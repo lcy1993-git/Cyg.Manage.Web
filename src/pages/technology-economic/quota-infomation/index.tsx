@@ -163,7 +163,11 @@ const QuotaProject = () => {
 
   const treeData = useMemo(() => {
     if (catalogueList && catalogueList.length > 0) {
-      return fileTreeFormData(formatDataTree(catalogueList))
+      let data = fileTreeFormData(formatDataTree(catalogueList))
+      if (data.length !== 0) {
+        setCatalogueId(data[0]?.id)
+        return data
+      }
     }
     return []
   }, [catalogueList])
@@ -228,12 +232,15 @@ const QuotaProject = () => {
                 />
               </div>
               <div className={styles.fileTree}>
-                <Tree.DirectoryTree
-                  // @ts-ignore
-                  onSelect={onCheck}
-                  treeData={treeData}
-                  defaultExpandAll
-                />
+                {treeData.length !== 0 && (
+                  <Tree.DirectoryTree
+                    // @ts-ignore
+                    onSelect={onCheck}
+                    treeData={treeData}
+                    defaultSelectedKeys={[treeData[0]?.id]}
+                    // defaultExpandAll
+                  />
+                )}
               </div>
             </TabPane>
           </Tabs>

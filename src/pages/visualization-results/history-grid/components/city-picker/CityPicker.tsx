@@ -1,8 +1,7 @@
 import { CSSProperties, FC } from 'react'
 import CityList from './CityList'
 import LetterPicker from './LetterPicker'
-import rawData from './province-city.json'
-import { CityWithProvince } from './type'
+import { CityWithProvince, Province } from './type'
 import useCityPicker from './useCityPicker'
 
 export type CityPickerProps = {
@@ -10,6 +9,7 @@ export type CityPickerProps = {
   style?: CSSProperties
   value?: CityWithProvince
   onSelect: (city: CityWithProvince) => void
+  rawData: Province[]
 }
 
 const CityPicker: FC<CityPickerProps> = ({ className, style, children, ...rest }) => {
@@ -21,16 +21,11 @@ const CityPicker: FC<CityPickerProps> = ({ className, style, children, ...rest }
     selectedLetter,
     onSelectCity,
     onSelectLetter,
-  } = useCityPicker({
-    ...rest,
-    rawData,
-  })
+  } = useCityPicker(rest)
 
   return (
     <div
-      className={`border border-gray-300 bg-white border-solid select-none overflow-hidden ${
-        className || ''
-      }`}
+      className={`bg-white elect-none overflow-hidden ${className || ''}`}
       style={{ width: '350px', ...style }}
     >
       <div className="py-1 px-2 flex justify-between items-center">

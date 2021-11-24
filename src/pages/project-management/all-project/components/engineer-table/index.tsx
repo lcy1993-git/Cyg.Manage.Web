@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import CyTag from '@/components/cy-tag'
+import EmptyTip from '@/components/empty-tip'
 import ImageIcon from '@/components/image-icon'
+import { useLayoutStore } from '@/layouts/context'
 import {
   againInherit,
   AllProjectStatisticsParams,
@@ -20,6 +22,7 @@ import moment from 'moment'
 import uuid from 'node-uuid'
 import { forwardRef, memo, Ref, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import ScrollView from 'react-custom-scrollbars'
+import { history } from 'umi'
 import AddProjectModal from '../add-project-modal'
 import ApprovalProjectModal from '../approval-project-modal'
 import ArrangeModal from '../arrange-modal'
@@ -116,6 +119,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [maxEndTime, setMaxEndTime] = useState<number>()
 
   const [auditKnotModalVisible, setAuditKnotModalVisible] = useState<boolean>(false)
+
+  // 预设计
+  const { setPreDesignItem } = useLayoutStore()
 
   // 项目继承状态判断
   const [inheritState, setInheritState] = useState<boolean>(false)
@@ -291,6 +297,17 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             项目继承
           </Menu.Item>
         )}
+
+        {
+          <Menu.Item
+            onClick={() => {
+              setPreDesignItem(tableItemData)
+              history.push('/visualization-results/grid-pre-design')
+            }}
+          >
+            预设计
+          </Menu.Item>
+        }
       </Menu>
     )
   }

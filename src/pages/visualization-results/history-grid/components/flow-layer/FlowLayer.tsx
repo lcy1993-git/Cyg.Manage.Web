@@ -2,8 +2,10 @@ import { CloseOutlined } from '@ant-design/icons'
 import { FC, useEffect, useState } from 'react'
 
 interface FlowLayerProps {
-  left: number
-  top: number
+  left?: number
+  right?: number
+  top?: number
+  bottom?: number
   showClose?: boolean
   className?: string
   title?: string
@@ -29,10 +31,10 @@ const FlowLayer: FC<FlowLayerProps> = ({
   return (
     <div
       style={{ ...style, visibility: _visible ? 'visible' : 'hidden' }}
-      className={`absolute bg-white ${className || ''}`}
+      className={`absolute ${className || ''}`}
     >
       {title && (
-        <div className="p-2 border-0 border-b border-gray-300 border-solid flex items-center justify-between">
+        <div className="p-2 border-0 border-b border-gray-300 border-solid flex items-center justify-between bg-white">
           <div className="text-base">{title}</div>
           {showClose && (
             <CloseOutlined

@@ -1,6 +1,6 @@
-import Loadable from 'react-loadable'
-import React from 'react'
 import Loading from '@ant-design/pro-layout/es/PageLoading'
+import React from 'react'
+import Loadable from 'react-loadable'
 
 const ResultPage = Loadable({
   loader: () => import('@/pages/visualization-results/result-page'),
@@ -14,7 +14,13 @@ const HistoryGrid = Loadable({
   delay: 150,
 })
 
-export default [
+const GridPreDesign = Loadable({
+  loader: () => import('@/pages/visualization-results/grid-pre-design'),
+  loading: Loading,
+  delay: 150,
+})
+
+const routes = [
   {
     title: '网架可视化',
     path: '/visualization-results/result-page',
@@ -25,4 +31,11 @@ export default [
     path: '/visualization-results/history-grid',
     component: <HistoryGrid />,
   },
+  {
+    title: '网架预设计',
+    path: '/visualization-results/grid-pre-design',
+    component: <HistoryGrid />,
+  },
 ]
+
+export default routes

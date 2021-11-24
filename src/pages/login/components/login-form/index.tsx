@@ -1,25 +1,24 @@
-import { history } from 'umi'
-import React, { useRef, useState } from 'react'
-import { Button, Form, Input, message, Tabs } from 'antd'
 import ImageIcon from '@/components/image-icon'
-import VerifycodeImage from '../verifycode-image'
-
-import { loginRules } from '@/pages/login/components/login-form/rule'
 import VerificationCode from '@/components/verification-code'
+import { Stop } from '@/pages/login'
+import { loginRules } from '@/pages/login/components/login-form/rule'
+import { getProductServerList, getStopServerNotice } from '@/services/index'
+import {
+  compareVerifyCode,
+  getAuthorityModules,
+  getUserInfoRequest,
+  indexLoginRequest,
+  phoneLoginRequest,
+} from '@/services/login'
 import { phoneNumberRule } from '@/utils/common-rule'
 import { flatten } from '@/utils/utils'
-import {
-  phoneLoginRequest,
-  compareVerifyCode,
-  indexLoginRequest,
-  getUserInfoRequest,
-  getAuthorityModules,
-} from '@/services/login'
-
-import styles from './index.less'
-import { Stop } from '@/pages/login'
 import { useRequest } from 'ahooks'
-import { getProductServerList, getStopServerNotice } from '@/services/index'
+import { Button, Form, Input, message, Tabs } from 'antd'
+import React, { useRef, useState } from 'react'
+import { history } from 'umi'
+import VerifycodeImage from '../verifycode-image'
+import styles from './index.less'
+
 const { TabPane } = Tabs
 const { NODE_ENV } = process.env
 export type LoginType = 'account' | 'phone'
@@ -155,42 +154,49 @@ const LoginForm: React.FC<Props> = (props) => {
     if (serverCode === '') {
       // 如果前面没有获取到停服信息,在这里再获取一遍
       try {
-        getServerList().then(async (res) => {
-          if (res) {
-            console.log(res)
-            let val = await run(res.code)
-            if (!val) {
-              await loginButtonClick()
-              return
-            }
-            if ([2, 3].includes(val?.stage) && val?.testerAccountPrefix !== '') {
-              // 停服公告,前缀没有也直接放行
-              const data = form.getFieldsValue()
-              if (!data?.userName?.startsWith(val?.testerAccountPrefix)) {
-                props.stopLogin(val)
+        getServerList()
+          .then(async (res) => {
+            if (res) {
+              let val = await run(res.code)
+              if (!val) {
+                await loginButtonClick()
                 return
               }
+              if ([2, 3].includes(val?.stage) && val?.testerAccountPrefix !== '') {
+                // 停服公告,前缀没有也直接放行
+                const data = form.getFieldsValue()
+                if (!data?.userName?.startsWith(val?.testerAccountPrefix)) {
+                  props.stopLogin(val)
+                  return
+                }
+              }
+              await loginButtonClick(val)
+              return
             }
-            await loginButtonClick(val)
-            return
-          }
-        })
+          })
+          .catch(() => {
+            loginButtonClick()
+          })
       } catch {
         await loginButtonClick()
       }
     } else {
       // 停服公告,前缀没有也直接放行
       const data = form.getFieldsValue()
-      let val = await run(serverCode)
-      if (
-        val !== null &&
-        !data?.userName?.startsWith(val?.testerAccountPrefix) &&
-        [2, 3].includes(val?.stage)
-      ) {
-        props.stopLogin(val)
-        return
+      if (serverCode !== undefined && serverCode !== null) {
+        let val = await run(serverCode)
+        if (
+          val !== null &&
+          !data?.userName?.startsWith(val?.testerAccountPrefix) &&
+          [2, 3].includes(val?.stage)
+        ) {
+          props.stopLogin(val)
+          return
+        }
+        await loginButtonClick(val)
+      } else {
+        await loginButtonClick()
       }
-      await loginButtonClick(val)
     }
   }
   // 登录前的验证码校准，当needVerifycode存在先行判断验证码
@@ -220,7 +226,7 @@ const LoginForm: React.FC<Props> = (props) => {
   }
 
   const onKeyDownLogin = (e: any) => {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       login('account')
     }
   }
