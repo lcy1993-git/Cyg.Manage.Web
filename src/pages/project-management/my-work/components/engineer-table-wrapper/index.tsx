@@ -144,6 +144,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
+  const [cacheColumns, setCacheColumns] = useState<string[]>([])
   const tableRef = useRef<HTMLDivElement>(null)
   const { currentClickTabChildActiveType, myWorkInitData, currentClickTabType } = useMyWorkStore()
   const requestUrl = useMemo(() => {
@@ -152,9 +153,36 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       .children.find((item: any) => item.id === currentClickTabChildActiveType).url
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
+  useEffect(() => {
+    const typeColumns = myWorkInitData
+      .find((item) => item.id === currentClickTabType)
+      .children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
+    if (typeColumns) {
+      setChooseColumns(typeColumns)
+    } else {
+      setChooseColumns(cacheColumns)
+    }
+  }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
+
   const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
       setChooseColumns(
+        columnsData
+          ? JSON.parse(columnsData)
+          : [
+              'categoryText',
+              'kvLevelText',
+              'natureTexts',
+              'majorCategoryText',
+              'constructTypeText',
+              'stageText',
+              'exportCoordinate',
+              'surveyUser',
+              'designUser',
+              'identitys',
+            ]
+      )
+      setCacheColumns(
         columnsData
           ? JSON.parse(columnsData)
           : [
@@ -1008,6 +1036,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   const columnsSettingFinish = (checkedValue: string[]) => {
     setChooseColumns(checkedValue)
+    setCacheColumns(checkedValue)
     refreshEvent()
   }
 

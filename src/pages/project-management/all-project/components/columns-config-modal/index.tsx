@@ -1,11 +1,8 @@
 import { saveColumnsConfig } from '@/services/project-management/all-project'
 import { CheckSquareOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Checkbox, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { useEffect } from 'react'
-import { useMemo } from 'react'
+import { Button, Checkbox, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styles from './index.less'
 
 interface ColumnsConfigProps {

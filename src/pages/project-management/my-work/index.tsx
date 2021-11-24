@@ -54,6 +54,26 @@ const MyWork: React.FC = () => {
               id: 'approveing',
               number: data.approve.approveing,
               url: '/ProjectList/GetApproveings',
+              typeColumns: [
+                'name',
+                'dataSourceTypeText',
+                'categoryText',
+                'pTypeText',
+                'kvLevelText',
+                'natureTexts',
+                'projectTime',
+                'majorCategoryText',
+                'reformAimText',
+                'cityCompany',
+                'countyCompany',
+                'constructTypeText',
+                'pCategoryText',
+                'stageText',
+                'pAttributeText',
+                'disclosureRange',
+                'pileRange',
+                'batchText',
+              ],
             },
           ],
         },
@@ -79,6 +99,26 @@ const MyWork: React.FC = () => {
               id: 'agent',
               number: data.arrange.agent,
               url: '/ProjectList/GetAgents',
+              typeColumns: [
+                'name',
+                'dataSourceTypeText',
+                'categoryText',
+                'pTypeText',
+                'kvLevelText',
+                'natureTexts',
+                'projectTime',
+                'majorCategoryText',
+                'reformAimText',
+                'cityCompany',
+                'countyCompany',
+                'constructTypeText',
+                'pCategoryText',
+                'stageText',
+                'pAttributeText',
+                'disclosureRange',
+                'pileRange',
+                'batchText',
+              ],
             },
           ],
         },
@@ -160,7 +200,7 @@ const MyWork: React.FC = () => {
         <div className={styles.myWorkContent}>
           <div className={styles.myWorkTypeContent}>{statisticsElement}</div>
           <div className={styles.singleTypeContent}>
-            {loading && (
+            {loading && myWorkInitData.length === 0 && (
               <div style={{ width: '100%', paddingTop: '120xpx', textAlign: 'center' }}>
                 <Spin spinning={loading} tip="数据加载中..."></Spin>
               </div>
