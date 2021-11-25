@@ -1,5 +1,4 @@
 import { baseUrl, cyRequest } from '@/services/common'
-import { CommentType } from '@/services/visualization-results/side-popup'
 import request from 'umi-request'
 
 const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]) => {
@@ -54,17 +53,23 @@ export const importEquipments = (data: FormData, id: string) => {
 
 // 获取历史网架版本
 export const getAllGridVersions = (includeDeleted = false) => {
-  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/AllVersions`, {
-    method: 'GET',
-    params: { includeDeleted },
+  return cyRequest(() => {
+    return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/AllVersions`, {
+      method: 'GET',
+      params: { includeDeleted },
+    })
   })
+
 }
 // 通过id获取历史网架版本
 export const getHistoriesById = (versionId: string) => {
-  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Histories/${versionId}`, {
-    method: 'GET',
+  return cyRequest(() => {
+    return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Histories/${versionId}`, {
+      method: 'GET',
+    })
   })
 }
+
 // 查询枚举
 export const getHistoriesEnums = () => {
   return request(`${baseUrl.netFrameworkHistory}/System/Enums`, {

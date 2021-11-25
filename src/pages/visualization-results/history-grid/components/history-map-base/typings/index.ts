@@ -1,11 +1,13 @@
-import '@/assets/icon/history-grid-icon.css'
-import { Map, View } from 'ol'
-import Geometry from 'ol/geom/Geometry'
-import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
-import { Layer } from 'ol/layer'
-import 'ol/ol.css'
-import { Source, Vector as VectorSource } from 'ol/source'
-import { GridMapGlobalState } from '../../../store/mapReducer'
+import '@/assets/icon/history-grid-icon.css';
+import { Map, View } from 'ol';
+import Geometry from 'ol/geom/Geometry';
+import LineString from 'ol/geom/LineString';
+import Point from 'ol/geom/Point';
+import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction';
+import { Layer } from 'ol/layer';
+import 'ol/ol.css';
+import { Source, Vector as VectorSource } from 'ol/source';
+import { GridMapGlobalState } from '../../../store/mapReducer';
 
 export type ElectricPointType =
   | '无类型'
@@ -58,6 +60,8 @@ export type SelectedData = (ElectricPointData | ElectricLineData)[]
 
 export type SelectType = 'pointSelect' | 'toggleSelect'
 
+type selectKey = "viewNoTextSelect" | "viewTextSelect" | "drawNoTextSelect" | "drawTextSelect"
+
 export interface InterActionRef {
   draw?: Draw
   snap?: Snap
@@ -66,8 +70,8 @@ export interface InterActionRef {
   designSource: VectorSource<Geometry>
   modify?: Modify
   isDraw?: boolean
-  currentSelect?: Select
-  select?: Record<Exclude<SelectType, ''>, Select>
+
+  select: Record<selectKey, Select> & {currentSelect: Select | null}
   dragBox?: DragBox
   isDragBox?: boolean
 }
@@ -76,9 +80,13 @@ export interface LayerRef {
   vecLayer: Layer<Source>
   streetLayer: Layer<Source>
   annLayer: Layer<Source>
-  vectorLayer: Layer<VectorSource<Geometry>>
-  hightLayer: Layer<VectorSource<Geometry>>
-  designLayer: Layer<VectorSource<Geometry>>
+
+  historyPointLayer: Layer<VectorSource<Point>>
+  historyLineLayer: Layer<VectorSource<LineString>>
+  designPointLayer: Layer<VectorSource<Point>>
+  designLineLayer: Layer<VectorSource<LineString>>
+  highLightPointLayer: Layer<VectorSource<Point>>
+  highLightLineLayer: Layer<VectorSource<LineString>>
 }
 
 export interface ViewRef {
@@ -86,7 +94,17 @@ export interface ViewRef {
 }
 
 export interface MapRef {
+  mapRef: globalThis.Map<unknown, unknown>;
   map: Map
+}
+
+export interface SourceRef {
+  historyPointSource: VectorSource<Point>
+  historyLineSource: VectorSource<LineString>
+  designPointSource: VectorSource<Point>
+  designLineSource: VectorSource<LineString>
+  highLightPointSource: VectorSource<Point>
+  highLightLineSource: VectorSource<LineString>
 }
 
 export type SetState = <T extends GridMapGlobalState, K extends keyof T = keyof T>(

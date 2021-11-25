@@ -14,11 +14,11 @@ const HistoryGrid = Loadable({
   delay: 150,
 })
 
-const GridPreDesign = Loadable({
-  loader: () => import('@/pages/visualization-results/grid-pre-design'),
-  loading: Loading,
-  delay: 150,
-})
+// const GridPreDesign = Loadable({
+//   loader: () => import('@/pages/visualization-results/grid-pre-design'),
+//   loading: Loading,
+//   delay: 150,
+// })
 
 const routes = [
   {

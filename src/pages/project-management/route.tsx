@@ -24,11 +24,6 @@ const ProjectAllAreaStatistics = Loadable({
   loading: () => <Loading />,
   delay: 150,
 })
-const ProjectEntrust = Loadable({
-  loader: () => import('@/pages/project-management/project-entrust'),
-  loading: () => <Loading />,
-  delay: 150,
-})
 
 export default [
   {
@@ -50,10 +45,5 @@ export default [
     title: '项目一览表',
     path: '/project-management/project-all-area-statistics',
     component: <ProjectAllAreaStatistics />,
-  },
-  {
-    title: '公司待办项目',
-    path: '/project-management/project-entrust',
-    component: <ProjectEntrust />,
   },
 ]

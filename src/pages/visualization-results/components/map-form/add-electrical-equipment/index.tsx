@@ -36,6 +36,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const {
     UIStatus,
     selectedData = [], //被选中的元素
+    currentGridData,
     historyDataSource, // 绘制元素的数据源
   } = useHistoryGridContext()
   const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
@@ -159,6 +160,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     setVisible(false)
   }
   useEffect(() => {
+    setVisible(false)
+  }, [currentGridData])
+  useEffect(() => {
     if (drawing && selectedData?.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
@@ -173,9 +177,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLineLength(
           // @ts-ignore
-          [Number(selectedData[0]?.startLat), Number(selectedData[0]?.startLng)],
+          [Number(selectedData[0]?.startLng), Number(selectedData[0]?.startLat)],
           // @ts-ignore
-          [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
+          [Number(selectedData[0]?.endLng), Number(selectedData[0]?.endLat)]
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
@@ -195,9 +199,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLineLength(
           // @ts-ignore
-          [Number(selectedData[0]?.startLat!), Number(selectedData[0]?.startLng)],
+          [Number(selectedData[0]?.startLng!), Number(selectedData[0]?.startLat)],
           // @ts-ignore
-          [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
+          [Number(selectedData[0]?.endLng), Number(selectedData[0]?.endLat)]
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }

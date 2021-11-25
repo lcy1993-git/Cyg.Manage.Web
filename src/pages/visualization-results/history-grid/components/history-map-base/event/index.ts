@@ -1,4 +1,5 @@
+import mapClick from './mapClick'
 import pointermove from './mapPointMove'
 import moveend from './moveend'
 import { pointSelectCallback, toggleSelectCallback } from './select'
-export { pointermove, moveend, toggleSelectCallback, pointSelectCallback }
+export { pointermove, moveend, toggleSelectCallback, pointSelectCallback, mapClick }
