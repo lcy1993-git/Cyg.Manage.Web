@@ -1,31 +1,31 @@
-import { editProject, getProjectInfo } from '@/services/project-management/all-project';
-import { useControllableValue } from 'ahooks';
-import { Button } from 'antd';
-import { Form, message, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useRequest } from 'ahooks';
-import moment, { Moment } from 'moment';
-import CreateProjectForm from '../create-project-form';
+import { editProject, getProjectInfo } from '@/services/project-management/all-project'
+import { useControllableValue } from 'ahooks'
+import { Button } from 'antd'
+import { Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useRequest } from 'ahooks'
+import moment, { Moment } from 'moment'
+import CreateProjectForm from '../create-project-form'
 
 interface EditProjectProps {
-  projectId: string;
-  visible: boolean;
-  pointVisible?: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  setInheritState?: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  areaId: string;
-  company: string;
-  companyName?: string;
-  status: number;
-  startTime?: Moment;
-  endTime?: Moment;
+  projectId: string
+  visible: boolean
+  pointVisible?: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  setInheritState?: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  areaId: string
+  company: string
+  companyName?: string
+  status: number
+  startTime?: Moment
+  endTime?: Moment
 }
 
 const EditProjectModal: React.FC<EditProjectProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState(false);
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [requestLoading, setRequestLoading] = useState(false)
+  const [form] = Form.useForm()
 
   const {
     projectId,
@@ -38,7 +38,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     endTime,
     pointVisible,
     setInheritState,
-  } = props;
+  } = props
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
@@ -62,15 +62,15 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             : projectInfo?.dataSourceType === 1
             ? undefined
             : projectInfo?.pileRange,
-      });
+      })
     },
-  });
+  })
 
   useEffect(() => {
     if (state) {
-      run();
+      run()
     }
-  }, [state]);
+  }, [state])
 
   const edit = () => {
     form.validateFields().then(async (value) => {
@@ -85,18 +85,18 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
               : value.disclosureRange,
           pileRange:
             value.pileRange === undefined || value.pileRange === undefined ? 0 : value.pileRange,
-        });
-        message.success('项目信息更新成功');
-        setState(false);
-        form.resetFields();
-        changeFinishEvent?.();
+        })
+        message.success('项目信息更新成功')
+        setState(false)
+        form.resetFields()
+        changeFinishEvent?.()
       } catch (msg) {
-        console.error(msg);
+        console.error(msg)
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
-    });
-  };
+    })
+  }
 
   return (
     <Modal
@@ -110,8 +110,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         <Button
           key="cancle"
           onClick={() => {
-            setInheritState?.(false);
-            setState(false);
+            setInheritState?.(false)
+            setState(false)
           }}
         >
           取消
@@ -122,8 +122,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
       ]}
       onOk={() => edit()}
       onCancel={() => {
-        setInheritState?.(false);
-        setState(false);
+        setInheritState?.(false)
+        setState(false)
       }}
     >
       <Form form={form} preserve={false}>
@@ -141,7 +141,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         />
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditProjectModal;
+export default EditProjectModal

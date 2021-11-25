@@ -171,7 +171,7 @@ export const commonUpload = (
 export const commonExport = (url: string, params: any, selectIds: string[]) => {
   return tokenRequest(`${baseUrl.project}${url}`, {
     method: 'POST',
-    data: { ...params, ids: selectIds },
+    data: { ...params, projectIds: selectIds },
     responseType: 'blob',
   })
 }

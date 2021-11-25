@@ -1,16 +1,16 @@
-import React from 'react';
-import { Input, InputNumber } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import CascaderUrlSelect from '@/components/material-cascader-url-select';
-import Scrollbars from 'react-custom-scrollbars';
+import React from 'react'
+import { Input, InputNumber } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import CascaderUrlSelect from '@/components/material-cascader-url-select'
+import Scrollbars from 'react-custom-scrollbars'
 
 interface EditCableChannelDetailParams {
-  resourceLibId: string;
+  resourceLibId: string
 }
 
 const EditCableChannelDetail: React.FC<EditCableChannelDetailParams> = (props) => {
-  const { resourceLibId } = props;
+  const { resourceLibId } = props
 
   return (
     <>
@@ -24,9 +24,9 @@ const EditCableChannelDetail: React.FC<EditCableChannelDetailParams> = (props) =
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (getFieldValue('materialId') != undefined && value) {
-                  return Promise.reject('组件或物料选其一');
+                  return Promise.reject('组件或物料选其一')
                 }
-                return Promise.resolve();
+                return Promise.resolve()
               },
             }),
           ]}
@@ -43,9 +43,9 @@ const EditCableChannelDetail: React.FC<EditCableChannelDetailParams> = (props) =
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (getFieldValue('componentId') != undefined && value) {
-                  return Promise.reject('组件或物料选其一');
+                  return Promise.reject('组件或物料选其一')
                 }
-                return Promise.resolve();
+                return Promise.resolve()
               },
             }),
           ]}
@@ -58,8 +58,14 @@ const EditCableChannelDetail: React.FC<EditCableChannelDetailParams> = (props) =
           label="数量"
           name="itemNumber"
           rules={[
-            { required: true, message: '数量不能为空' },
-            { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+            {
+              pattern: /^(([1-9]\d+)|[0-9])/, //匹配正整数
+              message: '输入值必须大于0',
+            },
+            {
+              pattern: /^([\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+              message: '最多保留三位小数',
+            },
           ]}
           required
         >
@@ -67,7 +73,7 @@ const EditCableChannelDetail: React.FC<EditCableChannelDetailParams> = (props) =
         </CyFormItem>
       </Scrollbars>
     </>
-  );
-};
+  )
+}
 
-export default EditCableChannelDetail;
+export default EditCableChannelDetail

@@ -1,11 +1,8 @@
-import PageCommonWrap from '@/components/page-common-wrap'
-import TableSearch from '@/components/table-search'
 // import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, message } from 'antd'
-import React, { useState } from 'react'
+import { Button } from 'antd'
+import React, { useState, useRef } from 'react'
 import styles from './index.less'
 import CommonTitle from '@/components/common-title'
-import UrlSelect from '@/components/url-select'
 import CableDesignTab from './components/cableDesign-tab'
 import { ImportOutlined } from '@ant-design/icons'
 import ImportCableModal from './components/import-form'
@@ -18,39 +15,19 @@ interface libParams {
 
 const CableDesign: React.FC<libParams> = (props) => {
   const { libId } = props
-  const tableRef = React.useRef<HTMLDivElement>(null)
-  const [resourceLibId, setResourceLibId] = useState<string>('')
   const [importCableVisible, setImportCableVisible] = useState<boolean>(false)
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-
-  //选择资源库传libId
-  const searchByLib = (value: any) => {
-    setResourceLibId(value)
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams({
-        libId: value,
-      })
-    }
-  }
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
+  const uploadRefresh = useRef()
 
   // 列表刷新
   const refresh = () => {
-    if (tableRef && tableRef.current) {
+    if (uploadRefresh && uploadRefresh.current) {
       // @ts-ignore
-      tableRef.current.refresh()
+      uploadRefresh.current.refresh()
     }
   }
 
-  const uploadFinishEvent = () => {
-    refresh()
-  }
-
   const importCableDesignEvent = () => {
-    // if (!resourceLibId) {
-    //   message.error('请先选择资源库');
-    //   return;
-    // }
     setImportCableVisible(true)
   }
 
@@ -72,14 +49,14 @@ const CableDesign: React.FC<libParams> = (props) => {
               )}
             </div>
           </div>
-          <CableDesignTab libId={libId} />
+          <CableDesignTab ref={uploadRefresh} libId={libId} />
         </div>
       </div>
       <ImportCableModal
         libId={libId}
         requestSource="resource"
         visible={importCableVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
+        changeFinishEvent={refresh}
         onChange={setImportCableVisible}
       />
       {/* </PageCommonWrap> */}

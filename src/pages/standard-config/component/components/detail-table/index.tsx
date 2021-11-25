@@ -35,7 +35,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const { data, run } = useRequest(getComponentDetailItem, {
     manual: true,

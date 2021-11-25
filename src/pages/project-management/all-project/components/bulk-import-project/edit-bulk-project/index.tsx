@@ -1,39 +1,39 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
+import CyFormItem from '@/components/cy-form-item'
+import DataSelect from '@/components/data-select'
+import UrlSelect from '@/components/url-select'
+import { useGetProjectEnum } from '@/utils/hooks'
+import { useControllableValue } from 'ahooks'
+import { DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd'
+import { cloneDeep } from 'lodash'
 // import DataSelect from '@/components/data-select';
 // import EnumSelect from '@/components/enum-select';
-import moment from 'moment';
-import Rule from '../../create-project-form/project-form-rule';
-import { useControllableValue } from 'ahooks';
-import { useGetProjectEnum } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
-import { cloneDeep } from 'lodash';
+import moment from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import Rule from '../../create-project-form/project-form-rule'
 
 interface EditBulkProjectProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent: (projectInfo: any) => void;
-  projectInfo: any;
-  currentChooseEngineerInfo: any;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent: (projectInfo: any) => void
+  projectInfo: any
+  currentChooseEngineerInfo: any
 }
 
 const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [nature, setNature] = useState<string>();
-  const [powerSupplySelectData, setPowerSupplySelectData] = useState<any[]>([]);
-  const [powerSupply, setPowerSupply] = useState<string>('');
-  const [dataSourceType, setDataSourceType] = useState<number>();
-  const [disRangeValue, setDisRangeValue] = useState<number>();
-  const [pileRangeValue, setPileRangeValue] = useState<number>();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [nature, setNature] = useState<string>()
+  const [powerSupplySelectData, setPowerSupplySelectData] = useState<any[]>([])
+  const [powerSupply, setPowerSupply] = useState<string>('')
+  const [dataSourceType, setDataSourceType] = useState<number>()
+  const [disRangeValue, setDisRangeValue] = useState<number>()
+  const [pileRangeValue, setPileRangeValue] = useState<number>()
 
-  const { projectInfo, finishEvent, currentChooseEngineerInfo } = props;
+  const { projectInfo, finishEvent, currentChooseEngineerInfo } = props
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   useEffect(() => {
-    const { selectData } = currentChooseEngineerInfo;
+    const { selectData } = currentChooseEngineerInfo
     form.setFieldsValue({
       ...projectInfo,
       startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -54,15 +54,15 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           : projectInfo?.dataSourceType === 1
           ? undefined
           : projectInfo?.pileRange,
-    });
-    setDataSourceType(projectInfo?.dataSourceType);
-    setPowerSupplySelectData(selectData.departmentSelectData);
-    setPowerSupply(projectInfo.powerSupply);
-  }, [JSON.stringify(projectInfo)]);
+    })
+    setDataSourceType(projectInfo?.dataSourceType)
+    setPowerSupplySelectData(selectData.departmentSelectData)
+    setPowerSupply(projectInfo.powerSupply)
+  }, [JSON.stringify(projectInfo)])
 
   const powerSupplyOnchange = (value: any) => {
-    setPowerSupply(value);
-  };
+    setPowerSupply(value)
+  }
 
   const {
     projectCategory,
@@ -81,37 +81,37 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
     projectAttribute,
     meteorologicLevel,
     projectDataSourceType,
-  } = useGetProjectEnum();
+  } = useGetProjectEnum()
 
   const saveCurrentProject = () => {
     form.validateFields().then((values) => {
-      const { projects } = currentChooseEngineerInfo;
+      const { projects } = currentChooseEngineerInfo
 
       const newProjectInfo = {
         ...projectInfo,
         ...values,
         powerSupply,
-      };
+      }
 
-      const copyProjects = cloneDeep(projects);
+      const copyProjects = cloneDeep(projects)
       const handleProjects = copyProjects.map((item: any, index: any) => {
         if (index === newProjectInfo.index) {
-          return newProjectInfo;
+          return newProjectInfo
         }
-        return item;
-      });
+        return item
+      })
       const projectSaveInfo = {
         ...currentChooseEngineerInfo,
         projects: handleProjects,
-      };
-      finishEvent(projectSaveInfo);
-    });
-    setState(false);
-  };
+      }
+      finishEvent(projectSaveInfo)
+    })
+    setState(false)
+  }
 
   const closeModalEvent = () => {
-    setState(false);
-  };
+    setState(false)
+  }
   return (
     <>
       <Modal
@@ -252,9 +252,9 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                         !value ||
                         !getFieldValue('startTime')
                       ) {
-                        return Promise.resolve();
+                        return Promise.resolve()
                       }
-                      return Promise.reject('"项目结束日期"不得早于"项目开始日期"');
+                      return Promise.reject('"项目结束日期"不得早于"项目开始日期"')
                     },
                   }),
                 ]}
@@ -570,9 +570,9 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   placeholder="请选择"
                   onChange={(value: any) => {
                     if (value === 2 || value === 1) {
-                      form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
+                      form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined })
                     }
-                    setDataSourceType(value);
+                    setDataSourceType(value)
                   }}
                 />
               </CyFormItem>
@@ -592,7 +592,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 >
                   <InputNumber
                     disabled
-                    placeholder="“无需现场数据”项目，免设置此条目"
+                    placeholder="“免勘察”项目，免设置此条目"
                     style={{ width: '100%' }}
                     value={disRangeValue}
                   />
@@ -608,7 +608,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 >
                   <InputNumber
                     disabled
-                    placeholder="“点位导入”项目，免设置此条目"
+                    placeholder="“导入”项目，免设置此条目"
                     style={{ width: '100%' }}
                     value={disRangeValue}
                   />
@@ -628,13 +628,13 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                     },
                     () => ({
                       validator(_, value) {
-                        if (value <= 99999 && value > -1) {
-                          return Promise.resolve();
+                        if (value <= 999 && value > -1) {
+                          return Promise.resolve()
                         }
-                        if (value > 99999) {
-                          return Promise.reject('请填写0~99999以内的整数');
+                        if (value > 999) {
+                          return Promise.reject('请填写0~999以内的整数')
                         }
-                        return Promise.resolve();
+                        return Promise.resolve()
                       },
                     }),
                     {
@@ -664,7 +664,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   <InputNumber
                     value={pileRangeValue}
                     disabled
-                    placeholder="“无需现场数据”项目，免设置此条目"
+                    placeholder="“免勘察”项目，免设置此条目"
                     style={{ width: '100%' }}
                   />
                 </CyFormItem>
@@ -680,7 +680,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   <InputNumber
                     value={pileRangeValue}
                     disabled
-                    placeholder="“点位导入”项目，免设置此条目"
+                    placeholder="“导入”项目，免设置此条目"
                     style={{ width: '100%' }}
                   />
                 </CyFormItem>
@@ -699,13 +699,13 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                     },
                     () => ({
                       validator(_, value) {
-                        if (value <= 99999 && value > -1) {
-                          return Promise.resolve();
+                        if (value <= 999 && value > -1) {
+                          return Promise.resolve()
                         }
-                        if (value > 99999) {
-                          return Promise.reject('请填写1~99999以内的整数');
+                        if (value > 999) {
+                          return Promise.reject('请填写0~999以内的整数')
                         }
-                        return Promise.resolve();
+                        return Promise.resolve()
                       },
                     }),
                     {
@@ -722,7 +722,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
         </Form>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default EditBulkProject;
+export default EditBulkProject

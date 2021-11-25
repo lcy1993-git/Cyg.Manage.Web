@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import styles from './index.less'
-import loginBg from '@/assets/image/login/bg.png'
 import bannerSrc from '@/assets/image/login/banner.png'
-import LoginForm from './components/login-form'
+import loginBg from '@/assets/image/login/bg.png'
 import LogoComponent from '@/components/logo-component'
-import { useMount } from 'ahooks'
 import { getProductServerList } from '@/services/index'
+import { useMount } from 'ahooks'
+import React, { useState } from 'react'
+import LoginForm from './components/login-form'
 import StopServer from './components/stop-server'
+import styles from './index.less'
 const { NODE_ENV } = process.env
 
 export interface Stop {

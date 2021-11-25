@@ -1,25 +1,24 @@
-import { history } from 'umi'
-import React, { useRef, useState } from 'react'
-import { Button, Form, Input, message, Tabs } from 'antd'
 import ImageIcon from '@/components/image-icon'
-import VerifycodeImage from '../verifycode-image'
-
-import { loginRules } from '@/pages/login/components/login-form/rule'
 import VerificationCode from '@/components/verification-code'
+import { Stop } from '@/pages/login'
+import { loginRules } from '@/pages/login/components/login-form/rule'
+import { getProductServerList, getStopServerNotice } from '@/services/index'
+import {
+  compareVerifyCode,
+  getAuthorityModules,
+  getUserInfoRequest,
+  indexLoginRequest,
+  phoneLoginRequest,
+} from '@/services/login'
 import { phoneNumberRule } from '@/utils/common-rule'
 import { flatten } from '@/utils/utils'
-import {
-  phoneLoginRequest,
-  compareVerifyCode,
-  indexLoginRequest,
-  getUserInfoRequest,
-  getAuthorityModules,
-} from '@/services/login'
-
-import styles from './index.less'
-import { Stop } from '@/pages/login'
 import { useRequest } from 'ahooks'
-import { getProductServerList, getStopServerNotice } from '@/services/index'
+import { Button, Form, Input, message, Tabs } from 'antd'
+import React, { useRef, useState } from 'react'
+import { history } from 'umi'
+import VerifycodeImage from '../verifycode-image'
+import styles from './index.less'
+
 const { TabPane } = Tabs
 const { NODE_ENV } = process.env
 export type LoginType = 'account' | 'phone'

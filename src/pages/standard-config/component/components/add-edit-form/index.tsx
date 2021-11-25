@@ -32,16 +32,15 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
 
   return (
     <>
-      {type === 'add' && (
-        <CyFormItem
-          label="组件编码"
-          name="componentId"
-          required
-          rules={[{ required: true, message: '组件编码不能为空' }]}
-        >
-          <Input placeholder="请输入组件编码"></Input>
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="组件编码"
+        name="componentId"
+        required
+        rules={[{ required: true, message: '组件编码不能为空' }]}
+      >
+        <Input placeholder="请输入组件编码"></Input>
+      </CyFormItem>
+
       <CyFormItem
         label="组件名称"
         name="componentName"
@@ -122,7 +121,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
       </CyFormItem>
 
-      <CyFormItem label="图纸" name="chartIds">
+      <CyFormItem label="加工图" name="chartIds">
         <UrlSelect
           requestType="post"
           mode="multiple"

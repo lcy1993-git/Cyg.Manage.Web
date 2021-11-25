@@ -1,34 +1,34 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import EmptyTip from '@/components/empty-tip';
-import type { AuditFileInfo } from '../check-result-modal';
-import { Tree } from 'antd';
-import styles from './index.less';
-const { DirectoryTree } = Tree;
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import EmptyTip from '@/components/empty-tip'
+import type { AuditFileInfo } from '../check-result-modal'
+import { Tree } from 'antd'
+import styles from './index.less'
+const { DirectoryTree } = Tree
 
 interface AuditResultTabProps {
-  createEvent: Dispatch<SetStateAction<React.Key[]>>;
-  setTabEvent: Dispatch<SetStateAction<string>>;
-  auditResultData: any;
-  setAuditFileInfo: (fileInfo: AuditFileInfo) => void;
+  createEvent: Dispatch<SetStateAction<React.Key[]>>
+  setTabEvent: Dispatch<SetStateAction<string>>
+  auditResultData: any
+  setAuditFileInfo: (fileInfo: AuditFileInfo) => void
 }
 
 const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
-  const { createEvent, setTabEvent, auditResultData, setAuditFileInfo } = props;
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
+  const { createEvent, setTabEvent, auditResultData, setAuditFileInfo } = props
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
 
   const onCheck = (checkedKeysValue: React.Key[], e: any) => {
     const checkedIds = e.checkedNodes
       .map((item: any) => {
         if (item.category === 1) {
-          return item.value;
+          return item.value
         }
       })
-      .filter(Boolean);
+      .filter(Boolean)
 
-    createEvent(checkedIds);
-    setCheckedKeys(checkedKeysValue);
-    setTabEvent('audit');
-  };
+    createEvent(checkedIds)
+    setCheckedKeys(checkedKeysValue)
+    setTabEvent('audit')
+  }
 
   const onSelect = (info: string, e: any) => {
     if (e.node.category === 2 && e.node.title) {
@@ -39,13 +39,13 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
         extension: e.node.type,
         url: e.node.value,
         title: e.node.title,
-      });
+      })
     }
-  };
+  }
 
   const previewEvent = () => {
-    console.log(111);
-  };
+    console.log(111)
+  }
 
   return (
     <div className={styles.treeTableContent}>
@@ -59,7 +59,7 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
                 </span>
               ) : (
                 <span>{v.title}</span>
-              );
+              )
             }}
             checkable
             onCheck={onCheck}
@@ -72,7 +72,7 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
       )}
       {auditResultData?.length === 0 && <EmptyTip description="暂无评审成果" />}
     </div>
-  );
-};
+  )
+}
 
-export default AuditResultTab;
+export default AuditResultTab

@@ -1,17 +1,17 @@
-import { RightOutlined } from '@ant-design/icons';
-import React from 'react';
-import styles from './index.less';
+import { RightOutlined } from '@ant-design/icons'
+import React from 'react'
+import styles from './index.less'
 
 interface SingleStatisticsProps {
-  label: string;
-  icon: string;
-  tipSlot?: () => React.ReactNode;
+  label: string
+  icon: string
+  tipSlot?: () => React.ReactNode
 }
 
 const SingleStatistics: React.FC<SingleStatisticsProps> = (props) => {
-  const { label = '', icon = 'awaitProcess', tipSlot } = props;
+  const { label = '', icon = 'awaitProcess', tipSlot } = props
 
-  const imgSrc = require('../../../../../assets/image/project-management/' + icon + '.png');
+  const imgSrc = require('../../../../../assets/image/project-management/' + icon + '.png')
 
   return (
     <div className={styles.singleStatistics}>
@@ -32,7 +32,7 @@ const SingleStatistics: React.FC<SingleStatisticsProps> = (props) => {
         <div className={styles.singleStatisticsUnit}>条</div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SingleStatistics;
+export default SingleStatistics

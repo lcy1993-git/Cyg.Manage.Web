@@ -85,7 +85,7 @@ export const useGetButtonJurisdictionArray = () => {
   try {
     return localStorage.getItem('buttonJurisdictionArray') ?? '[]'
   } catch (msg) {
-    return []
+    return [] as string[]
   }
 }
 

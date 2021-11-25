@@ -1,7 +1,6 @@
-import React from 'react'
-
-import styles from './index.less'
 import { Stop } from '@/pages/login'
+import React from 'react'
+import styles from './index.less'
 
 interface Props {
   data: Stop
@@ -13,7 +12,7 @@ const StopServer: React.FC<Props> = (props) => {
   return (
     <div className={styles.stopInfoBox}>
       <div className={styles.stopInfoTitle}>关于服务器停机维护的公告</div>
-      <div>{data?.content ?? ''}</div>
+      {data?.content && <div dangerouslySetInnerHTML={{ __html: data?.content }}></div>}
     </div>
   )
 }

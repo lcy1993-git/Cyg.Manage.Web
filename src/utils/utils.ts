@@ -236,7 +236,7 @@ export const handleRate = (number: number) => {
   return number.toFixed(2)
 }
 
-export const BlobOrArrayBuffertoUnit8 = (data: Bolb | ArrayBuffer) => {
+export const BlobOrArrayBuffertoUnit8 = (data: Blob | ArrayBuffer) => {
   const res = []
   switch (Object.prototype.toString.call(b)) {
     case '[object Blob]':
@@ -249,7 +249,6 @@ export const BlobOrArrayBuffertoUnit8 = (data: Bolb | ArrayBuffer) => {
       break
   }
 }
-
 interface Data {
   parentID: number
   id: number

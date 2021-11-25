@@ -1,30 +1,30 @@
-import CyTip from '@/components/cy-tip';
-import { auditKnot } from '@/services/project-management/all-project';
-import { useControllableValue } from 'ahooks';
-import { message, Modal, Radio } from 'antd';
-import React, { Dispatch, useState } from 'react';
-import { SetStateAction } from 'react';
-import styles from './index.less';
+import CyTip from '@/components/cy-tip'
+import { auditKnot } from '@/services/project-management/all-project'
+import { useControllableValue } from 'ahooks'
+import { message, Modal, Radio } from 'antd'
+import React, { Dispatch, useState } from 'react'
+import { SetStateAction } from 'react'
+import styles from './index.less'
 
 interface AuditKnotParams {
-  projectIds: string[];
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent: (() => void) | undefined;
+  projectIds: string[]
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent: (() => void) | undefined
 }
 
 const AuditKnotModal: React.FC<AuditKnotParams> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [powerStatus, setPowerStatus] = useState<boolean>(true);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [powerStatus, setPowerStatus] = useState<boolean>(true)
 
-  const { projectIds, finishEvent } = props;
+  const { projectIds, finishEvent } = props
 
   const auditKnotEvent = async () => {
-    await auditKnot(powerStatus, projectIds);
-    message.success('操作成功');
-    setState(false);
-    finishEvent?.();
-  };
+    await auditKnot(powerStatus, projectIds)
+    message.success('操作成功')
+    setState(false)
+    finishEvent?.()
+  }
 
   return (
     <Modal
@@ -49,7 +49,7 @@ const AuditKnotModal: React.FC<AuditKnotParams> = (props) => {
         </div>
       </Radio.Group>
     </Modal>
-  );
-};
+  )
+}
 
-export default AuditKnotModal;
+export default AuditKnotModal

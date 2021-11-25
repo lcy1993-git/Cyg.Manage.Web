@@ -310,6 +310,13 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
     //   message.warning('请先选择资源库');
     //   return;
     // }
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.error('请选择单条数据进行编辑')
+      return
+    }
     setDetailVisible(true)
   }
 

@@ -1,13 +1,12 @@
-import { getVersionUpdate } from '@/services/common'
-import { useControllableValue, useRequest } from 'ahooks'
 import { webConfig } from '@/global'
-import { Modal, Spin } from 'antd'
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import styles from './index.less'
-import { useEffect } from 'react'
-import uuid from 'node-uuid'
 import { Stop } from '@/pages/login'
 import StopServer from '@/pages/login/components/stop-server'
+import { getVersionUpdate } from '@/services/common'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Modal, Spin } from 'antd'
+import uuid from 'node-uuid'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import styles from './index.less'
 
 interface VersionInfoModalProps {
   visible: boolean

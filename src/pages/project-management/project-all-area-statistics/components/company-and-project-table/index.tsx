@@ -87,6 +87,7 @@ const CompanyAndProjectTable: React.FC = () => {
             onChange={(value: any) => {
               setNowCompanyId(value)
               dataType === 'project' && returnToCompanyType()
+              // setSelectedCompanyId(value);
               setProjectShareCompanyId(value)
             }}
           />

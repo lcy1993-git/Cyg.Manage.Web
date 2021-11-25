@@ -1,33 +1,29 @@
-import React from 'react'
-import { Input, Radio } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
+import EnumSelect from '@/components/enum-select'
 import {
-  poleType,
-  poleMaterial,
   loopNumber,
   poleKvLevel,
+  poleMaterial,
+  poleType,
 } from '@/services/resource-config/resource-enum'
-import EnumSelect from '@/components/enum-select'
+import { Input, Radio } from 'antd'
+import React from 'react'
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string
 }
 
 const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
-
   return (
     <>
-      {type == 'add' && (
-        <CyFormItem
-          label="杆型简号"
-          name="poleTypeCode"
-          required
-          rules={[{ required: true, message: '杆型简号不能为空' }]}
-        >
-          <Input placeholder="请输入杆型简号" />
-        </CyFormItem>
-      )}
+      <CyFormItem
+        label="杆型简号"
+        name="poleTypeCode"
+        required
+        rules={[{ required: true, message: '杆型简号不能为空' }]}
+      >
+        <Input placeholder="请输入杆型简号" />
+      </CyFormItem>
 
       <CyFormItem
         label="杆型名称"

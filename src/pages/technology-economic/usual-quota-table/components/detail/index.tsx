@@ -1,44 +1,44 @@
-import { Space, Tabs } from 'antd';
+import { Space, Tabs } from 'antd'
 
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
-import TopographicIncreaseFactor from '../topographic-increase-factor';
-import AttritionRate from '../atrition-rate';
-import { getCommonlyTableTypeList } from '@/services/technology-economic/usual-quota-table';
-import TableImportButton from '@/components/table-import-button';
-import EarthworkParameters from '../earthwork-parameters';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { useMount } from 'ahooks';
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
+import TopographicIncreaseFactor from '../topographic-increase-factor'
+import AttritionRate from '../atrition-rate'
+import { getCommonlyTableTypeList } from '@/services/technology-economic/usual-quota-table'
+import TableImportButton from '@/components/table-import-button'
+import EarthworkParameters from '../earthwork-parameters'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { useMount } from 'ahooks'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 interface Props {}
 
 const UsualQuotaTableDetail: React.FC<Props> = () => {
-  const [active, setActive] = useState<number>(1);
-  const [name, setName] = useState<string>('');
+  const [active, setActive] = useState<number>(1)
+  const [name, setName] = useState<string>('')
   const getTabList = async () => {
     setName('')
-    const urlName = decodeURI(window.location.search.split('=')[1]).replace('&id', '');
+    const urlName = decodeURI(window.location.search.split('=')[1]).replace('&id', '')
     setName(urlName)
     if (urlName === '地形增加系数') {
-      setActive(3);
+      setActive(3)
     } else if (urlName === '未计价材料施工损耗率') {
-      setActive(4);
+      setActive(4)
     } else if (urlName === '土方参数') {
-      setActive(5);
+      setActive(5)
     }
-  };
+  }
   useEffect(() => {
-    getTabList();
-  }, []);
+    getTabList()
+  }, [])
   const setSuccessful = (e: boolean) => {
-    e && getTabList();
-  };
+    e && getTabList()
+  }
   useMount(() => {
-    setName(decodeURI(window.location.search.split('=')[1]).replace('&id', '') ?? '');
-  });
-  const detailId = window.location.search.split('=')[2];
+    setName(decodeURI(window.location.search.split('=')[1]).replace('&id', '') ?? '')
+  })
+  const detailId = window.location.search.split('=')[2]
   return (
     <PageCommonWrap>
       <div className={styles.costTemplate}>
@@ -49,11 +49,11 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
               <TableImportButton
                 extraParams={{
                   commonlyTableType: active,
-                  RateFileId:detailId
+                  RateFileId: detailId,
                 }}
                 modalTitle={'导入费率'}
                 buttonTitle={'导入费率'}
-                style={{ zIndex: 99}}
+                style={{ zIndex: 99 }}
                 template={true}
                 downType={active}
                 requestSource={'tecEco1'}
@@ -91,7 +91,7 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
         </div>
       </div>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default UsualQuotaTableDetail;
+export default UsualQuotaTableDetail

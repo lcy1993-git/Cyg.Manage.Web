@@ -1,34 +1,43 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Table, Modal, Input, message } from 'antd';
-import SidePopupMergeThreeHoc from './components/side-popup-hoc/index';
-import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons';
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { Table, Modal, Input, message } from 'antd'
+import SidePopupMergeThreeHoc from './components/side-popup-hoc/index'
+import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
 
-import { useContainer } from '../../result-page/mobx-store';
-import CommentList from './components/comment-list';
+import { useContainer } from '../../result-page/mobx-store'
+import CommentList from './components/comment-list'
 
-import moment from 'moment';
-import { useRequest } from 'ahooks';
-import { observer } from 'mobx-react-lite';
+import moment from 'moment'
+import { useRequest } from 'ahooks'
+import { observer } from 'mobx-react-lite'
 
-import { findEnumKeyByCN } from '../../utils/loadEnum';
-import { formDataMateral, generateMaterialTreeList, translateMatDataToTree } from '@/utils/utils';
-import { getlibId_new, getMedium, getMaterialItemData } from '@/services/visualization-results/visualization-results';
-import { CommentRequestType, addComment, fetchCommentList, porjectIsExecutor } from '@/services/visualization-results/side-popup';
-import styles from './index.less';
-import CableSection from '../cable-section';
-import MediaModal from '../media-modal';
-import classnames from 'classnames';
-import { MaterialTableNew } from '../material-table-new';
+import { findEnumKeyByCN } from '../../utils/loadEnum'
+import { formDataMateral, generateMaterialTreeList, translateMatDataToTree } from '@/utils/utils'
+import {
+  getlibId_new,
+  getMedium,
+  getMaterialItemData,
+} from '@/services/visualization-results/visualization-results'
+import {
+  CommentRequestType,
+  addComment,
+  fetchCommentList,
+  porjectIsExecutor,
+} from '@/services/visualization-results/side-popup'
+import styles from './index.less'
+import CableSection from '../cable-section'
+import MediaModal from '../media-modal'
+import classnames from 'classnames'
+import { MaterialTableNew } from '../material-table-new'
 
 export interface TableDataType {
-  [propName: string]: any;
+  [propName: string]: any
 }
 
 export interface SidePopupProps {
-  data: TableDataType[];
-  rightSidebarVisible: boolean;
-  setRightSidebarVisiviabel: (arg0: boolean) => void;
-  height: number;
+  data: TableDataType[]
+  rightSidebarVisible: boolean
+  setRightSidebarVisiviabel: (arg0: boolean) => void
+  height: number
 }
 
 const materiaColumns = [
@@ -68,8 +77,8 @@ const materiaColumns = [
     key: 'itemNumber',
     ellipsis: true,
     render(v: number) {
-      return v ? String(v) : ""
-    }
+      return v ? String(v) : ''
+    },
   },
 
   {
@@ -79,8 +88,8 @@ const materiaColumns = [
     key: 'unitPrice',
     ellipsis: true,
     render(v: number) {
-      return v ? String(v) : ""
-    }
+      return v ? String(v) : ''
+    },
   },
   {
     title: '单重(kg)',
@@ -89,8 +98,8 @@ const materiaColumns = [
     key: 'pieceWeight',
     ellipsis: true,
     render(v: number) {
-      return v ? String(v) : ""
-    }
+      return v ? String(v) : ''
+    },
   },
   {
     title: '状态',
@@ -98,7 +107,7 @@ const materiaColumns = [
     dataIndex: 'state',
     key: 'state',
     render(r: string | number) {
-      return r || "";
+      return r || ''
     },
     ellipsis: true,
   },
@@ -130,13 +139,13 @@ const materiaColumns = [
     key: 'remark',
     ellipsis: true,
   },
-];
+]
 
 const modalTitle = {
   media: '查看多媒体文件',
   material: '查看材料表',
   annotation: '创建审阅',
-};
+}
 
 const DEVICE_TYPE: { [propertyName: string]: string } = {
   tower: '杆塔',
@@ -154,35 +163,34 @@ const DEVICE_TYPE: { [propertyName: string]: string } = {
   pull_line: '拉线',
   Track: '轨迹点',
   TrackLine: '轨迹线',
-};
+}
 
 const LAYER_TYPE: { [propertyName: string]: string } = {
   survey: '勘察',
   plan: '方案',
   design: '设计',
   dismantle: '拆除',
-};
+}
 
 export interface CommentListItemDataType {
-  author: string;
-  content: React.ReactNode;
-  datetime: React.ReactNode;
+  author: string
+  content: React.ReactNode
+  datetime: React.ReactNode
 }
 const SidePopup: React.FC<SidePopupProps> = observer((props) => {
+  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props
+  const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>()
 
-  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props;
-  const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>();
+  const [activeType, setActiveType] = useState<string | undefined>(undefined)
+  const [threeModal, setThtreeModal] = useState<boolean>(false)
+  const [dataSource, setDataSource] = useState(dataResource)
 
-  const [activeType, setActiveType] = useState<string | undefined>(undefined);
-  const [threeModal, setThtreeModal] = useState<boolean>(false);
-  const [dataSource, setDataSource] = useState(dataResource);
-
-  const [threeRouter, setThreeRouter] = useState<string>("duanluqi");
+  const [threeRouter, setThreeRouter] = useState<string>('duanluqi')
 
   const setMmaterialRefNone = () => {
     if (materialRef?.current?.innerHTML) {
-      materialRef.current.innerHTML = '暂无数据';
-      materialRef.current.className = '';
+      materialRef.current.innerHTML = '暂无数据'
+      materialRef.current.className = ''
     }
   }
 
@@ -190,110 +198,117 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     manual: true,
     onSuccess(data) {
       if (data?.content?.length > 0) {
-        mediaRef.current!.innerHTML = '查看';
-        mediaRef.current!.className = 'mapSideBarlinkBtn';
+        mediaRef.current!.innerHTML = '查看'
+        mediaRef.current!.className = 'mapSideBarlinkBtn'
       } else {
-        mediaRef.current!.innerHTML = '暂无数据';
-        mediaRef.current!.className = '';
+        mediaRef.current!.innerHTML = '暂无数据'
+        mediaRef.current!.className = ''
       }
     },
-  });
+  })
 
   const { run: reviewRun } = useRequest(porjectIsExecutor, {
     manual: true,
     onSuccess(data) {
       if (data) {
-        reviewRef.current!.innerHTML = '添加审阅';
-        reviewRef.current!.className = 'mapSideBarlinkBtn';
+        reviewRef.current!.innerHTML = '添加审阅'
+        reviewRef.current!.className = 'mapSideBarlinkBtn'
       } else {
-        reviewRef.current!.innerHTML = '暂无数据';
-        reviewRef.current!.className = '';
+        reviewRef.current!.innerHTML = '暂无数据'
+        reviewRef.current!.className = ''
       }
     },
   })
 
-  const { data: materialData, run: materialDataRun, loading: matiralsLoading } = useRequest(getMaterialItemData, {
-    manual: true,
-    onSuccess(data) {
-      if (data?.content?.length > 0) {
-        data.content.forEach((item: any) => {
-          if (item.unit === 'km') {
-            item.itemNumber = item.itemNumber / 1000;
-          }
-        })
-        materialRef.current!.innerHTML = '查看';
-        materialRef.current!.className = 'mapSideBarlinkBtn';
-      } else {
-        materialRef.current!.innerHTML = '暂无数据';
-        materialRef.current!.className = '';
-      }
-    },
-  });
+  const { data: materialData, run: materialDataRun, loading: matiralsLoading } = useRequest(
+    getMaterialItemData,
+    {
+      manual: true,
+      onSuccess(data) {
+        if (data?.content?.length > 0) {
+          data.content.forEach((item: any) => {
+            if (item.unit === 'km') {
+              item.itemNumber = item.itemNumber / 1000
+            }
+          })
+          materialRef.current!.innerHTML = '查看'
+          materialRef.current!.className = 'mapSideBarlinkBtn'
+        } else {
+          materialRef.current!.innerHTML = '暂无数据'
+          materialRef.current!.className = ''
+        }
+      },
+    }
+  )
 
   const returnlibId = async (materialParams: any) => {
     await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data) => {
       if (data.isSuccess) {
-        const resourceLibID = data?.content;
-        materialDataRun({ resourceLibID, ...materialParams.rest, layerName: materialParams.rest.layerName });
+        const resourceLibID = data?.content
+        materialDataRun({
+          resourceLibID,
+          ...materialParams.rest,
+          layerName: materialParams.rest.layerName,
+        })
       }
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     if (rightSidebarVisible) {
-      setDataSource(dataResource);
+      setDataSource(dataResource)
       // 多媒体数据请求
       const mediaParams = dataResource?.find((item: any) => item.propertyName === '多媒体')?.data
-        ?.params;
+        ?.params
       if (mediaParams) {
-        mediaDataRun(mediaParams);
+        mediaDataRun(mediaParams)
       } else if (mediaRef.current) {
-        mediaRef.current.innerHTML = '暂无数据';
-        mediaRef.current.className = '';
+        mediaRef.current.innerHTML = '暂无数据'
+        mediaRef.current.className = ''
       }
       // 材料表数据请求
-      const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
-        ?.params ?? {};
+      const materialParams =
+        dataResource?.find((item: any) => item.propertyName === '材料表')?.data?.params ?? {}
       if (materialParams?.rest?.objectID && materialParams?.getProperties.project_id) {
-        returnlibId(materialParams);
+        returnlibId(materialParams)
       } else {
-        setMmaterialRefNone();
+        setMmaterialRefNone()
       }
       // 审阅数据
-      const reviewData = dataResource?.find((item: any) => item.propertyName === '审阅')?.data ?? {};
-      if(reviewData?.id) {
+      const reviewData = dataResource?.find((item: any) => item.propertyName === '审阅')?.data ?? {}
+      if (reviewData?.id) {
         reviewRun(reviewData.id)
       }
-    } 
-  }, [JSON.stringify(dataResource), rightSidebarVisible]);
+    }
+  }, [JSON.stringify(dataResource), rightSidebarVisible])
 
-  const mediaRef = useRef<HTMLSpanElement>(null);
-  const materialRef = useRef<HTMLSpanElement>(null);
-  const reviewRef = useRef<HTMLSpanElement>(null);
+  const mediaRef = useRef<HTMLSpanElement>(null)
+  const materialRef = useRef<HTMLSpanElement>(null)
+  const reviewRef = useRef<HTMLSpanElement>(null)
 
-  const [Comment, setComment] = useState('');
-  const [mediaVisiable, setMediaVisiable] = useState(false);
-  const [mediaIndex, setMediaIndex] = useState<number>(0);
-  const store = useContainer();
+  const [Comment, setComment] = useState('')
+  const [mediaVisiable, setMediaVisiable] = useState(false)
+  const [mediaIndex, setMediaIndex] = useState<number>(0)
+  const store = useContainer()
   // const { vState, setMediaListVisibel } = useContainer();
-  const { checkedProjectIdList, mediaListVisibel, mediaListData } = store.vState;
+  const { checkedProjectIdList, mediaListVisibel, mediaListData } = store.vState
 
   const data = useMemo(() => {
-    const title = dataSource.find((o) => o.propertyName === 'title')?.data;
-    return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : ''];
-  }, [JSON.stringify(dataSource)]);
+    const title = dataSource.find((o) => o.propertyName === 'title')?.data
+    return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : '']
+  }, [JSON.stringify(dataSource)])
 
   const handlerMediaClick = () => {
     if (mediaRef.current?.innerHTML === '查看') {
-      setActiveType('media');
+      setActiveType('media')
     }
-  };
+  }
 
   const handlerMaterialClick = () => {
     if (materialRef.current?.innerHTML === '查看') {
-      setActiveType('material');
+      setActiveType('material')
     }
-  };
+  }
 
   const columns = [
     {
@@ -307,39 +322,54 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       // ellipsis: true,
       render(value: any, record: any, index: any) {
-        if (record.propertyName === 'title') return null;
+        if (record.propertyName === 'title') return null
         if (record.propertyName === '三维模型') {
-          if(record.data){
-            return <span
-            key={record.id}
-            className={styles.link}
-            onClick={() => {
-              setThreeRouter(value)
-              setThtreeModal(true)
-            }}
-          >查看</span>
+          if (record.data) {
+            return (
+              <span
+                key={record.id}
+                className={styles.link}
+                onClick={() => {
+                  setThreeRouter(value)
+                  setThtreeModal(true)
+                }}
+              >
+                查看
+              </span>
+            )
           }
         }
         if (typeof value === 'string' || typeof value === 'number')
-          return <span title={value + ''} key={index}>{value}</span>;
+          return (
+            <span title={value + ''} key={index}>
+              {value}
+            </span>
+          )
         if (record.propertyName === '多媒体') {
           return (
             <span onClick={handlerMediaClick} ref={mediaRef}>
               {mediaRef ? '暂无数据' : '数据请求中'}
             </span>
-          );
+          )
         } else if (record.propertyName === '材料表') {
           return (
             <span onClick={handlerMaterialClick} ref={materialRef}>
               {materialRef ? '暂无数据' : '数据请求中'}
             </span>
-          );
+          )
         } else if (record.propertyName === '审阅') {
-          return <span onClick={() => {
-            if(reviewRef.current?.innerHTML=== "添加审阅") {
-              onOpenAddCommentModal(value)
-            }
-          }} ref={reviewRef}>暂无权限</span>
+          return (
+            <span
+              onClick={() => {
+                if (reviewRef.current?.innerHTML === '添加审阅') {
+                  onOpenAddCommentModal(value)
+                }
+              }}
+              ref={reviewRef}
+            >
+              暂无权限
+            </span>
+          )
           // if (checkedProjectIdList.flat(2).find((i) => i.id === value.id)?.isExecutor) {
           //   return (
           //     <span
@@ -357,13 +387,13 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           //     </span>
           //   );
           // }
-        } else if (record.propertyName === "穿孔示意图") {
+        } else if (record.propertyName === '穿孔示意图') {
           return <CableSection key={JSON.stringify({ ...value })} {...value} />
         }
-        return <span key={index}>暂无权限</span>;
+        return <span key={index}>暂无权限</span>
       },
     },
-  ];
+  ]
 
   const mediaColumns = [
     {
@@ -372,11 +402,11 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       key: 'type',
       render(t: any, r: any) {
         if (t === 1) {
-          return <span key={r.id}>图片</span>;
+          return <span key={r.id}>图片</span>
         } else if (t === 2) {
-          return <span key={r.id}>音频</span>;
+          return <span key={r.id}>音频</span>
         }
-        return t ?? '';
+        return t ?? ''
       },
     },
     {
@@ -389,7 +419,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       dataIndex: 'surveyTime',
       key: 'surveyTime',
       render(t: number) {
-        return moment(t).format('YYYY-MM-DD');
+        return moment(t).format('YYYY-MM-DD')
       },
     },
     {
@@ -402,16 +432,16 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             key={record.id}
             className={styles.link}
             onClick={() => {
-              setMediaVisiable(true);
+              setMediaVisiable(true)
               setMediaIndex(index)
             }}
           >
             查看
           </span>
-        );
+        )
       },
     },
-  ];
+  ]
 
   /**
    * 获取评审list
@@ -423,32 +453,32 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   } = useRequest(fetchCommentList, {
     manual: true,
     onError: () => {
-      message.error('获取审阅失败');
+      message.error('获取审阅失败')
     },
-  });
+  })
   /**
    * 添加评审
    */
   const { run: addCommentRequest } = useRequest(addComment, {
     manual: true,
     onSuccess: () => {
-      message.success('添加成功');
+      message.success('添加成功')
       fetchCommentListRequest({
         layer: commentRquestBody?.layerType,
         deviceId: commentRquestBody?.deviceId,
         projectId: commentRquestBody?.projectId,
-      });
-      setComment('');
+      })
+      setComment('')
     },
     onError: () => {
-      message.error('添加失败');
+      message.error('添加失败')
     },
-  });
+  })
 
   const onOpenAddCommentModal = (value: any) => {
-    setActiveType('annotation&' + value.id);
+    setActiveType('annotation&' + value.id)
 
-    const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature;
+    const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature
 
     /**
      * 从feature这个对象里面取出关键信息，
@@ -456,18 +486,18 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
      * 这里取出来的是英文，所以要根据中英文转换一下
      */
     if (feature) {
-      const { id_ } = feature;
-      const { project_id: projectId } = feature.values_;
+      const { id_ } = feature
+      const { project_id: projectId } = feature.values_
       /**
        * "survey_tower.1386220338212147281" 切割该字符串获取图层type，设备类型，设备id
        * survey_device_type.1386220338212147281
        */
-      const split = id_.split('.');
+      const split = id_.split('.')
       // deviceId在审阅获取数据时拿不到id名称，这里的id有误故修改id获取方式
       // const deviceId = split[1];
-      const deviceId = feature.values_?.id;
+      const deviceId = feature.values_?.id
 
-      const deviceAndLayer = split[0].split('_');
+      const deviceAndLayer = split[0].split('_')
 
       /**
        * 初始化请求body
@@ -480,34 +510,33 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         layerType: findEnumKeyByCN(LAYER_TYPE[deviceAndLayer[0]], 'ProjectCommentLayer'),
         deviceType: findEnumKeyByCN(
           DEVICE_TYPE[deviceAndLayer.slice(1).join('_')],
-          'ProjectCommentDevice',
+          'ProjectCommentDevice'
         ),
         deviceId,
         projectId,
         content: '',
-      };
+      }
 
-      setcommentRquestBody(body);
-      fetchCommentListRequest({ layer: body.layerType, deviceId: body.deviceId, projectId });
+      setcommentRquestBody(body)
+      fetchCommentListRequest({ layer: body.layerType, deviceId: body.deviceId, projectId })
     }
-  };
+  }
 
   // 解决意外关闭弹窗时，三维模型框没有响应关闭的bug
   useEffect(() => {
-    if(!rightSidebarVisible){
-      setThtreeModal(false);
+    if (!rightSidebarVisible) {
+      setThtreeModal(false)
     }
   }, [rightSidebarVisible])
 
   useEffect(() => {
-    setRightSidebarVisiviabel(false);
-  }, [JSON.stringify(checkedProjectIdList)]);
+    setRightSidebarVisiviabel(false)
+  }, [JSON.stringify(checkedProjectIdList)])
 
   const materialDataRes = useMemo(() => {
-    if(Array.isArray(materialData?.content) && materialData?.content.length > 0) {
-      
+    if (Array.isArray(materialData?.content) && materialData?.content.length > 0) {
       return translateMatDataToTree(materialData.content)
-    }else{
+    } else {
       return []
     }
     // const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
@@ -516,8 +545,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     // return materialData?.content && materialData?.content.length > 0
     //   ? generateMaterialTreeList(materialData?.content)
     //   : [];
-
-  }, [JSON.stringify(materialData)]);
+  }, [JSON.stringify(materialData)])
 
   /**
    * 当modal click确定的时候
@@ -534,11 +562,11 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         deviceType: commentRquestBody?.deviceType ?? -100,
         deviceId: commentRquestBody?.deviceId ?? '-100',
         content: Comment,
-      });
+      })
     } else {
-      setActiveType(void 0);
+      setActiveType(void 0)
     }
-  };
+  }
 
   return (
     <div className={styles.wrap}>
@@ -560,7 +588,11 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           destroyOnClose={true}
           className={styles.mediaModal}
         >
-          <MediaModal content={mediaData?.content ?? []} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
+          <MediaModal
+            content={mediaData?.content ?? []}
+            currentIndex={mediaIndex}
+            setCurrentIndex={setMediaIndex}
+          />
         </Modal>
         {activeType === 'media' && (
           <Table
@@ -572,7 +604,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           ></Table>
         )}
         {activeType === 'material' && (
-          <MaterialTableNew data={materialDataRes} loading={matiralsLoading}/>
+          <MaterialTableNew data={materialDataRes} loading={matiralsLoading} />
         )}
         {activeType?.split('&')[0] === 'annotation' && (
           <>
@@ -623,24 +655,26 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           destroyOnClose={true}
           className={styles.mediaModal}
         >
-          <MediaModal content={mediaListData} currentIndex={mediaIndex} setCurrentIndex={setMediaIndex} />
+          <MediaModal
+            content={mediaListData}
+            currentIndex={mediaIndex}
+            setCurrentIndex={setMediaIndex}
+          />
         </Modal>
       </Modal>
-      {
-        rightSidebarVisible ? <div
-
-          className={styles.sidePopupWrap}
-        >
-          <div className={styles.title}
-                    title={'项目名称：' + data[1]}
-          >
+      {rightSidebarVisible ? (
+        <div className={styles.sidePopupWrap}>
+          <div className={styles.title} title={'项目名称：' + data[1]}>
             <span className={styles.head}>项目名称：</span>
             <span className={styles.body}>{data[1]}</span>
           </div>
-          <div className={styles.drawerClose} onClick={() => {
-            setRightSidebarVisiviabel(false)
-            setThtreeModal(false)
-          }}>
+          <div
+            className={styles.drawerClose}
+            onClick={() => {
+              setRightSidebarVisiviabel(false)
+              setThtreeModal(false)
+            }}
+          >
             <CloseOutlined />
           </div>
           <Table
@@ -654,24 +688,34 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             scroll={{ y: height - 160 }}
             rowKey={(r) => r.propertyName}
           />
-        </div> : null
-      }
-      {
-        rightSidebarVisible && threeModal ? <div
+        </div>
+      ) : null}
+      {rightSidebarVisible && threeModal ? (
+        <div
           className={styles.threeModalWrap}
           style={{
             width: window.innerWidth - 540,
             height: window.innerHeight - 228,
-          }}>
+          }}
+        >
           <div
             className={classnames(styles.closeButton, styles.link)}
             onClick={() => setThtreeModal(false)}
-          ><StepBackwardOutlined />收起</div>
-          <iframe key={threeRouter} width="100%" height="100%" src={`${window.location.origin}/visiual3d/?type=${threeRouter}`} style={{ backgroundColor: "#fff" }}></iframe>
-        </div> : null
-      }
+          >
+            <StepBackwardOutlined />
+            收起
+          </div>
+          <iframe
+            key={threeRouter}
+            width="100%"
+            height="100%"
+            src={`${window.location.origin}/visiual3d/?type=${threeRouter}`}
+            style={{ backgroundColor: '#fff' }}
+          ></iframe>
+        </div>
+      ) : null}
     </div>
-  );
-});
+  )
+})
 
-export default SidePopup;
+export default SidePopup

@@ -1,14 +1,14 @@
-import React from 'react';
-import EditFormTable from '@/components/edit-form-table';
-import { InputNumber, Form, Input } from 'antd';
-import CascaderUrlSelect from '@/components/material-cascader-url-select';
-import Scrollbars from 'react-custom-scrollbars';
+import React from 'react'
+import EditFormTable from '@/components/edit-form-table'
+import { InputNumber, Form, Input } from 'antd'
+import CascaderUrlSelect from '@/components/material-cascader-url-select'
+import Scrollbars from 'react-custom-scrollbars'
 interface AddDetailParams {
-  resourceLibId: string;
-  addForm: any;
+  resourceLibId: string
+  addForm: any
 }
 const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
-  const { resourceLibId, addForm } = props;
+  const { resourceLibId, addForm } = props
 
   const columns = [
     {
@@ -23,7 +23,7 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       rules: [{ required: true, message: '电缆井编码不能为空' }],
       width: 180,
       render: () => {
-        return <Input placeholder="请输入电缆井编码" />;
+        return <Input placeholder="请输入电缆井编码" />
       },
     },
     {
@@ -51,21 +51,21 @@ const AddCableWellDetailTable: React.FC<AddDetailParams> = (props) => {
       index: 'itemNumber',
       width: 160,
       render: () => {
-        return <Input type="number" min={1} placeholder="请输入数量（正整数）" />;
+        return <Input type="number" min={1} placeholder="请输入数量" />
       },
       rules: [
         { required: true, message: '数量不能为空' },
         { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
       ],
     },
-  ];
+  ]
   return (
     <Scrollbars autoHeight>
       <Form form={addForm} preserve={false}>
         <EditFormTable formName="items" columns={columns} />
       </Form>
     </Scrollbars>
-  );
-};
+  )
+}
 
-export default AddCableWellDetailTable;
+export default AddCableWellDetailTable

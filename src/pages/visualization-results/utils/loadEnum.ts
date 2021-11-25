@@ -1,17 +1,17 @@
 // 第一次进入页面当前枚举值请求尚未在本地
 import defautEnumData from './localData/defautEnumData'
 
-const loadEnumsData = window.localStorage.getItem('loadEnumsData');
-const data = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : null;
+const loadEnumsData = window.localStorage.getItem('loadEnumsData')
+const data = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : null
 
 export interface EnumItem {
-  key: string;
-  value: EnumValue[];
+  key: string
+  value: EnumValue[]
 }
 
 export interface EnumValue {
-  value: number;
-  text: string;
+  value: number
+  text: string
 }
 /**
  * 根据localstorage loadEnumsData获取<枚举数字,枚举中文>的map
@@ -21,9 +21,9 @@ export interface EnumValue {
 export const findEnumKeyByType = (type: string): Map<number, string> => {
   const res = data
     .find((enumItem: EnumItem) => enumItem.key === type)
-    .value.map((e: EnumValue) => [e.value, e.text]);
-  return new Map<number, string>(res);
-};
+    .value.map((e: EnumValue) => [e.value, e.text])
+  return new Map<number, string>(res)
+}
 
 /**
  *
@@ -34,4 +34,4 @@ export const findEnumKeyByType = (type: string): Map<number, string> => {
 export const findEnumKeyByCN = (chEnum: string, type: string): number =>
   (data || defautEnumData)
     .find((enumItem: EnumItem) => enumItem.key === type)
-    .value.find((value: EnumValue) => value.text === chEnum).value;
+    .value.find((value: EnumValue) => value.text === chEnum).value

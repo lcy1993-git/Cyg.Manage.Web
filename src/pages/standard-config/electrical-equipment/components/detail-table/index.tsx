@@ -151,7 +151,7 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
     const ComponentDetailData = await run(libId, editDataId)
     const formData = {
       componentId: ComponentDetailData.itemName,
-      itemId: ComponentDetailData.spec,
+      itemId: ComponentDetailData.itemId,
       itemNumber: ComponentDetailData.itemNumber,
       // spec: ComponentDetailData.spec,
       itemType: ComponentDetailData.isComponent === 1 ? '1' : '0',
@@ -163,17 +163,15 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const sureEditcomponentDetail = () => {
     const editData = data!
-
+    console.log(editData)
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
           id: editData.id,
           libId: libId,
-          componentId: editData.componentId,
-          materialId: editData.materialId,
           itemId: editData.itemId,
           itemNumber: editData.itemNumber,
-          isComponent: editData.isComponent,
+          itemType: editData.itemType,
         },
         values
       )

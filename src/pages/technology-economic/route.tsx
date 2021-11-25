@@ -1,79 +1,85 @@
-import Loadable from 'react-loadable';
+import Loadable from 'react-loadable'
 // @ts-ignore
-import React from 'react';
-import Loading from '@ant-design/pro-layout/es/PageLoading';
-import CostTemplate from './cost-template';
-import TotalTable from './total-table';
-import UsualQuotaTable from './usual-quota-table';
-import UsualQuotaTableDetail from './usual-quota-table/components/detail';
-import SuppliesLibrary from './supplies-library';
-import SocialSecurityFund from '@/pages/technology-economic/social-security-fund';
-import SupplieslInfomation from './suppliesl-infomation';
-import MaterialMapping from '@/pages/technology-economic/material-mapping';
-import MappingInfomation from '@/pages/technology-economic/mapping-infomation';
-import DesignMaterialMapping from '@/pages/technology-economic/design-material-mapping';
-import DesignMappingInfo from './design-mapping-info';
+import React from 'react'
+import Loading from '@ant-design/pro-layout/es/PageLoading'
+import CostTemplate from './cost-template'
+import TotalTable from './total-table'
+import UsualQuotaTable from './usual-quota-table'
+import UsualQuotaTableDetail from './usual-quota-table/components/detail'
+import SuppliesLibrary from './supplies-library'
+import SocialSecurityFund from '@/pages/technology-economic/social-security-fund'
+import SupplieslInfomation from './suppliesl-infomation'
+import MaterialMapping from '@/pages/technology-economic/material-mapping'
+import MappingInfomation from '@/pages/technology-economic/mapping-infomation'
+import DesignMaterialMapping from '@/pages/technology-economic/design-material-mapping'
+import DesignMappingInfo from './design-mapping-info'
 
 const QuotaLibrary = Loadable({
   loader: () => import('@/pages/technology-economic/quota-library'),
   loading: Loading,
   delay: 150,
-});
+})
 const QuotaInfomation = Loadable({
   loader: () => import('@/pages/technology-economic/quota-infomation'),
   loading: Loading,
   delay: 150,
-});
+})
+const ReinforcementQuota = Loadable({
+  loader: () =>
+    import('@/pages/technology-economic/quota-infomation/components/reinforcement-quota'),
+  loading: Loading,
+  delay: 150,
+})
 const MaterialLibrary = Loadable({
   loader: () => import('@/pages/technology-economic/material-library'),
   loading: Loading,
   delay: 150,
-});
+})
 const MaterialInfomation = Loadable({
   loader: () => import('@/pages/technology-economic/material-infomation'),
   loading: Loading,
   delay: 150,
-});
+})
 const PricingTemplates = Loadable({
   loader: () => import('@/pages/technology-economic/pricing-templates'),
   loading: Loading,
   delay: 150,
-});
+})
 const CommonRate = Loadable({
   loader: () => import('@/pages/technology-economic/common-rate'),
   loading: Loading,
   delay: 150,
-});
+})
 const ProjectList = Loadable({
   loader: () => import('@/pages/technology-economic/project-list'),
   loading: Loading,
   delay: 150,
-});
+})
 const CommonRateInfomation = Loadable({
   loader: () => import('@/pages/technology-economic/common-rate-infomation'),
   loading: Loading,
   delay: 150,
-});
+})
 const SpreadCoefficient = Loadable({
   loader: () => import('@/pages/technology-economic/spread-coefficient'),
   loading: Loading,
   delay: 150,
-});
+})
 const PriceDifferenceDetails = Loadable({
   loader: () => import('@/pages/technology-economic/price-difference-details'),
   loading: Loading,
   delay: 150,
-});
+})
 const AdjustmentFileDetails = Loadable({
   loader: () => import('@/pages/technology-economic/adjustment-file-details'),
   loading: Loading,
   delay: 150,
-});
+})
 const AreaTypeManage = Loadable({
   loader: () => import('@/pages/technology-economic/area-type-manage'),
   loading: Loading,
   delay: 150,
-});
+})
 
 export default [
   {
@@ -85,6 +91,11 @@ export default [
     title: '查看定额库',
     path: '/technology-economic/quota-infomation',
     component: <QuotaInfomation />,
+  },
+  {
+    title: '查看钢筋定额',
+    path: '/technology-economic/quota-infomation/components/reinforcement-quota',
+    component: <ReinforcementQuota />,
   },
   {
     title: '材机库',
@@ -191,4 +202,4 @@ export default [
     path: '/technology-economic/design-mapping-info',
     component: <DesignMappingInfo />,
   },
-];
+]

@@ -1,10 +1,8 @@
 import { getStopServerNotice, pollingHealth } from '@/services/index'
-import { history } from '@@/core/history'
 import { useInterval, useMount, useRequest } from 'ahooks'
-import { notification } from 'antd'
-import { message } from 'antd/es'
+import { message, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'umi'
+import { history, useLocation } from 'umi'
 
 const HealthPolling: React.FC = () => {
   const [requestFlag, setRequestFlag] = useState(true)
@@ -74,7 +72,7 @@ const HealthPolling: React.FC = () => {
     if (requestFlag) {
       await run()
     }
-    if (serverCode !== '') {
+    if (serverCode && serverCode !== 'null' && serverCode !== 'undefined') {
       await infoRun()
     }
   }, 3000)

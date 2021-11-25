@@ -1,105 +1,88 @@
-import React, { SetStateAction, useState } from 'react';
-import {
-  Button,
-  Divider,
-  Form,
-  message,
-  Modal,
-  Popconfirm,
-  Radio,
-  Spin,
-  Steps,
-  Tooltip,
-} from 'antd';
-
-import { useControllableValue, useUpdateEffect } from 'ahooks';
-// import uuid from 'node-uuid';
-import { Dispatch } from 'react';
 // import { UserInfo } from '@/services/project-management/select-add-list-form';
 // import { Checkbox } from 'antd';
 import {
-  getExternalArrangeStep,
   addAllotUser,
   confirmOuterAudit,
+  getExternalArrangeStep,
   getReviewFileUrl,
-} from '@/services/project-management/all-project';
-import styles from './index.less';
+  removeAllotUser,
+} from '@/services/project-management/all-project'
 import {
   DeleteOutlined,
   DownloadOutlined,
   EnvironmentOutlined,
   ExclamationCircleOutlined,
-} from '@ant-design/icons';
-
-import { useRequest } from 'ahooks';
-import { useEffect } from 'react';
-import { removeAllotUser } from '@/services/project-management/all-project';
-import SelectAddListForm from '../select-add-list-form';
-import ViewAuditFile from './components/viewFile';
-import { isArray } from 'lodash';
+} from '@ant-design/icons'
+import { useControllableValue, useRequest, useUpdateEffect } from 'ahooks'
+import { Button, Divider, Form, message, Modal, Radio, Spin, Steps, Tooltip } from 'antd'
+import { isArray } from 'lodash'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import SelectAddListForm from '../select-add-list-form'
+import ViewAuditFile from './components/viewFile'
+import styles from './index.less'
 
 interface GetGroupUserProps {
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  getCompanyInfo?: (companyInfo: any) => void;
-  defaultType?: string;
-  allotCompanyId?: string;
-  visible: boolean;
-  projectId: string;
-  stepData?: any;
-  refresh?: () => void;
+  onChange?: Dispatch<SetStateAction<boolean>>
+  getCompanyInfo?: (companyInfo: any) => void
+  defaultType?: string
+  allotCompanyId?: string
+  visible: boolean
+  projectId: string
+  stepData?: any
+  refresh?: () => void
 }
 
 export interface CurrentFileInfo {
-  url: string;
-  extension: string | undefined;
-  title: string;
+  url: string
+  extension: string | undefined
+  title: string
 }
 
-const { Step } = Steps;
+const { Step } = Steps
 
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false);
-  const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false);
-  const [backTo, setBackTo] = useState<number>(4);
-  const [addPersonState, setAddPersonState] = useState<boolean>(false);
-  const [addPeople, setAddPeople] = useState<any[]>([]);
-  const [current, setCurrent] = useState<number>(0);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false)
+  const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false)
+  const [backTo, setBackTo] = useState<number>(4)
+  const [addPersonState, setAddPersonState] = useState<boolean>(false)
+  const [addPeople, setAddPeople] = useState<any[]>([])
+  const [current, setCurrent] = useState<number>(0)
 
   // const [requestLoading, setRequestLoading] = useState(false);
 
-  const [newStepData, setNewStepData] = useState<any[]>([]);
+  const [newStepData, setNewStepData] = useState<any[]>([])
 
-  const [form] = Form.useForm();
-  const { projectId, refresh } = props;
+  const [form] = Form.useForm()
+  const { projectId, refresh } = props
 
   const [currentFileInfo, setCurrentFileInfoErr] = useState<CurrentFileInfo>({
     url: '',
     extension: undefined,
     title: '',
-  });
+  })
 
   const setCurrentFileInfo = (info: CurrentFileInfo) => {
     if (info.extension === '.doc' || info.extension === '.xls') {
-      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件在本地进行预览`);
+      message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件在本地进行预览`)
     } else {
-      setCurrentFileInfoErr(info);
+      setCurrentFileInfoErr(info)
     }
-  };
+  }
 
-  const { data: stepData, run, loading } = useRequest(() => getExternalArrangeStep(projectId));
+  const { data: stepData, run, loading } = useRequest(() => getExternalArrangeStep(projectId))
   const { run: addUser } = useRequest(
     () => addAllotUser({ projectId: projectId, userId: addPeople[0]?.value }),
     {
       manual: true,
       onSuccess: () => {
-        run();
+        run()
       },
-    },
-  );
+    }
+  )
 
   const checkResultEvent = async () => {
-    setCurrent(current + 1);
+    setCurrent(current + 1)
     // await confirmOuterAudit({
     //   projectId: projectId,
     //   parameter: { 是否结束: `${isPassExternalArrange === '1' ? true : false}` },
@@ -107,26 +90,26 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     // message.success('外审已通过');
     // setState(false);
     // refresh?.();
-  };
+  }
 
   useEffect(() => {
-    setNewStepData(stepData);
-  }, [stepData]);
+    setNewStepData(stepData)
+  }, [stepData])
 
   useUpdateEffect(() => {
-    addUser();
-  }, [addPeople]);
+    addUser()
+  }, [addPeople])
 
   const deleteAllotUser = async (id: string) => {
-    await removeAllotUser({ projectId: projectId, userAllotId: id });
-    message.success('已移除');
-    const res = await run();
+    await removeAllotUser({ projectId: projectId, userAllotId: id })
+    message.success('已移除')
+    const res = await run()
 
     if (res && res.length === 0) {
-      setState(false);
-      refresh?.();
+      setState(false)
+      refresh?.()
     }
-  };
+  }
 
   const deleteConfirm = (id: string) => {
     if (stepData.length > 1) {
@@ -137,58 +120,58 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         okText: '确认',
         cancelText: '取消',
         onOk: () => deleteAllotUser(id),
-      });
-      return;
+      })
+      return
     }
-    message.error('至少保留一位外审人员');
-  };
+    message.error('至少保留一位外审人员')
+  }
 
   const prevEvent = () => {
-    setCurrent(current - 1);
-  };
+    setCurrent(current - 1)
+  }
 
   const confirmResultEvent = async () => {
     if (isPassExternalArrange) {
-      await confirmOuterAudit({ projectId: projectId, auditPass: true });
-      setState(false);
-      message.success('操作成功');
-      refresh?.();
-      return;
+      await confirmOuterAudit({ projectId: projectId, auditPass: true })
+      setState(false)
+      message.success('操作成功')
+      refresh?.()
+      return
     }
-    setCurrent(current + 1);
-  };
+    setCurrent(current + 1)
+  }
 
   const reviewCheckEvent = async (id: string) => {
-    const res = await getReviewFileUrl({ projectId: projectId, userId: id });
+    const res = await getReviewFileUrl({ projectId: projectId, userId: id })
 
     if (res && isArray(res) && res?.length === 0) {
-      message.info('该评审未产生评审成果');
-      return;
+      message.info('该评审未产生评审成果')
+      return
     }
-    const url = res[0]?.extend.file.url;
-    const extension = res[0]?.extend.file.extension;
-    const name = res[0]?.name;
-    setCurrentFileInfo({ url: url, extension: extension, title: name });
-  };
+    const url = res[0]?.extend.file.url
+    const extension = res[0]?.extend.file.extension
+    const name = res[0]?.name
+    setCurrentFileInfo({ url: url, extension: extension, title: name })
+  }
 
   const backToEvent = async () => {
-    await confirmOuterAudit({ projectId: projectId, auditPass: false, returnToState: backTo });
-    setState(false);
-    message.success('外审已退回');
-    refresh?.();
-  };
+    await confirmOuterAudit({ projectId: projectId, auditPass: false, returnToState: backTo })
+    setState(false)
+    message.success('外审已退回')
+    refresh?.()
+  }
 
   const downloadEvent = async (id: string) => {
-    const res = await getReviewFileUrl({ projectId: projectId, userId: id });
+    const res = await getReviewFileUrl({ projectId: projectId, userId: id })
     if (res && isArray(res) && res?.length === 0) {
-      message.info('该评审暂无下载文件');
-      return;
+      message.info('该评审暂无下载文件')
+      return
     }
-    const url = res[0]?.extend.file.url;
-    const aEl = document.createElement('a');
-    aEl.href = url;
-    aEl.click();
-  };
+    const url = res[0]?.extend.file.url
+    const aEl = document.createElement('a')
+    aEl.href = url
+    aEl.click()
+  }
 
   return (
     <>
@@ -202,9 +185,9 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
           !newStepData
             ?.map((item: any) => {
               if (item.status === 3) {
-                return true;
+                return true
               }
-              return false;
+              return false
             })
             .includes(false) && current === 0
             ? [
@@ -266,7 +249,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                   )}
                   <Button
                     onClick={() => {
-                      message.info('当前存在未提交评审结果的外审人员，无法执行此操作');
+                      message.info('当前存在未提交评审结果的外审人员，无法执行此操作')
                     }}
                     key="save"
                     type="default"
@@ -326,9 +309,9 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
           !newStepData
             ?.map((item: any) => {
               if (item.status === 3) {
-                return true;
+                return true
               }
-              return false;
+              return false
             })
             .includes(false) && (
             <Form style={{ width: '100%' }} form={form}>
@@ -374,7 +357,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         {currentFileInfo.url && <ViewAuditFile params={currentFileInfo} />}
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default ExternalListModal;
+export default ExternalListModal

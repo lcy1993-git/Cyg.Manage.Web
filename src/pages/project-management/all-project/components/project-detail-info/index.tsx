@@ -1,36 +1,36 @@
-import React, { Dispatch, memo, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, memo, SetStateAction, useEffect } from 'react'
 
-import { getProjectInfo } from '@/services/project-management/all-project';
-import { useControllableValue, useRequest } from 'ahooks';
-import { Modal, Tabs } from 'antd';
-import ProjectBaseInfo from '../project-base-info';
+import { getProjectInfo } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Modal, Tabs } from 'antd'
+import ProjectBaseInfo from '../project-base-info'
 
-import styles from './index.less';
-import ProjectProcessInfo from '../project-process-info/index';
-import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal';
-const { TabPane } = Tabs;
+import styles from './index.less'
+import ProjectProcessInfo from '../project-process-info/index'
+import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal'
+const { TabPane } = Tabs
 
 interface ProjectDetailInfoProps {
-  projectId: string;
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  isResult?: boolean;
+  projectId: string
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  isResult?: boolean
 }
 
 const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const { projectId } = props;
+  const { projectId } = props
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
-  });
+  })
 
   useEffect(() => {
     if (state) {
-      run();
+      run()
     }
-  }, [state]);
+  }, [state])
 
   return (
     <Modal
@@ -64,7 +64,7 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
         </Tabs>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default memo(ProjectDetailInfo);
+export default memo(ProjectDetailInfo)

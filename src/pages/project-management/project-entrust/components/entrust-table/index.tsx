@@ -1,62 +1,61 @@
 /* eslint-disable no-nested-ternary */
-import EmptyTip from '@/components/empty-tip';
-import { getEntrustProjectList } from '@/services/project-management/project-entrust';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { useRequest, useSize, useUpdateEffect } from 'ahooks';
-import { Spin } from 'antd';
-import { Pagination } from 'antd';
-import { forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react';
+import EmptyTip from '@/components/empty-tip'
+import { getEntrustProjectList } from '@/services/project-management/project-entrust'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { useRequest, useSize, useUpdateEffect } from 'ahooks'
+import { Spin } from 'antd'
+import { Pagination } from 'antd'
+import { forwardRef, useImperativeHandle, Ref, useRef, useMemo, useState } from 'react'
 
 import EngineerTableItem, {
   TableItemCheckedInfo,
-} from '@/pages/project-management/all-project/components/engineer-table/engineer-table-item';
-import ScrollView from 'react-custom-scrollbars';
-import styles from './index.less';
-import CyTag from '@/components/cy-tag';
-import uuid from 'node-uuid';
-import { TableContext } from '@/pages/project-management/all-project/components/engineer-table/table-store';
-import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info';
-import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
-import moment from 'moment';
+} from '@/pages/project-management/all-project/components/engineer-table/engineer-table-item'
+import ScrollView from 'react-custom-scrollbars'
+import styles from './index.less'
+import CyTag from '@/components/cy-tag'
+import uuid from 'node-uuid'
+import { TableContext } from '@/pages/project-management/all-project/components/engineer-table/table-store'
+import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
 
 interface EntrustTableProps {
-  extractParams: any;
-  onSelect?: (checkedValue: TableItemCheckedInfo[]) => void;
+  extractParams: any
+  onSelect?: (checkedValue: TableItemCheckedInfo[]) => void
   // getStatisticsData?: (value: any) => void;
   // finishEvent: () => void;
 }
 
 const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
-  const { extractParams, onSelect } = props;
-  const [pageIndex, setPageIndex] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([]);
+  const { extractParams, onSelect } = props
+  const [pageIndex, setPageIndex] = useState<number>(1)
+  const [pageSize, setPageSize] = useState<number>(10)
+  const [tableSelectData, setTableSelectData] = useState<TableItemCheckedInfo[]>([])
 
-  const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('');
+  const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('')
 
-  const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('');
+  const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('')
 
   //@ts-ignore
-  const { userType } = JSON.parse(localStorage.getItem('userInfo'));
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'))
 
-  const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false);
-  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
+  const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
+  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false)
 
   const { data: tableData, loading, run } = useRequest(() =>
-    getEntrustProjectList({ ...extractParams, pageIndex, pageSize }),
-  );
+    getEntrustProjectList({ ...extractParams, pageIndex, pageSize })
+  )
 
-  const scrollbar = useRef<any>(null);
-  const tableContentRef = useRef<HTMLDivElement>(null);
+  const scrollbar = useRef<any>(null)
+  const tableContentRef = useRef<HTMLDivElement>(null)
 
-  const tableContentSize = useSize(tableContentRef);
+  const tableContentSize = useSize(tableContentRef)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const projectNameClickEvent = (engineerId: string) => {
-    setCurrentClickEngineerId(engineerId);
-    setEngineerModalVisible(true);
-  };
+    setCurrentClickEngineerId(engineerId)
+    setEngineerModalVisible(true)
+  }
 
   // const refreshEvent = () => {
   //   run({
@@ -99,13 +98,13 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
           <u
             className="canClick"
             onClick={() => {
-              setCurrentClickProjectId(record.id);
-              setProjectModalVisible(true);
+              setCurrentClickProjectId(record.id)
+              setProjectModalVisible(true)
             }}
           >
             {record.name}
           </u>
-        );
+        )
       },
     },
     {
@@ -131,14 +130,14 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
       dataIndex: 'natureTexts',
       width: 180,
       render: (record: any) => {
-        const { natureTexts = [] } = record;
+        const { natureTexts = [] } = record
         return natureTexts.map((item: any) => {
           return (
             <CyTag key={uuid.v1()} className="mr7">
               {item}
             </CyTag>
-          );
-        });
+          )
+        })
       },
     },
 
@@ -197,35 +196,35 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
       width: 120,
       ellipsis: true,
     },
-  ];
+  ]
 
   const columnsInfo = useMemo(() => {
     // const showColumns = completeConfig.filter((item) => chooseColumns.includes(item.dataIndex));
 
     const columnsWidth = completeConfig.reduce((sum, item) => {
-      return sum + (item.width ? item.width : 100);
-    }, 0);
-    const isOverflow = (tableContentSize.width ?? 0) - 40 - columnsWidth < 0;
+      return sum + (item.width ? item.width : 100)
+    }, 0)
+    const isOverflow = (tableContentSize.width ?? 0) - 40 - columnsWidth < 0
 
     if (scrollbar && scrollbar.current) {
       // @ts-ignore
       scrollbar.current.view.scroll({
         left: 0,
         behavior: 'auto',
-      });
+      })
     }
 
     return {
       isOverflow,
       columns: completeConfig,
       columnsWidth: columnsWidth + 38,
-    };
-  }, [JSON.stringify(tableContentSize.width)]);
+    }
+  }, [JSON.stringify(tableContentSize.width)])
 
   const tableResultData = useMemo(() => {
     if (tableData) {
       // const { pagedData, statistics } = tableData;
-      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = tableData;
+      const { items, pageIndex: resPageIndex, pageSize: resPageSize, total } = tableData
 
       return {
         items: items ?? [],
@@ -239,7 +238,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
             ?.filter((item: any) => item.projects && item.projects.length > 0)
             .map((item: any) => item.projects)
             .flat().length ?? 0,
-      };
+      }
     }
     return {
       items: [],
@@ -249,48 +248,48 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
       dataStartIndex: 0,
       dataEndIndex: 0,
       projectLen: 0,
-    };
-  }, [JSON.stringify(tableData)]);
+    }
+  }, [JSON.stringify(tableData)])
 
   const pageSizeChange = (page: any, size: any) => {
-    setPageIndex(1);
-    setPageSize(size);
+    setPageIndex(1)
+    setPageSize(size)
 
-    setTableSelectData([]);
-    onSelect?.([]);
-  };
+    setTableSelectData([])
+    onSelect?.([])
+  }
 
   // 列显示处理
   const currentPageChange = (page: any, size: any) => {
     // 判断当前page是否改变, 没有改变代表是change页面触发
 
     if (pageSize === size) {
-      setPageIndex(page === 0 ? 1 : page);
-      setTableSelectData([]);
-      onSelect?.([]);
+      setPageIndex(page === 0 ? 1 : page)
+      setTableSelectData([])
+      onSelect?.([])
     }
-  };
+  }
 
   useUpdateEffect(() => {
-    run();
-  }, [pageIndex, pageSize]);
+    run()
+  }, [pageIndex, pageSize])
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
-      (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id,
-    );
-    const copyData: TableItemCheckedInfo[] = JSON.parse(JSON.stringify(tableSelectData));
+      (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id
+    )
+    const copyData: TableItemCheckedInfo[] = JSON.parse(JSON.stringify(tableSelectData))
     if (hasData > -1) {
-      copyData.splice(hasData, 1, projectSelectInfo);
-      setTableSelectData(copyData);
-      onSelect?.(copyData);
+      copyData.splice(hasData, 1, projectSelectInfo)
+      setTableSelectData(copyData)
+      onSelect?.(copyData)
     } else {
       // 代表没有数据，那就直接插进去
-      setTableSelectData([...tableSelectData, projectSelectInfo]);
-      onSelect?.([...tableSelectData, projectSelectInfo]);
+      setTableSelectData([...tableSelectData, projectSelectInfo])
+      onSelect?.([...tableSelectData, projectSelectInfo])
     }
-  };
+  }
 
   const engineerTableElement = tableResultData?.items.map((item: any) => {
     return (
@@ -305,15 +304,15 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
         columnsWidth={columnsInfo.columnsWidth}
         contentWidth={tableContentSize.width!}
       />
-    );
-  });
+    )
+  })
 
   useImperativeHandle(ref, () => ({
     // changeVal 就是暴露给父组件的方法
     refresh: () => {
-      run();
-      setTableSelectData([]);
-      onSelect?.([]);
+      run()
+      setTableSelectData([])
+      onSelect?.([])
     },
 
     // search: () => {
@@ -335,16 +334,16 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     // },
 
     searchByParams: (params: object) => {
-      setPageIndex(1);
-      run();
+      setPageIndex(1)
+      run()
       if (scrollbar && scrollbar.current) {
         scrollbar.current.view.scroll({
           top: 0,
           behavior: 'smooth',
-        });
+        })
       }
-      setTableSelectData([]);
-      onSelect?.([]);
+      setTableSelectData([])
+      onSelect?.([])
     },
     // delayRefresh: async (ms: number) => {
     //   await delay(500);
@@ -356,45 +355,45 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     //   setTableSelectData([]);
     //   onSelect?.([]);
     // },
-  }));
+  }))
 
   const scrollEvent = (size: any) => {
     if (size) {
-      const tableTitle = document.getElementsByClassName('tableTitleContent');
-      const tableCheckbox = document.getElementsByClassName('checkboxContent');
-      const tableNameTd = document.getElementsByClassName('nameTdContent');
+      const tableTitle = document.getElementsByClassName('tableTitleContent')
+      const tableCheckbox = document.getElementsByClassName('checkboxContent')
+      const tableNameTd = document.getElementsByClassName('nameTdContent')
 
       if (tableTitle && tableTitle.length > 0) {
         for (let i = 0; i < tableTitle.length; i += 1) {
           // @ts-ignore
-          tableTitle[i].style.left = `${size.scrollLeft}px`;
+          tableTitle[i].style.left = `${size.scrollLeft}px`
         }
       }
       if (tableCheckbox && tableCheckbox.length > 0) {
         for (let i = 0; i < tableCheckbox.length; i += 1) {
           // @ts-ignore
-          tableCheckbox[i].style.left = `${size.scrollLeft}px`;
+          tableCheckbox[i].style.left = `${size.scrollLeft}px`
         }
       }
       if (tableNameTd && tableNameTd.length > 0) {
         for (let i = 0; i < tableNameTd.length; i += 1) {
           // @ts-ignore
-          tableNameTd[i].style.left = `${size.scrollLeft + 38}px`;
+          tableNameTd[i].style.left = `${size.scrollLeft + 38}px`
         }
       }
     }
-  };
+  }
 
   const scrollBarRenderView = (params: any) => {
-    const { style, ...rest } = params;
+    const { style, ...rest } = params
     const viewStyle = {
       backgroundColor: `rgba(0, 0, 0, 0.2)`,
       borderRadius: '6px',
       cursor: 'pointer',
       zIndex: 100,
-    };
-    return <div style={{ ...style, ...viewStyle }} {...rest} />;
-  };
+    }
+    return <div style={{ ...style, ...viewStyle }} {...rest} />
+  }
 
   return (
     <TableContext.Provider
@@ -467,7 +466,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
         />
       )}
     </TableContext.Provider>
-  );
-};
+  )
+}
 
-export default forwardRef(EntrustTable);
+export default forwardRef(EntrustTable)

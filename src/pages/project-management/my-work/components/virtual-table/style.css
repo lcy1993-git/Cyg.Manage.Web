@@ -1,0 +1,82 @@
+:root {
+  /* border 宽度 */
+  --vt-border-width: 1px;
+  /* border 颜色 */
+  --vt-border-color: #dbdbdb;
+  /* 单元格 x 轴 padding */
+  --vt-cell-padding-x: 0.5rem;
+  /* 固定单元格背景颜色 */
+  --vt-fixed-cell-bg-color: #fff;
+
+  --vt-parent-bg-color: #f2f2f2;
+}
+.border {
+  border: var(--vt-border-width) solid var(--vt-border-color);
+}
+.vt-row:last-of-type .vt-cell {
+  border-bottom-width: var(--vt-border-width);
+}
+.vt-row .vt-cell:first-of-type {
+  border-left: none;
+}
+.vt-row .vt-cell:not(:first-child) {
+  border-left-width: var(--vt-border-width);
+}
+
+.vt-row .vt-cell:last-child {
+  border-right-width: var(--vt-border-width);
+}
+
+.vt-cell {
+  display: inline-block;
+  padding-right: var(--vt-cell-padding-x);
+  padding-left: var(--vt-cell-padding-x);
+  overflow: hidden;
+  border-top-width: var(--vt-border-width);
+  border-bottom: 1px solid #dbdbdb;
+  border-left: 1px solid #dbdbdb;
+}
+
+.vt-cell.sticky {
+  position: sticky;
+  z-index: 2;
+  background-color: var(--vt-fixed-cell-bg-color);
+}
+
+.vt-cell.stick-left-last:not(.parent)::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: -1px;
+  width: 30px;
+  box-shadow: 0 0 5px 1px #00000026;
+  transform: translate(100%);
+  content: '';
+  pointer-events: none;
+}
+
+.vt-cell.stick-right-first:not(.parent)::before {
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: -10px;
+  width: 5px;
+  box-shadow: 1px 0 3px 1px #00000026;
+  transform: translate(100%);
+  content: '';
+  pointer-events: none;
+}
+
+.vt-cell.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.vt-cell .vt-checkbox {
+  width: 28px;
+  margin-right: var(--vt-cell-padding-x);
+  padding-right: var(--vt-cell-padding-x);
+  border-right-color: #dbdbdb;
+  border-right-width: var(--vt-border-width);
+  border-right-style: solid;
+}

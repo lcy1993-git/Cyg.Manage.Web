@@ -1,33 +1,29 @@
-import {
-  copyProject,
-  editProject,
-  getProjectInfo,
-} from '@/services/project-management/all-project';
-import { useControllableValue } from 'ahooks';
-import { Button } from 'antd';
-import { Form, message, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { useRequest } from 'ahooks';
-import moment, { Moment } from 'moment';
-import CreateProjectForm from '../create-project-form';
+import { copyProject, editProject, getProjectInfo } from '@/services/project-management/all-project'
+import { useControllableValue } from 'ahooks'
+import { Button } from 'antd'
+import { Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { useRequest } from 'ahooks'
+import moment, { Moment } from 'moment'
+import CreateProjectForm from '../create-project-form'
 
 interface CopyProjectModalProps {
-  projectId: string;
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  areaId: string;
-  company: string;
-  engineerId: string;
-  companyName: string;
-  startTime?: Moment;
-  endTime?: Moment;
+  projectId: string
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  areaId: string
+  company: string
+  engineerId: string
+  companyName: string
+  startTime?: Moment
+  endTime?: Moment
 }
 
 const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState(false);
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [requestLoading, setRequestLoading] = useState(false)
+  const [form] = Form.useForm()
 
   const {
     projectId,
@@ -38,7 +34,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     companyName,
     startTime,
     endTime,
-  } = props;
+  } = props
 
   const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
     ready: !!projectId,
@@ -63,9 +59,9 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
             : projectInfo?.dataSourceType === 1
             ? undefined
             : projectInfo?.pileRange,
-      });
+      })
     },
-  });
+  })
 
   const edit = () => {
     form.validateFields().then(async (value) => {
@@ -81,18 +77,18 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
               : value.disclosureRange,
           pileRange:
             value.pileRange === undefined || value.pileRange === undefined ? 0 : value.pileRange,
-        });
-        message.success('项目复制成功');
-        setState(false);
-        form.resetFields();
-        changeFinishEvent?.();
+        })
+        message.success('项目复制成功')
+        setState(false)
+        form.resetFields()
+        changeFinishEvent?.()
       } catch (msg) {
-        console.error(msg);
+        console.error(msg)
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
-    });
-  };
+    })
+  }
 
   return (
     <Modal
@@ -124,7 +120,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
         />
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default CopyProjectModal;
+export default CopyProjectModal
