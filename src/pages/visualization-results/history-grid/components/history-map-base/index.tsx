@@ -2,7 +2,6 @@ import '@/assets/icon/history-grid-icon.css'
 import { useCurrentRef } from '@/utils/hooks'
 import { useMount, useUpdateEffect } from 'ahooks'
 import { MapEvent, View } from 'ol'
-import GeometryType from 'ol/geom/GeometryType'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
 import { useRef, useState } from 'react'
@@ -12,7 +11,7 @@ import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import { mapClick, moveend, pointermove } from './event'
 import init from './init'
 import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
-import { checkUserLocation, clearScreen, getSelectByType, moveToViewByLocation } from './utils'
+import { checkUserLocation, clear, getSelectByType, moveToViewByLocation } from './utils'
 
 const HistoryMapBase = () => {
   // const [state, setState, mode] = useGridMap()
@@ -76,13 +75,17 @@ const HistoryMapBase = () => {
 
   // 挂载地图
   useMount(() => {
-    init({ interActionRef, sourceRef, layerRef, viewRef, mapRef, ref: ref.current!, setState })
-    // initSource()
-    // initLayer()
-    // initView()
-    // initMap()
+    init({
+      interActionRef,
+      sourceRef,
+      layerRef,
+      viewRef,
+      mapRef,
+      ref: ref.current!,
+      setState,
+      mode,
+    })
     bindEvent()
-    // initInterAction()
   })
 
   // 处理geometryType变化
@@ -92,10 +95,10 @@ const HistoryMapBase = () => {
   }, [geometryType])
 
   // 处理当前地图类型变化
-  useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer), [mapLayerType])
-
-
-
+  useUpdateEffect(
+    () => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer),
+    [mapLayerType]
+  )
 
   // 根据历史数据绘制点位线路
   useUpdateEffect(() => {
@@ -103,18 +106,22 @@ const HistoryMapBase = () => {
   }, [dataSource])
   // 根据预设计数据绘制点位线路
   useUpdateEffect(() => {
-    false && drawDesignLayer()
+    drawDesignLayer()
   }, [importDesignData])
 
-  // 处理select样式变化
+  // 处理select
   useUpdateEffect(() => {
+    interActionRef.select.currentSelect?.getFeatures().clear()
     mapRef.map.removeInteraction(interActionRef.select.currentSelect!)
     interActionRef.select.currentSelect = getSelectByType(interActionRef, showText, isDraw)!
     mapRef.map.addInteraction(interActionRef.select.currentSelect)
   }, [isDraw, showText])
 
+  // 处理绘制状态的select
   useUpdateEffect(() => {
-
+    clear(sourceRef)
+    drawHistoryLayer()
+    drawDesignLayer()
   }, [showText])
 
   // 当绘制状态改变时
@@ -132,8 +139,6 @@ const HistoryMapBase = () => {
     //   mapRef.map.addInteraction(interActionRef.select!.pointSelect)
     // }
   }, [isDraw])
-
-
 
   // 定位当当前项目位置
   useUpdateEffect(() => {
@@ -158,7 +163,7 @@ const HistoryMapBase = () => {
     [locate]
   )
 
-  useUpdateEffect(() => clearScreen(interActionRef), [cleanSelected])
+  useUpdateEffect(() => clear(sourceRef), [cleanSelected])
 
   // 绑定事件
   function bindEvent() {
@@ -233,7 +238,7 @@ const HistoryMapBase = () => {
   //   })
   // }
 
-  function drawHistoryLayer () {
+  function drawHistoryLayer() {
     drawByDataSource(dataSource!, {
       source: 'history',
       showText,
@@ -242,7 +247,7 @@ const HistoryMapBase = () => {
     })
   }
 
-  function drawDesignLayer () {
+  function drawDesignLayer() {
     if (mode === 'preDesign')
       drawByDataSource(importDesignData!, {
         source: 'design',
@@ -278,57 +283,6 @@ const HistoryMapBase = () => {
   return (
     <div className="w-full h-full">
       <div ref={ref} className="w-full h-full"></div>
-      {true && (
-        <div className="absolute bottom-0">
-          <button onClick={() => setGeometryType(GeometryType.POINT)}>Point</button>
-          <button
-            style={{ color: 'red' }}
-            onClick={() => setGeometryType(GeometryType.LINE_STRING)}
-          >
-            Line
-          </button>
-          <button style={{ color: 'red' }} onClick={() => setGeometryType('')}>
-            None
-          </button>
-          <button
-            onClick={() =>
-              setState('mapLayerType', mapLayerType === 'SATELLITE' ? 'STREET' : 'SATELLITE')
-            }
-          >
-            {mapLayerType === 'SATELLITE' ? '卫星图' : '街道图'}
-          </button>
-          <button>显示名称</button>
-          <button onClick={() => setState('onCurrentLocationClick', !onCurrentLocationClick)}>
-            定位到当前位置
-          </button>
-          <button onClick={() => setState('onProjectLocationClick', !onProjectLocationClick)}>
-            定位到当前项目
-          </button>
-          <button onClick={() => setState('showText', !showText)}>元素名称开关</button>
-          <button onClick={() => setState('cleanSelected', !cleanSelected)}>清屏</button>
-          <button>导入</button>
-          <button>{mode}</button>
-          {/* <button onClick={() => setSelectType('')}>不选择</button>{' '}
-        <button onClick={() => setSelectType('pointSelect')}>不选择</button>{' '} */}
-          {/* <button onClick={() => setSelectType('boxSelect')}>框选</button> */}
-          <button onClick={() => setState('isDraw', !isDraw)} style={{ color: 'red' }}>
-            状态{isDraw ? '绘制' : '查看'}
-          </button>
-          <button
-            onClick={() =>
-              setState('dataSource', {
-                lines: dataSource?.lines.slice(0, 1) ?? [],
-                equipments: dataSource?.equipments.slice(0, 2) ?? [],
-              })
-            }
-          >
-            testData
-          </button>
-          <button onClick={() => setState('historyLayerVisible', !historyLayerVisible)}>
-            历史图层{historyLayerVisible}
-          </button>
-        </div>
-      )}
     </div>
   )
 }

@@ -5,25 +5,26 @@ import Geometry from 'ol/geom/Geometry'
 import { Select } from 'ol/interaction'
 import * as proj from 'ol/proj'
 import { getStyle } from '../styles'
-import { InterActionRef, ViewRef } from '../typings'
+import { InterActionRef, SourceRef, ViewRef } from '../typings'
 import { DataSource } from './../typings/index'
 
 // 清空选择器和高亮图层
-export const clear = (interActionRef: InterActionRef) => {
-  interActionRef.select!.pointSelect.getFeatures().clear()
-  interActionRef.select!.toggleSelect.getFeatures().clear()
-  interActionRef.hightLightSource!.clear()
+export const clear = (sourceRef: SourceRef) => {
+  sourceRef.historyPointSource.clear()
+  sourceRef.historyLineSource.clear()
+  sourceRef.designPointSource.clear()
+  sourceRef.designLineSource.clear()
 }
 
 /**
  * 清空地图上现有的所有选择器以及所有图层的Feature元素
  * @param {InterActionRef} interActionRef
  */
-export const clearScreen = (interActionRef: InterActionRef) => {
-  clear(interActionRef)
-  interActionRef.source!.clear()
-  interActionRef?.designSource.clear()
-}
+// export const clearScreen = (interActionRef: InterActionRef) => {
+//   clear(interActionRef)
+//   interActionRef.source!.clear()
+//   interActionRef?.designSource.clear()
+// }
 
 // 获取元素类型
 export function getGeometryType(f: Feature<Geometry>) {
@@ -63,9 +64,9 @@ export const checkUserLocation = (viewRef: ViewRef) => {
     {},
     function (err: any, res: any) {
       if (err) {
-        message.error(err)
+        message.error(err.toString())
       } else {
-        if (res?.rgc?.status === 'success') {
+        if (res?.rgc?.status === 'success' && res?.rgc?.result?.location?.lat) {
           const lat = parseFloat(res?.rgc?.result?.location?.lat)
           const lng = parseFloat(res?.rgc?.result?.location?.lng)
           moveToViewByLocation(viewRef, [lat, lng])
@@ -74,6 +75,8 @@ export const checkUserLocation = (viewRef: ViewRef) => {
           // } else {
           //   message.error('获取的位置信息无效，无法定位')
           // }
+        } else {
+          message.error('获取当前位置信息失败')
         }
       }
     }
@@ -125,18 +128,21 @@ function getIdsByDataSource(data: DataSource) {
   return [...lineArr, ...equipmentArr].map((o) => o.id)
 }
 
-
-export function getSelectByType (interActionRef: InterActionRef, showText: boolean, isDraw: boolean): Select | undefined {
-  if(isDraw === false && showText === false){
+export function getSelectByType(
+  interActionRef: InterActionRef,
+  showText: boolean,
+  isDraw: boolean
+): Select | undefined {
+  if (isDraw === false && showText === false) {
     return interActionRef.select.viewNoTextSelect
   }
-  if(isDraw === false && showText === true){
+  if (isDraw === false && showText === true) {
     return interActionRef.select.viewTextSelect
   }
-  if(isDraw === true && showText === false){
+  if (isDraw === true && showText === false) {
     return interActionRef.select.drawNoTextSelect
   }
-  if(isDraw === true && showText === true){
+  if (isDraw === true && showText === true) {
     return interActionRef.select.drawTextSelect
   }
   return
