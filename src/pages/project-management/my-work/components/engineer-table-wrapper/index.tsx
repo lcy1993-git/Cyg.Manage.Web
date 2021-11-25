@@ -446,6 +446,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   // 安排项目
   const arrange = async (projectId: string, projectType?: number, allotCompanyId?: string) => {
     const projectInfo = await getProjectInfo(projectId)
+
     setModalInfo({
       projectDataSource: Number(projectInfo?.dataSourceType),
       projectId: projectId,
@@ -1179,7 +1180,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       {addProjectVisible && (
         <AddProjectModal
           companyName={modalNeedInfo.companyName}
-          changeFinishEvent={refreshEvent}
+          changeFinishEvent={delayRefresh}
           visible={addProjectVisible}
           onChange={setAddProjectVisible}
           engineerId={modalNeedInfo.engineerId}
@@ -1215,12 +1216,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       {arrangeModalVisible && (
         <ArrangeModal
           allotCompanyId={modalNeedInfo.allotCompanyId}
-          finishEvent={refreshEvent}
+          finishEvent={delayRefresh}
           visible={arrangeModalVisible}
           onChange={setArrangeModalVisible}
           projectIds={[modalNeedInfo.projectId]}
           defaultSelectType={modalNeedInfo.projectType}
-          dataSourceType={modalNeedInfo.dataSourceType}
+          dataSourceType={modalNeedInfo.projectDataSource}
         />
       )}
       {auditKnotModalVisible && (
@@ -1228,7 +1229,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           visible={auditKnotModalVisible}
           onChange={setAuditKnotModalVisible}
           projectIds={[modalNeedInfo.projectId]}
-          finishEvent={refreshEvent}
+          finishEvent={delayRefresh}
         />
       )}
       {externalArrangeModalVisible && (

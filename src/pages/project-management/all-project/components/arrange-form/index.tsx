@@ -87,8 +87,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     }
   }, [defaultType])
 
-  console.log(defaultType, checkedValue, '5543545')
-
   const notChoose = (() => {
     return [
       {
@@ -98,7 +96,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       },
     ]
   })()
-  console.log(notChoose)
 
   return (
     <>
