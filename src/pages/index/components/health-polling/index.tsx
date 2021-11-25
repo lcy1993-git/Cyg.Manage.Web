@@ -72,7 +72,7 @@ const HealthPolling: React.FC = () => {
     if (requestFlag) {
       await run()
     }
-    if (serverCode !== '') {
+    if (serverCode && serverCode !== 'null' && serverCode !== 'undefined') {
       await infoRun()
     }
   }, 3000)
