@@ -142,13 +142,6 @@ export const GeographicLocation = () => {
   }
   return (
     <div className="bg-black bg-opacity-80 mt-1 px-2 py-1 text-white" id={GEOGRAPHIC_LOCATION}>
-      <span
-        onClick={() => dispatch(action)}
-        className="hover:text-theme-green-light cursor-pointer"
-      >
-        定位
-      </span>
-      <span className="w-6 inline-block text-center"> | </span>
       经度：
       <span className="inline-block" id={`grid_map_lat_${mode}`}>
         123

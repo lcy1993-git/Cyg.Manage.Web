@@ -1,13 +1,17 @@
-import * as extent from 'ol/extent';
-import { LineString } from 'ol/geom/LineString';
-import Point from 'ol/geom/Point';
-import TileLayer from 'ol/layer/Tile';
-import VectorLayer from 'ol/layer/Vector';
-import * as proj from 'ol/proj';
-import { Vector as VectorSource, WMTS as sourceWmts, XYZ } from 'ol/source';
-import tilegridWmts from 'ol/tilegrid/WMTS';
-import { getStyle } from '../styles';
-import { LayerRef, SourceRef } from './../typings/index';
+import { Feature } from 'ol'
+import * as extent from 'ol/extent'
+import Geometry from 'ol/geom/Geometry'
+import { LineString } from 'ol/geom/LineString'
+import Point from 'ol/geom/Point'
+import TileLayer from 'ol/layer/Tile'
+import VectorLayer from 'ol/layer/Vector'
+import * as proj from 'ol/proj'
+import RenderFeature from 'ol/render/Feature'
+import { Vector as VectorSource, WMTS as sourceWmts, XYZ } from 'ol/source'
+import { Style } from 'ol/style'
+import tilegridWmts from 'ol/tilegrid/WMTS'
+import { getStyle } from '../styles'
+import { LayerRef, SourceRef } from './../typings/index'
 
 // 卫星图层
 export const vecLayer = new TileLayer({
@@ -63,21 +67,33 @@ export const annLayer = new TileLayer({
 })
 annLayer.set('name', 'annLayer')
 
+const hasTextStyle = (showText: boolean) => (f: RenderFeature | Feature<Geometry>): Style[] => {
+  if (f.getGeometry()?.getType() === 'Point') {
+    return getStyle('Point')(
+      f.get('sourceType'),
+      f.get('typeStr') || '无类型',
+      f.get('name'),
+      showText
+    )
+  } else {
+    return getStyle('LineString')(
+      f.get('sourceType'),
+      f.get('typeStr') || '无类型',
+      f.get('name'),
+      showText
+    )
+  }
+}
+
 /**
  * 点位数据源图层
  * @param source
  * @returns
  */
-function getPointVectorLayer (source: VectorSource<Point>): VectorLayer<VectorSource<Point>> {
+function getPointVectorLayer(source: VectorSource<Point>): VectorLayer<VectorSource<Point>> {
   return new VectorLayer({
     source: source,
-    style: (f) => {
-      if (f.getGeometry()?.getType() === "Point") {
-        return getStyle("Point")(f.get("sourceType"), f.get("typeStr") || "无类型", f.get("name"), true)
-      }else {
-        return getStyle("LineString")(f.get("sourceType"), f.get("typeStr") || "无类型", f.get("name"), true)
-      }
-    }
+    style: hasTextStyle(true),
   })
 }
 /**
@@ -85,7 +101,9 @@ function getPointVectorLayer (source: VectorSource<Point>): VectorLayer<VectorSo
  * @param source
  * @returns
  */
-function getLineVectorLayer (source: VectorSource<LineString>): VectorLayer<VectorSource<LineString>> {
+function getLineVectorLayer(
+  source: VectorSource<LineString>
+): VectorLayer<VectorSource<LineString>> {
   return new VectorLayer({
     source: source,
   })
@@ -97,27 +115,27 @@ function getLineVectorLayer (source: VectorSource<LineString>): VectorLayer<Vect
  * @param sourceRef
  */
 
-export function initLayer (layerRef: LayerRef, sourceRef: SourceRef) {
-      // 添加 卫星图
-      layerRef.vecLayer = vecLayer
-      // 添加街道图层
-      layerRef.streetLayer = streetLayer
-      // 添加地域名称图层
-      layerRef.annLayer = annLayer
-      // 历史网架
-      layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
-      layerRef.historyPointLayer.set("name", "historyPointLayer")
-      
-      layerRef.historyLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
-      layerRef.historyLineLayer.set("name", "historyLineLayer")
-      // 预设计
-      layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
-      layerRef.designPointLayer.set("name", "designPointLayer")
-      layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
-      layerRef.designLineLayer.set("name", "designLineLayer")
-      // 添加高亮图层
-      layerRef.highLightPointLayer = getPointVectorLayer(sourceRef.highLightPointSource)
-      layerRef.highLightPointLayer.set("name", "highLightPointLayer")
-      layerRef.highLightLineLayer = getLineVectorLayer(sourceRef.highLightLineSource)
-      layerRef.highLightLineLayer.set("name", "highLightLineLayer")
+export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
+  // 添加 卫星图
+  layerRef.vecLayer = vecLayer
+  // 添加街道图层
+  layerRef.streetLayer = streetLayer
+  // 添加地域名称图层
+  layerRef.annLayer = annLayer
+  // 历史网架
+  layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
+  layerRef.historyPointLayer.set('name', 'historyPointLayer')
+
+  layerRef.historyLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
+  layerRef.historyLineLayer.set('name', 'historyLineLayer')
+  // 预设计
+  layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
+  layerRef.designPointLayer.set('name', 'designPointLayer')
+  layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
+  layerRef.designLineLayer.set('name', 'designLineLayer')
+  // 添加高亮图层
+  layerRef.highLightPointLayer = getPointVectorLayer(sourceRef.highLightPointSource)
+  layerRef.highLightPointLayer.set('name', 'highLightPointLayer')
+  layerRef.highLightLineLayer = getLineVectorLayer(sourceRef.highLightLineSource)
+  layerRef.highLightLineLayer.set('name', 'highLightLineLayer')
 }
