@@ -1,67 +1,67 @@
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
-import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useBoolean, useControllableValue } from 'ahooks';
-import React, { useState } from 'react';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
-import { Form, message, Modal, Button } from 'antd';
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
+import { uploadLineStressSag } from '@/services/resource-config/drawing'
+import { useBoolean, useControllableValue } from 'ahooks'
+import React, { useState } from 'react'
+import { Dispatch } from 'react'
+import { SetStateAction } from 'react'
+import { Form, message, Modal, Button } from 'antd'
 
 interface ImportChartProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  libId?: string;
-  securityKey?: string;
-  requestSource: 'project' | 'resource' | 'upload';
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  libId?: string
+  securityKey?: string
+  requestSource: 'project' | 'resource' | 'upload'
 }
 
 const ImportCableModal: React.FC<ImportChartProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { libId, requestSource, changeFinishEvent } = props;
-  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { libId, requestSource, changeFinishEvent } = props
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
+  const [form] = Form.useForm()
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
+  ] = useBoolean(false)
   const saveImportCableEvent = () => {
     return form
       .validateFields()
       .then((values) => {
-        const { file } = values;
-        return uploadLineStressSag(file, { libId }, requestSource, '/CableWell/SaveImport');
+        const { file } = values
+        return uploadLineStressSag(file, { libId }, requestSource, '/CableWell/SaveImport')
       })
       .then(
         (res) => {
-          setIsImportFlag(true);
-          message.success('导入成功');
+          setIsImportFlag(true)
+          message.success('导入成功')
 
-          return Promise.resolve();
+          return Promise.resolve()
         },
         (res) => {
-          const { code, isSuccess, message: msg } = res;
+          const { code, isSuccess, message: msg } = res
           if (msg) {
-            message.warn(msg);
+            message.warn(msg)
           }
-          return Promise.reject('导入失败');
-        },
+          return Promise.reject('导入失败')
+        }
       )
       .finally(() => {
-        changeFinishEvent?.();
-        setUploadFileFalse();
-      });
-  };
+        changeFinishEvent?.()
+        setUploadFileFalse()
+      })
+  }
 
   const onSave = () => {
     form.validateFields().then((value) => {
       if (isImportFlag) {
-        setState(false);
-        return;
+        setState(false)
+        return
       }
-      message.info('您还未上传文件，点击“开始上传”上传文件');
-    });
-  };
+      message.info('您还未上传文件，点击“开始上传”上传文件')
+    })
+  }
 
   return (
     <Modal
@@ -97,7 +97,7 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
         </CyFormItem>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default ImportCableModal;
+export default ImportCableModal

@@ -1,35 +1,36 @@
-import { saveColumnsConfig } from '@/services/project-management/all-project';
-import { CheckSquareOutlined } from '@ant-design/icons';
-import { useControllableValue } from 'ahooks';
-import { Button } from 'antd';
-import { Checkbox, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { useEffect } from 'react';
-import { useMemo } from 'react';
-import styles from './index.less';
+import { saveColumnsConfig } from '@/services/project-management/all-project'
+import { CheckSquareOutlined } from '@ant-design/icons'
+import { useControllableValue } from 'ahooks'
+import { Button, Checkbox, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import styles from './index.less'
 
 interface ColumnsConfigProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: (checkedValue: any) => void;
-  hasCheckColumns: string[];
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent?: (checkedValue: any) => void
+  hasCheckColumns: string[]
 }
 
 const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const [checkedList, setCheckedList] = useState<string[]>([]);
-  const [indeterminate, setIndeterminate] = useState(false);
-  const [checkAll, setCheckAll] = useState(false);
-  const [requestLoading, setRequestLoading] = useState(false);
+  const [checkedList, setCheckedList] = useState<string[]>([])
+  const [indeterminate, setIndeterminate] = useState(false)
+  const [checkAll, setCheckAll] = useState(false)
+  const [requestLoading, setRequestLoading] = useState(false)
 
-  const { finishEvent, hasCheckColumns = [] } = props;
+  const { finishEvent, hasCheckColumns = [] } = props
 
   const defaultColumns = [
     {
       title: '项目名称(必选)',
       dataIndex: 'name',
       must: true,
+    },
+    {
+      title: '现场数据来源',
+      dataIndex: 'dataSourceTypeText',
     },
     {
       title: '项目分类',
@@ -91,10 +92,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       title: '桩位范围',
       dataIndex: 'pileRange',
     },
-    {
-      title: '现场数据来源',
-      dataIndex: 'dataSourceTypeText',
-    },
+
     {
       title: '导出坐标权限',
       dataIndex: 'exportCoordinate',
@@ -126,7 +124,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       dataIndex: 'status',
       must: true,
     },
-  ];
+  ]
 
   const checkboxElement = defaultColumns.map((item) => {
     return (
@@ -141,51 +139,52 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
         )}
         {!item.must && <Checkbox value={item.dataIndex}>{item.title}</Checkbox>}
       </div>
-    );
-  });
+    )
+  })
 
   const afterHandleColumns = useMemo(() => {
-    return defaultColumns.filter((item) => !item.must).map((item) => item.dataIndex);
-  }, [JSON.stringify(defaultColumns)]);
+    return defaultColumns.filter((item) => !item.must).map((item) => item.dataIndex)
+  }, [JSON.stringify(defaultColumns)])
 
   const checkboxCheckEvent = (list: any) => {
-    setCheckedList(list);
-    setIndeterminate(!!list.length && list.length < afterHandleColumns.length);
-    setCheckAll(list.length === afterHandleColumns.length);
-  };
+    setCheckedList(list)
+    setIndeterminate(!!list.length && list.length < afterHandleColumns.length)
+    setCheckAll(list.length === afterHandleColumns.length)
+  }
 
   const allCheckEvent = (e: any) => {
-    setCheckedList(e.target.checked ? afterHandleColumns : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
-  };
+    setCheckedList(e.target.checked ? afterHandleColumns : [])
+    setIndeterminate(false)
+    setCheckAll(e.target.checked)
+  }
 
   useEffect(() => {
     if (hasCheckColumns && hasCheckColumns.length > 0) {
-      setCheckedList(hasCheckColumns);
-      setIndeterminate(true);
+      setCheckedList(hasCheckColumns)
+      setIndeterminate(true)
       if (hasCheckColumns.length === afterHandleColumns.length) {
-        setCheckAll(true);
+        setCheckAll(true)
       }
     }
-  }, [JSON.stringify(hasCheckColumns)]);
+  }, [JSON.stringify(hasCheckColumns)])
 
   const sureConfigEvent = async () => {
-    setRequestLoading(true);
+    setRequestLoading(true)
     try {
-      await saveColumnsConfig(JSON.stringify(checkedList));
-      finishEvent?.(checkedList);
-      setState(false);
+      await saveColumnsConfig(JSON.stringify(checkedList))
+      finishEvent?.(checkedList)
+      setState(false)
     } catch (msg) {
-      console.error(msg);
+      console.error(msg)
     } finally {
-      setRequestLoading(false);
+      setRequestLoading(false)
     }
-  };
+  }
 
   const defaultConfig = [
     'categoryText',
     'kvLevelText',
+    'dataSourceTypeText',
     'natureTexts',
     'majorCategoryText',
     'constructTypeText',
@@ -194,7 +193,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
     'surveyUser',
     'designUser',
     'identitys',
-  ];
+  ]
 
   const revertConfig = () => {
     setCheckedList(defaultConfig)
@@ -237,7 +236,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
         </Checkbox.Group>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ColumnsConfigModal;
+export default ColumnsConfigModal

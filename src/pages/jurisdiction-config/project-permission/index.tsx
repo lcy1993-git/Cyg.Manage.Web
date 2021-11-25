@@ -1,50 +1,50 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { Button, Input, Modal, Form, message, Spin, Tooltip } from 'antd';
-import React, { useState } from 'react';
-import { EditOutlined, PlusOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import '@/assets/icon/iconfont.css';
-import { useRequest, useBoolean } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { Button, Input, Modal, Form, message, Spin, Tooltip } from 'antd'
+import React, { useState } from 'react'
+import { EditOutlined, PlusOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import '@/assets/icon/iconfont.css'
+import { useRequest, useBoolean } from 'ahooks'
 import {
   addEditProPermissionItem,
   getProPermissionItem,
   updateProPermissionStatus,
   deleteProPermissionItem,
-} from '@/services/jurisdiction-config/project-permission';
-import { isArray } from 'lodash';
-import styles from './index.less';
-import CyTag from '@/components/cy-tag';
-import uuid from 'node-uuid';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ProjectPermissionForm from './components/add-edit-form';
-import CategoryTable from './components/category-table';
-import UserPermissionAccredit from './components/user-authorization';
-import ModalConfirm from '@/components/modal-confirm';
+} from '@/services/jurisdiction-config/project-permission'
+import { isArray } from 'lodash'
+import styles from './index.less'
+import CyTag from '@/components/cy-tag'
+import uuid from 'node-uuid'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ProjectPermissionForm from './components/add-edit-form'
+import CategoryTable from './components/category-table'
+import UserPermissionAccredit from './components/user-authorization'
+import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input;
+const { Search } = Input
 
 const ProjectPermission: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [currentId, setCurrentId] = useState<string>('');
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [permissionItem, setPermissionItem] = useState<any[]>([]);
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [currentId, setCurrentId] = useState<string>('')
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [permissionItem, setPermissionItem] = useState<any[]>([])
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [
     permissionFormVisible,
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
-  ] = useBoolean(false);
+  ] = useBoolean(false)
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const { data, run, loading } = useRequest(getProPermissionItem, {
     manual: true,
-  });
+  })
 
   const columns = [
     {
@@ -59,7 +59,7 @@ const ProjectPermission: React.FC = () => {
       index: 'isDisable',
       width: 120,
       render: (text: any, record: any) => {
-        const isChecked = !record.isDisable;
+        const isChecked = !record.isDisable
         return (
           <>
             {buttonJurisdictionArray?.includes('project-permissions-start-using') && (
@@ -77,9 +77,9 @@ const ProjectPermission: React.FC = () => {
                     style={{ cursor: 'pointer' }}
                     className="colorPrimary"
                     onClick={async () => {
-                      await updateProPermissionStatus({ id: record.id, isDisable: isChecked });
-                      tableFresh();
-                      message.success('状态修改成功');
+                      await updateProPermissionStatus({ id: record.id, isDisable: isChecked })
+                      tableFresh()
+                      message.success('状态修改成功')
                     }}
                   >
                     启用
@@ -89,9 +89,9 @@ const ProjectPermission: React.FC = () => {
                     style={{ cursor: 'pointer' }}
                     className="colorRed"
                     onClick={async () => {
-                      await updateProPermissionStatus({ id: record.id, isDisable: isChecked });
-                      tableFresh();
-                      message.success('状态修改成功');
+                      await updateProPermissionStatus({ id: record.id, isDisable: isChecked })
+                      tableFresh()
+                      message.success('状态修改成功')
                     }}
                   >
                     禁用
@@ -102,7 +102,7 @@ const ProjectPermission: React.FC = () => {
             {!buttonJurisdictionArray?.includes('project-permissions-start-using') &&
               (isChecked ? <span>启用</span> : <span>禁用</span>)}
           </>
-        );
+        )
       },
     },
     {
@@ -116,9 +116,9 @@ const ProjectPermission: React.FC = () => {
                 <CyTag className="mr7" key={uuid.v1()}>
                   {item.text}
                 </CyTag>
-              );
+              )
             })
-          : null;
+          : null
       },
     },
     {
@@ -127,7 +127,7 @@ const ProjectPermission: React.FC = () => {
       index: 'remark',
       width: '30%',
     },
-  ];
+  ]
 
   const searchElement = () => {
     return (
@@ -142,55 +142,55 @@ const ProjectPermission: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search();
+      tableRef.current?.search()
     }
-  };
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteProPermissionItem(editDataId);
-    tableFresh();
-    message.success('删除成功');
-    setTableSelectRows([]);
-  };
+    await deleteProPermissionItem(editDataId)
+    tableFresh()
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
   //授权
   const authorizationEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择项目权限组模板');
-      return;
+      message.error('请选择项目权限组模板')
+      return
     }
-    authorizationFormShow();
-    setCurrentId(tableSelectRows[0].id);
-  };
+    authorizationFormShow()
+    setCurrentId(tableSelectRows[0].id)
+  }
 
   const cancelAuthorization = () => {
-    authorizationFormHide();
-  };
+    authorizationFormHide()
+  }
 
   //添加
   const addEvent = async () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddProjectPermissions = () => {
     addForm.validateFields().then(async (value) => {
@@ -200,15 +200,15 @@ const ProjectPermission: React.FC = () => {
           remark: '',
           items: permissionItem,
         },
-        value,
-      );
+        value
+      )
 
-      await addEditProPermissionItem(submitInfo);
-      tableFresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      await addEditProPermissionItem(submitInfo)
+      tableFresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   const titleElement = () => {
     return (
@@ -218,32 +218,32 @@ const ProjectPermission: React.FC = () => {
       >
         <QuestionCircleOutlined style={{ paddingLeft: 10 }} />
       </Tooltip>
-    );
-  };
+    )
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    const PermissionData = await run(editDataId);
+    const PermissionData = await run(editDataId)
 
-    setPermissionItem(PermissionData?.items);
+    setPermissionItem(PermissionData?.items)
 
-    editForm.setFieldsValue(PermissionData);
-    setEditFormVisible(true);
-  };
+    editForm.setFieldsValue(PermissionData)
+    setEditFormVisible(true)
+  }
 
   const sureEditProPermissions = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const editItemData = permissionItem.map((item) => {
@@ -251,8 +251,8 @@ const ProjectPermission: React.FC = () => {
           category: item.category,
           objectId: item.objectId,
           projectTypes: item.projectTypes.map((item: any) => item.value ?? item),
-        };
-      });
+        }
+      })
 
       const submitInfo = Object.assign(
         {
@@ -261,15 +261,15 @@ const ProjectPermission: React.FC = () => {
           remark: editData.remark,
           items: editItemData,
         },
-        values,
-      );
-      await addEditProPermissionItem(submitInfo);
-      tableFresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await addEditProPermissionItem(submitInfo)
+      tableFresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const buttonElement = () => {
     return (
@@ -302,8 +302,8 @@ const ProjectPermission: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <PageCommonWrap>
@@ -374,7 +374,7 @@ const ProjectPermission: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default ProjectPermission;
+export default ProjectPermission

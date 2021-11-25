@@ -1,47 +1,47 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import { Cascader, DatePicker, Input, Modal, Form } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import DataSelect from '@/components/data-select';
-import EnumSelect from '@/components/enum-select';
-import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project';
-import city from '@/assets/local-data/area';
-import moment from 'moment';
-import { useControllableValue, useRequest } from 'ahooks';
-import { useState, useMemo } from 'react';
-import { useGetSelectData } from '@/utils/hooks';
-import { getCommonSelectData } from '@/services/common';
-import rule from '../../create-engineer-form/engineer-form-rule';
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
+import { Cascader, DatePicker, Input, Modal, Form } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import DataSelect from '@/components/data-select'
+import EnumSelect from '@/components/enum-select'
+import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
+import city from '@/assets/local-data/area'
+import moment from 'moment'
+import { useControllableValue, useRequest } from 'ahooks'
+import { useState, useMemo } from 'react'
+import { useGetSelectData } from '@/utils/hooks'
+import { getCommonSelectData } from '@/services/common'
+import rule from '../../create-engineer-form/engineer-form-rule'
 interface EditBulkEngineerProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent: (engineerInfo: any) => void;
-  engineerInfo: any;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent: (engineerInfo: any) => void
+  engineerInfo: any
 }
 
 const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const [areaChange, setAreaChange] = useState<boolean>(false);
-  const [libChange, setLibChange] = useState<boolean>(false);
-  const [companyChangeFlag, setCompanyChangeFlag] = useState<boolean>(false);
+  const [areaChange, setAreaChange] = useState<boolean>(false)
+  const [libChange, setLibChange] = useState<boolean>(false)
+  const [companyChangeFlag, setCompanyChangeFlag] = useState<boolean>(false)
 
-  const [inventoryOverviewSelectData, setInventoryOverviewSelectData] = useState<any[]>([]);
-  const [warehouseSelectData, setWarehouseSelectData] = useState<any[]>([]);
-  const [companySelectData, setCompanySelectData] = useState<any[]>([]);
-  const [departmentSelectData, setDepartmentSelectData] = useState<any[]>([]);
+  const [inventoryOverviewSelectData, setInventoryOverviewSelectData] = useState<any[]>([])
+  const [warehouseSelectData, setWarehouseSelectData] = useState<any[]>([])
+  const [companySelectData, setCompanySelectData] = useState<any[]>([])
+  const [departmentSelectData, setDepartmentSelectData] = useState<any[]>([])
 
-  const [provinceValue, setProvinceValue] = useState<any[]>([]);
-  const [libId, setLibId] = useState<string>('');
-  const [inventoryOverviewId, setInventoryOverviewId] = useState<string | undefined>('');
-  const [warehouseId, setWarehouseId] = useState<string | undefined>('');
-  const [company, setCompany] = useState<string | undefined>('');
+  const [provinceValue, setProvinceValue] = useState<any[]>([])
+  const [libId, setLibId] = useState<string>('')
+  const [inventoryOverviewId, setInventoryOverviewId] = useState<string | undefined>('')
+  const [warehouseId, setWarehouseId] = useState<string | undefined>('')
+  const [company, setCompany] = useState<string | undefined>('')
 
-  const [form] = Form.useForm();
-  const { engineerInfo, finishEvent } = props;
+  const [form] = Form.useForm()
+  const { engineerInfo, finishEvent } = props
 
   const saveCurrentEngineer = () => {
     form.validateFields().then((values) => {
-      const [province, city, area] = provinceValue;
+      const [province, city, area] = provinceValue
       const engineerSaveInfo = {
         ...engineerInfo,
         engineer: {
@@ -65,28 +65,28 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
           companySelectData,
           departmentSelectData,
         },
-      };
-      finishEvent(engineerSaveInfo);
-    });
-    setState(false);
-  };
+      }
+      finishEvent(engineerSaveInfo)
+    })
+    setState(false)
+  }
 
   const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
-  });
+  })
 
-  const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true });
+  const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true })
 
-  const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true });
-  const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true });
-  const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true });
+  const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true })
+  const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
+  const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
 
   const closeModalEvent = () => {
-    setState(false);
-  };
+    setState(false)
+  }
 
   const mapHandleCityData = (data: any) => {
     return {
@@ -98,24 +98,24 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
             ...data.children.map(mapHandleCityData),
           ]
         : undefined,
-    };
-  };
+    }
+  }
 
   const afterHandleData = useMemo(() => {
-    return city.map(mapHandleCityData);
-  }, [JSON.stringify(city)]);
+    return city.map(mapHandleCityData)
+  }, [JSON.stringify(city)])
 
   useEffect(() => {
-    const { engineer, selectData } = engineerInfo;
+    const { engineer, selectData } = engineerInfo
 
     let provinceValue = [
       engineer?.province,
       engineer?.city ? engineer?.city : `${engineer?.province}_null`,
       engineer?.area ? engineer?.area : engineer?.city ? `${engineer?.city}_null` : undefined,
-    ];
+    ]
 
     if (!engineer.province) {
-      provinceValue = [];
+      provinceValue = []
     }
 
     form.setFieldsValue({
@@ -127,23 +127,23 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       grade: String(engineer?.grade),
       inventoryOverviewId: engineer?.inventoryOverviewId ? engineer?.inventoryOverviewId : 'none',
       warehouseId: engineer?.warehouseId ? engineer?.warehouseId : 'none',
-    });
+    })
 
-    setInventoryOverviewSelectData(selectData.inventoryOverviewSelectData);
-    setWarehouseSelectData(selectData.warehouseSelectData);
-    setCompanySelectData(selectData.companySelectData);
-    setDepartmentSelectData(selectData.departmentSelectData);
+    setInventoryOverviewSelectData(selectData.inventoryOverviewSelectData)
+    setWarehouseSelectData(selectData.warehouseSelectData)
+    setCompanySelectData(selectData.companySelectData)
+    setDepartmentSelectData(selectData.departmentSelectData)
 
-    setLibId(engineer.libId);
-    setProvinceValue(provinceValue);
-    setInventoryOverviewId(engineer.inventoryOverviewId);
-    setWarehouseId(engineer.warehouseId);
-    setCompany(engineer.company);
-  }, [JSON.stringify(engineerInfo)]);
+    setLibId(engineer.libId)
+    setProvinceValue(provinceValue)
+    setInventoryOverviewId(engineer.inventoryOverviewId)
+    setWarehouseId(engineer.warehouseId)
+    setCompany(engineer.company)
+  }, [JSON.stringify(engineerInfo)])
 
   const areaChangeEvent = async (value: any) => {
-    setProvinceValue(value);
-    const [province] = value;
+    setProvinceValue(value)
+    const [province] = value
 
     const warehouseSelectResData = await getWarehouseSelectData({
       url: '/WareHouse/GetWareHouseListByArea',
@@ -151,84 +151,84 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       postType: 'query',
       params: { area: province },
       requestSource: 'resource',
-    });
+    })
 
     const companySelectResData = await getCompanySelectData({
       url: '/ElectricityCompany/GetListByAreaId',
       method: 'get',
       params: { areaId: province },
-    });
+    })
 
     const handleWarehouseSelectData = warehouseSelectResData?.map((item: any) => {
       return {
         label: item.text,
         value: item.value,
-      };
-    });
+      }
+    })
 
     const handleCompanySelectData = companySelectResData?.map((item: any) => {
       return {
         label: item.text,
         value: item.text,
-      };
-    });
-    setCompany(undefined);
-    setWarehouseId(undefined);
-    setAreaChange(true);
-    setWarehouseSelectData(handleWarehouseSelectData);
-    setCompanySelectData(handleCompanySelectData);
-  };
+      }
+    })
+    setCompany(undefined)
+    setWarehouseId(undefined)
+    setAreaChange(true)
+    setWarehouseSelectData(handleWarehouseSelectData)
+    setCompanySelectData(handleCompanySelectData)
+  }
 
   const libChangeEvent = async (value: any) => {
-    setLibId(value);
+    setLibId(value)
     const inventoryOverviewSelectResData = await getInventoryOverviewSelectData({
       url: '/Inventory/GetListByResourceLibId',
       params: { libId: value },
       requestSource: 'resource',
-    });
+    })
 
     const handleInventoryOverviewSelectData = inventoryOverviewSelectResData
       ? inventoryOverviewSelectResData?.map((item: any) => {
           return {
             label: item.text,
             value: item.value,
-          };
+          }
         })
-      : [{ label: '无', value: 'none' }];
-    setLibChange(true);
-    setInventoryOverviewId(undefined);
-    setInventoryOverviewSelectData(handleInventoryOverviewSelectData);
-  };
+      : [{ label: '无', value: 'none' }]
+    setLibChange(true)
+    setInventoryOverviewId(undefined)
+    setInventoryOverviewSelectData(handleInventoryOverviewSelectData)
+  }
 
   const inventoryOverviewChange = (value: any) => {
-    setInventoryOverviewId(value);
-  };
+    setInventoryOverviewId(value)
+  }
 
   const warehouseIdChange = (value: any) => {
-    setWarehouseId(value);
-  };
+    setWarehouseId(value)
+  }
 
   const companyChange = async (value: any) => {
-    setCompany(value);
+    setCompany(value)
 
-    const [province] = provinceValue;
+    const [province] = provinceValue
     const departmentSelectData = await getDepartmentSelectData({
       url: '/ElectricityCompany/GetPowerSupplys',
       method: 'post',
       params: { areaId: province, company: value },
       requestSource: 'project',
-    });
+    })
 
     const handleDepartmentSelectData = departmentSelectData?.map((item: any) => {
       return {
         label: item.text,
         value: item.value,
-      };
-    });
+      }
+    })
 
-    setCompanyChangeFlag(true);
-    setDepartmentSelectData(handleDepartmentSelectData);
-  };
+    setCompanyChangeFlag(true)
+    setDepartmentSelectData(handleDepartmentSelectData)
+  }
 
   return (
     <>
@@ -417,9 +417,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                         !value ||
                         !getFieldValue('startTime')
                       ) {
-                        return Promise.resolve();
+                        return Promise.resolve()
                       }
-                      return Promise.reject('"工程结束时间"不得早于"工程开始时间"');
+                      return Promise.reject('"工程结束时间"不得早于"工程开始时间"')
                     },
                   }),
                 ]}
@@ -494,7 +494,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         </Form>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default EditBulkEngineer;
+export default EditBulkEngineer

@@ -1,39 +1,39 @@
-import { Button, Cascader, Checkbox, message, Modal } from 'antd';
-import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useMemo } from 'react';
-import styles from './index.less';
-import city from '@/assets/local-data/area';
-import { useGetSelectData } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
-import { cloneDeep } from 'lodash';
-import useRequest from '@ahooksjs/use-request';
-import { getCommonSelectData } from '@/services/common';
-import EditBulkEngineer from './edit-bulk-engineer';
-import { useControllableValue } from 'ahooks';
-import { importBulkEngineerProject } from '@/services/project-management/all-project';
-import EditBulkProject from './edit-bulk-project';
-import CyTip from '@/components/cy-tip';
+import { Button, Cascader, Checkbox, message, Modal } from 'antd'
+import uuid from 'node-uuid'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useMemo } from 'react'
+import styles from './index.less'
+import city from '@/assets/local-data/area'
+import { useGetSelectData } from '@/utils/hooks'
+import DataSelect from '@/components/data-select'
+import { cloneDeep } from 'lodash'
+import useRequest from '@ahooksjs/use-request'
+import { getCommonSelectData } from '@/services/common'
+import EditBulkEngineer from './edit-bulk-engineer'
+import { useControllableValue } from 'ahooks'
+import { importBulkEngineerProject } from '@/services/project-management/all-project'
+import EditBulkProject from './edit-bulk-project'
+import CyTip from '@/components/cy-tip'
 
 interface BatchEditEngineerInfoProps {
-  excelModalData: any;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  visible: boolean;
-  refreshEvent?: () => void;
+  excelModalData: any
+  onChange: Dispatch<SetStateAction<boolean>>
+  visible: boolean
+  refreshEvent?: () => void
 }
 
 const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props) => {
-  const { excelModalData = [], refreshEvent } = props;
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const { excelModalData = [], refreshEvent } = props
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const [engineerInfo, setEngineerInfo] = useState<any[]>([]);
-  const [currentChooseEngineerInfo, setCurrentChooseEngineerInfo] = useState<any>();
+  const [engineerInfo, setEngineerInfo] = useState<any[]>([])
+  const [currentChooseEngineerInfo, setCurrentChooseEngineerInfo] = useState<any>()
 
-  const [currentClickEngineerInfo, setCurrentClickEngineerInfo] = useState<any>();
-  const [currentClickProjectInfo, setCurrentClickProjectInfo] = useState<any>();
+  const [currentClickEngineerInfo, setCurrentClickEngineerInfo] = useState<any>()
+  const [currentClickProjectInfo, setCurrentClickProjectInfo] = useState<any>()
 
-  const [editEngineerModalVisible, setEditEngineerModalVisible] = useState<boolean>(false);
-  const [editProjectModalVisible, setEditProjectModalVisible] = useState<boolean>(false);
+  const [editEngineerModalVisible, setEditEngineerModalVisible] = useState<boolean>(false)
+  const [editProjectModalVisible, setEditProjectModalVisible] = useState<boolean>(false)
 
   const mapHandleCityData = (data: any) => {
     return {
@@ -45,25 +45,25 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             ...data.children.map(mapHandleCityData),
           ]
         : undefined,
-    };
-  };
+    }
+  }
 
   const afterHandleData = useMemo(() => {
-    return city.map(mapHandleCityData);
-  }, [JSON.stringify(city)]);
+    return city.map(mapHandleCityData)
+  }, [JSON.stringify(city)])
 
-  const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true });
+  const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true })
 
-  const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true });
-  const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true });
-  const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true });
+  const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true })
+  const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
+  const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
 
   const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
-  });
+  })
 
   useEffect(() => {
     const newData = excelModalData?.map((item: any, index: any) => {
@@ -81,21 +81,21 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           companySelectData: [],
           departmentSelectData: [],
         },
-      };
-    });
-    setEngineerInfo(newData);
-    setCurrentChooseEngineerInfo(newData[0]);
-  }, [JSON.stringify(excelModalData)]);
+      }
+    })
+    setEngineerInfo(newData)
+    setCurrentChooseEngineerInfo(newData[0])
+  }, [JSON.stringify(excelModalData)])
 
   const areaChangeEvent = async (value: any, numberIndex: number) => {
-    let [province, city, area] = value;
+    let [province, city, area] = value
     if (city?.indexOf('null') != -1) {
-      city = '';
+      city = ''
     }
     if (area?.indexOf('null') != -1) {
-      area = '';
+      area = ''
     }
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
 
     const warehouseSelectData = await getWarehouseSelectData({
       url: '/WareHouse/GetWareHouseListByArea',
@@ -103,7 +103,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       postType: 'query',
       params: { area: province },
       requestSource: 'resource',
-    });
+    })
 
     // const { data: warehouseSelectData = [] } = useGetSelectData(
     //   {
@@ -120,7 +120,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       url: '/ElectricityCompany/GetListByAreaId',
       method: 'get',
       params: { areaId: province },
-    });
+    })
     // const { data: companySelectData = [] } = useGetSelectData(
     //   {
     //     url: `/ElectricityCompany?area=${province}`,
@@ -136,15 +136,15 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       return {
         label: item.text,
         value: item.value,
-      };
-    });
+      }
+    })
 
     const handleCompanySelectData = companySelectData?.map((item: any) => {
       return {
         label: item.text,
         value: item.text,
-      };
-    });
+      }
+    })
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
@@ -152,8 +152,8 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           return {
             ...ite,
             powerSupply: null,
-          };
-        });
+          }
+        })
         return {
           ...item,
           areaChange: true,
@@ -174,32 +174,32 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             departmentSelectData: [],
           },
           projects: handleProjects,
-        };
+        }
       }
-      return { ...item, checked: false };
-    });
+      return { ...item, checked: false }
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleData);
-    setEngineerInfo(finalyResultData);
-    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
-  };
+    const finalyResultData = handleWillStateEngineerInfo(handleData)
+    setEngineerInfo(finalyResultData)
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex])
+  }
 
   const libChangeEvent = async (value: any, numberIndex: number) => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
     const inventoryOverviewSelectData = await getInventoryOverviewSelectData({
       url: '/Inventory/GetListByResourceLibId',
       params: { libId: value },
       requestSource: 'resource',
-    });
+    })
 
     const handleInventoryOverviewSelectData = inventoryOverviewSelectData
       ? inventoryOverviewSelectData?.map((item: any) => {
           return {
             label: item.text,
             value: item.value,
-          };
+          }
         })
-      : [{ label: '无', value: 'none' }];
+      : [{ label: '无', value: 'none' }]
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
@@ -216,18 +216,18 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             ...item.selectData,
             inventoryOverviewSelectData: handleInventoryOverviewSelectData,
           },
-        };
+        }
       }
-      return { ...item, checked: false };
-    });
+      return { ...item, checked: false }
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleData);
-    setEngineerInfo(finalyResultData);
-    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
-  };
+    const finalyResultData = handleWillStateEngineerInfo(handleData)
+    setEngineerInfo(finalyResultData)
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex])
+  }
 
   const wareHouseChangeEvent = (value: any, numberIndex: number) => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
@@ -238,32 +238,32 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             ...item.engineer,
             warehouseId: value,
           },
-        };
+        }
       }
-      return { ...item, checked: false };
-    });
+      return { ...item, checked: false }
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleData);
-    setEngineerInfo(finalyResultData);
-    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
-  };
+    const finalyResultData = handleWillStateEngineerInfo(handleData)
+    setEngineerInfo(finalyResultData)
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex])
+  }
 
   const companyChangeEvent = async (value: any, numberIndex: number) => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
 
     const departmentSelectData = await getDepartmentSelectData({
       url: '/ElectricityCompany/GetPowerSupplys',
       method: 'post',
       params: { areaId: copyEngineerInfo[numberIndex].engineer.areaId, company: value },
       requestSource: 'project',
-    });
+    })
 
     const handleDepartmentSelectData = departmentSelectData.map((item: any) => {
       return {
         label: item.text,
         value: item.value,
-      };
-    });
+      }
+    })
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
@@ -271,8 +271,8 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           return {
             ...ite,
             powerSupply: null,
-          };
-        });
+          }
+        })
         return {
           ...item,
           index: numberIndex,
@@ -287,18 +287,18 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             departmentSelectData: handleDepartmentSelectData,
           },
           projects: handleProjects,
-        };
+        }
       }
-      return { ...item, checked: false };
-    });
+      return { ...item, checked: false }
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleData);
-    setEngineerInfo(finalyResultData);
-    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
-  };
+    const finalyResultData = handleWillStateEngineerInfo(handleData)
+    setEngineerInfo(finalyResultData)
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex])
+  }
 
   const inventoryOverviewChange = (value: any, numberIndex: number) => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
@@ -309,38 +309,38 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             ...item.engineer,
             inventoryOverviewId: value,
           },
-        };
+        }
       }
-      return { ...item, checked: false };
-    });
+      return { ...item, checked: false }
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleData);
-    setEngineerInfo(finalyResultData);
-    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
-  };
+    const finalyResultData = handleWillStateEngineerInfo(handleData)
+    setEngineerInfo(finalyResultData)
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex])
+  }
 
   const checkboxChangeEvent = (value: any, numberIndex: number) => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
-        setCurrentChooseEngineerInfo({ ...item, index: numberIndex });
+        setCurrentChooseEngineerInfo({ ...item, index: numberIndex })
         return {
           ...item,
           checked: true,
-        };
+        }
       }
 
       return {
         ...item,
         checked: false,
-      };
-    });
+      }
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleData);
-    setEngineerInfo(finalyResultData);
-    setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
-  };
+    const finalyResultData = handleWillStateEngineerInfo(handleData)
+    setEngineerInfo(finalyResultData)
+    setCurrentChooseEngineerInfo(finalyResultData[numberIndex])
+  }
 
   const engineerTrElement = engineerInfo.map((item, index) => {
     let provinceValue = [
@@ -355,9 +355,9 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         : item?.engineer.city
         ? `${item?.engineer.city}_null`
         : undefined,
-    ];
+    ]
     if (!item?.engineer.province) {
-      provinceValue = [];
+      provinceValue = []
     }
 
     if (index === 0) {
@@ -429,7 +429,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             </Button>
           </td>
         </tr>
-      );
+      )
     }
     return (
       <tr key={item.id} className={item.checked ? styles.checked : ''}>
@@ -492,44 +492,44 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           </Button>
         </td>
       </tr>
-    );
-  });
+    )
+  })
 
   const departmentChangeEvent = (value: any, numberIndex: number) => {
-    const copyProjectInfo = cloneDeep(currentChooseEngineerInfo.projects);
+    const copyProjectInfo = cloneDeep(currentChooseEngineerInfo.projects)
 
     const handleData = copyProjectInfo.map((item: any, index: number) => {
       if (index === numberIndex) {
         return {
           ...item,
           powerSupply: value,
-        };
+        }
       }
 
-      return item;
-    });
+      return item
+    })
 
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
     const handleEngineerData = copyEngineerInfo.map((item: any, index: number) => {
       if (item.checked) {
         return {
           ...item,
           projects: handleData,
-        };
+        }
       }
-      return item;
-    });
+      return item
+    })
 
     setCurrentChooseEngineerInfo({
       ...currentChooseEngineerInfo,
       index: numberIndex,
       projects: handleData,
-    });
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleEngineerData);
-    setEngineerInfo(finalyResultData);
+    const finalyResultData = handleWillStateEngineerInfo(handleEngineerData)
+    setEngineerInfo(finalyResultData)
     //setCurrentChooseEngineerInfo(finalyResultData[numberIndex]);
-  };
+  }
 
   const projectTrElement = currentChooseEngineerInfo?.projects.map((item: any, index: number) => {
     if (index === 0) {
@@ -555,7 +555,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             </Button>
           </td>
         </tr>
-      );
+      )
     }
     return (
       <tr key={`${currentChooseEngineerInfo.id}_${index}`}>
@@ -575,62 +575,62 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           </Button>
         </td>
       </tr>
-    );
-  });
+    )
+  })
 
   const judgeCanSaveFunction = () => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
-    let canSave = true;
+    const copyEngineerInfo = cloneDeep(engineerInfo)
+    let canSave = true
     const errorInfo: {
-      wareHouseNoChoose: any[];
-      companyNoChoose: any[];
-      departmentNoChoose: any[];
-      inventoryOverviewNoChoose: any[];
+      wareHouseNoChoose: any[]
+      companyNoChoose: any[]
+      departmentNoChoose: any[]
+      inventoryOverviewNoChoose: any[]
     } = {
       wareHouseNoChoose: [],
       companyNoChoose: [],
       departmentNoChoose: [],
       inventoryOverviewNoChoose: [],
-    };
+    }
     copyEngineerInfo.forEach((item, index) => {
       if (item.areaChange) {
         if (!item.engineer.warehouseId) {
-          canSave = false;
-          errorInfo.wareHouseNoChoose.push(item.engineer);
+          canSave = false
+          errorInfo.wareHouseNoChoose.push(item.engineer)
         }
         if (!item.engineer.company) {
-          canSave = false;
-          errorInfo.companyNoChoose.push(item.engineer);
+          canSave = false
+          errorInfo.companyNoChoose.push(item.engineer)
         }
       }
       if (item.companyChange) {
         if (item.projects && item.projects.length > 0) {
           if (!item.projects[0].powerSupply) {
-            canSave = false;
-            errorInfo.departmentNoChoose.push(item.engineer);
+            canSave = false
+            errorInfo.departmentNoChoose.push(item.engineer)
           }
         }
       }
       if (item.libChange) {
         if (!item.engineer.inventoryOverviewId) {
-          canSave = false;
-          errorInfo.inventoryOverviewNoChoose.push(item.engineer);
+          canSave = false
+          errorInfo.inventoryOverviewNoChoose.push(item.engineer)
         }
       }
-    });
+    })
     return {
       canSave,
       errorInfo,
-    };
-  };
+    }
+  }
 
   const handleFinallyData = () => {
     const saveData = cloneDeep(engineerInfo).map((item) => {
       return {
         engineer: item.engineer,
         projects: item.projects,
-      };
-    });
+      }
+    })
     const engineerKeys = [
       'area',
       'city',
@@ -639,200 +639,200 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       'libId',
       'inventoryOverviewId',
       'company',
-    ];
+    ]
 
     // projects 里面的供应组也要同上
     saveData.forEach((item, index) => {
-      const sliceData = saveData.slice(0, index);
+      const sliceData = saveData.slice(0, index)
 
       // 如果没有值，才需要做处理
       if (!item.engineer['company']) {
-        const hasValueData = sliceData.filter((it) => it.engineer['company']);
+        const hasValueData = sliceData.filter((it) => it.engineer['company'])
 
         if (hasValueData && hasValueData.length > 0) {
           // 找这个数据下的projects 第一个的 powerSupply
 
-          const thisPowerSupply = hasValueData[hasValueData.length - 1].projects[0].powerSupply;
+          const thisPowerSupply = hasValueData[hasValueData.length - 1].projects[0].powerSupply
 
           item.projects.forEach((it: any) => {
-            it.powerSupply = thisPowerSupply;
-          });
+            it.powerSupply = thisPowerSupply
+          })
         }
       } else {
         item.projects.forEach((ite: any, ind: number) => {
           if (!ite['powerSupply']) {
-            const copyProjects = cloneDeep(item.projects);
-            const sliceProjectData = copyProjects.slice(0, ind);
+            const copyProjects = cloneDeep(item.projects)
+            const sliceProjectData = copyProjects.slice(0, ind)
 
-            const hasThisValueData = sliceProjectData.filter((it: any) => it['powerSupply']);
+            const hasThisValueData = sliceProjectData.filter((it: any) => it['powerSupply'])
 
             if (hasThisValueData && hasThisValueData.length > 0) {
-              ite['powerSupply'] = hasThisValueData[hasThisValueData.length - 1]['powerSupply'];
+              ite['powerSupply'] = hasThisValueData[hasThisValueData.length - 1]['powerSupply']
             }
           }
-        });
+        })
       }
-    });
+    })
 
     saveData.forEach((item, index) => {
       if (index > 0) {
         engineerKeys.forEach((ite: any) => {
           // 如果没有值，才需要做处理
           if (!item.engineer[ite]) {
-            const sliceData = saveData.slice(0, index);
+            const sliceData = saveData.slice(0, index)
 
-            const hasValueData = sliceData.filter((it) => it.engineer[ite]);
+            const hasValueData = sliceData.filter((it) => it.engineer[ite])
 
             if (hasValueData && hasValueData.length > 0) {
-              item.engineer[ite] = hasValueData[hasValueData.length - 1].engineer[ite];
+              item.engineer[ite] = hasValueData[hasValueData.length - 1].engineer[ite]
             }
           }
-        });
+        })
       }
-    });
-    return saveData;
-  };
+    })
+    return saveData
+  }
 
   const closeModalEvent = () => {
-    setState(false);
-  };
+    setState(false)
+  }
 
   //批量上传
   const saveBatchAddProjectEvent = async () => {
     // 如果存在含 areaChange、companyChange、libChange 为true的选型，如果没有重新选值，那么就不进行保存
-    const judgeInfo = judgeCanSaveFunction();
+    const judgeInfo = judgeCanSaveFunction()
     if (!judgeInfo.canSave) {
-      let tipMessage = '';
+      let tipMessage = ''
       if (judgeInfo.errorInfo.wareHouseNoChoose.length > 0) {
         judgeInfo.errorInfo.wareHouseNoChoose.forEach((item, index) => {
-          tipMessage = tipMessage + item.name;
-        });
-        tipMessage += '未选择利旧协议库。';
+          tipMessage = tipMessage + item.name
+        })
+        tipMessage += '未选择利旧协议库。'
       }
 
       if (judgeInfo.errorInfo.companyNoChoose.length > 0) {
         judgeInfo.errorInfo.companyNoChoose.forEach((item, index) => {
-          tipMessage = tipMessage + item.name;
-        });
-        tipMessage += '未选择所属公司。';
+          tipMessage = tipMessage + item.name
+        })
+        tipMessage += '未选择所属公司。'
       }
 
       if (judgeInfo.errorInfo.inventoryOverviewNoChoose.length > 0) {
         judgeInfo.errorInfo.inventoryOverviewNoChoose.forEach((item, index) => {
-          tipMessage = tipMessage + item.name;
-        });
-        tipMessage += '未选择协议库。';
+          tipMessage = tipMessage + item.name
+        })
+        tipMessage += '未选择协议库。'
       }
 
       if (judgeInfo.errorInfo.departmentNoChoose.length > 0) {
         judgeInfo.errorInfo.departmentNoChoose.forEach((item, index) => {
-          tipMessage = tipMessage + item.name;
-        });
-        tipMessage += '下第一个项目未选择部组。';
+          tipMessage = tipMessage + item.name
+        })
+        tipMessage += '下第一个项目未选择部组。'
       }
-      message.error(tipMessage);
-      return;
+      message.error(tipMessage)
+      return
     }
 
-    const submitInfo = handleFinallyData();
-    await importBulkEngineerProject({ datas: submitInfo });
-    setState(false);
-    message.success('批量立项成功');
-    refreshEvent?.();
-  };
+    const submitInfo = handleFinallyData()
+    await importBulkEngineerProject({ datas: submitInfo })
+    setState(false)
+    message.success('批量立项成功')
+    refreshEvent?.()
+  }
 
   const engineerFinishEditInfo = (values: any) => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
     //copyEngineerInfo.splice(values.index, 1, values);
 
     const handleResultData = copyEngineerInfo.map((item, index) => {
       if (index === values.index) {
-        return { ...values, checked: true };
+        return { ...values, checked: true }
       }
-      return { ...item, checked: false };
-    });
+      return { ...item, checked: false }
+    })
 
-    const finalyResultData = handleWillStateEngineerInfo(handleResultData);
-    setEngineerInfo(finalyResultData);
+    const finalyResultData = handleWillStateEngineerInfo(handleResultData)
+    setEngineerInfo(finalyResultData)
 
-    setCurrentChooseEngineerInfo(finalyResultData[values.index]);
-  };
+    setCurrentChooseEngineerInfo(finalyResultData[values.index])
+  }
 
   const projectFinishEditInfo = (values: any) => {
-    const copyEngineerInfo = cloneDeep(engineerInfo);
+    const copyEngineerInfo = cloneDeep(engineerInfo)
 
-    copyEngineerInfo.splice(values.index, 1, values);
+    copyEngineerInfo.splice(values.index, 1, values)
 
-    const finalyResultData = handleWillStateEngineerInfo(copyEngineerInfo);
-    setEngineerInfo(finalyResultData);
-    setCurrentChooseEngineerInfo(values);
-  };
+    const finalyResultData = handleWillStateEngineerInfo(copyEngineerInfo)
+    setEngineerInfo(finalyResultData)
+    setCurrentChooseEngineerInfo(values)
+  }
 
   const editEngineerInfo = (engineerInfo: any) => {
-    setEditEngineerModalVisible(true);
-    setCurrentClickEngineerInfo(engineerInfo);
-  };
+    setEditEngineerModalVisible(true)
+    setCurrentClickEngineerInfo(engineerInfo)
+  }
 
   const editProjectInfo = (projectInfo: any) => {
-    setEditProjectModalVisible(true);
-    setCurrentClickProjectInfo(projectInfo);
-  };
+    setEditProjectModalVisible(true)
+    setCurrentClickProjectInfo(projectInfo)
+  }
 
   // 每一次设置engineerInfo的时候，需要把数据进行处理，可以获取到上面的select
   const handleWillStateEngineerInfo = (willStateEngineerInfo: any) => {
-    const copyData = cloneDeep(willStateEngineerInfo);
-    const engineerKeys = ['warehouseId', 'inventoryOverviewId', 'company'];
+    const copyData = cloneDeep(willStateEngineerInfo)
+    const engineerKeys = ['warehouseId', 'inventoryOverviewId', 'company']
 
     copyData.forEach((item: any, index: number) => {
       if (index > 0) {
         engineerKeys.forEach((ite: any) => {
           // 如果没有值，并且这个数据的item的area没有发生过变化，那么可以更新同步  warehouseSelectData， companySelectData
           if (!item.engineer[ite] && ite === 'warehouseId' && !item.areaChange) {
-            const sliceData = copyData.slice(0, index);
+            const sliceData = copyData.slice(0, index)
 
-            const hasValueData = sliceData.filter((it: any) => it.engineer[ite]);
+            const hasValueData = sliceData.filter((it: any) => it.engineer[ite])
 
             if (hasValueData && hasValueData.length > 0) {
               item.selectData.warehouseSelectData =
-                hasValueData[hasValueData.length - 1].selectData.warehouseSelectData;
+                hasValueData[hasValueData.length - 1].selectData.warehouseSelectData
             }
           }
 
           if (!item.engineer[ite] && ite === 'company') {
-            const sliceData = copyData.slice(0, index);
+            const sliceData = copyData.slice(0, index)
 
-            const hasValueData = sliceData.filter((it: any) => it.engineer[ite]);
+            const hasValueData = sliceData.filter((it: any) => it.engineer[ite])
 
             if (hasValueData && hasValueData.length > 0) {
               if (!item.areaChange) {
                 item.selectData.companySelectData =
-                  hasValueData[hasValueData.length - 1].selectData.companySelectData;
+                  hasValueData[hasValueData.length - 1].selectData.companySelectData
               }
               if (!item.companyChange) {
                 item.selectData.departmentSelectData =
-                  hasValueData[hasValueData.length - 1].selectData.departmentSelectData;
+                  hasValueData[hasValueData.length - 1].selectData.departmentSelectData
               }
             }
           }
 
           if (!item.engineer[ite] && ite === 'inventoryOverviewId') {
-            const sliceData = copyData.slice(0, index);
+            const sliceData = copyData.slice(0, index)
 
-            const hasValueData = sliceData.filter((it: any) => it.engineer[ite]);
+            const hasValueData = sliceData.filter((it: any) => it.engineer[ite])
 
             if (hasValueData && hasValueData.length > 0) {
               if (!item.libChange) {
                 item.selectData.inventoryOverviewSelectData =
-                  hasValueData[hasValueData.length - 1].selectData.inventoryOverviewSelectData;
+                  hasValueData[hasValueData.length - 1].selectData.inventoryOverviewSelectData
               }
             }
           }
-        });
+        })
       }
-    });
+    })
 
-    return copyData;
-  };
+    return copyData
+  }
 
   return (
     <>
@@ -905,7 +905,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default BatchEditEngineerInfoTable;
+export default BatchEditEngineerInfoTable

@@ -1,6 +1,6 @@
-import React, { FC, useState } from 'react';
-import { Menu, message, Switch, Tooltip } from 'antd';
-import styles from './index.less';
+import React, { FC, useState } from 'react'
+import { Menu, message, Switch, Tooltip } from 'antd'
+import styles from './index.less'
 import {
   CommentOutlined,
   CopyOutlined,
@@ -8,102 +8,100 @@ import {
   HeatMapOutlined,
   NodeIndexOutlined,
   QuestionCircleOutlined,
-} from '@ant-design/icons';
-import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info';
-import { useContainer } from '../../result-page/mobx-store';
-import CommentModal from '../comment-modal';
-import MaterialModal from '../material-modal';
-import { useRequest } from 'ahooks';
-import { ProjectList } from '@/services/visualization-results/visualization-results';
-import { observer } from 'mobx-react-lite';
-import { fetchCommentCountById } from '@/services/visualization-results/side-tree';
-import { downloadMapPositon } from '@/services/visualization-results/list-menu';
-import ExportMapPositionModal from '../export-map-position-modal';
+} from '@ant-design/icons'
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
+import { useContainer } from '../../result-page/mobx-store'
+import CommentModal from '../comment-modal'
+import MaterialModal from '../material-modal'
+import { useRequest } from 'ahooks'
+import { ProjectList } from '@/services/visualization-results/visualization-results'
+import { observer } from 'mobx-react-lite'
+import { fetchCommentCountById } from '@/services/visualization-results/side-tree'
+import { downloadMapPositon } from '@/services/visualization-results/list-menu'
+import ExportMapPositionModal from '../export-map-position-modal'
 
 const ListMenu: FC = observer(() => {
-  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false);
-  const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false);
-  const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(
-    false,
-  );
-  const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false);
-  const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false);
-  const store = useContainer();
-  const { vState } = store;
-  const { checkedProjectIdList } = vState;
+  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false)
+  const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false)
+  const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(false)
+  const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false)
+  const [commentTableModalVisible, setCommentTableModalVisible] = useState<boolean>(false)
+  const store = useContainer()
+  const { vState } = store
+  const { checkedProjectIdList } = vState
   const { data: commentCountResponseData, run: fetchCommentCountRquest } = useRequest(
     () => fetchCommentCountById(checkedProjectIdList[0].id),
     {
       manual: true,
       onSuccess: () => {
         if (!commentCountResponseData?.totalQty) {
-          message.warn('当前项目不存在审阅消息');
+          message.warn('当前项目不存在审阅消息')
         } else {
-          setCommentTableModalVisible(true);
+          setCommentTableModalVisible(true)
         }
       },
-    },
-  );
+    }
+  )
 
   const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
     manual: true,
     onSuccess: () => {
-      const a = document.createElement('a');
-      a.download = '项目坐标.zip';
-      const blob = new Blob([mapPosition], { type: 'application/zip;charset=utf-8' });
+      const a = document.createElement('a')
+      a.download = '项目坐标.zip'
+      const blob = new Blob([mapPosition], { type: 'application/zip;charset=utf-8' })
       // text指需要下载的文本或字符串内容
-      a.href = window.URL.createObjectURL(blob);
+      a.href = window.URL.createObjectURL(blob)
       // 会生成一个类似blob:http://localhost:8080/d3958f5c-0777-0845-9dcf-2cb28783acaf 这样的URL字符串
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      setexportMapPositionModalVisible(false);
-      setexportMapPositionLoading(false);
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      setexportMapPositionModalVisible(false)
+      setexportMapPositionLoading(false)
     },
     onError: () => {
-      message.warn('导出失败');
+      message.warn('导出失败')
     },
-  });
+  })
 
   const onCilickPositionMap = () => {
-    store.togglePositionMap();
-    store.setOnPositionClickState();
-  };
+    store.togglePositionMap()
+    store.setOnPositionClickState()
+  }
 
   const onClickMaterialTable = () => {
-    setMaterialModalVisible(true);
-  };
+    setMaterialModalVisible(true)
+  }
 
   const onClickCommentTable = () => {
     if (checkedProjectIdList?.length) {
-      fetchCommentCountRquest();
+      fetchCommentCountRquest()
     } else {
-      message.warn('请选择一个项目');
+      message.warn('请选择一个项目')
     }
-  };
+  }
 
   const onClickProjectDetailInfo = () => {
     if (checkedProjectIdList?.length !== 1) {
-      message.warning('请选择一个项目');
-      setProjectModalVisible(false);
+      message.warning('请选择一个项目')
+      setProjectModalVisible(false)
     } else {
-      setProjectModalVisible(true);
+      setProjectModalVisible(true)
     }
-  };
+  }
 
   const onClickExportProjectMapPosition = () => {
     if (checkedProjectIdList?.length === 0) {
-      message.warning('请先选择项目');
-      setexportMapPositionModalVisible(false);
+      message.warning('请先选择项目')
+      setexportMapPositionModalVisible(false)
     } else {
-      setexportMapPositionModalVisible(true);
+      setexportMapPositionModalVisible(true)
     }
-  };
+  }
 
   const onOkWithExportMapPosition = () => {
-    downloadMapPositonRequest(checkedProjectIdList.map((item) => item.id));
-    setexportMapPositionLoading(true);
-  };
+    downloadMapPositonRequest(checkedProjectIdList.map((item) => item.id))
+    setexportMapPositionLoading(true)
+  }
 
   const menuListProcessor = {
     projectDetail: onClickProjectDetailInfo,
@@ -111,7 +109,7 @@ const ListMenu: FC = observer(() => {
     materialTable: onClickMaterialTable,
     commentTable: onClickCommentTable,
     exportProjectMapPosition: onClickExportProjectMapPosition,
-  };
+  }
 
   return (
     <>
@@ -204,7 +202,7 @@ const ListMenu: FC = observer(() => {
         onOk={onOkWithExportMapPosition}
       />
     </>
-  );
-});
+  )
+})
 
-export default ListMenu;
+export default ListMenu

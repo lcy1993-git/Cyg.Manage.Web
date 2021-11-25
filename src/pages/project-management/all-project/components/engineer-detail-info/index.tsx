@@ -1,30 +1,30 @@
-import ReadonlyItem from '@/components/readonly-item';
-import { getEngineerInfo } from '@/services/project-management/all-project';
-import { useControllableValue, useRequest } from 'ahooks';
-import { Modal, Tooltip } from 'antd';
-import moment from 'moment';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import ReadonlyItem from '@/components/readonly-item'
+import { getEngineerInfo } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Modal, Tooltip } from 'antd'
+import moment from 'moment'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 
 interface EngineerDetailInfoProps {
-  engineerId: string;
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
+  engineerId: string
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
 }
 
 const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const { engineerId } = props;
+  const { engineerId } = props
 
   const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
     manual: true,
-  });
+  })
 
   useEffect(() => {
     if (state) {
-      run();
+      run()
     }
-  }, [state]);
+  }, [state])
 
   return (
     <Modal
@@ -119,7 +119,7 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
         </div>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default EngineerDetailInfo;
+export default EngineerDetailInfo

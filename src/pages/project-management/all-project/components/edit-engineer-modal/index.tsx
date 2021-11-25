@@ -2,34 +2,34 @@ import {
   addProject,
   editEngineer,
   getEngineerInfo,
-} from '@/services/project-management/all-project';
-import { useControllableValue } from 'ahooks';
-import { Button } from 'antd';
-import { Form, message, Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useRequest } from 'ahooks';
-import CreateEngineerForm from '../create-engineer-form';
-import moment from 'moment';
+} from '@/services/project-management/all-project'
+import { useControllableValue } from 'ahooks'
+import { Button } from 'antd'
+import { Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useRequest } from 'ahooks'
+import CreateEngineerForm from '../create-engineer-form'
+import moment from 'moment'
 
 interface EditEngineerProps {
-  engineerId: string;
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  minStart?: number;
-  maxEnd?: number;
+  engineerId: string
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  minStart?: number
+  maxEnd?: number
 }
 
 const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState(false);
-  const [areaId, setAreaId] = useState<string>('');
-  const [libId, setLibId] = useState<string>('');
-  const [canChange, setCanChange] = useState<boolean>(false);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [requestLoading, setRequestLoading] = useState(false)
+  const [areaId, setAreaId] = useState<string>('')
+  const [libId, setLibId] = useState<string>('')
+  const [canChange, setCanChange] = useState<boolean>(false)
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
-  const { engineerId, changeFinishEvent, minStart, maxEnd } = props;
+  const { engineerId, changeFinishEvent, minStart, maxEnd } = props
 
   const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
     manual: true,
@@ -42,7 +42,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
           : engineerInfo?.city
           ? `${engineerInfo?.city}_null`
           : undefined,
-      ];
+      ]
 
       form.setFieldsValue({
         ...engineerInfo,
@@ -56,44 +56,44 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
           : 'none',
         warehouseId: engineerInfo?.warehouseId ? engineerInfo?.warehouseId : 'none',
         province: provinceValue,
-      });
+      })
 
-      setAreaId(engineerInfo?.province ?? '');
-      setLibId(engineerInfo?.libId ?? '');
+      setAreaId(engineerInfo?.province ?? '')
+      setLibId(engineerInfo?.libId ?? '')
 
-      setCanChange(true);
+      setCanChange(true)
     },
-  });
+  })
 
   useEffect(() => {
     if (state) {
-      run();
+      run()
     }
-  }, [state]);
+  }, [state])
 
   const edit = () => {
     form.validateFields().then(async (value) => {
       try {
-        const { province } = value;
-        const [provinceNumber, city, area] = province;
+        const { province } = value
+        const [provinceNumber, city, area] = province
         await editEngineer({
           id: engineerId,
           ...value,
           province: !isNaN(provinceNumber) ? provinceNumber : '',
           city: !isNaN(city) ? city : '',
           area: !isNaN(area) ? area : '',
-        });
-        message.success('工程信息更新成功');
-        setState(false);
-        form.resetFields();
-        changeFinishEvent?.();
+        })
+        message.success('工程信息更新成功')
+        setState(false)
+        form.resetFields()
+        changeFinishEvent?.()
       } catch (msg) {
-        console.error(msg);
+        console.error(msg)
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
-    });
-  };
+    })
+  }
 
   return (
     <Modal
@@ -124,7 +124,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
         />
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditEngineerModal;
+export default EditEngineerModal

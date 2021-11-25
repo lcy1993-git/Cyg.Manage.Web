@@ -1,0 +1,56 @@
+.myProjectContent {
+  width: 100%;
+  height: 100%;
+  .emptyContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .myProjectCommonContent {
+    display: flex;
+    width: 100%;
+    height: 65px;
+    padding-top: 8px 0;
+    .myProjectCommonLeft {
+      flex: 1;
+      padding-left: 12px;
+    }
+    .myProjectCommonRight {
+      display: flex;
+      padding-top: 12px;
+      padding-right: 8px;
+    }
+  }
+
+  .myProjectTableContent {
+    width: 100%;
+    height: calc(100% - 74px);
+    padding: 0 15px;
+  }
+}
+
+.folderButton {
+  position: fixed;
+  bottom: 85px;
+  z-index: 999;
+  width: 32px;
+  height: 54px;
+  color: white;
+  text-align: center;
+  background-color: #505050;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.2s;
+  img {
+    width: 16px;
+    height: 12px;
+  }
+}
+
+.folderButton:hover {
+  width: 38px;
+  opacity: 1;
+}

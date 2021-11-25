@@ -1,54 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { TreeSelect, message, Divider } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import EnumSelect from '@/components/enum-select';
+import React, { useEffect, useState } from 'react'
+import { TreeSelect, message, Divider } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import EnumSelect from '@/components/enum-select'
 import {
   Arrangement,
   IsArrangement,
   getCompanyName,
   getGroupInfo,
-} from '@/services/project-management/all-project';
-import { useRequest } from 'ahooks';
-import Search from 'antd/lib/input/Search';
-import ReadonlyItem from '@/components/readonly-item';
-import { getTreeSelectData } from '@/services/operation-config/company-group';
-import uuid from 'node-uuid';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import styles from './index.less';
+} from '@/services/project-management/all-project'
+import { useRequest } from 'ahooks'
+import Search from 'antd/lib/input/Search'
+import ReadonlyItem from '@/components/readonly-item'
+import { getTreeSelectData } from '@/services/operation-config/company-group'
+import uuid from 'node-uuid'
+import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import styles from './index.less'
 
 interface GetGroupUserProps {
-  onChange?: (checkedValue: string) => void;
-  getCompanyInfo?: (companyInfo: any) => void;
-  defaultType?: string;
-  allotCompanyId?: string | undefined;
-  dataSourceType?: number;
+  onChange?: (checkedValue: string) => void
+  getCompanyInfo?: (companyInfo: any) => void
+  defaultType?: string
+  allotCompanyId?: string | undefined
+  dataSourceType?: number
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const {
-    onChange,
-    getCompanyInfo,
-    defaultType = '2',
-    allotCompanyId = '',
-    dataSourceType,
-  } = props;
+  const { onChange, getCompanyInfo, defaultType = '2', allotCompanyId = '', dataSourceType } = props
 
   const { data: companyInfo, run: getCompanyInfoEvent } = useRequest(getCompanyName, {
     manual: true,
-  });
+  })
 
-  const [checkedValue, setCheckedValue] = useState<string>('2');
-  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false);
+  const [checkedValue, setCheckedValue] = useState<string>('2')
+  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
 
-  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId));
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId))
 
-  const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId));
+  const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId))
 
-  const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId));
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId))
 
-  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId));
+  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
 
-  const { data: groupData = [] } = useRequest(() => getTreeSelectData());
+  const { data: groupData = [] } = useRequest(() => getTreeSelectData())
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0 && checkedValue != '3') {
@@ -58,42 +52,40 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         key: uuid.v1(),
         disabled: true,
         children: data.children ? data.children.map(mapTreeData) : [],
-      };
+      }
     }
     return {
       title: data.text,
       value: data.id,
       key: uuid.v1(),
       children: data.children ? data.children.map(mapTreeData) : [],
-    };
-  };
+    }
+  }
 
   const typeChange = (value: string) => {
-    setCheckedValue(value);
-    onChange?.(value);
-  };
+    setCheckedValue(value)
+    onChange?.(value)
+  }
 
   const searchEvent = async (value: string) => {
     if (value == '') {
-      message.warning('请输入单位账户');
-      return;
+      message.warning('请输入单位账户')
+      return
     }
-    const res = await getCompanyInfoEvent(value);
+    const res = await getCompanyInfoEvent(value)
     if (res == undefined) {
-      message.error('账户不存在');
-      return;
+      message.error('账户不存在')
+      return
     }
-    getCompanyInfo?.(res);
-  };
+    getCompanyInfo?.(res)
+  }
 
   useEffect(() => {
     if (defaultType) {
-      setCheckedValue(defaultType === '5' ? '2' : defaultType);
-      onChange?.(defaultType === '5' ? '2' : defaultType);
+      setCheckedValue(defaultType === '5' ? '2' : defaultType)
+      onChange?.(defaultType === '5' ? '2' : defaultType)
     }
-  }, [defaultType]);
-
-  console.log(defaultType, checkedValue, '5543545');
+  }, [defaultType])
 
   const notChoose = (() => {
     return [
@@ -102,9 +94,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         title: '无',
         children: null ?? [],
       },
-    ];
-  })();
-  console.log(notChoose);
+    ]
+  })()
 
   return (
     <>
@@ -125,7 +116,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 key="surveyUser"
                 style={{ width: '100%' }}
                 treeData={surveyData.map(mapTreeData)}
-                placeholder="“无需现场数据”项目，免安排勘察人员"
+                placeholder="“免勘察”项目，免安排勘察人员"
                 treeDefaultExpandAll
                 disabled
               />
@@ -136,7 +127,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 key="surveyUser"
                 style={{ width: '100%' }}
                 treeData={surveyData.map(mapTreeData)}
-                placeholder="“点位导入”项目，免安排勘察人员"
+                placeholder="“导入”项目，免安排勘察人员"
                 treeDefaultExpandAll
                 disabled
               />
@@ -309,7 +300,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
         </>
       )}
     </>
-  );
-};
+  )
+}
 
-export default ArrangeForm;
+export default ArrangeForm

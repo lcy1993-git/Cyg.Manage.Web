@@ -1,28 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useLayoutStore } from '@/layouts/context'
 import {
   AreaInfo,
   getMapRegisterData,
   getMapStatisticsData,
   MapStatisticsData,
 } from '@/services/index'
-import { history } from 'umi'
+import { exportHomeStatisticData } from '@/services/operation-config/cockpit'
 import { useMount, useRequest, useSize } from 'ahooks'
-import borderStylesHTML from '../../utils/borderStylesHTML'
-import styles from './index.less'
-
+import { Button, message } from 'antd'
 import * as echarts from 'echarts'
 import 'echarts/lib/chart/map'
 import 'echarts/lib/component/tooltip'
-
-import { cityCodeObject } from './map-info'
-import ChartBox from '../chart-box'
-
 // import ProjectNumberIcon from '@/assets/image/index/project-number.png';
 import { isArray } from 'lodash'
-import { useMemo } from 'react'
-import { Button, message } from 'antd'
-import { exportHomeStatisticData } from '@/services/operation-config/cockpit'
-import { useLayoutStore } from '@/layouts/context'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { history } from 'umi'
+import borderStylesHTML from '../../utils/borderStylesHTML'
+import ChartBox from '../chart-box'
+import styles from './index.less'
+import { cityCodeObject } from './map-info'
 
 interface MapChartComponentProps {
   currentAreaInfo: AreaInfo

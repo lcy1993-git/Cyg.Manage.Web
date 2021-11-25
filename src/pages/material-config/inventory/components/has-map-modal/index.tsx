@@ -1,18 +1,15 @@
 import GeneralTable from '@/components/general-table'
-import { Button, Modal, message, Popconfirm } from 'antd'
-import React, { useState } from 'react'
-import styles from './index.less'
-
+import ModalConfirm from '@/components/modal-confirm'
 import { deleteResourceInventoryMap } from '@/services/material-config/inventory'
-
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { ImportOutlined } from '@ant-design/icons'
-
-// import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import MapLibModal from '../map-lib-modal'
+import { Button, message, Modal } from 'antd'
+import React, { useState } from 'react'
 import CheckMapping from '../check-mapping-form'
 import CreateMap from '../create-map'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+// import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import MapLibModal from '../map-lib-modal'
+import styles from './index.less'
 
 const HasMapModal: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null)

@@ -1,31 +1,31 @@
-import { addProject, getEngineerInfo } from '@/services/project-management/all-project';
-import { useControllableValue, useRequest } from 'ahooks';
-import { Button } from 'antd';
-import { Form, message, Modal } from 'antd';
-import moment from 'moment';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import CreateProjectForm from '../create-project-form';
+import { addProject, getEngineerInfo } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button } from 'antd'
+import { Form, message, Modal } from 'antd'
+import moment from 'moment'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import CreateProjectForm from '../create-project-form'
 
 interface AddProjectProps {
-  engineerId: string;
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  areaId: string;
-  company: string;
-  changeFinishEvent: () => void;
-  companyName?: string;
+  engineerId: string
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  areaId: string
+  company: string
+  changeFinishEvent: () => void
+  companyName?: string
 }
 
 const AddProjectModal: React.FC<AddProjectProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState(false);
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [requestLoading, setRequestLoading] = useState(false)
+  const [form] = Form.useForm()
 
-  const { engineerId, areaId, company, changeFinishEvent, companyName } = props;
+  const { engineerId, areaId, company, changeFinishEvent, companyName } = props
   const { data: engineerInfo } = useRequest(() => getEngineerInfo(engineerId), {
     ready: !!engineerId,
     refreshDeps: [engineerId],
-  });
+  })
 
   const addProjectEvent = () => {
     form.validateFields().then(async (value) => {
@@ -34,24 +34,24 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           engineerId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
-        });
-        message.success('项目新增成功');
-        setState(false);
+        })
+        message.success('项目新增成功')
+        setState(false)
 
-        form.resetFields();
-        changeFinishEvent?.();
+        form.resetFields()
+        changeFinishEvent?.()
       } catch (msg) {
-        console.error(msg);
+        console.error(msg)
       } finally {
-        setRequestLoading(false);
+        setRequestLoading(false)
       }
-    });
-  };
+    })
+  }
 
   const modalCloseEvent = () => {
-    setState(false);
-    form.resetFields();
-  };
+    setState(false)
+    form.resetFields()
+  }
 
   return (
     <Modal
@@ -88,7 +88,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
         />
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddProjectModal;
+export default AddProjectModal

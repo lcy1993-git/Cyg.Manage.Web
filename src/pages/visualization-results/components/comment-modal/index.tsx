@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
-import { Modal } from 'antd';
-import { ProjectList } from '@/services/visualization-results/visualization-results';
-import CommentTable from '../comment-table';
+import React, { FC } from 'react'
+import { Modal } from 'antd'
+import { ProjectList } from '@/services/visualization-results/visualization-results'
+import CommentTable from '../comment-table'
 export interface CommentModalProps {
-  visible?: boolean;
-  onOk: () => void;
-  onCancel: () => void;
-  checkedProjectIdList: ProjectList[];
+  visible?: boolean
+  onOk: () => void
+  onCancel: () => void
+  checkedProjectIdList: ProjectList[]
 }
 
 const CommentModal: FC<CommentModalProps> = (props) => {
-  const { checkedProjectIdList, visible, onOk, onCancel } = props;
+  const { checkedProjectIdList, visible, onOk, onCancel } = props
 
   return (
     <Modal
@@ -23,12 +23,10 @@ const CommentModal: FC<CommentModalProps> = (props) => {
       width={1500}
     >
       {checkedProjectIdList.length > 0 ? (
-        <CommentTable
-          projectIds={checkedProjectIdList.map((t) => t.id)}
-        />
+        <CommentTable projectIds={checkedProjectIdList.map((t) => t.id)} />
       ) : null}
     </Modal>
-  );
-};
+  )
+}
 
-export default CommentModal;
+export default CommentModal

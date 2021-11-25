@@ -1,55 +1,55 @@
-import EmptyTip from '@/components/empty-tip';
-import { getHasShareDetailData, recallShare } from '@/services/project-management/all-project';
-import { useControllableValue, useRequest } from 'ahooks';
-import { Button, message, Modal, Table } from 'antd';
-import React, { Dispatch, SetStateAction } from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import styles from './index.less';
+import EmptyTip from '@/components/empty-tip'
+import { getHasShareDetailData, recallShare } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, message, Modal, Table } from 'antd'
+import React, { Dispatch, SetStateAction } from 'react'
+import { useEffect } from 'react'
+import { useState } from 'react'
+import styles from './index.less'
 
 interface ProjectRecallModalProps {
-  projectId: string;
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
+  projectId: string
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
 }
 
 const ProjectRecallModal: React.FC<ProjectRecallModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState(false);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [requestLoading, setRequestLoading] = useState(false)
 
-  const [tableSelectArray, setTableSelectArray] = useState<any[]>([]);
+  const [tableSelectArray, setTableSelectArray] = useState<any[]>([])
 
-  const { projectId, changeFinishEvent } = props;
+  const { projectId, changeFinishEvent } = props
 
   const { data: shareDetailData = [], run: getShareDetailData } = useRequest(
     () => getHasShareDetailData(projectId),
-    { manual: true },
-  );
+    { manual: true }
+  )
 
   const recallEvent = async () => {
     if (tableSelectArray.length === 0) {
-      message.error('请选择一个目标');
-      return;
+      message.error('请选择一个目标')
+      return
     }
     try {
-      setRequestLoading(true);
-      await recallShare(tableSelectArray);
-      message.success('撤回共享成功');
-      setState(false);
-      changeFinishEvent?.();
+      setRequestLoading(true)
+      await recallShare(tableSelectArray)
+      message.success('撤回共享成功')
+      setState(false)
+      changeFinishEvent?.()
     } catch (msg) {
-      console.error(msg);
+      console.error(msg)
     } finally {
-      setRequestLoading(false);
+      setRequestLoading(false)
     }
-  };
+  }
 
   const tableSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
-      setTableSelectArray(selectedRows.map((item) => item['id']));
+      setTableSelectArray(selectedRows.map((item) => item['id']))
     },
-  };
+  }
 
   const tableColumns = [
     {
@@ -58,7 +58,7 @@ const ProjectRecallModal: React.FC<ProjectRecallModalProps> = (props) => {
       title: '序号',
       width: 80,
       render: (text: string, record: any, index: number) => {
-        return <span>{index + 1}</span>;
+        return <span>{index + 1}</span>
       },
     },
     {
@@ -66,13 +66,13 @@ const ProjectRecallModal: React.FC<ProjectRecallModalProps> = (props) => {
       index: 'companyName',
       title: '公司名称',
     },
-  ];
+  ]
 
   useEffect(() => {
     if (state) {
-      getShareDetailData();
+      getShareDetailData()
     }
-  }, [state]);
+  }, [state])
 
   return (
     <Modal
@@ -111,7 +111,7 @@ const ProjectRecallModal: React.FC<ProjectRecallModalProps> = (props) => {
         ></Table>
       </div>
     </Modal>
-  );
-};
+  )
+}
 
-export default ProjectRecallModal;
+export default ProjectRecallModal

@@ -1,16 +1,16 @@
-import React from 'react'
-import { Input, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
 import EnumSelect from '@/components/enum-select'
-import { QuestionCircleOutlined } from '@ant-design/icons'
+import UrlSelect from '@/components/url-select'
 import {
+  forDesignType,
+  forProjectType,
+  kvBothLevelType,
   materialType,
   supplySideType,
-  kvBothLevelType,
-  forProjectType,
-  forDesignType,
 } from '@/services/resource-config/resource-enum'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Tooltip } from 'antd'
+import React from 'react'
 interface ChartListFromLibParams {
   resourceLibId: string
 }
@@ -90,7 +90,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="单重(kg)" name="pieceWeight">
-        <Input placeholder="请输入单重" />
+        <Input placeholder="请输入单重" type="number" />
       </CyFormItem>
 
       <CyFormItem label="供给方" name="supplySide">

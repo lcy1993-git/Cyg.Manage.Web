@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { Col, Input, Row } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import Scrollbars from 'react-custom-scrollbars'
 import EnumSelect from '@/components/enum-select'
-import { useRequest } from 'ahooks'
 import { getComponentName, getMaterialName } from '@/services/resource-config/component'
+import { useRequest } from 'ahooks'
+import { Col, Input, Row } from 'antd'
+import React, { useEffect, useMemo, useState } from 'react'
+import Scrollbars from 'react-custom-scrollbars'
 import NameSelect from '../add-form/name-select'
 import SpecificationsSelect from '../add-form/specifications-select'
 
@@ -127,10 +127,18 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
               required
               rules={[
                 { required: true, message: '数量不能为空' },
-                { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+                {
+                  pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, //匹配正整数
+                  message: '输入值必须大于0',
+                },
+
+                {
+                  pattern: /^([\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+                  message: '最多保留三位小数',
+                },
               ]}
             >
-              <Input type="number" min={1} placeholder="请输入数量（正整数）" />
+              <Input type="number" min={1} placeholder="请输入数量" />
             </CyFormItem>
           </Col>
         </Row>

@@ -1,62 +1,62 @@
-import React, { useMemo, memo } from 'react';
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Tooltip } from 'antd';
-import { useBoolean } from 'ahooks';
-import { TableContext } from '../table-store';
+import React, { useMemo, memo } from 'react'
+import { CheckboxValueType } from 'antd/lib/checkbox/Group'
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
+import { Button, Checkbox, Tooltip } from 'antd'
+import { useBoolean } from 'ahooks'
+import { TableContext } from '../table-store'
 
-import styles from './index.less';
-import moment from 'moment';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import EmptyTip from '@/components/empty-tip';
-import { useContext } from 'react';
-import { useEffect } from 'react';
-import { isNumber } from 'lodash';
+import styles from './index.less'
+import moment from 'moment'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import EmptyTip from '@/components/empty-tip'
+import { useContext } from 'react'
+import { useEffect } from 'react'
+import { isNumber } from 'lodash'
 
 export interface AddProjectValue {
-  engineerId: string;
-  areaId: string;
-  company: string;
-  companyName: string;
+  engineerId: string
+  areaId: string
+  company: string
+  companyName: string
 }
 
 interface EngineerTableItemProps {
-  noPadding?: boolean;
-  projectInfo: any;
-  columns: any[];
-  onChange?: (checkedValue: TableItemCheckedInfo) => void;
-  getClickProjectId: (clickProjectId: string) => void;
-  addProject?: (needValue: AddProjectValue) => void;
-  editEngineer?: (needValue: AddProjectValue) => void;
-  approvalEngineer?: (needValue: AddProjectValue) => void;
+  noPadding?: boolean
+  projectInfo: any
+  columns: any[]
+  onChange?: (checkedValue: TableItemCheckedInfo) => void
+  getClickProjectId: (clickProjectId: string) => void
+  addProject?: (needValue: AddProjectValue) => void
+  editEngineer?: (needValue: AddProjectValue) => void
+  approvalEngineer?: (needValue: AddProjectValue) => void
   // left: number;
-  isOverflow: boolean;
-  columnsWidth: number;
-  contentWidth: number;
+  isOverflow: boolean
+  columnsWidth: number
+  contentWidth: number
 }
 interface TableCheckedItemProjectInfo {
-  id: string;
-  isAllChecked: boolean;
-  status?: any;
-  name?: any;
-  dataSourceType?: number[];
+  id: string
+  isAllChecked: boolean
+  status?: any
+  name?: any
+  dataSourceType?: number[]
 }
 
 export interface TableItemCheckedInfo {
-  projectInfo: TableCheckedItemProjectInfo;
-  checkedArray: string[];
+  projectInfo: TableCheckedItemProjectInfo
+  checkedArray: string[]
 }
 
 const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
-  const [isFold, { toggle: foldEvent }] = useBoolean(false);
+  const [isFold, { toggle: foldEvent }] = useBoolean(false)
 
-  const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([]);
-  const [indeterminate, setIndeterminate] = React.useState(false);
-  const [checkAll, setCheckAll] = React.useState(false);
+  const [checkedList, setCheckedList] = React.useState<CheckboxValueType[]>([])
+  const [indeterminate, setIndeterminate] = React.useState(false)
+  const [checkAll, setCheckAll] = React.useState(false)
 
-  const { tableSelectData } = useContext(TableContext);
+  const { tableSelectData } = useContext(TableContext)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const {
     projectInfo = {},
@@ -70,21 +70,21 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
     columnsWidth,
     contentWidth,
     noPadding = false,
-  } = props;
+  } = props
 
-  const noPaddingRight = noPadding ? styles.noPaddingRight : '';
+  const noPaddingRight = noPadding ? styles.noPaddingRight : ''
 
   const valueList = useMemo(() => {
     if (projectInfo.projects) {
-      return projectInfo.projects.map((item: any) => item.id);
+      return projectInfo.projects.map((item: any) => item.id)
     }
-    return [];
-  }, [JSON.stringify(projectInfo.projects)]);
+    return []
+  }, [JSON.stringify(projectInfo.projects)])
 
   const checkboxChange = (list: CheckboxValueType[]) => {
-    setCheckedList(list);
-    setIndeterminate(!!list.length && list.length < valueList.length);
-    setCheckAll(list.length === valueList.length);
+    setCheckedList(list)
+    setIndeterminate(!!list.length && list.length < valueList.length)
+    setCheckAll(list.length === valueList.length)
 
     onChange?.({
       projectInfo: {
@@ -93,33 +93,33 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
         status: projectInfo.projects
           .map((item: any) => {
             if (list.includes(item.id)) {
-              return item.stateInfo;
+              return item.stateInfo
             }
           })
           .filter(Boolean),
         name: projectInfo.projects
           .map((item: any) => {
             if (list.includes(item.id)) {
-              return item.name;
+              return item.name
             }
           })
           .filter(Boolean),
         dataSourceType: projectInfo.projects
           .map((item: any) => {
             if (list.includes(item.id)) {
-              return item.dataSourceType;
+              return item.dataSourceType
             }
           })
           .filter((item: any) => isNumber(item)),
       },
       checkedArray: list as string[],
-    });
-  };
+    })
+  }
 
   const checkAllEvent = (e: any) => {
-    setCheckedList(e.target.checked ? valueList : []);
-    setIndeterminate(false);
-    setCheckAll(e.target.checked);
+    setCheckedList(e.target.checked ? valueList : [])
+    setIndeterminate(false)
+    setCheckAll(e.target.checked)
 
     onChange?.({
       projectInfo: {
@@ -128,32 +128,32 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
         status: projectInfo.projects
           .map((item: any) => {
             if (valueList.includes(item.id)) {
-              return item.stateInfo;
+              return item.stateInfo
             }
           })
           .filter(Boolean),
         name: projectInfo.projects
           .map((item: any) => {
             if (valueList.includes(item.id)) {
-              return item.name;
+              return item.name
             }
           })
           .filter(Boolean),
         dataSourceType: projectInfo.projects
           .map((item: any) => {
             if (valueList.includes(item.id)) {
-              return item.dataSourceType;
+              return item.dataSourceType
             }
           })
           .filter((item: any) => isNumber(item)),
       },
       checkedArray: e.target.checked ? valueList : [],
-    });
-  };
+    })
+  }
 
   const projectNameClickEvent = (projectId: string) => {
-    getClickProjectId?.(projectId);
-  };
+    getClickProjectId?.(projectId)
+  }
 
   const addProjectEvent = () => {
     addProject?.({
@@ -161,8 +161,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
       areaId: projectInfo.province,
       company: projectInfo.company,
       companyName: projectInfo.company,
-    });
-  };
+    })
+  }
 
   const editEngineerEvent = () => {
     editEngineer?.({
@@ -170,8 +170,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
       areaId: projectInfo.province,
       company: projectInfo.company,
       companyName: projectInfo.company,
-    });
-  };
+    })
+  }
 
   const approvalFileEvent = () => {
     approvalEngineer?.({
@@ -179,8 +179,8 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
       areaId: projectInfo.province,
       company: projectInfo.company,
       companyName: projectInfo.company,
-    });
-  };
+    })
+  }
 
   const theadElement = useMemo(() => {
     return columns.map((item) => {
@@ -208,15 +208,9 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
         >
           {item.title}
         </div>
-      );
-    });
-  }, [
-    JSON.stringify(projectInfo),
-    contentWidth,
-    isOverflow,
-    JSON.stringify(columns),
-    columnsWidth,
-  ]);
+      )
+    })
+  }, [JSON.stringify(projectInfo), contentWidth, isOverflow, JSON.stringify(columns), columnsWidth])
 
   const tbodyElement = useMemo(() => {
     return (projectInfo.projects ?? []).map((item: any) => {
@@ -276,25 +270,19 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
                   )}
                 </div>
               </div>
-            );
+            )
           })}
         </div>
-      );
-    });
-  }, [
-    JSON.stringify(projectInfo),
-    contentWidth,
-    isOverflow,
-    JSON.stringify(columns),
-    columnsWidth,
-  ]);
+      )
+    })
+  }, [JSON.stringify(projectInfo), contentWidth, isOverflow, JSON.stringify(columns), columnsWidth])
 
   useEffect(() => {
     if (tableSelectData.length === 0) {
-      setCheckedList([]);
-      setCheckAll(false);
+      setCheckedList([])
+      setCheckAll(false)
     }
-  }, [JSON.stringify(tableSelectData), projectInfo]);
+  }, [JSON.stringify(tableSelectData), projectInfo])
 
   return (
     <div className={`${styles.engineerTableItem} ${isOverflow ? styles.overflowTable : ''}`}>
@@ -389,7 +377,7 @@ const EngineerTableItem: React.FC<EngineerTableItemProps> = (props) => {
           )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default memo(EngineerTableItem);
+export default memo(EngineerTableItem)

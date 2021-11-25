@@ -1,10 +1,7 @@
-import PageCommonWrap from '@/components/page-common-wrap'
-import TableSearch from '@/components/table-search'
-import { Button, message } from 'antd'
+import { Button } from 'antd'
 import React, { useState } from 'react'
 import styles from './index.less'
 import CommonTitle from '@/components/common-title'
-import UrlSelect from '@/components/url-select'
 import OverHeadDesignTab from './components/overHeadDesign-tab'
 import { ImportOutlined } from '@ant-design/icons'
 import ImportOverheadModal from './components/import-form'
@@ -17,20 +14,8 @@ interface libParams {
 const OverheadDesign: React.FC<libParams> = (props) => {
   const { libId } = props
   const tableRef = React.useRef<HTMLDivElement>(null)
-  const [resourceLibId, setResourceLibId] = useState<string>('')
   const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false)
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-
-  //选择资源库传libId
-  const searchByLib = (value: any) => {
-    setResourceLibId(value)
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams({
-        libId: value,
-      })
-    }
-  }
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   // 列表刷新
   const refresh = () => {
@@ -45,10 +30,6 @@ const OverheadDesign: React.FC<libParams> = (props) => {
   }
 
   const importOverheadDesignEvent = () => {
-    // if (!resourceLibId) {
-    //   message.error('请先选择资源库');
-    //   return;
-    // }
     setImportOverheadVisible(true)
   }
 

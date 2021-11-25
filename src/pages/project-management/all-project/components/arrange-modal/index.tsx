@@ -1,24 +1,24 @@
 /* eslint-disable prefer-object-spread */
-import { useControllableValue } from 'ahooks';
-import { Form, message } from 'antd';
-import { Modal } from 'antd';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import ArrangeForm from '../arrange-form';
-import { saveArrange } from '@/services/project-management/all-project';
+import { useControllableValue } from 'ahooks'
+import { Form, message } from 'antd'
+import { Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import ArrangeForm from '../arrange-form'
+import { saveArrange } from '@/services/project-management/all-project'
 interface ArrangeModalProps {
-  projectIds: string[];
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: () => void;
-  defaultSelectType?: string;
-  allotCompanyId?: string;
-  dataSourceType?: number;
-  setSourceTypeEvent?: Dispatch<SetStateAction<number | undefined>>;
+  projectIds: string[]
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent?: () => void
+  defaultSelectType?: string
+  allotCompanyId?: string
+  dataSourceType?: number
+  setSourceTypeEvent?: Dispatch<SetStateAction<number | undefined>>
 }
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [companyInfo, setCompanyInfo] = useState<any>();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [companyInfo, setCompanyInfo] = useState<any>()
   const {
     projectIds,
     finishEvent,
@@ -26,14 +26,14 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     allotCompanyId,
     dataSourceType,
     setSourceTypeEvent,
-  } = props;
-  const [selectType, setSelectType] = useState<string>('');
+  } = props
+  const [selectType, setSelectType] = useState<string>('')
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const getCompanyInfo = (companyInfo: any) => {
-    setCompanyInfo(companyInfo);
-  };
+    setCompanyInfo(companyInfo)
+  }
 
   const saveInfo = () => {
     form.validateFields().then(async (values) => {
@@ -53,14 +53,14 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           costAuditUser3: values.costAuditUser3,
           allotCompanyGroup: values.allotCompanyGroup,
           allotOrganizeUser: values.allotOrganizeUser,
-        };
+        }
 
-        await saveArrange(arrangeInfo);
+        await saveArrange(arrangeInfo)
       }
       if (selectType === '1') {
         if (companyInfo === undefined) {
-          message.error('请输入组织账户');
-          return;
+          message.error('请输入组织账户')
+          return
         }
         const arrangeInfo = Object.assign(
           {
@@ -68,9 +68,9 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
             projectIds,
             allotOrganizeUser: companyInfo.value,
           },
-          values,
-        );
-        await saveArrange(arrangeInfo);
+          values
+        )
+        await saveArrange(arrangeInfo)
       }
 
       if (selectType === '3') {
@@ -80,9 +80,9 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
             projectIds,
             allotCompanyGroup: '',
           },
-          values,
-        );
-        await saveArrange(arrangeInfo);
+          values
+        )
+        await saveArrange(arrangeInfo)
       }
 
       if (selectType === '4') {
@@ -97,21 +97,21 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
             designAssessUser3: '',
             designAssessUser4: '',
           },
-          values,
-        );
-        await saveArrange(arrangeInfo);
+          values
+        )
+        await saveArrange(arrangeInfo)
       }
-      message.success('操作成功！');
-      finishEvent?.();
-      form.resetFields();
-      setState(false);
-    });
-  };
+      message.success('操作成功！')
+      finishEvent?.()
+      form.resetFields()
+      setState(false)
+    })
+  }
 
   const closeModalEvent = () => {
-    setState(false);
-    form.resetFields();
-  };
+    setState(false)
+    form.resetFields()
+  }
 
   return (
     <Modal
@@ -124,8 +124,8 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       destroyOnClose
       onOk={() => saveInfo()}
       onCancel={() => {
-        closeModalEvent();
-        setSourceTypeEvent?.(undefined);
+        closeModalEvent()
+        setSourceTypeEvent?.(undefined)
       }}
     >
       <Form form={form} preserve={false}>
@@ -155,7 +155,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         {/* </Tabs> */}
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default ArrangeModal;
+export default ArrangeModal

@@ -184,11 +184,19 @@ const AddComponentDetail: React.FC<AddDetailParams> = (props) => {
       index: 'itemNumber',
       width: 160,
       render: () => {
-        return <Input type="number" min={1} placeholder="请输入数量（正整数）" bordered={false} />
+        return <Input type="number" min={1} placeholder="请输入数量" bordered={false} />
       },
       rules: [
         { required: true, message: '数量不能为空' },
-        { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+        {
+          pattern: /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/, //匹配正整数
+          message: '输入值必须大于0',
+        },
+
+        {
+          pattern: /^([\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+          message: '最多保留三位小数',
+        },
       ],
     },
     {

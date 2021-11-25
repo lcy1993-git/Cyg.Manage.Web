@@ -40,7 +40,7 @@ const Component: React.FC<libParams> = (props) => {
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false)
   const [detailVisible, setDetailVisible] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
