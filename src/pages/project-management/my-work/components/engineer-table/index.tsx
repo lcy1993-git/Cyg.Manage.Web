@@ -83,6 +83,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         total,
         dataStartIndex: Math.floor((resPageIndex - 1) * pageInfo.pageSize + 1),
         dataEndIndex: Math.floor((resPageIndex - 1) * pageInfo.pageSize + (items ?? []).length),
+        engineerLen: items?.filter((item: any) => item.projects).length,
         projectLen:
           items
             ?.filter((item: any) => item.projects && item.projects.length > 0)
@@ -258,7 +259,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             <span>到第</span>
             <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
             <span>条记录，总共</span>
-            <span className={styles.importantTip}>{tableResultData.items.length}</span>
+            <span className={styles.importantTip}>{tableResultData.engineerLen}</span>
             <span>个工程，</span>
             <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
           </div>
