@@ -64,7 +64,7 @@ export const checkUserLocation = (viewRef: ViewRef) => {
     {},
     function (err: any, res: any) {
       if (err) {
-        message.error(err.toString())
+        message.error('获取的位置信息无效，无法定位')
       } else {
         if (res?.rgc?.status === 'success' && res?.rgc?.result?.location?.lat) {
           const lat = parseFloat(res?.rgc?.result?.location?.lat)

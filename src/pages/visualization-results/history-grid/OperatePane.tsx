@@ -1,11 +1,13 @@
+import { getProjectInfo } from '@/services/project-management/all-project'
 import { Button } from 'antd'
-import { CSSProperties, FC, ReactNode, useCallback, useMemo } from 'react'
+import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
 import { HistoryState, useHistoryGridContext } from './store'
 
 /** 左上方操作 */
 const OperationPane: FC = ({ children }) => {
-  const { mode, UIStatus, dispatch } = useHistoryGridContext()
+  const [canDraw, setCanDraw] = useState(false)
+  const { mode, UIStatus, dispatch, preDesignItemData } = useHistoryGridContext()
 
   const changeMode = useCallback(
     (changedMode: HistoryState['mode']) => {
@@ -13,6 +15,16 @@ const OperationPane: FC = ({ children }) => {
     },
     [dispatch]
   )
+
+  useEffect(() => {
+    if (mode === 'preDesign' && preDesignItemData) {
+      getProjectInfo(preDesignItemData.id).then((res) => {
+        if (res.identitys.some((s: any) => s.value! === 4)) {
+          setCanDraw(true)
+        }
+      })
+    }
+  }, [mode, preDesignItemData, setCanDraw])
 
   /** 是否处于绘制状态 */
   const drawing = mode === 'preDesigning' || mode === 'recordEdit'
@@ -94,6 +106,7 @@ const OperationPane: FC = ({ children }) => {
       {!drawing && (
         <Button
           type="primary"
+          disabled={!canDraw}
           onClick={() => {
             changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
             dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
