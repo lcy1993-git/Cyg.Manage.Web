@@ -109,25 +109,19 @@ const LoginForm: React.FC<Props> = (props) => {
           message.error(resData.message)
         }
       } catch (msg) {
-        console.error(msg)
       } finally {
         setRequestLoading(false)
       }
     })
   }
-  const { run } = useRequest(
-    (serverCode) =>
-      getStopServerNotice({
-        serverCode: serverCode,
-        kickOutSeconds: 605,
-      }),
-    {
-      manual: true,
-      onSuccess: (val) => {
-        return val
-      },
-    }
-  )
+  const getStopServerNoticeReq = async (serverCode: string) => {
+    const res = await getStopServerNotice({
+      serverCode: serverCode,
+      kickOutSeconds: 605,
+    })
+    return res
+  }
+
   const getServerList = async () => {
     const res = await getProductServerList({
       productCode: '1301726010322214912',
@@ -157,7 +151,7 @@ const LoginForm: React.FC<Props> = (props) => {
         getServerList()
           .then(async (res) => {
             if (res) {
-              let val = await run(res.code)
+              let val = await getStopServerNoticeReq(res.code)
               if (!val) {
                 await loginButtonClick()
                 return
@@ -184,7 +178,7 @@ const LoginForm: React.FC<Props> = (props) => {
       // 停服公告,前缀没有也直接放行
       const data = form.getFieldsValue()
       if (serverCode !== undefined && serverCode !== null) {
-        let val = await run(serverCode)
+        let val = await getStopServerNoticeReq(serverCode)
         if (
           val !== null &&
           !data?.userName?.startsWith(val?.testerAccountPrefix) &&
