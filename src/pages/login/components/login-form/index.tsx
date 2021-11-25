@@ -2,17 +2,17 @@ import ImageIcon from '@/components/image-icon'
 import VerificationCode from '@/components/verification-code'
 import { Stop } from '@/pages/login'
 import { loginRules } from '@/pages/login/components/login-form/rule'
-import { getProductServerList, getStopServerNotice } from '@/services/index'
 import {
   compareVerifyCode,
   getAuthorityModules,
   getUserInfoRequest,
   indexLoginRequest,
+  PhoneLoginParams,
   phoneLoginRequest,
+  UserLoginParams,
 } from '@/services/login'
 import { phoneNumberRule } from '@/utils/common-rule'
-import { flatten } from '@/utils/utils'
-import { useRequest } from 'ahooks'
+import { flatten, getStopServerList } from '@/utils/utils'
 import { Button, Form, Input, message, Tabs } from 'antd'
 import React, { useRef, useState } from 'react'
 import { history } from 'umi'
@@ -20,14 +20,14 @@ import VerifycodeImage from '../verifycode-image'
 import styles from './index.less'
 
 const { TabPane } = Tabs
-const { NODE_ENV } = process.env
 export type LoginType = 'account' | 'phone'
+
 interface Props {
-  serverCode: string
   stopLogin: (data?: Stop) => void
 }
+
 const LoginForm: React.FC<Props> = (props) => {
-  const { serverCode } = props
+  const { stopLogin } = props
   const [needVerifycode, setNeedVerifycode] = useState<boolean>(false)
   const [imageCode, setImageCode] = useState<string>('')
   // 是否验证码错误
@@ -61,153 +61,70 @@ const LoginForm: React.FC<Props> = (props) => {
     }
   }
 
-  const login = (type: LoginType, data?: Stop) => {
+  const login = async (type: LoginType, data: UserLoginParams | PhoneLoginParams) => {
     // TODO  校验通过之后进行保存
-    form.validateFields().then(async (values) => {
-      if (
-        [2, 3].includes(data?.stage as number) &&
-        values?.userName?.startsWith(data?.testerAccountPrefix)
-      ) {
-        values.userName = values?.userName?.replace(data?.testerAccountPrefix, '')
-      }
-      try {
-        let resData = null
-        if (type === 'account') {
-          resData = await indexLoginRequest(values)
-        } else {
-          resData = await phoneLoginRequest(values)
-        }
-        if (resData.code === 200 && resData.isSuccess) {
-          const { accessToken } = resData.content
-
-          localStorage.setItem('Authorization', accessToken)
-          let userInfo = await getUserInfoRequest()
-          if (data?.stage) {
-            const userName = form.getFieldValue('userName')
-            userInfo['isTestUser'] =
-              [2, 3].includes(data?.stage) && userName.startsWith(data?.testerAccountPrefix) // 是否测试账号
-          }
-          const modules = await getAuthorityModules()
-
-          const buttonModules = flatten(modules)
-
-          const buttonArray = buttonModules
-            .filter((item: any) => item.category === 3)
-            .map((item: any) => item.authCode)
-
-          localStorage.setItem('functionModules', JSON.stringify(modules))
-          localStorage.setItem('userInfo', JSON.stringify(userInfo))
-          localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
-
-          setNeedVerifycode(false)
-          message.success('登录成功', 1.5)
-          history.push('/index')
-        } else if (resData.code === 40100) {
-          // 临时关闭验证码，开启时，打开下行代码
-          message.error(resData.message)
-        } else {
-          message.error(resData.message)
-        }
-      } catch (msg) {
-      } finally {
-        setRequestLoading(false)
-      }
-    })
-  }
-  const getStopServerNoticeReq = async (serverCode: string) => {
-    const res = await getStopServerNotice({
-      serverCode: serverCode,
-      kickOutSeconds: 605,
-    })
-    return res
-  }
-
-  const getServerList = async () => {
-    const res = await getProductServerList({
-      productCode: '1301726010322214912',
-      category: 0,
-      status: 0,
-      province: '',
-    })
-    const currenServer = res?.find((item: { propertys: { webSite: string } }) => {
-      if (NODE_ENV === 'development') {
-        return item.propertys?.webSite === 'http://10.6.1.40:21528/login'
+    try {
+      let resData = null
+      if (type === 'account') {
+        resData = await indexLoginRequest(data as UserLoginParams)
       } else {
-        return item.propertys?.webSite === window.location.href
+        resData = await phoneLoginRequest(data as PhoneLoginParams)
       }
-    })
-    if (currenServer) {
-      sessionStorage.setItem('serverCode', currenServer?.code || '')
-      return currenServer
-    } else {
-      return ''
+      if (resData.code === 200 && resData.isSuccess) {
+        const { accessToken } = resData.content
+
+        localStorage.setItem('Authorization', accessToken)
+        let userInfo = await getUserInfoRequest()
+
+        const modules = await getAuthorityModules()
+
+        const buttonModules = flatten(modules)
+
+        const buttonArray = buttonModules
+          .filter((item: any) => item.category === 3)
+          .map((item: any) => item.authCode)
+
+        localStorage.setItem('functionModules', JSON.stringify(modules))
+        localStorage.setItem('userInfo', JSON.stringify(userInfo))
+        localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
+
+        setNeedVerifycode(false)
+        message.success('登录成功', 1.5)
+        history.push('/index')
+      } else if (resData.code === 40100) {
+        // 临时关闭验证码，开启时，打开下行代码
+        message.error(resData.message)
+      } else {
+        message.error(resData.message)
+      }
+    } catch (msg) {
+    } finally {
+      setRequestLoading(false)
     }
   }
-  const getStopInfo = async () => {
+
+  const getStopInfo = () => {
     setRequestLoading(true)
-    if (serverCode === '') {
-      // 如果前面没有获取到停服信息,在这里再获取一遍
-      try {
-        getServerList()
-          .then(async (res) => {
-            if (res) {
-              let val = await getStopServerNoticeReq(res.code)
-              if (!val) {
-                await loginButtonClick()
-                return
-              }
-              if ([2, 3].includes(val?.stage) && val?.testerAccountPrefix !== '') {
-                // 停服公告,前缀没有也直接放行
-                const data = form.getFieldsValue()
-                if (!data?.userName?.startsWith(val?.testerAccountPrefix)) {
-                  props.stopLogin(val)
-                  return
-                }
-              }
-              await loginButtonClick(val)
-              return
-            }
-          })
-          .catch(() => {
-            loginButtonClick()
-          })
-      } catch {
-        await loginButtonClick()
-      }
-    } else {
-      // 停服公告,前缀没有也直接放行
-      const data = form.getFieldsValue()
-      if (serverCode !== undefined && serverCode !== null) {
-        let val = await getStopServerNoticeReq(serverCode)
-        if (
-          val !== null &&
-          !data?.userName?.startsWith(val?.testerAccountPrefix) &&
-          [2, 3].includes(val?.stage)
-        ) {
-          props.stopLogin(val)
-          return
-        }
-        await loginButtonClick(val)
-      } else {
-        await loginButtonClick()
-      }
-    }
+    form.validateFields().then((values) => {
+      getStopServerList(loginButtonClick, values, stopLogin)
+    })
   }
   // 登录前的验证码校准，当needVerifycode存在先行判断验证码
-  const loginButtonClick = async (data?: Stop) => {
+  const loginButtonClick = async (data: UserLoginParams | PhoneLoginParams) => {
     if (needVerifycode) {
       let fromData = await form.validateFields()
       const key = activeKey === 'account' ? fromData.userName : fromData.phone
       const codeRes = await compareVerifyCode(key, imageCode)
       if (codeRes.content === true) {
-        login(activeKey, data)
+        await login(activeKey, data)
       } else {
         message.error('验证码校验错误')
+        setRequestLoading(false)
         refreshCode()
         setHasErr(true)
       }
     } else {
-      login(activeKey, data)
+      await login(activeKey, data)
     }
   }
 
@@ -221,7 +138,7 @@ const LoginForm: React.FC<Props> = (props) => {
 
   const onKeyDownLogin = (e: any) => {
     if (e.keyCode === 13) {
-      login('account')
+      getStopInfo()
     }
   }
 

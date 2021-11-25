@@ -38,8 +38,8 @@ const LayoutHeader: React.FC = () => {
     setPersonInfoModalVisible(true)
   }
   useInterval(() => {
-    let info = JSON.parse(sessionStorage.getItem('stopServerInfo') || '')
-    if (info) {
+    let info = JSON.parse(sessionStorage.getItem('stopServerInfo') || '{}')
+    if (Object.keys(info).length !== 0) {
       setCount(1)
       setStopServerInfo(info)
     }
