@@ -1,14 +1,15 @@
-import { Timeline } from 'antd'
-import { Ref, useEffect, useState } from 'react'
-import styles from './index.less'
 import pickUp from '@/assets/icon-image/pack-up.png'
-import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
-import { Moment } from 'moment/moment'
-import { getHistoriesById } from '../../history-grid/service'
-import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
-import GridVersionManagement from '@/pages/visualization-results/history-grid/components/grid-version-management'
 import HistoryGirdForm from '@/pages/visualization-results/components/map-form/add-electrical-equipment'
 import RecordHistoryVersion from '@/pages/visualization-results/components/record-history-version'
+import GridVersionManagement from '@/pages/visualization-results/history-grid/components/grid-version-management'
+import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
+import { useGridMap } from '@/pages/visualization-results/history-grid/store/mapReducer'
+import { useUpdateEffect } from 'ahooks'
+import { Timeline } from 'antd'
+import { Moment } from 'moment/moment'
+import { Ref, useState } from 'react'
+import { getHistoriesById } from '../../history-grid/service'
+import styles from './index.less'
 
 export interface HistoryGridVersion {
   id: string
@@ -40,13 +41,18 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     setActive(!active)
   }
   const onItemClick = async (val: HistoryGridVersion) => {
+    console.log(val);
+    
     dispatch({
       type: 'changeCurrentGridData',
       payload: val,
     })
     setActiveId(val.id)
     const res = await getHistoriesById(val.id)
-    const data = res?.content
+    console.log(res);
+    
+    const data = res
+    
     data.id = val.id
     dispatch({
       type: 'changeHistoryDataSource',
@@ -57,7 +63,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     setShowVersion(false)
     dispatch('refetch')
   }
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (mode === 'record') {
       setShow(true)
     } else {
@@ -65,6 +71,8 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     }
     if (allHistoryGridData?.length !== 0) {
       const isTemplate = allHistoryGridData?.find((item) => item.isTemplate)
+      console.log(isTemplate);
+      
       isTemplate && onItemClick(isTemplate)
     }
   }, [mode, state, allHistoryGridData])

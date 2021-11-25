@@ -18,9 +18,9 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
       if (isHistory) {
         // 历史网架
         const res = await getAllGridVersions()
-        dispatch({ type: 'changeAllHistoryGridData', payload: res.content })
+        dispatch({ type: 'changeAllHistoryGridData', payload: res })
 
-        const payload = res.content.find((s: any) => s.isTemplate === true)
+        const payload = res.find((s: any) => s.isTemplate === true)
 
         if (!cancel) {
           dispatch({ type: 'changeCurrentGridData', payload })

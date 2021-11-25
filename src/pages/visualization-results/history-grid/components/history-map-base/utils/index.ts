@@ -2,6 +2,7 @@ import { message } from 'antd'
 import JsonP from 'jsonp'
 import { Feature } from 'ol'
 import Geometry from 'ol/geom/Geometry'
+import { Select } from 'ol/interaction'
 import * as proj from 'ol/proj'
 import { getStyle } from '../styles'
 import { InterActionRef, ViewRef } from '../typings'
@@ -122,4 +123,21 @@ function getIdsByDataSource(data: DataSource) {
   const lineArr = Array.isArray(data?.lines) ? data?.lines : []
   const equipmentArr = Array.isArray(data?.equipments) ? data?.equipments : []
   return [...lineArr, ...equipmentArr].map((o) => o.id)
+}
+
+
+export function getSelectByType (interActionRef: InterActionRef, showText: boolean, isDraw: boolean): Select | undefined {
+  if(isDraw === false && showText === false){
+    return interActionRef.select.viewNoTextSelect
+  }
+  if(isDraw === false && showText === true){
+    return interActionRef.select.viewTextSelect
+  }
+  if(isDraw === true && showText === false){
+    return interActionRef.select.drawNoTextSelect
+  }
+  if(isDraw === true && showText === true){
+    return interActionRef.select.drawTextSelect
+  }
+  return
 }
