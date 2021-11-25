@@ -177,9 +177,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLineLength(
           // @ts-ignore
-          [Number(selectedData[0]?.startLat), Number(selectedData[0]?.startLng)],
+          [Number(selectedData[0]?.startLng), Number(selectedData[0]?.startLat)],
           // @ts-ignore
-          [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
+          [Number(selectedData[0]?.endLng), Number(selectedData[0]?.endLat)]
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
@@ -199,9 +199,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLineLength(
           // @ts-ignore
-          [Number(selectedData[0]?.startLat!), Number(selectedData[0]?.startLng)],
+          [Number(selectedData[0]?.startLng!), Number(selectedData[0]?.startLat)],
           // @ts-ignore
-          [Number(selectedData[0]?.endLat), Number(selectedData[0]?.endLng)]
+          [Number(selectedData[0]?.endLng), Number(selectedData[0]?.endLat)]
         )
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
