@@ -60,6 +60,8 @@ export type SelectedData = (ElectricPointData | ElectricLineData)[]
 
 export type SelectType = 'pointSelect' | 'toggleSelect'
 
+type selectKey = "viewNoTextSelect" | "viewTextSelect" | "drawNoTextSelect" | "drawTextSelect"
+
 export interface InterActionRef {
   draw?: Draw
   snap?: Snap
@@ -68,8 +70,8 @@ export interface InterActionRef {
   designSource: VectorSource<Geometry>
   modify?: Modify
   isDraw?: boolean
-  currentSelect?: Select
-  select?: Record<Exclude<SelectType, ''>, Select>
+
+  select: Record<selectKey, Select> & {currentSelect: Select | null}
   dragBox?: DragBox
   isDragBox?: boolean
 }

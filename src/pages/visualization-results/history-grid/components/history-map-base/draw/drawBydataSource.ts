@@ -2,7 +2,6 @@ import { Feature } from 'ol'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import * as proj from 'ol/proj'
-import { getStyle } from '../styles'
 import { DataSource, InterActionRef, SourceRef, SourceType } from './../typings'
 
 /**
@@ -29,7 +28,7 @@ export function drawByDataSource(
     // 清理缓存
     if (source === 'history') {
       sourceRef.historyLineSource.clear()
-      sourceRef.historyLineSource.clear()
+      sourceRef.historyPointSource.clear()
     }
 
     // 渲染设备
@@ -37,7 +36,7 @@ export function drawByDataSource(
       const points = data.equipments.map((p) => {
         const feature = new Feature<Point>()
         feature.setGeometry(new Point(proj.transform([p.lng!, p.lat!], 'EPSG:4326', 'EPSG:3857')))
-        feature.setStyle(getStyle('Point')(sourceType, p.typeStr || '无类型', p.name, showText))
+        // feature.setStyle(getStyle('Point')(sourceType, p.typeStr || '无类型', p.name, showText))
         feature.setProperties(p)
         feature.set('sourceType', sourceType)
         return feature
@@ -56,9 +55,9 @@ export function drawByDataSource(
           ])
         )
 
-        feature.setStyle(
-          getStyle('LineString')(sourceType, p.typeStr || '无类型', p.name, showText)
-        )
+        // feature.setStyle(
+        //   getStyle('LineString')(sourceType, p.typeStr || '无类型', p.name, showText)
+        // )
         // feature.setStyle(lineStyle[p.type])
         // Object.keys(p).forEach((key) => {
         //   feature.set(key, p[key])

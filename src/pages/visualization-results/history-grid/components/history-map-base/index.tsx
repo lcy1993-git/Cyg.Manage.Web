@@ -12,7 +12,7 @@ import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import { mapClick, moveend, pointermove } from './event'
 import init from './init'
 import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
-import { checkUserLocation, clear, clearScreen, moveToViewByLocation } from './utils'
+import { checkUserLocation, clearScreen, getSelectByType, moveToViewByLocation } from './utils'
 
 const HistoryMapBase = () => {
   // const [state, setState, mode] = useGridMap()
@@ -76,7 +76,7 @@ const HistoryMapBase = () => {
 
   // 挂载地图
   useMount(() => {
-    init({ sourceRef, layerRef, viewRef, mapRef, ref: ref.current! })
+    init({ interActionRef, sourceRef, layerRef, viewRef, mapRef, ref: ref.current!, setState })
     // initSource()
     // initLayer()
     // initView()
@@ -90,50 +90,50 @@ const HistoryMapBase = () => {
     removeaddInteractions()
     if (geometryType) addInteractions(geometryType)
   }, [geometryType])
+
   // 处理当前地图类型变化
-  useUpdateEffect(
-    () => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer),
-    [mapLayerType]
-  )
+  useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer), [mapLayerType])
+
+
+
+
   // 根据历史数据绘制点位线路
   useUpdateEffect(() => {
-    if (dataSource) {
-      drawByDataSource(dataSource!, {
-        source: 'history',
-        showText,
-        sourceType: 'history',
-        sourceRef,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataSource, showText])
+    drawHistoryLayer()
+  }, [dataSource])
   // 根据预设计数据绘制点位线路
   useUpdateEffect(() => {
-    // if (mode === 'preDesign')
-    //   drawByDataSource(importDesignData!, {
-    //     source: 'design',
-    //     showText,
-    //     sourceType: 'design',
-    //     sourceRef,
-    //   })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [importDesignData, showText])
+    false && drawDesignLayer()
+  }, [importDesignData])
+
+  // 处理select样式变化
+  useUpdateEffect(() => {
+    mapRef.map.removeInteraction(interActionRef.select.currentSelect!)
+    interActionRef.select.currentSelect = getSelectByType(interActionRef, showText, isDraw)!
+    mapRef.map.addInteraction(interActionRef.select.currentSelect)
+  }, [isDraw, showText])
+
+  useUpdateEffect(() => {
+
+  }, [showText])
 
   // 当绘制状态改变时
   useUpdateEffect(() => {
-    clear(interActionRef)
+    // clear(interActionRef)
     setState({
       type: 'changeSelectedData',
       payload: [],
     })
-    if (isDraw) {
-      mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
-      mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
-    } else {
-      mapRef.map.removeInteraction(interActionRef.select!.toggleSelect)
-      mapRef.map.addInteraction(interActionRef.select!.pointSelect)
-    }
+    // if (isDraw) {
+    //   mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
+    //   mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
+    // } else {
+    //   mapRef.map.removeInteraction(interActionRef.select!.toggleSelect)
+    //   mapRef.map.addInteraction(interActionRef.select!.pointSelect)
+    // }
   }, [isDraw])
+
+
 
   // 定位当当前项目位置
   useUpdateEffect(() => {
@@ -163,7 +163,7 @@ const HistoryMapBase = () => {
   // 绑定事件
   function bindEvent() {
     mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
-      mapClick(e, { interActionRef, mapRef, setState })
+      mapClick(e, { interActionRef, mapRef, setState, sourceRef })
     )
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
@@ -232,6 +232,25 @@ const HistoryMapBase = () => {
   //     selectedFeatures.clear()
   //   })
   // }
+
+  function drawHistoryLayer () {
+    drawByDataSource(dataSource!, {
+      source: 'history',
+      showText,
+      sourceType: 'history',
+      sourceRef,
+    })
+  }
+
+  function drawDesignLayer () {
+    if (mode === 'preDesign')
+      drawByDataSource(importDesignData!, {
+        source: 'design',
+        showText,
+        sourceType: 'design',
+        sourceRef,
+      })
+  }
 
   // 删除draw交互行为
   function removeaddInteractions() {

@@ -1,11 +1,12 @@
 import * as extent from 'ol/extent';
-import LineString from 'ol/geom/LineString';
+import { LineString } from 'ol/geom/LineString';
 import Point from 'ol/geom/Point';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import * as proj from 'ol/proj';
 import { Vector as VectorSource, WMTS as sourceWmts, XYZ } from 'ol/source';
 import tilegridWmts from 'ol/tilegrid/WMTS';
+import { getStyle } from '../styles';
 import { LayerRef, SourceRef } from './../typings/index';
 
 // 卫星图层
@@ -70,6 +71,13 @@ annLayer.set('name', 'annLayer')
 function getPointVectorLayer (source: VectorSource<Point>): VectorLayer<VectorSource<Point>> {
   return new VectorLayer({
     source: source,
+    style: (f) => {
+      if (f.getGeometry()?.getType() === "Point") {
+        return getStyle("Point")(f.get("sourceType"), f.get("typeStr") || "无类型", f.get("name"), true)
+      }else {
+        return getStyle("LineString")(f.get("sourceType"), f.get("typeStr") || "无类型", f.get("name"), true)
+      }
+    }
   })
 }
 /**
@@ -98,12 +106,18 @@ export function initLayer (layerRef: LayerRef, sourceRef: SourceRef) {
       layerRef.annLayer = annLayer
       // 历史网架
       layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
+      layerRef.historyPointLayer.set("name", "historyPointLayer")
+      
       layerRef.historyLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
+      layerRef.historyLineLayer.set("name", "historyLineLayer")
       // 预设计
-
       layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
+      layerRef.designPointLayer.set("name", "designPointLayer")
       layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
+      layerRef.designLineLayer.set("name", "designLineLayer")
       // 添加高亮图层
-      layerRef.highLightPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
-      layerRef.highLightLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
+      layerRef.highLightPointLayer = getPointVectorLayer(sourceRef.highLightPointSource)
+      layerRef.highLightPointLayer.set("name", "highLightPointLayer")
+      layerRef.highLightLineLayer = getLineVectorLayer(sourceRef.highLightLineSource)
+      layerRef.highLightLineLayer.set("name", "highLightLineLayer")
 }
