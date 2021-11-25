@@ -9,7 +9,7 @@ const { useForm } = Form
 
 /** 导入 */
 const ImportGrid = () => {
-  const { UIStatus, mode, currentGridData, dispatch } = useHistoryGridContext()
+  const { UIStatus, mode, preDesignItemData, dispatch } = useHistoryGridContext()
   const { importModalVisible } = UIStatus
 
   const [form] = useForm()
@@ -33,7 +33,7 @@ const ImportGrid = () => {
     try {
       const res =
         mode === 'preDesigning'
-          ? await importEquipments(data, currentGridData!.id as string)
+          ? await importEquipments(data, preDesignItemData!.id as string)
           : await importHistoryEquipments(data)
 
       if (res.isSuccess) {
@@ -47,7 +47,7 @@ const ImportGrid = () => {
     } catch (e: any) {
       message.error(e.message || '上传出错，请重试')
     }
-  }, [closeModal, currentGridData, form, mode, dispatch])
+  }, [closeModal, preDesignItemData, form, mode, dispatch])
 
   return (
     <Modal
