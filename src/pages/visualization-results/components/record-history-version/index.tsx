@@ -1,11 +1,10 @@
-import React, { ChangeEventHandler, useEffect, useState } from 'react'
-import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
-import { Input, message, Modal } from 'antd'
-import styles from './index.less'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { recordVersionData } from '@/pages/visualization-results/history-grid/service'
+import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Input, message, Modal } from 'antd'
 import _ from 'lodash'
-import { useSavaData } from '@/pages/visualization-results/history-grid/hooks/useSaveData'
+import React, { ChangeEventHandler, useEffect, useState } from 'react'
+import styles from './index.less'
 
 export interface ElectricalEquipmentForm {
   name: string
@@ -24,9 +23,8 @@ interface Props {
 
 const RecordHistoryVersion: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
-  const { UIStatus, dispatch, historyDataSource, mode, preDesignItemData } = useHistoryGridContext()
+  const { UIStatus, dispatch } = useHistoryGridContext()
   const { recordVersion } = UIStatus
-  useSavaData({ mode, historyDataSource, recordVersion, preDesignItemData })
   const [remark, setRemark] = useState<string>('')
   const handleOk = async () => {
     const res = await recordVersionData({

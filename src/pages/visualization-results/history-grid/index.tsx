@@ -8,6 +8,7 @@ import DesignTitle from './DesignTitle'
 import Footer from './Footer'
 import { usePreDesign } from './hooks/usePreDesign'
 import { useRefetch } from './hooks/useRefetch'
+import { useSavaData } from './hooks/useSaveData'
 import ImportGrid from './ImportGrid'
 import MapOperator from './MapOperator'
 import { HistoryGridContext, historyGridReducer, initializeHistoryState } from './store'
@@ -16,10 +17,11 @@ const HistoryGrid = () => {
   const location = useLocation()
   const [state, dispatch] = useReducer(historyGridReducer, { location }, initializeHistoryState)
 
-  const { refetch, mode, preDesignItemData } = state
+  const { refetch, mode, preDesignItemData, UIStatus, historyDataSource } = state
 
   usePreDesign(location, dispatch)
   useRefetch({ refetch, mode, preDesignItemData }, dispatch)
+  useSavaData({ preDesignItemData, mode, recordVersion: UIStatus.recordVersion, historyDataSource })
 
   return (
     <div className="relative h-full">
