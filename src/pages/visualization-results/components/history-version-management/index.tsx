@@ -36,7 +36,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
   const [showVersion, setShowVersion] = useState<boolean>(false)
   const [activeId, setActiveId] = useState<string>('')
   const [show, setShow] = useState<boolean>(true)
-  const { mode, dispatch, allHistoryGridData, historyDataSource } = useHistoryGridContext()
+  const { mode, dispatch, allHistoryGridData } = useHistoryGridContext()
   const activeList = () => {
     setActive(!active)
   }
