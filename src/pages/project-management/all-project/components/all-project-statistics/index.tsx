@@ -15,8 +15,6 @@ const SingleStatistics: React.FC<SingleStatisticsProps> = (props) => {
   const imgSrc = require('../../../../../assets/image/project-management/' + icon + '.png')
   const borderColorClass = clickTab ? styles.borderClass : ''
 
-  console.log(icon, '5566')
-
   return (
     <div
       className={`${styles.allStatistics} ${borderColorClass}`}
