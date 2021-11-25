@@ -62,9 +62,7 @@ export function toggleSelectCallback(
 
   // 判断是否能删除
   function canRemove(o: Feature<Geometry>) {
-    return interActionRef
-      .hightLightSource!.getFeatures()
-      .some((f) => f.get('id') === o.get('id'))
+    return interActionRef.hightLightSource!.getFeatures().some((f) => f.get('id') === o.get('id'))
   }
 }
 

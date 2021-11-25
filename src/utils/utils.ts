@@ -1,4 +1,7 @@
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
+import { getProductServerList, getStopServerNotice } from '@/services/index'
+
+const { NODE_ENV } = process.env
 
 /**
  *  @param treeData 需要平铺的树状数据
@@ -98,8 +101,10 @@ export interface TreeData {
   parentId: string | null
   children?: TreeData[]
   key: string
+
   [key: string]: unknown
 }
+
 /**
  * 树形结构化
  * @param data 平铺的扁平数组
@@ -110,6 +115,7 @@ export const formatDataTree = (data: TreeData[]) => {
   const parents = data.filter((p) => p.parentId === null)
   const children = data.filter((p) => p.parentId !== null)
   dataToTree(parents, children)
+
   function dataToTree(parents: TreeData[], children: TreeData[]) {
     parents.forEach((p) => {
       children.forEach((c) => {
@@ -121,6 +127,7 @@ export const formatDataTree = (data: TreeData[]) => {
       })
     })
   }
+
   return parents
 }
 
@@ -157,8 +164,6 @@ export const delay = (ms: number) => {
 export const formDataMateral = (content: any, getProperties: any) => {
   const filterData = content.filter((item: any) => item.parentID !== -1)
   const data = filterData.map((item: any) => {
-    console.log()
-
     return {
       ...item,
       // state: getProperties?.state,
@@ -251,10 +256,12 @@ export const BlobOrArrayBuffertoUnit8 = (data: Bolb | ArrayBuffer) => {
       break
   }
 }
+
 interface Data {
   parentID: number
   id: number
   children?: Data[]
+
   [key: string]: any
 }
 
@@ -290,4 +297,88 @@ export const translateMatDataToTree = (soureceData: Data[]) => {
   translator(parents, childrens)
 
   return parents
+}
+/*
+ * 获取停服公告信息
+ * */
+type Login = {
+  userName: string
+  pwd: string
+}
+export const getStopServerList = (
+  loginFuc: CallableFunction,
+  values: Login,
+  stopLoginFuc?: CallableFunction
+) => {
+  getProductServerList({
+    productCode: '1301726010322214912',
+    category: 0,
+    status: 0,
+    province: '',
+  })
+    .then((res) => {
+      if (res?.code !== 200) {
+        loginFuc(values)
+        return
+      }
+      const { data } = res
+      const currenServer = data?.find((item: { propertys: { webSite: string } }) => {
+        if (NODE_ENV === 'development') {
+          return item.propertys?.webSite === 'http://10.6.1.40:21528/login'
+        } else {
+          return item.propertys?.webSite === window.location.href
+        }
+      })
+      if (currenServer && currenServer?.code) {
+        // 是否查询到 服务器信息
+        sessionStorage.setItem('serverCode', currenServer?.code || '')
+        getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
+      } else {
+        loginFuc(values)
+      }
+    })
+    .catch(() => {
+      loginFuc(values)
+    })
+}
+const getNoticeReq = (
+  code: string,
+  loginFuc: CallableFunction,
+  values: Login,
+  stopLoginFuc?: CallableFunction
+) => {
+  getStopServerNotice({
+    serverCode: code,
+    kickOutSeconds: 605,
+  })
+    .then((res) => {
+      if (res?.code !== 200) {
+        loginFuc(values)
+        return
+      }
+      const { data } = res
+      const info = { ...values }
+      if (data !== null && typeof data !== 'string') {
+        if ([2, 3].includes(data?.stage) && info?.userName?.startsWith(data?.testerAccountPrefix)) {
+          // 测试账号
+          info.userName = info.userName.replace(data?.testerAccountPrefix, '') // 移除前缀
+          sessionStorage.setItem('isTestUser', 'true')
+          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
+          loginFuc(info)
+        } else if (data?.stage === 1) {
+          // 公告期
+          sessionStorage.setItem('isTestUser', 'false')
+          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
+          loginFuc(values)
+        } else {
+          // 预停服期和发版期,非测试账号
+          stopLoginFuc?.(data)
+          localStorage.setItem('Authorization', '')
+          sessionStorage.setItem('isTestUser', 'false')
+        }
+      }
+    })
+    .catch(() => {
+      loginFuc(values)
+    })
 }
