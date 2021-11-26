@@ -37,16 +37,16 @@ const OperationPane: FC = ({ children }) => {
 
   const drawingBtnList = useMemo(() => {
     const list: OperateBtnProps[] = [
-      {
-        text: '保存',
-        icon: 'icon-baocun',
-        onClick: () => {
-          dispatch({
-            type: 'changeUIStatus',
-            payload: { ...UIStatus, recordVersion: 'save' },
-          })
-        },
-      },
+      // {
+      //   text: '保存',
+      //   icon: 'icon-baocun',
+      //   onClick: () => {
+      //     dispatch({
+      //       type: 'changeUIStatus',
+      //       payload: { ...UIStatus, recordVersion: 'save' },
+      //     })
+      //   },
+      // },
       {
         text: '记录版本',
         icon: 'icon-jilubanben',
