@@ -324,7 +324,7 @@ export const getStopServerList = (
       const { data } = res
       const currenServer = data?.find((item: { propertys: { webSite: string } }) => {
         if (NODE_ENV === 'development') {
-          return item.propertys?.webSite === 'http://10.6.1.40:21528/login'
+          return item.propertys?.webSite === 'http://171.223.214.154:21573/login'
         } else {
           return item.propertys?.webSite === window.location.href
         }
@@ -358,7 +358,6 @@ const getNoticeReq = (
       }
       const { data } = res
       const info = { ...values }
-
       if (data !== null && typeof data !== 'string') {
         if ([2, 3].includes(data?.stage) && info?.userName?.startsWith(data?.testerAccountPrefix)) {
           // 测试账号
@@ -366,6 +365,11 @@ const getNoticeReq = (
           sessionStorage.setItem('isTestUser', 'true')
           sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
           loginFuc(info)
+        } else if (data?.stage === 1) {
+          // 公告期
+          sessionStorage.setItem('isTestUser', 'false')
+          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
+          loginFuc(values)
         } else {
           // 预停服期和发版期,非测试账号
           stopLoginFuc?.(data)
