@@ -22,7 +22,7 @@ const ConsoleWrapper = () => {
         lng: obj.lng,
       })
 
-      const filteredData = res.content.map((p: any) => {
+      const filteredData = res.content?.map((p: any) => {
         return {
           ...filterEntries(p),
           letter: (p.pinyin[0] as string).toLowerCase(),

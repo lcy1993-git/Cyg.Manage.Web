@@ -129,17 +129,9 @@ export const MapSwitcher = () => {
 export const GEOGRAPHIC_LOCATION = 'GeographicLocation'
 
 export const GeographicLocation = () => {
-  const { UIStatus, dispatch, mode } = useHistoryGridContext()
+  const { mode: preMode } = useHistoryGridContext()
+  let mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
 
-  const { currentLocation } = UIStatus
-
-  const action = {
-    type: 'changeUIStatus',
-    payload: {
-      ...UIStatus,
-      currentLocation: !currentLocation,
-    },
-  }
   return (
     <div className="bg-black bg-opacity-80 mt-1 px-2 py-1 text-white" id={GEOGRAPHIC_LOCATION}>
       经度：

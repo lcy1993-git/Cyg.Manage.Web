@@ -1,16 +1,12 @@
-import { Feature } from 'ol'
 import * as extent from 'ol/extent'
-import Geometry from 'ol/geom/Geometry'
-import { LineString } from 'ol/geom/LineString'
+import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
 import * as proj from 'ol/proj'
-import RenderFeature from 'ol/render/Feature'
 import { Vector as VectorSource, WMTS as sourceWmts, XYZ } from 'ol/source'
-import { Style } from 'ol/style'
 import tilegridWmts from 'ol/tilegrid/WMTS'
-import { getStyle } from '../styles'
+import { getLayerStyleByShowText } from '../styles'
 import { LayerRef, SourceRef } from './../typings/index'
 
 // 卫星图层
@@ -67,24 +63,6 @@ export const annLayer = new TileLayer({
 })
 annLayer.set('name', 'annLayer')
 
-const hasTextStyle = (showText: boolean) => (f: RenderFeature | Feature<Geometry>): Style[] => {
-  if (f.getGeometry()?.getType() === 'Point') {
-    return getStyle('Point')(
-      f.get('sourceType'),
-      f.get('typeStr') || '无类型',
-      f.get('name'),
-      showText
-    )
-  } else {
-    return getStyle('LineString')(
-      f.get('sourceType'),
-      f.get('typeStr') || '无类型',
-      f.get('name'),
-      showText
-    )
-  }
-}
-
 /**
  * 点位数据源图层
  * @param source
@@ -93,7 +71,7 @@ const hasTextStyle = (showText: boolean) => (f: RenderFeature | Feature<Geometry
 function getPointVectorLayer(source: VectorSource<Point>): VectorLayer<VectorSource<Point>> {
   return new VectorLayer({
     source: source,
-    style: hasTextStyle(true),
+    style: getLayerStyleByShowText(true),
   })
 }
 /**
@@ -101,11 +79,12 @@ function getPointVectorLayer(source: VectorSource<Point>): VectorLayer<VectorSou
  * @param source
  * @returns
  */
-function getLineVectorLayer(
+export function getLineVectorLayer(
   source: VectorSource<LineString>
 ): VectorLayer<VectorSource<LineString>> {
   return new VectorLayer({
     source: source,
+    style: getLayerStyleByShowText(true),
   })
 }
 
@@ -133,9 +112,4 @@ export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
   layerRef.designPointLayer.set('name', 'designPointLayer')
   layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
   layerRef.designLineLayer.set('name', 'designLineLayer')
-  // 添加高亮图层
-  layerRef.highLightPointLayer = getPointVectorLayer(sourceRef.highLightPointSource)
-  layerRef.highLightPointLayer.set('name', 'highLightPointLayer')
-  layerRef.highLightLineLayer = getLineVectorLayer(sourceRef.highLightLineSource)
-  layerRef.highLightLineLayer.set('name', 'highLightLineLayer')
 }
