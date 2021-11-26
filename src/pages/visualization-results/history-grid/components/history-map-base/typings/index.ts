@@ -56,6 +56,13 @@ export type DataSource = {
   lines: ElectricLineData[]
 }
 
+export type EditDataSource = {
+  equipments: ElectricPointData[]
+  lines: ElectricLineData[]
+  toBeDeletedEquipmentIds: []
+  toBeDeletedLineIds: []
+}
+
 export type SelectedData = (ElectricPointData | ElectricLineData)[]
 
 export type SelectType = 'pointSelect' | 'toggleSelect'

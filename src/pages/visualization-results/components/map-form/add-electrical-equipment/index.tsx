@@ -24,7 +24,7 @@ export interface ElectricalEquipmentForm {
   type: string
   remark: string
   length?: number
-  level?: number | string
+  voltageLevel?: number | string
 }
 
 interface Props {
@@ -188,7 +188,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         name: '',
         type: '',
         remark: '',
-        level: '',
+        voltageLevel: '',
       })
       setPosition([10, 155])
     } else if (!drawing && selectedData.length === 1) {
@@ -294,7 +294,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               layout={showDetail ? 'horizontal' : 'vertical'}
             >
               <Form.Item name="name" label="名称">
-                <Input placeholder="名称" type="text" />
+                <Input placeholder="名称" type="text" maxLength={20} />
               </Form.Item>
               <Form.Item name="type" label={'类型'}>
                 <Select>
@@ -337,7 +337,8 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               )}
               {selectedData?.length === 1 && (
                 <Form.Item name="remark" label={'备注'}>
-                  <Input.TextArea maxLength={200} rows={2} />
+                  <Input.TextArea maxLength={200} rows={2} showCount />
+                  <br />
                 </Form.Item>
               )}
               <div style={{ display: 'flex', justifyContent: 'end' }}>

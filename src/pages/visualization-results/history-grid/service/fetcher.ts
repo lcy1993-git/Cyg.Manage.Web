@@ -59,7 +59,6 @@ export const getAllGridVersions = (includeDeleted = false) => {
       params: { includeDeleted },
     })
   })
-
 }
 // 通过id获取历史网架版本
 export const getHistoriesById = (versionId: string) => {
@@ -80,8 +79,8 @@ export const getHistoriesEnums = () => {
 // 删除历史网架版本
 export const DeleteGridVersions = (versionId: string, password: string) => {
   // return cyRequest<CommentType[]>(() =>
-  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Version/${versionId}`, {
-    method: 'DELETE',
+  return request(`${baseUrl.netFrameworkHistory}/NetFrameworkHistory/Version/Delete/${versionId}`, {
+    method: 'POST',
     headers: {
       UserPwd: password,
     },

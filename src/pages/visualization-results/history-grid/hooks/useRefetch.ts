@@ -42,7 +42,7 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
         const payload = res.content[0]
 
         if (!cancel) {
-          dispatch({ type: 'changeHistoryDataSource', payload })
+          dispatch({ type: 'changePreDesignDataSource', payload })
         }
       }
     }

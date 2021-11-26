@@ -34,11 +34,8 @@ const MapOperator = () => {
             title="定位到当前位置"
             flag="currentLocation"
             onClick={onClick}
-            icon={
-              currentLocation
-                ? 'icon-dingweidaodangqianweizhi_h'
-                : 'icon-dingweidaodangqianweizhi_n'
-            }
+            icon="icon-a-dingweidaodangqianweizhi_n-fuben"
+            className="hover:text-theme-green"
           />
         </div>
 
@@ -47,9 +44,8 @@ const MapOperator = () => {
             title="定位到现有网架"
             flag="currentProject"
             onClick={onClick}
-            icon={
-              currentProject ? 'icon-dingweidaoxianyouwangjia_h' : 'icon-dingweidaoxianyouwangjia_n'
-            }
+            className="hover:text-theme-green"
+            icon="icon-a-dingweidaoxianyouwangjia_n-fuben"
           />
         </div>
       </div>
@@ -66,15 +62,20 @@ interface IconSwitcherProps {
   icon: string
   flag: string
   onClick: (key: string) => void
+  className?: string
 }
 
-export const IconSwitcher = ({ title, icon, flag, onClick }: IconSwitcherProps) => {
+export const IconSwitcher = ({ title, className, icon, flag, onClick }: IconSwitcherProps) => {
   const iconClass = 'w-7 h-7 bg-white cursor-pointer'
 
   return (
     <Tooltip placement="left" title={title}>
       <div className="inline-block">
-        <Iconfont className={iconClass} symbol={icon} onClick={() => onClick(flag)} />
+        <Iconfont
+          className={iconClass + ` ${className || ''}`}
+          symbol={icon}
+          onClick={() => onClick(flag)}
+        />
       </div>
     </Tooltip>
   )
