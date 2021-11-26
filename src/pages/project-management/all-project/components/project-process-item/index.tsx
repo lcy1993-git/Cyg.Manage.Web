@@ -150,7 +150,7 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
           </span>
         )}
       </div>
-      <div className={styles.remarkInfo}>{remarkInfo && <span>备注：{remarkInfo}</span>}</div>
+      <div className={styles.remarkInfo}>{remarkInfo && <span>{remarkInfo}</span>}</div>
       {Array.isArray(allotUsers) && (
         <div className={styles.usersInfo}>{usersElement(allotUsers)}</div>
       )}
