@@ -24,22 +24,28 @@ const ReportApproveModal: React.FC<ReportApproveParams> = (props) => {
   })
   //   const [defaultUser, setDefaultUser] = useState<string>('')
   useUpdateEffect(() => {
-    form.setFieldsValue({
-      approveUserId: approveUser[0].value,
-    })
+    if (approveUser && approveUser.length > 0) {
+      form.setFieldsValue({
+        approveUserId: approveUser[0].value,
+      })
+    }
   }, [approveUser])
 
   const approveEvent = async () => {
-    form.validateFields().then(async (values) => {
-      const submitInfo = {
-        projectIds: projectIds,
-        ...values,
-      }
-      await reportProjectApprove(submitInfo)
-    })
-    message.success('报审成功')
-    setState(false)
-    finishEvent?.()
+    if (approveUser && approveUser.length > 0) {
+      form.validateFields().then(async (values) => {
+        const submitInfo = {
+          projectIds: projectIds,
+          ...values,
+        }
+        await reportProjectApprove(submitInfo)
+      })
+      message.success('报审成功')
+      setState(false)
+      finishEvent?.()
+      return
+    }
+    message.warning('未查到立项审核人，请到立项审核管理模块中添加')
   }
 
   return (
@@ -55,16 +61,16 @@ const ReportApproveModal: React.FC<ReportApproveParams> = (props) => {
       okText="确认"
     >
       <Form form={form}>
-        <CyFormItem required label="审核人" name="approveUserId" labelWidth={98}>
+        <CyFormItem label="审核人" name="approveUserId" labelWidth={98}>
           <UrlSelect
             disabled
             defaultData={approveUser}
             titlekey="label"
             valuekey="value"
-            placeholder="请选择审核人"
+            placeholder="未查到立项审核人，请到立项审核管理模块中添加"
           />
         </CyFormItem>
-        <CyFormItem required label="备注" labelWidth={98} name="remark">
+        <CyFormItem label="备注" labelWidth={98} name="remark">
           <Input.TextArea maxLength={100} showCount />
         </CyFormItem>
       </Form>
