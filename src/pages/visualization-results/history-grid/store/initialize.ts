@@ -22,6 +22,12 @@ export const initializeHistoryState = ({ location }: InitParams) => {
       equipments: [],
       lines: [],
     },
+    editDataSource: {
+      equipments: [],
+      lines: [],
+      toBeDeletedEquipmentIds: [],
+      toBeDeletedLineIds: [],
+    },
     selectedData: [],
     UIStatus: {
       showTitle: true,

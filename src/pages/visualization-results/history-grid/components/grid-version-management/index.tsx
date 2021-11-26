@@ -96,7 +96,7 @@ const GridVersionManagement: FC<Props> = (props) => {
   ]
   const getHistoryList = async (del: boolean) => {
     const res = await getAllGridVersions(del)
-    res?.content && setList(res.content)
+    res && setList(res)
   }
   const pageChange = (val: any) => {
     setPageSize(val.pageSize)
@@ -147,6 +147,7 @@ const GridVersionManagement: FC<Props> = (props) => {
             <Input
               placeholder={'请输入密码'}
               type={'password'}
+              value={password}
               onChange={passWordChange}
               style={{ marginTop: 10, width: '250px' }}
             />

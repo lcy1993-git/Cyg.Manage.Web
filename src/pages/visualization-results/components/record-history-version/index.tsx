@@ -1,10 +1,14 @@
-import { recordVersionData } from '@/pages/visualization-results/history-grid/service'
+import {
+  getHistoriesById,
+  recordVersionData,
+} from '@/pages/visualization-results/history-grid/service'
 import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Input, message, Modal } from 'antd'
 import _ from 'lodash'
 import React, { ChangeEventHandler, useEffect, useState } from 'react'
 import styles from './index.less'
+import { useMount } from 'ahooks'
 
 export interface ElectricalEquipmentForm {
   name: string
@@ -23,9 +27,10 @@ interface Props {
 
 const RecordHistoryVersion: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
-  const { UIStatus, dispatch } = useHistoryGridContext()
+  const { UIStatus, dispatch, historyDataSource, currentGridData } = useHistoryGridContext()
   const { recordVersion } = UIStatus
   const [remark, setRemark] = useState<string>('')
+  const [change, setChange] = useState<boolean>(false)
   const handleOk = async () => {
     const res = await recordVersionData({
       force: false,
@@ -38,6 +43,10 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     message.success('保存成功')
     setRemark('')
     handleCancel()
+    dispatch({
+      type: 'changeMode',
+      payload: 'record',
+    })
   }
   const handleCancel = () => {
     setRemark('')
@@ -62,7 +71,15 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     if (recordVersion === 'save') {
       saveVersion().then()
     }
+    if (recordVersion === 'record') {
+      compareNoChange()
+    }
   }, [recordVersion, saveVersion])
+  const compareNoChange = async () => {
+    const data = await getHistoriesById(currentGridData?.id as string)
+    data['id'] = currentGridData?.id
+    setChange(JSON.stringify(data) !== JSON.stringify(historyDataSource))
+  }
   return (
     <div>
       <Modal
@@ -81,7 +98,11 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
               top: '3px',
             }}
           />{' '}
-          &emsp;确认记录当前版本?
+          &emsp;
+          <span style={{ display: !change ? 'inline-block' : 'none' }}>
+            检测到当前版本无数据变化，
+          </span>
+          确认记录当前版本?
         </div>
         <div className={styles.remark}>
           <div style={{ width: '50px' }}>备注</div>

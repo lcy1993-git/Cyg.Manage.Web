@@ -1,7 +1,7 @@
 import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
 import { createContext, useContext } from 'react'
 import { CityWithProvince } from '../components/city-picker/type'
-import { DataSource, SelectedData } from './../components/history-map-base/typings'
+import { DataSource, EditDataSource, SelectedData } from './../components/history-map-base/typings'
 import { InitParams } from './initialize'
 import { GridMapGlobalState } from './mapReducer'
 export * from './initialize'
@@ -32,6 +32,8 @@ export type ReducerState = {
 
   // 历史网架点线的数据
   historyDataSource: DataSource
+  /* 当前在编辑的网架数据 */
+  editDataSource: EditDataSource
   gridMapState: GridMapGlobalState
 
   /** UI 状态 */
@@ -75,6 +77,7 @@ type ComplexActionReflectPayload = {
   changeCurrentGridData: ReducerState['currentGridData']
   changeSelectedData: ReducerState['selectedData']
   changeHistoryDataSource: ReducerState['historyDataSource']
+  changeEditDataSource: ReducerState['editDataSource']
 }
 
 type Actions = SimpleActions | ComplexActions

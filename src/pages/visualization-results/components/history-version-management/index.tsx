@@ -41,19 +41,13 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     setActive(!active)
   }
   const onItemClick = async (val: HistoryGridVersion) => {
-    console.log(val);
-    
     dispatch({
       type: 'changeCurrentGridData',
       payload: val,
     })
     setActiveId(val.id)
-    const res = await getHistoriesById(val.id)
-    console.log(res);
-    
-    const data = res
-    
-    data.id = val.id
+    const data = await getHistoriesById(val.id)
+    data['id'] = val.id
     dispatch({
       type: 'changeHistoryDataSource',
       payload: data,
@@ -71,8 +65,6 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     }
     if (allHistoryGridData?.length !== 0) {
       const isTemplate = allHistoryGridData?.find((item) => item.isTemplate)
-      console.log(isTemplate);
-      
       isTemplate && onItemClick(isTemplate)
     }
   }, [mode, state, allHistoryGridData])
