@@ -30,7 +30,7 @@ export const initializeHistoryState = ({ location }: InitParams) => {
       currentProject: false,
       importModalVisible: false,
       drawing: false,
-      mapType: 'street',
+      mapType: 'satellite',
       recordVersion: 'hide',
       cleanSelected: false,
       currentMousePosition: [0, 0],

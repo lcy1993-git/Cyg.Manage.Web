@@ -67,17 +67,17 @@ const OperationPane: FC = ({ children }) => {
           dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, importModalVisible: true } })
         },
       },
-      {
-        text: '电气设备',
-        icon: 'icon-dianqishebei',
-        onClick: () => {},
-      },
-      {
-        text: '线路',
-        type: 'route',
-        icon: 'icon-xianlu',
-        onClick: () => {},
-      },
+      // {
+      //   text: '电气设备',
+      //   icon: 'icon-dianqishebei',
+      //   onClick: () => {},
+      // },
+      // {
+      //   text: '线路',
+      //   type: 'route',
+      //   icon: 'icon-xianlu',
+      //   onClick: () => {},
+      // },
       {
         text: '清屏',
         icon: 'icon-qingping',
