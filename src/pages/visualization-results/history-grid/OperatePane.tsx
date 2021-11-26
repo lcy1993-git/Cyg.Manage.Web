@@ -1,5 +1,5 @@
 import { getProjectInfo } from '@/services/project-management/all-project'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
 import { HistoryState, INITIAL_DATA_SOURCE, useHistoryGridContext } from './store'
@@ -115,8 +115,12 @@ const OperationPane: FC = ({ children }) => {
           type="primary"
           disabled={!canDraw}
           onClick={() => {
-            changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
-            dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
+            if (canDraw) {
+              changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
+              dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
+            } else {
+              message.error('当前项目身份非 [执行]，不可执行该操作')
+            }
           }}
         >
           网架{changeModeBtnText}
