@@ -1,6 +1,7 @@
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Form, message, Modal, Upload } from 'antd'
 import { useCallback } from 'react'
+import './importGrid.less'
 import { downloadTemplate, importEquipments, importHistoryEquipments } from './service'
 import { useHistoryGridContext } from './store'
 
