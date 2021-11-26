@@ -1,5 +1,5 @@
-import { MaterialDataType } from '@/services/visualization-results/list-menu'
 import { getProductServerList, getStopServerNotice } from '@/services/index'
+import { MaterialDataType } from '@/services/visualization-results/list-menu'
 
 const { NODE_ENV } = process.env
 
@@ -358,6 +358,7 @@ const getNoticeReq = (
       }
       const { data } = res
       const info = { ...values }
+
       if (data !== null && typeof data !== 'string') {
         if ([2, 3].includes(data?.stage) && info?.userName?.startsWith(data?.testerAccountPrefix)) {
           // 测试账号
@@ -376,6 +377,8 @@ const getNoticeReq = (
           localStorage.setItem('Authorization', '')
           sessionStorage.setItem('isTestUser', 'false')
         }
+      } else {
+        loginFuc(values)
       }
     })
     .catch(() => {

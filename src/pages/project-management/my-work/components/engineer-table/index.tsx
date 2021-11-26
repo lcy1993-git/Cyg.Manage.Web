@@ -56,6 +56,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const { sideVisible, selectedFavId } = useMyWorkStore()
   const { data: tableData, run, loading } = useRequest(getTableData, {
     manual: true,
+    debounceInterval: 500,
   })
 
   const cache = useRef([])
