@@ -111,7 +111,9 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
                   // @ts-ignore
                   onClick={() => onItemClick(item)}
                 >
-                  {item.versionCode.replaceAll('/', '.')}
+                  <span className={styles.addTextStyle}>
+                    {item.versionCode.replaceAll('/', '.')}
+                  </span>
                 </Timeline.Item>
               )
             })}

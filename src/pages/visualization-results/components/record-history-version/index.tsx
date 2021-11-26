@@ -104,6 +104,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
             rows={3}
             value={remark}
             maxLength={200}
+            showCount={true}
             // @ts-ignore
             onChange={remarkChange}
           />

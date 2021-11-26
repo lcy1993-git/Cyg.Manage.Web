@@ -59,18 +59,20 @@ const GridVersionManagement: FC<Props> = (props) => {
       title: '时间',
       dataIndex: 'createdTime',
       key: 'createdTime',
+      width: 150,
       render: (text: Moment) => {
         return moment(text).format('YYYY.MM.DD HH:mm:ss')
       },
     },
     {
       title: '创建人',
-      width: 70,
+      width: 150,
       dataIndex: 'createdBy',
       key: 'createdBy',
     },
     {
       title: '备注',
+      width: 320,
       dataIndex: 'remark',
       key: 'remark',
     },
@@ -78,6 +80,7 @@ const GridVersionManagement: FC<Props> = (props) => {
       dataIndex: 'address',
       key: 'address',
       title: '',
+      width: 100,
       align: 'center',
       render: (index: number, row: HistoryGridVersion) => {
         return (
@@ -109,10 +112,10 @@ const GridVersionManagement: FC<Props> = (props) => {
   }, [showDelete])
   return (
     <div className={styles.versionManageBox}>
-      <Modal title="版本管理" visible={true} width={800} onCancel={onClose} onOk={onClose}>
+      <Modal title="版本管理" visible={true} width={900} onCancel={onClose} onOk={onClose}>
         <div style={{ marginBottom: '10px' }}>
           <Checkbox onChange={() => isShowDelete(!showDelete)} checked={showDelete}>
-            显示已删除
+            <span style={{ color: '#8C8C8C' }}>显示已删除</span>
           </Checkbox>
         </div>
         <Table
