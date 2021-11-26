@@ -366,11 +366,6 @@ const getNoticeReq = (
           sessionStorage.setItem('isTestUser', 'true')
           sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
           loginFuc(info)
-        } else if (data?.stage === 1) {
-          // 公告期
-          sessionStorage.setItem('isTestUser', 'false')
-          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
-          loginFuc(values)
         } else {
           // 预停服期和发版期,非测试账号
           stopLoginFuc?.(data)
