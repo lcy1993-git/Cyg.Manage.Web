@@ -20,7 +20,6 @@ import {
   getProjectInfo,
   receiveProject,
   revokeAllot,
-  revokeKnot,
 } from '@/services/project-management/all-project'
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'

@@ -8,7 +8,7 @@ import { useMemo } from 'react'
 
 interface JSONData {
   Key: string
-  Value: string | any[]
+  Value: any
 }
 
 const getValueByName = (name: string, data: JSONData[]) => {
@@ -113,16 +113,24 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
     } else if (category === 4) {
       // 安排部组成员这里应该为空
       return false
+    } else if (category === 70) {
+      return getValueByName('approve_user_name', jsonData)
+    } else if (category === 71) {
+      return getValueByName('receiver_user_name', jsonData)
     }
     return getCompanyNameByShare(jsonData) || getCompanyGroupName(jsonData)
   }, [content])
 
   const getOperator = (data: JSONData[], category: number) => {
-    // if(category === 50 || category === 51) {
-    //   return "123"
-    // }
     return operator
   }
+
+  const remarkInfo = useMemo(() => {
+    if (category === 70 || category === 72) {
+      return getValueByName('remark', jsonData)
+    }
+    return
+  }, [content])
 
   return (
     <div className={styles.projectProcessItem}>
@@ -136,8 +144,13 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
       </div>
       <div className={styles.projectProcessItemTitle}>
         <span className={styles.title}>{operationCategory}</span>
-        {targetName && <span>&nbsp;&gt;&gt;&nbsp;{targetName}</span>}
+        {targetName && (
+          <span>
+            <b>&nbsp;&gt;&gt;&nbsp;{targetName}</b>
+          </span>
+        )}
       </div>
+      <div className={styles.remarkInfo}>{remarkInfo && <span>备注：{remarkInfo}</span>}</div>
       {Array.isArray(allotUsers) && (
         <div className={styles.usersInfo}>{usersElement(allotUsers)}</div>
       )}
