@@ -54,9 +54,9 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
 
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
   const { sideVisible, selectedFavId } = useMyWorkStore()
-  const { data: tableData, run, loading } = useRequest(getTableData, {
+  const { data: tableData, run, loading, cancel } = useRequest(getTableData, {
     manual: true,
-    debounceInterval: 500,
+    throttleInterval: 500,
   })
 
   const cache = useRef([])
@@ -111,7 +111,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         pageSize: size,
         pageIndex: page === 0 ? 1 : page,
       })
-
+      cancel()
       run(url, {
         ...searchParams,
         pageIndex: page,
@@ -126,7 +126,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       pageIndex: 1,
       pageSize: size,
     })
-
+    cancel()
     run(url, {
       ...searchParams,
       pageIndex: 1,
@@ -139,6 +139,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   useImperativeHandle(ref, () => ({
     // 刷新
     refresh: () => {
+      cancel()
       run(url, {
         ...searchParams,
         ...pageInfo,
@@ -151,6 +152,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
+      cancel()
       run(url, {
         ...searchParams,
         ...pageInfo,
@@ -164,6 +166,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
+      cancel()
       run(url, {
         ...params,
         ...pageInfo,
@@ -178,6 +181,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
+      cancel()
       run(url, {
         ...searchParams,
         ...pageInfo,
@@ -189,6 +193,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
+      cancel()
       run(requestUrl, {
         ...params,
         ...pageInfo,
