@@ -13,6 +13,7 @@ import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
+import { OverHeadProvider } from '../../context'
 import PoleTypeForm from './components/add-edit-form'
 import styles from './index.less'
 
@@ -277,7 +278,11 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   }
 
   return (
-    <>
+    <OverHeadProvider
+      value={{
+        refresh,
+      }}
+    >
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -324,7 +329,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
           </Spin>
         </Form>
       </Modal>
-    </>
+    </OverHeadProvider>
   )
 }
 

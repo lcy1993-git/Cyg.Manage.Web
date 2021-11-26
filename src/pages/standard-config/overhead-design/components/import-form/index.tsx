@@ -1,69 +1,71 @@
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
-import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useBoolean, useControllableValue } from 'ahooks';
-import React, { useState } from 'react';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
-import { Form, message, Modal, Button } from 'antd';
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
+import { uploadLineStressSag } from '@/services/resource-config/drawing'
+import { useBoolean, useControllableValue } from 'ahooks'
+import React, { useState } from 'react'
+import { Dispatch } from 'react'
+import { SetStateAction } from 'react'
+import { Form, message, Modal, Button } from 'antd'
+import { useOverHeadStore } from '../../context'
 
 interface ImportChartProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  libId?: string;
-  securityKey?: string;
-  requestSource: 'project' | 'resource' | 'upload';
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  libId?: string
+  securityKey?: string
+  requestSource: 'project' | 'resource' | 'upload'
 }
 
 const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { libId, requestSource, changeFinishEvent } = props;
-  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { libId, requestSource } = props
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
+  const [form] = Form.useForm()
+  const { refresh } = useOverHeadStore()
+
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
+  ] = useBoolean(false)
   const saveImportOverHeadEvent = () => {
     return form
       .validateFields()
       .then((values) => {
-        const { file } = values;
-        return uploadLineStressSag(file, { libId }, requestSource, '/PoleType/SaveImport');
+        const { file } = values
+        return uploadLineStressSag(file, { libId }, requestSource, '/PoleType/SaveImport')
       })
       .then(
         () => {
-          message.success('导入成功');
-          setIsImportFlag(true);
-          setState(false);
-          return Promise.resolve();
+          message.success('导入成功')
+          setIsImportFlag(true)
+          setState(false)
+          return Promise.resolve()
         },
         (res) => {
-          const { code, isSuccess, message: msg } = res;
+          const { code, isSuccess, message: msg } = res
 
           if (msg) {
-            message.warn(msg);
+            message.warn(msg)
           }
 
-          return Promise.reject('导入失败');
-        },
+          return Promise.reject('导入失败')
+        }
       )
       .finally(() => {
-        changeFinishEvent?.();
-        setUploadFileFalse();
-      });
-  };
+        refresh()
+        setUploadFileFalse()
+      })
+  }
 
   const onSave = () => {
     form.validateFields().then((value) => {
       if (isImportFlag) {
-        setState(false);
-        return;
+        setState(false)
+        return
       }
-      message.info('您还未上传文件，点击“开始上传”上传文件');
-    });
-  };
+      message.info('您还未上传文件，点击“开始上传”上传文件')
+    })
+  }
 
   return (
     <Modal
@@ -100,7 +102,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
         </CyFormItem>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default ImportOverheadModal;
+export default ImportOverheadModal
