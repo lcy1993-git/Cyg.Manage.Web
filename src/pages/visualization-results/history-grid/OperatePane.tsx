@@ -2,7 +2,7 @@ import { getProjectInfo } from '@/services/project-management/all-project'
 import { Button } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
-import { HistoryState, useHistoryGridContext } from './store'
+import { HistoryState, INITIAL_DATA_SOURCE, useHistoryGridContext } from './store'
 
 /** 左上方操作 */
 const OperationPane: FC = ({ children }) => {
@@ -82,7 +82,10 @@ const OperationPane: FC = ({ children }) => {
         text: '清屏',
         icon: 'icon-qingping',
         visible: (mode: HistoryState['mode']) => mode === 'preDesigning',
-        onClick: () => {},
+        onClick: () => {
+          dispatch({ type: 'changePreDesignDataSource', payload: INITIAL_DATA_SOURCE })
+          dispatch({ type: 'changeHistoryDataSource', payload: INITIAL_DATA_SOURCE })
+        },
       },
     ]
 

@@ -32,6 +32,8 @@ export type ReducerState = {
 
   // 历史网架点线的数据
   historyDataSource: DataSource
+  /** 预设计网架数据 */
+  preDesignDataSource: DataSource
   gridMapState: GridMapGlobalState
 
   /** UI 状态 */
@@ -75,6 +77,7 @@ type ComplexActionReflectPayload = {
   changeCurrentGridData: ReducerState['currentGridData']
   changeSelectedData: ReducerState['selectedData']
   changeHistoryDataSource: ReducerState['historyDataSource']
+  changePreDesignDataSource: ReducerState['preDesignDataSource']
 }
 
 type Actions = SimpleActions | ComplexActions
