@@ -61,13 +61,13 @@ const OperationPane: FC = ({ children }) => {
       {
         text: '导入',
         icon: 'icon-daoru',
-        before: <span>|</span>,
-        after: <span>|</span>,
+        before: mode === 'recordEdit' ? <span>|</span> : null,
         onClick: () => {
           dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, importModalVisible: true } })
         },
       },
       // {
+      //   before: <span>|</span>,
       //   text: '电气设备',
       //   icon: 'icon-dianqishebei',
       //   onClick: () => {},
@@ -81,6 +81,7 @@ const OperationPane: FC = ({ children }) => {
       {
         text: '清屏',
         icon: 'icon-qingping',
+        before: <span>|</span>,
         visible: (mode: HistoryState['mode']) => mode === 'preDesigning',
         onClick: () => {
           dispatch({ type: 'changePreDesignDataSource', payload: INITIAL_DATA_SOURCE })
