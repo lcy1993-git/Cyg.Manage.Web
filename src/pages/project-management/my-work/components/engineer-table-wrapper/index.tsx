@@ -1120,7 +1120,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }
 
   useEffect(() => {
-    searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+    if (selectedFavId) {
+      searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+    }
   }, [selectedFavId])
   useMount(() => {
     initTableData(requestUrl, { ...initSearchParams, keyWord: '' })

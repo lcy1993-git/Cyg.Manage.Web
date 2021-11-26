@@ -173,7 +173,10 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         labelWidth={130}
         align="right"
         required
-        rules={[{ required: true, message: '可容纳电缆数量不能为空' }]}
+        rules={[
+          { required: true, message: '可容纳电缆数量不能为空' },
+          { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+        ]}
       >
         <Input placeholder="请输入电缆数量" type="number" />
       </CyFormItem>
@@ -184,7 +187,10 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         labelWidth={130}
         align="right"
         required
-        rules={[{ required: true, message: '支架层数不能为空' }]}
+        rules={[
+          { required: true, message: '支架层数不能为空' },
+          { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+        ]}
       >
         <Input placeholder="请输入支架层数" type="number" />
       </CyFormItem>
