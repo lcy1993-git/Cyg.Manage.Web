@@ -18,6 +18,7 @@ import ProjectDetailInfo from '@/pages/project-management/all-project/components
 import ProjectInheritModal from '@/pages/project-management/all-project/components/project-inherit-modal'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ScreenModal from '@/pages/project-management/all-project/components/screen-modal'
+import FilterEntrustModal from '@/pages/project-management/project-entrust/components/filter-entrust-modal'
 import {
   againInherit,
   applyKnot,
@@ -47,10 +48,10 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { history } from 'umi'
 import { useMyWorkStore } from '../../context'
 import EngineerTable from '../engineer-table'
 import styles from './index.less'
-import { history } from 'umi'
 
 const { Search } = Input
 
@@ -147,6 +148,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [approvingModalVisible, setApprovingModalVisible] = useState<boolean>(false)
   // 筛选
   const [screenModalVisible, setScreenModalVisible] = useState(false)
+  //公司待办筛选
+  const [filterAgentModalVisible, setFilterAgentModalVisible] = useState(false)
   // 列设置
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
@@ -154,6 +157,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   // 预设计
   const { setPreDesignItem } = useLayoutStore()
+
+  //获取用户身份
+  // @ts-ignore
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'))
 
   const {
     allProjectSearchParams,
@@ -460,15 +467,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const applyKnotEvent = async (projectId: string[]) => {
     await applyKnot(projectId)
     message.success('申请结项成功')
-
-    refreshEvent()
+    delayRefresh()
   }
 
   const applyConfirm = (id: string[]) => {
     Modal.confirm({
       title: '申请结项',
       icon: <ExclamationCircleOutlined />,
-      content: ' 确定对该项目进行“申请结项”?',
+      content: '确定对该项目进行“申请结项”?',
       okText: '确认',
       cancelText: '取消',
       onOk: () => applyKnotEvent(id),
@@ -496,6 +502,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       projectId,
     })
     setExternalListModalVisible(true)
+  }
+
+  //字段隐藏时展示tips
+  const showNameTips = (tips: any) => {
+    return <Tooltip title={tips}>{tips}</Tooltip>
   }
 
   const completeConfig = [
@@ -586,18 +597,27 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       dataIndex: 'reformAimText',
       width: 120,
       ellipsis: true,
+      render: (text: any, record: any) => {
+        return showNameTips(record.reformAimText)
+      },
     },
     {
       title: '所属市公司',
       dataIndex: 'cityCompany',
       width: 120,
       ellipsis: true,
+      render: (text: any, record: any) => {
+        return showNameTips(record.cityCompany)
+      },
     },
     {
       title: '所属县公司',
       dataIndex: 'countyCompany',
       width: 120,
       ellipsis: true,
+      render: (text: any, record: any) => {
+        return showNameTips(record.countyCompany)
+      },
     },
     {
       title: '建设类型',
@@ -610,6 +630,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       dataIndex: 'pCategoryText',
       width: 120,
       ellipsis: true,
+      render: (text: any, record: any) => {
+        return showNameTips(record.pCategoryText)
+      },
     },
     {
       title: '项目阶段',
@@ -622,6 +645,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       dataIndex: 'pAttributeText',
       width: 120,
       ellipsis: true,
+      render: (text: any, record: any) => {
+        return showNameTips(record.pAttributeText)
+      },
     },
     {
       title: '交底范围',
@@ -676,7 +702,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       width: 120,
       ellipsis: true,
       render: (value: string, record: any) => {
-        return record.surveyUser ? `${record.surveyUser.value}` : '无需安排'
+        return record.surveyUser
+          ? `${record.surveyUser.value}`
+          : currentClickTabChildActiveType === 'awaitApprove'
+          ? ''
+          : '无需安排'
       },
     },
     {
@@ -777,7 +807,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                     {stateInfo?.statusText}
                   </span>
                 ) : identitys.findIndex((item: any) => item.value === 1) > -1 &&
-                  stateInfo.status === 30 ? (
+                  stateInfo.status === 30 &&
+                  userType === 2 ? (
                   <span className="canClick" onClick={() => reportApprove([record.id])}>
                     {stateInfo?.statusText}
                   </span>
@@ -1146,7 +1177,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
               onSearch={() => searchEvent()}
             />
           </TableSearch>
-          <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
+          {currentClickTabChildActiveType === 'agent' ||
+          currentClickTabChildActiveType === 'approveing' ? (
+            <Button onClick={() => setFilterAgentModalVisible(true)}>筛选</Button>
+          ) : (
+            <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
+          )}
         </div>
         <div className={styles.engineerTableWrapperSearchRight}>{batchButtonSlot?.()}</div>
       </div>
@@ -1170,6 +1206,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         finishEvent={screenClickEvent}
         searchParams={searchParams}
       />
+      <FilterEntrustModal
+        visible={filterAgentModalVisible}
+        onChange={setFilterAgentModalVisible}
+        finishEvent={screenClickEvent}
+        searchParams={searchParams}
+      />
+
       {engineerModalVisible && (
         <EngineerDetailInfo
           engineerId={modalNeedInfo.engineerId}

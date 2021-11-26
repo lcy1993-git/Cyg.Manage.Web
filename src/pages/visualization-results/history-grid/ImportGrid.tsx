@@ -1,6 +1,7 @@
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Form, message, Modal, Upload } from 'antd'
 import { useCallback } from 'react'
+import './importGrid.less'
 import { downloadTemplate, importEquipments, importHistoryEquipments } from './service'
 import { useHistoryGridContext } from './store'
 
@@ -71,7 +72,7 @@ const ImportGrid = () => {
           valuePropName="fileList"
           getValueFromEvent={normalize}
         >
-          <Dragger multiple accept=".xls,.xlsx">
+          <Dragger beforeUpload={() => false} multiple accept=".xls,.xlsx">
             <div>
               <UploadOutlined className="mr-1" />
               添加文件或拖放文件上传

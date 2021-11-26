@@ -42,7 +42,7 @@ const ConsoleWrapper = () => {
           <Select
             open={false}
             value={city?.name || '地区定位'}
-            className="w-36 flex-grow-0 truncate"
+            className="w-44 flex-grow-0 truncate"
             onClick={() => !visible && setVisible(true)}
           />
         </OperationPane>
