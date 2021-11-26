@@ -42,6 +42,9 @@ const LayoutHeader: React.FC = () => {
     if (Object.keys(info).length !== 0) {
       setCount(1)
       setStopServerInfo(info)
+    } else {
+      setCount(0)
+      setStopServerInfo({} as Stop)
     }
   }, 5000)
   // TODO 点击个人信息对应的一些方法都还么写

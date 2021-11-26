@@ -11,7 +11,6 @@ const StopServer: React.FC<Props> = (props) => {
 
   return (
     <div className={styles.stopInfoBox}>
-      <div className={styles.stopInfoTitle}>关于服务器停机维护的公告</div>
       {data?.content && <div dangerouslySetInnerHTML={{ __html: data?.content }}></div>}
     </div>
   )

@@ -39,8 +39,8 @@ const HealthPolling: React.FC = () => {
                 is60 ? '1' : ''
               }分钟后进行停机维护，
             维护期间将无法使用平台，
-            给您带来的不变我们深表歉意，
-            维护结束后我们将在第一时间告知大家；`,
+            给您带来的不便我们深表歉意，
+            维护结束后我们将在第一时间告知大家。`,
               bottom: 40,
               placement: 'bottomRight',
               duration: null,
