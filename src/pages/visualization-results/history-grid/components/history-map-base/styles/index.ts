@@ -1,7 +1,9 @@
 import { GemotType } from '../typings'
 import { GetLineStyle, getLineStyle } from './lineStyle'
 import { GetPointStyle, getPointStyle } from './pointStyle'
-
+export * from './changeLayerStyleByShowText'
+export * from './getLayerStyleByShowText'
+export { getStyle }
 /**
  *
  * @param {GemotType} type
@@ -16,5 +18,3 @@ function getStyle(type: 'LineString'): GetLineStyle
 function getStyle(type: GemotType) {
   return type === 'Point' ? getPointStyle : getLineStyle
 }
-
-export { getStyle }

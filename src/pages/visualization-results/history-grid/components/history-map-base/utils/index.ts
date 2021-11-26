@@ -16,6 +16,22 @@ export const clear = (sourceRef: SourceRef) => {
   sourceRef.designLineSource.clear()
 }
 
+interface ClearScreenOps {
+  sourceRef: SourceRef
+  interActionRef: InterActionRef
+}
+/**
+ * 清屏
+ * @param {ClearScreenOps} param0
+ */
+export function clearScreen({ sourceRef, interActionRef }: ClearScreenOps) {
+  sourceRef.historyPointSource.clear()
+  sourceRef.historyLineSource.clear()
+  sourceRef.designPointSource.clear()
+  sourceRef.designLineSource.clear()
+  interActionRef.select.currentSelect?.getFeatures().clear()
+}
+
 /**
  * 清空地图上现有的所有选择器以及所有图层的Feature元素
  * @param {InterActionRef} interActionRef
@@ -32,7 +48,7 @@ export function getGeometryType(f: Feature<Geometry>) {
 }
 
 // 添加高亮样式
-export function addHightStyle(fs: Feature<Geometry>[], showText) {
+export function addHightStyle(fs: Feature<Geometry>[], showText: boolean) {
   return fs.map((f) => {
     const sourceType = f.get('sourceType')
     const geometryType = getGeometryType(f)
@@ -64,7 +80,7 @@ export const checkUserLocation = (viewRef: ViewRef) => {
     {},
     function (err: any, res: any) {
       if (err) {
-        message.error(err.toString())
+        message.error('获取的位置信息无效，无法定位')
       } else {
         if (res?.rgc?.status === 'success' && res?.rgc?.result?.location?.lat) {
           const lat = parseFloat(res?.rgc?.result?.location?.lat)
@@ -86,6 +102,7 @@ export const checkUserLocation = (viewRef: ViewRef) => {
 export function moveToViewByLocation(viewRef: ViewRef, [lng, lat]: [number, number]) {
   if (!isNaN(lat) && !isNaN(lng)) {
     viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+    viewRef.view.setZoom(13)
   } else {
     message.error('获取的位置信息有误，无法定位')
   }
@@ -146,4 +163,31 @@ export function getSelectByType(
     return interActionRef.select.drawTextSelect
   }
   return
+}
+
+/**
+ * @description
+ * 根据多个图层点位位置计算当前自适应屏幕位置
+ * sx, sy表示左上角位置坐标, bx, by表示右下角的位置坐标
+ * @param {number[]} a0 图层位置信息
+ * @param {number[][]} args 其他图层的位置信息
+ * @returns {number[]} 适应屏幕的尺寸位置
+ * @example
+ * const a = [[0, 1], [5, 6]] as ExtendUnit
+ * const b = [[2, 0], [4, 5]] as ExtendUnit
+ * getFitExtend(a, b) ---> [[0, 0], [5, 6]]
+ */
+export function getFitExtend(a0: number[], ...args: number[][]): number[] {
+  if (!args.length) return a0
+  let [sx, sy, bx, by] = a0
+  args.forEach(([sx1, sy1, bx1, by1]) => {
+    sx = Math.min(sx, sx1)
+    sy = Math.min(sy, sy1)
+    bx = Math.max(bx, bx1)
+    by = Math.max(by, by1)
+  })
+  // 自适应屏幕下向外扩大0.1倍
+  const shrinkUnitX = (bx - sx) * 0.1
+  const shrinkUnitY = (by - sy) * 0.1
+  return [sx - shrinkUnitX, sy - shrinkUnitY, bx + shrinkUnitX, by + shrinkUnitY]
 }

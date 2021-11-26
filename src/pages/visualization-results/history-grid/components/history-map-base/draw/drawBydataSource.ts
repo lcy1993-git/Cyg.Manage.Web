@@ -14,11 +14,9 @@ export function drawByDataSource(
   data: DataSource,
   {
     source,
-    showText,
     sourceType,
     sourceRef,
   }: {
-    showText: boolean
     source: 'history' | 'design'
     sourceRef: SourceRef
     sourceType: keyof typeof SourceType
@@ -36,7 +34,6 @@ export function drawByDataSource(
       const points = data.equipments.map((p) => {
         const feature = new Feature<Point>()
         feature.setGeometry(new Point(proj.transform([p.lng!, p.lat!], 'EPSG:4326', 'EPSG:3857')))
-        // feature.setStyle(getStyle('Point')(sourceType, p.typeStr || '无类型', p.name, showText))
         feature.setProperties(p)
         feature.set('sourceType', sourceType)
         return feature

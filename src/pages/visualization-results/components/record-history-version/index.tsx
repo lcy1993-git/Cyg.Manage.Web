@@ -1,10 +1,14 @@
-import { recordVersionData } from '@/pages/visualization-results/history-grid/service'
+import {
+  getHistoriesById,
+  recordVersionData,
+} from '@/pages/visualization-results/history-grid/service'
 import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Input, message, Modal } from 'antd'
 import _ from 'lodash'
 import React, { ChangeEventHandler, useEffect, useState } from 'react'
 import styles from './index.less'
+import { useMount } from 'ahooks'
 
 export interface ElectricalEquipmentForm {
   name: string
@@ -37,7 +41,17 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
     }
     message.success('保存成功')
     setRemark('')
-    handleCancel()
+    dispatch({
+      type: 'changeMode',
+      payload: 'record',
+    })
+    const data = _.cloneDeep(UIStatus)
+    data.drawing = false
+    data.recordVersion = 'hide'
+    dispatch({
+      type: 'changeUIStatus',
+      payload: data,
+    })
   }
   const handleCancel = () => {
     setRemark('')
@@ -90,6 +104,7 @@ const RecordHistoryVersion: React.FC<Props> = (props) => {
             rows={3}
             value={remark}
             maxLength={200}
+            showCount={true}
             // @ts-ignore
             onChange={remarkChange}
           />

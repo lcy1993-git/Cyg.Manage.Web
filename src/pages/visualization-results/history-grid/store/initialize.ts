@@ -7,6 +7,12 @@ export type InitParams = {
   location: Location<unknown>
 }
 
+export const INITIAL_DATA_SOURCE = {
+  id: '',
+  equipments: [],
+  lines: [],
+}
+
 /** 惰性初始化 */
 export const initializeHistoryState = ({ location }: InitParams) => {
   const { pathname } = location
@@ -17,11 +23,8 @@ export const initializeHistoryState = ({ location }: InitParams) => {
     refetch: false,
     gridMapState: initGridMapState as any,
     historyGridVersion: {} as HistoryGridVersion,
-    historyDataSource: {
-      id: '',
-      equipments: [],
-      lines: [],
-    },
+    historyDataSource: INITIAL_DATA_SOURCE,
+    preDesignDataSource: INITIAL_DATA_SOURCE,
     selectedData: [],
     UIStatus: {
       showTitle: true,
