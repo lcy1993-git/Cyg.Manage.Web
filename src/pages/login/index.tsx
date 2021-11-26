@@ -1,13 +1,11 @@
 import bannerSrc from '@/assets/image/login/banner.png'
 import loginBg from '@/assets/image/login/bg.png'
 import LogoComponent from '@/components/logo-component'
-import { getProductServerList } from '@/services/index'
 import { useMount } from 'ahooks'
 import React, { useState } from 'react'
 import LoginForm from './components/login-form'
 import StopServer from './components/stop-server'
 import styles from './index.less'
-const { NODE_ENV } = process.env
 
 export interface Stop {
   content: string
@@ -19,28 +17,9 @@ export interface Stop {
 }
 const Login: React.FC = () => {
   const [stopInfo, setStopInfo] = useState<Stop>({} as Stop)
-  const [serverCode, setServerCode] = useState<string>('')
   const [activeStop, setActiveStop] = useState<boolean>(false)
 
-  const getServerList = async () => {
-    const res = await getProductServerList({
-      productCode: '1301726010322214912',
-      category: 0,
-      status: 0,
-      province: '',
-    })
-    const currenServer = res?.find((item: { propertys: { webSite: string } }) => {
-      if (NODE_ENV === 'development') {
-        return item.propertys?.webSite === 'http://10.6.1.40:21528/login'
-      } else {
-        return item.propertys?.webSite === window.location.href
-      }
-    })
-    if (currenServer) {
-      sessionStorage.setItem('serverCode', currenServer?.code || '')
-      setServerCode(currenServer?.code || '')
-    }
-  }
+  const getServerList = async () => {}
   const loginStop = (res?: Stop) => {
     setActiveStop(true)
     if (res) {
@@ -60,11 +39,7 @@ const Login: React.FC = () => {
             <img className={styles.bannerImage} src={bannerSrc} alt="" />
           </div>
           <div className={styles.loginForm}>
-            {activeStop ? (
-              <StopServer data={stopInfo} />
-            ) : (
-              <LoginForm serverCode={serverCode} stopLogin={loginStop} />
-            )}
+            {activeStop ? <StopServer data={stopInfo} /> : <LoginForm stopLogin={loginStop} />}
           </div>
         </div>
       </div>

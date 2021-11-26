@@ -258,12 +258,11 @@ export const getProjectNumberData = (params: ProjectParams) => {
 
 // 获取停服公告
 export const getStopServerNotice = (params: { serverCode: string; kickOutSeconds: number }) => {
-  return cyRequest<any>(() =>
-    request(`${webConfig.commonServer}/api/StopServerNotice/Get`, {
-      method: 'POST',
-      data: { ...params },
-    })
-  )
+  return request(`${webConfig.commonServer}/api/StopServerNotice/Get`, {
+    method: 'POST',
+    data: { ...params },
+    timeout: 5000,
+  })
 }
 
 // 获取服务器列表
@@ -273,10 +272,10 @@ export const getProductServerList = (params: {
   status: number
   province?: string
 }) => {
-  return cyRequest<any>(() =>
-    request(`${webConfig.commonServer}/api/ProductServer/GetList`, {
-      method: 'POST',
-      data: { ...params },
-    })
-  )
+  // return cyRequest<any>(() =>
+  return request(`${webConfig.commonServer}/api/ProductServer/GetList`, {
+    method: 'POST',
+    data: { ...params },
+  })
+  // )
 }

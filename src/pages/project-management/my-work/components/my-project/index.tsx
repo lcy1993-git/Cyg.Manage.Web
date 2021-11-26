@@ -388,25 +388,25 @@ const MyProject: React.FC = () => {
     </Menu>
   )
 
-  const postProjectMenu = (
-    <Menu>
-      {buttonJurisdictionArray?.includes('all-project-apply-knot') && (
-        <Menu.Item key="apply" onClick={() => applyConfirm()}>
-          申请结项
-        </Menu.Item>
-      )}
-      {buttonJurisdictionArray?.includes('all-project-recall-apply-knot') && (
-        <Menu.Item key="revoke" onClick={() => revokeConfirm()}>
-          撤回结项
-        </Menu.Item>
-      )}
-      {buttonJurisdictionArray?.includes('all-project-kont-approve') && (
-        <Menu.Item key="audit" onClick={() => auditKnotEvent()}>
-          结项审批
-        </Menu.Item>
-      )}
-    </Menu>
-  )
+  // const postProjectMenu = (
+  //   <Menu>
+  //     {buttonJurisdictionArray?.includes('all-project-apply-knot') && (
+  //       <Menu.Item key="apply" onClick={() => applyConfirm()}>
+  //         申请结项
+  //       </Menu.Item>
+  //     )}
+  //     {buttonJurisdictionArray?.includes('all-project-recall-apply-knot') && (
+  //       <Menu.Item key="revoke" onClick={() => revokeConfirm()}>
+  //         撤回结项
+  //       </Menu.Item>
+  //     )}
+  //     {buttonJurisdictionArray?.includes('all-project-kont-approve') && (
+  //       <Menu.Item key="audit" onClick={() => auditKnotEvent()}>
+  //         结项审批
+  //       </Menu.Item>
+  //     )}
+  //   </Menu>
+  // )
 
   const auditKnotEvent = async () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
@@ -426,7 +426,7 @@ const MyProject: React.FC = () => {
     Modal.confirm({
       title: '提示',
       icon: <ExclamationCircleOutlined />,
-      content: '确定申请结项吗？',
+      content: '确定对该项目进行“申请结项”?',
       okText: '确认',
       cancelText: '取消',
       onOk: applyKnotEvent,
@@ -437,30 +437,30 @@ const MyProject: React.FC = () => {
     const projectIds = tableSelectKeys
     await applyKnot(projectIds)
     message.success('申请结项成功')
-    refresh()
+    delayRefresh()
   }
 
-  const revokeConfirm = () => {
-    if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.error('请至少选择一个项目')
-      return
-    }
-    Modal.confirm({
-      title: '提示',
-      icon: <ExclamationCircleOutlined />,
-      content: '确定撤回结项吗？',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: revokeKnotEvent,
-    })
-  }
+  // const revokeConfirm = () => {
+  //   if (tableSelectKeys && tableSelectKeys.length === 0) {
+  //     message.error('请至少选择一个项目')
+  //     return
+  //   }
+  //   Modal.confirm({
+  //     title: '提示',
+  //     icon: <ExclamationCircleOutlined />,
+  //     content: '确定撤回结项吗？',
+  //     okText: '确认',
+  //     cancelText: '取消',
+  //     onOk: revokeKnotEvent,
+  //   })
+  // }
 
-  const revokeKnotEvent = async () => {
-    const projectIds = tableSelectKeys
-    await revokeKnot(projectIds)
-    message.success('撤回结项成功')
-    refresh()
-  }
+  // const revokeKnotEvent = async () => {
+  //   const projectIds = tableSelectKeys
+  //   await revokeKnot(projectIds)
+  //   message.success('撤回结项成功')
+  //   refresh()
+  // }
 
   // 外审安排
   const externalArrange = () => {
@@ -552,7 +552,7 @@ const MyProject: React.FC = () => {
   const sureReceiveProject = async () => {
     await receiveProject(tableSelectKeys)
     message.success('项目获取成功')
-    refresh()
+    delayRefresh()
   }
 
   return (
@@ -621,7 +621,8 @@ const MyProject: React.FC = () => {
                 )}
               {(buttonJurisdictionArray?.includes('all-project-export-all') ||
                 buttonJurisdictionArray?.includes('all-project-export-selected')) &&
-                currentClickTabType === 'allpro' && (
+                currentClickTabType === 'allpro' &&
+                !sideVisible && (
                   <div className="mr7">
                     <TableExportButton
                       exportUrl="/Porject/Export"
