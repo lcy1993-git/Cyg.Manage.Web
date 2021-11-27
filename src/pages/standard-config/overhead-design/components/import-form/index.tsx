@@ -21,7 +21,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
   const { libId, requestSource } = props
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const { refresh } = useOverHeadStore()
+  const { setIsRefresh } = useOverHeadStore()
 
   const [
     triggerUploadFile,
@@ -52,7 +52,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
         }
       )
       .finally(() => {
-        refresh()
+        setIsRefresh?.(true)
         setUploadFileFalse()
       })
   }
@@ -61,6 +61,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
     form.validateFields().then((value) => {
       if (isImportFlag) {
         setState(false)
+        setIsRefresh?.(false)
         return
       }
       message.info('您还未上传文件，点击“开始上传”上传文件')
