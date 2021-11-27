@@ -159,6 +159,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const hideModel = () => {
     setVisible(false)
   }
+
   useEffect(() => {
     setVisible(false)
   }, [currentGridData])
@@ -171,7 +172,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       val.type = val.type + ''
       // @ts-ignore
       val.voltageLevel = val.voltageLevel + ''
-      form.setFieldsValue(val)
+      setTimeout(() => {
+        form.setFieldsValue(val)
+      })
       setShowDetail(false)
       setPosition([10, 155])
       if (Object.keys(selectedData[0]).includes('startLng')) {
@@ -338,7 +341,6 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               {selectedData?.length === 1 && (
                 <Form.Item name="remark" label={'备注'}>
                   <Input.TextArea maxLength={200} rows={2} showCount />
-                  <br />
                 </Form.Item>
               )}
               <div style={{ display: 'flex', justifyContent: 'end' }}>

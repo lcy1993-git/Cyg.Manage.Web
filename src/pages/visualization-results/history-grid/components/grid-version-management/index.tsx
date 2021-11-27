@@ -57,12 +57,12 @@ const GridVersionManagement: FC<Props> = (props) => {
     },
     {
       title: '时间',
-      dataIndex: 'createdTime',
-      key: 'createdTime',
+      dataIndex: 'versionCode',
+      key: 'versionCode',
       width: 150,
-      render: (text: Moment) => {
-        return moment(text).format('YYYY.MM.DD HH:mm:ss')
-      },
+      // render: (text: Moment) => {
+      //   return moment(text).format('YYYY.MM.DD HH:mm:ss')
+      // },
     },
     {
       title: '创建人',
@@ -88,7 +88,7 @@ const GridVersionManagement: FC<Props> = (props) => {
             {row?.isDeleted ? (
               <span style={{ color: '#777777' }}>已删除</span>
             ) : (
-              <Button type={'text'} onClick={() => onDelete(row)} danger>
+              <Button type={'text'} onClick={() => onDelete(row)} danger disabled={row.isTemplate}>
                 <span style={{ textDecoration: 'underline' }}>删除</span>
               </Button>
             )}
