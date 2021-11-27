@@ -13,7 +13,6 @@ import { changeLayerStyleByShowText } from './styles'
 import { InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
 import {
   checkUserLocation,
-  clear,
   clearScreen,
   getFitExtend,
   getSelectByType,
@@ -31,7 +30,7 @@ const HistoryMapBase = () => {
     city,
     locate,
     historyDataSource: dataSource,
-    preDesignItemData: importDesignData,
+    preDesignDataSource: importDesignData,
   } = useHistoryGridContext()
   let mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
   const {
@@ -127,12 +126,7 @@ const HistoryMapBase = () => {
   }, [isDraw, showText])
 
   // 处理绘制状态的select
-  useUpdateEffect(() => {
-    clear(sourceRef)
-    changeLayerStyleByShowText(layerRef, showText)
-    drawHistoryLayer()
-    drawDesignLayer()
-  }, [showText])
+  useUpdateEffect(() => changeLayerStyleByShowText(sourceRef, showText), [showText])
 
   // 当绘制状态改变时
   useUpdateEffect(() => {
