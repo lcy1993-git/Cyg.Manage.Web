@@ -1,9 +1,9 @@
 import { message } from 'antd'
 import { useCallback, useEffect } from 'react'
-import { SaveHistoryData } from '../service'
+import { saveData, SaveHistoryData } from '../service'
 import { HistoryState } from '../store'
 
-type useSavaDataProps = Pick<HistoryState, 'historyDataSource' | 'mode' | 'preDesignItemData'> &
+type useSavaDataProps = Pick<HistoryState, 'historyDataSource' | 'mode' | 'preDesignDataSource'> &
   Pick<HistoryState['UIStatus'], 'recordVersion'>
 
 /** 保存网架数据 */
@@ -11,7 +11,7 @@ export const useSavaData = ({
   mode,
   historyDataSource,
   recordVersion,
-  preDesignItemData,
+  preDesignDataSource,
 }: useSavaDataProps) => {
   const save = useCallback(async () => {
     if (recordVersion === 'save') {
@@ -23,7 +23,7 @@ export const useSavaData = ({
           await SaveHistoryData(historyDataSource)
         } else {
           // 预设计
-          await SaveHistoryData(preDesignItemData?.id)
+          await saveData(preDesignDataSource)
         }
 
         message.success('保存成功')
@@ -31,7 +31,7 @@ export const useSavaData = ({
         message.error(e.message || '保存失败，请重试')
       }
     }
-  }, [historyDataSource, mode, preDesignItemData, recordVersion])
+  }, [historyDataSource, mode, preDesignDataSource, recordVersion])
 
   useEffect(() => {
     save()

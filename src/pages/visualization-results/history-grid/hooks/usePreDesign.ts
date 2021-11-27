@@ -11,6 +11,15 @@ export const usePreDesign = ({ pathname }: Location<unknown>, dispatch: HistoryD
     if (pathname === '/visualization-results/grid-pre-design') {
       if (preDesignItem.id) {
         dispatch({ type: 'changePreDesignItemData', payload: preDesignItem })
+      } else {
+        const localPreDesignItem = localStorage.getItem('preDesignItem')
+        if (
+          localPreDesignItem &&
+          localPreDesignItem !== 'null' &&
+          localPreDesignItem !== 'undefined'
+        ) {
+          dispatch({ type: 'changePreDesignItemData', payload: JSON.parse(localPreDesignItem) })
+        }
       }
     }
   }, [preDesignItem, pathname, dispatch])

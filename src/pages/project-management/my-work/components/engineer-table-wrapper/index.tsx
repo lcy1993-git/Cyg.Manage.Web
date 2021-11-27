@@ -341,6 +341,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           <Menu.Item
             onClick={() => {
               setPreDesignItem(tableItemData)
+              localStorage.setItem('preDesignItem', JSON.stringify(tableItemData))
               history.push('/visualization-results/grid-pre-design')
             }}
           >

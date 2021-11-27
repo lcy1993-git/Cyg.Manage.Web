@@ -25,6 +25,11 @@ export const saveData = (data: any) => {
   return historyGridRequest('NetFramework/Save', { method: 'POST', data })
 }
 
+/** 初始化网架 */
+export const initPreDesign = (projectId: string) => {
+  return historyGridRequest(`/NetFramework/Init/${projectId}`, { method: 'POST' })
+}
+
 /** 保存历史网架数据 */
 export const SaveHistoryData = (data: any) => {
   return historyGridRequest('NetFrameworkHistory/SaveHistory', { method: 'POST', data })
