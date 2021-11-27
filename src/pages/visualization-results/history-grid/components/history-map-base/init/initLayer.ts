@@ -72,7 +72,7 @@ annLayer.set('name', 'annLayer')
 function getPointVectorLayer(source: VectorSource<Point>): VectorLayer<VectorSource<Point>> {
   return new VectorLayer({
     source: source,
-    style: getLayerStyleByShowText(true),
+    style: getLayerStyleByShowText(false),
   })
 }
 /**
@@ -85,7 +85,7 @@ export function getLineVectorLayer(
 ): VectorLayer<VectorSource<LineString>> {
   return new VectorLayer({
     source: source,
-    style: getLayerStyleByShowText(true),
+    style: getLayerStyleByShowText(false),
   })
 }
 

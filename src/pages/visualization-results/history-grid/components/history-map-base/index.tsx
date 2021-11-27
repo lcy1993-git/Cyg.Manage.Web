@@ -34,7 +34,7 @@ const HistoryMapBase = () => {
   } = useHistoryGridContext()
   let mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
   const {
-    showTitle: showText,
+    showTitle,
     showHistoryLayer: historyLayerVisible,
     currentLocation: onCurrentLocationClick,
     currentProject: onProjectLocationClick,
@@ -43,6 +43,8 @@ const HistoryMapBase = () => {
     cleanSelected,
     disableShowTitle,
   } = UIStatus
+
+  const showText = showTitle && !disableShowTitle
 
   // const {
   // mapLayerType,
