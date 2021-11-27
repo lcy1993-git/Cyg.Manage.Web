@@ -1,5 +1,5 @@
 import { getProjectInfo } from '@/services/project-management/all-project'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
 import { HistoryState, INITIAL_DATA_SOURCE, useHistoryGridContext } from './store'
@@ -61,13 +61,13 @@ const OperationPane: FC = ({ children }) => {
       {
         text: '导入',
         icon: 'icon-daoru',
-        before: <span>|</span>,
-        after: <span>|</span>,
+        before: mode === 'recordEdit' ? <span>|</span> : null,
         onClick: () => {
           dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, importModalVisible: true } })
         },
       },
       // {
+      //   before: <span>|</span>,
       //   text: '电气设备',
       //   icon: 'icon-dianqishebei',
       //   onClick: () => {},
@@ -81,6 +81,7 @@ const OperationPane: FC = ({ children }) => {
       {
         text: '清屏',
         icon: 'icon-qingping',
+        before: <span>|</span>,
         visible: (mode: HistoryState['mode']) => mode === 'preDesigning',
         onClick: () => {
           dispatch({ type: 'changePreDesignDataSource', payload: INITIAL_DATA_SOURCE })
@@ -115,8 +116,12 @@ const OperationPane: FC = ({ children }) => {
           type="primary"
           disabled={!canDraw}
           onClick={() => {
-            changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
-            dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
+            if (canDraw) {
+              changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
+              dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
+            } else {
+              message.error('当前项目身份非 [执行]，不可执行该操作')
+            }
           }}
         >
           网架{changeModeBtnText}

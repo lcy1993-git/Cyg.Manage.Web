@@ -1,7 +1,6 @@
 import '@/assets/icon/history-grid-icon.css'
-import { useCurrentRef } from '@/utils/hooks'
 import { useMount, useUpdateEffect } from 'ahooks'
-import { MapEvent, View } from 'ol'
+import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
 import { useRef, useState } from 'react'
@@ -10,8 +9,17 @@ import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import { mapClick, moveend, pointermove } from './event'
 import init from './init'
-import { InterActionRef, LayerRef, MapRef, SourceRef } from './typings'
-import { checkUserLocation, clear, getSelectByType, moveToViewByLocation } from './utils'
+import { changeLayerStyleByShowText } from './styles'
+import { InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
+import {
+  checkUserLocation,
+  clear,
+  clearScreen,
+  getFitExtend,
+  getSelectByType,
+  moveToViewByLocation,
+} from './utils'
+import { useCurrentRef } from './utils/hooks'
 
 const HistoryMapBase = () => {
   // const [state, setState, mode] = useGridMap()
@@ -19,13 +27,13 @@ const HistoryMapBase = () => {
   const {
     dispatch: setState,
     UIStatus,
-    mode,
+    mode: preMode,
     city,
     locate,
     historyDataSource: dataSource,
     preDesignItemData: importDesignData,
   } = useHistoryGridContext()
-
+  let mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
   const {
     showTitle: showText,
     showHistoryLayer: historyLayerVisible,
@@ -62,8 +70,9 @@ const HistoryMapBase = () => {
   // 画图缓存数据
   const interActionRef = useCurrentRef<InterActionRef>({})
 
-  const sourceRef = useCurrentRef<SourceRef>({})
+  const lifeStateRef = useCurrentRef<LifeStateRef>({ state: { isFirstDrawHistory: true } })
 
+  const sourceRef = useCurrentRef<SourceRef>({})
   // const bindEvent = useCallback(() => {
   //   mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
   //     mapClick(e, { interActionRef, mapRef, setState, UIStatus }))
@@ -120,6 +129,7 @@ const HistoryMapBase = () => {
   // 处理绘制状态的select
   useUpdateEffect(() => {
     clear(sourceRef)
+    changeLayerStyleByShowText(layerRef, showText)
     drawHistoryLayer()
     drawDesignLayer()
   }, [showText])
@@ -142,10 +152,12 @@ const HistoryMapBase = () => {
 
   // 定位当当前项目位置
   useUpdateEffect(() => {
-    viewRef.view.fit([
-      ...sourceRef.historyPointSource.getExtent(),
-      ...sourceRef.historyLineSource.getExtent(),
-    ])
+    viewRef.view.fit(
+      getFitExtend(
+        sourceRef.historyPointSource.getExtent(),
+        sourceRef.historyLineSource.getExtent()
+      )
+    )
   }, [onProjectLocationClick])
 
   // 定位到当前用户位置
@@ -163,7 +175,7 @@ const HistoryMapBase = () => {
     [locate]
   )
 
-  useUpdateEffect(() => clear(sourceRef), [cleanSelected])
+  useUpdateEffect(() => clearScreen({ sourceRef, interActionRef }), [cleanSelected])
 
   // 绑定事件
   function bindEvent() {
@@ -239,19 +251,25 @@ const HistoryMapBase = () => {
   // }
 
   function drawHistoryLayer() {
+    if (!dataSource) return
     drawByDataSource(dataSource!, {
       source: 'history',
-      showText,
       sourceType: 'history',
       sourceRef,
     })
+    // 初次挂载自适应屏幕
+    if (lifeStateRef.state.isFirstDrawHistory) {
+      const pointExtent = sourceRef.historyPointSource.getExtent()
+      const lineExtent = sourceRef.historyLineSource.getExtent()
+      viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
+    }
+    lifeStateRef.state.isFirstDrawHistory = false
   }
 
   function drawDesignLayer() {
     if (mode === 'preDesign')
       drawByDataSource(importDesignData!, {
         source: 'design',
-        showText,
         sourceType: 'design',
         sourceRef,
       })

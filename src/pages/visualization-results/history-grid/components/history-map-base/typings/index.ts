@@ -114,6 +114,12 @@ export interface SourceRef {
   highLightLineSource: VectorSource<LineString>
 }
 
+export interface LifeStateRef {
+  state: {
+    isFirstDrawHistory: Boolean
+  }
+}
+
 export type SetState = <T extends GridMapGlobalState, K extends keyof T = keyof T>(
   key: K,
   value: T[K]
