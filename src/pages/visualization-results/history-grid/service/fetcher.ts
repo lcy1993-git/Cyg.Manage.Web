@@ -74,6 +74,11 @@ export const getHistoriesById = (versionId: string) => {
   })
 }
 
+// 清屏功能
+export const clearData = (id: string) => {
+  return historyGridRequest(`NetFramework/Clear/${id}`, { method: 'POST' })
+}
+
 // 查询枚举
 export const getHistoriesEnums = () => {
   return request(`${baseUrl.netFrameworkHistory}/System/Enums`, {

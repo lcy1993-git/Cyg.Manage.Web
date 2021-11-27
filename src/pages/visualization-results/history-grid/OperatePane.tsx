@@ -2,12 +2,19 @@ import { getProjectInfo } from '@/services/project-management/all-project'
 import { Button, message } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
+import { clearData } from './service/fetcher'
 import { HistoryState, INITIAL_DATA_SOURCE, useHistoryGridContext } from './store'
 
 /** 左上方操作 */
 const OperationPane: FC = ({ children }) => {
   const [canDraw, setCanDraw] = useState(false)
-  const { mode, UIStatus, dispatch, preDesignItemData } = useHistoryGridContext()
+  const {
+    mode,
+    UIStatus,
+    dispatch,
+    preDesignItemData,
+    preDesignDataSource,
+  } = useHistoryGridContext()
 
   const changeMode = useCallback(
     (changedMode: HistoryState['mode']) => {
@@ -34,6 +41,14 @@ const OperationPane: FC = ({ children }) => {
   const drawing = mode === 'preDesigning' || mode === 'recordEdit'
 
   const changeModeBtnText = mode === 'preDesign' ? '预设' : mode === 'record' ? '绘制' : ''
+
+  const clearAllData = async () => {
+    await clearData(preDesignDataSource.id!)
+    dispatch({
+      type: 'changePreDesignDataSource',
+      payload: { ...INITIAL_DATA_SOURCE, id: preDesignDataSource.id },
+    })
+  }
 
   const drawingBtnList = useMemo(() => {
     const list: OperateBtnProps[] = [
@@ -83,10 +98,7 @@ const OperationPane: FC = ({ children }) => {
         icon: 'icon-qingping',
         before: <span>|</span>,
         visible: (mode: HistoryState['mode']) => mode === 'preDesigning',
-        onClick: () => {
-          dispatch({ type: 'changePreDesignDataSource', payload: INITIAL_DATA_SOURCE })
-          dispatch({ type: 'changeHistoryDataSource', payload: INITIAL_DATA_SOURCE })
-        },
+        onClick: () => clearAllData(),
       },
     ]
 
