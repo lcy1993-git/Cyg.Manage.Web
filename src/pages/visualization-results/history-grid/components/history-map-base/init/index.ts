@@ -9,6 +9,7 @@ import { handlerGeographicSize } from '../effects'
 import { getStyle } from '../styles'
 import { getDataByFeature } from '../utils'
 import { InterActionRef, LayerRef, MapRef, SourceRef, ViewRef } from './../typings'
+import { initControl } from './initControl'
 import { initLayer } from './initLayer'
 import { initMap } from './initMap'
 import { initSource } from './initSource'
@@ -40,6 +41,8 @@ function init({
   initView(viewRef)
   initMap({ viewRef, mapRef, layerRef, ref })
 
+  initControl({ mapRef, mode })
+
   // 显示比例尺
   handlerGeographicSize({ mode, viewRef })
 
@@ -69,7 +72,7 @@ function init({
           return true
         }
       },
-      hitTolerance: 5,
+      hitTolerance: 10,
       // condition: conditionClick,
       toggleCondition: isToggle ? platformModifierKeyOnly : undefined,
     })

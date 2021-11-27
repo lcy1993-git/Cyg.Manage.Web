@@ -135,12 +135,13 @@ export const GeographicLocation = () => {
 
   return (
     <div className="bg-black bg-opacity-80 mt-1 px-2 py-1 text-white" id={GEOGRAPHIC_LOCATION}>
-      经度：
+      <span id={`grid_map_${mode}`} className="inline-block"></span>
+      {/* 经度：
       <span className="inline-block" id={`grid_map_lat_${mode}`}>
         123
       </span>
       <span className="w-2 inline-block text-center"> </span>
-      维度：<span id={`grid_map_lng_${mode}`}>123</span>
+      维度：<span id={`grid_map_lng_${mode}`}>123</span> */}
       <span className="w-6 inline-block text-center"> | </span>
       比列尺：<span id={`grid_map_size_${mode}`}></span>
     </div>

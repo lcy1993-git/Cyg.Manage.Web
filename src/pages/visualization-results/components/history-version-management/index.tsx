@@ -74,7 +74,7 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
         className={styles.versionManagement}
         style={{
           height: height,
-          display: show ? 'block' : 'none',
+          display: mode === 'record' ? 'block' : 'none',
         }}
       >
         <div className={styles.versionManagementButton}>

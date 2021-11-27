@@ -7,14 +7,6 @@ interface OpsSize {
   viewRef: ViewRef
 }
 
-export function handlerGeographicInformation(mode: string, coordinate: number[]) {
-  const lat = document.getElementById(`grid_map_lat_${mode}`)
-  const lng = document.getElementById(`grid_map_lng_${mode}`)
-
-  if (lat) lat.innerText = (coordinate[0] / 100000).toFixed(4)
-  if (lng) lng.innerText = (coordinate[1] / 100000).toFixed(4)
-}
-
 /**
  * 修改当前比例尺
  * @param param0

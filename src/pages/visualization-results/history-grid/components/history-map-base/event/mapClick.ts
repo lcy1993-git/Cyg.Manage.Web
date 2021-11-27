@@ -1,8 +1,6 @@
-import { Feature, MapBrowserEvent } from 'ol';
-import LineString from 'ol/geom/LineString';
-import { Point } from 'ol/geom/Point';
-import { HistoryDispatch } from '../../../store';
-import type { InterActionRef, MapRef, SourceRef } from './../typings/index';
+import { MapBrowserEvent } from 'ol'
+import { HistoryDispatch } from '../../../store'
+import type { InterActionRef, MapRef, SourceRef } from './../typings/index'
 
 interface Ops {
   interActionRef: InterActionRef
@@ -15,6 +13,12 @@ export default function mapClick(
   e: MapBrowserEvent<MouseEvent>,
   { mapRef, setState, sourceRef }: Ops
 ) {
+  // var pixel = e.pixel;
+  // console.log(pixel);
+
+  // var lonlat = map.getLonLatFromPixel(pixel);
+  //   lonlat.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")); //由900913坐标系转为4326
+  // 　　　　 alert(lonlat.lon+", "+lonlat.lat);
   // 设置当前坐标
   // setState("currentMousePosition", [...e.pixel] as [number, number])
   setState((state) => {
@@ -53,7 +57,7 @@ export default function mapClick(
   const highLightFeature = mapRef.map.getFeaturesAtPixel(e.pixel, {
     layerFilter(f) {
       return f.get('name') === 'highLightPointLayer' || f.get('name') === 'highLightLineLayer'
-    }
+    },
   })[0]
 
   // 点击时是否有高亮图层

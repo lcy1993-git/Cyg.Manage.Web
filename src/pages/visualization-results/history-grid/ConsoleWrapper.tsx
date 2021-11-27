@@ -18,6 +18,7 @@ const ConsoleWrapper = () => {
     filter: (res) => {
       const filterEntries = (obj: any) => ({
         name: obj.name,
+        code: obj.code,
         lat: obj.lat,
         lng: obj.lng,
       })
