@@ -27,6 +27,7 @@ export const initializeHistoryState = ({ location }: InitParams) => {
     preDesignDataSource: INITIAL_DATA_SOURCE,
     selectedData: [],
     UIStatus: {
+      disableShowTitle: true,
       showTitle: true,
       showHistoryLayer: true,
       currentLocation: false,

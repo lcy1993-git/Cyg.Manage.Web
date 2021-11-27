@@ -13,6 +13,7 @@ interface OpsSize {
  */
 export function handlerGeographicSize({ mode, viewRef }: OpsSize) {
   const size = document.getElementById(`grid_map_size_${mode}`)
+
   if (size) size.innerText = getScale(viewRef) || ''
 }
 

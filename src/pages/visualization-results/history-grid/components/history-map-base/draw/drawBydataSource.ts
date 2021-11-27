@@ -27,6 +27,9 @@ export function drawByDataSource(
     if (source === 'history') {
       sourceRef.historyLineSource.clear()
       sourceRef.historyPointSource.clear()
+    } else if (source === 'design') {
+      sourceRef.designLineSource.clear()
+      sourceRef.designPointSource.clear()
     }
 
     // 渲染设备

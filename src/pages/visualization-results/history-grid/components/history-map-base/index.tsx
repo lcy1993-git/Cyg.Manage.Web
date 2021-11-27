@@ -1,5 +1,5 @@
 import '@/assets/icon/history-grid-icon.css'
-import { useMount, useUpdateEffect } from 'ahooks'
+import { useMount, useSize, useUpdateEffect } from 'ahooks'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
@@ -34,14 +34,17 @@ const HistoryMapBase = () => {
   } = useHistoryGridContext()
   let mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
   const {
-    showTitle: showText,
+    showTitle,
     showHistoryLayer: historyLayerVisible,
     currentLocation: onCurrentLocationClick,
     currentProject: onProjectLocationClick,
     mapType: mapLayerType,
     drawing: isDraw,
     cleanSelected,
+    disableShowTitle,
   } = UIStatus
+
+  const showText = showTitle && disableShowTitle
 
   // const {
   // mapLayerType,
@@ -60,6 +63,7 @@ const HistoryMapBase = () => {
   const [geometryType, setGeometryType] = useState<string>('')
 
   const ref = useRef<HTMLDivElement>(null)
+  const size = useSize(ref)
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
   // 图层缓存数据
@@ -95,6 +99,10 @@ const HistoryMapBase = () => {
     })
     bindEvent()
   })
+
+  useUpdateEffect(() => {
+    mapRef.map.updateSize()
+  }, [size])
 
   // 处理geometryType变化
   useUpdateEffect(() => {
@@ -149,7 +157,9 @@ const HistoryMapBase = () => {
     viewRef.view.fit(
       getFitExtend(
         sourceRef.historyPointSource.getExtent(),
-        sourceRef.historyLineSource.getExtent()
+        sourceRef.historyLineSource.getExtent(),
+        sourceRef.designPointSource.getExtent(),
+        sourceRef.designLineSource.getExtent()
       )
     )
   }, [onProjectLocationClick])
@@ -179,7 +189,36 @@ const HistoryMapBase = () => {
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
-    viewRef.view.on('change:resolution', () => handlerGeographicSize({ mode, viewRef }))
+    viewRef.view.on('change:resolution', (e) => {
+      if (viewRef.view.getZoom()! > 16.5) {
+        setState((state) => {
+          return {
+            ...state,
+            UIStatus: {
+              ...state.UIStatus,
+              disableShowTitle: true,
+            },
+          }
+        })
+      } else {
+        setState((state) => {
+          return {
+            ...state,
+            UIStatus: {
+              ...state.UIStatus,
+              disableShowTitle: false,
+            },
+          }
+        })
+      }
+
+      // if(viewRef.view.getZoom() >  16.6){
+
+      // }
+
+      // 修改比例尺
+      handlerGeographicSize({ mode, viewRef })
+    })
   }
 
   // 初始化interaction
