@@ -34,7 +34,7 @@ import {
   LinkOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
-import { useMount, useRequest, useUpdateEffect } from 'ahooks'
+import { useRequest } from 'ahooks'
 import { Button, Divider, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
@@ -1068,13 +1068,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     },
   }))
 
-  useUpdateEffect(() => {
-    setKeyWord('')
-    setSearchParams(initSearchParams)
-    initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
-  }, [requestUrl])
-
-  useUpdateEffect(() => {
+  useEffect(() => {
     setKeyWord('')
     if (allProjectSearchProjectId) {
       const searchParams = {
@@ -1085,6 +1079,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       setSearchParams(initSearchParams)
       initTableData(requestUrl, { ...searchParams, keyWord: '' })
       setAllProjectSearchProjectId?.('')
+      setAllProjectSearchParams?.({
+        areaLevel: '-1',
+        areaId: '',
+        cityId: '',
+        searchPerson: '',
+        searchType: '',
+        noNeedRefresh: true,
+      })
       return
     }
     if (allProjectSearchParams.searchPerson) {
@@ -1094,6 +1096,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         cityId: '',
         searchPerson: '',
         searchType: '',
+        noNeedRefresh: true,
       })
       setSearchParams({
         ...initSearchParams,
@@ -1114,7 +1117,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       })
       return
     }
-  }, [allProjectSearchParams.searchPerson, allProjectSearchProjectId])
+    if (!allProjectSearchParams.noNeedRefresh) {
+      setSearchParams(initSearchParams)
+      initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
+    }
+  }, [allProjectSearchParams, allProjectSearchProjectId, requestUrl])
+
   const columnsConfigSetting = () => {
     setChooseColumnsModal(true)
   }
@@ -1124,9 +1132,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
     }
   }, [selectedFavId])
-  useMount(() => {
-    initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
-  })
 
   const finalyColumns = useMemo(() => {
     if (chooseColumns) {

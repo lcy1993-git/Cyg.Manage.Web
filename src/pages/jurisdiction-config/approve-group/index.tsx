@@ -177,7 +177,6 @@ const ApproveGroup: React.FC = () => {
       // const { userIds } = value
       // const handleIds = addPersonArray.filter((item: any) => userIds?.includes(item.value))
       // const finallyIds = getUsersIds(handleIds)
-      console.log(value, '33')
 
       const submitInfo = {
         ...value,
@@ -233,7 +232,6 @@ const ApproveGroup: React.FC = () => {
         userIds: editData.userIds,
         ...values,
       }
-      console.log(submitInfo, '555')
 
       await modifyApproveGroup(submitInfo)
       tableFresh()
@@ -281,7 +279,7 @@ const ApproveGroup: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-模板"
+        title="添加-组别"
         width="40%"
         visible={addFormVisible}
         okText="确认"
@@ -298,7 +296,7 @@ const ApproveGroup: React.FC = () => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-模板"
+        title="编辑-组别"
         width="40%"
         visible={editFormVisible}
         okText="确认"
