@@ -324,7 +324,7 @@ export const getStopServerList = (
       const { data } = res
       const currenServer = data?.find((item: { propertys: { webSite: string } }) => {
         if (NODE_ENV === 'development') {
-          return item.propertys?.webSite === 'http://10.6.1.40:21529/login'
+          return item.propertys?.webSite === 'http://171.223.214.154:21529/login'
         } else {
           return item.propertys?.webSite === window.location.href
         }

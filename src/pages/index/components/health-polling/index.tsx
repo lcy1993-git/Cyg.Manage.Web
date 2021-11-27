@@ -21,6 +21,7 @@ const HealthPolling: React.FC = () => {
     }
   }, [location.pathname])
   const getStopNotice = () => {
+    if (!requestFlag) return
     getStopServerNotice({
       serverCode: serverCode,
       kickOutSeconds: 605,
