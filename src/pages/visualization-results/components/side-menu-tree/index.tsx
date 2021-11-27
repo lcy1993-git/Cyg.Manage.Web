@@ -101,9 +101,9 @@ function generatorProjectInfoItem(item: TreeNodeType): ProjectList {
 type KeyType =
   | React.Key[]
   | {
-  checked: React.Key[]
-  halfChecked: React.Key[]
-}
+      checked: React.Key[]
+      halfChecked: React.Key[]
+    }
 
 const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   // 项目详情
@@ -417,7 +417,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         // 修复初次请求默认到县级的bug
       } else {
         setTreeData([])
-        message.warning('无数据')
+        // message.warning('无数据')
       }
     },
     onError: () => {
