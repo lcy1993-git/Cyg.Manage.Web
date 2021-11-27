@@ -69,7 +69,7 @@ const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
               ? 'text-theme-green bg-theme-green-lightest'
               : 'text-gray-800'
           }`}
-          key={c.name}
+          key={c.code}
           onClick={() => onSelect(c, rest)}
         >
           {c.name}
