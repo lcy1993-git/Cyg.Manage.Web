@@ -20,7 +20,7 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
         const res = await getAllGridVersions()
         dispatch({ type: 'changeAllHistoryGridData', payload: res })
 
-        const payload = res.find((s: any) => s.isTemplate === true)
+        const payload = res.find((s: any) => s.isTemplate)
 
         if (!cancel) {
           dispatch({ type: 'changeCurrentGridData', payload })
@@ -31,7 +31,15 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
           // 没有项目数据
           return
         }
-
+        // 历史网架数据
+        const resHistory = await getAllGridVersions()
+        if (Array.isArray(resHistory) && resHistory?.length !== 0) {
+          dispatch({ type: 'changeAllHistoryGridData', payload: resHistory })
+          const newHistory = resHistory.find((s: any) => s.isTemplate)
+          if (newHistory) {
+            dispatch({ type: 'changeHistoryDataSource', newHistory })
+          }
+        }
         const res = await getDataByProjectId({ projectIds: [preDesignItemData.id] })
 
         if (!Array.isArray(res.content) || res.content.length === 0) {
