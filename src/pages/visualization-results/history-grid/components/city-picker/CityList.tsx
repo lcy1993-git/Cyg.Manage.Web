@@ -65,7 +65,7 @@ const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
       {cities.map((c) => (
         <span
           className={`mx-1 mb-2 px-1 cursor-pointer hover:underline ${
-            selectedCity?.name === c.name
+            selectedCity?.code === c.code
               ? 'text-theme-green bg-theme-green-lightest'
               : 'text-gray-800'
           }`}
