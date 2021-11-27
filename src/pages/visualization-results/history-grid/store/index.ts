@@ -40,6 +40,8 @@ export type ReducerState = {
   UIStatus: {
     /** 是否显示线路和电气设备名称 */
     showTitle: boolean
+    /** 是否显示线路和电气设备名称 */
+    disableShowTitle: boolean
     /** 是否展示历史网架图层 */
     showHistoryLayer: boolean
     /** 是否定位到当前位置 */

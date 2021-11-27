@@ -41,6 +41,7 @@ const HistoryMapBase = () => {
     mapType: mapLayerType,
     drawing: isDraw,
     cleanSelected,
+    disableShowTitle,
   } = UIStatus
 
   // const {
@@ -179,7 +180,36 @@ const HistoryMapBase = () => {
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
-    viewRef.view.on('change:resolution', () => handlerGeographicSize({ mode, viewRef }))
+    viewRef.view.on('change:resolution', (e) => {
+      if (viewRef.view.getZoom()! > 16.5) {
+        setState((state) => {
+          return {
+            ...state,
+            UIStatus: {
+              ...state.UIStatus,
+              disableShowTitle: true,
+            },
+          }
+        })
+      } else {
+        setState((state) => {
+          return {
+            ...state,
+            UIStatus: {
+              ...state.UIStatus,
+              disableShowTitle: false,
+            },
+          }
+        })
+      }
+
+      // if(viewRef.view.getZoom() >  16.6){
+
+      // }
+
+      // 修改比例尺
+      handlerGeographicSize({ mode, viewRef })
+    })
   }
 
   // 初始化interaction

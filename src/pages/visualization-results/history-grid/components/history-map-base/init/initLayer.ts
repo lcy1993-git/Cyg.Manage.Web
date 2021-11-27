@@ -49,6 +49,7 @@ export const streetLayer = new TileLayer({
     wrapX: false,
   }),
 })
+
 streetLayer.setVisible(false)
 streetLayer.set('name', 'STREET')
 
