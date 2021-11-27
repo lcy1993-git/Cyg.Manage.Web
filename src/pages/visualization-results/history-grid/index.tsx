@@ -37,8 +37,8 @@ const HistoryGrid = () => {
   })
 
   return (
-    <div className="relative h-full">
-      <div className="relative" style={{ height: 'calc(100% - 40px)' }}>
+    <div className="relative h-full w-full">
+      <div className="relative w-full" style={{ height: 'calc(100% - 40px)' }}>
         <HistoryGridContext.Provider value={{ ...state, dispatch }}>
           <HistoryMapBase />
           <DesignTitle />

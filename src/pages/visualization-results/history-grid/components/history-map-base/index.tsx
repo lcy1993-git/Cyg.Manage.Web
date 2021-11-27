@@ -1,5 +1,5 @@
 import '@/assets/icon/history-grid-icon.css'
-import { useMount, useUpdateEffect } from 'ahooks'
+import { useMount, useSize, useUpdateEffect } from 'ahooks'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
@@ -44,7 +44,7 @@ const HistoryMapBase = () => {
     disableShowTitle,
   } = UIStatus
 
-  const showText = showTitle && !disableShowTitle
+  const showText = showTitle && disableShowTitle
 
   // const {
   // mapLayerType,
@@ -63,6 +63,7 @@ const HistoryMapBase = () => {
   const [geometryType, setGeometryType] = useState<string>('')
 
   const ref = useRef<HTMLDivElement>(null)
+  const size = useSize(ref)
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
   // 图层缓存数据
@@ -98,6 +99,10 @@ const HistoryMapBase = () => {
     })
     bindEvent()
   })
+
+  useUpdateEffect(() => {
+    mapRef.map.updateSize()
+  }, [size])
 
   // 处理geometryType变化
   useUpdateEffect(() => {
@@ -152,7 +157,9 @@ const HistoryMapBase = () => {
     viewRef.view.fit(
       getFitExtend(
         sourceRef.historyPointSource.getExtent(),
-        sourceRef.historyLineSource.getExtent()
+        sourceRef.historyLineSource.getExtent(),
+        sourceRef.designPointSource.getExtent(),
+        sourceRef.designLineSource.getExtent()
       )
     )
   }, [onProjectLocationClick])
