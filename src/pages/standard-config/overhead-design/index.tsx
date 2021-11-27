@@ -6,7 +6,7 @@ import OverHeadDesignTab from './components/overHeadDesign-tab'
 import { ImportOutlined } from '@ant-design/icons'
 import ImportOverheadModal from './components/import-form'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { useOverHeadStore } from './context'
+import { initState, OverHeadProvider, useOverHeadStore } from './context'
 
 interface libParams {
   libId: string
@@ -16,7 +16,7 @@ const OverheadDesign: React.FC<libParams> = (props) => {
   const { libId } = props
   const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false)
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
-  const { refresh } = useOverHeadStore()
+  // const { refresh } = useOverHeadStore()
 
   const importOverheadDesignEvent = () => {
     setImportOverheadVisible(true)
@@ -24,7 +24,7 @@ const OverheadDesign: React.FC<libParams> = (props) => {
 
   return (
     // <PageCommonWrap noPadding={true}>
-    <>
+    <OverHeadProvider value={initState}>
       <div className={styles.overHeadDesign}>
         <div className={styles.overHeadTable}>
           <div className="flex">
@@ -50,7 +50,7 @@ const OverheadDesign: React.FC<libParams> = (props) => {
         onChange={setImportOverheadVisible}
       />
       {/* </PageCommonWrap> */}
-    </>
+    </OverHeadProvider>
   )
 }
 

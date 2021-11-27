@@ -278,11 +278,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   }
 
   return (
-    <OverHeadProvider
-      value={{
-        refresh,
-      }}
-    >
+    <>
       <GeneralTable
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
@@ -329,7 +325,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
           </Spin>
         </Form>
       </Modal>
-    </OverHeadProvider>
+    </>
   )
 }
 

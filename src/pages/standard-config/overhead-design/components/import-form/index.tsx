@@ -21,7 +21,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
   const { libId, requestSource } = props
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const { refresh } = useOverHeadStore()
+  const { isRefresh } = useOverHeadStore()
 
   const [
     triggerUploadFile,

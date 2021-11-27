@@ -1,8 +1,10 @@
 import { createContext, useContext } from 'react'
 
 interface OverHeadDesignContextProps {
-  refresh: any
+  isRefresh?: boolean
 }
+
+// export const initState = { isRefresh: false }
 
 export const OverHeadContext = createContext({} as OverHeadDesignContextProps)
 
