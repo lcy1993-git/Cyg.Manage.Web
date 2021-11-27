@@ -7,7 +7,7 @@ import { HistoryState, useHistoryGridContext } from './store'
 
 const MapOperator = () => {
   const { UIStatus, dispatch } = useHistoryGridContext()
-  const { showTitle, currentLocation, currentProject } = UIStatus
+  const { showTitle, currentLocation, currentProject, disableShowTitle } = UIStatus
 
   const onClick = useCallback(
     (key: string) => {
@@ -26,6 +26,7 @@ const MapOperator = () => {
             flag="showTitle"
             onClick={onClick}
             icon={showTitle ? 'icon-xianshi' : 'icon-yincang'}
+            disabled={disableShowTitle}
           />
         </div>
 
@@ -63,18 +64,30 @@ interface IconSwitcherProps {
   flag: string
   onClick: (key: string) => void
   className?: string
+  disabled?: boolean
 }
 
-export const IconSwitcher = ({ title, className, icon, flag, onClick }: IconSwitcherProps) => {
+export const IconSwitcher = ({
+  title,
+  className,
+  icon,
+  flag,
+  onClick,
+  disabled = false,
+}: IconSwitcherProps) => {
   const iconClass = 'w-7 h-7 bg-white cursor-pointer'
-
+  const clickEvent = (flag: string) => {
+    if (!disabled) {
+      onClick(flag)
+    }
+  }
   return (
     <Tooltip placement="left" title={title}>
-      <div className="inline-block">
+      <div className={`inline-block ${!disabled ? 'pre-design-disabled' : ''}`}>
         <Iconfont
           className={iconClass + ` ${className || ''}`}
           symbol={icon}
-          onClick={() => onClick(flag)}
+          onClick={() => clickEvent(flag)}
         />
       </div>
     </Tooltip>
