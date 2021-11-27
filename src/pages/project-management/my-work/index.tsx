@@ -28,6 +28,9 @@ const MyWork: React.FC = () => {
   const [selectedFavId, setSelectedFavId] = useState<string>('')
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
   const [favName, setFavName] = useState<string>('')
+  const [tableSearchParams, setTableSearchParams] = useState({
+    requestUrl: '/ProjectList/GetAlls',
+  })
   const { data, run: refreshStatistics, loading } = useRequest(() => getMyWorkStatisticsData(), {
     onSuccess: () => {
       setMyWorkInitData([
@@ -40,7 +43,7 @@ const MyWork: React.FC = () => {
               label: '我的项目',
               id: 'my',
               number: data.all.my,
-              url: '/ProjectList/GetAlls ',
+              url: '/ProjectList/GetAlls',
             },
           ],
         },
@@ -164,7 +167,7 @@ const MyWork: React.FC = () => {
     },
   })
 
-  const { allProjectSearchParams } = useLayoutStore()
+  const { allProjectSearchParams, setAllProjectSearchParams } = useLayoutStore()
 
   //收藏夹
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
@@ -178,6 +181,9 @@ const MyWork: React.FC = () => {
       setCurrentClickTabChildActiveType(childrenType[0].id)
     }
     setCurrentClickType(type)
+    setAllProjectSearchParams?.({
+      noNeedRefresh: false,
+    })
   }
 
   const statisticsElement = useMemo(() => {
