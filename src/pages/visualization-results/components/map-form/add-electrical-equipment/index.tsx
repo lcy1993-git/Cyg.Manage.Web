@@ -1,6 +1,6 @@
-import { CloseOutlined } from '@ant-design/icons'
+import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { useMount } from 'ahooks'
-import { Button, Form, Input, message, Popconfirm, Select, Space } from 'antd'
+import { Button, Form, Input, message, Modal, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
 import {
@@ -15,7 +15,7 @@ import getLineLength from '@/pages/visualization-results/history-grid/components
 import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
 
 const { Option } = Select
-
+const { confirm } = Modal
 export interface ElectricalEquipmentForm {
   name: string
   id: string
@@ -53,23 +53,30 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const [lineType, setLineType] = useState<[]>([])
   const [equipmentsType, setEquipmentsType] = useState<[]>([])
   const handleDelete = async () => {
-    const data = {
-      lines: [],
-      equipments: [],
-    }
-    if (type === 'Point') {
-      // @ts-ignore
-      data.toBeDeletedEquipmentIds = selectedData.map((item) => item.id)
-      data['toBeDeletedLineIds'] = []
-    }
-    if (type === 'LineString') {
-      // @ts-ignore
-      data.toBeDeletedLineIds = selectedData.map((item) => item.id)
-      data['toBeDeletedEquipmentIds'] = []
-    }
-    await SaveHistoryData(data)
-    message.success('删除成功')
-    updateHistoryVersion()
+    confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: `确定要删除选中的${type === 'Point' ? '电气设备' : '线路'}吗?`,
+      async onOk() {
+        const data = {
+          lines: [],
+          equipments: [],
+        }
+        if (type === 'Point') {
+          // @ts-ignore
+          data.toBeDeletedEquipmentIds = selectedData.map((item) => item.id)
+          data['toBeDeletedLineIds'] = []
+        }
+        if (type === 'LineString') {
+          // @ts-ignore
+          data.toBeDeletedLineIds = selectedData.map((item) => item.id)
+          data['toBeDeletedEquipmentIds'] = []
+        }
+        await SaveHistoryData(data)
+        message.success('删除成功')
+        updateHistoryVersion()
+      },
+    })
   }
   const handleFinish = async (values: ElectricPointData | ElectricLineData) => {
     const data = {}
@@ -159,7 +166,48 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const hideModel = () => {
     setVisible(false)
   }
-
+  const getLength = () => {
+    let len = 0
+    selectedData.map((item, index) => {
+      len =
+        len +
+        getLineLength(
+          // @ts-ignore
+          [Number(item?.startLng!), Number(item?.startLat)],
+          // @ts-ignore
+          [Number(item?.endLng), Number(item?.endLat)]
+        )
+      return null
+    })
+    return len
+  }
+  const getEqualData = () => {
+    const data = {
+      name: '',
+      voltageLevel: '',
+      remark: '',
+      type: '',
+    }
+    const nameArr: Iterable<any> | [] = []
+    const voltageLevelArr: Iterable<any> | [] = []
+    const typeArr: Iterable<any> | [] = []
+    selectedData.map((item) => {
+      nameArr.push(item.name)
+      voltageLevelArr.push(item.voltageLevel)
+      typeArr.push(item.type)
+      return null
+    })
+    if (Array.from(new Set(nameArr)).length === 1) {
+      data.name = nameArr[0]
+    }
+    if (Array.from(new Set(voltageLevelArr)).length === 1) {
+      data.voltageLevel = voltageLevelArr[0] + ''
+    }
+    if (Array.from(new Set(typeArr)).length === 1) {
+      data.type = typeArr[0] + ''
+    }
+    return data
+  }
   useEffect(() => {
     setVisible(false)
   }, [currentGridData])
@@ -178,21 +226,15 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setShowDetail(false)
       setPosition([10, 155])
       if (Object.keys(selectedData[0]).includes('startLng')) {
-        const l = getLineLength(
-          // @ts-ignore
-          [Number(selectedData[0]?.startLng), Number(selectedData[0]?.startLat)],
-          // @ts-ignore
-          [Number(selectedData[0]?.endLng), Number(selectedData[0]?.endLat)]
-        )
+        const l = getLength()
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
     } else if (drawing && selectedData?.length > 1) {
-      form.setFieldsValue({
-        name: '',
-        type: '',
-        remark: '',
-        voltageLevel: '',
-      })
+      form.setFieldsValue(getEqualData())
+      if (Object.keys(selectedData[0]).includes('startLng')) {
+        const l = getLength()
+        setLineLength(((l / 1000).toFixed(4) as unknown) as number)
+      }
       setPosition([10, 155])
     } else if (!drawing && selectedData.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
@@ -200,12 +242,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setShowDetail(true)
       setPosition(currentMousePosition)
       if (Object.keys(selectedData[0]).includes('startLng')) {
-        const l = getLineLength(
-          // @ts-ignore
-          [Number(selectedData[0]?.startLng!), Number(selectedData[0]?.startLat)],
-          // @ts-ignore
-          [Number(selectedData[0]?.endLng), Number(selectedData[0]?.endLat)]
-        )
+        const l = getLength()
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
     } else if (selectedData.length === 0) {
@@ -244,8 +281,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
             <span
               className={styles.detailInfo}
               style={{
-                display:
-                  type === 'LineString' && selectedData.length === 1 ? 'inline-block' : 'none',
+                display: type === 'LineString' ? 'inline-block' : 'none',
               }}
             >
               长度:
@@ -330,7 +366,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
                   })}
                 </Select>
               </Form.Item>
-              {type === 'LineString' && selectedData.length === 1 && (
+              {type === 'LineString' && (
                 <p className={styles.lengthBox}>
                   长度:
                   <span style={{ textIndent: '10px', display: 'inline-block' }}>
@@ -345,15 +381,15 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               )}
               <div style={{ display: 'flex', justifyContent: 'end' }}>
                 <Space>
-                  <Popconfirm
-                    placement="topLeft"
-                    title={'确认删除当前对象？'}
-                    onConfirm={handleDelete}
-                    okText="确定"
-                    cancelText="取消"
-                  >
-                    <Button>删除</Button>
-                  </Popconfirm>
+                  {/*<Popconfirm*/}
+                  {/*  placement="topLeft"*/}
+                  {/*  title={'确认删除当前对象？'}*/}
+                  {/*  onConfirm={}*/}
+                  {/*  okText="确定"*/}
+                  {/*  cancelText="取消"*/}
+                  {/*>*/}
+                  <Button onClick={handleDelete}>删除</Button>
+                  {/*</Popconfirm>*/}
                   <Button type="primary" htmlType="submit">
                     保存
                   </Button>
