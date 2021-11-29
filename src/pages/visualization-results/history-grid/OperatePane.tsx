@@ -1,5 +1,5 @@
 import { getProjectInfo } from '@/services/project-management/all-project'
-import { Button, Tooltip } from 'antd'
+import { Button, Modal, Tooltip } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
 import { clearData } from './service/fetcher'
@@ -98,7 +98,15 @@ const OperationPane: FC = ({ children }) => {
         icon: 'icon-qingping',
         before: <span>|</span>,
         visible: (mode: HistoryState['mode']) => mode === 'preDesigning',
-        onClick: () => clearAllData(),
+        onClick: () => {
+          Modal.confirm({
+            title: '提示',
+            okText: '确认',
+            cancelText: '取消',
+            content: '此操作会清除当前项目所有设计数据,确认清屏？',
+            onOk: () => clearAllData(),
+          })
+        },
       },
     ]
 
