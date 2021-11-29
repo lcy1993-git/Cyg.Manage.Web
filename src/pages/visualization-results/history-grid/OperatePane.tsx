@@ -29,6 +29,8 @@ const OperationPane: FC = ({ children }) => {
         getProjectInfo(preDesignItemData.id).then((res) => {
           if (res.identitys.some((s: any) => s.value! === 4)) {
             setCanDraw(true)
+          } else {
+            setCanDraw(false)
           }
         })
       }
