@@ -78,7 +78,7 @@ const ImportGrid = () => {
           valuePropName="fileList"
           getValueFromEvent={normalize}
         >
-          <Dragger beforeUpload={() => false} multiple accept=".xls,.xlsx">
+          <Dragger beforeUpload={() => false} maxCount={1} accept=".xls,.xlsx">
             <div>
               <UploadOutlined className="mr-1" />
               添加文件或拖放文件上传
