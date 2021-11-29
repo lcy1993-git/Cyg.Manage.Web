@@ -177,14 +177,18 @@ export function getSelectByType(
  * const b = [[2, 0], [4, 5]] as ExtendUnit
  * getFitExtend(a, b) ---> [[0, 0], [5, 6]]
  */
-export function getFitExtend(a0: number[], ...args: number[][]): number[] {
-  if (!args.length) return a0
-  let [sx, sy, bx, by] = a0
-  args.forEach(([sx1, sy1, bx1, by1]) => {
-    sx = Math.min(sx, sx1)
-    sy = Math.min(sy, sy1)
-    bx = Math.max(bx, bx1)
-    by = Math.max(by, by1)
+export function getFitExtend(a0: number[] | false, ...args: (number[] | false)[]): number[] {
+  const first = a0 ? a0 : [Infinity, Infinity, -Infinity, -Infinity]
+  if (!args.length) return first
+  let [sx, sy, bx, by] = first
+  args.forEach((item) => {
+    if (item) {
+      const [sx1, sy1, bx1, by1] = item
+      sx = Math.min(sx, sx1)
+      sy = Math.min(sy, sy1)
+      bx = Math.max(bx, bx1)
+      by = Math.max(by, by1)
+    }
   })
   // 自适应屏幕下向外扩大0.1倍
   const shrinkUnitX = (bx - sx) * 0.1

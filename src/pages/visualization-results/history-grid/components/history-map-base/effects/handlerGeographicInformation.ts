@@ -72,6 +72,5 @@ function getScale(viewRef: ViewRef) {
   }
 
   let text = count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix
-
   return '1 : ' + text === '1000 m' ? '1 km' : text
 }

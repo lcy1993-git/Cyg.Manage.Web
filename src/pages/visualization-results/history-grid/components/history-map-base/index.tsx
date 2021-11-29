@@ -23,7 +23,6 @@ import { useCurrentRef } from './utils/hooks'
 
 const HistoryMapBase = () => {
   // const [state, setState, mode] = useGridMap()
-
   const {
     dispatch: setState,
     UIStatus,
@@ -33,7 +32,7 @@ const HistoryMapBase = () => {
     historyDataSource: dataSource,
     preDesignDataSource: importDesignData,
   } = useHistoryGridContext()
-  let mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
+  const mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
   const {
     showTitle,
     showHistoryLayer: historyLayerVisible,
@@ -112,10 +111,7 @@ const HistoryMapBase = () => {
   }, [geometryType])
 
   // 处理当前地图类型变化
-  useUpdateEffect(
-    () => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer),
-    [mapLayerType]
-  )
+  useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.streetLayer), [mapLayerType])
 
   // 根据历史数据绘制点位线路
   useUpdateEffect(() => {
@@ -156,10 +152,10 @@ const HistoryMapBase = () => {
   // 定位当当前项目位置
   useUpdateEffect(() => {
     const extend = getFitExtend(
-      sourceRef.historyPointSource.getExtent(),
-      sourceRef.historyLineSource.getExtent(),
       sourceRef.designPointSource.getExtent(),
-      sourceRef.designLineSource.getExtent()
+      sourceRef.designLineSource.getExtent(),
+      historyLayerVisible && sourceRef.historyPointSource.getExtent(),
+      historyLayerVisible && sourceRef.historyLineSource.getExtent()
     )
     const canFit = extend.every(Number.isFinite)
     if (canFit) {
@@ -296,7 +292,8 @@ const HistoryMapBase = () => {
       sourceRef,
     })
     // 初次挂载自适应屏幕
-    if (lifeStateRef.state.isFirstDrawHistory) {
+
+    if (lifeStateRef.state.isFirstDrawHistory && mode === 'record') {
       const pointExtent = sourceRef.historyPointSource.getExtent()
       const lineExtent = sourceRef.historyLineSource.getExtent()
       const extend = getFitExtend(pointExtent, lineExtent)
