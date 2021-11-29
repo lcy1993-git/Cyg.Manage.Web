@@ -88,7 +88,7 @@ const GridVersionManagement: FC<Props> = (props) => {
             {row?.isDeleted ? (
               <span style={{ color: '#777777' }}>已删除</span>
             ) : (
-              <Button type={'text'} onClick={() => onDelete(row)} danger disabled={row.isTemplate}>
+              <Button type={'text'} onClick={() => onDelete(row)} danger>
                 <span style={{ textDecoration: 'underline' }}>删除</span>
               </Button>
             )}
@@ -99,7 +99,7 @@ const GridVersionManagement: FC<Props> = (props) => {
   ]
   const getHistoryList = async (del: boolean) => {
     const res = await getAllGridVersions(del)
-    res && setList(res)
+    res && setList(res?.filter((item) => !item.isTemplate))
   }
   const pageChange = (val: any) => {
     setPageSize(val.pageSize)
@@ -146,7 +146,7 @@ const GridVersionManagement: FC<Props> = (props) => {
         <div style={{ display: 'flex' }}>
           <ExclamationCircleOutlined style={{ color: '#FFC400', fontSize: '20px' }} />
           <div style={{ marginLeft: '6px' }}>
-            此操作将会删除该条历史版本记录相关网架数据,删除后将不可恢复,请输入密码确认删除。
+            此操作将会删除该条历史版本记录及相关网架数据，删除后将不可恢复，请输入密码确认删除。
             <Input
               placeholder={'请输入密码'}
               type={'password'}

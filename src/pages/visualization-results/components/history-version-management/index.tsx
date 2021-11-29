@@ -30,7 +30,7 @@ interface Props {
 }
 
 const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
-  const { height = '45vh' } = props
+  const { height = '5vh' } = props
   const [state] = useGridMap()
   const [active, setActive] = useState<boolean>(true)
   const [showVersion, setShowVersion] = useState<boolean>(false)
