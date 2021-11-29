@@ -1,5 +1,6 @@
 import '@/assets/icon/history-grid-icon.css'
 import { useMount, useSize, useUpdateEffect } from 'ahooks'
+import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
@@ -154,14 +155,18 @@ const HistoryMapBase = () => {
 
   // 定位当当前项目位置
   useUpdateEffect(() => {
-    viewRef.view.fit(
-      getFitExtend(
-        sourceRef.historyPointSource.getExtent(),
-        sourceRef.historyLineSource.getExtent(),
-        sourceRef.designPointSource.getExtent(),
-        sourceRef.designLineSource.getExtent()
-      )
+    const extend = getFitExtend(
+      sourceRef.historyPointSource.getExtent(),
+      sourceRef.historyLineSource.getExtent(),
+      sourceRef.designPointSource.getExtent(),
+      sourceRef.designLineSource.getExtent()
     )
+    const canFit = extend.every(Number.isFinite)
+    if (canFit) {
+      viewRef.view.fit(extend)
+    } else {
+      message.error('当前项目没有数据，无法定位')
+    }
   }, [onProjectLocationClick])
 
   // 定位到当前用户位置
@@ -190,7 +195,7 @@ const HistoryMapBase = () => {
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
     viewRef.view.on('change:resolution', (e) => {
-      if (viewRef.view.getZoom()! > 16.5) {
+      if (viewRef.view.getZoom()! > 14.0) {
         setState((state) => {
           return {
             ...state,
@@ -294,7 +299,9 @@ const HistoryMapBase = () => {
     if (lifeStateRef.state.isFirstDrawHistory) {
       const pointExtent = sourceRef.historyPointSource.getExtent()
       const lineExtent = sourceRef.historyLineSource.getExtent()
-      viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
+      const extend = getFitExtend(pointExtent, lineExtent)
+      const canFit = extend.every((i) => Number.isFinite(i))
+      canFit && viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
     }
     lifeStateRef.state.isFirstDrawHistory = false
   }
