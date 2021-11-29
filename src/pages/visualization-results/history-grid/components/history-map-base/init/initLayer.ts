@@ -10,59 +10,63 @@ import { getLayerStyleByShowText } from '../styles'
 import { LayerRef, SourceRef } from './../typings/index'
 
 // 卫星图层
-export const vecLayer = new TileLayer({
-  source: new XYZ({
-    url: decodeURI(
-      'https://mt{0-3}.s02.sirenmap.com/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Galileo'
-    ),
-  }),
-  preload: 18,
-})
-
-const matrixIds = [],
-  resolutions = []
-//瓦片大小
-//坐标系信息
-const projection = proj.get('EPSG:4326')
-
-var projectionExtent = projection.getExtent()
-var size = extent.getWidth(projectionExtent) / 256
-// 初始化分辨率组
-for (let i = 0; i < 18; i++) {
-  resolutions[i] = size / Math.pow(2, i)
-  matrixIds[i] = i.toString()
-}
-// 街道图层
-export const streetLayer = new TileLayer({
-  source: new sourceWmts({
-    url: 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5',
-    layer: 'vec',
-    matrixSet: 'c',
-    format: 'tiles',
-    style: 'default',
-    projection: proj.get('EPSG:4326'),
-    tileGrid: new tilegridWmts({
-      origin: extent.getTopLeft(projectionExtent),
-      resolutions: resolutions,
-      matrixIds: matrixIds,
+function getVecLayer() {
+  return new TileLayer({
+    source: new XYZ({
+      url: decodeURI(
+        'https://mt{0-3}.s02.sirenmap.com/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Galileo'
+      ),
     }),
-    wrapX: false,
-  }),
-})
+    preload: 18,
+  })
+}
 
-streetLayer.setVisible(false)
-streetLayer.set('name', 'STREET')
+function getStreetLayer() {
+  const matrixIds = [],
+    resolutions = []
+  //瓦片大小
+  //坐标系信息
+  const projection = proj.get('EPSG:4326')
 
-// ann图
-const annUrl =
-  'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
-export const annLayer = new TileLayer({
-  source: new XYZ({
-    url: decodeURI(annUrl),
-  }),
-  preload: 18,
-})
-annLayer.set('name', 'annLayer')
+  var projectionExtent = projection.getExtent()
+  var size = extent.getWidth(projectionExtent) / 256
+  // 初始化分辨率组
+  for (let i = 0; i < 18; i++) {
+    resolutions[i] = size / Math.pow(2, i)
+    matrixIds[i] = i.toString()
+  }
+  // 街道图层
+  const street = new TileLayer({
+    source: new sourceWmts({
+      url: 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5',
+      layer: 'vec',
+      matrixSet: 'c',
+      format: 'tiles',
+      style: 'default',
+      projection: proj.get('EPSG:4326'),
+      tileGrid: new tilegridWmts({
+        origin: extent.getTopLeft(projectionExtent),
+        resolutions: resolutions,
+        matrixIds: matrixIds,
+      }),
+      wrapX: false,
+    }),
+  })
+  street.setVisible(false)
+  return street
+}
+
+function getAnnLayer() {
+  // ann图
+  const annUrl =
+    'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
+  return new TileLayer({
+    source: new XYZ({
+      url: decodeURI(annUrl),
+    }),
+    preload: 18,
+  })
+}
 
 /**
  * 点位数据源图层
@@ -97,11 +101,11 @@ export function getLineVectorLayer(
 
 export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
   // 添加 卫星图
-  layerRef.vecLayer = vecLayer
+  layerRef.vecLayer = getVecLayer()
   // 添加街道图层
-  layerRef.streetLayer = streetLayer
+  layerRef.streetLayer = getStreetLayer()
   // 添加地域名称图层
-  layerRef.annLayer = annLayer
+  layerRef.annLayer = getAnnLayer()
   // 历史网架
   layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
   layerRef.historyPointLayer.set('name', 'historyPointLayer')
