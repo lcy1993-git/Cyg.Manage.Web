@@ -34,6 +34,7 @@ interface Props {
 const HistoryGirdForm: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
   const {
+    mode,
     UIStatus,
     selectedData = [], //被选中的元素
     currentGridData,
@@ -47,6 +48,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const {
     drawing, //是否绘制模式
     currentMousePosition, // 当前操作鼠标位置
+    showHistoryLayer,
   } = UIStatus
   const [form] = Form.useForm()
   const [KVLevel, setKVLevel] = useState<[]>([])
@@ -223,8 +225,19 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setTimeout(() => {
         form.setFieldsValue(val)
       })
-      setShowDetail(false)
-      setPosition([10, 155])
+      if (mode === 'preDesigning' && selectedData[0]?.sourceType === 'design') {
+        // 与设计预设图层
+        setShowDetail(false)
+        setPosition([10, 155])
+      } else if (mode === 'preDesigning' && selectedData[0]?.sourceType === 'history') {
+        // 预设计历史图层
+        setShowDetail(true)
+        setPosition(currentMousePosition)
+      } else {
+        // 其他情况
+        setShowDetail(false)
+        setPosition([10, 155])
+      }
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLength()
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
@@ -235,7 +248,11 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         const l = getLength()
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
-      setPosition([10, 155])
+      if (mode === 'preDesigning' && selectedData[0]?.sourceType === 'history') {
+        setPosition(currentMousePosition)
+      } else {
+        setPosition([10, 155])
+      }
     } else if (!drawing && selectedData.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
@@ -248,7 +265,18 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     } else if (selectedData.length === 0) {
       setVisible(false)
     }
-  }, [drawing, selectedData, form])
+  }, [drawing, selectedData, form, mode])
+  useEffect(() => {
+    if (
+      ['preDesign', 'preDesigning'].includes(mode) &&
+      !showHistoryLayer &&
+      selectedData?.[0].sourceType === 'history'
+    ) {
+      setVisible(false)
+    } else if (showHistoryLayer && selectedData.length > 0) {
+      setVisible(true)
+    }
+  }, [showHistoryLayer, mode])
   return (
     <div>
       {showDetail && visible && (
@@ -377,19 +405,12 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               {selectedData?.length === 1 && (
                 <Form.Item name="remark" label={'备注'}>
                   <Input.TextArea maxLength={200} rows={2} showCount />
+                  <br />
                 </Form.Item>
               )}
               <div style={{ display: 'flex', justifyContent: 'end' }}>
                 <Space>
-                  {/*<Popconfirm*/}
-                  {/*  placement="topLeft"*/}
-                  {/*  title={'确认删除当前对象？'}*/}
-                  {/*  onConfirm={}*/}
-                  {/*  okText="确定"*/}
-                  {/*  cancelText="取消"*/}
-                  {/*>*/}
                   <Button onClick={handleDelete}>删除</Button>
-                  {/*</Popconfirm>*/}
                   <Button type="primary" htmlType="submit">
                     保存
                   </Button>

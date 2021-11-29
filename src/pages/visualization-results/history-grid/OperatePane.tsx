@@ -113,7 +113,7 @@ const OperationPane: FC = ({ children }) => {
           onClick={() => {
             dispatch({
               type: 'changeUIStatus',
-              payload: { ...UIStatus, recordVersion: 'save', drawing: false },
+              payload: { ...UIStatus, drawing: false },
             })
             changeMode(mode === 'recordEdit' ? 'record' : 'preDesign')
           }}

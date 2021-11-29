@@ -36,9 +36,11 @@ export interface ElectricLineData {
   endId?: string
   voltageLevelStr: string
   voltageLevel: number
+  sourceType: 'design' | 'history'
 }
 
 export interface ElectricPointData {
+  sourceType: 'design' | 'history'
   id: string
   name: string
   type: ElectricPointType | number

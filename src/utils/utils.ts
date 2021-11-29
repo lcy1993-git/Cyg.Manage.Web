@@ -322,11 +322,14 @@ export const getStopServerList = (
         return
       }
       const { data } = res
+      const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
       const currenServer = data?.find((item: { propertys: { webSite: string } }) => {
-        if (NODE_ENV === 'development') {
-          return item.propertys?.webSite === 'http://171.223.214.154:21529/login'
+        if (NODE_ENV !== 'development' && item?.propertys?.webSite) {
+          return item?.propertys?.webSite === 'http://171.223.214.154:21529/login'
+        } else if (item?.propertys?.webSite) {
+          return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
         } else {
-          return item.propertys?.webSite === window.location.href
+          return undefined
         }
       })
       if (currenServer && currenServer?.code) {
