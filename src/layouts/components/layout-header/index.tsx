@@ -1,49 +1,52 @@
-import React, { useState } from 'react';
-import { Menu, Dropdown, Badge } from 'antd';
-import styles from './index.less';
-import LayoutHeaderMenu from '../layout-header-menu';
-import { history } from 'umi';
-import ImageIcon from '@/components/image-icon';
-import headPortraitSrc from '@/assets/image/head-portrait.jpg';
-import { signOut } from '@/services/login';
-import EditPassword from '../edit-password';
-import CutAccount from '../cut-account';
-import PersonInfoModal from '../person-info-modal';
-import { useGetFunctionModules, useGetUserInfo } from '@/utils/hooks';
-import LogoComponent from '@/components/logo-component';
-import { BellOutlined } from '@ant-design/icons';
-import VersionInfoModal from '../version-info-modal';
-import {useInterval} from "ahooks";
-import { Stop } from '@/pages/login';
+import headPortraitSrc from '@/assets/image/head-portrait.jpg'
+import ImageIcon from '@/components/image-icon'
+import LogoComponent from '@/components/logo-component'
+import { Stop } from '@/pages/login'
+import { signOut } from '@/services/login'
+import { useGetFunctionModules, useGetUserInfo } from '@/utils/hooks'
+import { BellOutlined } from '@ant-design/icons'
+import { useInterval } from 'ahooks'
+import { Badge, Dropdown, Menu } from 'antd'
+import React, { useState } from 'react'
+import { history } from 'umi'
+import CutAccount from '../cut-account'
+import EditPassword from '../edit-password'
+import LayoutHeaderMenu from '../layout-header-menu'
+import PersonInfoModal from '../person-info-modal'
+import VersionInfoModal from '../version-info-modal'
+import styles from './index.less'
 
 const LayoutHeader: React.FC = () => {
-  const [editPasswordModalVisible, setEditPasswordModalVisible] = useState<boolean>(false);
-  const [cutAccoutModalVisible, setCutAccountModalVisible] = useState<boolean>(false);
-  const [personInfoModalVisible, setPersonInfoModalVisible] = useState<boolean>(false);
-  const [versionModalVisible, setVersionModalVisible] = useState<boolean>(false);
-  const [count,setCount] = useState<number>(0)
-  const [stopServerInfo,setStopServerInfo] = useState<Stop>({} as Stop)
+  const [editPasswordModalVisible, setEditPasswordModalVisible] = useState<boolean>(false)
+  const [cutAccoutModalVisible, setCutAccountModalVisible] = useState<boolean>(false)
+  const [personInfoModalVisible, setPersonInfoModalVisible] = useState<boolean>(false)
+  const [versionModalVisible, setVersionModalVisible] = useState<boolean>(false)
+  const [count, setCount] = useState<number>(0)
+  const [stopServerInfo, setStopServerInfo] = useState<Stop>({} as Stop)
 
-  const userInfo = useGetUserInfo();
+  const userInfo = useGetUserInfo()
 
   const loginOut = async () => {
-    history.push('/login');
-    await signOut();
-    localStorage.setItem('Authorization', '');
-  };
+    history.push('/login')
+    await signOut()
+    localStorage.setItem('Authorization', '')
+  }
 
-  const menuData: any[] = useGetFunctionModules();
+  const menuData: any[] = useGetFunctionModules()
 
   const personInfoEditEvent = () => {
-    setPersonInfoModalVisible(true);
-  };
-  useInterval(()=>{
-    let info = JSON.parse(sessionStorage.getItem('stopServerInfo')  || '')
-    if (info){
+    setPersonInfoModalVisible(true)
+  }
+  useInterval(() => {
+    let info = JSON.parse(sessionStorage.getItem('stopServerInfo') || '{}')
+    if (Object.keys(info).length !== 0) {
       setCount(1)
       setStopServerInfo(info)
+    } else {
+      setCount(0)
+      setStopServerInfo({} as Stop)
     }
-  },5000)
+  }, 5000)
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (
     <Menu>
@@ -73,13 +76,12 @@ const LayoutHeader: React.FC = () => {
         <span>安全退出</span>
       </Menu.Item>
     </Menu>
-  );
+  )
 
   const menuSelectEvent = (name: string, path: string) => {
-    history.push(path);
-  };
+    history.push(path)
+  }
   // TODO 获取menu需要根据权限进行处理一下，没权限的不用展示出来
-
 
   const menuContent = menuData
     ?.filter((item) => item.category === 1)
@@ -94,8 +96,8 @@ const LayoutHeader: React.FC = () => {
             menuData={item.children}
           />
         </>
-      );
-    });
+      )
+    })
 
   return (
     <div className={styles.layoutHeader}>
@@ -107,7 +109,7 @@ const LayoutHeader: React.FC = () => {
 
         <div className={styles.layoutMyBaseInfo}>
           <div onClick={() => setVersionModalVisible(true)}>
-            <Badge count={count} color={"red"} size={"small"} offset={[1,20]} dot>
+            <Badge count={count} color={'red'} size={'small'} offset={[1, 20]} dot>
               <BellOutlined style={{ height: '32px' }} className={styles.myMessageTips} />
             </Badge>
           </div>
@@ -126,9 +128,13 @@ const LayoutHeader: React.FC = () => {
       <EditPassword visible={editPasswordModalVisible} onChange={setEditPasswordModalVisible} />
       <CutAccount visible={cutAccoutModalVisible} onChange={setCutAccountModalVisible} />
       <PersonInfoModal visible={personInfoModalVisible} onChange={setPersonInfoModalVisible} />
-      <VersionInfoModal visible={versionModalVisible} onChange={setVersionModalVisible} stopServerInfo={stopServerInfo}/>
+      <VersionInfoModal
+        visible={versionModalVisible}
+        onChange={setVersionModalVisible}
+        stopServerInfo={stopServerInfo}
+      />
     </div>
-  );
-};
+  )
+}
 
-export default LayoutHeader;
+export default LayoutHeader

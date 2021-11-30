@@ -6,6 +6,7 @@ import OverHeadDesignTab from './components/overHeadDesign-tab'
 import { ImportOutlined } from '@ant-design/icons'
 import ImportOverheadModal from './components/import-form'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { OverHeadProvider } from './context'
 
 interface libParams {
   libId: string
@@ -13,21 +14,10 @@ interface libParams {
 
 const OverheadDesign: React.FC<libParams> = (props) => {
   const { libId } = props
-  const tableRef = React.useRef<HTMLDivElement>(null)
   const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false)
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
-
-  // 列表刷新
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh()
-    }
-  }
-
-  const uploadFinishEvent = () => {
-    refresh()
-  }
+  const [isRefresh, setIsRefresh] = useState<boolean>(false)
+  // const { refresh } = useOverHeadStore()
 
   const importOverheadDesignEvent = () => {
     setImportOverheadVisible(true)
@@ -35,7 +25,7 @@ const OverheadDesign: React.FC<libParams> = (props) => {
 
   return (
     // <PageCommonWrap noPadding={true}>
-    <>
+    <OverHeadProvider value={{ isRefresh, setIsRefresh }}>
       <div className={styles.overHeadDesign}>
         <div className={styles.overHeadTable}>
           <div className="flex">
@@ -58,11 +48,10 @@ const OverheadDesign: React.FC<libParams> = (props) => {
         libId={libId}
         requestSource="resource"
         visible={importOverheadVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportOverheadVisible}
       />
       {/* </PageCommonWrap> */}
-    </>
+    </OverHeadProvider>
   )
 }
 

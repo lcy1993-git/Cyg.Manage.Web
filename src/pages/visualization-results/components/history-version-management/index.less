@@ -1,0 +1,69 @@
+.versionManagement {
+  position: absolute;
+  top: 70px;
+  left: 3px;
+  width: 200px;
+  margin-left: 8px;
+  background: transparent;
+  .versionManagementButton {
+    display: flex;
+    height: 32px;
+    line-height: 32px;
+    //opacity: 0.8;
+    .pickUpIcon {
+      width: 20px;
+      height: 20px;
+      margin-top: 5px;
+    }
+    .versionManagementText {
+      width: 88px;
+      height: 28px;
+      margin-right: 6px;
+      color: #0e7b3b;
+      line-height: 28px;
+      text-align: center;
+      background: #ffffff;
+      border: 1px solid white;
+      cursor: pointer;
+      //opacity: 1;
+      user-select: none;
+      //border-radius: 4px;
+    }
+  }
+  .versionManagementList {
+    //height: 70vh;
+    overflow-y: auto;
+    transition: all 0.5s;
+    .listText {
+      color: white;
+      cursor: pointer;
+      opacity: 0.6;
+      :global .ant-timeline-item-head-blue {
+        color: white;
+        border-color: white;
+      }
+      .addTextStyle {
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.24);
+      }
+    }
+    .listActiveText {
+      color: white;
+      cursor: pointer;
+      opacity: 1;
+    }
+    .listText:hover {
+      opacity: 1;
+      :global .ant-timeline-item-tail {
+        opacity: 0.5;
+      }
+    }
+    .listActiveText {
+      :global .ant-timeline-item-tail {
+        opacity: 0.5;
+      }
+    }
+  }
+  .versionManagementList::-webkit-scrollbar {
+    width: 0 !important;
+  }
+}

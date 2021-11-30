@@ -16,7 +16,8 @@
         "manage": "/manage/api",
         "geoserver": "/geoserver",
         "design": "/design/api",
-        "geoServerUrl": "/geoserver/pdd/ows/"
+        "geoServerUrl": "/geoserver/pdd/ows/",
+        "netFrameworkHistory": "/gridpredesign/api"
     },
     "logoUrl": {
         "218.6.242.125": "ke-rui-logo.png",
@@ -29,5 +30,5 @@
     },
     "areaStatisticsUrl": "/chart/index.html",
     "commonServer": "http://service.pwcloud.cdsrth.com:8101",
-    "version": "1.0.148"
+    "version": "1.0.152"
 }

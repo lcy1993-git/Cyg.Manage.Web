@@ -1,33 +1,33 @@
-import { CaretDownOutlined } from '@ant-design/icons';
-import { Dropdown, Menu } from 'antd';
-import React from 'react';
-import styles from './index.less';
+import { CaretDownOutlined } from '@ant-design/icons'
+import { Dropdown, Menu } from 'antd'
+import React from 'react'
+import styles from './index.less'
 
 interface MenuItemParams {
-  name: string;
-  jurisdiction?: string;
-  icon?: string;
-  url: string;
-  category: number;
-  children: any[];
-  authCode: string;
+  name: string
+  jurisdiction?: string
+  icon?: string
+  url: string
+  category: number
+  children: any[]
+  authCode: string
 }
 
 interface MenuProps {
-  name: string;
-  icon: string;
-  menuData: MenuItemParams[];
-  onSelect: (name: string, path: string) => void;
+  name: string
+  icon: string
+  menuData: MenuItemParams[]
+  onSelect: (name: string, path: string) => void
 }
 
-const { SubMenu } = Menu;
+const { SubMenu } = Menu
 
 const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
-  const { name, icon, menuData, onSelect } = props;
+  const { name, icon, menuData, onSelect } = props
 
   const toPath = (name: string, path: string) => {
-    onSelect(name, path);
-  };
+    onSelect(name, path)
+  }
 
   const menuElementList = menuData
     .filter((item) => item.category === 2)
@@ -44,13 +44,13 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
         >
           {item.children.map((ite) => {
             return (
-              <Menu.Item onClick={() => toPath(ite.name, ite.url)}>
+              <Menu.Item key={ite.name} onClick={() => toPath(ite.name, ite.url)}>
                 <div>
                   {icon ? <span>{ite.icon}</span> : null}
                   <span>{ite.name}</span>
                 </div>
               </Menu.Item>
-            );
+            )
           })}
         </SubMenu>
       ) : (
@@ -60,10 +60,10 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
             <span>{item.name}</span>
           </div>
         </Menu.Item>
-      );
-    });
+      )
+    })
 
-  const menuElement = <Menu>{menuElementList}</Menu>;
+  const menuElement = <Menu>{menuElementList}</Menu>
 
   return (
     <Dropdown overlay={menuElement} className="headerMenuItem">
@@ -78,7 +78,7 @@ const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
         </div>
       </div>
     </Dropdown>
-  );
-};
+  )
+}
 
-export default LayoutHeaderMenu;
+export default LayoutHeaderMenu

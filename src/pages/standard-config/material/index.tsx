@@ -1,24 +1,24 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, ImportOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useState, useEffect } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
+  addMaterialItem,
+  deleteMaterialItem,
   getMaterialDetail,
   updateMaterialItem,
-  deleteMaterialItem,
-  addMaterialItem,
 } from '@/services/resource-config/material'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
 // import UrlSelect from '@/components/url-select';
 import MaterialForm from './component/add-edit-form'
-import LineProperty from './component/line-property'
 import CableMapping from './component/cable-mapping'
 import SaveImportMaterial from './component/import-form'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import LineProperty from './component/line-property'
+import styles from './index.less'
 
 const { Search } = Input
 

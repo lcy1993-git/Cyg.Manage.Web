@@ -1,34 +1,34 @@
-import CyTip from '@/components/cy-tip';
-import { modifyExportPowerState } from '@/services/project-management/all-project';
-import { useControllableValue } from 'ahooks';
-import { Divider, Form, message, Modal, Radio } from 'antd';
-import React, { Dispatch, useState } from 'react';
-import { SetStateAction } from 'react';
+import CyTip from '@/components/cy-tip'
+import { modifyExportPowerState } from '@/services/project-management/all-project'
+import { useControllableValue } from 'ahooks'
+import { Divider, Form, message, Modal, Radio } from 'antd'
+import React, { Dispatch, useState } from 'react'
+import { SetStateAction } from 'react'
 
 // import styles from './index.less';
 
 interface ExportPowerModalParams {
-  projectIds: string[];
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent: () => void;
+  projectIds: string[]
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent: () => void
 }
 
 const ExportPowerModal: React.FC<ExportPowerModalParams> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [powerStatus, setPowerStatus] = useState<boolean>(true);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [powerStatus, setPowerStatus] = useState<boolean>(true)
 
-  const { projectIds, finishEvent } = props;
+  const { projectIds, finishEvent } = props
 
   const modifyPowerStatus = async () => {
     await modifyExportPowerState({
       isEnable: powerStatus,
       projectIds: projectIds,
-    });
-    message.success('操作成功');
-    setState(false);
-    finishEvent?.();
-  };
+    })
+    message.success('操作成功')
+    setState(false)
+    finishEvent?.()
+  }
 
   return (
     <Modal
@@ -54,7 +54,7 @@ const ExportPowerModal: React.FC<ExportPowerModalParams> = (props) => {
         </Radio.Group>
       </Divider>
     </Modal>
-  );
-};
+  )
+}
 
-export default ExportPowerModal;
+export default ExportPowerModal

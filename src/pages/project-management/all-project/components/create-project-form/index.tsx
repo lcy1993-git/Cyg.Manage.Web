@@ -6,9 +6,7 @@ import { useMount, useRequest } from 'ahooks'
 import { DatePicker, Input, InputNumber, Select } from 'antd'
 import { isEmpty, isNumber } from 'lodash'
 import moment, { Moment } from 'moment'
-import React, { memo, useEffect, useState } from 'react'
-import { useMemo } from 'react'
-
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import Rule from './project-form-rule'
 
 interface CreateProjectFormProps {
@@ -692,7 +690,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             rules={Rule.required}
           >
-            {status == 1 || status == 14 || status == undefined ? (
+            {status == 1 || status == 14 || status == 30 || status == 31 || status == undefined ? (
               <UrlSelect
                 defaultData={
                   pointVisible || isInherit ? handleProjectDataSourceType : projectDataSourceType

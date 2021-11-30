@@ -22,10 +22,18 @@ interface GetGroupUserProps {
   defaultType?: string
   allotCompanyId?: string | undefined
   dataSourceType?: number
+  groupId?: string
 }
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
-  const { onChange, getCompanyInfo, defaultType = '2', allotCompanyId = '', dataSourceType } = props
+  const {
+    onChange,
+    getCompanyInfo,
+    defaultType = '2',
+    allotCompanyId = '',
+    dataSourceType,
+    groupId = '',
+  } = props
 
   const { data: companyInfo, run: getCompanyInfoEvent } = useRequest(getCompanyName, {
     manual: true,
@@ -42,7 +50,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
 
-  const { data: groupData = [] } = useRequest(() => getTreeSelectData())
+  const { data: groupData = [] } = useRequest(() => getTreeSelectData({ pId: groupId }))
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0 && checkedValue != '3') {
@@ -87,8 +95,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     }
   }, [defaultType])
 
-  console.log(defaultType, checkedValue, '5543545')
-
   const notChoose = (() => {
     return [
       {
@@ -98,7 +104,6 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       },
     ]
   })()
-  console.log(notChoose)
 
   return (
     <>

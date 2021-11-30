@@ -1,22 +1,21 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { Ref, useEffect, useImperativeHandle, useState, forwardRef } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
+  addCableWellItem,
+  deleteCableWellItem,
   getCableWellDetail,
   updateCableWellItem,
-  deleteCableWellItem,
-  addCableWellItem,
 } from '@/services/resource-config/cable-well'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
-
+import React, { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react'
 import CableWellForm from './components/add-edit-form'
 import CableWellDetail from './components/detail-table/index'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import styles from './index.less'
 
 const { Search } = Input
 

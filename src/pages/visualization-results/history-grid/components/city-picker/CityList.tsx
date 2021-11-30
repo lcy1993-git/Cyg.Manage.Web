@@ -64,12 +64,12 @@ const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
     <div className="flex flex-wrap">
       {cities.map((c) => (
         <span
-          className={`mx-1 mb-2 px-1 cursor-pointer ${
-            selectedCity?.name === c.name
-              ? 'text-theme-green bg-theme-green-light'
+          className={`mx-1 mb-2 px-1 cursor-pointer hover:underline ${
+            selectedCity?.code === c.code
+              ? 'text-theme-green bg-theme-green-lightest'
               : 'text-gray-800'
           }`}
-          key={c.name}
+          key={c.code}
           onClick={() => onSelect(c, rest)}
         >
           {c.name}

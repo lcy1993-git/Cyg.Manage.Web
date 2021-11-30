@@ -1,63 +1,63 @@
 .batchEditEngineerInfoTable {
-    display: flex;
-    padding: 20px 20px 10px 20px;
-    height: calc(100% - 35px);
-    box-sizing: border-box;
-    .batchEditEngineerTableContent {
-        flex: 1;
-    }
-    .batchEditProjectTable {
-        background-color: @table-select-color;
-        padding: 10px;
-        width: 520px;
-        height: 100%;
-    }
-    .currentControlEngineer {
-      height: 50px;
-      line-height: 50px;
-      border: 1px solid @table-line-color;
-      border-bottom: none;
-      border-radius: 1px;
-      font-size: 13px;
-      text-indent: 8px;
-      background-color: @white-color;
-    }
-    table {
-        width: 100%;
-        table-layout: fixed;
-        border-collapse: collapse;
-        background-color: #fff;
-        border: 1px solid @table-line-color;
-        thead {
-          th {
-            border-right: 1px solid @table-line-color;
-            border-bottom: 1px solid @table-line-color;
-            padding: 6px 10px;
-            background-color: @table-thead-bg;
-            &.checkboxTh {
-              width: 44px;
-            }
-          }
+  display: flex;
+  box-sizing: border-box;
+  height: calc(100% - 35px);
+  padding: 20px 20px 10px 20px;
+  .batchEditEngineerTableContent {
+    flex: 1;
+  }
+  .batchEditProjectTable {
+    width: 520px;
+    height: 100%;
+    padding: 10px;
+    background-color: @table-select-color;
+  }
+  .currentControlEngineer {
+    height: 50px;
+    font-size: 13px;
+    line-height: 50px;
+    text-indent: 8px;
+    background-color: @white-color;
+    border: 1px solid @table-line-color;
+    border-bottom: none;
+    border-radius: 1px;
+  }
+  table {
+    width: 100%;
+    table-layout: fixed;
+    background-color: #fff;
+    border: 1px solid @table-line-color;
+    border-collapse: collapse;
+    thead {
+      th {
+        padding: 6px 10px;
+        background-color: @table-thead-bg;
+        border-right: 1px solid @table-line-color;
+        border-bottom: 1px solid @table-line-color;
+        &.checkboxTh {
+          width: 44px;
         }
-    
-        tbody {
-          tr {
-            &.checked {
-              background-color: @table-select-color;
-            }
-          }
-          td {
-            border-right: 1px solid @table-line-color;
-            border-bottom: 1px solid @table-line-color;
-            padding: 6px 10px;
-            color: @gray-color;
-            overflow: hidden;
-            :global {
-                .ant-form-item {
-                    margin-bottom: 0px !important;
-                }
-            }
+      }
+    }
+
+    tbody {
+      tr {
+        &.checked {
+          background-color: @table-select-color;
+        }
+      }
+      td {
+        padding: 6px 10px;
+        overflow: hidden;
+        color: @gray-color;
+        border-right: 1px solid @table-line-color;
+        border-bottom: 1px solid @table-line-color;
+        :global {
+          .ant-form-item {
+            margin-bottom: 0px !important;
           }
         }
       }
+    }
+  }
 }

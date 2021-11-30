@@ -1,50 +1,50 @@
-import PageCommonWrap from '@/components/page-common-wrap';
-import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, message, Spin } from 'antd';
-import TreeTable from '@/components/tree-table/index';
+import PageCommonWrap from '@/components/page-common-wrap'
+import React, { useRef, useState } from 'react'
+import { Button, Modal, Form, message, Spin } from 'antd'
+import TreeTable from '@/components/tree-table/index'
 import {
   addCompanyGroupItem,
   deleteCompanyGroupItem,
   getTreeSelectData,
   updateCompanyGroupItem,
   getCompanyGroupDetail,
-} from '@/services/operation-config/company-group';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import CompanyGroupForm from './components/add-edit-form';
+} from '@/services/operation-config/company-group'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import CompanyGroupForm from './components/add-edit-form'
 
-import { isArray } from 'lodash';
-import { useRequest } from 'ahooks';
-import CyTag from '@/components/cy-tag';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
+import { isArray } from 'lodash'
+import { useRequest } from 'ahooks'
+import CyTag from '@/components/cy-tag'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
 
 const CompanyGroup: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
 
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading: editDataLoading } = useRequest(getCompanyGroupDetail, {
     manual: true,
-  });
+  })
 
   const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
     manual: true,
-  });
+  })
 
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   const functionTableColumns = [
     {
@@ -58,7 +58,7 @@ const CompanyGroup: React.FC = () => {
       dataIndex: 'adminUserId',
       index: 'adminUserId',
       render: (text: any, record: any) => {
-        return record.adminUserId ? record.adminUserName : record.adminUserId;
+        return record.adminUserId ? record.adminUserName : record.adminUserId
       },
       width: 240,
     },
@@ -72,30 +72,30 @@ const CompanyGroup: React.FC = () => {
             <CyTag key={item.value} className="mr7">
               {item.text}
             </CyTag>
-          );
-        });
+          )
+        })
       },
     },
-  ];
+  ]
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteCompanyGroupItem(editDataId);
-    tableFresh();
-    message.success('删除成功');
-    setTableSelectRows([]);
-  };
+    await deleteCompanyGroupItem(editDataId)
+    tableFresh()
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
   const addEvent = async () => {
-    await getSelectTreeData();
-    setAddFormVisible(true);
-  };
+    await getSelectTreeData()
+    setAddFormVisible(true)
+  }
 
   const sureAddCompanyGroup = () => {
     addForm.validateFields().then(async (value) => {
@@ -106,39 +106,39 @@ const CompanyGroup: React.FC = () => {
           adminUserId: '',
           userIds: '',
         },
-        value,
-      );
-      await addCompanyGroupItem(submitInfo);
-      tableFresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addCompanyGroupItem(submitInfo)
+      tableFresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await getSelectTreeData();
-    setEditFormVisible(true);
-    const CompanyGroupData = await run(editDataId);
+    await getSelectTreeData({ skipId: editDataId })
+    setEditFormVisible(true)
+    const CompanyGroupData = await run(editDataId)
 
     editForm.setFieldsValue({
       ...CompanyGroupData,
       userIds: (CompanyGroupData.users ?? []).map((item: any) => item.value),
-    });
-  };
+    })
+  }
 
   const sureEditCompanyGroup = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -148,14 +148,14 @@ const CompanyGroup: React.FC = () => {
           parentId: editData.parentId,
           userIds: editData.userIds,
         },
-        values,
-      );
-      await updateCompanyGroupItem(submitInfo);
-      tableFresh();
-      message.success('更新成功');
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateCompanyGroupItem(submitInfo)
+      tableFresh()
+      message.success('更新成功')
+      setEditFormVisible(false)
+    })
+  }
 
   const functionModuleButton = () => {
     return (
@@ -176,8 +176,8 @@ const CompanyGroup: React.FC = () => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </>
-    );
-  };
+    )
+  }
 
   return (
     <PageCommonWrap>
@@ -225,7 +225,7 @@ const CompanyGroup: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default CompanyGroup;
+export default CompanyGroup

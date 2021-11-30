@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 interface ModulesPropertyParams {
   libId: string
@@ -29,7 +29,7 @@ interface ModuleAttributeParams extends ItemDetailData {
   nominalHeight: number
   steelStrength: string
   poleStrength: string
-  rodDiameter: number
+  rodDimaeter: number
   baseWeight: number
   segmentMode: string
   earthwork: string

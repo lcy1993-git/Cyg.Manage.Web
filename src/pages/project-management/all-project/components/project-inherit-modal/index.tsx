@@ -1,16 +1,10 @@
-import {
-  editProject,
-  getProjectInfo,
-  inheritProject,
-} from '@/services/project-management/all-project'
-import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useRequest } from 'ahooks'
-import moment, { Moment } from 'moment'
-import CreateProjectForm from '../create-project-form'
+import { getProjectInfo, inheritProject } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
 import { isNumber } from 'lodash'
+import moment, { Moment } from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import CreateProjectForm from '../create-project-form'
 
 interface ProjectInheritModalProps {
   projectId: string

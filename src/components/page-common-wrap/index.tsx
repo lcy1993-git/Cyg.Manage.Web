@@ -1,16 +1,16 @@
-import React from 'react';
-import styles from './index.less';
+import React from 'react'
+import styles from './index.less'
 interface PageCommonWrapProps {
-  noPadding?: boolean;
-  noColor?: boolean;
-  className?: string;
+  noPadding?: boolean
+  noColor?: boolean
+  className?: string
 }
 
 const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
-  const { noPadding = false, className, noColor = false } = props;
+  const { noPadding = false, className, noColor = false } = props
 
-  const noPaddingClass = noPadding ? styles.noPadding : '';
-  const noColorClass = noColor ? styles.noColor : '';
+  const noPaddingClass = noPadding ? styles.noPadding : ''
+  const noColorClass = noColor ? styles.noColor : ''
 
   return (
     <div className={`${styles.pageCommonWrap} ${className}`}>
@@ -34,7 +34,7 @@ const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
         </div> */}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default PageCommonWrap;
+export default PageCommonWrap

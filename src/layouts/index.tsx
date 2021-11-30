@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'
-import { IRouteComponentProps } from 'umi'
-import { Tabs, ConfigProvider } from 'antd'
-import LayoutHeader from './components/layout-header'
 import { getTabsComponent, RouteListItem } from '@/utils/tabs-config'
+import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons'
+import { ConfigProvider, Tabs } from 'antd'
 import zhCN from 'antd/lib/locale/zh_CN'
 import moment from 'moment'
 import 'moment/locale/zh-cn'
-
-import styles from './index.less'
-import { BackwardOutlined, DownOutlined, ForwardOutlined, UpOutlined } from '@ant-design/icons'
+import React, { useEffect, useState } from 'react'
+import { IRouteComponentProps } from 'umi'
+import LayoutHeader from './components/layout-header'
 import { LayoutProvider } from './context'
+import styles from './index.less'
+
 moment.locale('zh-cn')
 
 const { TabPane } = Tabs
@@ -46,6 +46,9 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     },
   ])
   const [layoutIsFold, setLayoutIsFold] = useState(false)
+
+  // 预设计项目 id
+  const [preDesignItem, setPreDesignItem] = useState('')
 
   useEffect(() => {
     const historyRoutes: RouteListItem[] = JSON.parse(JSON.stringify(routeList))
@@ -185,10 +188,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
       <LayoutProvider
         value={{
           clearAgainLogin,
-          allProjectSearchProjectId,
           allProjectSearchParams,
           mapSelectCity,
-          setAllProjectSearchProjectId,
           setAllProjectSearchParams,
           setMapSelectCity,
           resourceManageFlag,
@@ -196,6 +197,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           workHandoverFlag,
           setWorkHandoverFlag,
           removeTab,
+          preDesignItem,
+          setPreDesignItem,
         }}
       >
         <div className={styles.layoutContent}>

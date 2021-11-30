@@ -1,10 +1,8 @@
-import React, { useRef, useEffect } from 'react'
-
-import * as echarts from 'echarts/lib/echarts'
+import { useSize } from 'ahooks'
 import 'echarts/lib/chart/bar'
 import 'echarts/lib/component/tooltip'
-
-import { useSize } from 'ahooks'
+import * as echarts from 'echarts/lib/echarts'
+import React, { useEffect, useRef } from 'react'
 
 interface BarChartProps {
   options: object

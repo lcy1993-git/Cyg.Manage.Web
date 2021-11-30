@@ -1,24 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import CyFormItem from '@/components/cy-form-item';
-import { DatePicker, Input, Cascader } from 'antd';
-import EnumSelect from '@/components/enum-select';
-import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project';
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import CyFormItem from '@/components/cy-form-item'
+import { DatePicker, Input, Cascader } from 'antd'
+import EnumSelect from '@/components/enum-select'
+import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
 
-import Rule from './engineer-form-rule';
-import { useGetSelectData } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
+import Rule from './engineer-form-rule'
+import { useGetSelectData } from '@/utils/hooks'
+import DataSelect from '@/components/data-select'
 
-import city from '@/assets/local-data/area';
-import moment from 'moment';
+import city from '@/assets/local-data/area'
+import moment from 'moment'
 
 interface CreateEngineerForm {
-  exportDataChange?: (exportData: any) => void;
-  areaId?: string;
-  libId?: string;
-  form?: any;
-  canChange?: boolean;
-  minStart?: number;
-  maxEnd?: number;
+  exportDataChange?: (exportData: any) => void
+  areaId?: string
+  libId?: string
+  form?: any
+  canChange?: boolean
+  minStart?: number
+  maxEnd?: number
 }
 
 const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
@@ -30,28 +30,28 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     canChange = true,
     minStart,
     maxEnd,
-  } = props;
+  } = props
 
-  const [areaId, setAreaId] = useState<string>('');
-  const [libId, setLibId] = useState<string>('');
+  const [areaId, setAreaId] = useState<string>('')
+  const [libId, setLibId] = useState<string>('')
 
   const disableDate = (current: any) => {
-    return current < moment('2010-01-01') || current > moment('2051-01-01');
-  };
+    return current < moment('2010-01-01') || current > moment('2051-01-01')
+  }
 
   const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
-  });
+  })
   const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
     {
       url: `/Inventory/GetListByResourceLibId?libId=${libId}`,
       requestSource: 'resource',
     },
-    { ready: !!libId, refreshDeps: [libId] },
-  );
+    { ready: !!libId, refreshDeps: [libId] }
+  )
   const { data: warehouseSelectData = [] } = useGetSelectData(
     {
       url: '/WareHouse/GetWareHouseListByArea',
@@ -60,8 +60,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
       method: 'post',
       postType: 'query',
     },
-    { ready: !!areaId, refreshDeps: [areaId] },
-  );
+    { ready: !!areaId, refreshDeps: [areaId] }
+  )
 
   const { data: companySelectData = [] } = useGetSelectData(
     {
@@ -70,8 +70,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
       titleKey: 'text',
       valueKey: 'text',
     },
-    { ready: !!areaId, refreshDeps: [areaId] },
-  );
+    { ready: !!areaId, refreshDeps: [areaId] }
+  )
 
   const mapHandleCityData = (data: any) => {
     return {
@@ -83,64 +83,64 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             ...data.children.map(mapHandleCityData),
           ]
         : undefined,
-    };
-  };
+    }
+  }
 
   const afterHandleData = useMemo(() => {
-    return city.map(mapHandleCityData);
-  }, [JSON.stringify(city)]);
+    return city.map(mapHandleCityData)
+  }, [JSON.stringify(city)])
 
   const valueChangeEvenet = useCallback(
     (prevValues: any, curValues: any) => {
       if (prevValues.province !== curValues.province) {
-        const [currentAreaId = ''] = curValues.province;
-        setAreaId(currentAreaId);
+        const [currentAreaId = ''] = curValues.province
+        setAreaId(currentAreaId)
         exportDataChange?.({
           areaId: currentAreaId,
           company: curValues.company,
           companyName:
             companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? '',
-        });
+        })
         // 因为发生了改变，所以之前选择的应该重置
         if (form && canChange) {
           form.setFieldsValue({
             warehouseId: undefined,
-          });
+          })
           form.setFieldsValue({
             company: undefined,
-          });
+          })
         }
       }
       if (prevValues.libId !== curValues.libId) {
-        setLibId(curValues.libId);
+        setLibId(curValues.libId)
         if (form && canChange) {
           form.setFieldsValue({
             inventoryOverviewId: undefined,
-          });
+          })
         }
       }
       if (prevValues.company !== curValues.company) {
-        const [currentAreaId = ''] = curValues.province;
+        const [currentAreaId = ''] = curValues.province
         exportDataChange?.({
           areaId: currentAreaId,
           company: curValues.company,
           companyName:
             companySelectData?.find((item: any) => item.value == curValues.company)?.label ?? '',
-        });
+        })
       }
-      return false;
+      return false
     },
-    [canChange],
-  );
+    [canChange]
+  )
 
   useEffect(() => {
     if (province) {
-      setAreaId(province);
+      setAreaId(province)
     }
     if (inputLibId) {
-      setLibId(inputLibId);
+      setLibId(inputLibId)
     }
-  }, [province, inputLibId]);
+  }, [province, inputLibId])
 
   return (
     <>
@@ -282,9 +282,9 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
                         moment(new Date(value).getTime()).isSame(moment(minStart))
                       : true
                   ) {
-                    return Promise.resolve();
+                    return Promise.resolve()
                   }
-                  return Promise.reject('"工程开始时间"不得晚于"项目开始时间"');
+                  return Promise.reject('"工程开始时间"不得晚于"项目开始时间"')
                 },
               }),
             ]}
@@ -304,11 +304,11 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
               { required: true, message: '工程结束时间不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(value);
+                  console.log(value)
 
                   if (
                     moment(moment(new Date(value)).format('YYYY-MM-DD')).isAfter(
-                      moment(new Date(getFieldValue('startTime')?.format('YYYY-MM-DD'))),
+                      moment(new Date(getFieldValue('startTime')?.format('YYYY-MM-DD')))
                     ) ||
                     !value ||
                     !getFieldValue('startTime')
@@ -319,11 +319,11 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
                           moment(new Date(value).getTime()).isSame(moment(maxEnd))
                         : true
                     ) {
-                      return Promise.resolve();
+                      return Promise.resolve()
                     }
-                    return Promise.reject('"工程结束时间"不得早于"项目结束时间"');
+                    return Promise.reject('"工程结束时间"不得早于"项目结束时间"')
                   }
-                  return Promise.reject('"工程结束时间"不得早于"工程开始时间"');
+                  return Promise.reject('"工程结束时间"不得早于"工程开始时间"')
                 },
               }),
             ]}
@@ -388,7 +388,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default CreateEngineerForm;
+export default CreateEngineerForm

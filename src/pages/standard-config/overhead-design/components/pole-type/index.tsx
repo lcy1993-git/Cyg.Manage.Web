@@ -1,20 +1,21 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
+  addPoleTypeItem,
+  deletePoleTypeItem,
   getPoleTypeDetail,
   updatePoleTypeItem,
-  deletePoleTypeItem,
-  addPoleTypeItem,
 } from '@/services/resource-config/pole-type'
-import { isArray } from 'lodash'
-import PoleTypeForm from './components/add-edit-form'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest, useUpdateEffect } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { OverHeadProvider, useOverHeadStore } from '../../context'
+import PoleTypeForm from './components/add-edit-form'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -31,7 +32,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-
+  const { isRefresh } = useOverHeadStore()
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
@@ -56,6 +57,10 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       </div>
     )
   }
+
+  useUpdateEffect(() => {
+    refresh()
+  }, [isRefresh])
 
   //选择资源库传libId
   const searchByLib = (value: any) => {

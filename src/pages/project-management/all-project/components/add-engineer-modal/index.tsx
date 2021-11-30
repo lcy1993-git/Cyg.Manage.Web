@@ -1,30 +1,30 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
-import { useControllableValue } from 'ahooks';
-import { Modal, Button } from 'antd';
-import { Form } from 'antd';
-import CreateEngineer from '../create-engineer';
-import { addEngineer } from '@/services/project-management/all-project';
-import { message } from 'antd';
+import React, { useState, Dispatch, SetStateAction } from 'react'
+import { useControllableValue } from 'ahooks'
+import { Modal, Button } from 'antd'
+import { Form } from 'antd'
+import CreateEngineer from '../create-engineer'
+import { addEngineer } from '@/services/project-management/all-project'
+import { message } from 'antd'
 
 interface AddEngineerModalProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: () => void;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  finishEvent?: () => void
 }
 
 const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [saveLoading, setSaveLoading] = useState<boolean>(false);
-  const [current, setCurrent] = useState<number>(0);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [saveLoading, setSaveLoading] = useState<boolean>(false)
+  const [current, setCurrent] = useState<number>(0)
 
-  const { finishEvent } = props;
+  const { finishEvent } = props
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const sureAddEngineerEvent = () => {
     form.validateFields().then(async (values) => {
       try {
-        setSaveLoading(true);
+        setSaveLoading(true)
         const {
           projects,
           name,
@@ -41,9 +41,9 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
           plannedYear,
           importance,
           grade,
-        } = values;
+        } = values
 
-        const [provinceNumber, city, area] = province;
+        const [provinceNumber, city, area] = province
 
         await addEngineer({
           projects,
@@ -65,18 +65,18 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
             importance,
             grade,
           },
-        });
+        })
 
-        message.success('立项成功');
-        setState(false);
-        finishEvent?.();
+        message.success('立项成功')
+        setState(false)
+        finishEvent?.()
       } catch (msg) {
-        console.error(msg);
+        console.error(msg)
       } finally {
-        setSaveLoading(false);
+        setSaveLoading(false)
       }
-    });
-  };
+    })
+  }
 
   return (
     <Modal
@@ -123,7 +123,7 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
         <CreateEngineer form={form} current={current} />
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddEngineerModal;
+export default AddEngineerModal

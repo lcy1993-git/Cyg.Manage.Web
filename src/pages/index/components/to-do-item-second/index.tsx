@@ -1,31 +1,31 @@
-import React from 'react';
-import styles from './index.less';
-import awaitProcessSrc from '@/assets/index/awaitProcess.png';
-import inProgressSrc from '@/assets/index/inProgress.png';
-import delegationSrc from '@/assets/index/delegation.png';
-import beSharedSrc from '@/assets/index/beShared.png';
+import awaitProcessSrc from '@/assets/index/awaitProcess.png'
+import beSharedSrc from '@/assets/index/beShared.png'
+import delegationSrc from '@/assets/index/delegation.png'
+import inProgressSrc from '@/assets/index/inProgress.png'
+import React from 'react'
+import styles from './index.less'
 
 interface ToDoItemProps {
-  type: string;
-  number: number;
+  type: string
+  number: number
 }
 
 const statusObject = {
-  awaitProcess: '待处理',
-  inProgress: '进行中',
-  delegation: '委托',
-  beShared: '被共享',
-};
+  awaitProcess: '立项审批',
+  inProgress: '任务安排',
+  delegation: '评审管理',
+  beShared: '结项管理',
+}
 
 const imageObject = {
   awaitProcess: awaitProcessSrc,
   inProgress: inProgressSrc,
   delegation: delegationSrc,
   beShared: beSharedSrc,
-};
+}
 
 const ToDoItem: React.FC<ToDoItemProps> = (props) => {
-  const { type, number } = props;
+  const { type, number } = props
   return (
     <div className={styles.toDoItem}>
       <div className={styles.toDoItemIcon}>
@@ -36,7 +36,7 @@ const ToDoItem: React.FC<ToDoItemProps> = (props) => {
         <div className={styles.toDoItemStatus}>{statusObject[type]}</div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ToDoItem;
+export default ToDoItem

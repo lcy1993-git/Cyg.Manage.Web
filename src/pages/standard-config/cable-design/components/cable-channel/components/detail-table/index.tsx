@@ -1,22 +1,22 @@
 import GeneralTable from '@/components/general-table'
-import TableSearch from '@/components/table-search'
-import { Input, Button, message, Form, Modal } from 'antd'
-import React, { useState } from 'react'
-import { PlusOutlined, EditOutlined } from '@ant-design/icons'
-// import styles from './index.less';
-import { isArray } from 'lodash'
-import {
-  getCableChannelDetailItem,
-  updateCableChannelDetailItem,
-  deleteCableChannelDetailItem,
-  addCableChannelDetailItem,
-} from '@/services/resource-config/cable-channel'
-import { useRequest } from 'ahooks'
-
 import ModalConfirm from '@/components/modal-confirm'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import TableSearch from '@/components/table-search'
 import AddComponentDetail from '@/pages/standard-config/component/components/detail-table/add-form'
 import EditComponentDetail from '@/pages/standard-config/component/components/detail-table/edit-form'
+import {
+  addCableChannelDetailItem,
+  deleteCableChannelDetailItem,
+  getCableChannelDetailItem,
+  updateCableChannelDetailItem,
+} from '@/services/resource-config/cable-channel'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal } from 'antd'
+// import styles from './index.less';
+import { isArray } from 'lodash'
+import React, { useState } from 'react'
+
 interface ModuleDetailParams {
   libId: string
   cableChannelId: string[]

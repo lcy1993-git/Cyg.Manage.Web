@@ -1,37 +1,37 @@
-.recentlyWarned{
-  .title{
-      font-size: 16px;
-      font-family: Source Han Sans CN;
-      font-weight: 500;
-      line-height: 16px;
-      color: #1F1F1F;
-      opacity: 1;
-      margin: 0;
-      margin-bottom: 10px;
+.recentlyWarned {
+  .title {
+    margin: 0;
+    margin-bottom: 10px;
+    color: #1f1f1f;
+    font-weight: 500;
+    font-size: 16px;
+    font-family: Source Han Sans CN;
+    line-height: 16px;
+    opacity: 1;
   }
-  .warnList{
-    overflow-y:auto;
+  .warnList {
     height: 68vh;
+    overflow-y: auto;
     /* 滚动条 */
-    .warnItem{
-      border-bottom:  1px solid #EDEDED;
+    .warnItem {
       padding-top: 12px;
-      .warnText{
-        font-size: 14px;
-        font-family: Source Han Sans CN;
-        font-weight: 500;
-        line-height: 20px;
-        color: #505050;
-        opacity: 1;
+      border-bottom: 1px solid #ededed;
+      .warnText {
         margin-bottom: 8px;
-      }
-      .warnTime{
-        margin-bottom: 12px;
+        color: #505050;
+        font-weight: 500;
         font-size: 14px;
         font-family: Source Han Sans CN;
+        line-height: 20px;
+        opacity: 1;
+      }
+      .warnTime {
+        margin-bottom: 12px;
+        color: #8c8c8c;
         font-weight: 400;
+        font-size: 14px;
+        font-family: Source Han Sans CN;
         line-height: 14px;
-        color: #8C8C8C;
         opacity: 1;
       }
     }
@@ -62,9 +62,9 @@
 
   /* 滑块 */
   .warnList::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    min-height: 60px;
     min-width: 60px;
+    min-height: 60px;
+    background-color: #ccc;
     border-radius: 5px;
   }
 

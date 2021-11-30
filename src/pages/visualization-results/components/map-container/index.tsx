@@ -1,21 +1,20 @@
-import React, { useState } from 'react';
-import MapBase from '../map-base';
-import Layer from 'ol/layer/Layer';
-import LayerGroup from 'ol/layer/Group';
-import { initLayers, initOtherLayers, initTrackLayers, initView } from '../../utils';
-import styles from './index.less';
+import { useState } from 'react'
+import MapBase from '../map-base'
+import Layer from 'ol/layer/Layer'
+import LayerGroup from 'ol/layer/Group'
+import { initLayers, initOtherLayers, initTrackLayers, initView } from '../../utils'
+import styles from './index.less'
 
 const MapContainer = (props: any) => {
-  const { mapData } = props;
+  const { mapData } = props
 
   // 图层
-  const [layers, setLayers] = useState<Layer[]>(initLayers(mapData));
-  const [layerGroups, setLayerGroups] = useState<LayerGroup[]>(initOtherLayers());
-  const [trackLayers, setTrackLayerGroups] = useState<LayerGroup[]>(initTrackLayers());
-  
+  const [layers, setLayers] = useState<Layer[]>(initLayers(mapData))
+  const [layerGroups, setLayerGroups] = useState<LayerGroup[]>(initOtherLayers())
+  const [trackLayers, setTrackLayerGroups] = useState<LayerGroup[]>(initTrackLayers())
 
   // 视图
-  const [view, setView] = useState(initView);
+  const [view, setView] = useState(initView)
 
   return (
     <div className={styles.mapContainerBox}>
@@ -33,4 +32,4 @@ const MapContainer = (props: any) => {
     </div>
   )
 }
-export default MapContainer;
+export default MapContainer

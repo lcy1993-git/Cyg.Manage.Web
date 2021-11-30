@@ -1,43 +1,43 @@
 .singleStatistics {
-    width: 98px;
-    .singleStatisticsTitle {
-        font-size: 13px;
-        color: @gray-color;
-        font-weight: 400;
-        display: flex;
-        line-height: 1;
-        .singleStatisticsTitleWord {
-            flex: 1;
-        }
-        .singleStatisticsTitleToIcon {
-            font-size: 13px;
-        }
+  width: 98px;
+  .singleStatisticsTitle {
+    display: flex;
+    color: @gray-color;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1;
+    .singleStatisticsTitleWord {
+      flex: 1;
     }
-    .singleStatisticsContent {
-        padding-top: 10px;
-        display: flex;
-        .singleStatisticsIcon {
-            margin-right: 7px;
-            font-size: 0;
-            line-height: 1;
-            padding-top: 2px;
-            img {
-                width: 28px;
-                height: 28px;
-            }
-        }
-        .singleStatisticsNumber {
-            color: @black-color;
-            font-size: 26px;
-            font-weight: bold;
-            line-height: 1;
-            flex: 1;
-            padding-top: 4px;
-        }
-        .singleStatisticsUnit {
-            font-size: 13px;
-            color: @gray-color;
-            padding-top: 10px;
-        }
+    .singleStatisticsTitleToIcon {
+      font-size: 13px;
     }
+  }
+  .singleStatisticsContent {
+    display: flex;
+    padding-top: 10px;
+    .singleStatisticsIcon {
+      margin-right: 7px;
+      padding-top: 2px;
+      font-size: 0;
+      line-height: 1;
+      img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+    .singleStatisticsNumber {
+      flex: 1;
+      padding-top: 4px;
+      color: @black-color;
+      font-weight: bold;
+      font-size: 26px;
+      line-height: 1;
+    }
+    .singleStatisticsUnit {
+      padding-top: 10px;
+      color: @gray-color;
+      font-size: 13px;
+    }
+  }
 }

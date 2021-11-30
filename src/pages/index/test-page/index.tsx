@@ -1,32 +1,12 @@
-import data from './data'
-
-interface Data {
-  id: number;
-  parentID: number;
-  [key: string]: any
-}
-
-function formatDatatoTree(data: Data[]) {
-  const cloneData = data.map((item) => {
-    return { ...item }
-  })
-  const root = cloneData.filter(item => item.parentID === -1)
-  const childrens = cloneData.filter(item => item.parentID !== -1)
-  recursion(root, childrens)
-  return root
-  function recursion(parents: Data[], childrens: Data[]) {
-    parents.forEach((p) => {
-      childrens.forEach(() => {
-
-      })
-    })
-  }
-}
-
+import PageCommonWrap from '@/components/page-common-wrap'
+import MyProject from '@/pages/project-management/my-work/components/my-project'
+import React from 'react'
 const Test = () => {
-  console.log(formatDatatoTree(data));
-  return null
+  return (
+    <PageCommonWrap noPadding>
+      <MyProject />
+    </PageCommonWrap>
+  )
 }
 
 export default Test
-
