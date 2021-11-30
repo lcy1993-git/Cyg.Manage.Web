@@ -8,6 +8,7 @@
 
   .moduleHead {
     width: 98%;
+    height: calc(100% - 150px);
     margin: auto;
     background-color: #eaeaea;
     border: 2px solid #eaeaea;
@@ -18,19 +19,17 @@
     }
 
     .moduleTabs {
-      margin: 0;
       box-sizing: border-box;
       width: 100%;
       height: calc(100% - 76px);
+      margin: 0;
 
       :global {
-
         .ant-tabs-card .ant-tabs-content {
-            height: 100%;
-            background-color: white;
-            z-index: 999;
-
-          }
+          z-index: 999;
+          height: 100%;
+          background-color: white;
+        }
         .ant-tabs .ant-tabs-nav {
           box-shadow: none;
 
@@ -63,16 +62,16 @@
 
   .actionBtn {
     width: 100%;
-    height:48px;
+    height: 48px;
     line-height: 50px;
     text-align: center;
   }
-  .account{
-    padding-left:20px;
-    padding-top:5px;
+  .account {
+    padding-top: 5px;
+    padding-left: 20px;
     font-size: 12px;
-    .numberAccount{
-      color:#0E7B3B
+    .numberAccount {
+      color: #0e7b3b;
     }
   }
 }

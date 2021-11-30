@@ -448,7 +448,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       projectId: projectId,
       projectType: projectType ? String(projectType) : undefined,
       allotCompanyId: allotCompanyId,
-      allotGroupId: projectInfo.allots[0].allotCompanyGroup,
+      allotGroupId: projectInfo.allots ? projectInfo?.allots[0]?.allotCompanyGroup : '',
     })
     setArrangeModalVisible(true)
   }
