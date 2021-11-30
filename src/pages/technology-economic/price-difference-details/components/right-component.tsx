@@ -1,7 +1,5 @@
-import { Table } from 'antd';
-import React from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { Table } from 'antd'
+import React, { useEffect, useState } from 'react'
 const columns = [
   {
     title: '',
@@ -16,7 +14,7 @@ const columns = [
     key: 'number',
     colSpan: 2,
   },
-];
+]
 const columnsTwo = [
   {
     title: '建筑材机系数调差(%)',
@@ -38,7 +36,7 @@ const columnsTwo = [
       },
     ],
   },
-];
+]
 
 const columnsThree = [
   {
@@ -61,7 +59,7 @@ const columnsThree = [
       },
     ],
   },
-];
+]
 
 const columnsFour = [
   {
@@ -84,7 +82,7 @@ const columnsFour = [
       },
     ],
   },
-];
+]
 
 const columnsFive = [
   {
@@ -107,13 +105,13 @@ const columnsFive = [
       },
     ],
   },
-];
+]
 const RightComponent = (props: any) => {
-  const { rightData } = props;
-  const [data, setData] = useState<any>(rightData);
+  const { rightData } = props
+  const [data, setData] = useState<any>(rightData)
   useEffect(() => {
-    setData(rightData);
-  }, [rightData]);
+    setData(rightData)
+  }, [rightData])
   // 人工系数调差
   const dataSource = [
     {
@@ -132,7 +130,7 @@ const RightComponent = (props: any) => {
       name: '安装拆除工程',
       number: data?.mairProject,
     },
-  ];
+  ]
   // 建筑材机系数调差
   const dataSourceTwo = [
     {
@@ -150,7 +148,7 @@ const RightComponent = (props: any) => {
       number1: data?.bmclWithMaterial,
       number2: data?.bmclWithMachine,
     },
-  ];
+  ]
   // 安装材机系数调差
   const dataSourceThree = [
     {
@@ -165,15 +163,15 @@ const RightComponent = (props: any) => {
     },
     {
       name: '架空线路',
-      number1: data?.imclWithMaterial,
-      number2: data?.imclWithMachine,
-    },
-    {
-      name: '电缆线路',
       number1: data?.imolWithMaterial,
       number2: data?.imolWithMachine,
     },
-  ];
+    {
+      name: '电缆线路',
+      number1: data?.imclWithMaterial,
+      number2: data?.imclWithMachine,
+    },
+  ]
   // 建筑拆除材机系数调差
   const dataSourceFour = [
     {
@@ -186,7 +184,7 @@ const RightComponent = (props: any) => {
       number1: data?.brmclWithMaterial,
       number2: data?.brmclWithMachine,
     },
-  ];
+  ]
   // 安装拆除材机系数调差
   const dataSourceFive = [
     {
@@ -209,7 +207,7 @@ const RightComponent = (props: any) => {
       number1: data?.irmcmlWithMaterial,
       number2: data?.irmcmlWithMachine,
     },
-  ];
+  ]
   return (
     <div>
       <Table columns={columns} bordered dataSource={dataSource} pagination={false} />
@@ -226,6 +224,6 @@ const RightComponent = (props: any) => {
         <Table columns={columnsFive} bordered dataSource={dataSourceFive} pagination={false} />
       </div>
     </div>
-  );
-};
-export default RightComponent;
+  )
+}
+export default RightComponent
