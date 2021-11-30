@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './index.less'
 import {
   getHistoriesEnums,
+  saveData,
   SaveHistoryData,
 } from '@/pages/visualization-results/history-grid/service'
 import {
@@ -34,10 +35,12 @@ interface Props {
 const HistoryGirdForm: React.FC<Props> = (props) => {
   const { updateHistoryVersion } = props
   const {
+    mode,
     UIStatus,
     selectedData = [], //被选中的元素
     currentGridData,
-    historyDataSource, // 绘制元素的数据源
+    historyDataSource, // 历史网架绘制元素的数据源
+    preDesignDataSource, // 预设计网架绘制元素的数据源
   } = useHistoryGridContext()
   const [position, setPosition] = useState<number[]>([10, 155]) // 鼠标位置
   const [visible, setVisible] = useState<boolean>(false) // 是否可见
@@ -47,6 +50,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   const {
     drawing, //是否绘制模式
     currentMousePosition, // 当前操作鼠标位置
+    showHistoryLayer,
   } = UIStatus
   const [form] = Form.useForm()
   const [KVLevel, setKVLevel] = useState<[]>([])
@@ -72,7 +76,12 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
           data.toBeDeletedLineIds = selectedData.map((item) => item.id)
           data['toBeDeletedEquipmentIds'] = []
         }
-        await SaveHistoryData(data)
+        data['id'] = preDesignDataSource?.id
+        if (mode === 'recordEdit') {
+          await SaveHistoryData(data)
+        } else if (mode === 'preDesigning') {
+          await saveData(data)
+        }
         message.success('删除成功')
         updateHistoryVersion()
       },
@@ -80,13 +89,14 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   }
   const handleFinish = async (values: ElectricPointData | ElectricLineData) => {
     const data = {}
+    const dataSource = mode === 'recordEdit' ? historyDataSource : preDesignDataSource
     if (selectedData?.length === 1) {
       values.type = Number(values.type)
       values.voltageLevel = Number(values.voltageLevel)
       if (type === 'LineString') {
         // @ts-ignore
         data['lines'] =
-          historyDataSource?.lines.filter((item: ElectricLineData) => {
+          dataSource?.lines.filter((item: ElectricLineData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
               return item
@@ -95,7 +105,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       } else {
         // @ts-ignore
         data['equipments'] =
-          historyDataSource?.equipments.filter((item: ElectricPointData) => {
+          dataSource?.equipments.filter((item: ElectricPointData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
               return item
@@ -107,7 +117,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       if (type === 'LineString') {
         data['lines'] =
           // @ts-ignore
-          historyDataSource?.lines.filter((item: ElectricLineData) => {
+          dataSource?.lines.filter((item: ElectricLineData) => {
             if (ids?.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
@@ -118,7 +128,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       } else {
         data['equipments'] =
           // @ts-ignore
-          historyDataSource?.equipments.filter((item: ElectricPointData) => {
+          dataSource?.equipments.filter((item: ElectricPointData) => {
             if (ids?.includes(item.id)) {
               item = Object.assign(item, values)
               item.type = Number(values.type)
@@ -136,7 +146,13 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     data['toBeDeletedEquipmentIds'] = []
     data['toBeDeletedLineIds'] = []
     setVisible(false)
-    await SaveHistoryData(data)
+
+    if (mode === 'recordEdit') {
+      await SaveHistoryData(data)
+    } else if (mode === 'preDesigning') {
+      data['id'] = preDesignDataSource?.id
+      await saveData(data)
+    }
     message.success('保存成功')
     updateHistoryVersion()
   }
@@ -223,8 +239,19 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setTimeout(() => {
         form.setFieldsValue(val)
       })
-      setShowDetail(false)
-      setPosition([10, 155])
+      if (mode === 'preDesigning' && selectedData[0]?.sourceType === 'design') {
+        // 与设计预设图层
+        setShowDetail(false)
+        setPosition([10, 155])
+      } else if (mode === 'preDesigning' && selectedData[0]?.sourceType === 'history') {
+        // 预设计历史图层
+        setShowDetail(true)
+        setPosition(currentMousePosition)
+      } else {
+        // 其他情况
+        setShowDetail(false)
+        setPosition([10, 155])
+      }
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLength()
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
@@ -235,7 +262,19 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         const l = getLength()
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
-      setPosition([10, 155])
+      if (mode === 'preDesigning' && selectedData.some((item) => item?.sourceType === 'history')) {
+        setShowDetail(true)
+        setPosition(currentMousePosition)
+      } else if (
+        mode === 'preDesigning' &&
+        selectedData.every((item) => item?.sourceType === 'design')
+      ) {
+        setPosition([10, 155])
+        setShowDetail(false)
+      } else {
+        setPosition([10, 155])
+        setShowDetail(false)
+      }
     } else if (!drawing && selectedData.length === 1) {
       setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       setVisible(true)
@@ -248,7 +287,18 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     } else if (selectedData.length === 0) {
       setVisible(false)
     }
-  }, [drawing, selectedData, form])
+  }, [drawing, selectedData, form, mode])
+  useEffect(() => {
+    if (
+      ['preDesign', 'preDesigning'].includes(mode) &&
+      !showHistoryLayer &&
+      selectedData?.[0]?.sourceType === 'history'
+    ) {
+      setVisible(false)
+    } else if (showHistoryLayer && selectedData.length > 0) {
+      setVisible(true)
+    }
+  }, [showHistoryLayer, mode])
   return (
     <div>
       {showDetail && visible && (
@@ -377,19 +427,12 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               {selectedData?.length === 1 && (
                 <Form.Item name="remark" label={'备注'}>
                   <Input.TextArea maxLength={200} rows={2} showCount />
+                  <br />
                 </Form.Item>
               )}
               <div style={{ display: 'flex', justifyContent: 'end' }}>
                 <Space>
-                  {/*<Popconfirm*/}
-                  {/*  placement="topLeft"*/}
-                  {/*  title={'确认删除当前对象？'}*/}
-                  {/*  onConfirm={}*/}
-                  {/*  okText="确定"*/}
-                  {/*  cancelText="取消"*/}
-                  {/*>*/}
                   <Button onClick={handleDelete}>删除</Button>
-                  {/*</Popconfirm>*/}
                   <Button type="primary" htmlType="submit">
                     保存
                   </Button>

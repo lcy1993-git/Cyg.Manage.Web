@@ -1,17 +1,16 @@
-import { Modal, Form, Select, Button } from 'antd'
-import { ReloadOutlined } from '@ant-design/icons'
-import { useRequest, useMount } from 'ahooks'
-import UrlSelect from '@/components/url-select'
 import EnumSelect from '@/components/enum-select'
+import UrlSelect from '@/components/url-select'
 // import { useGetProjectEnum } from '@/utils/hooks';
 import {
+  getEngineerEnum,
   ProjectIdentityType,
   ProjectSourceType,
-  ProjectStatus,
 } from '@/services/project-management/all-project'
-import { getEngineerEnum } from '@/services/project-management/all-project'
-import styles from './index.less'
+import { ReloadOutlined } from '@ant-design/icons'
+import { useMount, useRequest } from 'ahooks'
+import { Button, Form, Modal, Select } from 'antd'
 import { useEffect } from 'react'
+import styles from './index.less'
 
 const { Item } = Form
 const { Option } = Select
@@ -39,19 +38,19 @@ const FilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel, def
     onChange(false)
   }
 
-  const getProjectStatusOption = () => {
-    const arrayProjectStatus: ProjectStatusOption[] = []
-    for (const [propertyKey, propertyValue] of Object.entries(ProjectStatus)) {
-      if (!Number.isNaN(Number(propertyKey))) {
-        continue
-      }
-      arrayProjectStatus.push({ key: propertyValue.toString(), name: propertyKey })
-    }
+  // const getProjectStatusOption = () => {
+  //   const arrayProjectStatus: ProjectStatusOption[] = [];
+  //   for (const [propertyKey, propertyValue] of Object.entries(ProjectStatus)) {
+  //     if (!Number.isNaN(Number(propertyKey))) {
+  //       continue;
+  //     }
+  //     arrayProjectStatus.push({ key: propertyValue.toString(), name: propertyKey });
+  //   }
 
-    return arrayProjectStatus.map((v) => {
-      return <Option key={v.key} children={v.name} value={v.key} />
-    })
-  }
+  //   return arrayProjectStatus.map((v) => {
+  //     return <Option key={v.key} children={v.name} value={v.key} />;
+  //   });
+  // };
 
   const onReset = () => {
     form.setFieldsValue({
@@ -103,7 +102,20 @@ const FilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel, def
         <div className={styles.filterModalWrap}>
           <div className={styles.col}>
             <Item name="status" label="项目状态">
-              <Select
+              <UrlSelect
+                {...selectStyle}
+                allowClear
+                mode="multiple"
+                valuekey="value"
+                titlekey="text"
+                url="/Porject/GetStatus"
+                // defaultData={resData.projectClassification}
+                dropdownMatchSelectWidth={168}
+                className="widthAll"
+                placeholder="项目状态"
+                style={{ width: 200 }}
+              />
+              {/* <Select
                 {...selectStyle}
                 mode="multiple"
                 allowClear
@@ -111,7 +123,7 @@ const FilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel, def
                 placeholder="项目状态"
               >
                 {getProjectStatusOption()}
-              </Select>
+              </Select> */}
             </Item>
             <Item name="pCategory" label="项目类别">
               <UrlSelect

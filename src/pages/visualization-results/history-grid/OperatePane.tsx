@@ -1,5 +1,5 @@
 import { getProjectInfo } from '@/services/project-management/all-project'
-import { Button, message } from 'antd'
+import { Button, Modal, Tooltip } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
 import { clearData } from './service/fetcher'
@@ -29,6 +29,8 @@ const OperationPane: FC = ({ children }) => {
         getProjectInfo(preDesignItemData.id).then((res) => {
           if (res.identitys.some((s: any) => s.value! === 4)) {
             setCanDraw(true)
+          } else {
+            setCanDraw(false)
           }
         })
       }
@@ -98,12 +100,25 @@ const OperationPane: FC = ({ children }) => {
         icon: 'icon-qingping',
         before: <span>|</span>,
         visible: (mode: HistoryState['mode']) => mode === 'preDesigning',
-        onClick: () => clearAllData(),
+        onClick: () => {
+          Modal.confirm({
+            title: '提示',
+            okText: '确认',
+            cancelText: '取消',
+            content: '此操作会清除当前项目所有设计数据,确认清屏？',
+            onOk: () => clearAllData(),
+          })
+        },
       },
     ]
 
     return list.filter(({ visible }) => !visible || visible(mode))
   }, [UIStatus, dispatch, mode])
+
+  const buttonClickEvent = () => {
+    changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
+    dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
+  }
 
   return (
     <div className="bg-white px-4 py-2 flex justify-between items-center space-x-4">
@@ -113,7 +128,7 @@ const OperationPane: FC = ({ children }) => {
           onClick={() => {
             dispatch({
               type: 'changeUIStatus',
-              payload: { ...UIStatus, recordVersion: 'save', drawing: false },
+              payload: { ...UIStatus, drawing: false },
             })
             changeMode(mode === 'recordEdit' ? 'record' : 'preDesign')
           }}
@@ -124,20 +139,20 @@ const OperationPane: FC = ({ children }) => {
       {children}
 
       {!drawing && (
-        <Button
-          type="primary"
-          disabled={!canDraw}
-          onClick={() => {
-            if (canDraw) {
-              changeMode(mode === 'preDesign' ? 'preDesigning' : 'recordEdit')
-              dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, drawing: true } })
-            } else {
-              message.error('当前项目身份非 [执行]，不可执行该操作')
-            }
-          }}
-        >
-          网架{changeModeBtnText}
-        </Button>
+        <>
+          {!canDraw && (
+            <Tooltip title="当前项目身份非 [执行]，不可执行该操作">
+              <Button type="primary" disabled={!canDraw} onClick={() => buttonClickEvent()}>
+                网架{changeModeBtnText}
+              </Button>
+            </Tooltip>
+          )}
+          {canDraw && (
+            <Button type="primary" disabled={!canDraw} onClick={() => buttonClickEvent()}>
+              网架{changeModeBtnText}
+            </Button>
+          )}
+        </>
       )}
 
       {drawing && (

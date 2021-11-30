@@ -45,7 +45,7 @@ function getScale(viewRef: ViewRef) {
   } else if (nominalCount < 1) {
     suffix = 'mm'
     pointResolution *= 1000
-  } else if (nominalCount < 1000) {
+  } else if (nominalCount <= 1000) {
     suffix = 'm'
   } else {
     suffix = 'km'
@@ -70,6 +70,7 @@ function getScale(viewRef: ViewRef) {
     }
     ++i
   }
+
   let text = count.toFixed(decimalCount < 0 ? -decimalCount : 0) + ' ' + suffix
-  return '1 : ' + text
+  return '1 : ' + text === '1000 m' ? '1 km' : text
 }

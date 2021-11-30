@@ -12,6 +12,7 @@ export const usePreDesign = ({ pathname }: Location<unknown>, dispatch: HistoryD
       if (preDesignItem.id) {
         dispatch({ type: 'changePreDesignItemData', payload: preDesignItem })
       } else {
+        // 解决刷新获取不到项目数据
         const localPreDesignItem = localStorage.getItem('preDesignItem')
         if (
           localPreDesignItem &&

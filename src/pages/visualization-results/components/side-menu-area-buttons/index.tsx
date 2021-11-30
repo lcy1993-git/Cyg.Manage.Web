@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { Button } from 'antd';
-import styles from './index.less';
+import { Button } from 'antd'
+import { useState } from 'react'
+import styles from './index.less'
 
 interface BtnProps {
-  title: string;
-  dart: string;
-  light: string;
-  onClick: () => void;
+  title: string
+  dart: string
+  light: string
+  onClick: () => void
   style?: any
 }
 
@@ -14,25 +14,31 @@ interface SiderMenuAreaButtonsProps {
   buttonProps: BtnProps[]
 }
 
-const SiderMenuAreaButtons: React.FC<SiderMenuAreaButtonsProps> = ({
-  buttonProps
-}) => {
-
+const SiderMenuAreaButtons: React.FC<SiderMenuAreaButtonsProps> = ({ buttonProps }) => {
   const [onButtonHover, setOnButtonHover] = useState<number>(-1)
 
   return (
     <>
-          {
-        buttonProps.map((item, index) => {
-          return (
-            <Button key={item.title} onMouseEnter={() => setOnButtonHover(index)} onMouseLeave={() => setOnButtonHover(-1)} title={item.title} onClick={item.onClick} style={{width: "100%", ...item?.style}}>
-            <img className={styles.img} src={ onButtonHover === index ? item.light : item.dart}></img>
+      {buttonProps.map((item, index) => {
+        return (
+          <Button
+            key={item.title}
+            onMouseEnter={() => setOnButtonHover(index)}
+            onMouseLeave={() => setOnButtonHover(-1)}
+            title={item.title}
+            onClick={item.onClick}
+            style={{ width: '100%', ...item?.style }}
+          >
+            <img
+              className={styles.img}
+              src={onButtonHover === index ? item.light : item.dart}
+              alt=""
+            ></img>
           </Button>
-          )
-        })
-      }
+        )
+      })}
     </>
-  );
+  )
 }
 
-export default SiderMenuAreaButtons;
+export default SiderMenuAreaButtons

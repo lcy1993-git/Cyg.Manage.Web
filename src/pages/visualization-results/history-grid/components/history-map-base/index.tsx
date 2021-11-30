@@ -1,5 +1,6 @@
 import '@/assets/icon/history-grid-icon.css'
 import { useMount, useSize, useUpdateEffect } from 'ahooks'
+import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
@@ -22,7 +23,6 @@ import { useCurrentRef } from './utils/hooks'
 
 const HistoryMapBase = () => {
   // const [state, setState, mode] = useGridMap()
-
   const {
     dispatch: setState,
     UIStatus,
@@ -32,7 +32,7 @@ const HistoryMapBase = () => {
     historyDataSource: dataSource,
     preDesignDataSource: importDesignData,
   } = useHistoryGridContext()
-  let mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
+  const mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
   const {
     showTitle,
     showHistoryLayer: historyLayerVisible,
@@ -111,10 +111,7 @@ const HistoryMapBase = () => {
   }, [geometryType])
 
   // 处理当前地图类型变化
-  useUpdateEffect(
-    () => onMapLayerTypeChange(mapLayerType, layerRef.vecLayer, layerRef.streetLayer),
-    [mapLayerType]
-  )
+  useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.streetLayer), [mapLayerType])
 
   // 根据历史数据绘制点位线路
   useUpdateEffect(() => {
@@ -154,14 +151,18 @@ const HistoryMapBase = () => {
 
   // 定位当当前项目位置
   useUpdateEffect(() => {
-    viewRef.view.fit(
-      getFitExtend(
-        sourceRef.historyPointSource.getExtent(),
-        sourceRef.historyLineSource.getExtent(),
-        sourceRef.designPointSource.getExtent(),
-        sourceRef.designLineSource.getExtent()
-      )
+    const extend = getFitExtend(
+      sourceRef.designPointSource.getExtent(),
+      sourceRef.designLineSource.getExtent(),
+      historyLayerVisible && sourceRef.historyPointSource.getExtent(),
+      historyLayerVisible && sourceRef.historyLineSource.getExtent()
     )
+    const canFit = extend.every(Number.isFinite)
+    if (canFit) {
+      viewRef.view.fit(extend)
+    } else {
+      message.error('当前项目没有数据，无法定位')
+    }
   }, [onProjectLocationClick])
 
   // 定位到当前用户位置
@@ -190,7 +191,7 @@ const HistoryMapBase = () => {
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
     viewRef.view.on('change:resolution', (e) => {
-      if (viewRef.view.getZoom()! > 16.5) {
+      if (viewRef.view.getZoom()! > 14.0) {
         setState((state) => {
           return {
             ...state,
@@ -291,10 +292,13 @@ const HistoryMapBase = () => {
       sourceRef,
     })
     // 初次挂载自适应屏幕
-    if (lifeStateRef.state.isFirstDrawHistory) {
+
+    if (lifeStateRef.state.isFirstDrawHistory && mode === 'record') {
       const pointExtent = sourceRef.historyPointSource.getExtent()
       const lineExtent = sourceRef.historyLineSource.getExtent()
-      viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
+      const extend = getFitExtend(pointExtent, lineExtent)
+      const canFit = extend.every((i) => Number.isFinite(i))
+      canFit && viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
     }
     lifeStateRef.state.isFirstDrawHistory = false
   }
