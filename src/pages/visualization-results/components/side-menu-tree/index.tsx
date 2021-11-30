@@ -1,40 +1,35 @@
-import React, { FC, useEffect, useRef, useState } from 'react'
-import { Tree, message, Input, Button, DatePicker, Modal } from 'antd'
-import { SearchOutlined, AlignLeftOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons'
-import { useMount, useRequest, useSize, useUpdateEffect, useUpdateLayoutEffect } from 'ahooks'
-import {
-  fetchAreaEngineerProjectListByParams,
-  fetchCompanyEngineerProjectListByParams,
-  ProjectListByAreaType,
-  downloadMediaZipFile,
-} from '@/services/visualization-results/side-tree'
-import { ProjectList } from '@/services/visualization-results/visualization-results'
-import { fetchCommentCountById } from '@/services/visualization-results/side-tree'
-
+import exportMediaLight from '@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'
+import exportMedia from '@/assets/icon-image/menu-tree-icon/导出多媒体.png'
+import { useLayoutStore } from '@/layouts/context'
+import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
 import { downloadMapPositon } from '@/services/visualization-results/list-menu'
+import {
+  downloadMediaZipFile, fetchAreaEngineerProjectListByParams, fetchCommentCountById, fetchCompanyEngineerProjectListByParams,
+  ProjectListByAreaType
+} from '@/services/visualization-results/side-tree'
+import { ProjectList } from '@/services/visualization-results/visualization-results'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { AlignLeftOutlined, LeftOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
+import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
+import { Button, DatePicker, Input, message, Modal, Tree } from 'antd'
+import classNames from 'classnames'
+import _ from 'lodash'
+import { observer } from 'mobx-react-lite'
+import moment from 'moment'
+import React, { FC, useEffect, useRef, useState } from 'react'
+import { useContainer } from '../../result-page/mobx-store'
+import { flattenDeepToKey, getSelectKeyByKeyword, TreeNodeType } from '../../utils/utils'
+import CommentModal from '../comment-modal'
+import ControlLayers from '../control-layers'
 import ExportMapPositionModal from '../export-map-position-modal'
 import FilterModal from '../filter-modal'
-import ResultModal from '../result-modal'
-import CommentModal from '../comment-modal'
 import MaterialModal from '../material-modal'
+import ResultModal from '../result-modal'
+import SiderMenuAreaButtons from '../side-menu-area-buttons'
 import SidePopup from '../side-popup'
 import MenuTree from './components/menu-tree'
-import ControlLayers from '../control-layers'
-
-import { observer } from 'mobx-react-lite'
-import { useContainer } from '../../result-page/mobx-store'
-import moment from 'moment'
-import _ from 'lodash'
-import { flattenDeepToKey, TreeNodeType, getSelectKeyByKeyword } from '../../utils/utils'
-import classNames from 'classnames'
 import styles from './index.less'
-
-import SiderMenuAreaButtons from '../side-menu-area-buttons'
-import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { useLayoutStore } from '@/layouts/context'
-import { useMemo } from '@umijs/renderer-react/node_modules/@types/react'
 
 const { RangePicker } = DatePicker
 
@@ -738,8 +733,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
             buttonJurisdictionArray?.includes('export-media') && {
               title: '导出多媒体',
-              dart: require('@/assets/icon-image/menu-tree-icon/导出多媒体.png'),
-              light: require('@/assets/icon-image/menu-tree-icon/导出多媒体-light.png'),
+              dart: exportMedia,
+              light: exportMediaLight,
               onClick: () => downLoadMedia(checkedProjectIdList),
               style:
                 Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0

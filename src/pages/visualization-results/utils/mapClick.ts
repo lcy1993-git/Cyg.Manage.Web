@@ -160,7 +160,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     } else {
       feature = feature_
     }
-    map.getTargetElement().style.cursor = 'wait'
+
     layerName = layer.getProperties().name
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length)
 
@@ -169,6 +169,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     feature.set('layerType', layerTypeIDEnum[layerType])
 
     if (layerType === 'preDesign') return
+    map.getTargetElement().style.cursor = 'wait'
     if (layer.getProperties().name.includes('mediaSign')) {
       let params = {
         projectId: feature.getProperties().data.project_id,

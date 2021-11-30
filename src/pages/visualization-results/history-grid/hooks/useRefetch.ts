@@ -46,7 +46,6 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
           // 没有数据
           return
         }
-
         const payload = res.content[0]
 
         if (!cancel) {
