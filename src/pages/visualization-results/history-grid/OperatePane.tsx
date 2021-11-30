@@ -50,6 +50,10 @@ const OperationPane: FC = ({ children }) => {
       type: 'changePreDesignDataSource',
       payload: { ...INITIAL_DATA_SOURCE, id: preDesignDataSource.id },
     })
+    dispatch({
+      type: 'changeSelectedData',
+      payload: [],
+    })
   }
 
   const drawingBtnList = useMemo(() => {
