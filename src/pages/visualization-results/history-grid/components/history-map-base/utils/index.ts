@@ -85,12 +85,11 @@ export const checkUserLocation = (viewRef: ViewRef) => {
         if (res?.rgc?.status === 'success' && res?.rgc?.result?.location?.lat) {
           const lat = parseFloat(res?.rgc?.result?.location?.lat)
           const lng = parseFloat(res?.rgc?.result?.location?.lng)
-          moveToViewByLocation(viewRef, [lat, lng])
-          // if (!isNaN(lat) && !isNaN(lng)) {
-          //   viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
-          // } else {
-          //   message.error('获取的位置信息无效，无法定位')
-          // }
+          if (!isNaN(lat) && !isNaN(lng)) {
+            viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
+          } else {
+            message.error('获取的位置信息无效，无法定位')
+          }
         } else {
           message.error('获取当前位置信息失败')
         }
