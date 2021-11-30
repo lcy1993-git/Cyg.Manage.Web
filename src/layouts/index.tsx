@@ -188,10 +188,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
       <LayoutProvider
         value={{
           clearAgainLogin,
-          allProjectSearchProjectId,
           allProjectSearchParams,
           mapSelectCity,
-          setAllProjectSearchProjectId,
           setAllProjectSearchParams,
           setMapSelectCity,
           resourceManageFlag,

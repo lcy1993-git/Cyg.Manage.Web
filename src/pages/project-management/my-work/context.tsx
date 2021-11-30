@@ -8,6 +8,8 @@ interface MyWorkContextProps {
   selectedFavId: string
   favName?: string
   sideVisible?: boolean
+  indexToPageSearchParams: any
+  setIndexToPageSearchParams: Dispatch<SetStateAction<any>>
   setCurrentClickTabChildActiveType: Dispatch<SetStateAction<string>>
   refreshStatistics: any
 }

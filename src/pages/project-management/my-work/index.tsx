@@ -28,9 +28,10 @@ const MyWork: React.FC = () => {
   const [selectedFavId, setSelectedFavId] = useState<string>('')
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
   const [favName, setFavName] = useState<string>('')
-  const [tableSearchParams, setTableSearchParams] = useState({
+  const [indexToPageSearchParams, setIndexToPageSearchParams] = useState({
     requestUrl: '/ProjectList/GetAlls',
   })
+
   const { data, run: refreshStatistics, loading } = useRequest(() => getMyWorkStatisticsData(), {
     onSuccess: () => {
       setMyWorkInitData([
@@ -181,8 +182,11 @@ const MyWork: React.FC = () => {
       setCurrentClickTabChildActiveType(childrenType[0].id)
     }
     setCurrentClickType(type)
-    setAllProjectSearchParams?.({
-      noNeedRefresh: false,
+
+    const requestUrl = childrenType[0].url
+
+    setIndexToPageSearchParams({
+      requestUrl: requestUrl,
     })
   }
 
@@ -207,7 +211,12 @@ const MyWork: React.FC = () => {
   }, [myWorkInitData, currentClickTabType])
 
   useEffect(() => {
-    if (allProjectSearchParams.searchType && myWorkInitData && myWorkInitData.length > 0) {
+    if (
+      allProjectSearchParams &&
+      allProjectSearchParams.searchType &&
+      myWorkInitData &&
+      myWorkInitData.length > 0
+    ) {
       setCurrentClickType(allProjectSearchParams.searchType)
       const childrenType = myWorkInitData.find(
         (item) => item.id === allProjectSearchParams.searchType
@@ -217,13 +226,25 @@ const MyWork: React.FC = () => {
       if (childrenType && childrenType.length > 0) {
         setCurrentClickTabChildActiveType(childrenType[0].id)
       }
+      const requestUrl = myWorkInitData.find(
+        (item) => item.id === allProjectSearchParams.searchType
+      ).children[0].url
+
+      setIndexToPageSearchParams({
+        ...allProjectSearchParams,
+        requestUrl: requestUrl,
+      })
+
+      setAllProjectSearchParams?.(undefined)
     }
-  }, [allProjectSearchParams.searchType, myWorkInitData])
+  }, [allProjectSearchParams, myWorkInitData])
 
   return (
     <MyWorkProvider
       value={{
         myWorkInitData,
+        indexToPageSearchParams,
+        setIndexToPageSearchParams,
         currentClickTabType,
         selectedFavId,
         currentClickTabChildActiveType,

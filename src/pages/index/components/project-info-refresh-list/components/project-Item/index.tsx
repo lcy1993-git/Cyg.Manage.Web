@@ -12,17 +12,16 @@ export interface ProjectItemProps {
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ operator, name, id, date, operationCategory }) => {
-  const { setAllProjectSearchProjectId, setAllProjectSearchParams } = useLayoutStore()
+  const { setAllProjectSearchParams } = useLayoutStore()
 
   const onClickProject = () => {
-    // setAllProjectSearchProjectId(name);
-    setAllProjectSearchProjectId?.(id)
     setAllProjectSearchParams?.({
       areaLevel: '-1',
       areaId: '',
       cityId: '',
       searchPerson: '',
       searchType: 'allpro',
+      projectId: id,
     })
   }
 

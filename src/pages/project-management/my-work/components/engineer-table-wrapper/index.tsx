@@ -161,27 +161,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   //获取用户身份
   // @ts-ignore
   const { userType } = JSON.parse(localStorage.getItem('userInfo'))
-
-  const {
-    allProjectSearchParams,
-    setAllProjectSearchParams,
-    allProjectSearchProjectId,
-    setAllProjectSearchProjectId,
-  } = useLayoutStore()
-
   const tableRef = useRef<HTMLDivElement>(null)
   const {
     currentClickTabChildActiveType,
     myWorkInitData,
+    indexToPageSearchParams,
     currentClickTabType,
     selectedFavId,
     refreshStatistics,
   } = useMyWorkStore()
-  const requestUrl = useMemo(() => {
-    return myWorkInitData
-      .find((item) => item.id === currentClickTabType)
-      .children.find((item: any) => item.id === currentClickTabChildActiveType).url
-  }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
   const typeColumns = useMemo(() => {
     return myWorkInitData
@@ -1071,58 +1059,41 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   useEffect(() => {
     setKeyWord('')
-    if (allProjectSearchProjectId) {
+    if (indexToPageSearchParams.projectId) {
       const searchParams = {
         ...initSearchParams,
         keyWord: '',
-        projectIds: [allProjectSearchProjectId],
+        projectIds: [indexToPageSearchParams.projectId],
       }
       setSearchParams(initSearchParams)
-      initTableData(requestUrl, { ...searchParams, keyWord: '' })
-      setAllProjectSearchProjectId?.('')
-      setAllProjectSearchParams?.({
-        areaLevel: '-1',
-        areaId: '',
-        cityId: '',
-        searchPerson: '',
-        searchType: '',
-        noNeedRefresh: true,
-      })
+      initTableData(indexToPageSearchParams.requestUrl, { ...searchParams, keyWord: '' })
       return
     }
-    if (allProjectSearchParams.searchPerson) {
-      setAllProjectSearchParams?.({
-        areaLevel: '-1',
-        areaId: '',
-        cityId: '',
-        searchPerson: '',
-        searchType: '',
-        noNeedRefresh: true,
-      })
+    if (indexToPageSearchParams.searchPerson) {
       setSearchParams({
         ...initSearchParams,
-        surveyUser: String(allProjectSearchParams.searchPerson),
+        surveyUser: String(indexToPageSearchParams.searchPerson),
         logicRelation: 1,
-        designUser: String(allProjectSearchParams.searchPerson),
-        areaType: allProjectSearchParams.areaLevel!,
-        areaId: allProjectSearchParams.areaId!,
+        designUser: String(indexToPageSearchParams.searchPerson),
+        areaType: indexToPageSearchParams.areaLevel!,
+        areaId: indexToPageSearchParams.areaId!,
       })
-      initTableData(requestUrl, {
+      initTableData(indexToPageSearchParams.requestUrl, {
         ...initSearchParams,
-        surveyUser: String(allProjectSearchParams.searchPerson),
+        surveyUser: String(indexToPageSearchParams.searchPerson),
         logicRelation: 1,
-        designUser: String(allProjectSearchParams.searchPerson),
-        areaType: allProjectSearchParams.areaLevel!,
-        areaId: allProjectSearchParams.areaId!,
+        designUser: String(indexToPageSearchParams.searchPerson),
+        areaType: indexToPageSearchParams.areaLevel!,
+        areaId: indexToPageSearchParams.areaId!,
         keyWord: '',
       })
       return
     }
-    if (!allProjectSearchParams.noNeedRefresh) {
+    if (indexToPageSearchParams.requestUrl) {
       setSearchParams(initSearchParams)
-      initTableData(requestUrl, { ...initSearchParams, keyWord: '' })
+      initTableData(indexToPageSearchParams.requestUrl, { ...initSearchParams, keyWord: '' })
     }
-  }, [allProjectSearchParams, allProjectSearchProjectId, requestUrl])
+  }, [indexToPageSearchParams])
 
   const columnsConfigSetting = () => {
     setChooseColumnsModal(true)
@@ -1201,7 +1172,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           getSelectRowKeys={getSelectRowKeys}
           searchParams={{ ...searchParams, keyWord }}
           ref={tableRef}
-          url={requestUrl}
+          url={indexToPageSearchParams.requestUrl}
           parentColumns={parentColumns}
           columns={showColumns}
           pagingSlot={typeColumns ? undefined : columnsIcon}
