@@ -7,8 +7,24 @@ interface TypeTabProps {
 }
 
 const TypeTab: React.FC<TypeTabProps> = (props) => {
-  const { currentClickTabChildActiveType, setCurrentClickTabChildActiveType } = useMyWorkStore()
+  const {
+    currentClickTabChildActiveType,
+    currentClickTabType,
+    setCurrentClickTabChildActiveType,
+    myWorkInitData,
+    setIndexToPageSearchParams,
+  } = useMyWorkStore()
   const { typeArray } = props
+
+  const thieTypeClickEvent = (id: string) => {
+    setCurrentClickTabChildActiveType(id)
+    const requestUrl = myWorkInitData
+      .find((item) => item.id === currentClickTabType)
+      .children.find((item: any) => item.id === id).url
+    setIndexToPageSearchParams({
+      requestUrl,
+    })
+  }
 
   const typeTabElement = useMemo(() => {
     return typeArray.map((item) => {
@@ -17,9 +33,7 @@ const TypeTab: React.FC<TypeTabProps> = (props) => {
         <div
           className={`${styles.typeSingleTab} ${isActive}`}
           key={item.id}
-          onClick={() => {
-            setCurrentClickTabChildActiveType(item.id)
-          }}
+          onClick={() => thieTypeClickEvent(item.id)}
         >
           {`${item.label}(${item.number})`}
         </div>

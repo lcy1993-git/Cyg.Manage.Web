@@ -5,12 +5,12 @@ interface LayoutContextValue {
   workHandoverFlag?: boolean
   clearAgainLogin?: () => void
   mapSelectCity?: string
-  allProjectSearchProjectId?: string
+
   allProjectSearchParams?: any
   setResourceManageFlag?: (value: boolean) => void
   setMapSelectCity?: (value: string) => void
   setWorkHandoverFlag?: (value: boolean) => void
-  setAllProjectSearchProjectId?: (value: string) => void
+
   setAllProjectSearchParams?: (value?: any) => void
   removeTab?: (value: string) => void
   /** 预设计 */
