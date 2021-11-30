@@ -177,6 +177,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     selectedFavId,
     refreshStatistics,
   } = useMyWorkStore()
+
   const requestUrl = useMemo(() => {
     return myWorkInitData
       .find((item) => item.id === currentClickTabType)
@@ -189,7 +190,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       .children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
-  const { data: columnsData, loading } = useRequest(() => getColumnsConfig(), {
+  const { data: columnsData } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
       setChooseColumns(
         columnsData
@@ -574,15 +575,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       render: (value: string, record: any) => {
         const { startTime, endTime } = record
         if (startTime && endTime) {
-          return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-            'YYYY-MM-DD'
-          )}`
+          return showNameTips(
+            `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format('YYYY-MM-DD')}`
+          )
         }
         if (startTime && !endTime) {
-          return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`
+          return showNameTips(`开始时间: ${moment(startTime).format('YYYY-MM-DD')}`)
         }
         if (!startTime && endTime) {
-          return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`
+          return showNameTips(`截止时间: ${moment(startTime).format('YYYY-MM-DD')}`)
         }
         return '未设置起止时间'
       },
@@ -705,7 +706,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       render: (value: string, record: any) => {
         return record.surveyUser
           ? `${record.surveyUser.value}`
-          : currentClickTabChildActiveType === 'awaitApprove'
+          : record.dataSourceType === 0
           ? ''
           : '无需安排'
       },
@@ -1039,10 +1040,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     }
   }
 
-  const initTableData = (url: string, params: any) => {
+  const initTableData = async (url: string, params: any) => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.urlChange(url, params)
+      await tableRef.current.urlChange(url, params)
+      refreshStatistics()
     }
   }
 
@@ -1327,7 +1329,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           startTime={modalNeedInfo.startTime}
           endTime={modalNeedInfo.endTime}
           onChange={setCopyProjectVisible}
-          changeFinishEvent={refreshEvent}
+          changeFinishEvent={delayRefresh}
         />
       )}
       {projectInheritVisible && (

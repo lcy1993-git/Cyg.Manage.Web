@@ -5,6 +5,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import useRequest from '@ahooksjs/use-request'
 import { Spin, Tooltip } from 'antd'
 import React, { useEffect, useMemo, useState } from 'react'
+import { useHistory } from 'umi'
 import SingleStatistics from '../all-project/components/all-project-statistics'
 import FavoriteList from '../all-project/components/favorite-list'
 import MyProject from './components/my-project'
@@ -169,6 +170,11 @@ const MyWork: React.FC = () => {
 
   const { allProjectSearchParams, setAllProjectSearchParams } = useLayoutStore()
 
+  const history = useHistory()
+
+  //@ts-ignore
+  const favVisible = history.location.state?.sideVisible
+
   //收藏夹
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const [sideVisible, setSideVisible] = useState<boolean>(false)
@@ -220,6 +226,10 @@ const MyWork: React.FC = () => {
     }
   }, [allProjectSearchParams.searchType, myWorkInitData])
 
+  useEffect(() => {
+    setSideVisible(favVisible)
+  }, [favVisible])
+
   return (
     <MyWorkProvider
       value={{
@@ -229,6 +239,7 @@ const MyWork: React.FC = () => {
         currentClickTabChildActiveType,
         sideVisible,
         favName,
+        setSideVisible,
         setCurrentClickTabChildActiveType,
         refreshStatistics,
       }}

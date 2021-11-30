@@ -9,6 +9,7 @@ interface MyWorkContextProps {
   favName?: string
   sideVisible?: boolean
   setCurrentClickTabChildActiveType: Dispatch<SetStateAction<string>>
+  setSideVisible?: Dispatch<SetStateAction<boolean>>
   refreshStatistics: any
 }
 

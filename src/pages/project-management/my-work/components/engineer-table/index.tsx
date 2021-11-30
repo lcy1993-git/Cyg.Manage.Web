@@ -187,6 +187,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...pageInfo,
         pageIndex: 1,
       })
+      emptyTableSelect()
     },
     urlChange: (requestUrl: string, params: object) => {
       setPageInfo({

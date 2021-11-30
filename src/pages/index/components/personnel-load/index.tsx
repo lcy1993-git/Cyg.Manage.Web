@@ -37,7 +37,10 @@ const PersonnelLoad: React.FC<Props> = (props) => {
         searchPerson: personId,
         searchType: 'allpro',
       })
-      history.push('/project-management/all-project')
+      history.push({
+        pathname: '/project-management/all-project',
+        state: { sideVisible: false },
+      })
     }
     return () => {
       //@ts-ignore

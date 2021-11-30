@@ -16,6 +16,8 @@ interface LayoutContextValue {
   /** 预设计 */
   preDesignItem?: any
   setPreDesignItem: React.Dispatch<SetStateAction<any>>
+  favoriteFlag?: boolean
+  setFavoriteFlag?: (value: boolean) => void
 }
 
 const LayoutContext = createContext({} as LayoutContextValue)

@@ -51,11 +51,14 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           {/* <TabPane key="schedule" tab="项目进度">
             <ProjectSchedule />
           </TabPane> */}
-          <TabPane key="process" tab="项目过程">
+          <TabPane key="process" tab="项目过程" style={{ height: '650px', overflowY: 'auto' }}>
             <ProjectProcessInfo operateLog={projectInfo?.operateLog ?? []} />
           </TabPane>
           {projectInfo &&
-            ((projectInfo.stateInfo.status > 4 && projectInfo.stateInfo.status !== 14) ||
+            ((projectInfo.stateInfo.status > 4 &&
+              projectInfo.stateInfo.status !== 14 &&
+              projectInfo.stateInfo.status !== 30 &&
+              projectInfo.stateInfo.status !== 31) ||
               projectInfo.stateInfo.status === 4) && (
               <TabPane key="result" tab="项目成果">
                 <CheckResultModal projectInfo={{ ...projectInfo, projectId: projectInfo?.id }} />

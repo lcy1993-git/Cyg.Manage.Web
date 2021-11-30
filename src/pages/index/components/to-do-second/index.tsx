@@ -1,4 +1,5 @@
 import { useLayoutStore } from '@/layouts/context'
+import { useMyWorkStore } from '@/pages/project-management/my-work/context'
 import { AreaInfo } from '@/services/index'
 import { getMyWorkStatisticsData } from '@/services/project-management/all-project'
 import { useRequest } from 'ahooks'
@@ -42,6 +43,7 @@ const ToDo: React.FC<ToDoProps> = (props) => {
   } = props
 
   const { setAllProjectSearchParams } = useLayoutStore()
+  const { sideVisible } = useMyWorkStore()
 
   const { data: toDoStatisticsInfo, loading } = useRequest(
     () => getMyWorkStatisticsData(areaTypeObj[currentAreaInfo.areaLevel!], currentAreaInfo.areaId),
@@ -74,7 +76,10 @@ const ToDo: React.FC<ToDoProps> = (props) => {
       searchPerson: '',
       searchType: typeEnmu[type],
     })
-    history.push('/project-management/all-project')
+    history.push({
+      pathname: '/project-management/all-project',
+      state: { sideVisible: false },
+    })
   }
 
   const handleTheStatisticsData = useMemo(() => {

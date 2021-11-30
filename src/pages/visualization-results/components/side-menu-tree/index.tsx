@@ -221,7 +221,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const store = useContainer()
   const { vState } = store
   const { checkedProjectIdList, checkedProjectDateList } = vState
-  const [filterCondition, setfilterCondition] = useState<any>({ haveAnnotate: -1 })
+  const [filterCondition, setfilterCondition] = useState<any>({ haveAnnotate: 0 })
   /**
    * 根据用户实时选择的数据动态添加初始和截至时间
    */

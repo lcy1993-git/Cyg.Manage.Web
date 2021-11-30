@@ -41,11 +41,11 @@ const ReportApproveModal: React.FC<ReportApproveParams> = (props) => {
         await reportProjectApprove(submitInfo)
       })
       message.success('报审成功')
-      setState(false)
       finishEvent?.()
+      setState(false)
       return
     }
-    message.warning('未查到立项审核人，请到立项审核管理模块中添加')
+    message.warning('未查到立项审核人，请到立项审批管理模块中添加')
   }
 
   return (
@@ -67,7 +67,7 @@ const ReportApproveModal: React.FC<ReportApproveParams> = (props) => {
             defaultData={approveUser}
             titlekey="label"
             valuekey="value"
-            placeholder="未查到立项审核人，请到立项审核管理模块中添加"
+            placeholder="未查到立项审核人，请到立项审批管理模块中添加"
           />
         </CyFormItem>
         <CyFormItem label="备注" labelWidth={98} name="remark">

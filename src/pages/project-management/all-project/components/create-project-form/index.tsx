@@ -690,7 +690,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             rules={Rule.required}
           >
-            {status == 1 || status == 14 || status == undefined ? (
+            {status == 1 || status == 14 || status == 30 || status == 31 || status == undefined ? (
               <UrlSelect
                 defaultData={
                   pointVisible || isInherit ? handleProjectDataSourceType : projectDataSourceType

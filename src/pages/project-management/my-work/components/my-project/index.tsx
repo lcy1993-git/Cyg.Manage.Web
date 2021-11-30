@@ -189,7 +189,7 @@ const MyProject: React.FC = () => {
     await deleteProject(projectIds as string[])
     message.success('删除成功')
     // search();
-    refresh()
+    delayRefresh()
   }
 
   const arrangeEvent = async () => {
