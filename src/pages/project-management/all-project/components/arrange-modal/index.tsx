@@ -14,6 +14,7 @@ interface ArrangeModalProps {
   allotCompanyId?: string
   dataSourceType?: number
   setSourceTypeEvent?: Dispatch<SetStateAction<number | undefined>>
+  groupId?: string
 }
 
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
@@ -26,6 +27,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
     allotCompanyId,
     dataSourceType,
     setSourceTypeEvent,
+    groupId,
   } = props
   const [selectType, setSelectType] = useState<string>('')
 
@@ -137,6 +139,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           getCompanyInfo={getCompanyInfo}
           onChange={(value) => setSelectType(value)}
           dataSourceType={dataSourceType}
+          groupId={groupId}
         />
         {/* </TabPane> */}
         {/* {(selectType === '2' || selectType === '4') && (

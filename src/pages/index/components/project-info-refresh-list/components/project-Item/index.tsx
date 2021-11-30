@@ -42,7 +42,10 @@ const ProjectItem: FC<ProjectItemProps> = ({ operator, name, id, date, operation
       <div className={styles.operationCategory}>{operationCategory}</div>
       <div className={styles.projectName}>
         <Link
-          to={`/project-management/all-project`}
+          to={{
+            pathname: '/project-management/all-project',
+            state: { sideVisible: false },
+          }}
           className={styles.name}
           onClick={onClickProject}
         >

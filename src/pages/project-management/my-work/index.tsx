@@ -247,6 +247,8 @@ const MyWork: React.FC = () => {
 
   useEffect(() => {
     setSideVisible(favVisible)
+    setFavName('')
+    setSelectedFavId('')
   }, [favVisible])
 
   return (
@@ -271,6 +273,9 @@ const MyWork: React.FC = () => {
             className={styles.folderButton}
             onClick={() => {
               setSideVisible(true)
+              setIndexToPageSearchParams({
+                requestUrl: '/ProjectList/GetAlls',
+              })
             }}
             style={{ display: sideVisible || currentClickTabType !== 'allpro' ? 'none' : 'block' }}
           >
