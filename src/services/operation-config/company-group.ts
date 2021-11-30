@@ -68,7 +68,7 @@ export interface CompanyGroupTreeData {
 }
 
 // 下拉选择获取数据
-export const getTreeSelectData = (params?: { skipId?: string; parentId?: string }) => {
+export const getTreeSelectData = (params?: { skipId?: string; pId?: string }) => {
   return cyRequest<CompanyGroupTreeData[]>(() =>
     request(`${baseUrl.project}/CompanyGroup/GetTree`, { method: 'GET', params: params })
   )

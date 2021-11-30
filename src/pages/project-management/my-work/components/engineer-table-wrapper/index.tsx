@@ -448,6 +448,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       projectId: projectId,
       projectType: projectType ? String(projectType) : undefined,
       allotCompanyId: allotCompanyId,
+      allotGroupId: projectInfo.allots[0].allotCompanyGroup,
     })
     setArrangeModalVisible(true)
   }
@@ -756,6 +757,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       fixed: 'right',
       render: (value: string, record: any) => {
         const { stateInfo, allot, identitys } = record
+
         let arrangeType: any = null
         let allotCompanyId: any = null
 
@@ -1245,6 +1247,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           projectIds={[modalNeedInfo.projectId]}
           defaultSelectType={modalNeedInfo.projectType}
           dataSourceType={modalNeedInfo.projectDataSource}
+          groupId={modalNeedInfo.allotGroupId}
         />
       )}
       {auditKnotModalVisible && (
