@@ -55,7 +55,6 @@ const OperationPane: FC = ({ children }) => {
       payload: [],
     })
   }
-
   const drawingBtnList = useMemo(() => {
     const list: OperateBtnProps[] = [
       // {

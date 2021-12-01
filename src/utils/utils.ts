@@ -324,8 +324,8 @@ export const getStopServerList = (
       const { data } = res
       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
       const currenServer = data?.find((item: { propertys: { webSite: string } }) => {
-        if (NODE_ENV !== 'development' && item?.propertys?.webSite) {
-          return item?.propertys?.webSite === 'http://171.223.214.154:21529/login'
+        if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+          return item?.propertys?.webSite === 'http://171.223.214.154:21528/login'
         } else if (item?.propertys?.webSite) {
           return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
         } else {
