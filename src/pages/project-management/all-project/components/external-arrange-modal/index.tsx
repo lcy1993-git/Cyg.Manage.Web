@@ -26,6 +26,9 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false) //不安排外审status
   const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false) //不安排外审status
 
+  //提交loading提示
+  const [loading, setLoading] = useState<boolean>(false)
+
   const [form] = Form.useForm()
   const { projectId, search } = props
 
@@ -48,6 +51,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   }, [arrangePeople])
 
   const saveExternalArrange = async () => {
+    setLoading(true)
     await allotOuterAudit({
       projectIds: projectId,
       userIds: handleExternalMen,
@@ -56,6 +60,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     })
     message.success('外审安排成功')
     setState(false)
+    setLoading(false)
     search?.()
   }
 
@@ -92,27 +97,36 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       destroyOnClose
       // onCancel={() => modalCloseEvent()}
       footer={[
-        <div key="outSider">
-          {arrangePeople && arrangePeople.length > 0 ? (
-            <span className={styles.needExternalTitle}>无需外审</span>
-          ) : (
-            <span className={styles.noExternalTitle} onClick={() => isExternalEvent()}>
-              无需外审
-            </span>
-          )}
+        <div key="outSider" className={styles.footerDiv}>
+          <div>
+            {arrangePeople && arrangePeople.length > 0 ? (
+              <span className={styles.needExternalTitle}>无需外审</span>
+            ) : (
+              <span className={styles.noExternalTitle} onClick={() => isExternalEvent()}>
+                无需外审
+              </span>
+            )}
+          </div>
 
-          <Button key="cancle" onClick={() => setState(false)}>
-            取消
-          </Button>
-          {(arrangePeople && arrangePeople.length > 0) || isArrangePeople ? (
-            <Button key="save" type="primary" onClick={() => saveExternalArrange()}>
-              提交
+          <div>
+            <Button key="cancle" onClick={() => setState(false)}>
+              取消
             </Button>
-          ) : (
-            <Button disabled key="save" type="primary" onClick={() => saveExternalArrange()}>
-              提交
-            </Button>
-          )}
+            {(arrangePeople && arrangePeople.length > 0) || isArrangePeople ? (
+              <Button
+                key="save"
+                type="primary"
+                onClick={() => saveExternalArrange()}
+                loading={loading}
+              >
+                提交
+              </Button>
+            ) : (
+              <Button disabled key="save" type="primary" onClick={() => saveExternalArrange()}>
+                提交
+              </Button>
+            )}
+          </div>
         </div>,
       ]}
     >
