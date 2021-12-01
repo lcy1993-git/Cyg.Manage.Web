@@ -55,7 +55,6 @@ const OperationPane: FC = ({ children }) => {
       payload: [],
     })
   }
-
   const drawingBtnList = useMemo(() => {
     const list: OperateBtnProps[] = [
       // {
@@ -109,7 +108,7 @@ const OperationPane: FC = ({ children }) => {
             title: '提示',
             okText: '确认',
             cancelText: '取消',
-            content: '此操作会清除当前项目所有设计数据,确认清屏？',
+            content: '此操作会清除当前项目所有预设计数据,确认清屏？',
             onOk: () => clearAllData(),
           })
         },

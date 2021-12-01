@@ -14,6 +14,15 @@ const HistoryGrid = Loadable({
   delay: 150,
 })
 
+/**
+ * 注入projectId,接触新id生成时没有重新挂载的问题
+ * @returns
+ */
+// const HashHistoryGrid = () => {
+//   const { preDesignItem } = useLayoutStore()
+//   return <HistoryGrid key={preDesignItem.id}/>
+// }
+
 // const GridPreDesign = Loadable({
 //   loader: () => import('@/pages/visualization-results/grid-pre-design'),
 //   loading: Loading,

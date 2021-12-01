@@ -2,7 +2,6 @@ import { HistoryGridVersion } from '@/pages/visualization-results/components/his
 import { createContext, useContext } from 'react'
 import { CityWithProvince } from '../components/city-picker/type'
 import { DataSource, SelectedData } from './../components/history-map-base/typings'
-import { InitParams } from './initialize'
 import { GridMapGlobalState } from './mapReducer'
 export * from './initialize'
 export * from './reducer'
@@ -68,7 +67,7 @@ type SimpleActions = 'locate' | 'refetch'
 type ComplexActions = keyof ComplexActionReflectPayload
 
 type ComplexActionReflectPayload = {
-  reset: InitParams
+  reset: ReducerState
   changeMode: ReducerState['mode']
   setCity: ReducerState['city']
   changeGridMap: ReducerState['gridMapState']

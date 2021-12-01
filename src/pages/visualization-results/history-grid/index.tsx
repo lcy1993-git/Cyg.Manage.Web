@@ -1,4 +1,3 @@
-import { useRequest } from 'ahooks'
 import { useReducer } from 'react'
 import { useLocation } from 'umi'
 import HistoryVersionManagement from '../components/history-version-management'
@@ -12,22 +11,14 @@ import { useRefetch } from './hooks/useRefetch'
 import { useSavaData } from './hooks/useSaveData'
 import ImportGrid from './ImportGrid'
 import MapOperator from './MapOperator'
-import { initPreDesign } from './service/fetcher'
 import { HistoryGridContext, historyGridReducer, initializeHistoryState } from './store'
 
 const HistoryGrid = () => {
   const location = useLocation()
   const [state, dispatch] = useReducer(historyGridReducer, { location }, initializeHistoryState)
   const { refetch, mode, preDesignItemData, UIStatus, historyDataSource } = state
-  useRequest(() => initPreDesign(preDesignItemData.id), {
-    ready: !!preDesignItemData,
-    onSuccess: (res) => {
-      const initData = { ...state.preDesignDataSource, id: res.content }
-      dispatch({ type: 'changePreDesignDataSource', payload: initData })
-    },
-  })
 
-  usePreDesign(location, dispatch)
+  usePreDesign(dispatch)
   useRefetch({ refetch, mode, preDesignItemData }, dispatch)
   useSavaData({
     preDesignDataSource: state.preDesignDataSource,
