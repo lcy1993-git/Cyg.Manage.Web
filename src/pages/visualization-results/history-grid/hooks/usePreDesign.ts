@@ -1,6 +1,6 @@
 import { useLayoutStore } from '@/layouts/context'
 import { useCallback, useEffect, useRef } from 'react'
-import { HistoryDispatch } from '../store'
+import { HistoryDispatch, INITIAL_DATA_SOURCE } from '../store'
 import { useGridType } from './useGridType'
 
 /** 预设计初始化逻辑 */
@@ -13,6 +13,7 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
 
   const init = useCallback(() => {
     dispatch({ type: 'changeMode', payload: 'preDesign' })
+    dispatch({ type: 'changePreDesignDataSource', payload: INITIAL_DATA_SOURCE })
   }, [dispatch])
 
   useEffect(() => {
