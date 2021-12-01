@@ -160,6 +160,7 @@ const HistoryMapBase = () => {
     const canFit = extend.every(Number.isFinite)
     if (canFit) {
       viewRef.view.fit(extend)
+      handlerGeographicSize({ mode, viewRef })
     } else {
       message.error('当前项目没有数据，无法定位')
     }
@@ -298,7 +299,10 @@ const HistoryMapBase = () => {
       const lineExtent = sourceRef.historyLineSource.getExtent()
       const extend = getFitExtend(pointExtent, lineExtent)
       const canFit = extend.every((i) => Number.isFinite(i))
-      canFit && viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
+      if (canFit) {
+        viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
+        handlerGeographicSize({ mode, viewRef })
+      }
     }
     lifeStateRef.state.isFirstDrawHistory = false
   }
