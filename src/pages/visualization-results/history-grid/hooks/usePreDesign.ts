@@ -1,5 +1,7 @@
 import { useLayoutStore } from '@/layouts/context'
+import { message } from 'antd'
 import { useCallback, useEffect, useRef } from 'react'
+import { initPreDesign } from '../service'
 import { HistoryDispatch, INITIAL_DATA_SOURCE } from '../store'
 import { useGridType } from './useGridType'
 
@@ -11,10 +13,23 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
 
   const lastPreDesignItem = useRef(preDesignItem)
 
-  const init = useCallback(() => {
-    dispatch({ type: 'changeMode', payload: 'preDesign' })
-    dispatch({ type: 'changePreDesignDataSource', payload: INITIAL_DATA_SOURCE })
-  }, [dispatch])
+  /** 初始化 */
+  const init = useCallback(
+    async (id: string) => {
+      dispatch({ type: 'changeMode', payload: 'preDesign' })
+
+      try {
+        const { content } = await initPreDesign(id)
+        dispatch({
+          type: 'changePreDesignDataSource',
+          payload: { ...INITIAL_DATA_SOURCE, id: content },
+        })
+      } catch (e: any) {
+        message.error(e?.message || '初始化预设计失败，请重试')
+      }
+    },
+    [dispatch]
+  )
 
   useEffect(() => {
     if (gridType === 'preDesign') {
@@ -23,7 +38,7 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
       if (preDesignItem.id) {
         if (lastPreDesignItem.current.id !== preDesignItem.id) {
           // 点击新的工程项目，回到默认状态
-          init()
+          init(preDesignItem.id)
         }
 
         preDesignItemPayload = preDesignItem
