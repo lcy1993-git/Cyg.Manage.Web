@@ -21,6 +21,7 @@ const HistoryGrid = () => {
   const { refetch, mode, preDesignItemData, UIStatus, historyDataSource } = state
   useRequest(() => initPreDesign(preDesignItemData.id), {
     ready: !!preDesignItemData,
+    refreshDeps: [preDesignItemData],
     onSuccess: (res) => {
       const initData = { ...state.preDesignDataSource, id: res.content }
       dispatch({ type: 'changePreDesignDataSource', payload: initData })
