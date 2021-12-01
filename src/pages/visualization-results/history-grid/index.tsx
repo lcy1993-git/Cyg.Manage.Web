@@ -27,7 +27,7 @@ const HistoryGrid = () => {
     },
   })
 
-  usePreDesign(location, dispatch)
+  usePreDesign({ location, mode }, dispatch)
   useRefetch({ refetch, mode, preDesignItemData }, dispatch)
   useSavaData({
     preDesignDataSource: state.preDesignDataSource,
