@@ -54,7 +54,7 @@ const ImportGrid = () => {
     } catch (e: any) {
       message.error(e.message || '上传出错，请重试')
     }
-  }, [closeModal, preDesignItemData, form, mode, dispatch])
+  }, [closeModal, form, mode, preDesignDataSource, dispatch])
 
   return (
     <Modal
