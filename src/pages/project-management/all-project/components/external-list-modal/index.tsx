@@ -48,7 +48,8 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [addPersonState, setAddPersonState] = useState<boolean>(false)
   const [addPeople, setAddPeople] = useState<any[]>([])
   const [current, setCurrent] = useState<number>(0)
-
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false)
+  const [backToLoading, setBackToLoading] = useState<boolean>(false)
   // const [requestLoading, setRequestLoading] = useState(false);
 
   const [newStepData, setNewStepData] = useState<any[]>([])
@@ -132,7 +133,9 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
 
   const confirmResultEvent = async () => {
     if (isPassExternalArrange) {
+      setConfirmLoading(true)
       await confirmOuterAudit({ projectId: projectId, auditPass: true })
+      setConfirmLoading(false)
       setState(false)
       message.success('操作成功')
       refresh?.()
@@ -155,7 +158,9 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   }
 
   const backToEvent = async () => {
+    setBackToLoading(true)
     await confirmOuterAudit({ projectId: projectId, auditPass: false, returnToState: backTo })
+    setBackToLoading(false)
     setState(false)
     message.success('外审已退回')
     refresh?.()
@@ -216,7 +221,12 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                   <Button style={{ margin: '0 8px' }} onClick={() => prevEvent()}>
                     上一步
                   </Button>
-                  <Button key="save" type="primary" onClick={() => confirmResultEvent()}>
+                  <Button
+                    key="save"
+                    type="primary"
+                    onClick={() => confirmResultEvent()}
+                    loading={confirmLoading}
+                  >
                     确认
                   </Button>
                 </>,
@@ -227,7 +237,12 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
                   <Button style={{ margin: '0 8px' }} onClick={() => prevEvent()}>
                     上一步
                   </Button>
-                  <Button key="save" type="primary" onClick={() => backToEvent()}>
+                  <Button
+                    key="save"
+                    type="primary"
+                    onClick={() => backToEvent()}
+                    loading={backToLoading}
+                  >
                     确认
                   </Button>
                 </>,

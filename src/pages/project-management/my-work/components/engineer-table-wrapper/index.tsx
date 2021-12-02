@@ -1080,6 +1080,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         designUser: String(indexToPageSearchParams.searchPerson),
         areaType: indexToPageSearchParams.areaLevel!,
         areaId: indexToPageSearchParams.areaId!,
+        status: [30, 31, 14, 1, 2, 3, 4, 19, 5, 6, 11, 9, 10, 8, 7, 15] as never[],
       })
       initTableData(indexToPageSearchParams.requestUrl, {
         ...initSearchParams,
@@ -1088,6 +1089,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         designUser: String(indexToPageSearchParams.searchPerson),
         areaType: indexToPageSearchParams.areaLevel!,
         areaId: indexToPageSearchParams.areaId!,
+        status: [30, 31, 14, 1, 2, 3, 4, 19, 5, 6, 11, 9, 10, 8, 7, 15] as never[],
         keyWord: '',
       })
       return

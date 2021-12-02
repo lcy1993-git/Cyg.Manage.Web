@@ -3,7 +3,6 @@ import ExclamationCircleOutlined from '@ant-design/icons/lib/icons/ExclamationCi
 
 import { useMount } from 'ahooks'
 import { Button, Checkbox, Input, Modal, Space, Table } from 'antd'
-import moment, { Moment } from 'moment'
 import { FC, useEffect, useState } from 'react'
 import { DeleteGridVersions, getAllGridVersions } from '../../service'
 import styles from './index.less'
@@ -67,8 +66,11 @@ const GridVersionManagement: FC<Props> = (props) => {
     {
       title: '创建人',
       width: 150,
-      dataIndex: 'createdBy',
-      key: 'createdBy',
+      dataIndex: 'creatorName',
+      key: 'creatorName',
+      render: (text: string | null, row: HistoryGridVersion) => {
+        return row.creatorName || row.createdBy
+      },
     },
     {
       title: '备注',
