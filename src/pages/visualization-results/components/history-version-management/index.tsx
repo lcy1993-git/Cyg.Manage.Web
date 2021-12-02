@@ -22,6 +22,7 @@ export interface HistoryGridVersion {
   isTemplate: boolean
   deletedBy: string | null
   createdBy: string | null
+  creatorName: string | null
   updatedBy: string | null
 }
 
