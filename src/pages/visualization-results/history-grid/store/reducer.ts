@@ -1,5 +1,5 @@
 import { Reducer } from 'react'
-import { HistoryAction, HistoryState, initializeHistoryState } from '.'
+import { HistoryAction, HistoryState } from '.'
 import { mapReducer } from './mapReducer'
 
 export const historyGridReducer: Reducer<HistoryState, HistoryAction> = (state, action) => {
@@ -27,14 +27,14 @@ export const historyGridReducer: Reducer<HistoryState, HistoryAction> = (state, 
   const { type, payload } = action
 
   switch (type) {
+    case 'reset':
+      return payload
     case 'changeMode':
       return { ...state, mode: payload }
     case 'changeUIStatus':
       return { ...state, UIStatus: payload }
     case 'setCity':
       return { ...state, city: payload }
-    case 'reset':
-      return initializeHistoryState(payload)
     case 'changeGridMap':
       return { ...state, gridMapState: { ...mapReducer(state.gridMapState, payload) } }
     case 'changePreDesignItemData':

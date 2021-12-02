@@ -2,24 +2,26 @@ import { useLayoutStore } from '@/layouts/context'
 import { message } from 'antd'
 import { useCallback, useEffect, useRef } from 'react'
 import { initPreDesign } from '../service'
-import { HistoryDispatch, INITIAL_DATA_SOURCE } from '../store'
+import { HistoryDispatch, HistoryState, INITIAL_DATA_SOURCE, INITIAL_STATE } from '../store'
 import { useGridType } from './useGridType'
 
 /** 预设计初始化逻辑 */
 export const usePreDesign = (dispatch: HistoryDispatch) => {
-  const gridType = useGridType()
-
   const { preDesignItem } = useLayoutStore()
 
-  const lastPreDesignItem = useRef(preDesignItem)
+  const gridType = useGridType()
+
+  // 记录上次的项目数据，因为修改了对象 preDesignItem 引用，因此可能还是同一份数据
+  const lastPreDesignItem = useRef<HistoryState['preDesignItemData']>()
 
   /** 初始化 */
   const init = useCallback(
-    async (id: string) => {
-      dispatch({ type: 'changeMode', payload: 'preDesign' })
+    async (preDesignItemData: HistoryState['preDesignItemData']) => {
+      dispatch({ type: 'reset', payload: { ...INITIAL_STATE, mode: gridType, preDesignItemData } })
 
       try {
-        const { content } = await initPreDesign(id)
+        const { content } = await initPreDesign(preDesignItemData.id)
+
         dispatch({
           type: 'changePreDesignDataSource',
           payload: { ...INITIAL_DATA_SOURCE, id: content },
@@ -28,27 +30,26 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
         message.error(e?.message || '初始化预设计失败，请重试')
       }
     },
-    [dispatch]
+    [dispatch, gridType]
   )
 
   useEffect(() => {
     if (gridType === 'preDesign') {
       let preDesignItemPayload
 
-      if (preDesignItem.id) {
-        if (lastPreDesignItem.current.id !== preDesignItem.id) {
-          // 点击新的工程项目，回到默认状态
-          init(preDesignItem.id)
-        }
-
+      if (preDesignItem?.id) {
         preDesignItemPayload = preDesignItem
       } else {
         // 解决刷新获取不到项目数据
         preDesignItemPayload = JSON.parse(localStorage.getItem('preDesignItem') || 'null')
       }
 
-      if (preDesignItemPayload) {
-        dispatch({ type: 'changePreDesignItemData', payload: preDesignItemPayload })
+      // 上一个项目数据
+      const lastItem = lastPreDesignItem.current
+
+      if (!lastItem || (preDesignItemPayload && lastItem.id !== preDesignItemPayload.id)) {
+        // * 首次打开 | 刷新页面 | 从不同项目再次进入 => 初始化
+        init(preDesignItemPayload)
       }
     }
   }, [preDesignItem, dispatch, gridType, init])
