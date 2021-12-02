@@ -3,13 +3,13 @@ import { message } from 'antd'
 import { useCallback, useEffect, useRef } from 'react'
 import { initPreDesign } from '../service'
 import { HistoryDispatch, HistoryState, INITIAL_DATA_SOURCE, INITIAL_STATE } from '../store'
-import { useGridType } from './useGridType'
 
 /** 预设计初始化逻辑 */
-export const usePreDesign = (dispatch: HistoryDispatch) => {
+export const usePreDesign = (
+  { mode }: { mode: HistoryState['mode'] },
+  dispatch: HistoryDispatch
+) => {
   const { preDesignItem } = useLayoutStore()
-
-  const gridType = useGridType()
 
   // 记录上次的项目数据，因为修改了对象 preDesignItem 引用，因此可能还是同一份数据
   const lastPreDesignItem = useRef<HistoryState['preDesignItemData']>()
@@ -46,7 +46,7 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
     // 标记，用以当出现竞态时，取消上一次初始化函数中的修改状态操作
     let flag = { cancel: false }
 
-    if (gridType === 'preDesign') {
+    if (mode === 'preDesign' || mode === 'preDesigning') {
       let preDesignItemPayload
 
       if (preDesignItem?.id) {
@@ -76,5 +76,5 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
         flag.cancel = true
       }
     }
-  }, [preDesignItem, dispatch, gridType, init])
+  }, [preDesignItem, dispatch, mode, init])
 }
