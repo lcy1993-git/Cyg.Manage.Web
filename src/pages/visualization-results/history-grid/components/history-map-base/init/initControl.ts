@@ -10,6 +10,7 @@ let memoText = ''
 
 export function initControl({ mode, mapRef }: { mode: string; mapRef: MapRef }) {
   //鼠标获取坐标控件
+
   const mousePositionControl = new MousePosition({
     coordinateFormat: function (coordinate) {
       memoText = format(coordinate!, '经度:{x} 纬度:{y}', 4)

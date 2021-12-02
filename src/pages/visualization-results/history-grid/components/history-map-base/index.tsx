@@ -295,11 +295,12 @@ const HistoryMapBase = () => {
     // 初次挂载自适应屏幕
     if (lifeStateRef.state.isFirstDrawHistory) {
       const extend = getFitExtend(
-        sourceRef.historyPointSource.getExtent(),
-        sourceRef.historyLineSource.getExtent(),
+        historyLayerVisible && sourceRef.historyPointSource.getExtent(),
+        historyLayerVisible && sourceRef.historyLineSource.getExtent(),
         sourceRef.designLineSource.getExtent(),
         sourceRef.designLineSource.getExtent()
       )
+
       const canFit = extend.every((i) => Number.isFinite(i))
       if (canFit) {
         viewRef.view.fit(extend)
