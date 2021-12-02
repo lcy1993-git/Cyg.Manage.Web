@@ -177,7 +177,7 @@ const HistoryMapBase = () => {
 
   // 根据城市选择定位
   useUpdateEffect(
-    () => moveToViewByLocation(viewRef, [city?.lng || 0, city?.lat || 0] as [number, number]),
+    () => moveToViewByLocation(viewRef, [city?.lng || 0, city?.lat || 0] as [number, number], mode),
     [locate]
   )
 
@@ -293,14 +293,17 @@ const HistoryMapBase = () => {
       sourceRef,
     })
     // 初次挂载自适应屏幕
+    if (lifeStateRef.state.isFirstDrawHistory) {
+      const extend = getFitExtend(
+        historyLayerVisible && sourceRef.historyPointSource.getExtent(),
+        historyLayerVisible && sourceRef.historyLineSource.getExtent(),
+        sourceRef.designLineSource.getExtent(),
+        sourceRef.designLineSource.getExtent()
+      )
 
-    if (lifeStateRef.state.isFirstDrawHistory && mode === 'record') {
-      const pointExtent = sourceRef.historyPointSource.getExtent()
-      const lineExtent = sourceRef.historyLineSource.getExtent()
-      const extend = getFitExtend(pointExtent, lineExtent)
       const canFit = extend.every((i) => Number.isFinite(i))
       if (canFit) {
-        viewRef.view.fit(getFitExtend(pointExtent, lineExtent))
+        viewRef.view.fit(extend)
         handlerGeographicSize({ mode, viewRef })
       }
     }

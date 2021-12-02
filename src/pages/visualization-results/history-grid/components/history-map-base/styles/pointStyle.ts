@@ -65,8 +65,7 @@ export const getPointStyle: GetPointStyle = (
   isHight: boolean = false,
   ops: PointOps = {}
 ): ClassStyle[] => {
-
-  const fillColor = SourceType[sourceType]
+  const fillColor = isHight ? 'rgba(249, 149, 52, 1)' : SourceType[sourceType]
 
   const textObjet = {
     无类型: '\ue823',
@@ -92,7 +91,7 @@ export const getPointStyle: GetPointStyle = (
   ]
 
   // 处理高亮图层
-  baseStyle.unshift(isHight ? hightCircle : whiteCircle)
+  baseStyle.unshift(whiteCircle)
 
   // 处理设备名称
   if (showText) {
@@ -101,12 +100,16 @@ export const getPointStyle: GetPointStyle = (
       text: new Text({
         text: name?.length > 10 ? `${name.slice(0, 10)}...` : name,
         textAlign: 'center',
-        font: 'bold 12px Source Han Sans SC', //字体与大小
+        font: '12px Source Han Sans SC', //字体与大小
         // placement: 'line',
         offsetY: 20,
         fill: new Fill({
           //文字填充色
-          color: isHight ? SourceType.highLight : fillColor,
+          color: fillColor,
+        }),
+        stroke: new Stroke({
+          color: 'rgba(255,255,255,1)',
+          width: 2,
         }),
       }),
     })

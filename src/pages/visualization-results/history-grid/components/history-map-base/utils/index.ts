@@ -4,6 +4,7 @@ import { Feature } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import { Select } from 'ol/interaction'
 import * as proj from 'ol/proj'
+import { handlerGeographicSize } from '../effects'
 import { getStyle } from '../styles'
 import { InterActionRef, SourceRef, ViewRef } from '../typings'
 import { DataSource } from './../typings/index'
@@ -98,10 +99,11 @@ export const checkUserLocation = (viewRef: ViewRef) => {
   )
 }
 
-export function moveToViewByLocation(viewRef: ViewRef, [lng, lat]: [number, number]) {
+export function moveToViewByLocation(viewRef: ViewRef, [lng, lat]: [number, number], mode: string) {
   if (!isNaN(lat) && !isNaN(lng)) {
     viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
-    viewRef.view.setZoom(13)
+    viewRef.view.setZoom(12.5)
+    handlerGeographicSize({ mode, viewRef })
   } else {
     message.error('获取的位置信息有误，无法定位')
   }

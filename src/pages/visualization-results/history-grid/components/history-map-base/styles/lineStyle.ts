@@ -33,7 +33,6 @@ export const getLineStyle: GetLineStyle = (
   isHight: boolean = false,
   ops: LineOps = {}
 ) => {
-
   const fillColor = SourceType[sourceType]
 
   const textObject = {
@@ -60,14 +59,17 @@ export const getLineStyle: GetLineStyle = (
       text: new Text({
         text: name?.length > 10 ? `${name.slice(0, 10)}...` : name,
         textAlign: 'center',
-        font: 'bold 12px Source Han Sans SC', //字体与大小
+        font: '12px Source Han Sans SC', //字体与大小
         placement: 'line',
         offsetY: -10,
         fill: new Fill({
           //文字填充色
           color: isHight ? SourceType.highLight : fillColor,
         }),
-
+        stroke: new Stroke({
+          color: 'rgba(255,255,255,1)',
+          width: 2,
+        }),
       }),
     })
 
