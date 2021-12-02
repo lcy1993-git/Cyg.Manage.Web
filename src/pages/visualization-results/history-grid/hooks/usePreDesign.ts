@@ -17,7 +17,10 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
   /** 初始化 */
   const init = useCallback(
     async (preDesignItemData: HistoryState['preDesignItemData'], flag: { cancel: boolean }) => {
-      dispatch({ type: 'reset', payload: { ...INITIAL_STATE, mode: gridType, preDesignItemData } })
+      dispatch({
+        type: 'reset',
+        payload: { ...INITIAL_STATE, mode: 'preDesign', preDesignItemData },
+      })
 
       try {
         const { content } = await initPreDesign(preDesignItemData.id)
@@ -29,15 +32,12 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
           type: 'changePreDesignDataSource',
           payload: { ...INITIAL_DATA_SOURCE, id: content },
         })
-
-        // eslint-disable-next-line no-console
-        console.log('预设计初始化')
       } catch (e: any) {
         if (flag.cancel) return
         message.error(e?.message || '初始化预设计失败，请重试')
       }
     },
-    [dispatch, gridType]
+    [dispatch]
   )
 
   useEffect(() => {
@@ -65,6 +65,8 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
 
         executedInit = true
         init(preDesignItemPayload, flag)
+
+        lastPreDesignItem.current = preDesignItemPayload
       }
     }
 
@@ -75,8 +77,4 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
       }
     }
   }, [preDesignItem, dispatch, gridType, init])
-
-  useEffect(() => {
-    lastPreDesignItem.current = preDesignItem
-  }, [preDesignItem])
 }
