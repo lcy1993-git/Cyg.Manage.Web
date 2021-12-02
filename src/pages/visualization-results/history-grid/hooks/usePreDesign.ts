@@ -36,7 +36,7 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
       let preDesignItemPayload
 
       if (preDesignItem.id) {
-        if (lastPreDesignItem.current.id !== preDesignItem.id) {
+        if (lastPreDesignItem.current.id !== preDesignItem.id || !lastPreDesignItem.current) {
           // 点击新的工程项目，回到默认状态
           init(preDesignItem.id)
         }
