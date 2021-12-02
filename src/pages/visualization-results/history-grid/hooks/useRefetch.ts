@@ -27,7 +27,7 @@ export const useRefetch: UseRefetch = ({ refetch, mode, preDesignItemData }, dis
         }
       } else {
         // 预设计
-        if (!preDesignItemData) {
+        if (!preDesignItemData?.id) {
           // 没有项目数据
           return
         }
