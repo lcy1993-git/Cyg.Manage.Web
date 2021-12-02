@@ -18,7 +18,7 @@ const HistoryGrid = () => {
   const [state, dispatch] = useReducer(historyGridReducer, { location }, initializeHistoryState)
   const { refetch, mode, preDesignItemData, UIStatus, historyDataSource } = state
 
-  usePreDesign(dispatch)
+  usePreDesign({ mode }, dispatch)
   useRefetch({ refetch, mode, preDesignItemData }, dispatch)
   useSavaData({
     preDesignDataSource: state.preDesignDataSource,

@@ -36,7 +36,7 @@ export const INITIAL_STATE: Omit<HistoryState, 'mode'> = {
 }
 
 /** 惰性初始化 */
-export const initializeHistoryState = ({ location }: InitParams) => {
+export const initializeHistoryState = ({ location }: InitParams): HistoryState => {
   const { pathname } = location
   const mode = pathname.includes('history-grid') ? 'record' : 'preDesign'
 
