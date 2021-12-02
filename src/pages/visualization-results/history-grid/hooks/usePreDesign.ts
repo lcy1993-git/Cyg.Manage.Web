@@ -33,6 +33,7 @@ export const usePreDesign = (dispatch: HistoryDispatch) => {
         // eslint-disable-next-line no-console
         console.log('预设计初始化')
       } catch (e: any) {
+        if (flag.cancel) return
         message.error(e?.message || '初始化预设计失败，请重试')
       }
     },
