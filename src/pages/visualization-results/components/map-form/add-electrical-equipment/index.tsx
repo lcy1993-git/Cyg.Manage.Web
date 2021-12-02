@@ -236,9 +236,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       val.type = val.type + ''
       // @ts-ignore
       val.voltageLevel = val.voltageLevel + ''
-      setTimeout(() => {
-        form.setFieldsValue(val)
-      })
+
       if (mode === 'preDesigning' && selectedData[0]?.sourceType === 'design') {
         // 与设计预设图层
         setShowDetail(false)
@@ -256,6 +254,9 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         const l = getLength()
         setLineLength(((l / 1000).toFixed(4) as unknown) as number)
       }
+      setTimeout(() => {
+        form.setFieldsValue(val)
+      })
     } else if (drawing && selectedData?.length > 1) {
       form.setFieldsValue(getEqualData())
       if (Object.keys(selectedData[0]).includes('startLng')) {
@@ -427,7 +428,6 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
               {selectedData?.length === 1 && (
                 <Form.Item name="remark" label={'备注'}>
                   <Input.TextArea maxLength={200} rows={2} showCount />
-                  <br />
                 </Form.Item>
               )}
               <div style={{ display: 'flex', justifyContent: 'end' }}>
