@@ -6,7 +6,14 @@ import { Select } from 'ol/interaction'
 import * as proj from 'ol/proj'
 import { handlerGeographicSize } from '../effects'
 import { getStyle } from '../styles'
-import { InterActionRef, SourceRef, ViewRef } from '../typings'
+import {
+  ElectricLineData,
+  ElectricPointData,
+  InterActionRef,
+  SelectedData,
+  SourceRef,
+  ViewRef,
+} from '../typings'
 import { DataSource } from './../typings/index'
 
 // 清空选择器和高亮图层
@@ -67,10 +74,10 @@ export function addHightStyle(fs: Feature<Geometry>[], showText: boolean) {
 }
 
 // 讲feature转为Data数组
-export function getDataByFeature(f: Feature<Geometry>[]) {
+export function getDataByFeature(f: Feature<Geometry>[]): SelectedData {
   return f.map((f) => {
     const { geometry, ...props } = f.getProperties()
-    return props
+    return props as ElectricPointData | ElectricLineData
   })
 }
 

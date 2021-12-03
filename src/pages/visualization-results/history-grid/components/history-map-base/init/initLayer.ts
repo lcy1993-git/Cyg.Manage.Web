@@ -1,4 +1,5 @@
 import * as extent from 'ol/extent'
+import Geometry from 'ol/geom/Geometry'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import TileLayer from 'ol/layer/Tile'
@@ -115,4 +116,8 @@ export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
   layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
   // 预设计 设备
   layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
+
+  const highLightLayer = new VectorLayer<VectorSource<Geometry>>({})
+
+  layerRef.highLightLayer = highLightLayer
 }

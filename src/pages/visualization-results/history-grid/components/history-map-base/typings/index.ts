@@ -1,5 +1,5 @@
 import '@/assets/icon/history-grid-icon.css'
-import { Map, View } from 'ol'
+import { Feature, Map, View } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
@@ -69,7 +69,12 @@ export type SelectedData = (ElectricPointData | ElectricLineData)[]
 
 export type SelectType = 'pointSelect' | 'toggleSelect'
 
-type selectKey = 'viewNoTextSelect' | 'viewTextSelect' | 'drawNoTextSelect' | 'drawTextSelect'
+type selectKey =
+  | 'viewNoTextSelect'
+  | 'viewTextSelect'
+  | 'drawNoTextSelect'
+  | 'drawTextSelect'
+  | 'boxSelect'
 
 export interface InterActionRef {
   draw?: Draw
@@ -79,7 +84,6 @@ export interface InterActionRef {
   designSource: VectorSource<Geometry>
   modify?: Modify
   isDraw?: boolean
-
   select: Record<selectKey, Select> & { currentSelect: Select | null }
   dragBox?: DragBox
   isDragBox?: boolean
@@ -94,8 +98,7 @@ export interface LayerRef {
   historyLineLayer: Layer<VectorSource<LineString>>
   designPointLayer: Layer<VectorSource<Point>>
   designLineLayer: Layer<VectorSource<LineString>>
-  highLightPointLayer: Layer<VectorSource<Point>>
-  highLightLineLayer: Layer<VectorSource<LineString>>
+  highLightLayer: Layer<VectorSource<Geometry>>
 }
 
 export interface ViewRef {
@@ -112,8 +115,7 @@ export interface SourceRef {
   historyLineSource: VectorSource<LineString>
   designPointSource: VectorSource<Point>
   designLineSource: VectorSource<LineString>
-  highLightPointSource: VectorSource<Point>
-  highLightLineSource: VectorSource<LineString>
+  highLightSource: VectorSource<Point>
 }
 
 export interface LifeStateRef {
@@ -136,4 +138,10 @@ export enum SourceType {
   'history' = 'rgba(0, 117, 206, 1)',
   'design' = 'rgba(20, 168, 107, 1)',
   'highLight' = 'rgba(249, 149, 52, 1)',
+}
+
+export interface DragBoxProps {
+  visible: boolean
+  position: number[]
+  selected: Feature<Point | LineString>[]
 }

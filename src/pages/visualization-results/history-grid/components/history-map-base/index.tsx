@@ -8,10 +8,11 @@ import { useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
-import { mapClick, moveend, pointermove } from './event'
+import { mapClick, moveend, onDragBoxCancel, onDragBoxPointSelect, pointermove } from './event'
+import './index.css'
 import init from './init'
 import { changeLayerStyleByShowText } from './styles'
-import { InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
+import { DragBoxProps, InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
 import {
   checkUserLocation,
   clearScreen,
@@ -32,7 +33,8 @@ const HistoryMapBase = () => {
     historyDataSource: dataSource,
     preDesignDataSource: importDesignData,
   } = useHistoryGridContext()
-  const mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
+  const modeRef = useRef(preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign')
+  const mode = modeRef.current
   const {
     showTitle,
     showHistoryLayer: historyLayerVisible,
@@ -76,6 +78,15 @@ const HistoryMapBase = () => {
   const lifeStateRef = useCurrentRef<LifeStateRef>({ state: { isFirstDrawHistory: true } })
 
   const sourceRef = useCurrentRef<SourceRef>({})
+
+  const DragBoxRef = useRef()
+
+  const [dragBoxProps, setDragBoxProps] = useState<DragBoxProps>({
+    visible: false,
+    position: [0, 0],
+    selected: [],
+  })
+
   // const bindEvent = useCallback(() => {
   //   mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
   //     mapClick(e, { interActionRef, mapRef, setState, UIStatus }))
@@ -96,6 +107,7 @@ const HistoryMapBase = () => {
       ref: ref.current!,
       setState,
       mode,
+      setDragBoxProps,
     })
     bindEvent()
   })
@@ -214,10 +226,6 @@ const HistoryMapBase = () => {
         })
       }
 
-      // if(viewRef.view.getZoom() >  16.6){
-
-      // }
-
       // 修改比例尺
       handlerGeographicSize({ mode, viewRef })
     })
@@ -255,30 +263,7 @@ const HistoryMapBase = () => {
   //       )
   //     },
   //   })
-  //   // 绑定单选及多选回调事件
-  //   toggleSelect.on('select', (e: SelectEvent) =>
-  //     toggleSelectCallback(e, { interActionRef, setState, showText, mode })
-  //   )
-  //   pointSelect.on('select', (e: SelectEvent) =>
-  //     pointSelectCallback(e, { interActionRef, setState, showText, mode })
-  //   )
-  //   toggleSelect.setHitTolerance(8)
-  //   pointSelect.setHitTolerance(8)
-  //   interActionRef.select = {
-  //     pointSelect,
-  //     toggleSelect,
-  //   }
 
-  //   mapRef.map.addInteraction(interActionRef.select.pointSelect)
-
-  //   interActionRef.dragBox = dragBox
-  //   const selectedFeatures = boxSelect.getFeatures()
-  //   dragBox.on('boxend', function () {
-  //     var extent = dragBox.getGeometry().getExtent()
-  //     interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
-  //       selectedFeatures.push(feature)
-  //     })
-  //   })
   //   // 框选鼠标按下清除高亮
   //   dragBox.on('boxstart', function () {
   //     selectedFeatures.clear()
@@ -343,8 +328,34 @@ const HistoryMapBase = () => {
   }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
       <div ref={ref} className="w-full h-full"></div>
+      {dragBoxProps.visible && (
+        <div className="absolute top-80 left-80 z-500 text-white bg-gray-900 border-gray-50 bg-opacity-5">
+          <div
+            className="cursor-pointer hover:text-green-500"
+            onClick={() =>
+              onDragBoxPointSelect(mode, dragBoxProps, 'Point', setState, interActionRef)
+            }
+          >
+            框选电气设备
+          </div>
+          <div
+            className="cursor-pointer hover:text-green-500"
+            onClick={() =>
+              onDragBoxPointSelect(mode, dragBoxProps, 'LineString', setState, interActionRef)
+            }
+          >
+            框选线路
+          </div>
+          <div
+            className="cursor-pointer hover:text-green-500"
+            onClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef })}
+          >
+            取消
+          </div>
+        </div>
+      )}
     </div>
   )
 }
