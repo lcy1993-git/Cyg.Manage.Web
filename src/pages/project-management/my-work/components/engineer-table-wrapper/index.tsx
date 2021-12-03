@@ -174,7 +174,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const typeColumns = useMemo(() => {
     return myWorkInitData
       .find((item) => item.id === currentClickTabType)
-      .children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
+      ?.children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
   const { data: columnsData } = useRequest(() => getColumnsConfig(), {
