@@ -102,9 +102,15 @@ export default function initSelect({
     condition: primaryAction,
     className: 'history_drag_box_style',
   })
+  interActionRef.dragBoxFeature = new Feature()
 
+  sourceRef.highLightSource.addFeature(interActionRef.dragBoxFeature)
+  // interActionRef.dragBoxFeature.setStyle(polygonDragBox)
+  interActionRef.dragBox = dragBox
+
+  dragBox.setActive(false)
   //框选
-  var selectedFeatures = boxSelect.getFeatures()
+  // var selectedFeatures = boxSelect.getFeatures()
 
   // 框选结束添加高亮
   dragBox.on('boxend', function () {
@@ -123,16 +129,22 @@ export default function initSelect({
       selected.push(feature)
     })
 
-    setDragBoxProps({
-      visible: true,
-      position: [0, 0],
-      selected,
-    })
+    if (selected.length > 0) {
+      setDragBoxProps({
+        visible: true,
+        position: [0, 0],
+        selected,
+      })
+      // 设置绘制完成后的线框
+      const polygon = dragBox.getGeometry()
+      interActionRef.dragBoxFeature!.setGeometry(polygon)
+      sourceRef.dragBoxSource.addFeature(interActionRef.dragBoxFeature!)
+    }
   })
-
   // 框选鼠标按下清除高亮
   dragBox.on('boxstart', function () {
-    selectedFeatures.clear()
+    sourceRef.dragBoxSource.clear()
+    boxSelect.getFeatures().clear()
   })
 
   mapRef.map.addInteraction(dragBox)

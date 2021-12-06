@@ -3,6 +3,7 @@ import { Feature, Map, View } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
+import { Polygon } from 'ol/geom/Polygon'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { Layer } from 'ol/layer'
 import 'ol/ol.css'
@@ -86,6 +87,7 @@ export interface InterActionRef {
   isDraw?: boolean
   select: Record<selectKey, Select> & { currentSelect: Select | null }
   dragBox?: DragBox
+  dragBoxFeature?: Feature<Polygon>
   isDragBox?: boolean
 }
 
@@ -99,6 +101,8 @@ export interface LayerRef {
   designPointLayer: Layer<VectorSource<Point>>
   designLineLayer: Layer<VectorSource<LineString>>
   highLightLayer: Layer<VectorSource<Geometry>>
+
+  dragBoxLayer: Layer<VectorSource<Polygon>>
 }
 
 export interface ViewRef {
@@ -115,7 +119,8 @@ export interface SourceRef {
   historyLineSource: VectorSource<LineString>
   designPointSource: VectorSource<Point>
   designLineSource: VectorSource<LineString>
-  highLightSource: VectorSource<Point>
+  highLightSource: VectorSource<Geometry>
+  dragBoxSource: VectorSource<Polygon>
 }
 
 export interface LifeStateRef {

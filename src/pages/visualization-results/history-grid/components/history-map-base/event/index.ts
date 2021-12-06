@@ -3,4 +3,5 @@ import pointermove from './mapPointMove'
 import moveend from './moveend'
 export * from './condition'
 export * from './dragBoxEvent'
+export * from './refreshModify'
 export { pointermove, moveend, mapClick }

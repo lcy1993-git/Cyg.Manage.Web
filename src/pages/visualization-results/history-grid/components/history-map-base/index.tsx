@@ -4,14 +4,20 @@ import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
-import { mapClick, moveend, onDragBoxCancel, onDragBoxPointSelect, pointermove } from './event'
+import {
+  mapClick,
+  moveend,
+  onDragBoxCancel,
+  onDragBoxPointSelect,
+  pointermove,
+  refreshModify,
+} from './event'
 import './index.css'
 import init from './init'
-import { changeLayerStyleByShowText } from './styles'
 import { DragBoxProps, InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
 import {
   checkUserLocation,
@@ -143,7 +149,7 @@ const HistoryMapBase = () => {
   }, [isDraw, showText])
 
   // 处理绘制状态的select
-  useUpdateEffect(() => changeLayerStyleByShowText(sourceRef, showText), [showText])
+  // useUpdateEffect(() => changeLayerStyleByShowText(sourceRef, showText), [showText])
 
   // 当绘制状态改变时
   useUpdateEffect(() => {
@@ -152,13 +158,13 @@ const HistoryMapBase = () => {
       type: 'changeSelectedData',
       payload: [],
     })
-    // if (isDraw) {
-    //   mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
-    //   mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
-    // } else {
-    //   mapRef.map.removeInteraction(interActionRef.select!.toggleSelect)
-    //   mapRef.map.addInteraction(interActionRef.select!.pointSelect)
-    // }
+    if (isDraw) {
+      refreshModify({ mapRef, interActionRef, sourceRef, isDraw })
+    } else {
+      interActionRef.modify && mapRef.map.removeInteraction(interActionRef.modify)
+      sourceRef.highLightSource.clear()
+    }
+    interActionRef.dragBox?.setActive(isDraw)
   }, [isDraw])
 
   // 定位当当前项目位置
@@ -197,8 +203,8 @@ const HistoryMapBase = () => {
 
   // 绑定事件
   function bindEvent() {
-    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
-      mapClick(e, { interActionRef, mapRef, setState, sourceRef })
+    mapRef.map.on('click', (e: MapBrowserEvent<MouseEvent>) =>
+      mapClick(e, { interActionRef, mapRef, setState, setDragBoxProps })
     )
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
@@ -277,6 +283,7 @@ const HistoryMapBase = () => {
       sourceType: 'history',
       sourceRef,
     })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw })
     // 初次挂载自适应屏幕
     if (lifeStateRef.state.isFirstDrawHistory) {
       const extend = getFitExtend(
@@ -302,6 +309,7 @@ const HistoryMapBase = () => {
         sourceType: 'design',
         sourceRef,
       })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw })
   }
 
   // 删除draw交互行为
@@ -335,7 +343,15 @@ const HistoryMapBase = () => {
           <div
             className="cursor-pointer hover:text-green-500"
             onClick={() =>
-              onDragBoxPointSelect(mode, dragBoxProps, 'Point', setState, interActionRef)
+              onDragBoxPointSelect(
+                mode,
+                dragBoxProps,
+                'Point',
+                setState,
+                interActionRef,
+                sourceRef,
+                setDragBoxProps
+              )
             }
           >
             框选电气设备
@@ -343,14 +359,22 @@ const HistoryMapBase = () => {
           <div
             className="cursor-pointer hover:text-green-500"
             onClick={() =>
-              onDragBoxPointSelect(mode, dragBoxProps, 'LineString', setState, interActionRef)
+              onDragBoxPointSelect(
+                mode,
+                dragBoxProps,
+                'LineString',
+                setState,
+                interActionRef,
+                sourceRef,
+                setDragBoxProps
+              )
             }
           >
             框选线路
           </div>
           <div
             className="cursor-pointer hover:text-green-500"
-            onClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef })}
+            onClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef, sourceRef })}
           >
             取消
           </div>

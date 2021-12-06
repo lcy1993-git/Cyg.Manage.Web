@@ -46,6 +46,7 @@ function init({
     setState,
     setDragBoxProps,
   })
+
   // 显示比例尺
   handlerGeographicSize({ mode, viewRef })
 }

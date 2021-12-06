@@ -1,17 +1,18 @@
 import { MapBrowserEvent } from 'ol'
+import { Dispatch, SetStateAction } from 'react'
 import { HistoryDispatch } from '../../../store'
-import type { InterActionRef, MapRef, SourceRef } from './../typings/index'
+import type { DragBoxProps, InterActionRef, MapRef, SourceRef } from './../typings/index'
 
 interface Ops {
   interActionRef: InterActionRef
   mapRef: MapRef
   setState: HistoryDispatch
-  sourceRef: SourceRef
+  setDragBoxProps: Dispatch<SetStateAction<DragBoxProps>>
 }
 
 export default function mapClick(
   e: MapBrowserEvent<MouseEvent>,
-  { mapRef, setState, sourceRef }: Ops
+  { mapRef, setState, setDragBoxProps }: Ops
 ) {
   // var pixel = e.pixel;
   // console.log(pixel);
@@ -21,6 +22,13 @@ export default function mapClick(
   // 　　　　 alert(lonlat.lon+", "+lonlat.lat);
   // 设置当前坐标
   // setState("currentMousePosition", [...e.pixel] as [number, number])
+
+  setDragBoxProps({
+    visible: false,
+    position: [0, 0],
+    selected: [],
+  })
+
   setState((state) => {
     return {
       ...state,
@@ -59,7 +67,14 @@ export default function mapClick(
       return f.get('name') === 'highLightPointLayer' || f.get('name') === 'highLightLineLayer'
     },
   })[0]
-
+  if (!highLightFeature) {
+    setState((state) => {
+      return {
+        ...state,
+        selectedData: [],
+      }
+    })
+  }
   // 点击时是否有高亮图层
   // if(highLightFeature) {
   //   const type = highLightFeature.getGeometry()?.getType()

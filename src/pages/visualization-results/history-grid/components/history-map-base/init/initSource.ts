@@ -14,4 +14,7 @@ export function initSource(sourceRef: SourceRef) {
   sourceRef.designLineSource = new VectorSource()
   // 高亮
   sourceRef.highLightSource = new VectorSource()
+
+  // dragBox线框
+  sourceRef.dragBoxSource = new VectorSource()
 }

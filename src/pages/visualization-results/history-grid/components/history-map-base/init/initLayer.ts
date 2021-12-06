@@ -7,7 +7,7 @@ import VectorLayer from 'ol/layer/Vector'
 import * as proj from 'ol/proj'
 import { Vector as VectorSource, WMTS as sourceWmts, XYZ } from 'ol/source'
 import tilegridWmts from 'ol/tilegrid/WMTS'
-import { getLayerStyleByShowText } from '../styles'
+import { getLayerStyleByShowText, getStyle, polygonDragBox } from '../styles'
 import { LayerRef, SourceRef } from './../typings/index'
 
 // 卫星图层
@@ -110,14 +110,38 @@ export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
 
   // 历史网架 线路
   layerRef.historyLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
+  layerRef.historyLineLayer.setZIndex(1)
   // 预设计 线路
   layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
+  layerRef.designLineLayer.setZIndex(2)
+
   // 历史网架 设备
   layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
+  layerRef.historyPointLayer.setZIndex(3)
   // 预设计 设备
   layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
+  layerRef.designPointLayer.setZIndex(4)
 
-  const highLightLayer = new VectorLayer<VectorSource<Geometry>>({})
+  // dragBOX线框
+  layerRef.dragBoxLayer = new VectorLayer({
+    source: sourceRef.dragBoxSource,
+    style: polygonDragBox,
+  })
+  layerRef.dragBoxLayer.setZIndex(4)
 
+  const highLightLayer = new VectorLayer<VectorSource<Geometry>>({
+    source: sourceRef.highLightSource,
+    style(f) {
+      return getStyle(f.getGeometry()!.getType())(
+        f.get('sourceType'),
+        f.get('typeStr') || '无类型',
+        f.get('name'),
+        true,
+        true
+      )
+    },
+  })
+  highLightLayer.setZIndex(0)
   layerRef.highLightLayer = highLightLayer
+  layerRef.highLightLayer.setZIndex(5)
 }
