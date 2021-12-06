@@ -1,31 +1,34 @@
-import { useEffect, useState } from 'react';
-import WrapperComponent from '@/components/page-common-wrap';
-import CommonTitle from '@/components/common-title';
-import styles from './index.less';
-import { getEnabledAdjustmentFiles } from '@/services/technology-economic/spread-coefficient';
-import { baseUrl } from '@/services/common';
-import FileDwgView from '@/components/api-file-view/componnents/file-dwg-view';
+import CommonTitle from '@/components/common-title'
+import WrapperComponent from '@/components/page-common-wrap'
+import { baseUrl } from '@/services/common'
+import { getEnabledAdjustmentFiles } from '@/services/technology-economic/spread-coefficient'
+import { useEffect, useState } from 'react'
+import PdfFileView from './components/pdf-file-view'
+import styles from './index.less'
 interface ListData {
-  id: string;
-  name: string;
-  [key: string]: string;
+  id: string
+  name: string
+  [key: string]: string
 }
 const AdjustmentFileDetails: React.FC = () => {
-  const [listData, setListData] = useState<ListData[]>([]);
-  const [activeValue, setActiveValue] = useState<ListData>({ id: '', name: '', path: '' });
-  const [path, setPath] = useState('');
-  const [api, setApi] = useState({});
+  const [listData, setListData] = useState<ListData[]>([])
+  const [activeValue, setActiveValue] = useState<ListData>({ id: '', name: '', path: '' })
+  const [path, setPath] = useState('')
+  const [api, setApi] = useState({})
   useEffect(() => {
-    getList();
-  }, []);
+    getList()
+  }, [])
 
   const getList = async () => {
-    const result: any = await getEnabledAdjustmentFiles();
-    setListData(result);
-    result && result[0].path && getApi(result[0].path);
-    setActiveValue(result[0]);
-    setPath(result[0].path);
-  };
+    const result: any = await getEnabledAdjustmentFiles()
+
+    setListData(result)
+    if (result && result[0]) {
+      result[0].path && getApi(result[0].path)
+      setActiveValue(result[0])
+      setPath(result[0].path)
+    }
+  }
   const listDataElement = listData.map((item: any, index) => {
     return (
       <div
@@ -34,15 +37,15 @@ const AdjustmentFileDetails: React.FC = () => {
         }`}
         key={item.id}
         onClick={() => {
-          item.path && getApi(item.path);
-          setActiveValue(item);
-          setPath(item.path);
+          item.path && getApi(item.path)
+          setActiveValue(item)
+          setPath(item.path)
         }}
       >
         {item.name}
       </div>
-    );
-  });
+    )
+  })
   const getApi = (id: string) => {
     const api = {
       url: `${
@@ -51,9 +54,10 @@ const AdjustmentFileDetails: React.FC = () => {
       httpHeaders: {
         Authorization: window.localStorage.getItem('Authorization'),
       },
-    };
-    setApi(api);
-  };
+    }
+    setApi(api)
+  }
+
   return (
     <WrapperComponent>
       <div className={styles.allDiv}>
@@ -70,14 +74,15 @@ const AdjustmentFileDetails: React.FC = () => {
           </div>
           <div className={styles.containerRight}>
             <div className={styles.body}>
-              {path && <FileDwgView params={api} hasAuthorization={true} />}
+              {/* {path && <FilePdfView params={api} hasAuthorization={true} />} */}
+              {path && <PdfFileView params={api} hasAuthorization={true} />}
             </div>
           </div>
         </div>
         {/* </Spin> */}
       </div>
     </WrapperComponent>
-  );
-};
+  )
+}
 
-export default AdjustmentFileDetails;
+export default AdjustmentFileDetails
