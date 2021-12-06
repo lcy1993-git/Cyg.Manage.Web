@@ -106,15 +106,13 @@ export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
   layerRef.streetLayer = getStreetLayer()
   // 添加地域名称图层
   layerRef.annLayer = getAnnLayer()
-  // 历史网架
-  layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
-  layerRef.historyPointLayer.set('name', 'historyPointLayer')
 
+  // 历史网架 线路
   layerRef.historyLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
-  layerRef.historyLineLayer.set('name', 'historyLineLayer')
-  // 预设计
-  layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
-  layerRef.designPointLayer.set('name', 'designPointLayer')
+  // 预设计 线路
   layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
-  layerRef.designLineLayer.set('name', 'designLineLayer')
+  // 历史网架 设备
+  layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
+  // 预设计 设备
+  layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
 }
