@@ -193,7 +193,7 @@ interface VersionParams {
   serverCode: string
 }
 
-const versionUrl = 'https://bbgl.gczhyun.com/api/Version/Get'
+const versionUrl = 'https://bbgl.gczhyun.com/common/api/Version/Get'
 
 export const getVersionUpdate = (params: VersionParams) => {
   return request(versionUrl, { method: 'POST', data: params })

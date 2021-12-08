@@ -18,7 +18,7 @@ export interface ProjectList {
 
 // 获取地图资源
 export const getMapList = (params: any) => {
-  return noTokenRequest('https://bbgl.gczhyun.com/api/Map/GetList', {
+  return noTokenRequest('https://bbgl.gczhyun.com/common/api/Map/GetList', {
     method: 'POST',
     data: { ...params },
   })
