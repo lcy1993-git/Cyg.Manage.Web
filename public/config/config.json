@@ -29,6 +29,6 @@
         "10.6.1.38": "logo.png"
     },
     "areaStatisticsUrl": "/chart/index.html",
-    "commonServer": "http://service.pwcloud.cdsrth.com:8101",
+    "commonServer": "https://bbgl.gczhyun.com",
     "version": "1.0.155"
 }
