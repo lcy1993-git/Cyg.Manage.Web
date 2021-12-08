@@ -81,11 +81,13 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
         </div>
       )}
       {auditResultData?.length === 0 && <EmptyTip description="暂无评审成果" />}
-      <ReviewDetailsModal
-        visible={reviewDetailVisible}
-        onChange={setReviewDetailVisible}
-        projectId={projectInfo?.projectId}
-      />
+      {reviewDetailVisible && (
+        <ReviewDetailsModal
+          visible={reviewDetailVisible}
+          onChange={setReviewDetailVisible}
+          projectId={projectInfo?.projectId}
+        />
+      )}
     </div>
   )
 }
