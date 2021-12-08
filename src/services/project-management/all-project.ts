@@ -633,6 +633,16 @@ export const getCompileResultTreeData = (projectId: string) => {
   )
 }
 
+//获取评审成果详情意见
+export const getReviewDetails = (ProjectId: string, IsDesign: boolean) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.review}/ReviewProject/GetProcessOpinionPreview`, {
+      method: 'GET',
+      params: { ProjectId, IsDesign },
+    })
+  )
+}
+
 //获取评审成果树状结构
 export const getAuditResultData = (projectId: string) => {
   return cyRequest<any[]>(() =>

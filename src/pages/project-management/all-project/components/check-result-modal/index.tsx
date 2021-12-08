@@ -351,6 +351,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                 createEvent={setAuditKeys}
                 setTabEvent={setCurrentTab}
                 setAuditFileInfo={setAuditFileInfo}
+                projectInfo={projectInfo}
               />
             </TabPane>
           </Tabs>
