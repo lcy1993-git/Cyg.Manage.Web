@@ -36,37 +36,28 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       width: 180,
     },
     {
-      dataIndex: 'orderPrice',
-      index: 'orderPrice',
-      title: '订单净价',
+      dataIndex: 'expectExecutorNickName',
+      index: 'expectExecutorNickName',
+      title: '评审人',
       width: 80,
     },
     {
-      dataIndex: 'area',
-      index: 'area',
-      title: '区域',
-      width: 80,
+      dataIndex: 'executionTime',
+      index: 'executionTime',
+      title: '时间',
+      width: 180,
     },
     {
-      dataIndex: 'demandCompany',
-      index: 'demandCompany',
-      title: '需求公司',
-      width: 140,
+      dataIndex: 'opinionContent',
+      index: 'opinionContent',
+      title: '批注意见',
+      // width: 240,
     },
     {
-      dataIndex: 'measurementUnit',
-      index: 'measurementUnit',
-      title: '计量单位',
-      width: 80,
-    },
-    {
-      dataIndex: 'howToCreate',
-      index: 'howToCreate',
-      title: '创建方式',
-      width: 80,
-      render: (text: any, record: any) => {
-        return record.howToCreateText
-      },
+      dataIndex: 'screenshots',
+      index: 'screenshots',
+      title: '截图',
+      width: 100,
     },
   ]
 
