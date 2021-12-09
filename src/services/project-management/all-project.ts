@@ -827,11 +827,15 @@ export const getReviewFileUrl = (params: { projectId: string; userId: string }) 
 
 //返回评审文件流
 export const getFileStream = (params: { url: string; extension: string }) => {
-  return request(`${baseUrl.review}/ReviewOpinionFile/fileStream`, {
-    method: 'GET',
-    params: params,
-    responseType: 'arrayBuffer',
-  })
+  return request(
+    `${baseUrl.review}/ReviewOpinionFile/fileStream?url=${encodeURIComponent(
+      params.url
+    )}&extension=${params.extension}`,
+    {
+      method: 'GET',
+      responseType: 'arrayBuffer',
+    }
+  )
 }
 
 interface ModifyOuterAuditParams {

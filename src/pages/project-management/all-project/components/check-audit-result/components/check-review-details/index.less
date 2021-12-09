@@ -6,13 +6,14 @@
     .ant-tabs-tab {
       padding: 18px !important;
       background-color: #f7f7f7 !important;
+      .ant-tabs-tab-active .ant-tabs-tab-btn {
+        width: 105px;
+        padding: 0 30px;
+        color: #167f41;
+        text-align: center;
+      }
     }
-    .ant-tabs-tab .ant-tabs-tab-active .ant-tabs-tab-btn {
-      width: 105px;
-      padding: 0 30px;
-      color: #167f41;
-      text-align: center;
-    }
+
     .ant-tabs-tab.ant-tabs-tab-active {
       padding: 18px !important;
       background-color: #fff !important;
@@ -54,4 +55,21 @@
       border: none;
     }
   }
+  thead {
+    tr {
+      th {
+        color: #1f1f1f;
+        font-weight: 550;
+      }
+    }
+  }
+}
+
+.checkTitle {
+  color: #0076ff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.noScreenShots {
+  color: #6f6f6f;
 }
