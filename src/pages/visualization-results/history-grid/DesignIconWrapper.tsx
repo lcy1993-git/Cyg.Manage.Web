@@ -59,7 +59,7 @@ export const DesignLabel = () => {
 
   const labels = [
     { text: '历史', bg: 'bg-theme-blue' },
-    { text: '预设', bg: 'bg-theme-green-light' },
+    { text: '规划', bg: 'bg-theme-green-light' },
   ]
 
   return mode === 'preDesigning' || mode === 'preDesign' ? (

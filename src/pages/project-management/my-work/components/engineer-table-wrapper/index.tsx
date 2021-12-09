@@ -333,7 +333,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
               history.push('/visualization-results/grid-pre-design')
             }}
           >
-            预设计
+            网架规划
           </Menu.Item>
         }
       </Menu>

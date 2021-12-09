@@ -36,7 +36,7 @@ const routes = [
     component: <HistoryGrid />,
   },
   {
-    title: '网架预设计',
+    title: '网架规划',
     path: '/visualization-results/grid-pre-design',
     component: <HashHistoryGrid />,
   },

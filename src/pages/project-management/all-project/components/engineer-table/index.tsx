@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import CyTag from '@/components/cy-tag'
-import EmptyTip from '@/components/empty-tip'
 import ImageIcon from '@/components/image-icon'
 import { useLayoutStore } from '@/layouts/context'
 import {
@@ -305,7 +304,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               history.push('/visualization-results/grid-pre-design')
             }}
           >
-            预设计
+            网架规划
           </Menu.Item>
         }
       </Menu>
