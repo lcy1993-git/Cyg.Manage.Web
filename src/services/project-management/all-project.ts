@@ -833,7 +833,7 @@ export const getFileStream = (params: { url: string; extension: string }) => {
     )}&extension=${params.extension}`,
     {
       method: 'GET',
-      responseType: 'arrayBuffer',
+      responseType: 'blob',
     }
   )
 }

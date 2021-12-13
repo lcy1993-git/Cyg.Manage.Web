@@ -1,11 +1,12 @@
 import { getFileStream, getReviewDetails } from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
-import { Modal, Table, Tabs } from 'antd'
+import { message, Modal, Table, Tabs } from 'antd'
 import Item from 'antd/lib/list/Item'
 import { Image } from 'antd'
 import moment from 'moment'
 import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import styles from './index.less'
+import { divide } from '@umijs/deps/compiled/lodash'
 interface ReviewDetailsProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
@@ -17,7 +18,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
   const { projectId } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [checkScreenShotVisible, setCheckScreenShotVisible] = useState<boolean>(false)
-  const [screenShotUrl, setScreenShotUrl] = useState<string>('')
+  const [imageData, setImageData] = useState<any>()
   const { data: detailsData } = useRequest(() => getReviewDetails(projectId, true))
 
   const detailColumns = [
@@ -43,7 +44,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       dataIndex: 'executionTime',
       index: 'executionTime',
       title: '时间',
-      width: 150,
+      width: 220,
     },
     {
       dataIndex: 'opinionContent',
@@ -78,10 +79,15 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
 
   //截图展示
   const screenShotsEvent = async (url: string, extension: string) => {
-    setScreenShotUrl(url)
-    await getFileStream({ url, extension })
+    // setScreenShotUrl(url)
+
+    // await getFileStream({ url, extension }).then((res) => {
+    //   setImageData(res)
+    // })
+    setImageData(url)
     setCheckScreenShotVisible(true)
   }
+  // console.log(imageData, '333')
 
   const getCurrentTabData = (tabType: number) => {
     return detailsData
@@ -113,6 +119,30 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       })
       .filter(Boolean)
       .flat(1)
+  }
+
+  const handlerUpload = async (url: string, extension: string) => {
+    const res = await getFileStream({ url, extension })
+    // const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1)
+
+    const blob = new Blob([res], {
+      type: `image/jpeg`,
+    })
+    // for IE
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, '11')
+    } else {
+      // for Non-IE
+      const objectUrl = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', '11')
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
+    }
+    message.success('下载成功')
   }
 
   return (
@@ -202,7 +232,8 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
         footer=""
         width="650px"
       >
-        <Image width={200} src={screenShotUrl} />
+        <img src={imageData} alt="" width="500px" height="500px" />
+        {/* <Image width={200} src={screenShotUrl} /> */}
       </Modal>
     </>
   )
