@@ -7,6 +7,7 @@ import moment from 'moment'
 import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import styles from './index.less'
 import { divide } from '@umijs/deps/compiled/lodash'
+import EmptyTip from '@/components/empty-tip'
 interface ReviewDetailsProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
@@ -59,10 +60,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       width: 120,
       render: (text: any, record: any) => {
         return record?.screenshots ? (
-          <span
-            className={styles.checkTitle}
-            onClick={() => screenShotsEvent(record?.screenshots, record.extension)}
-          >
+          <span className={styles.checkTitle} onClick={() => screenShotsEvent(record?.screenshots)}>
             查看
           </span>
         ) : (
@@ -78,12 +76,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
   ]
 
   //截图展示
-  const screenShotsEvent = async (url: string, extension: string) => {
-    // setScreenShotUrl(url)
-
-    // await getFileStream({ url, extension }).then((res) => {
-    //   setImageData(res)
-    // })
+  const screenShotsEvent = (url: string) => {
     setImageData(url)
     setCheckScreenShotVisible(true)
   }
@@ -121,30 +114,6 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       .flat(1)
   }
 
-  const handlerUpload = async (url: string, extension: string) => {
-    const res = await getFileStream({ url, extension })
-    // const suffix = fileName?.substring(fileName.lastIndexOf('.') + 1)
-
-    const blob = new Blob([res], {
-      type: `image/jpeg`,
-    })
-    // for IE
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, '11')
-    } else {
-      // for Non-IE
-      const objectUrl = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = objectUrl
-      link.setAttribute('download', '11')
-      document.body.appendChild(link)
-      link.click()
-      window.URL.revokeObjectURL(link.href)
-      document.body.removeChild(link)
-    }
-    message.success('下载成功')
-  }
-
   return (
     <>
       <Modal
@@ -164,9 +133,9 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
             <TabPane tab="设计校对" key="jd">
               <Table
                 size="middle"
-                // locale={{
-                //   emptyText: <EmptyTip className="pt20 pb20" />,
-                // }}
+                locale={{
+                  emptyText: <EmptyTip className="pt20 pb20" />,
+                }}
                 dataSource={handleData(getCurrentTabData(1))}
                 bordered={true}
                 pagination={false}
@@ -176,9 +145,9 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
             <TabPane tab="设计校核" key="jh">
               <Table
                 size="middle"
-                // locale={{
-                //   emptyText: <EmptyTip className="pt20 pb20" />,
-                // }}
+                locale={{
+                  emptyText: <EmptyTip className="pt20 pb20" description="暂无数据" />,
+                }}
                 dataSource={handleData(getCurrentTabData(2))}
                 bordered={true}
                 pagination={false}
@@ -188,9 +157,9 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
             <TabPane tab="设计审核" key="sh">
               <Table
                 size="middle"
-                // locale={{
-                //   emptyText: <EmptyTip className="pt20 pb20" />,
-                // }}
+                locale={{
+                  emptyText: <EmptyTip className="pt20 pb20" description="暂无数据" />,
+                }}
                 dataSource={handleData(getCurrentTabData(3))}
                 bordered={true}
                 pagination={false}
@@ -200,9 +169,9 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
             <TabPane tab="设计审定" key="sd">
               <Table
                 size="middle"
-                // locale={{
-                //   emptyText: <EmptyTip className="pt20 pb20" />,
-                // }}
+                locale={{
+                  emptyText: <EmptyTip className="pt20 pb20" description="暂无数据" />,
+                }}
                 dataSource={handleData(getCurrentTabData(4))}
                 bordered={true}
                 pagination={false}
@@ -212,9 +181,9 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
             <TabPane tab="外审" key="ws">
               <Table
                 size="middle"
-                // locale={{
-                //   emptyText: <EmptyTip className="pt20 pb20" />,
-                // }}
+                locale={{
+                  emptyText: <EmptyTip className="pt20 pb20" description="暂无数据" />,
+                }}
                 dataSource={handleData(getCurrentTabData(0))}
                 bordered={true}
                 pagination={false}
@@ -230,10 +199,11 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
         visible={checkScreenShotVisible}
         onCancel={() => setCheckScreenShotVisible(false)}
         footer=""
-        width="650px"
+        width="50%"
+        centered
+        bodyStyle={{ padding: '12px', textAlign: 'center' }}
       >
-        <img src={imageData} alt="" width="500px" height="500px" />
-        {/* <Image width={200} src={screenShotUrl} /> */}
+        <Image src={imageData} alt="" />
       </Modal>
     </>
   )
