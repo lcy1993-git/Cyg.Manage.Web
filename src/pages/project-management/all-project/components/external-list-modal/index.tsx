@@ -172,10 +172,16 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       message.info('该评审暂无下载文件')
       return
     }
+
+    const fileName = '评审文件.doc'
     const url = res[0]?.extend.file.url
     const aEl = document.createElement('a')
     aEl.href = url
+    aEl.setAttribute('download', fileName)
+    // document.body.appendChild(aEl)
     aEl.click()
+    // window.URL.revokeObjectURL(aEl.href)
+    // document.body.removeChild(aEl)
   }
 
   return (
