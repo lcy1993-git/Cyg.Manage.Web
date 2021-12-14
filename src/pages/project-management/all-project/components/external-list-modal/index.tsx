@@ -174,7 +174,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
     }
 
     const fileName = '评审文件 '
-    const url = res[0]?.extend.file.url.slice(5)
+    const url = res[0]?.extend.file.url
     const aEl = document.createElement('a')
     aEl.href = url
     aEl.setAttribute('download', fileName)
