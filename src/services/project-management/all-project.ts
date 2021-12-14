@@ -744,7 +744,7 @@ export const getAllotUsers = (projectId: string, arrangeType: number) => {
 }
 
 interface AllotOuterAuditParams {
-  projectIds: string[]
+  projectIds: string[] | string
   userIds?: string[]
   noNeedAudit?: boolean
   // auditResult?: boolean;
