@@ -110,16 +110,20 @@ export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
 
   // 历史网架 线路
   layerRef.historyLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
+  layerRef.historyLineLayer.set('name', 'historyLineLayer')
   layerRef.historyLineLayer.setZIndex(1)
   // 预设计 线路
   layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
+  layerRef.designLineLayer.set('name', 'designLineLayer')
   layerRef.designLineLayer.setZIndex(2)
 
   // 历史网架 设备
   layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
+  layerRef.historyPointLayer.set('name', 'historyPointLayer')
   layerRef.historyPointLayer.setZIndex(3)
   // 预设计 设备
   layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
+  layerRef.designPointLayer.set('name', 'designPointLayer')
   layerRef.designPointLayer.setZIndex(4)
 
   // dragBOX线框

@@ -51,8 +51,12 @@ export function clearScreen({ sourceRef, interActionRef }: ClearScreenOps) {
 // }
 
 // 获取元素类型
-export function getGeometryType(f: Feature<Geometry>) {
-  return f.getGeometry()!.getType()
+export function getGeometryType(f: Feature<Geometry>): any {
+  return f.getGeometry()!.getType() === 'Point'
+}
+// 获取元素类型
+export function getTypeByGeometry(f: Feature<Geometry>): any {
+  return f.getGeometry()!.getType() === 'Point' ? 'Point' : 'Line'
 }
 
 // 添加高亮样式

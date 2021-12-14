@@ -1,3 +1,4 @@
+import { Snap } from 'ol/interaction'
 import { Dispatch, SetStateAction } from 'react'
 import { HistoryDispatch } from '../../../store'
 import { handlerGeographicSize } from '../effects'

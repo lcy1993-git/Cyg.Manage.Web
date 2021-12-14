@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
@@ -159,7 +159,7 @@ const HistoryMapBase = () => {
       payload: [],
     })
     if (isDraw) {
-      refreshModify({ mapRef, interActionRef, sourceRef, isDraw })
+      refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode })
     } else {
       interActionRef.modify && mapRef.map.removeInteraction(interActionRef.modify)
       sourceRef.highLightSource.clear()
@@ -283,7 +283,7 @@ const HistoryMapBase = () => {
       sourceType: 'history',
       sourceRef,
     })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode })
     // 初次挂载自适应屏幕
     if (lifeStateRef.state.isFirstDrawHistory) {
       const extend = getFitExtend(
@@ -309,7 +309,7 @@ const HistoryMapBase = () => {
         sourceType: 'design',
         sourceRef,
       })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode })
   }
 
   // 删除draw交互行为
@@ -338,6 +338,11 @@ const HistoryMapBase = () => {
   return (
     <div className="w-full h-full relative">
       <div ref={ref} className="w-full h-full"></div>
+      <div>
+        <button>设备</button>
+        <button>线路</button>
+      </div>
+
       {dragBoxProps.visible && (
         <div className="absolute top-80 left-80 z-500 text-white bg-gray-900 border-gray-50 bg-opacity-5">
           <div

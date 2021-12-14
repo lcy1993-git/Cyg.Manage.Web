@@ -150,3 +150,10 @@ export interface DragBoxProps {
   position: number[]
   selected: Feature<Point | LineString>[]
 }
+
+export interface UpdateHistoryData {
+  equipments: ElectricPointData[]
+  lines: ElectricLineData[]
+  toBeDeletedEquipmentIds: string[]
+  toBeDeletedLineIds: string[]
+}
