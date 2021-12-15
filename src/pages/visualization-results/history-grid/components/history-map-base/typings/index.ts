@@ -28,10 +28,10 @@ export interface ElectricLineData {
   name: string
   type: ElectricLineType | number
   typeStr: ElectricLineType
-  startLng?: number
-  startLat?: number
-  endLng?: number
-  endLat?: number
+  startLng?: string | number
+  startLat?: string | number
+  endLng?: string | number
+  endLat?: string | number
   remark?: string
   startId?: string
   endId?: string
@@ -46,8 +46,8 @@ export interface ElectricPointData {
   name: string
   type: ElectricPointType | number
   typeStr: ElectricPointType
-  lng?: number
-  lat?: number
+  lng?: string | number
+  lat?: string | number
   remark?: string
   voltageLevelStr: string
   voltageLevel: number
