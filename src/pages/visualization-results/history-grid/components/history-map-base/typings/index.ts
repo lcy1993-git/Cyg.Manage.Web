@@ -151,6 +151,19 @@ export interface DragBoxProps {
   selected: Feature<Point | LineString>[]
 }
 
+export interface ModifyCurrentState {
+  eventFeatures: Feature<Geometry | Point | LineString>[]
+  atPixelFeatures: Feature<Geometry | Point | LineString>[]
+  coordinate: [number, number]
+  refreshModifyCallBack: () => void
+}
+
+export interface ModifyProps {
+  visible: boolean
+  position: [number, number]
+  currentState: ModifyCurrentState | null
+}
+
 export interface UpdateHistoryData {
   equipments: ElectricPointData[]
   lines: ElectricLineData[]

@@ -8,6 +8,7 @@ import { Modify, Snap } from 'ol/interaction'
 import { ModifyEvent } from 'ol/interaction/Modify'
 import * as proj from 'ol/proj'
 import RenderFeature from 'ol/render/Feature'
+import { Dispatch, SetStateAction } from 'react'
 import { saveHistoryData } from '../../../service'
 import {
   ElectricLineData,
@@ -18,6 +19,7 @@ import {
   UpdateHistoryData,
 } from '../typings'
 import { getTypeByGeometry } from '../utils'
+import { ModifyProps } from './../typings/index'
 
 interface InitModify {
   interActionRef: InterActionRef
@@ -25,6 +27,7 @@ interface InitModify {
   sourceRef: SourceRef
   isDraw: boolean
   mode: string
+  setModifyProps: Dispatch<SetStateAction<ModifyProps>>
 }
 
 export function refreshModify({
@@ -33,16 +36,15 @@ export function refreshModify({
   sourceRef,
   isDraw,
   mode: preMode,
+  setModifyProps,
 }: InitModify) {
   if (!isDraw) return
   const mode = preMode === 'record' ? 'history' : 'design'
   let memoFeatures: Feature<Geometry>[] = []
   const modify = new Modify({
     features: new Collection([
-      ...sourceRef.historyLineSource.getFeatures(),
-      ...sourceRef.historyPointSource.getFeatures(),
-      ...sourceRef.designLineSource.getFeatures(),
-      ...sourceRef.designPointSource.getFeatures(),
+      ...sourceRef[`${mode}LineSource`].getFeatures(),
+      ...sourceRef[`${mode}PointSource`].getFeatures(),
     ]),
     // condition: primaryAction,
     condition: (e: MapBrowserEvent<PointerEvent>) => {
@@ -56,7 +58,7 @@ export function refreshModify({
   })
 
   const refreshModifyCallBack = () =>
-    refreshModify({ interActionRef, mapRef, sourceRef, isDraw, mode: preMode })
+    refreshModify({ interActionRef, mapRef, sourceRef, isDraw, mode: preMode, setModifyProps })
 
   modify.on('modifystart', (e: ModifyEvent) => {
     const featureArr = e.features.getArray() as Feature<Geometry>[]
@@ -69,7 +71,7 @@ export function refreshModify({
     // 改变鼠标状态
     ;(mapRef.map.getTarget()! as HTMLCanvasElement).style.cursor = 'unset'
 
-    const { pixel } = e.mapBrowserEvent
+    const { pixel, coordinate } = e.mapBrowserEvent
 
     const eventFeatures = e.features.getArray() as Feature<Geometry>[]
 
@@ -107,22 +109,27 @@ export function refreshModify({
          * 如果合法，则反馈用户是否需要吸附
          * 如果不合法，则直接视当前操作操作无吸附副作用
          */
-        const isCheckAfterAdsorption = checkAfterAdsorption()
+        setModifyProps({
+          visible: true,
+          position: [0, 0],
+          currentState: {
+            eventFeatures,
+            atPixelFeatures: features,
+            coordinate,
+            refreshModifyCallBack,
+          },
+        })
 
-        if (isCheckAfterAdsorption) {
-          /**
-           * 该分支说明当前操作需要告知用户是否需要处理设备与线路吸附关系情况
-           * 如果当前设备与线路需要吸附
-           * 则按发布订阅模式进行预patch，由回调方式进行按需处理
-           */
-          return
-        }
+        return
+        /**
+         * 该分支说明当前操作需要告知用户是否需要处理设备与线路吸附关系情况
+         * 如果当前设备与线路需要吸附
+         * 则按发布订阅模式进行预patch，由回调方式进行按需处理
+         */
       }
     }
     // 保存操作
-    saveOperation(eventFeatures, refreshModifyCallBack)
-    // 清楚高亮
-    sourceRef.highLightSource.clear()
+    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef)
   })
 
   // 移除前一个modify
@@ -175,7 +182,7 @@ function checkRepeatLine(features: (RenderFeature | Feature<Geometry>)[]): boole
   let lineObject = {}
   for (let i = 0, len = features.length; i < len; i++) {
     if (features[i].getGeometry()?.getType() === 'LineString') {
-      const [x1, y1, x2, y2] = (features[i].getGeometry() as LineString).flatCoordinates
+      const [[x1, y1], [x2, y2]] = (features[i].getGeometry() as LineString).getCoordinates()
       if (x1 === x2 && y1 === y2) {
         message.error('线段首尾端重合，请检查后重试')
         return true
@@ -190,6 +197,7 @@ function checkRepeatLine(features: (RenderFeature | Feature<Geometry>)[]): boole
       }
     }
   }
+
   return false
 }
 
@@ -204,7 +212,7 @@ interface RevokeCurrentModifyOptions {
  * 撤销本次操作回退到编辑前的操作
  * @param {RevokeCurrentModifyOptions} param0
  */
-function revokeCurrentModify({
+export function revokeCurrentModify({
   features,
   memoFeatures,
   sourceRef,
@@ -224,18 +232,15 @@ function revokeCurrentModify({
   sourceRef.highLightSource.clear()
 }
 
-function checkAfterAdsorption(): boolean {
-  return false
-}
-
 /**
- * 将修改的数据保存到服务器
+ * 保存操作，将数据保存到服务器
  * @param {Feature<Geometry>[]} eventFeatures
  * @param {()=> void} refreshModifyCallBack
  */
-function saveOperation(
+export function saveOperation(
   eventFeatures: Feature<Geometry>[],
-  refreshModifyCallBack: () => void
+  refreshModifyCallBack: () => void,
+  sourceRef: SourceRef
 ): void {
   const updateHistoryData: UpdateHistoryData = {
     equipments: [],
@@ -272,6 +277,10 @@ function saveOperation(
       updateHistoryData.lines.push(resData as ElectricLineData)
     }
   })
+
+  // 清楚高亮
+  sourceRef.highLightSource.clear()
+
   // 将新的数据传递给服务器
   saveHistoryData(updateHistoryData).then((res) => {
     if (!(res.code === 200 && res.isSuccess === true)) {

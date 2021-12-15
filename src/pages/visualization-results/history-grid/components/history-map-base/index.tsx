@@ -11,6 +11,7 @@ import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import {
   mapClick,
   moveend,
+  needAdsorption,
   onDragBoxCancel,
   onDragBoxPointSelect,
   pointermove,
@@ -18,7 +19,15 @@ import {
 } from './event'
 import './index.css'
 import init from './init'
-import { DragBoxProps, InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
+import {
+  DragBoxProps,
+  InterActionRef,
+  LayerRef,
+  LifeStateRef,
+  MapRef,
+  ModifyProps,
+  SourceRef,
+} from './typings'
 import {
   checkUserLocation,
   clearScreen,
@@ -93,6 +102,12 @@ const HistoryMapBase = () => {
     selected: [],
   })
 
+  const [modifyProps, setModifyProps] = useState<ModifyProps>({
+    visible: false,
+    position: [0, 0],
+    currentState: null,
+  })
+
   // const bindEvent = useCallback(() => {
   //   mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
   //     mapClick(e, { interActionRef, mapRef, setState, UIStatus }))
@@ -159,7 +174,7 @@ const HistoryMapBase = () => {
       payload: [],
     })
     if (isDraw) {
-      refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode })
+      refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, setModifyProps })
     } else {
       interActionRef.modify && mapRef.map.removeInteraction(interActionRef.modify)
       sourceRef.highLightSource.clear()
@@ -204,7 +219,7 @@ const HistoryMapBase = () => {
   // 绑定事件
   function bindEvent() {
     mapRef.map.on('click', (e: MapBrowserEvent<MouseEvent>) =>
-      mapClick(e, { interActionRef, mapRef, setState, setDragBoxProps })
+      mapClick(e, { interActionRef, mapRef, setState, setDragBoxProps, sourceRef })
     )
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
@@ -283,7 +298,7 @@ const HistoryMapBase = () => {
       sourceType: 'history',
       sourceRef,
     })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, setModifyProps })
     // 初次挂载自适应屏幕
     if (lifeStateRef.state.isFirstDrawHistory) {
       const extend = getFitExtend(
@@ -309,7 +324,7 @@ const HistoryMapBase = () => {
         sourceType: 'design',
         sourceRef,
       })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, setModifyProps })
   }
 
   // 删除draw交互行为
@@ -341,6 +356,38 @@ const HistoryMapBase = () => {
       <div>
         <button>设备</button>
         <button>线路</button>
+        {modifyProps.visible && (
+          <span>
+            <button
+              onClick={() =>
+                needAdsorption(
+                  {
+                    modifyProps,
+                    setModifyProps,
+                    sourceRef,
+                  },
+                  true
+                )
+              }
+            >
+              是(吸附)
+            </button>
+            <button
+              onClick={() =>
+                needAdsorption(
+                  {
+                    modifyProps,
+                    setModifyProps,
+                    sourceRef,
+                  },
+                  false
+                )
+              }
+            >
+              否(吸附)
+            </button>
+          </span>
+        )}
       </div>
 
       {dragBoxProps.visible && (

@@ -8,20 +8,17 @@ interface Ops {
   mapRef: MapRef
   setState: HistoryDispatch
   setDragBoxProps: Dispatch<SetStateAction<DragBoxProps>>
+  sourceRef: SourceRef
 }
 
 export default function mapClick(
   e: MapBrowserEvent<MouseEvent>,
-  { mapRef, setState, setDragBoxProps }: Ops
+  { mapRef, setState, setDragBoxProps, sourceRef }: Ops
 ) {
-  // var pixel = e.pixel;
-  // console.log(pixel);
-
-  // var lonlat = map.getLonLatFromPixel(pixel);
-  //   lonlat.transform(new OpenLayers.Projection("EPSG:900913"), new OpenLayers.Projection("EPSG:4326")); //由900913坐标系转为4326
-  // 　　　　 alert(lonlat.lon+", "+lonlat.lat);
-  // 设置当前坐标
-  // setState("currentMousePosition", [...e.pixel] as [number, number])
+  // 清理高亮图层
+  if (sourceRef.highLightSource.getFeatures().length) {
+    sourceRef.highLightSource.clear()
+  }
 
   setDragBoxProps({
     visible: false,
