@@ -16,6 +16,7 @@ import ExternalArrangeModal from '@/pages/project-management/all-project/compone
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
 import ProjectInheritModal from '@/pages/project-management/all-project/components/project-inherit-modal'
+import ProjectMergeModal from '@/pages/project-management/all-project/components/project-merge-modal/idnex'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ScreenModal from '@/pages/project-management/all-project/components/screen-modal'
 import FilterEntrustModal from '@/pages/project-management/project-entrust/components/filter-entrust-modal'
@@ -154,7 +155,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
-
+  //项目合并模态框
+  const [projectMergeVisible, setProjectMergeVisible] = useState<boolean>(false)
   // 预设计
   const { setPreDesignItem } = useLayoutStore()
 
@@ -334,6 +336,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             }}
           >
             网架规划
+          </Menu.Item>
+        }
+        {
+          <Menu.Item
+            onClick={() => {
+              setProjectMergeVisible(true)
+            }}
+          >
+            项目合并
           </Menu.Item>
         }
       </Menu>
@@ -1344,6 +1355,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           visible={chooseColumnsModal}
           onChange={setChooseColumnsModal}
           finishEvent={columnsSettingFinish}
+        />
+      )}
+      {projectMergeVisible && (
+        <ProjectMergeModal
+          visible={projectMergeVisible}
+          onChange={setProjectMergeVisible}
+          finishEvent={delayRefresh}
         />
       )}
     </div>

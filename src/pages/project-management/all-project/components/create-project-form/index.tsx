@@ -21,7 +21,7 @@ interface CreateProjectFormProps {
   engineerEnd?: Moment
   copyFlag?: number[]
   setCopyFlag?: (value: number[]) => void
-  index?: number
+  index?: any
   isInherit?: boolean
   isEdit?: boolean
   pointVisible?: boolean
@@ -32,7 +32,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     field = {},
     areaId,
     company,
-    companyName,
     pointVisible,
     status,
     projectId,
@@ -854,7 +853,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 style={{ width: '100%' }}
               />
             </CyFormItem>
-          ) : (
+          ) : status === 1 || status === 2 || status === 14 || status === 30 || status === 31 ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}
@@ -868,21 +867,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                   required: true,
                   message: '桩位范围不能为空',
                 },
-                () => ({
-                  validator(_, value) {
-                    if (value <= 999 && value > -1) {
-                      return Promise.resolve()
-                    }
-                    if (value > 999) {
-                      return Promise.reject('请填写0~999以内的整数')
-                    }
-                    return Promise.resolve()
-                  },
-                }),
-                {
-                  pattern: /^[0-9]\d*$/,
-                  message: '请输入正整数',
-                },
               ]}
             >
               <Input
@@ -891,6 +875,18 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 style={{ width: '100%' }}
                 onKeyPress={keyPressEvent}
               />
+            </CyFormItem>
+          ) : (
+            <CyFormItem
+              label="桩位范围(米)"
+              // initialValue={'50'}
+              fieldKey={[field.fieldKey, 'pileRange']}
+              name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
+              labelWidth={120}
+              required
+              align="right"
+            >
+              <InputNumber value={pileRangeValue} disabled style={{ width: '100%' }} />
             </CyFormItem>
           )}
         </div>

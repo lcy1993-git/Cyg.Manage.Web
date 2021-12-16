@@ -1,7 +1,8 @@
-import awaitProcessSrc from '@/assets/index/awaitProcess.png'
-import beSharedSrc from '@/assets/index/beShared.png'
-import delegationSrc from '@/assets/index/delegation.png'
-import inProgressSrc from '@/assets/index/inProgress.png'
+import agentSrc from '@/assets/index/agent.png'
+import approveSrc from '@/assets/index/approve.png'
+import arrangeSrc from '@/assets/index/arrange.png'
+import knotSrc from '@/assets/index/knot.png'
+import reviewSrc from '@/assets/index/review.png'
 import React from 'react'
 import styles from './index.less'
 
@@ -11,17 +12,19 @@ interface ToDoItemProps {
 }
 
 const statusObject = {
-  awaitProcess: '立项审批',
-  inProgress: '任务安排',
-  delegation: '评审管理',
-  beShared: '结项管理',
+  agent: '项目获取',
+  approve: '立项审批',
+  arrange: '任务安排',
+  review: '评审管理',
+  knot: '结项管理',
 }
 
 const imageObject = {
-  awaitProcess: awaitProcessSrc,
-  inProgress: inProgressSrc,
-  delegation: delegationSrc,
-  beShared: beSharedSrc,
+  agent: agentSrc,
+  approve: approveSrc,
+  arrange: arrangeSrc,
+  review: reviewSrc,
+  knot: knotSrc,
 }
 
 const ToDoItem: React.FC<ToDoItemProps> = (props) => {

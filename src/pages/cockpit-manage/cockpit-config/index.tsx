@@ -153,7 +153,7 @@ const CockpitManage: React.FC = () => {
         h: 11,
         edit: true,
         key: uuid.v1(),
-        componentProps: ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
+        componentProps: ['agent', 'approve', 'arrange', 'review', 'knot'],
       },
       {
         name: 'mapComponent',
@@ -289,7 +289,12 @@ const CockpitManage: React.FC = () => {
   const configComponentElement = configArray.map((item) => {
     return (
       <div key={item.key} data-grid={{ x: item.x, y: item.y, w: item.w, h: item.h }}>
-        <ConfigWindow deleteEvent={deleteEvent} editEvent={editEvent} record={item}>
+        <ConfigWindow
+          deleteEvent={deleteEvent}
+          editEvent={editEvent}
+          record={item}
+          isEdit={item.name === 'toDo' ? false : true}
+        >
           {getComponentByType(item.name, item.componentProps, currentAreaInfo)}
         </ConfigWindow>
       </div>
