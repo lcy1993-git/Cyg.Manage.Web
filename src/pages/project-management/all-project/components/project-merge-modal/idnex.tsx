@@ -3,9 +3,12 @@ import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
 import { modifyMultipleEngineerLib } from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
+import { divide } from '@umijs/deps/compiled/lodash'
 import { useControllableValue } from 'ahooks'
 import { Button, Input, message, Modal } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import CheckMergeTable from './check-merge-table'
 import styles from './index.less'
 const { Search } = Input
 
@@ -161,6 +164,7 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
       destroyOnClose
       footer={null}
       onCancel={() => closeEvent()}
+      bodyStyle={{ padding: '12px 24px 24px' }}
     >
       {!requestLoading ? (
         <>
@@ -183,7 +187,23 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
           />
         </>
       ) : (
-        <div>111</div>
+        <div>
+          <div className={styles.checkMergeTips}>
+            <div>
+              <CloseCircleOutlined className={`${styles.failIcon} mr7`} />
+              校验未通过，请修改项目属性后重试。
+            </div>
+            {/* <div>
+              <CheckCircleOutlined style={{ color: '#00bf4f' }} />
+              校验通过。
+            </div> */}
+            <Button type="primary" onClick={() => checkMergeEvent()}>
+              确认合并
+            </Button>
+          </div>
+
+          <CheckMergeTable />
+        </div>
       )}
     </Modal>
   )
