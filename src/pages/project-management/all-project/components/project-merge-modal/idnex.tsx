@@ -149,6 +149,10 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
     // finishEvent?.()
   }
 
+  const mergeConfirm = () => {
+    //判断校验
+  }
+
   useEffect(() => {
     if (state) {
       resetSelectedRows()
@@ -197,7 +201,7 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
               <CheckCircleOutlined style={{ color: '#00bf4f' }} />
               校验通过。
             </div> */}
-            <Button type="primary" onClick={() => checkMergeEvent()}>
+            <Button type="primary" onClick={() => mergeConfirm()} disabled>
               确认合并
             </Button>
           </div>
