@@ -992,3 +992,16 @@ export const receiveProject = (projectIds: string[]) => {
     })
   )
 }
+
+//合并项目获取结果
+export const getComparisonResult = (params: {
+  sourceProjectId: string
+  targetProjectId: string
+}) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/ProjectMerge/GetComparisonResult`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}

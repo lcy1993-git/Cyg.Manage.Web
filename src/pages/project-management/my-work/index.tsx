@@ -52,12 +52,12 @@ const MyWork: React.FC = () => {
         {
           label: '项目获取',
           id: 'agent',
-          number: data.arrange.agent,
+          number: data.agent,
           children: [
             {
               label: '项目获取',
               id: 'agent',
-              number: data.arrange.agent,
+              number: data.agent,
               url: '/ProjectList/GetAgents',
               typeColumns: [
                 'name',

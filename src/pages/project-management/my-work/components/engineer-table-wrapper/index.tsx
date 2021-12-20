@@ -302,6 +302,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                 companyName: engineerInfo.company,
                 startTime: engineerInfo.startTime,
                 endTime: engineerInfo.endTime,
+                status: status,
               })
             }
           >
@@ -338,17 +339,18 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             网架规划
           </Menu.Item>
         }
-        {
-          <Menu.Item
-            onClick={() => {
-              setProjectMergeVisible(true)
-            }}
-          >
-            项目合并
-          </Menu.Item>
-        }
+        {tableItemData.identitys.findIndex((item: any) => item.value === 1) > -1 && (
+          <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
+        )}
       </Menu>
     )
+  }
+
+  const projectMergeEvent = (projectId: string) => {
+    setModalInfo({
+      projectId: projectId,
+    })
+    setProjectMergeVisible(true)
   }
 
   const checkProjectDetail = (projectId: string) => {
@@ -1312,6 +1314,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           company={modalNeedInfo.company}
           areaId={modalNeedInfo.areaId}
           visible={copyProjectVisible}
+          status={modalNeedInfo.status}
           startTime={modalNeedInfo.startTime}
           endTime={modalNeedInfo.endTime}
           onChange={setCopyProjectVisible}
@@ -1362,6 +1365,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           visible={projectMergeVisible}
           onChange={setProjectMergeVisible}
           finishEvent={delayRefresh}
+          projectId={modalNeedInfo.projectId}
         />
       )}
     </div>

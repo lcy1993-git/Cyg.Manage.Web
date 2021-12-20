@@ -1,19 +1,18 @@
 import DataSelect from '@/components/data-select'
 import GeneralTable from '@/components/general-table'
+import ImageIcon from '@/components/image-icon'
 import TableSearch from '@/components/table-search'
-import { modifyMultipleEngineerLib } from '@/services/project-management/all-project'
+import { getComparisonResult } from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
-import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons'
-import { divide } from '@umijs/deps/compiled/lodash'
-import { useControllableValue } from 'ahooks'
-import { Button, Input, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
-import CheckMergeTable from './check-merge-table'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Input, message, Modal, Spin, Table } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './index.less'
 const { Search } = Input
 
 interface ProjectMergeModalProps {
   visible: boolean
+  projectId: string
   onChange: Dispatch<SetStateAction<boolean>>
   finishEvent: () => void
 }
@@ -21,17 +20,37 @@ interface ProjectMergeModalProps {
 const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState(false)
+  const [companyId, setCompanyId] = useState('')
   const [keyWord, setKeyWord] = useState('')
+  const [checkData, setCheckData] = useState<any>([])
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
-  const [libId, setLibId] = useState<string>('')
-  const { finishEvent } = props
+  const { finishEvent, projectId } = props
 
-  const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList?status=1',
-    requestSource: 'resource',
-    titleKey: 'libName',
-    valueKey: 'id',
+  const { data: companyData = [] } = useGetSelectData({
+    url: '/ProjectMerge/GetTargetProjectCompanys',
+    method: 'post',
+    titleKey: 'text',
+    valueKey: 'value',
   })
+
+  const { data = [], run, loading } = useRequest(getComparisonResult, {
+    manual: true,
+    onSuccess: () => {
+      if (data) {
+        setCheckData(data)
+      }
+    },
+  })
+
+  const isAllCheckPass = useMemo(() => {
+    if (checkData) {
+      return checkData
+        ?.map((item: any) => {
+          return item.equality
+        })
+        .includes(false)
+    }
+  }, [checkData])
 
   const tableRef = useRef<HTMLDivElement>(null)
 
@@ -42,13 +61,6 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
     }
   }
 
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.refresh()
-    }
-  }
-
   const resetSelectedRows = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
@@ -56,27 +68,75 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
     }
   }
 
+  const searchByCompany = (value: any) => {
+    setCompanyId(value)
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.searchByParams({
+        companyId: value,
+      })
+    }
+  }
+
   const tableColumns = [
     {
-      dataIndex: 'engineerName',
-      index: 'engineerName',
+      dataIndex: 'engineer',
+      index: 'engineer',
       title: '工程',
       width: '50%',
-      //   onCell: () => {
-      //     return {
-      //       style: {
-      //         overflow: 'hidden',
-      //         whiteSpace: 'nowrap' as 'nowrap',
-      //         textOverflow: 'ellipsis',
-      //       },
-      //     }
-      //   },
+      render: (text: any, record: any) => {
+        return record.engineer.text
+      },
     },
     {
       dataIndex: 'project',
       index: 'project',
       title: '项目',
       width: '50%',
+      render: (text: any, record: any) => {
+        return record.project.text
+      },
+    },
+  ]
+
+  const mergeColumns = [
+    {
+      dataIndex: 'item',
+      index: 'item',
+      title: '校验条目',
+      width: 280,
+      onCell: () => {
+        return {
+          style: {
+            backgroundColor: '#fafafa',
+          },
+        }
+      },
+    },
+    {
+      dataIndex: 'targetValue',
+      index: 'targetValue',
+      title: '目标项目',
+      width: 320,
+    },
+    {
+      dataIndex: 'sourceValue',
+      index: 'sourceValue',
+      title: '当前项目',
+      width: 320,
+    },
+    {
+      dataIndex: 'equality',
+      index: 'equality',
+      title: '结果',
+      width: 80,
+      render: (text: any, record: any) => {
+        return record.equality ? (
+          <ImageIcon width={18} height={18} imgUrl="pass.png" />
+        ) : (
+          <ImageIcon width={18} height={18} imgUrl="fail.png" />
+        )
+      },
     },
   ]
 
@@ -100,13 +160,13 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
     return (
       <>
         <div className="flex">
-          <TableSearch className="mr77" label="立项公司" width="272px">
+          <TableSearch className="mr77" label="立项公司" width="260px">
             <DataSelect
               style={{ width: '100%' }}
-              value={libId}
-              onChange={(value) => setLibId(value as string)}
-              placeholder="公司名称"
-              options={libSelectData}
+              allowClear
+              onChange={(value: any) => searchByCompany(value)}
+              placeholder="-全部-"
+              options={companyData}
             />
           </TableSearch>
           <Button type="primary" onClick={() => checkMergeEvent()} loading={requestLoading}>
@@ -118,30 +178,17 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
   }
 
   const checkMergeEvent = async () => {
-    // if (!libId) {
-    //   message.error('请选择立项公司')
-    //   return
-    // }
-    // if (tableSelectRows.length === 0) {
-    //   message.error('请选择需要合并的项目')
-    //   return
-    // }
+    if (tableSelectRows && tableSelectRows.length === 0) {
+      message.warning('请选择需要合并的项目')
+      return
+    }
 
+    const targetId = tableSelectRows[0].project.value
+    await run({
+      sourceProjectId: projectId,
+      targetProjectId: targetId,
+    })
     setRequestLoading(true)
-    // const engineerIds = tableSelectRows.map((item) => item.engineerId)
-    // try {
-    //   await modifyMultipleEngineerLib({
-    //     engineerIds: engineerIds,
-    //     libId: libId,
-    //   })
-    //   message.success('批量变更资源库成功')
-    //   resetSelectedRows()
-    //   refresh()
-    // } catch (msg) {
-    //   console.error(msg)
-    // } finally {
-    //   setRequestLoading(false)
-    // }
   }
 
   const closeEvent = () => {
@@ -168,7 +215,7 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
       destroyOnClose
       footer={null}
       onCancel={() => closeEvent()}
-      bodyStyle={{ padding: '12px 24px 24px' }}
+      bodyStyle={{ padding: '12px 24px 0px', height: requestLoading ? '445px' : '635px' }}
     >
       {!requestLoading ? (
         <>
@@ -184,30 +231,41 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
             buttonRightContentSlot={tableButtonRightContent}
             buttonLeftContentSlot={tableButton}
             columns={tableColumns}
-            extractParams={{ keyWord }}
+            extractParams={{ companyId: companyId, keyWord: keyWord }}
             needTitleLine={false}
-            rowKey="engineerId"
-            url="/Engineer/GetEngineerByLibList"
+            rowKey="project"
+            url="/ProjectMerge/GetTargetProjects"
           />
         </>
       ) : (
-        <div>
+        <Spin spinning={loading}>
           <div className={styles.checkMergeTips}>
-            <div>
-              <CloseCircleOutlined className={`${styles.failIcon} mr7`} />
-              校验未通过，请修改项目属性后重试。
+            <div className={styles.checkIcon}>
+              {isAllCheckPass ? (
+                <>
+                  <ImageIcon width={18} height={18} imgUrl="fail.png" marginRight={5} />
+                  <span>校验未通过，请修改项目属性后重试</span>
+                </>
+              ) : (
+                <>
+                  <ImageIcon width={18} height={18} imgUrl="pass.png" marginRight={5} />
+                  <span>校验通过</span>
+                </>
+              )}
             </div>
-            {/* <div>
-              <CheckCircleOutlined style={{ color: '#00bf4f' }} />
-              校验通过。
-            </div> */}
-            <Button type="primary" onClick={() => mergeConfirm()} disabled>
+
+            <Button type="primary" onClick={() => mergeConfirm()} disabled={isAllCheckPass}>
               确认合并
             </Button>
           </div>
-
-          <CheckMergeTable />
-        </div>
+          <Table
+            columns={mergeColumns}
+            bordered
+            pagination={false}
+            size={'small'}
+            dataSource={checkData}
+          />
+        </Spin>
       )}
     </Modal>
   )

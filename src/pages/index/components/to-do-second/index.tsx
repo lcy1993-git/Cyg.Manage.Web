@@ -88,7 +88,8 @@ const ToDo: React.FC<ToDoProps> = (props) => {
       Object.keys(toDoStatisticsInfo)
         .filter((item) => item !== 'all')
         .forEach((item) => {
-          emptyObj[reserveTypeEnum[item]] = toDoStatisticsInfo[item].total
+          emptyObj[reserveTypeEnum[item]] =
+            item === 'agent' ? toDoStatisticsInfo[item] : toDoStatisticsInfo[item].total
         })
       return emptyObj
     }
