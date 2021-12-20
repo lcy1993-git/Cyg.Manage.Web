@@ -36,7 +36,6 @@ import {
   moveToViewByLocation,
 } from './utils'
 import { useCurrentRef } from './utils/hooks'
-
 const HistoryMapBase = () => {
   // const [state, setState, mode] = useGridMap()
   const {
@@ -94,7 +93,7 @@ const HistoryMapBase = () => {
 
   const sourceRef = useCurrentRef<SourceRef>({})
 
-  const DragBoxRef = useRef()
+  // const DragBoxRef = useRef()
 
   const [dragBoxProps, setDragBoxProps] = useState<DragBoxProps>({
     visible: false,
