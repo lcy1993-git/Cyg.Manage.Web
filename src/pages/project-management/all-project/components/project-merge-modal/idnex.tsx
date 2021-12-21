@@ -2,11 +2,13 @@ import DataSelect from '@/components/data-select'
 import GeneralTable from '@/components/general-table'
 import ImageIcon from '@/components/image-icon'
 import TableSearch from '@/components/table-search'
-import { getComparisonResult } from '@/services/project-management/all-project'
+import { getComparisonResult, saveProjectMerge } from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Input, message, Modal, Spin, Table } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
+import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
 import styles from './index.less'
 const { Search } = Input
 
@@ -19,11 +21,17 @@ interface ProjectMergeModalProps {
 
 const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const [requestLoading, setRequestLoading] = useState(false)
+  const [requestLoading, setRequestLoading] = useState<boolean>(false)
   const [companyId, setCompanyId] = useState('')
+  const [targetProjectId, setTargetProjectId] = useState<string>('')
   const [keyWord, setKeyWord] = useState('')
   const [checkData, setCheckData] = useState<any>([])
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
+  const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false)
+  const [currentClickProjectId, setCurrentClickProjectId] = useState<string>('')
+  const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('')
+  const [mergeLoading, setMergeLoading] = useState<boolean>(false)
   const { finishEvent, projectId } = props
 
   const { data: companyData = [] } = useGetSelectData({
@@ -86,7 +94,17 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
       title: '工程',
       width: '50%',
       render: (text: any, record: any) => {
-        return record.engineer.text
+        return (
+          <u
+            className="canClick"
+            onClick={() => {
+              setCurrentClickEngineerId(record.engineer.value)
+              setEngineerModalVisible(true)
+            }}
+          >
+            {record.engineer.text}
+          </u>
+        )
       },
     },
     {
@@ -95,7 +113,17 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
       title: '项目',
       width: '50%',
       render: (text: any, record: any) => {
-        return record.project.text
+        return (
+          <u
+            className="canClick"
+            onClick={() => {
+              setCurrentClickProjectId(record.project.value)
+              setProjectModalVisible(true)
+            }}
+          >
+            {record.project.text}
+          </u>
+        )
       },
     },
   ]
@@ -185,6 +213,7 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
     }
 
     const targetId = tableSelectRows[0].project.value
+    setTargetProjectId(targetId)
     await run({
       sourceProjectId: projectId,
       targetProjectId: targetId,
@@ -194,11 +223,18 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
 
   const closeEvent = () => {
     setState(false)
-    // finishEvent?.()
   }
 
-  const mergeConfirm = () => {
-    //判断校验
+  const mergeConfirm = async () => {
+    setMergeLoading(true)
+    await saveProjectMerge({
+      sourceProjectId: projectId,
+      targetProjectId: targetProjectId,
+    })
+    setMergeLoading(false)
+    message.success('项目合并成功')
+    finishEvent?.()
+    setState(false)
   }
 
   useEffect(() => {
@@ -239,7 +275,7 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
           />
         </>
       ) : (
-        <Spin spinning={loading}>
+        <Spin spinning={loading || mergeLoading} tip="项目合并中...">
           <div className={styles.checkMergeTips}>
             <div className={styles.checkIcon}>
               {isAllCheckPass ? (
@@ -267,6 +303,21 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
             dataSource={checkData}
           />
         </Spin>
+      )}
+      {projectModalVisible && (
+        <ProjectDetailInfo
+          projectId={currentClickProjectId}
+          visible={projectModalVisible}
+          onChange={setProjectModalVisible}
+        />
+      )}
+
+      {engineerModalVisible && (
+        <EngineerDetailInfo
+          engineerId={currentClickEngineerId}
+          visible={engineerModalVisible}
+          onChange={setEngineerModalVisible}
+        />
       )}
     </Modal>
   )

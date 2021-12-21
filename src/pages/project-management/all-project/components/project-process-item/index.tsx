@@ -133,6 +133,14 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
     return
   }, [content])
 
+  //获取项目合并目标项目
+  const targetProjectName = useMemo(() => {
+    if (category === 80) {
+      return getValueByName('target_project_name', jsonData)
+    }
+    return
+  }, [content])
+
   return (
     <div className={styles.projectProcessItem}>
       <div className={styles.projectProcessItemTime}>
@@ -145,10 +153,22 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
       </div>
       <div className={styles.projectProcessItemTitle}>
         <span className={styles.title}>{operationCategory}</span>
-        {targetName && (
+        {targetName && !targetProjectName && (
           <span>
             <b>&nbsp;&gt;&gt;&nbsp;{targetName}</b>
           </span>
+        )}
+        {targetProjectName && (
+          <>
+            <span>
+              <b>
+                &nbsp;&nbsp; &nbsp;{targetName}&gt;&gt;{targetProjectName}
+              </b>
+            </span>
+            <div className={styles.projectMergeTips}>
+              *注：此条日志之前的项目过程为目标合并项目的日志，此条日志之后的项目过程为合并项目的日志；
+            </div>
+          </>
         )}
       </div>
       <div className={styles.remarkInfo}>{remarkInfo && <span>{remarkInfo}</span>}</div>

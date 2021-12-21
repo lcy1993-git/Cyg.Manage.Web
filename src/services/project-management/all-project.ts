@@ -1005,3 +1005,13 @@ export const getComparisonResult = (params: {
     })
   )
 }
+
+//保存合并
+export const saveProjectMerge = (params: { sourceProjectId: string; targetProjectId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/ProjectMerge/SaveMerge`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
