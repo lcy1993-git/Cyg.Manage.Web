@@ -42,6 +42,7 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
     },
   })
 
+  //判断是否校验全部通过
   const isAllCheckPass = useMemo(() => {
     if (checkData) {
       return checkData

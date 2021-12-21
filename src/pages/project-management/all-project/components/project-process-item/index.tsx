@@ -1,10 +1,9 @@
 import CyTag from '@/components/cy-tag'
+import { OperateLog } from '@/services/project-management/all-project'
 import moment from 'moment'
 import uuid from 'node-uuid'
-import React from 'react'
-import { OperateLog } from '@/services/project-management/all-project'
+import React, { useMemo } from 'react'
 import styles from './index.less'
-import { useMemo } from 'react'
 
 interface JSONData {
   Key: string
@@ -117,6 +116,8 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
       return getValueByName('approve_user_name', jsonData)
     } else if (category === 71) {
       return getValueByName('receiver_user_name', jsonData)
+    } else if (category === 80) {
+      return getValueByName('source_project_name', jsonData)
     }
     return getCompanyNameByShare(jsonData) || getCompanyGroupName(jsonData)
   }, [content])
