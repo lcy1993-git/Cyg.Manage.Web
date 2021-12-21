@@ -1190,6 +1190,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             engineerId={currentCopyProjectInfo.engineerId}
             company={currentCopyProjectInfo.company}
             areaId={currentCopyProjectInfo.areaId}
+            status={currentEditProjectInfo.status}
             visible={copyProjectVisible}
             startTime={currentCopyProjectInfo.startTime}
             endTime={currentCopyProjectInfo.endTime}

@@ -16,6 +16,7 @@ import ExternalArrangeModal from '@/pages/project-management/all-project/compone
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
 import ProjectInheritModal from '@/pages/project-management/all-project/components/project-inherit-modal'
+import ProjectMergeModal from '@/pages/project-management/all-project/components/project-merge-modal/idnex'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ScreenModal from '@/pages/project-management/all-project/components/screen-modal'
 import FilterEntrustModal from '@/pages/project-management/project-entrust/components/filter-entrust-modal'
@@ -154,7 +155,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumnsModal, setChooseColumnsModal] = useState<boolean>(false)
 
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
-
+  //项目合并模态框
+  const [projectMergeVisible, setProjectMergeVisible] = useState<boolean>(false)
   // 预设计
   const { setPreDesignItem } = useLayoutStore()
 
@@ -300,6 +302,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                 companyName: engineerInfo.company,
                 startTime: engineerInfo.startTime,
                 endTime: engineerInfo.endTime,
+                status: status,
               })
             }
           >
@@ -336,8 +339,18 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             网架规划
           </Menu.Item>
         }
+        {tableItemData.identitys.findIndex((item: any) => item.value === 1) > -1 && (
+          <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
+        )}
       </Menu>
     )
+  }
+
+  const projectMergeEvent = (projectId: string) => {
+    setModalInfo({
+      projectId: projectId,
+    })
+    setProjectMergeVisible(true)
   }
 
   const checkProjectDetail = (projectId: string) => {
@@ -1301,6 +1314,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           company={modalNeedInfo.company}
           areaId={modalNeedInfo.areaId}
           visible={copyProjectVisible}
+          status={modalNeedInfo.status}
           startTime={modalNeedInfo.startTime}
           endTime={modalNeedInfo.endTime}
           onChange={setCopyProjectVisible}
@@ -1344,6 +1358,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           visible={chooseColumnsModal}
           onChange={setChooseColumnsModal}
           finishEvent={columnsSettingFinish}
+        />
+      )}
+      {projectMergeVisible && (
+        <ProjectMergeModal
+          visible={projectMergeVisible}
+          onChange={setProjectMergeVisible}
+          finishEvent={delayRefresh}
+          projectId={modalNeedInfo.projectId}
         />
       )}
     </div>
