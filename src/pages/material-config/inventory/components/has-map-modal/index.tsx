@@ -3,7 +3,9 @@ import ModalConfirm from '@/components/modal-confirm'
 import { deleteResourceInventoryMap } from '@/services/material-config/inventory'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { ImportOutlined } from '@ant-design/icons'
+import { useUpdateEffect } from 'ahooks'
 import { Button, message, Modal } from 'antd'
+import moment from 'moment'
 import React, { useState } from 'react'
 import CheckMapping from '../check-mapping-form'
 import CreateMap from '../create-map'
@@ -11,7 +13,12 @@ import CreateMap from '../create-map'
 import MapLibModal from '../map-lib-modal'
 import styles from './index.less'
 
-const HasMapModal: React.FC = () => {
+interface HasMapModalProps {
+  inventoryId: string
+  name: string
+}
+
+const HasMapModal: React.FC<HasMapModalProps> = (props) => {
   const tableRef = React.useRef<HTMLDivElement>(null)
   // const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
@@ -21,10 +28,11 @@ const HasMapModal: React.FC = () => {
   const [editMapListModalVisible, setEditMapListModalVisible] = useState<boolean>(false)
 
   const [mappingId, setMappingId] = useState<string>('')
-  const [inventoryId, setInventoryId] = useState<string>('')
+  // const [inventoryId, setInventoryId] = useState<string>('')
   const [libId, setLibId] = useState<string>('')
   const [inventoryName, setInventoryName] = useState<string>('')
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const { inventoryId, name } = props
 
   const tableElement = () => {
     return (
@@ -51,6 +59,10 @@ const HasMapModal: React.FC = () => {
     )
   }
 
+  useUpdateEffect(() => {
+    refresh()
+  }, [inventoryId])
+
   //映射操作
   const createMapEvent = () => {
     setMapLibModalVisible(true)
@@ -73,13 +85,13 @@ const HasMapModal: React.FC = () => {
       return
     }
     setMappingId(tableSelectRows[0].id)
-    setInventoryId(tableSelectRows[0].inventoryOverviewId)
+    // setInventoryId(tableSelectRows[0].inventoryOverviewId)
     setLibId(tableSelectRows[0].resourceLibId)
     setEditMapListModalVisible(true)
   }
 
   const checkMapEvent = (inventoryOverviewId: string, name: string, mappingId: string) => {
-    setInventoryId(inventoryOverviewId)
+    // setInventoryId(inventoryOverviewId)
     setInventoryName(name)
     setMappingId(mappingId)
     setMappingListModalVisible(true)
@@ -125,16 +137,17 @@ const HasMapModal: React.FC = () => {
       },
     },
     {
-      dataIndex: 'name',
-      index: 'name',
-      title: '协议库名称',
+      dataIndex: 'howToCreateText',
+      index: 'howToCreateText',
+      title: '状态',
       width: 240,
     },
     {
-      dataIndex: 'editor',
-      index: 'editor',
-      title: '编辑人',
+      dataIndex: 'lastUpdateDate',
+      index: 'lastUpdateDate',
+      title: '上一次编辑',
       width: 280,
+      render: (text: any) => moment(text).format('YYYY-MM-DD'),
     },
     {
       dataIndex: 'remark',
@@ -143,23 +156,31 @@ const HasMapModal: React.FC = () => {
     },
   ]
 
+  const titleSlotElement = () => {
+    return <div style={{ paddingTop: '1px', fontSize: '13px' }}>{`-${name}`}</div>
+  }
+
   return (
     <>
       <GeneralTable
         ref={tableRef}
         buttonRightContentSlot={tableElement}
+        titleSlot={titleSlotElement}
         columns={columns}
         requestSource="resource"
         url="/Inventory/GetMappingInventoryOverviewPageList"
         getSelectData={(data) => setTableSelectRows(data)}
         tableTitle="已映射列表"
         type="radio"
+        extractParams={{ inventoryOverviewId: inventoryId }}
       />
 
       <MapLibModal
         visible={mapLibModalVisible}
         onChange={setMapLibModalVisible}
         changeFinishEvent={refresh}
+        inventoryId={inventoryId}
+        name={name}
       />
 
       <Modal
