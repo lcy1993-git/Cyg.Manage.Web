@@ -1,9 +1,9 @@
 import { useControllableValue } from 'ahooks'
-import { Modal, Input, Button, message, Spin } from 'antd'
+import { Modal, Input, Button, message } from 'antd'
 import React, { useRef, useState } from 'react'
 import { SetStateAction } from 'react'
 import { Dispatch } from 'react'
-import styles from './index.less'
+// import styles from './index.less'
 import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
 import MapRemarkModal from '../map-remark-modal'
@@ -22,13 +22,10 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
   const { changeFinishEvent, inventoryId, name } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [libTableSelectRows, setLibTableSelectRow] = useState<any[]>([])
-  const [invTableSelectRows, setInvTableSelectRow] = useState<any[]>([])
   const [remarkModalVisible, setRemarkModalVisible] = useState<boolean>(false)
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
-  const [searchInvKeyWord, setSearchInvKeyWord] = useState<string>('')
 
   const resourceTableRef = useRef<HTMLDivElement>(null)
-  const inventoryTableRef = useRef<HTMLDivElement>(null)
 
   const resourceLibColumns = [
     {
@@ -58,13 +55,6 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
       resourceTableRef.current.search()
     }
   }
-  const InventoryTableSearch = () => {
-    if (resourceTableRef && resourceTableRef.current) {
-      //@ts-ignore
-
-      inventoryTableRef.current.search()
-    }
-  }
 
   const resourceLibSearch = () => {
     return (
@@ -80,12 +70,18 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
     )
   }
 
+  const refresh = () => {
+    if (resourceTableRef && resourceTableRef.current) {
+      // @ts-ignore
+      resourceTableRef.current.refresh()
+    }
+  }
+
   const mapLibEvent = async () => {
     if (libTableSelectRows && libTableSelectRows.length === 0) {
       message.warning('未选择资源库')
       return
     }
-
     setRemarkModalVisible(true)
   }
 
@@ -114,7 +110,6 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
             onClick={() => {
               setState(false)
               setLibTableSelectRow([])
-              setInvTableSelectRow([])
             }}
           >
             关闭
@@ -126,7 +121,6 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
         onCancel={() => {
           setState(false)
           setLibTableSelectRow([])
-          setInvTableSelectRow([])
         }}
       >
         <GeneralTable
@@ -135,6 +129,7 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
           columns={resourceLibColumns}
           extractParams={{
             keyWord: searchKeyWord,
+            inventoryOverviewId: inventoryId,
           }}
           getSelectData={(data) => setLibTableSelectRow(data)}
           buttonLeftContentSlot={resourceLibSearch}
@@ -146,6 +141,7 @@ const MapLibModal: React.FC<MapLibModalParams> = (props) => {
       </Modal>
       <MapRemarkModal
         refreshEvent={changeFinishEvent}
+        refreshLib={refresh}
         visible={remarkModalVisible}
         onChange={setRemarkModalVisible}
         libId={libTableSelectRows[0]?.id}

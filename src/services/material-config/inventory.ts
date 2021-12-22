@@ -66,7 +66,7 @@ export const saveMapData = (params: any) => {
 
 //映射资源库
 export const createResourceInventoryMap = (params: {
-  resourceLibId: string
+  resourceLibIds: string[]
   inventoryOverviewId: string
   remark: string
 }) => {

@@ -6,9 +6,9 @@ import { ImportOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import { Button, message, Modal } from 'antd'
 import moment from 'moment'
-import React, { useState } from 'react'
+import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react'
 import CheckMapping from '../check-mapping-form'
-import CreateMap from '../create-map'
+import EditMap from '../edit-map'
 // import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import MapLibModal from '../map-lib-modal'
 import styles from './index.less'
@@ -18,7 +18,7 @@ interface HasMapModalProps {
   name: string
 }
 
-const HasMapModal: React.FC<HasMapModalProps> = (props) => {
+const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
   const tableRef = React.useRef<HTMLDivElement>(null)
   // const [searchKeyWord, setSearchKeyWord] = useState<string>('');
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
@@ -105,12 +105,16 @@ const HasMapModal: React.FC<HasMapModalProps> = (props) => {
     }
   }
 
-  // const resetEvent = () => {
-  //   if (tableRef && tableRef.current) {
-  //     // @ts-ignore
-  //     tableRef.current.reset();
-  //   }
-  // };
+  const resetEvent = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.reset()
+    }
+  }
+
+  useImperativeHandle(ref, () => ({
+    resetEvent,
+  }))
 
   const columns = [
     {
@@ -200,15 +204,16 @@ const HasMapModal: React.FC<HasMapModalProps> = (props) => {
         />
       </Modal>
 
-      <CreateMap
+      <EditMap
         visible={editMapListModalVisible}
         onChange={setEditMapListModalVisible}
         mappingId={mappingId}
         inventoryOverviewId={inventoryId}
+        changeFinishEvent={refresh}
         libId={libId}
       />
     </>
   )
 }
 
-export default HasMapModal
+export default forwardRef(HasMapModal)

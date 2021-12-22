@@ -8,6 +8,7 @@ import { createResourceInventoryMap } from '@/services/material-config/inventory
 
 interface MapRemarkParams {
   refreshEvent?: () => void
+  refreshLib?: () => void
   onChange?: Dispatch<SetStateAction<boolean>>
   visible: boolean
   libId: string
@@ -19,7 +20,7 @@ const { TextArea } = Input
 const MapRemarkModal: React.FC<MapRemarkParams> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState<boolean>(false)
-  const { libId, invId, refreshEvent } = props
+  const { libId, invId, refreshEvent, refreshLib } = props
 
   const [form] = Form.useForm()
 
@@ -29,7 +30,7 @@ const MapRemarkModal: React.FC<MapRemarkParams> = (props) => {
       try {
         setRequestLoading(true)
         await createResourceInventoryMap({
-          resourceLibId: libId,
+          resourceLibIds: [libId],
           inventoryOverviewId: invId,
           remark: remark,
         })
@@ -42,6 +43,7 @@ const MapRemarkModal: React.FC<MapRemarkParams> = (props) => {
         setState(false)
       }
       refreshEvent?.()
+      refreshLib?.()
       form.resetFields()
     })
   }

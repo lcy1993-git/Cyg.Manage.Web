@@ -2,7 +2,7 @@ import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
 import { Input, Button, Modal, message } from 'antd'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styles from './index.less'
 
 // import UrlSelect from '@/components/url-select';
@@ -33,8 +33,8 @@ const Inventroy: React.FC = () => {
 
   const [versionNo, setVersionNo] = useState<string>('')
   const [invName, setInvName] = useState<string>('')
+  const hasMapRef = useRef()
 
-  // const [nowSelectedInv, setNowSelectedInv] = useState<string>('');
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   // const { data: inventoryData = [], loading } = useRequest(() => getInventoryOverviewList());
@@ -50,6 +50,13 @@ const Inventroy: React.FC = () => {
   //     };
   //   });
   // }, [JSON.stringify(inventoryData)]);
+
+  const resetHasMap = () => {
+    if (hasMapRef && hasMapRef.current) {
+      // @ts-ignore
+      hasMapRef.current.resetEvent()
+    }
+  }
 
   const searchComponent = () => {
     return (
@@ -218,16 +225,16 @@ const Inventroy: React.FC = () => {
   }
 
   //查看协议库存
-  const checkInventoryEvent = () => {
-    if (tableSelectRows && tableSelectRows.length === 0) {
-      message.info('请先选择协议库存')
-      return
-    }
-    setVersionNo(tableSelectRows[0].version)
-    setInvName(tableSelectRows[0].name)
-    setInventoryId(tableSelectRows[0].id)
-    setInventoryTableModalVisible(true)
-  }
+  // const checkInventoryEvent = () => {
+  //   if (tableSelectRows && tableSelectRows.length === 0) {
+  //     message.info('请先选择协议库存')
+  //     return
+  //   }
+  //   setVersionNo(tableSelectRows[0].version)
+  //   setInvName(tableSelectRows[0].name)
+  //   setInventoryId(tableSelectRows[0].id)
+  //   setInventoryTableModalVisible(true)
+  // }
 
   return (
     <PageCommonWrap>
@@ -266,9 +273,12 @@ const Inventroy: React.FC = () => {
         bodyStyle={{ height: 'auto', overflowY: 'auto' }}
         visible={hasMapModalVisible}
         footer=""
-        onCancel={() => setHasMapModalVisible(false)}
+        onCancel={() => {
+          resetHasMap?.()
+          setHasMapModalVisible(false)
+        }}
       >
-        <HasMapModal inventoryId={inventoryId} name={inventoryName} />
+        <HasMapModal inventoryId={inventoryId} name={inventoryName} ref={hasMapRef} />
       </Modal>
       {/* 
       {addMapVisible && (
