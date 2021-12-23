@@ -1,11 +1,11 @@
 import React, { SetStateAction, useMemo, useState } from 'react'
 import { Button, Form, message, Modal } from 'antd'
 
-import { useControllableValue, useRequest } from 'ahooks'
+import { useControllableValue } from 'ahooks'
 import SelectAddListForm from '../select-add-list-form'
 import { Dispatch } from 'react'
 import { UserInfo } from '@/services/project-management/select-add-list-form'
-import { allotOuterAudit, getAllotUsers } from '@/services/project-management/all-project'
+import { allotOuterAudit } from '@/services/project-management/all-project'
 import styles from './index.less'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 
@@ -15,9 +15,8 @@ interface GetGroupUserProps {
   defaultType?: string
   allotCompanyId?: string
   visible: boolean
-  projectId: string[]
+  projectId: string[] | string
   search?: () => void
-  // proName?: string
 }
 
 const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {

@@ -1,6 +1,6 @@
-import projectControl from '@/assets/cockpit-assets/projectControl.png'
 import delivery from '@/assets/cockpit-assets/delivery.png'
 import other from '@/assets/cockpit-assets/other.png'
+import projectControl from '@/assets/cockpit-assets/projectControl.png'
 import projectType from '@/assets/cockpit-assets/projectType.png'
 
 export interface ChildrenData {
@@ -103,8 +103,8 @@ export const cockpitMenuItemData = [
     childrenData: [
       {
         title: '通知栏',
-        componentProps: ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
-        componentTitles: ['立项审批', '任务安排', '评审管理', '结项管理'],
+        componentProps: ['agent', 'approve', 'arrange', 'review', 'knot'],
+        componentTitles: ['项目获取', '立项审批', '任务安排', '评审管理', '结项管理'],
         name: 'toDo',
       },
     ],

@@ -1,10 +1,9 @@
 import CyTag from '@/components/cy-tag'
+import { OperateLog } from '@/services/project-management/all-project'
 import moment from 'moment'
 import uuid from 'node-uuid'
-import React from 'react'
-import { OperateLog } from '@/services/project-management/all-project'
+import React, { useMemo } from 'react'
 import styles from './index.less'
-import { useMemo } from 'react'
 
 interface JSONData {
   Key: string
@@ -117,6 +116,8 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
       return getValueByName('approve_user_name', jsonData)
     } else if (category === 71) {
       return getValueByName('receiver_user_name', jsonData)
+    } else if (category === 80) {
+      return getValueByName('source_project_name', jsonData)
     }
     return getCompanyNameByShare(jsonData) || getCompanyGroupName(jsonData)
   }, [content])
@@ -128,6 +129,14 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
   const remarkInfo = useMemo(() => {
     if (category === 70 || category === 72) {
       return getValueByName('remark', jsonData)
+    }
+    return
+  }, [content])
+
+  //获取项目合并目标项目
+  const targetProjectName = useMemo(() => {
+    if (category === 80) {
+      return getValueByName('target_project_name', jsonData)
     }
     return
   }, [content])
@@ -144,10 +153,22 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
       </div>
       <div className={styles.projectProcessItemTitle}>
         <span className={styles.title}>{operationCategory}</span>
-        {targetName && (
+        {targetName && !targetProjectName && (
           <span>
             <b>&nbsp;&gt;&gt;&nbsp;{targetName}</b>
           </span>
+        )}
+        {targetProjectName && (
+          <>
+            <span>
+              <b>
+                &nbsp;&nbsp; &nbsp;{targetName}&gt;&gt;{targetProjectName}
+              </b>
+            </span>
+            <div className={styles.projectMergeTips}>
+              *注：此条日志之前的项目过程为目标合并项目的日志，此条日志之后的项目过程为合并项目的日志；
+            </div>
+          </>
         )}
       </div>
       <div className={styles.remarkInfo}>{remarkInfo && <span>{remarkInfo}</span>}</div>

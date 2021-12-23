@@ -4,6 +4,7 @@ import {
   addAllotUser,
   confirmOuterAudit,
   getExternalArrangeStep,
+  getFileStream,
   getReviewFileUrl,
   removeAllotUser,
 } from '@/services/project-management/all-project'
@@ -172,10 +173,30 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       message.info('该评审暂无下载文件')
       return
     }
+
     const url = res[0]?.extend.file.url
-    const aEl = document.createElement('a')
-    aEl.href = url
-    aEl.click()
+    const extension = res[0]?.extend.file.extension
+    const fileName = `评审文件${extension}`
+    const suffix = extension?.substring(extension.lastIndexOf('.') + 1)
+    const data = await getFileStream({ url, extension })
+    let blob = new Blob([data], {
+      type: `application/${suffix}`,
+    })
+    //for IE
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      window.navigator.msSaveOrOpenBlob(blob, fileName)
+    } else {
+      // for Non-IE
+      let objectUrl = URL.createObjectURL(blob)
+      let link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
+    }
+    message.success('下载成功')
   }
 
   return (

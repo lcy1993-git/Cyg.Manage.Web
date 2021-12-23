@@ -1,57 +1,68 @@
-import classnames from 'classnames';
-import styles from './index.less';
+import classnames from 'classnames'
+import styles from './index.less'
 
 const imgResourse = {
   kancha: {
     light: require('@/assets/icon-image/menu-tree-icon/kancha-light.png'),
-    dark: require('@/assets/icon-image/menu-tree-icon/kancha.png')
+    dark: require('@/assets/icon-image/menu-tree-icon/kancha.png'),
   },
   fangan: {
     light: require('@/assets/icon-image/menu-tree-icon/fangan-light.png'),
-    dark: require('@/assets/icon-image/menu-tree-icon/fangan.png')
+    dark: require('@/assets/icon-image/menu-tree-icon/fangan.png'),
   },
   sheji: {
     light: require('@/assets/icon-image/menu-tree-icon/sheji-light.png'),
-    dark: require('@/assets/icon-image/menu-tree-icon/sheji.png')
+    dark: require('@/assets/icon-image/menu-tree-icon/sheji.png'),
   },
   chaichu: {
     light: require('@/assets/icon-image/menu-tree-icon/chaichu-light.png'),
-    dark: require('@/assets/icon-image/menu-tree-icon/chaichu.png')
+    dark: require('@/assets/icon-image/menu-tree-icon/chaichu.png'),
   },
   yushe: {
     light: require('@/assets/icon-image/menu-tree-icon/yushe-light.png'),
-    dark: require('@/assets/icon-image/menu-tree-icon/yushe.png')
-  }
+    dark: require('@/assets/icon-image/menu-tree-icon/yushe.png'),
+  },
 }
 interface ListProps {
-  name: string;
-  state: boolean;
-  sign: string;
-  onChange: () => void;
+  name: string
+  state: boolean
+  sign: string
+  onChange: () => void
 }
 
 interface Props {
-  surveyLayerVisible: boolean;
-  planLayerVisible: boolean;
-  designLayerVisible: boolean;
-  dismantleLayerVisible: boolean;
-  preDesignVisible: boolean;
-  setPreDesignVisible: (preDesignVisible: boolean) => void;
-  setSurveyLayerVisible: (surveyLayerVisible: boolean) => void;
-  setPlanLayerVisible: (planLayerVisible: boolean) => void;
-  setDesignLayerVisible: (designLayerVisible: boolean) => void;
-  setDismantleLayerVisible: (dismantleLayerVisible: boolean) => void;
+  surveyLayerVisible: boolean
+  planLayerVisible: boolean
+  designLayerVisible: boolean
+  dismantleLayerVisible: boolean
+  preDesignVisible: boolean
+  setPreDesignVisible: (preDesignVisible: boolean) => void
+  setSurveyLayerVisible: (surveyLayerVisible: boolean) => void
+  setPlanLayerVisible: (planLayerVisible: boolean) => void
+  setDesignLayerVisible: (designLayerVisible: boolean) => void
+  setDismantleLayerVisible: (dismantleLayerVisible: boolean) => void
 }
 
 const ListItem = (props: ListProps) => {
-  const { name, state, onChange, sign } = props;
+  const { name, state, onChange, sign } = props
   return (
-    <div className={classnames(styles.listItem, state ? styles.activeBackground : "")} key={'listItem' + name} onClick={onChange}>
-      <div className={state ? styles.active : null}><img className={styles.img} src={state ? imgResourse[sign].light : imgResourse[sign].dark } /></div>
-      <div className={state ? styles.active : null}><span className={styles.text}>{name}</span></div>
+    <div
+      className={classnames(styles.listItem, state ? styles.activeBackground : '')}
+      key={'listItem' + name}
+      onClick={onChange}
+    >
+      <div className={state ? styles.active : null}>
+        <img
+          className={styles.img}
+          src={state ? imgResourse[sign].light : imgResourse[sign].dark}
+        />
+      </div>
+      <div className={state ? styles.active : null}>
+        <span className={styles.text}>{name}</span>
+      </div>
     </div>
-  );
-};
+  )
+}
 
 const ControlLayers = (props: Props) => {
   const {
@@ -65,14 +76,14 @@ const ControlLayers = (props: Props) => {
     setPlanLayerVisible,
     setDesignLayerVisible,
     setDismantleLayerVisible,
-  } = props;
+  } = props
 
   return (
     <div className={styles.container}>
       <div className={styles.icon}>
         <div className={styles.list}>
           <ListItem
-            name="预设图层"
+            name="规划图层"
             sign="yushe"
             state={preDesignVisible}
             onChange={() => setPreDesignVisible(!preDesignVisible)}
@@ -104,7 +115,7 @@ const ControlLayers = (props: Props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ControlLayers;
+export default ControlLayers

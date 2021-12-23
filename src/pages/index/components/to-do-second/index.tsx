@@ -1,5 +1,4 @@
 import { useLayoutStore } from '@/layouts/context'
-import { useMyWorkStore } from '@/pages/project-management/my-work/context'
 import { AreaInfo } from '@/services/index'
 import { getMyWorkStatisticsData } from '@/services/project-management/all-project'
 import { useRequest } from 'ahooks'
@@ -17,17 +16,19 @@ interface ToDoProps {
   currentAreaInfo: AreaInfo
 }
 export const typeEnmu = {
-  awaitProcess: 'approve',
-  inProgress: 'arrange',
-  delegation: 'review',
-  beShared: 'knot',
+  agent: 'agent',
+  approve: 'approve',
+  arrange: 'arrange',
+  review: 'review',
+  knot: 'knot',
 }
 
 export const reserveTypeEnum = {
-  approve: 'awaitProcess',
-  arrange: 'inProgress',
-  review: 'delegation',
-  knot: 'beShared',
+  agent: 'agent',
+  approve: 'approve',
+  arrange: 'arrange',
+  review: 'review',
+  knot: 'knot',
 }
 
 const areaTypeObj = {
@@ -38,12 +39,11 @@ const areaTypeObj = {
 
 const ToDo: React.FC<ToDoProps> = (props) => {
   const {
-    componentProps = ['awaitProcess', 'inProgress', 'delegation', 'beShared'],
+    componentProps = ['agent', 'approve', 'arrange', 'review', 'knot'],
     currentAreaInfo,
   } = props
 
   const { setAllProjectSearchParams } = useLayoutStore()
-  const { sideVisible } = useMyWorkStore()
 
   const { data: toDoStatisticsInfo, loading } = useRequest(
     () => getMyWorkStatisticsData(areaTypeObj[currentAreaInfo.areaLevel!], currentAreaInfo.areaId),
@@ -88,7 +88,8 @@ const ToDo: React.FC<ToDoProps> = (props) => {
       Object.keys(toDoStatisticsInfo)
         .filter((item) => item !== 'all')
         .forEach((item) => {
-          emptyObj[reserveTypeEnum[item]] = toDoStatisticsInfo[item].total
+          emptyObj[reserveTypeEnum[item]] =
+            item === 'agent' ? toDoStatisticsInfo[item] : toDoStatisticsInfo[item].total
         })
       return emptyObj
     }
