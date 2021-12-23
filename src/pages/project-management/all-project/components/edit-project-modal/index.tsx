@@ -50,6 +50,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
+        powerSupply: projectInfo?.powerSupply ? projectInfo?.powerSupply : '无',
         disclosureRange:
           projectInfo?.dataSourceType === 2
             ? undefined
