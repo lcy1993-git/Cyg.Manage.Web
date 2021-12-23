@@ -64,12 +64,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
             查看
           </span>
         ) : (
-          <span
-            className={styles.noScreenShots}
-            onClick={() => screenShotsEvent(record?.screenshots, record.extension)}
-          >
-            查看
-          </span>
+          <span className={styles.noScreenShots}>查看</span>
         )
       },
     },
