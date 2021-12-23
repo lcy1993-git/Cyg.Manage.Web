@@ -2,12 +2,12 @@ import { CaretRightOutlined } from '@ant-design/icons'
 import { observer } from 'mobx-react-lite'
 import React from 'react'
 import styles from './index.less'
-import { expressionContainer } from './store'
+import { useExpressionContainer } from './store'
 const Card = observer((props: { data: any[]; index: number; cInd: number; hIndex: string }) => {
   // cInd:卡片index
   // hIndex:选中index
   const { data, index, cInd, hIndex } = props
-  const store = expressionContainer()
+  const store = useExpressionContainer()
   //   const { currentRow } = store.state
 
   const selectRow = (e: any, cInd: number, hIndex: number) => {
