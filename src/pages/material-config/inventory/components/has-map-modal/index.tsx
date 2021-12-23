@@ -1,15 +1,14 @@
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
-import { deleteResourceInventoryMap } from '@/services/material-config/inventory'
+import { verifyPwd } from '@/services/user/user-info'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { ImportOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
-import { Button, message, Modal } from 'antd'
+import { Button, Input, message, Modal } from 'antd'
 import moment from 'moment'
 import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react'
 import CheckMapping from '../check-mapping-form'
 import EditMap from '../edit-map'
-// import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 import MapLibModal from '../map-lib-modal'
 import styles from './index.less'
 
@@ -26,13 +25,42 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
   const [mapLibModalVisible, setMapLibModalVisible] = useState<boolean>(false)
   const [mappingListModalVisible, setMappingListModalVisible] = useState<boolean>(false)
   const [editMapListModalVisible, setEditMapListModalVisible] = useState<boolean>(false)
-
+  const [password, setPassword] = useState<string>('')
   const [mappingId, setMappingId] = useState<string>('')
   // const [inventoryId, setInventoryId] = useState<string>('')
   const [libId, setLibId] = useState<string>('')
   const [inventoryName, setInventoryName] = useState<string>('')
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const { inventoryId, name } = props
+
+  const deleteSlot = () => {
+    return (
+      <>
+        <div>删除映射将会导致调用该映射的项目相关成果数据被清空，确认删除选中项目？</div>
+        <div>
+          <Input
+            placeholder="请输入密码执行此操作"
+            type="password"
+            // value={password}
+            onChange={(e: any) => setPassword(e.target.value)}
+            style={{ marginTop: 10, width: '250px' }}
+          />
+        </div>
+      </>
+    )
+  }
+  const passwordOnchange = (value: any) => {
+    setPassword(value)
+  }
+
+  const deleteMapEvent = async () => {
+    const res = await verifyPwd({ pwd: password })
+
+    // await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
+    // message.success('删除映射成功')
+    // setTableSelectRows([])
+    // refresh()
+  }
 
   const tableElement = () => {
     return (
@@ -52,6 +80,8 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
           <ModalConfirm
             changeEvent={deleteMapEvent}
             selectData={tableSelectRows}
+            contentSlot={deleteSlot}
+            pwd={password}
             title="删除映射"
           />
         )}
@@ -66,17 +96,6 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
   //映射操作
   const createMapEvent = () => {
     setMapLibModalVisible(true)
-  }
-
-  const deleteMapEvent = async () => {
-    if (tableSelectRows && tableSelectRows.length === 0) {
-      message.warning('请选择要删除的映射')
-      return
-    }
-    await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
-    message.success('删除映射成功')
-    setTableSelectRows([])
-    refresh()
   }
 
   const editMapEvent = () => {

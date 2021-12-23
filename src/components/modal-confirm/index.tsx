@@ -1,32 +1,42 @@
-import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import { Button, message, Modal } from 'antd';
-import { isArray } from 'lodash';
-import React from 'react';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { Button, message, Modal } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect } from 'react'
 
 interface ModalConfirmProps {
-  title?: string;
-  content?: string;
-  changeEvent: () => void;
-  selectData?: any[] | object;
+  title?: string
+  content?: string
+  changeEvent: () => void
+  selectData?: any[] | object
+  contentSlot?: () => React.ReactNode
+  pwd?: string
 }
 
 const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
-  const { title = '删除', content = '确定删除选中项吗？', changeEvent, selectData } = props;
+  const {
+    title = '删除',
+    content = '确定删除选中项吗？',
+    changeEvent,
+    selectData,
+    contentSlot,
+    pwd,
+  } = props
 
   const confirmEvent = () => {
     if (selectData && isArray(selectData) && selectData.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.warning('请选择要删除的数据')
+      return
     }
     Modal.confirm({
       title: '提示',
+      bodyStyle: { padding: 0 },
       icon: <ExclamationCircleOutlined />,
-      content: content,
+      content: contentSlot ? contentSlot?.() : content,
       okText: '确认',
       cancelText: '取消',
       onOk: changeEvent,
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -35,7 +45,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
         {title}
       </Button>
     </>
-  );
-};
+  )
+}
 
-export default ModalConfirm;
+export default ModalConfirm
