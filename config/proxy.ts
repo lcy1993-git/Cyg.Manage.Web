@@ -5,8 +5,7 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
-
-const proxy = {
+export default {
   dev: {
     '/api/': {
       // http://10.6.1.54:21525/api/
@@ -16,8 +15,6 @@ const proxy = {
       // target: 'http://171.223.214.154:21563',
       // 测试服 2
       // target: 'http://171.223.214.154:21573',
-      // 测试服 3
-      // target: 'http://171.223.214.154:21583',
       changeOrigin: true,
       pathRewrite: { '^/api': '/' },
     },
@@ -44,5 +41,3 @@ const proxy = {
     },
   },
 }
-
-export default proxy

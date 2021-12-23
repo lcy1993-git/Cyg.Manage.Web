@@ -1,0 +1,75 @@
+.reviewDetailsTab {
+  flex: 1;
+  height: 92%;
+  background-color: @white-color;
+  :global {
+    .ant-tabs-tab {
+      padding: 18px !important;
+      background-color: #f7f7f7 !important;
+      .ant-tabs-tab-active .ant-tabs-tab-btn {
+        width: 105px;
+        padding: 0 30px;
+        color: #167f41;
+        text-align: center;
+      }
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active {
+      padding: 18px !important;
+      background-color: #fff !important;
+    }
+    .ant-tabs-tab-btn {
+      padding: 0px 30px;
+      color: #696969;
+    }
+    .ant-tabs-card .ant-tabs-content {
+      margin-top: -16px;
+    }
+    .ant-tabs-card .ant-tabs-content > .ant-tabs-tabpane {
+      padding: 45px 12px;
+      background: #fff;
+    }
+    .ant-tabs-card > .ant-tabs-nav::before {
+      display: none;
+    }
+    .ant-tabs .ant-tabs-nav .ant-tabs-nav-wrap .ant-tabs-tab::before {
+      width: 0 !important;
+    }
+    .ant-tabs-nav-wrap {
+      height: 40px;
+      padding-top: 1px;
+      background-color: #f7f7f7;
+    }
+    .ant-tabs .ant-tabs-nav {
+      box-shadow: none !important;
+    }
+    .ant-tabs-card .ant-tabs-tab-active {
+      background: #fff;
+      border-color: #fff;
+    }
+    .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab + .ant-tabs-tab {
+      margin-left: 0;
+      border-radius: 0;
+    }
+    .ant-tabs-card.ant-tabs-top > .ant-tabs-nav .ant-tabs-tab {
+      border: none;
+    }
+  }
+  thead {
+    tr {
+      th {
+        color: #1f1f1f;
+        font-weight: 550;
+      }
+    }
+  }
+}
+
+.checkTitle {
+  color: #0076ff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.noScreenShots {
+  color: #6f6f6f;
+}

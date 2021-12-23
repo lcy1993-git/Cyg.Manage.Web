@@ -633,6 +633,16 @@ export const getCompileResultTreeData = (projectId: string) => {
   )
 }
 
+//获取评审成果详情意见
+export const getReviewDetails = (ProjectId: string, IsDesign: boolean) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.review}/ReviewProject/GetProcessOpinionPreview`, {
+      method: 'GET',
+      params: { ProjectId, IsDesign },
+    })
+  )
+}
+
 //获取评审成果树状结构
 export const getAuditResultData = (projectId: string) => {
   return cyRequest<any[]>(() =>
@@ -817,11 +827,15 @@ export const getReviewFileUrl = (params: { projectId: string; userId: string }) 
 
 //返回评审文件流
 export const getFileStream = (params: { url: string; extension: string }) => {
-  return request(`${baseUrl.review}/ReviewOpinionFile/fileStream`, {
-    method: 'GET',
-    params: params,
-    responseType: 'arrayBuffer',
-  })
+  return request(
+    `${baseUrl.review}/ReviewOpinionFile/fileStream?url=${encodeURIComponent(
+      params.url
+    )}&extension=${params.extension}`,
+    {
+      method: 'GET',
+      responseType: 'blob',
+    }
+  )
 }
 
 interface ModifyOuterAuditParams {

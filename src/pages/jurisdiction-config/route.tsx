@@ -79,7 +79,7 @@ export default [
   },
 
   {
-    title: '功能权限',
+    title: '菜单配置',
     path: '/jurisdiction-config/role-permissions',
     component: <RolePermissions />,
   },

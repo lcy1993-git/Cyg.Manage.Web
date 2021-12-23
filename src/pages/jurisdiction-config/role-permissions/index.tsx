@@ -337,7 +337,7 @@ const RolePermissions: React.FC = () => {
         getSelectData={(data) => setTableSelectRows(data)}
         url="/AuthTemplate/GetPagedList"
         columns={columns}
-        tableTitle="功能权限管理"
+        tableTitle="菜单配置"
         extractParams={{
           keyWord: searchKeyWord,
         }}
