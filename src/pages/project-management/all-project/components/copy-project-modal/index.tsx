@@ -1,10 +1,8 @@
 import { copyProject, getProjectInfo } from '@/services/project-management/all-project'
-import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { useRequest } from 'ahooks'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
 import moment, { Moment } from 'moment'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import CreateProjectForm from '../create-project-form'
 
 interface CopyProjectModalProps {
@@ -118,7 +116,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           company={company}
           projectId={projectId}
           form={form}
-          status={status}
+          status={1}
           engineerStart={startTime}
           engineerEnd={endTime}
         />

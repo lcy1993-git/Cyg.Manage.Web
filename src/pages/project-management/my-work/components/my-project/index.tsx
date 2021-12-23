@@ -371,21 +371,6 @@ const MyProject: React.FC = () => {
     message.success('已移出当前收藏夹')
     searchByParams()
   }
-  //收藏夹操作
-  const favoriteMenu = (
-    <Menu>
-      {buttonJurisdictionArray?.includes('add-favorite-project') && (
-        <Menu.Item key="add" onClick={() => addFavEvent()}>
-          添加至收藏夹
-        </Menu.Item>
-      )}
-      {buttonJurisdictionArray?.includes('remove-favorite-project') && (
-        <Menu.Item key="out" onClick={() => removeConfirm()}>
-          移出当前收藏夹
-        </Menu.Item>
-      )}
-    </Menu>
-  )
 
   // const postProjectMenu = (
   //   <Menu>

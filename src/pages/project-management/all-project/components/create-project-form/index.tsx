@@ -105,7 +105,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   }, [projectDataSourceType, pointVisible, isInherit])
 
   const handleProjectStage = useMemo(() => {
-    if (isNumber(projectInfo?.stage) && projectStage && isInherit) {
+    if (isNumber(projectInfo?.stage) && projectStage && isInherit && projectInfo) {
       return projectStage.filter((item: any) => item.value > projectInfo?.stage)
     }
     return []

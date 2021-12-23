@@ -115,7 +115,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     company: '',
     companyName: '',
   })
-  const [externalStepData, setExternalStepData] = useState<any>()
+  const [externalStepData] = useState<any>()
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   // 工程详情
   const [engineerModalVisible, setEngineerModalVisible] = useState(false)
@@ -386,6 +386,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         return <span className={styles.disabled}>{record.name}</span>
       }
     }
+    return
   }
 
   // 重新继承
@@ -561,14 +562,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       width: 180,
       render: (value: string, record: any) => {
         const { natureTexts = [] } = record
-        return natureTexts.map((item: any) => {
-          return (
-            <CyTag key={uuid.v1()} className="mr7">
-              {item}
-            </CyTag>
-          )
-        })
+        return (
+          <Tooltip placement="leftBottom" title={natureTexts.join('/')}>
+            {natureTexts.join('/')}
+          </Tooltip>
+        )
       },
+      ellipsis: true,
     },
     {
       title: '项目起止时间',
@@ -900,18 +900,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       return
     }
     message.info('请选择需要报审的项目')
-  }
-
-  //立项审批
-  const approveProjectEvent = (projectId: string[]) => {
-    if (projectId && projectId.length > 0) {
-      setModalInfo({
-        projectId: projectId,
-      })
-      setApprovingModalVisible(true)
-      return
-    }
-    message.info('请选择需要审批的项目')
   }
 
   const parentColumns: any[] = [
