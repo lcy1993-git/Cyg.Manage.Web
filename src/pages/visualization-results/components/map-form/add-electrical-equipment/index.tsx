@@ -225,7 +225,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     return data
   }
   const dragDetails = (e: React.DragEvent<HTMLDivElement>) => {
-    if (e.clientX !== 0 && e.clientY !== 0 && e.ctrlKey && e.buttons === 1) {
+    if (e.clientX !== 0 && e.clientY !== 0 && e.buttons === 1) {
       setPosition([e.pageX - 100, e.pageY - 40])
     }
   }
