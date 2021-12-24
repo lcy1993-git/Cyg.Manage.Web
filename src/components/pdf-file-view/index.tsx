@@ -1,12 +1,11 @@
-import React, { useRef, useState, useMemo, useEffect } from 'react'
+import { useMount } from 'ahooks'
 import { message } from 'antd'
+import { add, divide, multiply, subtract } from 'lodash'
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf'
 import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry'
 import { PDFPageProxy } from 'pdfjs-dist/types/display/api'
-import { add, subtract, multiply, divide } from 'lodash'
-
+import React, { useEffect, useRef, useState } from 'react'
 import styles from './index.less'
-import { useMount } from 'ahooks'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
 
@@ -49,7 +48,9 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({ params, hasAuthorization = fa
   const initPdfPage = (pdfInfo: any) => {
     pdfInfo.getPage(1).then((page: any) => {
       if (!page._pdfBug) {
-        const [_0, _1, width, height] = page.view
+        const normalSize = page.getViewport({ scale: 1 })
+        const width = normalSize.width
+        const height = normalSize.height
         maxScale.current = +parseInt((Math.min(4000 / width, 4000 / height) as unknown) as string)
         minScale.current = +parseFloat(
           (Math.min(
