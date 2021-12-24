@@ -67,7 +67,7 @@ const HealthPolling: React.FC = () => {
   }
 
   useMount(() => {
-    setServerCode(sessionStorage.getItem('serverCode') ?? '')
+    setServerCode(localStorage.getItem('serverCode') ?? '')
   })
   useInterval(async () => {
     if (requestFlag) {

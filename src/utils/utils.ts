@@ -334,7 +334,7 @@ export const getStopServerList = (
       })
       if (currenServer && currenServer?.code) {
         // 是否查询到 服务器信息
-        sessionStorage.setItem('serverCode', currenServer?.code || '')
+        localStorage.setItem('serverCode', currenServer?.code || '')
         getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
       } else {
         loginFuc(values)
