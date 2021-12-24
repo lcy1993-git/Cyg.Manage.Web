@@ -546,6 +546,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           // feature.getProperties().kv_level = ;
           fs && feature.set('kv_level', fs.getProperties().features[0].getProperties().kv_level)
         }
+
+        if (feature.getProperties().voltage)
+          feature.set('kv_level', feature.getProperties().voltage)
+
         pJSON['材料表'] = {
           params: {
             holeId: feature.getProperties().project_id,
