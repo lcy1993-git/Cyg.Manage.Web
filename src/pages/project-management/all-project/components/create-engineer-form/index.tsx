@@ -10,6 +10,7 @@ import DataSelect from '@/components/data-select'
 
 import city from '@/assets/local-data/area'
 import moment from 'moment'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 interface CreateEngineerForm {
   exportDataChange?: (exportData: any) => void
@@ -47,11 +48,18 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   })
   const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
     {
-      url: `/Inventory/GetListByResourceLibId?libId=${libId}`,
+      url: `/Inventory/GetList?libId=${libId}`,
+      valueKey: 'id',
+      titleKey: 'name',
+      otherKey: 'hasMaped',
       requestSource: 'resource',
     },
-    { ready: !!libId, refreshDeps: [libId] }
+    {
+      ready: !!libId,
+      refreshDeps: [libId],
+    }
   )
+
   const { data: warehouseSelectData = [] } = useGetSelectData(
     {
       url: '/WareHouse/GetWareHouseListByArea',
@@ -85,6 +93,26 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         : undefined,
     }
   }
+
+  const labelElement = (label: any) => {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>{label}</span>
+        <ExclamationCircleOutlined />
+      </div>
+    )
+  }
+
+  const handleInventoryData = useMemo(() => {
+    if (inventoryOverviewSelectData) {
+      return inventoryOverviewSelectData.map((item: any) => {
+        if (!item.otherKey) {
+          return { label: labelElement(item.label), value: item.value }
+        }
+        return { label: item.label, value: item.value }
+      })
+    }
+  }, [inventoryOverviewSelectData])
 
   const afterHandleData = useMemo(() => {
     return city.map(mapHandleCityData)
@@ -194,8 +222,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
           >
             <DataSelect
               options={
-                inventoryOverviewSelectData.length !== 0
-                  ? inventoryOverviewSelectData
+                handleInventoryData.length !== 0
+                  ? handleInventoryData
                   : [{ label: '无', value: 'none' }]
               }
               placeholder="请先选择资源库"
@@ -304,8 +332,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
               { required: true, message: '工程结束时间不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(value)
-
                   if (
                     moment(moment(new Date(value)).format('YYYY-MM-DD')).isAfter(
                       moment(new Date(getFieldValue('startTime')?.format('YYYY-MM-DD')))
