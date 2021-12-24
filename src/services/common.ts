@@ -1,11 +1,10 @@
 /* eslint-disable no-async-promise-executor */
-import { message } from 'antd'
-import { request, history } from 'umi'
-import tokenRequest from '@/utils/request'
-import type { RequestDataType, RequestDataCommonType } from './common.d'
 import { webConfig } from '@/global'
-
+import tokenRequest from '@/utils/request'
+import { message } from 'antd'
 import { isArray } from 'lodash'
+import { history, request } from 'umi'
+import type { RequestDataCommonType, RequestDataType } from './common.d'
 
 export const geoServeUrl = webConfig.requestUrl.geoServerUrl
 
@@ -194,7 +193,7 @@ interface VersionParams {
   serverCode: string
 }
 
-const versionUrl = 'http://service.sirenmap.com:8101/api/Version/Get'
+const versionUrl = 'https://bbgl.gczhyun.com/common/api/Version/Get'
 
 export const getVersionUpdate = (params: VersionParams) => {
   return request(versionUrl, { method: 'POST', data: params })

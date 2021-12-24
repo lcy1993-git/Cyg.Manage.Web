@@ -88,20 +88,15 @@ export function getDataByFeature(f: Feature<Geometry>[]): SelectedData {
 // 定位当前用户位置；调用的是百度定位api
 export const checkUserLocation = (viewRef: ViewRef) => {
   JsonP(
-    `https://map.baidu.com?qt=ipLocation&t=${new Date().getTime()}`,
+    `https://api.map.baidu.com/location/ip?ak=Oj5krytGMikcHSm6VLVnGVdGVHQ7xy4r&coor=bd09ll`,
     {},
     function (err: any, res: any) {
       if (err) {
         message.error('获取的位置信息无效，无法定位')
       } else {
-        if (res?.rgc?.status === 'success' && res?.rgc?.result?.location?.lat) {
-          const lat = parseFloat(res?.rgc?.result?.location?.lat)
-          const lng = parseFloat(res?.rgc?.result?.location?.lng)
-          if (!isNaN(lat) && !isNaN(lng)) {
-            viewRef.view.setCenter(proj.transform([lng, lat], 'EPSG:4326', 'EPSG:3857'))
-          } else {
-            message.error('获取的位置信息无效，无法定位')
-          }
+        const point = res?.content?.point
+        if (point?.x && point?.y) {
+          viewRef.view.setCenter(proj.transform([point.x, point.y], 'EPSG:4326', 'EPSG:3857'))
         } else {
           message.error('获取当前位置信息失败')
         }

@@ -2,12 +2,12 @@ import { Tooltip } from 'antd'
 import { useCallback, useRef } from 'react'
 import FlowLayer from './components/flow-layer'
 import Iconfont from './components/iconfont'
-import { Satellite, Street } from './Images'
-import { HistoryState, useHistoryGridContext } from './store'
+import MapSwitcher from './MapSwitcher'
+import { useHistoryGridContext } from './store'
 
 const MapOperator = () => {
   const { UIStatus, dispatch } = useHistoryGridContext()
-  const { showTitle, currentLocation, currentProject } = UIStatus
+  const { showTitle } = UIStatus
 
   const onClick = useCallback(
     (key: string) => {
@@ -17,8 +17,18 @@ const MapOperator = () => {
     [dispatch, UIStatus]
   )
 
+  const onMapTypeChange = useCallback(
+    (type) => {
+      dispatch({
+        type: 'changeUIStatus',
+        payload: { ...UIStatus, mapType: type },
+      })
+    },
+    [UIStatus, dispatch]
+  )
+
   return (
-    <FlowLayer className="select-none" bottom={0} right={15}>
+    <FlowLayer className="select-none z-50" bottom={0} right={15}>
       <div className="text-right">
         <div>
           <IconSwitcher
@@ -49,8 +59,8 @@ const MapOperator = () => {
           />
         </div>
       </div>
-      <div className="w-full h-28 flex justify-end">
-        <MapSwitcher />
+      <div className="w-full h-30 flex justify-end">
+        <MapSwitcher onChange={onMapTypeChange} />
       </div>
       <GeographicLocation />
     </FlowLayer>
@@ -81,52 +91,6 @@ export const IconSwitcher = ({ title, className, icon, flag, onClick }: IconSwit
         />
       </div>
     </Tooltip>
-  )
-}
-
-type MapType = HistoryState['UIStatus']['mapType']
-
-export const MapSwitcher = () => {
-  const { UIStatus, dispatch } = useHistoryGridContext()
-  const { mapType } = UIStatus
-
-  const getClassName = useCallback(
-    (type: MapType) => {
-      const defaultClass = 'cursor-pointer border border-solid w-24 h-20'
-      const typeClass = `${mapType === type ? 'border-theme-green-darker' : 'border-transparent'}`
-      return `${defaultClass} ${typeClass}`
-    },
-    [mapType]
-  )
-
-  const changeMapType = useCallback(
-    (e: React.MouseEvent<HTMLImageElement>) => {
-      dispatch({
-        type: 'changeUIStatus',
-        payload: { ...UIStatus, mapType: ((e.target as unknown) as { alt: MapType }).alt },
-      })
-    },
-    [dispatch, UIStatus]
-  )
-
-  const descTextClass = 'absolute px-1 bg-theme-green-darker'
-  const descTextStyle = { right: 1, bottom: 1 }
-
-  return (
-    <div className="mt-4 w-max bg-white text-white flex space-x-2 p-2">
-      <div className="relative">
-        <Street alt="street" className={getClassName('street')} onClick={changeMapType} />
-        <span style={descTextStyle} className={descTextClass}>
-          街道图
-        </span>
-      </div>
-      <div className="relative">
-        <Satellite alt="satellite" className={getClassName('satellite')} onClick={changeMapType} />
-        <span style={descTextStyle} className={descTextClass}>
-          卫星图
-        </span>
-      </div>
-    </div>
   )
 }
 

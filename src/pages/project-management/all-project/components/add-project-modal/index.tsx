@@ -1,7 +1,6 @@
 import { addProject, getEngineerInfo } from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
+import { Button, Form, message, Modal } from 'antd'
 import moment from 'moment'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import CreateProjectForm from '../create-project-form'
@@ -85,6 +84,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           form={form}
           engineerStart={moment(engineerInfo?.startTime)}
           engineerEnd={moment(engineerInfo?.endTime)}
+          status={1}
         />
       </Form>
     </Modal>

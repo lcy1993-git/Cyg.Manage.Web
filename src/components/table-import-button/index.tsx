@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Button, ButtonProps, Modal, Form, message } from 'antd';
-import { ExportOutlined } from '@ant-design/icons';
-import CyFormItem from '../cy-form-item';
-import FileUpload from '../file-upload';
-import { commonUpload } from '@/services/common';
-import { checkHasUploadFile } from '@/utils/common-rule';
-import {commonlyTableTemplate} from "@/services/technology-economic/project-list";
-import { downloadTemplate } from '@/services/technology-economic/common-rate';
+import React, { useState } from 'react'
+import { Button, ButtonProps, Modal, Form, message } from 'antd'
+import { ExportOutlined } from '@ant-design/icons'
+import CyFormItem from '../cy-form-item'
+import FileUpload from '../file-upload'
+import { commonUpload } from '@/services/common'
+import { checkHasUploadFile } from '@/utils/common-rule'
+import { downloadTemplate } from '@/services/technology-economic/common-rate'
 
 interface TableImportButtonProps extends ButtonProps {
-  importUrl: string;
-  extraParams?: object;
-  modalTitle?: string;
-  accept?: string;
-  name?: string;
-  labelTitle?: string;
-  buttonTitle?: string;
-  requestSource?: 'project' | 'resource' | 'upload' | 'tecEco1' | 'tecEco';
-  postType?: 'body' | 'query';
-  setSuccessful?: (e: boolean) => void;
+  importUrl: string
+  extraParams?: object
+  modalTitle?: string
+  accept?: string
+  name?: string
+  labelTitle?: string
+  buttonTitle?: string
+  requestSource?: 'project' | 'resource' | 'upload' | 'tecEco1' | 'tecEco'
+  postType?: 'body' | 'query'
+  setSuccessful?: (e: boolean) => void
+  setLoading?: (e: boolean) => void
   template?: boolean
   downType?: number
 }
@@ -37,56 +37,57 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     requestSource = 'project',
     postType = 'body',
     setSuccessful,
+    setLoading,
     ...rest
-  } = props;
+  } = props
 
-  const [importModalVisible, setImportModalVisible] = useState(false);
-  const [form] = Form.useForm();
+  const [importModalVisible, setImportModalVisible] = useState(false)
+  const [form] = Form.useForm()
 
   const cancelImport = () => {
-    form.resetFields();
-    setImportModalVisible(false);
-  };
+    form.resetFields()
+    setImportModalVisible(false)
+  }
   const downLoad = async () => {
-    const res = await downloadTemplate(downType);
-    console.log(res)
+    const res = await downloadTemplate(downType)
     let blob = new Blob([res], {
       type: `application/xlsx`,
-    });
-    let finallyFileName = `模板.xlsx`;
+    })
+    let finallyFileName = `模板.xlsx`
     //for IE
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, finallyFileName);
+      window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE
-      let objectUrl = URL.createObjectURL(blob);
-      let link = document.createElement('a');
-      link.href = objectUrl;
-      link.setAttribute('download', finallyFileName);
-      document.body.appendChild(link);
-      link.click();
-      window.URL.revokeObjectURL(link.href);
-      document.body.removeChild(link);
+      let objectUrl = URL.createObjectURL(blob)
+      let link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', finallyFileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
     }
-    message.success('下载成功');
-  };
+    message.success('下载成功')
+  }
   const sureImport = () => {
     form.validateFields().then(async (values) => {
-      const { file } = values;
-      await commonUpload(importUrl, file, name, requestSource, extraParams);
-      message.success('导入成功');
-      setSuccessful && setSuccessful(true);
-      setImportModalVisible(false);
-      form.resetFields();
-    });
-  };
+      const { file } = values
+      await commonUpload(importUrl, file, name, requestSource, extraParams)
+      message.success('导入成功')
+      setSuccessful && setSuccessful(true)
+      setLoading && setLoading(true)
+      setImportModalVisible(false)
+      form.resetFields()
+    })
+  }
 
   return (
     <div>
       <Button
         {...rest}
         onClick={() => {
-          setImportModalVisible(true);
+          setImportModalVisible(true)
         }}
       >
         <ExportOutlined />
@@ -103,16 +104,16 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
         destroyOnClose
       >
         <Button
-          style={{display: template ? 'block' : 'none'}}
+          style={{ display: template ? 'block' : 'none' }}
           className="mr5"
           type="primary"
           onClick={() => {
-            downLoad();
+            downLoad()
           }}
         >
           下载模板
         </Button>
-        <br/>
+        <br />
         <Form form={form} preserve={false}>
           <CyFormItem
             label={labelTitle}
@@ -125,7 +126,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
         </Form>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default TableImportButton;
+export default TableImportButton

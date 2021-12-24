@@ -1,10 +1,10 @@
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import React from 'react';
-import styles from './index.less';
-import { history } from 'umi';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import React from 'react'
+import styles from './index.less'
+import { history } from 'umi'
 
 const Description: React.FC = () => {
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   return (
     <div className={styles.others}>
       <div className={styles.noticeHead}>*其他注意事项：</div>
@@ -21,7 +21,7 @@ const Description: React.FC = () => {
               onClick={() => {
                 history.push({
                   pathname: '/jurisdiction-config/company-user',
-                });
+                })
               }}
             >
               <u>【账号管理】</u>
@@ -39,13 +39,13 @@ const Description: React.FC = () => {
               onClick={() => {
                 history.push({
                   pathname: '/jurisdiction-config/role-permissions',
-                });
+                })
               }}
             >
-              <u>【功能权限】</u>
+              <u>【菜单配置】</u>
             </span>
           ) : (
-            <span>【功能权限】</span>
+            <span>【菜单配置】</span>
           )}
           选择对应权限模板后点击【授权】按钮，将该 授权给对应的人员账号即可。
         </div>
@@ -55,7 +55,7 @@ const Description: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Description;
+export default Description

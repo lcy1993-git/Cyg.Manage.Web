@@ -80,6 +80,11 @@ const AreaTypeManage = Loadable({
   loading: Loading,
   delay: 150,
 })
+const Expression = Loadable({
+  loader: () => import('@/pages/technology-economic/expression'),
+  loading: Loading,
+  delay: 150,
+})
 
 export default [
   {
@@ -201,5 +206,10 @@ export default [
     title: '查看设计端物料库映射',
     path: '/technology-economic/design-mapping-info',
     component: <DesignMappingInfo />,
+  },
+  {
+    title: '表达式',
+    path: '/technology-economic/expression',
+    component: <Expression />,
   },
 ]

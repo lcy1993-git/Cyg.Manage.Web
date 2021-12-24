@@ -1,8 +1,9 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import EmptyTip from '@/components/empty-tip'
 import type { AuditFileInfo } from '../check-result-modal'
-import { Tree } from 'antd'
+import { Button, Tree } from 'antd'
 import styles from './index.less'
+import ReviewDetailsModal from './components/check-review-details'
 const { DirectoryTree } = Tree
 
 interface AuditResultTabProps {
@@ -10,11 +11,13 @@ interface AuditResultTabProps {
   setTabEvent: Dispatch<SetStateAction<string>>
   auditResultData: any
   setAuditFileInfo: (fileInfo: AuditFileInfo) => void
+  projectInfo?: any
 }
 
 const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
-  const { createEvent, setTabEvent, auditResultData, setAuditFileInfo } = props
+  const { createEvent, setTabEvent, auditResultData, setAuditFileInfo, projectInfo } = props
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
+  const [reviewDetailVisible, setReviewDetailVisible] = useState<boolean>(false)
 
   const onCheck = (checkedKeysValue: React.Key[], e: any) => {
     const checkedIds = e.checkedNodes
@@ -44,11 +47,18 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
   }
 
   const previewEvent = () => {
-    console.log(111)
+    // console.log(111)
+  }
+
+  const checkDetailEvent = () => {
+    setReviewDetailVisible(true)
   }
 
   return (
     <div className={styles.treeTableContent}>
+      <Button onClick={() => checkDetailEvent()} className="ml7">
+        查看评审详情
+      </Button>
       {auditResultData?.length > 0 && (
         <div className={styles.treeTable}>
           <DirectoryTree
@@ -71,6 +81,13 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
         </div>
       )}
       {auditResultData?.length === 0 && <EmptyTip description="暂无评审成果" />}
+      {reviewDetailVisible && (
+        <ReviewDetailsModal
+          visible={reviewDetailVisible}
+          onChange={setReviewDetailVisible}
+          projectId={projectInfo?.projectId}
+        />
+      )}
     </div>
   )
 }

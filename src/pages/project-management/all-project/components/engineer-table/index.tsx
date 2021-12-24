@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import CyTag from '@/components/cy-tag'
-import EmptyTip from '@/components/empty-tip'
 import ImageIcon from '@/components/image-icon'
 import { useLayoutStore } from '@/layouts/context'
 import {
@@ -305,7 +304,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               history.push('/visualization-results/grid-pre-design')
             }}
           >
-            预设计
+            网架规划
           </Menu.Item>
         }
       </Menu>
@@ -313,8 +312,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }
 
   const arrange = async (projectId: string, projectType?: number, allotCompanyId?: string) => {
-    console.log(projectType)
-
     const projectInfo = await getProjectInfo(projectId)
     setCurrentDataSourceType(Number(projectInfo?.dataSourceType))
     setCurrentArrageProjectId(projectId)
@@ -899,7 +896,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }
 
   const tableItemSelectEvent = (projectSelectInfo: TableItemCheckedInfo) => {
-    console.log(projectSelectInfo)
     // 监测现在数组是否含有此id的数据
     const hasData = tableSelectData.findIndex(
       (item) => item.projectInfo.id === projectSelectInfo.projectInfo.id
@@ -1194,6 +1190,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
             engineerId={currentCopyProjectInfo.engineerId}
             company={currentCopyProjectInfo.company}
             areaId={currentCopyProjectInfo.areaId}
+            status={currentEditProjectInfo.status}
             visible={copyProjectVisible}
             startTime={currentCopyProjectInfo.startTime}
             endTime={currentCopyProjectInfo.endTime}
@@ -1216,7 +1213,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         {externalArrangeModalVisible && (
           <ExternalArrangeModal
             projectId={currentClickProjectId}
-            proName={currentProName}
             onChange={setExternalArrangeModalVisible}
             visible={externalArrangeModalVisible}
             search={delayRefresh}

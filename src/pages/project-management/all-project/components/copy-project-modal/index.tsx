@@ -1,10 +1,8 @@
-import { copyProject, editProject, getProjectInfo } from '@/services/project-management/all-project'
-import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { useRequest } from 'ahooks'
+import { copyProject, getProjectInfo } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
 import moment, { Moment } from 'moment'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import CreateProjectForm from '../create-project-form'
 
 interface CopyProjectModalProps {
@@ -18,6 +16,7 @@ interface CopyProjectModalProps {
   companyName: string
   startTime?: Moment
   endTime?: Moment
+  status: number
 }
 
 const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
@@ -30,6 +29,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     changeFinishEvent,
     areaId,
     company,
+    status,
     engineerId,
     companyName,
     startTime,
@@ -93,8 +93,9 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
   return (
     <Modal
       maskClosable={false}
+      centered
       title="复制项目"
-      width={780}
+      width={800}
       visible={state as boolean}
       destroyOnClose
       footer={[
@@ -115,6 +116,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           company={company}
           projectId={projectId}
           form={form}
+          status={1}
           engineerStart={startTime}
           engineerEnd={endTime}
         />

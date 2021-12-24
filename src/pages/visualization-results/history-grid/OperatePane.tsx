@@ -42,7 +42,7 @@ const OperationPane: FC = ({ children }) => {
   /** 是否处于绘制状态 */
   const drawing = mode === 'preDesigning' || mode === 'recordEdit'
 
-  const changeModeBtnText = mode === 'preDesign' ? '预设' : mode === 'record' ? '绘制' : ''
+  const changeModeBtnText = mode === 'preDesign' ? '规划' : mode === 'record' ? '绘制' : ''
 
   const clearAllData = async () => {
     await clearData(preDesignDataSource.id!)
@@ -108,7 +108,7 @@ const OperationPane: FC = ({ children }) => {
             title: '提示',
             okText: '确认',
             cancelText: '取消',
-            content: '此操作会清除当前项目所有预设计数据,确认清屏？',
+            content: '此操作会清除当前项目所有规划数据,确认清屏？',
             onOk: () => clearAllData(),
           })
         },

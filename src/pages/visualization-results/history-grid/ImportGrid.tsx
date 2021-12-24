@@ -60,7 +60,7 @@ const ImportGrid = () => {
     <Modal
       destroyOnClose
       centered
-      title="导入网架"
+      title="导入网架.xlsx"
       visible={importModalVisible}
       onCancel={closeModal}
       onOk={onOk}

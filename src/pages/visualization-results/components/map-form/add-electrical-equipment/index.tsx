@@ -1,5 +1,5 @@
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-import { useMount } from 'ahooks'
+import { useMount, useUnmount } from 'ahooks'
 import { Button, Form, Input, message, Modal, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
@@ -224,6 +224,11 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     }
     return data
   }
+  const dragDetails = (e: React.DragEvent<HTMLDivElement>) => {
+    if (e.clientX !== 0 && e.clientY !== 0 && e.buttons === 1) {
+      setPosition([e.pageX - 100, e.pageY - 40])
+    }
+  }
   useEffect(() => {
     setVisible(false)
   }, [currentGridData])
@@ -300,11 +305,24 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setVisible(true)
     }
   }, [showHistoryLayer, mode])
+  // useMount(()=>{
+  //   window.addEventListener('keydown',(key)=>{
+  //     if (key.key === 'Control'){
+  //       setDraging(true)
+  //     } else {
+  //       setDraging(false)
+  //     }
+  //   })
+  // })
+  useUnmount(() => {
+    window.removeEventListener('keydown', () => {})
+  })
   return (
     <div>
       {showDetail && visible && (
         <div
           className={styles.detailBox}
+          onMouseMove={(e) => dragDetails(e)}
           style={{
             width: 180,
             top: position[1] + 20,

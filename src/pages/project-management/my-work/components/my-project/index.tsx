@@ -371,21 +371,6 @@ const MyProject: React.FC = () => {
     message.success('已移出当前收藏夹')
     searchByParams()
   }
-  //收藏夹操作
-  const favoriteMenu = (
-    <Menu>
-      {buttonJurisdictionArray?.includes('add-favorite-project') && (
-        <Menu.Item key="add" onClick={() => addFavEvent()}>
-          添加至收藏夹
-        </Menu.Item>
-      )}
-      {buttonJurisdictionArray?.includes('remove-favorite-project') && (
-        <Menu.Item key="out" onClick={() => removeConfirm()}>
-          移出当前收藏夹
-        </Menu.Item>
-      )}
-    </Menu>
-  )
 
   // const postProjectMenu = (
   //   <Menu>
@@ -496,13 +481,17 @@ const MyProject: React.FC = () => {
         结项申请
       </Button>
     ) : currentClickTabChildActiveType === 'approveKnot' ? (
-      <Button type="primary" onClick={() => auditKnotEvent()}>
-        结项审批
-      </Button>
-    ) : sideVisible ? (
-      <Button type="primary" onClick={() => removeConfirm()}>
-        移出收藏夹
-      </Button>
+      buttonJurisdictionArray?.includes('all-project-kont-approve') && (
+        <Button type="primary" onClick={() => auditKnotEvent()}>
+          结项审批
+        </Button>
+      )
+    ) : sideVisible && selectedFavId ? (
+      buttonJurisdictionArray?.includes('remove-favorite-project') && (
+        <Button type="primary" onClick={() => removeConfirm()}>
+          移出收藏夹
+        </Button>
+      )
     ) : null
   }
 
@@ -611,13 +600,11 @@ const MyProject: React.FC = () => {
                   </Button>
                 </Dropdown>
               )}
-              {(buttonJurisdictionArray?.includes('add-favorite-project') ||
-                buttonJurisdictionArray?.includes('remove-favorite-project')) &&
-                !sideVisible && (
-                  <Button className="mr7" onClick={() => addFavEvent()}>
-                    收藏
-                  </Button>
-                )}
+              {buttonJurisdictionArray?.includes('add-favorite-project') && !sideVisible && (
+                <Button className="mr7" onClick={() => addFavEvent()}>
+                  收藏
+                </Button>
+              )}
               {(buttonJurisdictionArray?.includes('all-project-export-all') ||
                 buttonJurisdictionArray?.includes('all-project-export-selected')) &&
                 currentClickTabType === 'allpro' &&
