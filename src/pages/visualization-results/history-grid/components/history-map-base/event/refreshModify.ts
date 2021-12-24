@@ -78,7 +78,7 @@ export function refreshModify({
     const features = mapRef.map.getFeaturesAtPixel(pixel, {
       layerFilter: (f) =>
         f.get('name') === 'historyPointLayer' || f.get('name') === 'historyLineLayer',
-    }) as Feature<Geometry>[]
+    }) as Feature<Geometry | Point | LineString>[]
 
     if (
       /**
@@ -86,7 +86,9 @@ export function refreshModify({
        * 说明当前modifyEnd的落点位于设备或者线路上
        * 对当前点位的状态进行边缘情况分析
        */
-      features.length !== e.features.getLength()
+      // features.length !== e.features.getLength() ||
+      // 当所有eFeatures移动一个点位时候 不提示吸附操作
+      needSpecialOperation(eventFeatures, features, coordinate)
     ) {
       if (
         // 当点位重合时的情况处理
@@ -288,4 +290,29 @@ export function saveOperation(
       refreshModifyCallBack()
     }
   })
+}
+/**
+ * 是否需要进行特殊操作
+ * 当落点处有额外的线路，且不为线路的端点时，需要进行特殊操作
+ * @param eventFeatures
+ * @param features
+ */
+function needSpecialOperation(
+  eventFeatures: Feature<Geometry | Point | LineString>[],
+  features: Feature<Geometry | Point | LineString>[],
+  coordinate: number[]
+): boolean {
+  if (eventFeatures.length === features.length) {
+    return false
+  } else {
+    const eventFeaturesIds = eventFeatures.map((f) => f.get('id'))
+    return features.some(
+      (f) =>
+        !eventFeaturesIds.includes(f.get('id')) &&
+        f.getGeometry()?.getType() === 'LineString' &&
+        (f.getGeometry() as LineString).getCoordinates().some((i) => {
+          return !(i[0] === coordinate[0] && i[1] === coordinate[1])
+        })
+    )
+  }
 }
