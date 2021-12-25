@@ -6,7 +6,14 @@ import { ImportOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import { Button, Input, message, Modal } from 'antd'
 import moment from 'moment'
-import React, { forwardRef, Ref, useImperativeHandle, useState } from 'react'
+import React, {
+  forwardRef,
+  Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react'
 import CheckMapping from '../check-mapping-form'
 import EditMap from '../edit-map'
 import MapLibModal from '../map-lib-modal'
@@ -54,7 +61,13 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
   }
 
   const deleteMapEvent = async () => {
-    const res = await verifyPwd({ pwd: password })
+    // console.log(password, 'pwd')
+    // Promise.resolve().then((value) => {
+    //   console.log(value)
+    // })
+    return password
+
+    // const res = await verifyPwd({ pwd: password })
 
     // await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
     // message.success('删除映射成功')
@@ -81,7 +94,6 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
             changeEvent={deleteMapEvent}
             selectData={tableSelectRows}
             contentSlot={deleteSlot}
-            pwd={password}
             title="删除映射"
           />
         )}

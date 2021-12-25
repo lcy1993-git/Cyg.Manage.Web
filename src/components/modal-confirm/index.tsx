@@ -9,7 +9,6 @@ interface ModalConfirmProps {
   changeEvent: () => void
   selectData?: any[] | object
   contentSlot?: () => React.ReactNode
-  pwd?: string
 }
 
 const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
@@ -19,7 +18,6 @@ const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
     changeEvent,
     selectData,
     contentSlot,
-    pwd,
   } = props
 
   const confirmEvent = () => {
