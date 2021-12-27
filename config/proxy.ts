@@ -5,6 +5,7 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   dev: {
     '/api/': {
