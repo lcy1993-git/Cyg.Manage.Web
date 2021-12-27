@@ -1,15 +1,15 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react'
-import { Cascader, DatePicker, Input, Modal, Form } from 'antd'
+import city from '@/assets/local-data/area'
 import CyFormItem from '@/components/cy-form-item'
 import DataSelect from '@/components/data-select'
 import EnumSelect from '@/components/enum-select'
-import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
-import city from '@/assets/local-data/area'
-import moment from 'moment'
-import { useControllableValue, useRequest } from 'ahooks'
-import { useState, useMemo } from 'react'
-import { useGetSelectData } from '@/utils/hooks'
 import { getCommonSelectData } from '@/services/common'
+import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
+import { useGetSelectData } from '@/utils/hooks'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Cascader, DatePicker, Form, Input, Modal } from 'antd'
+import moment from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import rule from '../../create-engineer-form/engineer-form-rule'
 interface EditBulkEngineerProps {
   visible: boolean
@@ -60,12 +60,18 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
         companyChange: companyChangeFlag,
         selectData: {
           ...engineerInfo.selectData,
-          inventoryOverviewSelectData,
+          inventoryOverviewSelectData: inventoryOverviewSelectData.map((item: any) => {
+            if (!item.hasMaped) {
+              return { label: labelElement(item.label), value: item.value }
+            }
+            return { label: item.label, value: item.value }
+          }),
           warehouseSelectData,
           companySelectData,
           departmentSelectData,
         },
       }
+
       finishEvent(engineerSaveInfo)
     })
     setState(false)
@@ -129,7 +135,22 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
       warehouseId: engineer?.warehouseId ? engineer?.warehouseId : 'none',
     })
 
-    setInventoryOverviewSelectData(selectData.inventoryOverviewSelectData)
+    setInventoryOverviewSelectData(
+      selectData.inventoryOverviewSelectData.map((item: any) => {
+        if (item.label.props) {
+          return {
+            label: item.label.props?.children[0].props?.children,
+            value: item.value,
+            hasMaped: false,
+          }
+        }
+        return {
+          label: item.label,
+          value: item.value,
+          hasMaped: true,
+        }
+      })
+    )
     setWarehouseSelectData(selectData.warehouseSelectData)
     setCompanySelectData(selectData.companySelectData)
     setDepartmentSelectData(selectData.departmentSelectData)
@@ -182,7 +203,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const libChangeEvent = async (value: any) => {
     setLibId(value)
     const inventoryOverviewSelectResData = await getInventoryOverviewSelectData({
-      url: '/Inventory/GetListByResourceLibId',
+      url: '/Inventory/GetList',
       params: { libId: value },
       requestSource: 'resource',
     })
@@ -190,8 +211,9 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     const handleInventoryOverviewSelectData = inventoryOverviewSelectResData
       ? inventoryOverviewSelectResData?.map((item: any) => {
           return {
-            label: item.text,
-            value: item.value,
+            label: item.name,
+            value: item.id,
+            hasMaped: item.hasMaped,
           }
         })
       : [{ label: '无', value: 'none' }]
@@ -199,6 +221,29 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     setInventoryOverviewId(undefined)
     setInventoryOverviewSelectData(handleInventoryOverviewSelectData)
   }
+
+  const labelElement = (label: any) => {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {label}
+        </span>
+        <ExclamationCircleOutlined />
+      </div>
+    )
+  }
+
+  const handleInventoryData = useMemo(() => {
+    if (inventoryOverviewSelectData) {
+      return inventoryOverviewSelectData.map((item: any) => {
+        if (!item.hasMaped) {
+          return { label: labelElement(item.label), value: item.value }
+        }
+        return { label: item.label, value: item.value }
+      })
+    }
+    return []
+  }, [inventoryOverviewSelectData])
 
   const inventoryOverviewChange = (value: any) => {
     setInventoryOverviewId(value)
@@ -311,8 +356,8 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                     value={inventoryOverviewId}
                     onChange={(value) => inventoryOverviewChange(value)}
                     options={
-                      inventoryOverviewSelectData?.length !== 0
-                        ? inventoryOverviewSelectData
+                      handleInventoryData?.length !== 0
+                        ? handleInventoryData
                         : [{ label: '无', value: 'none' }]
                     }
                     placeholder="请先选择资源库"

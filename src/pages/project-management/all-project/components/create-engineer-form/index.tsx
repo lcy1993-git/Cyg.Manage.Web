@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import CyFormItem from '@/components/cy-form-item'
-import { DatePicker, Input, Cascader } from 'antd'
+import { DatePicker, Input, Cascader, Tooltip } from 'antd'
 import EnumSelect from '@/components/enum-select'
 import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
 
@@ -97,7 +97,9 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   const labelElement = (label: any) => {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span>{label}</span>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {label}
+        </span>
         <ExclamationCircleOutlined />
       </div>
     )
@@ -112,6 +114,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         return { label: item.label, value: item.value }
       })
     }
+    return []
   }, [inventoryOverviewSelectData])
 
   const afterHandleData = useMemo(() => {
@@ -170,6 +173,20 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     }
   }, [province, inputLibId])
 
+  const invSlot = () => {
+    return (
+      <>
+        <span>协议库存</span>
+        <Tooltip
+          title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
+          placement="top"
+        >
+          <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    )
+  }
+
   return (
     <>
       <div className="flex">
@@ -213,7 +230,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="协议库存"
+            labelSlot={invSlot}
             name="inventoryOverviewId"
             labelWidth={120}
             align="right"

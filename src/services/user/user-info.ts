@@ -94,7 +94,5 @@ export const unBindEmail = () => {
 
 //密码验证
 export const verifyPwd = (params: { pwd: string }) => {
-  return cyRequest(() =>
-    request(`${baseUrl.common}/Users/VerifyPwd`, { method: 'POST', data: params })
-  )
+  return request(`${baseUrl.common}/Users/VerifyPwd`, { method: 'POST', data: params })
 }

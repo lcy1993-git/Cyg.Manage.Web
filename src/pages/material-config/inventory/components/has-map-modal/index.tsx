@@ -1,4 +1,5 @@
 import GeneralTable from '@/components/general-table'
+import { deleteResourceInventoryMap } from '@/services/material-config/inventory'
 import { verifyPwd } from '@/services/user/user-info'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { ExclamationCircleOutlined, ImportOutlined } from '@ant-design/icons'
@@ -32,15 +33,6 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
   const [inventoryName, setInventoryName] = useState<string>('')
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const { inventoryId, name } = props
-
-  // const deleteSlot = () => {
-  //   return (
-
-  //   )
-  // }
-  const passwordOnchange = (value: any) => {
-    setPassword(value)
-  }
 
   const tableElement = () => {
     return (
@@ -76,14 +68,26 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
   const deleteMapEvent = async () => {
     // console.log(password, 'pwd')
     if (password) {
-      const res = await verifyPwd({ pwd: password })
-      // console.log(res, '333')
+      await verifyPwd({ pwd: password })
+        .then(async (res) => {
+          if (res.content) {
+            await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
+            message.success('删除映射成功')
+            setTableSelectRows([])
+            setPasswordVisible(false)
+            refresh()
+            return
+          }
+          message.error('密码验证错误')
+          return
+        })
+        .catch((err) => {
+          message.warning(err)
+        })
+    } else {
+      message.warning('请输入密码验证')
+      return
     }
-    message.warning('请输入密码验证')
-    // await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
-    // message.success('删除映射成功')
-    // setTableSelectRows([])
-    // refresh()
   }
 
   useUpdateEffect(() => {
