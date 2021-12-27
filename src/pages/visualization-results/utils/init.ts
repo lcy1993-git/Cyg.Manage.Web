@@ -56,11 +56,11 @@ export const initLayers = (resData: any): Layer[] => {
 
   // 街道图
   // vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
-  const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
+  // const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
   //分辨率数组
   var resolutions = []
   //瓦片大小
-  var tileSize = 256
+  // var tileSize = 256
   //坐标系信息
   var projection = proj.get('EPSG:4326')
   //获取当前坐标系的范围
@@ -75,7 +75,7 @@ export const initLayers = (resData: any): Layer[] => {
   }
   const vecLayer = new TileLayer({
     source: new sourceWmts({
-      url: testUrl,
+      url: imgUrl,
       layer: 'vec',
       matrixSet: 'c',
       format: 'tiles',

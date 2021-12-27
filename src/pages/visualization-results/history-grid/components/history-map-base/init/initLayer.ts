@@ -14,7 +14,8 @@ function getVecLayer() {
   return new TileLayer({
     source: new XYZ({
       url: decodeURI(
-        'https://mt{0-3}.s02.sirenmap.com/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Galileo'
+        window.localStorage.getItem('vecUrl') ||
+          'https://mt{0-3}.s02.sirenmap.com/vt/lyrs=s&hl=zh-CN&x={x}&y={y}&z={z}&s=Galileo'
       ),
     }),
     preload: 18,
@@ -24,7 +25,6 @@ function getVecLayer() {
 function getStreetLayer() {
   const matrixIds = [],
     resolutions = []
-  //瓦片大小
   //坐标系信息
   const projection = proj.get('EPSG:4326')
 
@@ -38,7 +38,9 @@ function getStreetLayer() {
   // 街道图层
   const street = new TileLayer({
     source: new sourceWmts({
-      url: 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5',
+      url:
+        window.localStorage.getItem('streetUrl') ||
+        'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5',
       layer: 'vec',
       matrixSet: 'c',
       format: 'tiles',
