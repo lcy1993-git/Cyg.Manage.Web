@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 interface EditPasswordParams {
   oldPwd: string
