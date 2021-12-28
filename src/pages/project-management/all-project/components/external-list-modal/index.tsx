@@ -43,7 +43,7 @@ const { Step } = Steps
 
 const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false)
+  // const [editExternalArrangeModal, setEditExternalArrangeModal] = useState<boolean>(false)
   const [isPassExternalArrange, setIsPassExternalArrange] = useState<boolean>(false)
   const [backTo, setBackTo] = useState<number>(4)
   const [addPersonState, setAddPersonState] = useState<boolean>(false)
