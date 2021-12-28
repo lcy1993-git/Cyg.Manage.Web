@@ -6,10 +6,10 @@
 
   .resourceTable {
     flex: 1;
+    width: 800px;
     margin-right: 10px;
     padding: 0 12px;
     background-color: @white-color;
-    width:800px;
     // height:780px
   }
 
@@ -18,39 +18,39 @@
     // height: calc(50% - 10px);
     padding: 0 12px;
     background-color: @white-color;
-    .hasMapAccount{
+    .hasMapAccount {
       padding-top: 5px;
-      color:#a4a4a4;
-      font-size:13px;
-      .accountNumber{
-        color:#178042
+      color: #a4a4a4;
+      font-size: 13px;
+      .accountNumber {
+        color: #178042;
       }
     }
-    .currentMapTableTitle{
-      padding-top:20px
+    .currentMapTableTitle {
+      padding-top: 20px;
     }
-    .currentMapTableSearch{
+    .currentMapTableSearch {
       display: flex;
     }
     .currentMapTableButtonContent {
       display: flex;
       padding-bottom: 20px;
-      .buttonArea{
+      .buttonArea {
         display: flex;
-        margin-left:30px;
+        margin-left: 30px;
       }
     }
     .currentMapTableContent {
+      width: 948px;
       height: calc(100% - 154px);
       overflow-y: auto;
-      width:948px;
       :global {
         .ant-empty {
-          height:522px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
+          height: 522px;
         }
       }
     }
@@ -90,7 +90,6 @@
               padding: 7px 4px 10px 7px;
               color: @gray-color;
               font-size: 13px;
-              
             }
           }
 
@@ -119,5 +118,3 @@
     }
   }
 }
-
-

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import CyFormItem from '@/components/cy-form-item'
-import { DatePicker, Input, Cascader } from 'antd'
+import { DatePicker, Input, Cascader, Tooltip } from 'antd'
 import EnumSelect from '@/components/enum-select'
 import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
 
@@ -10,6 +10,7 @@ import DataSelect from '@/components/data-select'
 
 import city from '@/assets/local-data/area'
 import moment from 'moment'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 
 interface CreateEngineerForm {
   exportDataChange?: (exportData: any) => void
@@ -47,11 +48,18 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   })
   const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
     {
-      url: `/Inventory/GetListByResourceLibId?libId=${libId}`,
+      url: `/Inventory/GetList?libId=${libId}`,
+      valueKey: 'id',
+      titleKey: 'name',
+      otherKey: 'hasMaped',
       requestSource: 'resource',
     },
-    { ready: !!libId, refreshDeps: [libId] }
+    {
+      ready: !!libId,
+      refreshDeps: [libId],
+    }
   )
+
   const { data: warehouseSelectData = [] } = useGetSelectData(
     {
       url: '/WareHouse/GetWareHouseListByArea',
@@ -85,6 +93,29 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         : undefined,
     }
   }
+
+  const labelElement = (label: any) => {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {label}
+        </span>
+        <ExclamationCircleOutlined />
+      </div>
+    )
+  }
+
+  const handleInventoryData = useMemo(() => {
+    if (inventoryOverviewSelectData) {
+      return inventoryOverviewSelectData.map((item: any) => {
+        if (!item.otherKey) {
+          return { label: labelElement(item.label), value: item.value }
+        }
+        return { label: item.label, value: item.value }
+      })
+    }
+    return []
+  }, [inventoryOverviewSelectData])
 
   const afterHandleData = useMemo(() => {
     return city.map(mapHandleCityData)
@@ -142,6 +173,20 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     }
   }, [province, inputLibId])
 
+  const invSlot = () => {
+    return (
+      <>
+        <span>协议库存</span>
+        <Tooltip
+          title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
+          placement="top"
+        >
+          <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    )
+  }
+
   return (
     <>
       <div className="flex">
@@ -185,7 +230,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="协议库存"
+            labelSlot={invSlot}
             name="inventoryOverviewId"
             labelWidth={120}
             align="right"
@@ -194,8 +239,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
           >
             <DataSelect
               options={
-                inventoryOverviewSelectData.length !== 0
-                  ? inventoryOverviewSelectData
+                handleInventoryData.length !== 0
+                  ? handleInventoryData
                   : [{ label: '无', value: 'none' }]
               }
               placeholder="请先选择资源库"
@@ -304,8 +349,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
               { required: true, message: '工程结束时间不能为空' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  console.log(value)
-
                   if (
                     moment(moment(new Date(value)).format('YYYY-MM-DD')).isAfter(
                       moment(new Date(getFieldValue('startTime')?.format('YYYY-MM-DD')))
