@@ -384,11 +384,11 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         title={`预览-${currentFileInfo.title}`}
         width={'80%'}
         centered
-        visible={!!currentFileInfo.extension}
+        visible={!!currentFileInfo.url}
         destroyOnClose
         bodyStyle={{ height: '820px', overflowY: 'auto' }}
-        footer={null}
-        onCancel={() => setCurrentFileInfo({ ...currentFileInfo, extension: undefined })}
+        footer=""
+        onCancel={() => setCurrentFileInfo({ ...currentFileInfo, url: '' })}
       >
         {currentFileInfo.url && <ViewAuditFile params={currentFileInfo} />}
       </Modal>
