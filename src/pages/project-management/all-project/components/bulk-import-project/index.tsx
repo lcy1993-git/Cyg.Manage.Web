@@ -7,7 +7,7 @@ import { useGetSelectData } from '@/utils/hooks'
 import useRequest from '@ahooksjs/use-request'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
-import { Button, Cascader, Checkbox, message, Modal } from 'antd'
+import { Button, Cascader, Checkbox, message, Modal, Tooltip } from 'antd'
 import { cloneDeep } from 'lodash'
 import uuid from 'node-uuid'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
@@ -882,7 +882,15 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
                   <th>工程名称</th>
                   <th>区域</th>
                   <th>资源库</th>
-                  <th>协议库</th>
+                  <th>
+                    <span>协议库存</span>
+                    <Tooltip
+                      title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
+                      placement="top"
+                    >
+                      <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+                    </Tooltip>
+                  </th>
                   <th>利旧协议库</th>
                   <th>所属公司</th>
                   <th style={{ width: '100px' }}>已录入信息</th>

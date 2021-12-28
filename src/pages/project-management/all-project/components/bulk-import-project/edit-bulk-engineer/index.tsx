@@ -7,7 +7,7 @@ import { FormImportantLevel, ProjectLevel } from '@/services/project-management/
 import { useGetSelectData } from '@/utils/hooks'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue, useRequest } from 'ahooks'
-import { Cascader, DatePicker, Form, Input, Modal } from 'antd'
+import { Cascader, DatePicker, Form, Input, Modal, Tooltip } from 'antd'
 import moment from 'moment'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import rule from '../../create-engineer-form/engineer-form-rule'
@@ -275,6 +275,20 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     setDepartmentSelectData(handleDepartmentSelectData)
   }
 
+  const invSlot = () => {
+    return (
+      <>
+        <span>协议库存</span>
+        <Tooltip
+          title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
+          placement="top"
+        >
+          <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    )
+  }
+
   return (
     <>
       <Modal
@@ -343,7 +357,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
             </div>
             <div className="flex1 flowHidden">
               <CyFormItem
-                label="协议库存"
+                labelSlot={invSlot}
                 name="inventoryOverviewId"
                 labelWidth={120}
                 align="right"
