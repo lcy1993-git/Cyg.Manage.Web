@@ -4,9 +4,8 @@ import { message, Modal, Table, Tabs } from 'antd'
 import Item from 'antd/lib/list/Item'
 import { Image } from 'antd'
 import moment from 'moment'
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import styles from './index.less'
-import { divide } from '@umijs/deps/compiled/lodash'
 import EmptyTip from '@/components/empty-tip'
 interface ReviewDetailsProps {
   visible: boolean
@@ -75,7 +74,6 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
     setImageData(url)
     setCheckScreenShotVisible(true)
   }
-  // console.log(imageData, '333')
 
   const getCurrentTabData = (tabType: number) => {
     return detailsData
@@ -97,7 +95,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
               return {
                 nodeCountIndex: item.nodeCountIndex,
                 expectExecutorNickName: item.expectExecutorNickName,
-                executionTime: moment(item.executionTime).format('YYYY-MM-DD-HH-MM-SS'),
+                executionTime: moment(item.executionTime).format('YYYY-MM-DD HH:mm:ss'),
                 opinionContent: ite.opinionContent,
                 screenshots: ite.resource.screenShotFile.url,
                 extension: ite.resource.screenShotFile.extension,

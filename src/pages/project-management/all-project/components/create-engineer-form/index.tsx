@@ -7,10 +7,11 @@ import { FormImportantLevel, ProjectLevel } from '@/services/project-management/
 import Rule from './engineer-form-rule'
 import { useGetSelectData } from '@/utils/hooks'
 import DataSelect from '@/components/data-select'
-
-import city from '@/assets/local-data/area'
+// import city from '@/assets/local-data/area'
 import moment from 'moment'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import useRequest from '@ahooksjs/use-request'
+import { getRegionData } from '@/pages/visualization-results/history-grid/service'
 
 interface CreateEngineerForm {
   exportDataChange?: (exportData: any) => void
@@ -35,11 +36,20 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
 
   const [areaId, setAreaId] = useState<string>('')
   const [libId, setLibId] = useState<string>('')
+  const [city, setCity] = useState<any[]>([])
 
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01')
   }
 
+  //获取区域
+  const { data: cityData } = useRequest(() => getRegionData(), {
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
   const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
@@ -83,7 +93,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
 
   const mapHandleCityData = (data: any) => {
     return {
-      label: data.text,
+      label: data.parentId === '-1' ? data.text : data.shortName,
       value: data.id,
       children: data.children
         ? [
@@ -118,7 +128,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   }, [inventoryOverviewSelectData])
 
   const afterHandleData = useMemo(() => {
-    return city.map(mapHandleCityData)
+    return city?.map(mapHandleCityData)
   }, [JSON.stringify(city)])
 
   const valueChangeEvenet = useCallback(
