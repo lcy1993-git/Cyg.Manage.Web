@@ -1,9 +1,12 @@
 import CyFormItem from '@/components/cy-form-item'
 import DataSelect from '@/components/data-select'
 import EnumSelect from '@/components/enum-select'
-import { getRegionData } from '@/pages/visualization-results/history-grid/service'
 import { getCommonSelectData } from '@/services/common'
-import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
+import {
+  FormImportantLevel,
+  getCityAreas,
+  ProjectLevel,
+} from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue, useRequest } from 'ahooks'
@@ -91,7 +94,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
 
   //获取区域
-  const { data: cityData } = useRequest(() => getRegionData(), {
+  const { data: cityData } = useRequest(() => getCityAreas(), {
     onSuccess: () => {
       if (cityData) {
         setCity(cityData.data)

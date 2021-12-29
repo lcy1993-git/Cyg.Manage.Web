@@ -2,7 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import CyFormItem from '@/components/cy-form-item'
 import { DatePicker, Input, Cascader, Tooltip } from 'antd'
 import EnumSelect from '@/components/enum-select'
-import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
+import {
+  FormImportantLevel,
+  getCityAreas,
+  ProjectLevel,
+} from '@/services/project-management/all-project'
 
 import Rule from './engineer-form-rule'
 import { useGetSelectData } from '@/utils/hooks'
@@ -11,7 +15,6 @@ import DataSelect from '@/components/data-select'
 import moment from 'moment'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import useRequest from '@ahooksjs/use-request'
-import { getRegionData } from '@/pages/visualization-results/history-grid/service'
 
 interface CreateEngineerForm {
   exportDataChange?: (exportData: any) => void
@@ -43,7 +46,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   }
 
   //获取区域
-  const { data: cityData } = useRequest(() => getRegionData(), {
+  const { data: cityData } = useRequest(() => getCityAreas(), {
     onSuccess: () => {
       if (cityData) {
         setCity(cityData.data)
