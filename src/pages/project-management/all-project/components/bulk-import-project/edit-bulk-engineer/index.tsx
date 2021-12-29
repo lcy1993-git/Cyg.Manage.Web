@@ -1,7 +1,7 @@
-import city from '@/assets/local-data/area'
 import CyFormItem from '@/components/cy-form-item'
 import DataSelect from '@/components/data-select'
 import EnumSelect from '@/components/enum-select'
+import { getRegionData } from '@/pages/visualization-results/history-grid/service'
 import { getCommonSelectData } from '@/services/common'
 import { FormImportantLevel, ProjectLevel } from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
@@ -35,7 +35,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const [inventoryOverviewId, setInventoryOverviewId] = useState<string | undefined>('')
   const [warehouseId, setWarehouseId] = useState<string | undefined>('')
   const [company, setCompany] = useState<string | undefined>('')
-
+  const [city, setCity] = useState<any[]>([])
   const [form] = Form.useForm()
   const { engineerInfo, finishEvent } = props
 
@@ -90,13 +90,22 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
   const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
 
+  //获取区域
+  const { data: cityData } = useRequest(() => getRegionData(), {
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
+
   const closeModalEvent = () => {
     setState(false)
   }
 
   const mapHandleCityData = (data: any) => {
     return {
-      label: data.text,
+      label: data.parentId === '-1' ? data.text : data.shortName,
       value: data.id,
       children: data.children
         ? [
