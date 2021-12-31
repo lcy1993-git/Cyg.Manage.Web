@@ -1,37 +1,32 @@
-
-import LayerGroup from 'ol/layer/Group'
 import {
-  ProjectList,
-  loadLayer,
   getMediaSign,
+  loadLayer,
+  ProjectList,
 } from '@/services/visualization-results/visualization-results'
 import Feature from 'ol/Feature'
 import GeoJSON from 'ol/format/GeoJSON'
 import LineString from 'ol/geom/LineString'
-import { layerParams, LayerParams } from './localData/layerParamsData'
-import VectorSource from 'ol/source/Vector'
-import Cluster from 'ol/source/Cluster'
-import Vector from 'ol/layer/Vector'
 import MultiLineString from 'ol/geom/MultiLineString'
-import {
-  pointStyle,
-  line_style,
-  cable_channel_styles,
-  trackStyle,
-  trackLineStyle,
-  zero_guy_style,
-} from './localData/pointStyle'
+import Point from 'ol/geom/Point'
+import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
-import { transform, getPointResolution } from 'ol/proj'
+import Vector from 'ol/layer/Vector'
+import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
-import ClassStyle from 'ol/style/Style'
+import Cluster from 'ol/source/Cluster'
+import VectorSource from 'ol/source/Vector'
 import { getStyle } from '../history-grid/components/history-map-base/styles'
 import { getDataByProjectId } from '../history-grid/service'
-import Text from 'ol/style/Text'
-import Stroke from 'ol/style/Stroke'
-import Point from 'ol/geom/Point'
-import { getXmlData, sortByTime, LineCluster } from './utils'
-
+import { layerParams, LayerParams } from './localData/layerParamsData'
+import {
+  cable_channel_styles,
+  line_style,
+  pointStyle,
+  trackLineStyle,
+  trackStyle,
+  zero_guy_style,
+} from './localData/pointStyle'
+import { getXmlData, LineCluster, sortByTime } from './utils'
 
 var projects: any
 var layerGroups: LayerGroup[]
@@ -68,11 +63,11 @@ const refreshMap = async (
   lineClusters = []
   if (projects.length === 0) return
 
-  const postData = getXmlData(projects, startDate, endDate);
-  await loadSurveyLayers(postData, groupLayers);
-  await loadPlanLayers(postData, groupLayers);
-  await loadDismantleLayers(postData, groupLayers);
-  await loadDesignLayers(postData, groupLayers, view, setView, map);
+  const postData = getXmlData(projects, startDate, endDate)
+  await loadSurveyLayers(postData, groupLayers)
+  await loadPlanLayers(postData, groupLayers)
+  await loadDismantleLayers(postData, groupLayers)
+  await loadDesignLayers(postData, groupLayers, view, setView, map)
   await loadPreDesignLayers(groupLayers)
   for (let index = 0; index < lineClusters.length; index++) {
     const lineCluster = lineClusters[index]
@@ -437,6 +432,7 @@ const loadWFSData = (
       zIndex: number
       declutter?: boolean
       style?: any
+      minZoom?: number
     }
     let obj: LayerObject = {
       source,
@@ -460,6 +456,8 @@ const loadWFSData = (
         var style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false)
         return style
       }
+    } else if (item.type === 'line' || item.type === 'cable_channel') {
+      obj.minZoom = 18
     }
     groupLayers[layerType + '_' + layerName] = new Vector(obj)
     groupLayers[layerType + '_' + layerName].set('name', layerType + '_' + layerName)
