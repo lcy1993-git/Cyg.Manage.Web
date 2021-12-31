@@ -18,7 +18,6 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
   const [checkScreenShotVisible, setCheckScreenShotVisible] = useState<boolean>(false)
   const [imageData, setImageData] = useState<any>()
   const { data: detailsData } = useRequest(() => getReviewDetails(projectId, true))
-  // const { run: getImgData } = useRequest(getFileStream)
 
   const detailColumns = [
     {
@@ -74,11 +73,11 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       },
     },
   ]
-
   //截图展示
-  const screenShotsEvent = (url: string, extension: string) => {
-    // const res = getImgData({ url: url, extension: extension })
-    setImageData(url)
+  const screenShotsEvent = async (url: string, extension: string) => {
+    const res = await getFileStream({ url: url, extension: extension })
+    const blobURL = URL.createObjectURL(res)
+    setImageData(blobURL)
     setCheckScreenShotVisible(true)
   }
 
