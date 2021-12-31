@@ -13,8 +13,8 @@ import { ExpressionProvider, useExpressionContainer } from './store'
 const leftList = [
   { id: '1', name: '基本设计费' },
   { id: '2', name: '施工费' },
-  { id: '3', name: '建筑取表费' },
-  { id: '4', name: '安装取表费' },
+  { id: '3', name: '建筑取费表' },
+  { id: '4', name: '安装取费表' },
   { id: '5', name: '设备购置费' },
   { id: '6', name: '拆除取费表' },
   { id: '7', name: '其他费用' },
