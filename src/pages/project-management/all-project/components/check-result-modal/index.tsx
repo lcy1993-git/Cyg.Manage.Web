@@ -8,8 +8,8 @@ import {
   getAuditResultData,
   downloadAuditFile,
 } from '@/services/project-management/all-project'
-import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
-import { useControllableValue, useRequest } from 'ahooks'
+import { FileOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
 import { Button, Modal, Spin, message, Tabs } from 'antd'
 import React, { Dispatch, SetStateAction, useState, useEffect, useMemo } from 'react'
 import CompileResultTab from '../check-compile-result'
@@ -124,14 +124,14 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
   }
 
-  const refresh = () => {
-    message.success('刷新成功')
-    if (currentTab === 'design') {
-      run(projectInfo.projectId)
-    } else {
-      getCompileTree(projectInfo.projectId)
-    }
-  }
+  // const refresh = () => {
+  //   message.success('刷新成功')
+  //   if (currentTab === 'design') {
+  //     run(projectInfo.projectId)
+  //   } else {
+  //     getCompileTree(projectInfo.projectId)
+  //   }
+  // }
 
   const createFile = async () => {
     if (currentTab === 'design') {
@@ -155,7 +155,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         })
         let finalyFileName = `导出设计成果.zip`
         // for IE
+        //@ts-ignore
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
@@ -193,7 +195,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         })
         let finalyFileName = `导出项目需求编制成果.zip`
         // for IE
+        //@ts-ignore
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
@@ -228,7 +232,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         })
         let finalyFileName = `导出评审成果.zip`
         // for IE
+        //@ts-ignore
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
@@ -319,9 +325,6 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           </div>
 
           <div className={styles.resultButtonContent} style={{ paddingRight: '20px' }}>
-            <Button className="mr7" onClick={() => refresh()}>
-              刷新
-            </Button>
             <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
               导出
             </Button>
