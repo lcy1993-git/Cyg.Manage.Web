@@ -1,12 +1,10 @@
+import EmptyTip from '@/components/empty-tip'
 import { getFileStream, getReviewDetails } from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
-import { message, Modal, Table, Tabs } from 'antd'
-import Item from 'antd/lib/list/Item'
-import { Image } from 'antd'
+import { Image, Modal, Table, Tabs } from 'antd'
 import moment from 'moment'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import styles from './index.less'
-import EmptyTip from '@/components/empty-tip'
 interface ReviewDetailsProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
@@ -20,11 +18,13 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
   const [checkScreenShotVisible, setCheckScreenShotVisible] = useState<boolean>(false)
   const [imageData, setImageData] = useState<any>()
   const { data: detailsData } = useRequest(() => getReviewDetails(projectId, true))
+  // const { run: getImgData } = useRequest(getFileStream)
 
   const detailColumns = [
     {
       title: '序号',
       width: 50,
+      index: 'number',
       render: (text: any, record: any, index: number) => `${index + 1}`,
       align: 'center' as 'center',
     },
@@ -33,6 +33,9 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       index: 'nodeCountIndex',
       title: '版本',
       width: 80,
+      render: (text: any) => {
+        return `V${text}`
+      },
     },
     {
       dataIndex: 'expectExecutorNickName',
@@ -59,7 +62,10 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       width: 120,
       render: (text: any, record: any) => {
         return record?.screenshots ? (
-          <span className={styles.checkTitle} onClick={() => screenShotsEvent(record?.screenshots)}>
+          <span
+            className={styles.checkTitle}
+            onClick={() => screenShotsEvent(record?.screenshots, record?.extension)}
+          >
             查看
           </span>
         ) : (
@@ -70,7 +76,8 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
   ]
 
   //截图展示
-  const screenShotsEvent = (url: string) => {
+  const screenShotsEvent = (url: string, extension: string) => {
+    // const res = getImgData({ url: url, extension: extension })
     setImageData(url)
     setCheckScreenShotVisible(true)
   }
@@ -99,6 +106,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
                 opinionContent: ite.opinionContent,
                 screenshots: ite.resource.screenShotFile.url,
                 extension: ite.resource.screenShotFile.extension,
+                key: ite.id,
               }
             })
           : null

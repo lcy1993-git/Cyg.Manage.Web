@@ -1,95 +1,114 @@
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
-import { newUploadLineStressSag } from '@/services/resource-config/drawing';
-import { useBoolean, useControllableValue } from 'ahooks';
-import React, { useState } from 'react';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
-import { Input, Form, message, Modal, Button } from 'antd';
-import UrlSelect from '@/components/url-select';
-import rule from '../rules';
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
+import { newUploadLineStressSag } from '@/services/resource-config/drawing'
+import { useBoolean, useControllableValue, useRequest } from 'ahooks'
+import React, { useMemo, useState } from 'react'
+import { Dispatch } from 'react'
+import { SetStateAction } from 'react'
+import { Input, Form, message, Modal, Button } from 'antd'
+import UrlSelect from '@/components/url-select'
+import rule from '../rules'
+import { getCityAreas } from '@/services/project-management/all-project'
 
 interface ImportInventoryProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  libId?: string;
-  securityKey?: string;
-  requestSource: 'project' | 'resource' | 'upload';
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  libId?: string
+  securityKey?: string
+  requestSource: 'project' | 'resource' | 'upload'
 }
 
-const { TextArea } = Input;
+const { TextArea } = Input
 
 const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState<boolean>(false);
-  const [province, setProvince] = useState<string>('');
-  const [remark, setRemark] = useState<string>('');
-  const [msgState, setMsgState] = useState<boolean>(false);
-  const [versionName, setVersionName] = useState<string>('');
-  // const controller = new AbortController();
-  // const { signal } = controller;
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [requestLoading, setRequestLoading] = useState<boolean>(false)
+  const [province, setProvince] = useState<string>('')
+  const [remark, setRemark] = useState<string>('')
+  const [msgState, setMsgState] = useState<boolean>(false)
+  const [versionName, setVersionName] = useState<string>('')
+  const [city, setCity] = useState<any>([])
 
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
-  const [inventoryName, setInventoryName] = useState<string>('');
-  const { requestSource, changeFinishEvent } = props;
-  const [form] = Form.useForm();
+  ] = useBoolean(false)
+  const [inventoryName, setInventoryName] = useState<string>('')
+  const { requestSource, changeFinishEvent } = props
+  const [form] = Form.useForm()
+
+  const { data: cityData } = useRequest(() => getCityAreas(), {
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
+
+  const provinceData = useMemo(() => {
+    const newProvinceData = city.map((item: any) => {
+      return {
+        label: item.text,
+        value: item.id,
+        children: item.children,
+      }
+    })
+    return [{ label: '-全部-', value: '', children: [] }, ...newProvinceData]
+  }, [JSON.stringify(city)])
 
   const saveInventoryEvent = () => {
-    setMsgState(false);
+    setMsgState(false)
     return form
       .validateFields()
       .then((values) => {
-        const { file } = values;
-        setRequestLoading(true);
+        const { file } = values
+        setRequestLoading(true)
 
         return newUploadLineStressSag(
           file,
           { province, versionName, inventoryName, remark },
           requestSource,
-          '/Inventory/SaveImport',
-        );
+          '/Inventory/SaveImport'
+        )
       })
       .then(
         (res) => {
-          message.success('导入成功');
-          setRequestLoading(true);
-          return Promise.resolve();
+          message.success('导入成功')
+          setRequestLoading(true)
+          return Promise.resolve()
         },
         (res) => {
           if (res.code === 500 || res.code === 5000) {
-            const { message: msg } = res;
-            setRequestLoading(false);
-            setMsgState(true);
-            message.error('上传失败，' + msg);
+            const { message: msg } = res
+            setRequestLoading(false)
+            setMsgState(true)
+            message.error('上传失败，' + msg)
           }
 
-          setUploadFileFalse();
-          return Promise.reject('导入失败');
-        },
+          setUploadFileFalse()
+          return Promise.reject('导入失败')
+        }
       )
       .finally(() => {
         // setRequestLoading(true);
-      });
-  };
+      })
+  }
 
   const onSave = () => {
     form.validateFields().then((value) => {
       if (requestLoading) {
-        setState(false);
-        changeFinishEvent?.();
-        return;
+        setState(false)
+        changeFinishEvent?.()
+        return
       }
       if (msgState) {
-        message.info('请重新上传完整的文件');
-        return;
+        message.info('请重新上传完整的文件')
+        return
       }
-      message.info('您还未上传文件，点击“开始上传”上传文件');
-    });
-  };
+      message.info('您还未上传文件，点击“开始上传”上传文件')
+    })
+  }
 
   return (
     <Modal
@@ -147,9 +166,9 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         >
           <UrlSelect
             showSearch
-            url="/Area/GetList?pId=-1"
-            titlekey="text"
+            titlekey="label"
             valuekey="value"
+            defaultData={provinceData}
             placeholder="请选择"
             onChange={(value: any) => setProvince(value)}
           />
@@ -182,7 +201,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         </CyFormItem>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default ImportInventory;
+export default ImportInventory

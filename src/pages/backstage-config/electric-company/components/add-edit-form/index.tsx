@@ -1,10 +1,15 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import rules from '../rules';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import rules from '../rules'
 
-const ElectricCompanyForm: React.FC = () => {
+interface CompanyParams {
+  province: any[]
+}
+
+const ElectricCompanyForm: React.FC<CompanyParams> = (props: any) => {
+  const { province } = props
   return (
     <>
       <CyFormItem
@@ -17,8 +22,8 @@ const ElectricCompanyForm: React.FC = () => {
       >
         <UrlSelect
           showSearch
-          url="/Area/GetList?pId=-1"
-          titlekey="text"
+          titlekey="label"
+          defaultData={province}
           valuekey="value"
           placeholder="请选择"
         />
@@ -57,7 +62,7 @@ const ElectricCompanyForm: React.FC = () => {
         <Input placeholder="请输入供电所/班组" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default ElectricCompanyForm;
+export default ElectricCompanyForm
