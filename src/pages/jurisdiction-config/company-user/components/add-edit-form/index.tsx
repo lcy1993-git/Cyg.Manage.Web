@@ -1,41 +1,42 @@
-import React, { useMemo, useState } from 'react';
-import { Input, Select, TreeSelect } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import EnumRadio from '@/components/enum-radio';
-import UrlSelect from '@/components/url-select';
-import { BelongStatusEnum } from '@/services/personnel-config/manage-user';
-import rules from '../rule';
-import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
-import { getClientCategorys } from '@/services/personnel-config/company-user';
-import { useRequest } from 'ahooks';
-import Spin from 'antd/es/spin';
+import React, { useMemo, useState } from 'react'
+import { Input, Select, TreeSelect } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+// import EnumRadio from '@/components/enum-radio'
+// import UrlSelect from '@/components/url-select'
+// import { BelongStatusEnum } from '@/services/personnel-config/manage-user'
+import rules from '../rule'
+import { CompanyGroupTreeData } from '@/services/operation-config/company-group'
+import { getClientCategorys } from '@/services/personnel-config/company-user'
+import { useRequest } from 'ahooks'
+import Spin from 'antd/es/spin'
+import { noAutoCompletePassword } from '@/utils/utils'
 
 interface CompanyUserFormProps {
-  treeData: CompanyGroupTreeData[];
-  type?: 'add' | 'edit';
+  treeData: CompanyGroupTreeData[]
+  type?: 'add' | 'edit'
 }
 
 const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
-  const { treeData = [], type = 'edit' } = props;
-  const [category, setCategory] = useState<any>([]);
+  const { treeData = [], type = 'edit' } = props
+  const [category, setCategory] = useState<any>([])
 
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
       value: data.id,
       children: data.children.map(mapTreeData),
-    };
-  };
+    }
+  }
 
   const { data: categoryData, loading } = useRequest(() => getClientCategorys(), {
     onSuccess: () => {
-      setCategory(categoryData?.map((item) => ({ label: item.text, value: item.value })));
+      setCategory(categoryData?.map((item) => ({ label: item.text, value: item.value })))
     },
-  });
+  })
 
   const handleData = useMemo(() => {
-    return treeData?.map(mapTreeData);
-  }, [JSON.stringify(treeData)]);
+    return treeData?.map(mapTreeData)
+  }, [JSON.stringify(treeData)])
 
   return (
     <>
@@ -53,7 +54,12 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         </CyFormItem>
         {type === 'add' && (
           <CyFormItem label="密码" name="pwd" required rules={rules.pwd} hasFeedback>
-            <Input type="password" placeholder="请输入密码" onPaste={(e) => e.preventDefault()} />
+            <Input
+              type="password"
+              placeholder="请输入密码"
+              {...noAutoCompletePassword}
+              onPaste={(e) => e.preventDefault()}
+            />
           </CyFormItem>
         )}
         {type === 'add' && (
@@ -71,9 +77,9 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('pwd') === value) {
-                    return Promise.resolve();
+                    return Promise.resolve()
                   }
-                  return Promise.reject('两次密码输入不一致，请确认');
+                  return Promise.reject('两次密码输入不一致，请确认')
                 },
               }),
             ]}
@@ -87,7 +93,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         )}
 
         <CyFormItem label="邮箱" name="email" rules={rules.email}>
-          <Input placeholder="请填写邮箱" />
+          <Input placeholder="请填写邮箱" {...noAutoCompletePassword} />
         </CyFormItem>
 
         <CyFormItem label="姓名" name="name" rules={rules.realName} required>
@@ -112,7 +118,7 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         </CyFormItem> */}
       </Spin>
     </>
-  );
-};
+  )
+}
 
-export default CompanyUserForm;
+export default CompanyUserForm

@@ -51,12 +51,10 @@ const CompanyUser: React.FC = () => {
   const [status, setStatus] = useState<number>(0)
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
-  const [batchAddFormVisible, setBatchAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [resetFormVisible, setResetFormVisible] = useState<boolean>(false)
   const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false)
   const [addForm] = Form.useForm()
-  const [batchAddForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getCompanyUserDetail, {
@@ -82,7 +80,7 @@ const CompanyUser: React.FC = () => {
   //@ts-ignore
   const { id } = JSON.parse(window.localStorage.getItem('userInfo'))
 
-  const { setWorkHandoverFlag, workHandoverFlag } = useLayoutStore()
+  const { workHandoverFlag } = useLayoutStore()
 
   const rightButton = () => {
     return (
@@ -455,11 +453,6 @@ const CompanyUser: React.FC = () => {
   const addModalCloseEvent = () => {
     setAddFormVisible(false)
     addForm.resetFields()
-  }
-
-  const batchAddCloseEvent = () => {
-    setBatchAddFormVisible(false)
-    batchAddForm.resetFields()
   }
 
   return (

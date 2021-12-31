@@ -243,19 +243,18 @@ export const handleRate = (number: number) => {
   return number.toFixed(2)
 }
 
-export const BlobOrArrayBuffertoUnit8 = (data: Blob | ArrayBuffer) => {
-  const res = []
-  switch (Object.prototype.toString.call(b)) {
-    case '[object Blob]':
-      break
+// export const BlobOrArrayBuffertoUnit8 = (data: Blob | ArrayBuffer) => {
+//   switch (Object.prototype.toString.call(b)) {
+//     case '[object Blob]':
+//       break
 
-    case '[object ArrayBuffer]':
-      break
+//     case '[object ArrayBuffer]':
+//       break
 
-    default:
-      break
-  }
-}
+//     default:
+//       break
+//   }
+// }
 
 interface Data {
   parentID: number
@@ -386,4 +385,10 @@ const getNoticeReq = (
     .catch(() => {
       loginFuc(values)
     })
+}
+
+//移除自动填充
+export const noAutoCompletePassword = {
+  readOnly: true,
+  onFocus: (e: any) => e.currentTarget.removeAttribute('readonly'),
 }
