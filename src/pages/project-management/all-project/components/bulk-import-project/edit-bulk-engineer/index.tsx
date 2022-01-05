@@ -108,7 +108,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
 
   const mapHandleCityData = (data: any) => {
     return {
-      label: data.parentId === '-1' ? data.text : data.shortName,
+      label: data.shortName,
       value: data.id,
       children: data.children
         ? [

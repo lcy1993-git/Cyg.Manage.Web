@@ -49,12 +49,12 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const provinceData = useMemo(() => {
     const newProvinceData = city.map((item: any) => {
       return {
-        label: item.text,
+        label: item.shortName,
         value: item.id,
         children: item.children,
       }
     })
-    return [{ label: '-全部-', value: '', children: [] }, ...newProvinceData]
+    return newProvinceData
   }, [JSON.stringify(city)])
 
   const saveInventoryEvent = () => {

@@ -75,7 +75,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>) => {
   const provinceData = useMemo(() => {
     const newProvinceData = areaData.map((item) => {
       return {
-        label: item.text,
+        label: item.shortName,
         value: item.id,
         children: item.children,
       }
@@ -88,7 +88,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>) => {
 
     const newCityData = option.children?.map((item: any) => {
       return {
-        label: item.parentId === '-1' ? item.text : item.shortName,
+        label: item.shortName,
         value: item.id,
         children: item.children,
       }
@@ -112,7 +112,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>) => {
     setCityInfo(option)
     const newAreaData = option.children?.map((item: any) => {
       return {
-        label: item.parentId === '-1' ? item.text : item.shortName,
+        label: item.shortName,
         value: item.id,
         children: item.children,
       }

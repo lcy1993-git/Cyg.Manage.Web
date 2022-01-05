@@ -1,8 +1,7 @@
-import city from '@/assets/local-data/area'
 import CyTip from '@/components/cy-tip'
 import DataSelect from '@/components/data-select'
 import { getCommonSelectData } from '@/services/common'
-import { importBulkEngineerProject } from '@/services/project-management/all-project'
+import { getCityAreas, importBulkEngineerProject } from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
 import useRequest from '@ahooksjs/use-request'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
@@ -34,10 +33,18 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   const [editEngineerModalVisible, setEditEngineerModalVisible] = useState<boolean>(false)
   const [editProjectModalVisible, setEditProjectModalVisible] = useState<boolean>(false)
+  const [city, setCity] = useState<any[]>([])
+  const { data: cityData } = useRequest(() => getCityAreas(), {
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
 
   const mapHandleCityData = (data: any) => {
     return {
-      label: data.text,
+      label: data.shortName,
       value: data.id,
       children: data.children
         ? [
