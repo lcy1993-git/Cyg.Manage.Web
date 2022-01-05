@@ -125,7 +125,7 @@ const ParentRow = ({
       {_columns!.map(({ width, ...rest }, index) => (
         <VTCell
           {...rest}
-          className="parent"
+          className="parent ellipsis"
           style={{ border: 'none', backgroundColor: '#F2F2F2' }}
           width={width}
           prefix={prefix}
