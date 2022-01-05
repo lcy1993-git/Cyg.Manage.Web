@@ -1,5 +1,4 @@
 import PageCommonWrap from '@/components/page-common-wrap'
-import TableImportButton from '@/components/table-import-button'
 import {
   getExpressionTemplateList,
   getExpressionTemplateSheetMenuList,
@@ -10,6 +9,7 @@ import React, { useEffect } from 'react'
 import styles from './index.less'
 import RightTab from './rightTab'
 import { ExpressionProvider, useExpressionContainer } from './store'
+import TableImportButton from './table-import-button'
 const leftList = [
   { id: '1', name: '基本设计费' },
   { id: '2', name: '施工费' },
@@ -24,14 +24,13 @@ const leftList = [
 const Expression: React.FC = observer(() => {
   const store = useExpressionContainer()
   const { activeValue, loading } = store.state
-  // const [loading, setLoading] = useState<boolean>(false)
   const id = (qs.parse(window.location.href.split('?')[1]).id as string) || ''
   // const [activeValue, setActiveValue] = useState<ListData>({
   //   id: '1',
   //   name: '基本设计费',
   // })
   const getTableData = async (name?: string) => {
-    store.setLoading()
+    store.setLoading(true)
     let res = await getExpressionTemplateList({
       engineeringTemplateId: id,
       engineeringTemplateName: name ? name : activeValue.name,
@@ -66,6 +65,9 @@ const Expression: React.FC = observer(() => {
       </div>
     )
   })
+  const setSuccessful = () => {
+    getTableData()
+  }
   return (
     <PageCommonWrap>
       <div>
@@ -75,7 +77,7 @@ const Expression: React.FC = observer(() => {
             extraParams={{ EngineeringTemplateId: id }}
             buttonTitle={'导入'}
             requestSource={'tecEco1'}
-            // setLoading={setLoading}
+            setSuccessful={setSuccessful}
             importUrl={'/ExpressionTrees/AddExpressionTrees'}
           />
         </div>

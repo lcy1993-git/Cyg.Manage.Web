@@ -29,8 +29,8 @@ function createStore(state: any) {
     setRightTabList(list: any[]) {
       this.state.rightTabList = list
     },
-    setLoading() {
-      this.state.loading = true
+    setLoading(bool: boolean) {
+      this.state.loading = bool
     },
     setRightTile(list: any[]) {
       this.state.loading = false
@@ -45,8 +45,10 @@ function createStore(state: any) {
       const showData: any = {}
       showData.data = [...list]
       showData.hIndex = ''
+      showData.backgroundColor = false
       const data: any[] = []
       data.push(showData)
+
       this.state.allList = data
       this.setContentList(list)
     },
@@ -96,9 +98,9 @@ function createStore(state: any) {
         nowList[cInd + 1] = showData
         nowList[cInd].data = this.returnNewList(nowList[cInd].data, row.id, true)
         nowList[cInd].hIndex = hIndex + ''
+
         this.state.allList = nowList
         this.state.cIndex = cInd
-        // 如果要点击取消选中 TODO
       }
     },
     setCancelSelectRow(row: any, cInd: number, hIndex: number) {
@@ -110,6 +112,16 @@ function createStore(state: any) {
         this.state.allList = nowList
         this.state.cIndex = cInd
         // 如果要点击取消选中 TODO
+      }
+    },
+    showBackground(row: any, cInd: number, hIndex: number) {
+      if (!row.childs.length) {
+        const nowList = JSON.parse(JSON.stringify(this.state.allList))
+        nowList.map((item: any) => {
+          item.data = this.changeOtherBack(item.data, row.id)
+          return item
+        })
+        this.state.allList = nowList
       }
     },
     returnItem(list: any[], id: string) {
@@ -125,6 +137,20 @@ function createStore(state: any) {
           res.hIndex = index
         } else {
           res.selected = false
+        }
+      })
+      return list
+    },
+    changeOtherBack(list: any[], id: string) {
+      list.map((res: any) => {
+        if (res.id === id) {
+          res.backgroundColor = true
+        } else {
+          if (res.childs && res.childs.length > 0) {
+            res.backgroundColor = false
+            this.changeOtherBack(res.childs, id)
+          }
+          res.backgroundColor = false
         }
       })
       return list
