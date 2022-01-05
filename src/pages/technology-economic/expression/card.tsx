@@ -7,23 +7,30 @@ const Card = observer((props: { data: any[]; index: number; cInd: number; hIndex
   // cInd:卡片index
   // hIndex:选中index
   const { data, index, cInd, hIndex } = props
+  const background = { backgroundColor: '#E4F5EB' }
   const store = useExpressionContainer()
   //   const { currentRow } = store.state
 
   const selectRow = (e: any, cInd: number, hIndex: number) => {
+    // 有children选中
     store.setCurrentRow(e, cInd, hIndex)
   }
   const cancelSelectRow = (e: any, cInd: number, hIndex: number) => {
+    //有children取消选中
     store.setCancelSelectRow(e, cInd, hIndex)
+  }
+  const showBackground = (e: any, cInd: number, hIndex: number) => {
+    // 普通列表选中
+    store.showBackground(e, cInd, hIndex)
   }
 
   return (
     <div className={styles.card}>
       {data.map((res: any, i: number) => {
         let index = 0
-        const newIndex = parseInt(hIndex)
+        const newIndex = parseInt(hIndex) // 当前点击竖index
         if (newIndex) {
-          index = newIndex - 1 > 0 ? newIndex - 1 : 0
+          index = newIndex - 1 > 0 ? newIndex - 1 : 0 // 为了取消点击的上面行的border-bottom
         }
         // i:选项index
         if (res.childs && res.childs.length > 0) {
@@ -52,7 +59,11 @@ const Card = observer((props: { data: any[]; index: number; cInd: number; hIndex
           )
         } else {
           return (
-            <div className={newIndex && index === i ? styles.otherCardItemTwo : styles.cardItemTwo}>
+            <div
+              className={newIndex && index === i ? styles.otherCardItemTwo : styles.cardItemTwo}
+              style={res.backgroundColor ? background : {}}
+              onClick={() => showBackground(res, cInd, i)}
+            >
               <div className={styles.cardName}>{res.menuName}</div>
               {res.formula && !hIndex && (
                 <div className={styles.formula} style={{ flex: '2' }}>
