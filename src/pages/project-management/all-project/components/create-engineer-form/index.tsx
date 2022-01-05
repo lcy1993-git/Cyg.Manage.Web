@@ -96,7 +96,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
 
   const mapHandleCityData = (data: any) => {
     return {
-      label: data.parentId === '-1' ? data.text : data.shortName,
+      label: data.shortName,
       value: data.id,
       children: data.children
         ? [

@@ -49,12 +49,12 @@ const ElectricCompany: React.FC = () => {
   const provinceData = useMemo(() => {
     const newProvinceData = city.map((item: any) => {
       return {
-        label: item.text,
+        label: item.shortName,
         value: item.id,
         children: item.children,
       }
     })
-    return [{ label: '-全部-', value: '', children: [] }, ...newProvinceData]
+    return newProvinceData
   }, [JSON.stringify(city)])
 
   const searchComponent = () => {
@@ -74,7 +74,7 @@ const ElectricCompany: React.FC = () => {
             style={{ width: '200px' }}
             showSearch
             titlekey="label"
-            defaultData={provinceData}
+            defaultData={[{ label: '-全部-', value: '', children: [] }, ...provinceData]}
             valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => searchBySelectProvince(value)}
@@ -129,31 +129,30 @@ const ElectricCompany: React.FC = () => {
       dataIndex: 'id',
       index: 'id',
       title: '公司编号',
-      width: 150,
+      width: 240,
     },
     {
       dataIndex: 'provinceName',
       index: 'provinceName',
       title: '区域',
-      width: 150,
+      width: 200,
     },
     {
       dataIndex: 'companyName',
       index: 'companyName',
       title: '所属公司',
-      width: 200,
+      width: 350,
     },
     {
       dataIndex: 'countyCompany',
       index: 'countyCompany',
       title: '所属县公司',
-      width: 200,
+      width: 350,
     },
     {
       dataIndex: 'powerSupply',
       index: 'powerSupply',
       title: '供电所/班组',
-      width: 200,
     },
   ]
 

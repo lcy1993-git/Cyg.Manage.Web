@@ -452,34 +452,44 @@ const MyProject: React.FC = () => {
   }
 
   const batchButtonElement = () => {
-    return currentClickTabChildActiveType === 'awaitApprove' ? (
+    return currentClickTabChildActiveType === 'awaitApprove' &&
+      buttonJurisdictionArray?.includes('all-project-report-project') ? (
       <Button type="primary" onClick={() => reportApprove(tableSelectKeys)}>
         报审
       </Button>
-    ) : currentClickTabChildActiveType === 'approveing' ? (
+    ) : currentClickTabChildActiveType === 'approveing' &&
+      buttonJurisdictionArray?.includes('all-project-approve-project') ? (
       <Button type="primary" onClick={() => approveProjectEvent(tableSelectKeys)}>
         审批
       </Button>
-    ) : currentClickTabChildActiveType === 'awaitAllot' ? (
+    ) : currentClickTabChildActiveType === 'awaitAllot' &&
+      buttonJurisdictionArray?.includes('all-project-arrange-project') ? (
       <Button type="primary" onClick={() => arrangeEvent()}>
         安排
       </Button>
-    ) : currentClickTabChildActiveType === 'waitArrangAudit' ? (
+    ) : currentClickTabChildActiveType === 'waitArrangAudit' &&
+      buttonJurisdictionArray?.includes('all-project-external-audit') ? (
       <Button type="primary" onClick={() => externalArrange()}>
         安排外审
       </Button>
     ) : currentClickTabChildActiveType === 'agent' ? (
-      <Button type="primary" onClick={() => receiveProjectEvent()}>
-        获取
-      </Button>
+      buttonJurisdictionArray?.includes('get-project-entrust') && (
+        <Button type="primary" onClick={() => receiveProjectEvent()}>
+          获取
+        </Button>
+      )
     ) : currentClickTabChildActiveType === 'externalReviewing' ? (
-      <Button type="primary" onClick={() => externalEdit()}>
-        评审管理
-      </Button>
+      buttonJurisdictionArray?.includes('review-manage') && (
+        <Button type="primary" onClick={() => externalEdit()}>
+          评审管理
+        </Button>
+      )
     ) : currentClickTabChildActiveType === 'awaitApplyKnot' ? (
-      <Button type="primary" onClick={() => applyConfirm()}>
-        结项申请
-      </Button>
+      buttonJurisdictionArray?.includes('all-project-apply-knot') && (
+        <Button type="primary" onClick={() => applyConfirm()}>
+          结项申请
+        </Button>
+      )
     ) : currentClickTabChildActiveType === 'approveKnot' ? (
       buttonJurisdictionArray?.includes('all-project-kont-approve') && (
         <Button type="primary" onClick={() => auditKnotEvent()}>
