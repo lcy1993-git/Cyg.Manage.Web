@@ -1,7 +1,7 @@
 import FileDocxView from '@/components/api-file-view/componnents/file-docx-view'
 import XlsxViewer from '@/components/api-file-view/componnents/file-excel-view'
 import { baseUrl } from '@/services/common'
-import { getFileStream } from '@/services/project-management/all-project'
+import { downLoadFileItem } from '@/services/operation-config/company-file'
 import React, { useEffect, useState } from 'react'
 
 interface UrlFileViewProps {
@@ -12,19 +12,19 @@ interface UrlFileViewProps {
 }
 
 const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
-  url = '/ReviewOpinionFile/fileStream',
+  url = '/Download/GetFileById',
   fileType,
   params = {},
   method = 'GET',
-  requestSource = 'review',
+  requestSource = 'upload',
   ...rest
 }) => {
   const [data, setData] = useState(null)
 
   useEffect(() => {
-    const { url, extension } = params
+    const { id } = params
     if (!(params.extension === '.xlsx')) {
-      getFileStream({ url, extension }).then((res) => {
+      downLoadFileItem({ fileId: id }).then((res) => {
         setData(res)
       })
     }
@@ -32,9 +32,9 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
 
   let api: any = null
   if (params.extension === '.xlsx') {
-    api = `${baseUrl[requestSource]}${url}?url=${encodeURIComponent(params.url)}&extension=${
-      params.extension
-    }&token=${window.localStorage.getItem('Authorization')}`
+    api = `${baseUrl[requestSource]}${url}?fileId=${params.id}&token=${window.localStorage.getItem(
+      'Authorization'
+    )}`
 
     return <XlsxViewer url={api} />
   } else {

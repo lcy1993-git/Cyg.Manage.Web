@@ -1,10 +1,10 @@
 // import { UserInfo } from '@/services/project-management/select-add-list-form';
 // import { Checkbox } from 'antd';
+import { downLoadFileItem } from '@/services/operation-config/company-file'
 import {
   addAllotUser,
   confirmOuterAudit,
   getExternalArrangeStep,
-  getFileStream,
   getReviewFileUrl,
   removeAllotUser,
 } from '@/services/project-management/all-project'
@@ -34,7 +34,7 @@ interface GetGroupUserProps {
 }
 
 export interface CurrentFileInfo {
-  url: string
+  id: string
   extension: string | undefined
   title: string
 }
@@ -59,7 +59,7 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const { projectId, refresh } = props
 
   const [currentFileInfo, setCurrentFileInfoErr] = useState<CurrentFileInfo>({
-    url: '',
+    id: '',
     extension: undefined,
     title: '',
   })
@@ -85,13 +85,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
 
   const checkResultEvent = async () => {
     setCurrent(current + 1)
-    // await confirmOuterAudit({
-    //   projectId: projectId,
-    //   parameter: { 是否结束: `${isPassExternalArrange === '1' ? true : false}` },
-    // });
-    // message.success('外审已通过');
-    // setState(false);
-    // refresh?.();
   }
 
   useEffect(() => {
@@ -152,10 +145,10 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       message.info('该评审未产生评审成果')
       return
     }
-    const url = res[0]?.extend.file.url
+    const fileId = res[0]?.extend.file.id
     const extension = res[0]?.extend.file.extension
     const name = res[0]?.name
-    setCurrentFileInfo({ url: url, extension: extension, title: name })
+    setCurrentFileInfo({ id: fileId, extension: extension, title: name })
   }
 
   const backToEvent = async () => {
@@ -174,16 +167,18 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
       return
     }
 
-    const url = res[0]?.extend.file.url
+    const fileId = res[0]?.extend.file.id
     const extension = res[0]?.extend.file.extension
     const fileName = `评审文件${extension}`
     const suffix = extension?.substring(extension.lastIndexOf('.') + 1)
-    const data = await getFileStream({ url, extension })
+    const data = await downLoadFileItem({ fileId: fileId })
     let blob = new Blob([data], {
       type: `application/${suffix}`,
     })
     //for IE
+    //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, fileName)
     } else {
       // for Non-IE
@@ -384,13 +379,13 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
         title={`预览-${currentFileInfo.title}`}
         width={'80%'}
         centered
-        visible={!!currentFileInfo.url}
+        visible={!!currentFileInfo.id}
         destroyOnClose
         bodyStyle={{ height: '820px', overflowY: 'auto' }}
         footer=""
-        onCancel={() => setCurrentFileInfo({ ...currentFileInfo, url: '' })}
+        onCancel={() => setCurrentFileInfo({ ...currentFileInfo, id: '' })}
       >
-        {currentFileInfo.url && <ViewAuditFile params={currentFileInfo} />}
+        {currentFileInfo.id && <ViewAuditFile params={currentFileInfo} />}
       </Modal>
     </>
   )

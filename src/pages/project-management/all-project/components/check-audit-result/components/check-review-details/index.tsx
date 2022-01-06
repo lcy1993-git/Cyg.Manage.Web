@@ -1,5 +1,6 @@
 import EmptyTip from '@/components/empty-tip'
-import { getFileStream, getReviewDetails } from '@/services/project-management/all-project'
+import { downLoadFileItem } from '@/services/operation-config/company-file'
+import { getReviewDetails } from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Image, Modal, Table, Tabs } from 'antd'
 import moment from 'moment'
@@ -61,10 +62,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       width: 120,
       render: (text: any, record: any) => {
         return record?.screenshots ? (
-          <span
-            className={styles.checkTitle}
-            onClick={() => screenShotsEvent(record?.screenshots, record?.extension)}
-          >
+          <span className={styles.checkTitle} onClick={() => screenShotsEvent(record?.screenshots)}>
             查看
           </span>
         ) : (
@@ -74,8 +72,8 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
     },
   ]
   //截图展示
-  const screenShotsEvent = async (url: string, extension: string) => {
-    const res = await getFileStream({ url: url, extension: extension })
+  const screenShotsEvent = async (fileId: any) => {
+    const res = await downLoadFileItem({ fileId: fileId })
     const blobURL = URL.createObjectURL(res)
     setImageData(blobURL)
     setCheckScreenShotVisible(true)
@@ -103,7 +101,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
                 expectExecutorNickName: item.expectExecutorNickName,
                 executionTime: moment(item.executionTime).format('YYYY-MM-DD HH:mm:ss'),
                 opinionContent: ite.opinionContent,
-                screenshots: ite.resource.screenShotFile.url,
+                screenshots: ite.resource.screenShotFile.id,
                 extension: ite.resource.screenShotFile.extension,
                 key: ite.id,
               }
