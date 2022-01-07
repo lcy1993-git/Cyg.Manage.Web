@@ -457,7 +457,7 @@ const loadWFSData = (
         return style
       }
     } else if (item.type === 'line' || item.type === 'cable_channel') {
-      obj.minZoom = 17
+      obj.minZoom = 13
     }
     groupLayers[layerType + '_' + layerName] = new Vector(obj)
     groupLayers[layerType + '_' + layerName].set('name', layerType + '_' + layerName)
