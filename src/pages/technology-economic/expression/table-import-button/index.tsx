@@ -1,11 +1,11 @@
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
 import { commonUpload } from '@/services/common'
 import { downloadTemplate } from '@/services/technology-economic/common-rate'
 import { checkHasUploadFile } from '@/utils/common-rule'
 import { ExportOutlined } from '@ant-design/icons'
-import { Button, ButtonProps, Form, message, Modal } from 'antd'
+import { Button, ButtonProps, Form, message, Modal, Spin } from 'antd'
 import React, { useState } from 'react'
-import CyFormItem from '../cy-form-item'
-import FileUpload from '../file-upload'
 
 interface TableImportButtonProps extends ButtonProps {
   importUrl: string
@@ -18,7 +18,6 @@ interface TableImportButtonProps extends ButtonProps {
   requestSource?: 'project' | 'resource' | 'upload' | 'tecEco1' | 'tecEco'
   postType?: 'body' | 'query'
   setSuccessful?: (e: boolean) => void
-  setLoading?: (e: boolean) => void
   template?: boolean
   downType?: number
 }
@@ -37,11 +36,11 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     requestSource = 'project',
     postType = 'body',
     setSuccessful,
-    setLoading,
     ...rest
   } = props
 
   const [importModalVisible, setImportModalVisible] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [form] = Form.useForm()
 
   const cancelImport = () => {
@@ -72,10 +71,11 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
   }
   const sureImport = () => {
     form.validateFields().then(async (values) => {
-      setLoading && setLoading(true)
+      setLoading(true)
       const { file } = values
       await commonUpload(importUrl, file, name, requestSource, extraParams)
       message.success('导入成功')
+      setLoading(false)
       setSuccessful && setSuccessful(true)
       setImportModalVisible(false)
       form.resetFields()
@@ -103,27 +103,30 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
         onCancel={() => cancelImport()}
         destroyOnClose
       >
-        <Button
-          style={{ display: template ? 'block' : 'none' }}
-          className="mr5"
-          type="primary"
-          onClick={() => {
-            downLoad()
-          }}
-        >
-          下载模板
-        </Button>
-        <br />
-        <Form form={form} preserve={false}>
-          <CyFormItem
-            label={labelTitle}
-            name="file"
-            required
-            rules={[{ validator: checkHasUploadFile }]}
+        {loading ? (
+          <div
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
           >
-            <FileUpload accept={accept} maxCount={1} />
-          </CyFormItem>
-        </Form>
+            <Spin tip="导入中..." />
+          </div>
+        ) : (
+          <Form form={form} preserve={false}>
+            <CyFormItem
+              label={labelTitle}
+              name="file"
+              required
+              rules={[{ validator: checkHasUploadFile }]}
+            >
+              <FileUpload accept={accept} maxCount={1} />
+            </CyFormItem>
+          </Form>
+        )}
       </Modal>
     </div>
   )

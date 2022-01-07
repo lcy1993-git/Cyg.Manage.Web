@@ -31,6 +31,7 @@ interface GetSelectDataParams {
   extraParams?: any
   titleKey?: string
   valueKey?: string
+  otherKey?: string
   requestSource?: 'project' | 'common' | 'resource'
   postType?: 'body' | 'query'
 }
@@ -44,6 +45,7 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
     valueKey = 'value',
     requestSource = 'project',
     postType = 'body',
+    otherKey = '',
   } = params
 
   const { data: resData = [], loading, run } = useRequest(
@@ -54,6 +56,11 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
   )
 
   const afterHanldeData = useMemo(() => {
+    if (otherKey) {
+      return resData.map((item: any) => {
+        return { label: item[titleKey], value: item[valueKey], otherKey: item[otherKey] }
+      })
+    }
     if (resData) {
       return resData.map((item: any) => {
         return { label: item[titleKey], value: item[valueKey] }

@@ -6,6 +6,7 @@ import FlowLayer from './components/flow-layer'
 import OperationPane from './OperatePane'
 import { getRegionData, useApi } from './service'
 import { useHistoryGridContext } from './store'
+import { areaDataTransformer } from './utils/area-data-transformer'
 
 const FL_MARGIN_LEFT = 10
 
@@ -15,25 +16,7 @@ const ConsoleWrapper = () => {
 
   const { data } = useApi(getRegionData, {
     initialData: [],
-    filter: (res) => {
-      const filterEntries = (obj: any) => ({
-        name: obj.name,
-        code: obj.code,
-        lat: obj.lat,
-        lng: obj.lng,
-      })
-
-      const filteredData = res.content?.map((p: any) => {
-        return {
-          ...filterEntries(p),
-          letter: (p.pinyin[0] as string).toLowerCase(),
-          cities: p.children
-            .map((c: any) => (c.level === 2 ? filterEntries(c) : undefined))
-            .filter(Boolean),
-        }
-      })
-      return filteredData
-    },
+    filter: (res) => areaDataTransformer(res.data),
   })
 
   return (

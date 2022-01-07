@@ -5,16 +5,19 @@
  * For details, please see
  * https://pro.ant.design/docs/deploy
  */
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   dev: {
     '/api/': {
       // http://10.6.1.54:21525/api/
       // 171.223.214.154:21573
-      // target: 'https://srthkf2.gczhyun.com:21530',
+      target: 'https://srthkf2.gczhyun.com:21530',
+      // target: 'https://srthcs2.gczhyun.com:21564',
+      // target: 'https://srthk8scs2.gczhyun.com:21530',
       // 测试服 1
       // target: 'http://171.223.214.154:21563',
       // 测试服 2
-      target: 'http://171.223.214.154:21573',
+      // target: 'http://171.223.214.154:21573',
       changeOrigin: true,
       pathRewrite: { '^/api': '/' },
     },

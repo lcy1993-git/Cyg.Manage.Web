@@ -8,8 +8,8 @@ import {
   getAuditResultData,
   downloadAuditFile,
 } from '@/services/project-management/all-project'
-import { FileOutlined, FolderOpenOutlined } from '@ant-design/icons'
-import { useControllableValue, useRequest } from 'ahooks'
+import { FileOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
 import { Button, Modal, Spin, message, Tabs } from 'antd'
 import React, { Dispatch, SetStateAction, useState, useEffect, useMemo } from 'react'
 import CompileResultTab from '../check-compile-result'
@@ -34,7 +34,7 @@ export interface CurrentFileInfo {
   title: string
 }
 export interface AuditFileInfo {
-  url: string
+  id: string
   extension: string | undefined
   title: string
 }
@@ -61,7 +61,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     title: '',
   })
   const [auditFileInfo, setAuditFileInfoErr] = useState<AuditFileInfo>({
-    url: '',
+    id: '',
     extension: undefined,
     title: '',
   })
@@ -124,14 +124,14 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
   }
 
-  const refresh = () => {
-    message.success('刷新成功')
-    if (currentTab === 'design') {
-      run(projectInfo.projectId)
-    } else {
-      getCompileTree(projectInfo.projectId)
-    }
-  }
+  // const refresh = () => {
+  //   message.success('刷新成功')
+  //   if (currentTab === 'design') {
+  //     run(projectInfo.projectId)
+  //   } else {
+  //     getCompileTree(projectInfo.projectId)
+  //   }
+  // }
 
   const createFile = async () => {
     if (currentTab === 'design') {
@@ -155,7 +155,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         })
         let finalyFileName = `导出设计成果.zip`
         // for IE
+        //@ts-ignore
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
@@ -193,7 +195,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         })
         let finalyFileName = `导出项目需求编制成果.zip`
         // for IE
+        //@ts-ignore
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
@@ -228,7 +232,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         })
         let finalyFileName = `导出评审成果.zip`
         // for IE
+        //@ts-ignore
         if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
           window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
         } else {
           // for Non-IE
@@ -272,8 +278,8 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       children: [
         {
           title: datas.value.extend.file.name,
-          value: datas.value.extend.file.url,
-          key: datas.value.extend.file.url,
+          value: datas.value.extend.file.id,
+          key: datas.value.extend.file.id,
           type: datas.value.extend.file.extension,
           icon:
             datas.value.extend.file.extension === '.doc' ||
@@ -319,9 +325,6 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           </div>
 
           <div className={styles.resultButtonContent} style={{ paddingRight: '20px' }}>
-            <Button className="mr7" onClick={() => refresh()}>
-              刷新
-            </Button>
             <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
               导出
             </Button>
@@ -357,68 +360,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           </Tabs>
         </div>
       </Spin>
-      {/* {!isResult && (
-        <Modal
-          maskClosable={false}
-          title="查看成果"
-          width={750}
-          visible={state as boolean}
-          destroyOnClose
-          footer={null}
-          onCancel={() => closeEvent()}
-        >
-          <Spin spinning={requestLoading} tip="正在生成...">
-            <div className={`${styles.resultButton} flex`}>
-              <div className="flex2">
-                <span className={styles.titleIcon}></span>
-                <span className={styles.helpTitle}>项目名称: </span>
-                <span className={styles.projectTitle}>{projectInfo.projectName}</span>
-              </div>
-              <div className="flex1">
-                <span className={styles.titleIcon}></span>
-                <span className={styles.helpTitle}>当前阶段: </span>
-                <span>{projectInfo.projectStage}</span>
-              </div>
-              <div className={styles.resultButtonContent}>
-                <Button className="mr7" onClick={() => refresh()}>
-                  刷新
-                </Button>
-                <Button type="primary" onClick={() => createFile()} loading={requestLoading}>
-                  导出
-                </Button>
-              </div>
-            </div>
-            <div className={styles.resultTable}>
-              <Tabs
-                className="normalTabs"
-                onChange={(key: string) => setCurrentTab(key)}
-                type="card"
-              >
-                <TabPane key="design" tab="设计成果">
-                  <Spin spinning={loading}>
-                    <DesignResultTab
-                      designData={resultData?.map(mapTreeData)}
-                      createEvent={setCheckedKeys}
-                      setTabEvent={setCurrentTab}
-                      setCurrentFileInfo={setCurrentFileInfo}
-                    />
-                  </Spin>
-                </TabPane>
-                <TabPane key="compile" tab="项目需求编制成果">
-                  <Spin spinning={loading}>
-                    <CompileResultTab
-                      compileResultData={compileResultData?.map(mapTreeData)}
-                      createEvent={setCompileKeys}
-                      setTabEvent={setCurrentTab}
-                      setCurrentFileInfo={setCurrentFileInfo}
-                    />
-                  </Spin>
-                </TabPane>
-              </Tabs>
-            </div>
-          </Spin>
-        </Modal>
-      )} */}
+
       <Modal
         maskClosable={false}
         className={styles.fileRead}
@@ -445,7 +387,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         footer={null}
         onCancel={() => setAuditFileInfo({ ...auditFileInfo, extension: undefined })}
       >
-        {auditFileInfo.url && <ViewAuditFile params={auditFileInfo} />}
+        {auditFileInfo.id && <ViewAuditFile params={auditFileInfo} />}
       </Modal>
     </>
   )

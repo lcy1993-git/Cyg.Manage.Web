@@ -1,3 +1,4 @@
+import { webConfig } from '@/global'
 import request from '@/utils/request'
 import { Moment } from 'moment'
 import React from 'react'
@@ -1028,4 +1029,9 @@ export const saveProjectMerge = (params: { sourceProjectId: string; targetProjec
       data: params,
     })
   )
+}
+
+//获取行政区域
+export const getCityAreas = () => {
+  return request(`${webConfig.commonServer}/api/Area/GetTreeList`)
 }

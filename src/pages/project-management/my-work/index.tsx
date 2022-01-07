@@ -209,6 +209,7 @@ const MyWork: React.FC = () => {
         <div
           className={styles.projectManagementStatisticItem}
           onClick={() => singleStatisticsTypeClickEvent(item.id)}
+          key={item.id}
         >
           <SingleStatistics
             label={item.label}

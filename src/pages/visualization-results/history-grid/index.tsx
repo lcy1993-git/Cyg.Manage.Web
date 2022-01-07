@@ -2,6 +2,7 @@ import { useReducer } from 'react'
 import { useLocation } from 'umi'
 import HistoryVersionManagement from '../components/history-version-management'
 import HistoryMapBase from './components/history-map-base'
+import { useVecUrl } from './components/history-map-base/utils/hooks'
 import ConsoleWrapper from './ConsoleWrapper'
 import DesignIconWrapper, { DesignLabel, HistoryBtn, Legend } from './DesignIconWrapper'
 import DesignTitle from './DesignTitle'
@@ -26,12 +27,12 @@ const HistoryGrid = () => {
     recordVersion: UIStatus.recordVersion,
     historyDataSource,
   })
-
+  const [vecUrl] = useVecUrl()
   return (
     <div className="relative h-full w-full">
       <div className="relative w-full" style={{ height: 'calc(100% - 40px)' }}>
         <HistoryGridContext.Provider value={{ ...state, dispatch }}>
-          <HistoryMapBase />
+          {vecUrl && <HistoryMapBase />}
           <DesignTitle />
           <MapOperator />
           <ConsoleWrapper />

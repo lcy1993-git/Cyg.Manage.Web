@@ -1,42 +1,61 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd';
-import React, { useState } from 'react';
-import ElectricCompanyForm from './components/add-edit-form';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, Popconfirm, message, Spin } from 'antd'
+import React, { useMemo, useState } from 'react'
+import ElectricCompanyForm from './components/add-edit-form'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
 import {
   getElectricCompanyDetail,
   addElectricCompanyItem,
   updateElectricityCompanyItem,
   deleteElectricityCompanyItem,
-  // getProvince,
-} from '@/services/system-config/electric-company';
-import { isArray } from 'lodash';
-import UrlSelect from '@/components/url-select';
-import TableImportButton from '@/components/table-import-button';
-import TableExportButton from '@/components/table-export-button';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/system-config/electric-company'
+import { isArray } from 'lodash'
+import UrlSelect from '@/components/url-select'
+import TableImportButton from '@/components/table-import-button'
+import TableExportButton from '@/components/table-export-button'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { getCityAreas } from '@/services/project-management/all-project'
 
-const { Search } = Input;
+const { Search } = Input
 
 const ElectricCompany: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [ids, setIds] = useState<string[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [ids] = useState<string[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [city, setCity] = useState<any>([])
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getElectricCompanyDetail, {
     manual: true,
-  });
+  })
+
+  const { data: cityData } = useRequest(() => getCityAreas(), {
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
+
+  const provinceData = useMemo(() => {
+    const newProvinceData = city.map((item: any) => {
+      return {
+        label: item.shortName,
+        value: item.id,
+        children: item.children,
+      }
+    })
+    return newProvinceData
+  }, [JSON.stringify(city)])
 
   const searchComponent = () => {
     return (
@@ -52,17 +71,18 @@ const ElectricCompany: React.FC = () => {
         </TableSearch>
         <TableSearch marginLeft="20px" label="选择区域" width="260px">
           <UrlSelect
+            style={{ width: '200px' }}
             showSearch
-            url="/Area/GetList?pId=-1"
-            titlekey="text"
+            titlekey="label"
+            defaultData={[{ label: '-全部-', value: '', children: [] }, ...provinceData]}
             valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => searchBySelectProvince(value)}
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   //选择省份onChange事件
   const searchBySelectProvince = (value: any) => {
@@ -70,77 +90,76 @@ const ElectricCompany: React.FC = () => {
       // @ts-ignore
       tableRef.current.searchByParams({
         provinceId: value,
-      });
+      })
     }
-  };
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteElectricityCompanyItem(editDataId);
-    refresh();
-    setTableSelectRows([]);
-    message.success('删除成功');
-  };
+    await deleteElectricityCompanyItem(editDataId)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
       dataIndex: 'id',
       index: 'id',
       title: '公司编号',
-      width: 150,
+      width: 240,
     },
     {
       dataIndex: 'provinceName',
       index: 'provinceName',
       title: '区域',
-      width: 150,
+      width: 200,
     },
     {
       dataIndex: 'companyName',
       index: 'companyName',
       title: '所属公司',
-      width: 200,
+      width: 350,
     },
     {
       dataIndex: 'countyCompany',
       index: 'countyCompany',
       title: '所属县公司',
-      width: 200,
+      width: 350,
     },
     {
       dataIndex: 'powerSupply',
       index: 'powerSupply',
       title: '供电所/班组',
-      width: 200,
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddElectricCompany = () => {
     addForm.validateFields().then(async (value) => {
@@ -151,36 +170,36 @@ const ElectricCompany: React.FC = () => {
           countyCompany: '',
           powerSupply: '',
         },
-        value,
-      );
-      await addElectricCompanyItem(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addElectricCompanyItem(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const ElectricCompanyData = await run(editDataId);
+    setEditFormVisible(true)
+    const ElectricCompanyData = await run(editDataId)
 
-    editForm.setFieldsValue(ElectricCompanyData);
-  };
+    editForm.setFieldsValue(ElectricCompanyData)
+  }
 
   const sureEditAuthorization = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -191,19 +210,19 @@ const ElectricCompany: React.FC = () => {
           countyCompany: editData.countyCompany,
           powerSupply: editData.powerSupply,
         },
-        values,
-      );
-      await updateElectricityCompanyItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateElectricityCompanyItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   tableSelectRows.map((item: any) => {
-    ids.push(item.id);
-  });
+    ids.push(item.id)
+  })
 
   const tableElement = () => {
     return (
@@ -241,12 +260,12 @@ const ElectricCompany: React.FC = () => {
           <TableExportButton selectIds={ids} exportUrl="/ElectricityCompany/Export" />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const titleSlotElement = () => {
-    return <div className={styles.routeComponent}></div>;
-  };
+    return <div className={styles.routeComponent}></div>
+  }
 
   return (
     <PageCommonWrap>
@@ -276,7 +295,7 @@ const ElectricCompany: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <ElectricCompanyForm />
+          <ElectricCompanyForm province={provinceData} />
         </Form>
       </Modal>
       <Modal
@@ -292,12 +311,12 @@ const ElectricCompany: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <ElectricCompanyForm />
+            <ElectricCompanyForm province={provinceData} />
           </Spin>
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default ElectricCompany;
+export default ElectricCompany
