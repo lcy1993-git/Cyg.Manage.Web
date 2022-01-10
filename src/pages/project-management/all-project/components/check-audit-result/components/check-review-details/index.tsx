@@ -2,7 +2,7 @@ import EmptyTip from '@/components/empty-tip'
 import { downLoadFileItem } from '@/services/operation-config/company-file'
 import { getReviewDetails } from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
-import { Image, Modal, Table, Tabs } from 'antd'
+import { Image, Modal, Spin, Table, Tabs } from 'antd'
 import moment from 'moment'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import styles from './index.less'
@@ -18,7 +18,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [checkScreenShotVisible, setCheckScreenShotVisible] = useState<boolean>(false)
   const [imageData, setImageData] = useState<any>()
-  const { data: detailsData } = useRequest(() => getReviewDetails(projectId, true))
+  const { data: detailsData, loading } = useRequest(() => getReviewDetails(projectId, true))
 
   const detailColumns = [
     {
@@ -73,10 +73,12 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
   ]
   //截图展示
   const screenShotsEvent = async (fileId: any) => {
-    const res = await downLoadFileItem({ fileId: fileId })
-    const blobURL = URL.createObjectURL(res)
-    setImageData(blobURL)
-    setCheckScreenShotVisible(true)
+    if (fileId) {
+      const res = await downLoadFileItem({ fileId: fileId })
+      const blobURL = URL.createObjectURL(res)
+      setImageData(blobURL)
+      setCheckScreenShotVisible(true)
+    }
   }
 
   const getCurrentTabData = (tabType: number) => {
@@ -112,6 +114,8 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       .flat(1)
   }
 
+  // console.log(handleData(getCurrentTabData(1)), '333')
+
   return (
     <>
       <Modal
@@ -129,16 +133,18 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
         <div className={styles.reviewDetailsTab}>
           <Tabs className="normalTabs" type="card">
             <TabPane tab="设计校对" key="jd">
-              <Table
-                size="middle"
-                locale={{
-                  emptyText: <EmptyTip className="pt20 pb20" />,
-                }}
-                dataSource={handleData(getCurrentTabData(1))}
-                bordered={true}
-                pagination={false}
-                columns={detailColumns}
-              />
+              <Spin spinning={loading}>
+                <Table
+                  size="middle"
+                  locale={{
+                    emptyText: <EmptyTip className="pt20 pb20" description="暂无数据" />,
+                  }}
+                  dataSource={handleData(getCurrentTabData(1))}
+                  bordered={true}
+                  pagination={false}
+                  columns={detailColumns}
+                />
+              </Spin>
             </TabPane>
             <TabPane tab="设计校核" key="jh">
               <Table
