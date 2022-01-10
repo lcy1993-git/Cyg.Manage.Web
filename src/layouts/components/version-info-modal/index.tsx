@@ -20,20 +20,13 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
   const [historyVersionModalVisible, setHistoryVersionModalVisible] = useState<boolean>(false)
   const [historyVersionData, setHistoryVersionData] = useState<any[]>([])
   const [versionLoading, setVersionLoading] = useState<boolean>(false)
-  const serverCode =
-    window.location.hostname === 'localhost' ? '10.6.1.36' : window.location.hostname
+  //获取当前服务code
+  const serverCode: any = localStorage.getItem('serverCode')
 
-  // 171.223.214.154 环境需要做特殊处理
-  const serverCodeObejct = {
-    '171.223.214.154:21563': '171.223.214.154',
-    '171.223.214.154:21573': '171_223_214_154_2',
-    '171.223.214.154:21583': '171_223_214_154_3',
-  }
-
-  const finalyServerCode =
-    window.location.hostname === '171.223.214.154'
-      ? serverCodeObejct[`${serverCode}:${window.location.port}`]
-      : serverCode
+  // const finalyServerCode =
+  //   window.location.hostname === '171.223.214.154'
+  //     ? serverCodeObejct[`${serverCode}:${window.location.port}`]
+  //     : serverCode
 
   const { data: versionInfo, run: getVersionInfoEvent, loading } = useRequest(
     () =>
@@ -41,7 +34,7 @@ const VersionInfoModal: React.FC<VersionInfoModalProps> = (props) => {
         productCode: '1301726010322214912',
         moduleCode: 'ManageWebV2',
         versionNo: webConfig.version,
-        serverCode: finalyServerCode,
+        serverCode: serverCode,
       }),
     {
       manual: true,

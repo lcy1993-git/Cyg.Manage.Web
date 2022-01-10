@@ -1,19 +1,18 @@
-import { Button, Cascader, Checkbox, message, Modal } from 'antd'
-import uuid from 'node-uuid'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useMemo } from 'react'
-import styles from './index.less'
-import city from '@/assets/local-data/area'
-import { useGetSelectData } from '@/utils/hooks'
-import DataSelect from '@/components/data-select'
-import { cloneDeep } from 'lodash'
-import useRequest from '@ahooksjs/use-request'
-import { getCommonSelectData } from '@/services/common'
-import EditBulkEngineer from './edit-bulk-engineer'
-import { useControllableValue } from 'ahooks'
-import { importBulkEngineerProject } from '@/services/project-management/all-project'
-import EditBulkProject from './edit-bulk-project'
 import CyTip from '@/components/cy-tip'
+import DataSelect from '@/components/data-select'
+import { getCommonSelectData } from '@/services/common'
+import { getCityAreas, importBulkEngineerProject } from '@/services/project-management/all-project'
+import { useGetSelectData } from '@/utils/hooks'
+import useRequest from '@ahooksjs/use-request'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useControllableValue } from 'ahooks'
+import { Button, Cascader, Checkbox, message, Modal, Tooltip } from 'antd'
+import { cloneDeep } from 'lodash'
+import uuid from 'node-uuid'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import EditBulkEngineer from './edit-bulk-engineer'
+import EditBulkProject from './edit-bulk-project'
+import styles from './index.less'
 
 interface BatchEditEngineerInfoProps {
   excelModalData: any
@@ -34,10 +33,18 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   const [editEngineerModalVisible, setEditEngineerModalVisible] = useState<boolean>(false)
   const [editProjectModalVisible, setEditProjectModalVisible] = useState<boolean>(false)
+  const [city, setCity] = useState<any[]>([])
+  const { data: cityData } = useRequest(() => getCityAreas(), {
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
 
   const mapHandleCityData = (data: any) => {
     return {
-      label: data.text,
+      label: data.shortName,
       value: data.id,
       children: data.children
         ? [
@@ -187,19 +194,42 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   const libChangeEvent = async (value: any, numberIndex: number) => {
     const copyEngineerInfo = cloneDeep(engineerInfo)
     const inventoryOverviewSelectData = await getInventoryOverviewSelectData({
-      url: '/Inventory/GetListByResourceLibId',
+      url: '/Inventory/GetList',
       params: { libId: value },
       requestSource: 'resource',
     })
 
+    const labelElement = (label: any) => {
+      return (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {label}
+          </span>
+          <ExclamationCircleOutlined />
+        </div>
+      )
+    }
+
     const handleInventoryOverviewSelectData = inventoryOverviewSelectData
       ? inventoryOverviewSelectData?.map((item: any) => {
-          return {
-            label: item.text,
-            value: item.value,
+          if (!item.hasMaped) {
+            return { label: labelElement(item.name), value: item.id }
           }
+          return { label: item.name, value: item.id }
         })
-      : [{ label: '无', value: 'none' }]
+      : []
+
+    // const handleInventoryData = useMemo(() => {
+    //   if (inventoryOverviewSelectData) {
+    //     return inventoryOverviewSelectData.map((item: any) => {
+    //       if (!item.otherKey) {
+    //         return { label: labelElement(item.label), value: item.value }
+    //       }
+    //       return { label: item.label, value: item.value }
+    //     })
+    //   }
+    //   return [{ label: '无', value: 'none' }]
+    // }, [inventoryOverviewSelectData])
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
@@ -859,7 +889,15 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
                   <th>工程名称</th>
                   <th>区域</th>
                   <th>资源库</th>
-                  <th>协议库</th>
+                  <th>
+                    <span>协议库存</span>
+                    <Tooltip
+                      title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
+                      placement="top"
+                    >
+                      <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+                    </Tooltip>
+                  </th>
                   <th>利旧协议库</th>
                   <th>所属公司</th>
                   <th style={{ width: '100px' }}>已录入信息</th>

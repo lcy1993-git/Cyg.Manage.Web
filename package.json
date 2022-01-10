@@ -107,6 +107,7 @@
     "@types/node-uuid": "0.0.28",
     "@types/numeral": "^2.0.1",
     "@types/pdfjs-dist": "^2.7.4",
+    "@types/pinyin": "^2.10.0",
     "@types/proj4": "^2.5.2",
     "@types/qs": "^6.5.3",
     "@types/react": "^17.0.0",

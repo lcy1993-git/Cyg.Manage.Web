@@ -40,7 +40,7 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
 
       setAuditFileInfo({
         extension: e.node.type,
-        url: e.node.value,
+        id: e.node.value,
         title: e.node.title,
       })
     }
@@ -62,7 +62,7 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
       {auditResultData?.length > 0 && (
         <div className={styles.treeTable}>
           <DirectoryTree
-            titleRender={(v) => {
+            titleRender={(v: any) => {
               return v.category === 2 ? (
                 <span className={styles.treeTitle} onClick={() => previewEvent()}>
                   {v.title}

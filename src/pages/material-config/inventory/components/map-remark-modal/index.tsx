@@ -1,50 +1,52 @@
-import React, { useState } from 'react';
-import { useControllableValue } from 'ahooks';
-import { Modal, Input, message, Form, Spin } from 'antd';
-import { SetStateAction } from 'react';
-import { Dispatch } from 'react';
-import CyFormItem from '@/components/cy-form-item';
-import { createResourceInventoryMap } from '@/services/material-config/inventory';
+import React, { useState } from 'react'
+import { useControllableValue } from 'ahooks'
+import { Modal, Input, message, Form, Spin } from 'antd'
+import { SetStateAction } from 'react'
+import { Dispatch } from 'react'
+import CyFormItem from '@/components/cy-form-item'
+import { createResourceInventoryMap } from '@/services/material-config/inventory'
 
 interface MapRemarkParams {
-  refreshEvent?: () => void;
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  visible: boolean;
-  libId: string;
-  invIds: string[];
+  refreshEvent?: () => void
+  refreshLib?: () => void
+  onChange?: Dispatch<SetStateAction<boolean>>
+  visible: boolean
+  libId: string
+  invId: string
 }
 
-const { TextArea } = Input;
+const { TextArea } = Input
 
 const MapRemarkModal: React.FC<MapRemarkParams> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [requestLoading, setRequestLoading] = useState<boolean>(false);
-  const { libId, invIds, refreshEvent } = props;
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [requestLoading, setRequestLoading] = useState<boolean>(false)
+  const { libId, invId, refreshEvent, refreshLib } = props
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
 
   const mapLibEvent = () => {
     form.validateFields().then(async (values) => {
-      const { remark } = values;
+      const { remark } = values
       try {
-        setRequestLoading(true);
+        setRequestLoading(true)
         await createResourceInventoryMap({
-          resourceLibId: libId,
-          inventoryOverviewIds: invIds,
+          resourceLibIds: [libId],
+          inventoryOverviewId: invId,
           remark: remark,
-        });
-        message.success('列表映射成功');
-        setState(false);
+        })
+        message.success('列表映射成功')
+        setState(false)
       } catch (msg) {
-        console.error(msg);
+        console.error(msg)
       } finally {
-        setRequestLoading(false);
-        setState(false);
+        setRequestLoading(false)
+        setState(false)
       }
-      refreshEvent?.();
-      form.resetFields();
-    });
-  };
+      refreshEvent?.()
+      refreshLib?.()
+      form.resetFields()
+    })
+  }
 
   return (
     <>
@@ -68,7 +70,7 @@ const MapRemarkModal: React.FC<MapRemarkParams> = (props) => {
         </Spin>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default MapRemarkModal;
+export default MapRemarkModal

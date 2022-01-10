@@ -1,7 +1,7 @@
 export default [
   {
     id: '310000',
-    text: '上海',
+    text: '上海市',
     children: [
       {
         id: '310100',
@@ -3670,7 +3670,7 @@ export default [
   },
   {
     id: '120000',
-    text: '天津',
+    text: '天津市',
     children: [
       {
         id: '120100',

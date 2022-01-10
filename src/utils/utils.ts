@@ -243,19 +243,18 @@ export const handleRate = (number: number) => {
   return number.toFixed(2)
 }
 
-export const BlobOrArrayBuffertoUnit8 = (data: Blob | ArrayBuffer) => {
-  const res = []
-  switch (Object.prototype.toString.call(b)) {
-    case '[object Blob]':
-      break
+// export const BlobOrArrayBuffertoUnit8 = (data: Blob | ArrayBuffer) => {
+//   switch (Object.prototype.toString.call(b)) {
+//     case '[object Blob]':
+//       break
 
-    case '[object ArrayBuffer]':
-      break
+//     case '[object ArrayBuffer]':
+//       break
 
-    default:
-      break
-  }
-}
+//     default:
+//       break
+//   }
+// }
 
 interface Data {
   parentID: number
@@ -323,15 +322,21 @@ export const getStopServerList = (
       }
       const { data } = res
       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
-      const currenServer = data?.find((item: { propertys: { webSite: string } }) => {
-        if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-          return item?.propertys?.webSite === 'http://10.6.1.53:21525/login'
-        } else if (item?.propertys?.webSite) {
-          return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
-        } else {
-          return undefined
+      const currenServer = data?.find(
+        (item: { propertys: { webSite: string; host: string | null } }) => {
+          if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+            return item?.propertys?.webSite === 'http://10.6.1.53:21525/login'
+          } else if (item?.propertys?.webSite) {
+            if (item?.propertys?.host) {
+              return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
+            } else {
+              return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
+            }
+          } else {
+            return undefined
+          }
         }
-      })
+      )
       if (currenServer && currenServer?.code) {
         // 是否查询到 服务器信息
         localStorage.setItem('serverCode', currenServer?.code || '')
@@ -386,4 +391,10 @@ const getNoticeReq = (
     .catch(() => {
       loginFuc(values)
     })
+}
+
+//移除自动填充
+export const noAutoCompletePassword = {
+  readOnly: true,
+  onFocus: (e: any) => e.currentTarget.removeAttribute('readonly'),
 }

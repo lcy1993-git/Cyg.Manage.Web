@@ -1,19 +1,19 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { Input, Button, Modal, message } from 'antd';
-import React, { useState } from 'react';
-import styles from './index.less';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { Input, Button, Modal, message } from 'antd'
+import React, { useRef, useState } from 'react'
+import styles from './index.less'
 
 // import UrlSelect from '@/components/url-select';
-import { ImportOutlined } from '@ant-design/icons';
-import ImportInventory from './components/import-form';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import InventoryTable from './components/inventory-table';
-import HasMapModal from './components/has-map-modal';
-import moment from 'moment';
+import { ImportOutlined } from '@ant-design/icons'
+import ImportInventory from './components/import-form'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import InventoryTable from './components/inventory-table'
+import HasMapModal from './components/has-map-modal'
+import moment from 'moment'
 
-const { Search } = Input;
+const { Search } = Input
 
 // interface SelectParams {
 //   value: string | number;
@@ -21,20 +21,21 @@ const { Search } = Input;
 // }
 
 const Inventroy: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [inventoryId, setInventoryId] = useState<string>('');
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [inventoryId, setInventoryId] = useState<string>('')
+  const [inventoryName, setInventoryName] = useState<string>('')
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [importFormVisible, setImportFormVisible] = useState<boolean>(false)
 
-  const [inventoryTableModalVisible, setInventoryTableModalVisible] = useState<boolean>(false);
-  const [hasMapModalVisible, setHasMapModalVisible] = useState<boolean>(false);
+  const [inventoryTableModalVisible, setInventoryTableModalVisible] = useState<boolean>(false)
+  const [hasMapModalVisible, setHasMapModalVisible] = useState<boolean>(false)
 
-  const [versionNo, setVersionNo] = useState<string>('');
-  const [invName, setInvName] = useState<string>('');
+  const [versionNo, setVersionNo] = useState<string>('')
+  const [invName, setInvName] = useState<string>('')
+  const hasMapRef = useRef()
 
-  // const [nowSelectedInv, setNowSelectedInv] = useState<string>('');
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   // const { data: inventoryData = [], loading } = useRequest(() => getInventoryOverviewList());
 
@@ -50,6 +51,13 @@ const Inventroy: React.FC = () => {
   //   });
   // }, [JSON.stringify(inventoryData)]);
 
+  const resetHasMap = () => {
+    if (hasMapRef && hasMapRef.current) {
+      // @ts-ignore
+      hasMapRef.current.resetEvent()
+    }
+  }
+
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
@@ -63,8 +71,8 @@ const Inventroy: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   //选择协议库存传InvId
   // const searchByInv = (value: any) => {
@@ -91,25 +99,25 @@ const Inventroy: React.FC = () => {
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   //查看协议库存
   const checkEvent = (id: string, version: string, name: string) => {
-    setVersionNo(version);
-    setInvName(name);
-    setInventoryId(id);
-    setInventoryTableModalVisible(true);
-  };
+    setVersionNo(version)
+    setInvName(name)
+    setInventoryId(id)
+    setInventoryTableModalVisible(true)
+  }
 
   const columns = [
     {
@@ -130,7 +138,7 @@ const Inventroy: React.FC = () => {
             )}
             {!buttonJurisdictionArray?.includes('inventory-check') && <span>{record.name}</span>}
           </>
-        );
+        )
       },
     },
     {
@@ -139,7 +147,7 @@ const Inventroy: React.FC = () => {
       title: '区域',
       width: 180,
       render: (text: any, record: any) => {
-        return record.provinceName;
+        return record.provinceName
       },
     },
     {
@@ -166,7 +174,7 @@ const Inventroy: React.FC = () => {
       width: 180,
       render: (text: any) => moment(text).format('YYYY-MM-DD HH:mm'),
     },
-  ];
+  ]
 
   const tableElement = () => {
     return (
@@ -193,34 +201,40 @@ const Inventroy: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
-  //创建映射
+  //映射管理
   const openMapManageEvent = () => {
-    setHasMapModalVisible(true);
-  };
+    if (tableSelectRows && tableSelectRows.length === 0) {
+      message.warning('请选择一个对象进行操作')
+      return
+    }
+    setInventoryName(tableSelectRows[0].name)
+    setInventoryId(tableSelectRows[0].id)
+    setHasMapModalVisible(true)
+  }
 
   //导入
   const importInventoryEvent = () => {
-    setImportFormVisible(true);
-  };
+    setImportFormVisible(true)
+  }
 
   const uploadFinishEvent = () => {
-    refresh();
-  };
+    refresh()
+  }
 
   //查看协议库存
-  const checkInventoryEvent = () => {
-    if (tableSelectRows && tableSelectRows.length === 0) {
-      message.info('请先选择协议库存');
-      return;
-    }
-    setVersionNo(tableSelectRows[0].version);
-    setInvName(tableSelectRows[0].name);
-    setInventoryId(tableSelectRows[0].id);
-    setInventoryTableModalVisible(true);
-  };
+  // const checkInventoryEvent = () => {
+  //   if (tableSelectRows && tableSelectRows.length === 0) {
+  //     message.info('请先选择协议库存')
+  //     return
+  //   }
+  //   setVersionNo(tableSelectRows[0].version)
+  //   setInvName(tableSelectRows[0].name)
+  //   setInventoryId(tableSelectRows[0].id)
+  //   setInventoryTableModalVisible(true)
+  // }
 
   return (
     <PageCommonWrap>
@@ -255,13 +269,16 @@ const Inventroy: React.FC = () => {
       <Modal
         maskClosable={false}
         width="80%"
-        title="关联映射管理"
+        title="映射管理"
         bodyStyle={{ height: 'auto', overflowY: 'auto' }}
         visible={hasMapModalVisible}
         footer=""
-        onCancel={() => setHasMapModalVisible(false)}
+        onCancel={() => {
+          resetHasMap?.()
+          setHasMapModalVisible(false)
+        }}
       >
-        <HasMapModal />
+        <HasMapModal inventoryId={inventoryId} name={inventoryName} ref={hasMapRef} />
       </Modal>
       {/* 
       {addMapVisible && (
@@ -280,7 +297,7 @@ const Inventroy: React.FC = () => {
         />
       )}
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default Inventroy;
+export default Inventroy

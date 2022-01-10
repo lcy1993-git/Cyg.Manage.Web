@@ -1,3 +1,4 @@
+import { webConfig } from '@/global'
 import { baseUrl, cyRequest } from '@/services/common'
 import request from 'umi-request'
 import { UpdateHistoryData } from '../components/history-map-base/typings'
@@ -11,7 +12,9 @@ const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]
 
 /** 获取地区数据 */
 export const getRegionData = () => {
-  return historyGridRequest('Region/Query', { method: 'POST', data: { topLevel: 2 } })
+  // return historyGridRequest('Region/Query', { method: 'POST', data: { topLevel: 2 } })
+  const url = `${webConfig.commonServer}/api/Area/GetTreeList`
+  return request(url)
 }
 
 /* ----------------------- 网架 ----------------------- */
