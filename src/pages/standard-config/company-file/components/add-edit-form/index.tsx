@@ -1,38 +1,37 @@
-import React, { useState } from 'react';
-import { Input } from 'antd';
-import FileUpload, { UploadStatus } from '@/components/file-upload';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import rules from './rule';
-import { useMemo } from 'react';
+import React, { useState } from 'react'
+import { Input } from 'antd'
+import FileUpload from '@/components/file-upload'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import { useMemo } from 'react'
 interface CompanyFileForm {
-  type?: 'add' | 'edit';
-  securityKey?: string;
-  groupData?: any;
-  editingName?: string;
-  fileCategory?: number | undefined;
-  uploadFileFn: () => Promise<void>;
-  isBasisExist?: boolean;
+  type?: 'add' | 'edit'
+  securityKey?: string
+  groupData?: any
+  editingName?: string
+  fileCategory?: number | undefined
+  uploadFileFn: () => Promise<void>
+  isBasisExist?: boolean
 }
 
 const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
-  const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory, isBasisExist } = props;
+  const { type = 'edit', groupData, editingName, uploadFileFn, fileCategory, isBasisExist } = props
 
-  const [categoryValue, setCategoryValue] = useState<number>();
+  const [categoryValue, setCategoryValue] = useState<number>()
 
   const groupName = groupData.items?.map((item: any) => {
-    return item.name;
-  });
+    return item.name
+  })
 
   const acceptValue = useMemo(() => {
     if (categoryValue === 9 || fileCategory === 9) {
-      return '.docx,.doc,.xls,.xlsx';
+      return '.docx,.xlsx'
     }
     if ([5, 6, 8].includes(categoryValue!) || [5, 6, 8].includes(fileCategory!)) {
-      return '.docx,.doc';
+      return '.docx,.doc'
     }
-    return '.dwg';
-  }, [categoryValue]);
+    return '.dwg'
+  }, [categoryValue])
 
   return (
     <>
@@ -51,9 +50,9 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
           () => ({
             validator(_, value) {
               if (groupName.includes(value) && editingName != value) {
-                return Promise.reject('文件名已存在');
+                return Promise.reject('文件名已存在')
               }
-              return Promise.resolve();
+              return Promise.resolve()
             },
           }),
         ]}
@@ -70,9 +69,9 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
             () => ({
               validator(_, value) {
                 if (isBasisExist && value === 5) {
-                  return Promise.reject('每个文件组内仅能上传一份立项依据');
+                  return Promise.reject('每个文件组内仅能上传一份立项依据')
                 }
-                return Promise.resolve();
+                return Promise.resolve()
               },
             }),
           ]}
@@ -107,7 +106,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
         <Input.TextArea showCount maxLength={100} placeholder="请输入备注信息" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default CompanyFileForm;
+export default CompanyFileForm

@@ -22,7 +22,7 @@ import {
   revokeAllot,
 } from '@/services/project-management/all-project'
 import { removeCollectionEngineers } from '@/services/project-management/favorite-list'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
 import { uniq } from 'lodash'
@@ -67,6 +67,8 @@ const MyProject: React.FC = () => {
   //外审
   const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false)
   const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false)
+
+  const { userType = '' } = useGetUserInfo()
 
   const {
     currentClickTabType,
@@ -473,7 +475,8 @@ const MyProject: React.FC = () => {
         安排外审
       </Button>
     ) : currentClickTabChildActiveType === 'agent' ? (
-      buttonJurisdictionArray?.includes('get-project-entrust') && (
+      buttonJurisdictionArray?.includes('get-project-entrust') &&
+      userType === 2 && (
         <Button type="primary" onClick={() => receiveProjectEvent()}>
           获取
         </Button>
