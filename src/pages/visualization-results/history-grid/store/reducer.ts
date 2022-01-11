@@ -31,6 +31,8 @@ export const historyGridReducer: Reducer<HistoryState, HistoryAction> = (state, 
       return payload
     case 'changeMode':
       return { ...state, mode: payload }
+    case 'changeGeometryType':
+      return { ...state, geometryType: payload }
     case 'changeUIStatus':
       return { ...state, UIStatus: payload }
     case 'setCity':

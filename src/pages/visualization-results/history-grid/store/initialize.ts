@@ -15,6 +15,7 @@ export const INITIAL_DATA_SOURCE = {
 
 export const INITIAL_STATE: Omit<HistoryState, 'mode'> = {
   refetch: false,
+  geometryType: '',
   gridMapState: initGridMapState as any,
   historyGridVersion: {} as HistoryGridVersion,
   historyDataSource: INITIAL_DATA_SOURCE,

@@ -13,6 +13,7 @@ const OperationPane: FC = ({ children }) => {
     mode,
     UIStatus,
     dispatch,
+    geometryType,
     preDesignItemData,
     preDesignDataSource,
   } = useHistoryGridContext()
@@ -24,10 +25,23 @@ const OperationPane: FC = ({ children }) => {
     [dispatch]
   )
   useKeyPress('D', () => {
-    // console.log('d',mode)
+    if (mode === 'recordEdit' && geometryType !== 'Point') {
+      dispatch({ type: 'changeGeometryType', payload: 'Point' })
+    } else {
+      dispatch({ type: 'changeGeometryType', payload: '' })
+    }
   })
   useKeyPress('x', () => {
-    // console.log('x')
+    if (mode === 'recordEdit' && geometryType !== 'LIneString') {
+      dispatch({ type: 'changeGeometryType', payload: 'LIneString' })
+    } else {
+      dispatch({ type: 'changeGeometryType', payload: '' })
+    }
+  })
+  useKeyPress('esc', () => {
+    if (mode === 'recordEdit' && geometryType !== '') {
+      dispatch({ type: 'changeGeometryType', payload: '' })
+    }
   })
   useEffect(() => {
     if (mode === 'preDesign' || mode === 'preDesigning') {
@@ -42,6 +56,9 @@ const OperationPane: FC = ({ children }) => {
       }
     } else {
       setCanDraw(true)
+    }
+    if (mode === 'recordEdit') {
+      dispatch({ type: 'changeGeometryType', payload: '' })
     }
   }, [mode, preDesignItemData, setCanDraw])
 
@@ -97,14 +114,18 @@ const OperationPane: FC = ({ children }) => {
         hoverText: '快捷键: D',
         text: '电气设备',
         icon: 'icon-dianqishebei',
-        onClick: () => {},
+        onClick: () => {
+          dispatch({ type: 'changeGeometryType', payload: 'Point' })
+        },
       },
       {
         text: '线路',
         type: 'route',
         hoverText: '快捷键: X',
         icon: 'icon-xianlu',
-        onClick: () => {},
+        onClick: () => {
+          dispatch({ type: 'changeGeometryType', payload: 'LIneString' })
+        },
       },
       {
         text: '清屏',
@@ -142,6 +163,7 @@ const OperationPane: FC = ({ children }) => {
               payload: { ...UIStatus, drawing: false },
             })
             changeMode(mode === 'recordEdit' ? 'record' : 'preDesign')
+            dispatch({ type: 'changeGeometryType', payload: '' })
           }}
           type="back"
         />
