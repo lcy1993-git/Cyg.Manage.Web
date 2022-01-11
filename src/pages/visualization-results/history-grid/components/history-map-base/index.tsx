@@ -6,6 +6,7 @@ import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
 import { useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
+import AdsorptionModal from './components/adsorption-modal'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import {
@@ -337,6 +338,12 @@ const HistoryMapBase = () => {
   // 添加draw交互行为
   function addInteractions(type: string) {
     if (type) {
+      if (interActionRef.draw) {
+        mapRef.map.removeInteraction(interActionRef.draw)
+      }
+      // if(interActionRef.snap) {
+      //   mapRef.map.removeInteraction(interActionRef.snap)
+      // }
       interActionRef.draw = new Draw({
         source: interActionRef.source,
         type: type,
@@ -345,16 +352,30 @@ const HistoryMapBase = () => {
       interActionRef.draw.on('drawend', (e) => drawEnd(e, interActionRef.source!, setGeometryType))
       mapRef.map.addInteraction(interActionRef.draw)
       interActionRef.snap = new Snap({ source: interActionRef.source })
-      mapRef.map.addInteraction(interActionRef.snap)
+      // mapRef.map.addInteraction(interActionRef.snap)
     }
   }
 
   return (
     <div className="w-full h-full relative">
       <div ref={ref} className="w-full h-full"></div>
+      <AdsorptionModal
+        visible={modifyProps.visible}
+        needAdsorption={(flag: boolean) =>
+          needAdsorption(
+            {
+              modifyProps,
+              setModifyProps,
+              sourceRef,
+            },
+            flag
+          )
+        }
+      ></AdsorptionModal>
       <div>
-        <button>设备</button>
-        <button>线路</button>
+        <button onClick={() => setGeometryType('Point')}>绘制设备</button>
+        <button onClick={() => setGeometryType('LineString')}>绘制线路</button>
+
         {modifyProps.visible && (
           <span>
             <button

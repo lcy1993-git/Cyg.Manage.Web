@@ -14,7 +14,6 @@ import {
   SourceRef,
   UpdateHistoryData,
 } from './../typings'
-
 interface AdsorptionOptions {
   modifyProps: ModifyProps
   setModifyProps: Dispatch<SetStateAction<ModifyProps>>
