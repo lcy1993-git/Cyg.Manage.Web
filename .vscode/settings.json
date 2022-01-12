@@ -13,6 +13,7 @@
   "tailwindCSS.rootFontSize": 16,
   "cSpell.words": [
     "ahooks",
+    "antd",
     "camelcase",
     "colorpicker",
     "compat",

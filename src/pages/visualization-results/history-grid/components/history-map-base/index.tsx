@@ -1,12 +1,13 @@
 import '@/assets/icon/history-grid-icon.css'
-import { useMount, useSize, useUpdateEffect } from 'ahooks'
+import { useMount, useReactive, useSize, useUpdateEffect } from 'ahooks'
 import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import AdsorptionModal from './components/adsorption-modal'
+import DragBoxModal from './components/drag-box-modal'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import {
@@ -20,15 +21,7 @@ import {
 } from './event'
 import './index.css'
 import init from './init'
-import {
-  DragBoxProps,
-  InterActionRef,
-  LayerRef,
-  LifeStateRef,
-  MapRef,
-  ModifyProps,
-  SourceRef,
-} from './typings'
+import { DragBoxProps, InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
 import {
   checkUserLocation,
   clearScreen,
@@ -102,11 +95,17 @@ const HistoryMapBase = () => {
     selected: [],
   })
 
-  const [modifyProps, setModifyProps] = useState<ModifyProps>({
+  const modifyProps = useReactive({
     visible: false,
     position: [0, 0],
     currentState: null,
   })
+
+  // const [modifyProps, setModifyProps] = useState<ModifyProps>({
+  //   visible: false,
+  //   position: [0, 0],
+  //   currentState: null,
+  // })
 
   // const bindEvent = useCallback(() => {
   //   mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
@@ -174,7 +173,7 @@ const HistoryMapBase = () => {
       payload: [],
     })
     if (isDraw) {
-      refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, setModifyProps })
+      refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
     } else {
       interActionRef.modify && mapRef.map.removeInteraction(interActionRef.modify)
       sourceRef.highLightSource.clear()
@@ -298,7 +297,7 @@ const HistoryMapBase = () => {
       sourceType: 'history',
       sourceRef,
     })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, setModifyProps })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
     // 初次挂载自适应屏幕
     if (lifeStateRef.state.isFirstDrawHistory) {
       const extend = getFitExtend(
@@ -324,7 +323,7 @@ const HistoryMapBase = () => {
         sourceType: 'design',
         sourceRef,
       })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, setModifyProps })
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
   }
 
   // 删除draw交互行为
@@ -356,59 +355,22 @@ const HistoryMapBase = () => {
     }
   }
 
+  const needAdsorptionFn = useCallback(
+    (flag: boolean) => {
+      needAdsorption({ modifyProps, sourceRef }, flag)
+    },
+    [modifyProps, sourceRef]
+  )
+
   return (
     <div className="w-full h-full relative">
-      <div ref={ref} className="w-full h-full"></div>
-      <AdsorptionModal
-        visible={modifyProps.visible}
-        needAdsorption={(flag: boolean) =>
-          needAdsorption(
-            {
-              modifyProps,
-              setModifyProps,
-              sourceRef,
-            },
-            flag
-          )
-        }
-      ></AdsorptionModal>
-      <div>
-        <button onClick={() => setGeometryType('Point')}>绘制设备</button>
-        <button onClick={() => setGeometryType('LineString')}>绘制线路</button>
-
-        {modifyProps.visible && (
-          <span>
-            <button
-              onClick={() =>
-                needAdsorption(
-                  {
-                    modifyProps,
-                    setModifyProps,
-                    sourceRef,
-                  },
-                  true
-                )
-              }
-            >
-              是(吸附)
-            </button>
-            <button
-              onClick={() =>
-                needAdsorption(
-                  {
-                    modifyProps,
-                    setModifyProps,
-                    sourceRef,
-                  },
-                  false
-                )
-              }
-            >
-              否(吸附)
-            </button>
-          </span>
-        )}
-      </div>
+      <div ref={ref} className="w-full h-full absolute"></div>
+      {modifyProps.visible && (
+        <AdsorptionModal
+          position={modifyProps.position}
+          needAdsorption={needAdsorptionFn}
+        ></AdsorptionModal>
+      )}
 
       {dragBoxProps.visible && (
         <div className="absolute top-80 left-80 z-500 text-white bg-gray-900 border-gray-50 bg-opacity-5">
@@ -451,6 +413,23 @@ const HistoryMapBase = () => {
             取消
           </div>
         </div>
+      )}
+      {dragBoxProps.visible && (
+        <DragBoxModal
+          position={dragBoxProps.position}
+          onSelectClick={(type: 'LineString' | 'Point') =>
+            onDragBoxPointSelect(
+              mode,
+              dragBoxProps,
+              type,
+              setState,
+              interActionRef,
+              sourceRef,
+              setDragBoxProps
+            )
+          }
+          onCancelClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef, sourceRef })}
+        ></DragBoxModal>
       )}
     </div>
   )

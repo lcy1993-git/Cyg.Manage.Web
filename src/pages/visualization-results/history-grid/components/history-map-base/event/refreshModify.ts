@@ -8,7 +8,6 @@ import { Modify, Snap } from 'ol/interaction'
 import { ModifyEvent } from 'ol/interaction/Modify'
 import * as proj from 'ol/proj'
 import RenderFeature from 'ol/render/Feature'
-import { Dispatch, SetStateAction } from 'react'
 import { saveHistoryData } from '../../../service'
 import {
   ElectricLineData,
@@ -27,7 +26,7 @@ interface InitModify {
   sourceRef: SourceRef
   isDraw: boolean
   mode: string
-  setModifyProps: Dispatch<SetStateAction<ModifyProps>>
+  modifyProps: ModifyProps
 }
 
 export function refreshModify({
@@ -36,7 +35,7 @@ export function refreshModify({
   sourceRef,
   isDraw,
   mode: preMode,
-  setModifyProps,
+  modifyProps,
 }: InitModify) {
   if (!isDraw) return
   const mode = preMode === 'record' ? 'history' : 'design'
@@ -58,7 +57,7 @@ export function refreshModify({
   })
 
   const refreshModifyCallBack = () =>
-    refreshModify({ interActionRef, mapRef, sourceRef, isDraw, mode: preMode, setModifyProps })
+    refreshModify({ interActionRef, mapRef, sourceRef, isDraw, mode: preMode, modifyProps })
 
   modify.on('modifystart', (e: ModifyEvent) => {
     const featureArr = e.features.getArray() as Feature<Geometry>[]
@@ -111,16 +110,25 @@ export function refreshModify({
          * 如果合法，则反馈用户是否需要吸附
          * 如果不合法，则直接视当前操作操作无吸附副作用
          */
-        setModifyProps({
-          visible: true,
-          position: [0, 0],
-          currentState: {
-            eventFeatures,
-            atPixelFeatures: features,
-            coordinate,
-            refreshModifyCallBack,
-          },
-        })
+
+        modifyProps.visible = true
+        modifyProps.position = [...pixel]
+        modifyProps.currentState = {
+          eventFeatures,
+          atPixelFeatures: features,
+          coordinate,
+          refreshModifyCallBack,
+        }
+        // setModifyProps({
+        //   visible: true,
+        //   position: [0, 0],
+        //   currentState: {
+        //     eventFeatures,
+        //     atPixelFeatures: features,
+        //     coordinate,
+        //     refreshModifyCallBack,
+        //   },
+        // })
 
         return
         /**
@@ -131,7 +139,7 @@ export function refreshModify({
       }
     }
     // 保存操作
-    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef)
+    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
   })
 
   // 移除前一个modify
@@ -242,7 +250,8 @@ export function revokeCurrentModify({
 export function saveOperation(
   eventFeatures: Feature<Geometry>[],
   refreshModifyCallBack: () => void,
-  sourceRef: SourceRef
+  sourceRef: SourceRef,
+  modifyProps: ModifyProps
 ): void {
   const updateHistoryData: UpdateHistoryData = {
     equipments: [],
@@ -289,6 +298,10 @@ export function saveOperation(
       message.error('操作失败，服务器未响应')
       refreshModifyCallBack()
     }
+
+    modifyProps.visible = false
+    modifyProps.position = [0, 0]
+    modifyProps.currentState = null
   })
 }
 /**

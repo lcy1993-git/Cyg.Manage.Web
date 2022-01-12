@@ -113,7 +113,7 @@ export default function initSelect({
   // var selectedFeatures = boxSelect.getFeatures()
 
   // 框选结束添加高亮
-  dragBox.on('boxend', function () {
+  dragBox.on('boxend', function (e) {
     var extent = dragBox.getGeometry().getExtent()
 
     const source = new VectorSource<Point | LineString>({
@@ -132,7 +132,7 @@ export default function initSelect({
     if (selected.length > 0) {
       setDragBoxProps({
         visible: true,
-        position: [0, 0],
+        position: [...e.mapBrowserEvent.pixel],
         selected,
       })
       // 设置绘制完成后的线框

@@ -3,7 +3,6 @@ import { Feature } from 'ol'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import * as proj from 'ol/proj'
-import { Dispatch, SetStateAction } from 'react'
 import { saveOperation } from '.'
 import { saveHistoryData } from '../../../service'
 import {
@@ -16,7 +15,6 @@ import {
 } from './../typings'
 interface AdsorptionOptions {
   modifyProps: ModifyProps
-  setModifyProps: Dispatch<SetStateAction<ModifyProps>>
   sourceRef: SourceRef
 }
 /**
@@ -25,34 +23,36 @@ interface AdsorptionOptions {
  * @param needAdsorption
  */
 export function needAdsorption(
-  { modifyProps, setModifyProps, sourceRef }: AdsorptionOptions,
+  { modifyProps, sourceRef }: AdsorptionOptions,
   needAdsorption: boolean
 ) {
   const { eventFeatures, refreshModifyCallBack } = modifyProps.currentState!
   if (needAdsorption) {
-    saveAdsorptionOperation(modifyProps.currentState!, sourceRef)
+    saveAdsorptionOperation(modifyProps.currentState!, sourceRef, modifyProps)
   } else {
-    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef)
+    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
   }
-
-  setModifyProps({
-    visible: false,
-    position: [0, 0],
-    currentState: null,
-  })
+  // setModifyProps({
+  //   visible: false,
+  //   position: [0, 0],
+  //   currentState: null,
+  // })
 }
 /**
  * 不吸附时候的点击事件
  * @param param0
  */
-export function needNotAdsorption({ modifyProps, setModifyProps, sourceRef }: AdsorptionOptions) {
+export function needNotAdsorption({ modifyProps, sourceRef }: AdsorptionOptions) {
   const { eventFeatures, refreshModifyCallBack } = modifyProps.currentState!
-  saveOperation(eventFeatures, refreshModifyCallBack, sourceRef)
-  setModifyProps({
-    visible: false,
-    position: [0, 0],
-    currentState: null,
-  })
+  saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
+  modifyProps.visible = false
+  modifyProps.position = [0, 0]
+  modifyProps.currentState = null
+  // setModifyProps({
+  //   visible: false,
+  //   position: [0, 0],
+  //   currentState: null,
+  // })
 }
 
 /**
@@ -61,7 +61,11 @@ export function needNotAdsorption({ modifyProps, setModifyProps, sourceRef }: Ad
  * @param refreshModifyCallBack
  * @param sourceRef
  */
-function saveAdsorptionOperation(currentState: ModifyCurrentState, sourceRef: SourceRef) {
+function saveAdsorptionOperation(
+  currentState: ModifyCurrentState,
+  sourceRef: SourceRef,
+  modifyProps: ModifyProps
+) {
   const { eventFeatures, atPixelFeatures, coordinate, refreshModifyCallBack } = currentState
 
   const [lng, lat] = proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326')
@@ -137,10 +141,14 @@ function saveAdsorptionOperation(currentState: ModifyCurrentState, sourceRef: So
     saveHistoryData(updateHistoryData).then((res) => {
       if (!(res.code === 200 && res.isSuccess === true)) {
         message.error('操作失败，服务器未响应')
+
         refreshModifyCallBack()
       } else {
         // 操作成功刷新组件，重新拿数据
       }
+      modifyProps.visible = false
+      modifyProps.position = [0, 0]
+      modifyProps.currentState = null
     })
   }
 

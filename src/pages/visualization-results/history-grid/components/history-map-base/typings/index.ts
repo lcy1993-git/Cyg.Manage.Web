@@ -160,7 +160,7 @@ export interface ModifyCurrentState {
 
 export interface ModifyProps {
   visible: boolean
-  position: [number, number]
+  position: number[]
   currentState: ModifyCurrentState | null
 }
 
