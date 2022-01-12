@@ -101,7 +101,7 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
               return {
                 nodeCountIndex: item.nodeCountIndex,
                 expectExecutorNickName: item.expectExecutorNickName,
-                executionTime: moment(item.executionTime).format('YYYY-MM-DD HH:mm:ss'),
+                executionTime: moment(ite.createdOn).format('YYYY-MM-DD HH:mm:ss'),
                 opinionContent: ite.opinionContent,
                 screenshots: ite.resource.screenShotFile.id,
                 extension: ite.resource.screenShotFile.extension,
@@ -112,16 +112,17 @@ const ReviewDetailsModal: React.FC<ReviewDetailsProps> = (props) => {
       })
       .filter(Boolean)
       .flat(1)
+      .sort((a: any, b: any) => {
+        return a.executionTime < b.executionTime ? 1 : -1
+      })
   }
-
-  // console.log(handleData(getCurrentTabData(1)), '333')
 
   return (
     <>
       <Modal
         maskClosable={false}
         title="查看评审详情"
-        bodyStyle={{ padding: '0px', height: '650px' }}
+        bodyStyle={{ padding: '0px', height: '650px', overflowY: 'auto' }}
         destroyOnClose
         width="70%"
         visible={state as boolean}

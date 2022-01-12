@@ -1,15 +1,9 @@
-import {
-  addProject,
-  editEngineer,
-  getEngineerInfo,
-} from '@/services/project-management/all-project'
-import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useRequest } from 'ahooks'
-import CreateEngineerForm from '../create-engineer-form'
+import { editEngineer, getEngineerInfo } from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal, Spin } from 'antd'
 import moment from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import CreateEngineerForm from '../create-engineer-form'
 
 interface EditEngineerProps {
   engineerId: string
@@ -26,6 +20,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
   const [areaId, setAreaId] = useState<string>('')
   const [libId, setLibId] = useState<string>('')
   const [canChange, setCanChange] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const [form] = Form.useForm()
 
@@ -114,14 +109,17 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <CreateEngineerForm
-          form={form}
-          canChange={canChange}
-          areaId={areaId}
-          libId={libId}
-          minStart={minStart}
-          maxEnd={maxEnd}
-        />
+        <Spin spinning={!loading}>
+          <CreateEngineerForm
+            form={form}
+            canChange={canChange}
+            areaId={areaId}
+            libId={libId}
+            minStart={minStart}
+            maxEnd={maxEnd}
+            onLoadingFinish={() => setLoading(true)}
+          />
+        </Spin>
       </Form>
     </Modal>
   )

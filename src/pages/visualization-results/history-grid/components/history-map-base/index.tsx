@@ -56,19 +56,6 @@ const HistoryMapBase = () => {
 
   const showText = showTitle && disableShowTitle
 
-  // const {
-  // mapLayerType,
-  // isDraw,
-  // dataSource,
-  // onProjectLocationClick,
-  // onCurrentLocationClick,
-  // showText,
-  // importDesignData,
-  // historyLayerVisible,
-  // moveToByCityLocation,
-  // cleanSelected,
-  // } = state
-
   const ref = useRef<HTMLDivElement>(null)
   const size = useSize(ref)
   // 地图实例
@@ -249,45 +236,6 @@ const HistoryMapBase = () => {
     })
   }
 
-  // 初始化interaction
-  // function initInterAction() {
-  //   interActionRef.modify = new Modify({
-  //     source: interActionRef.source,
-  //     // 设置容差
-  //     style: undefined,
-  //     pixelTolerance: 25,
-  //   })
-  //   interActionRef.modify.on(['modifyend'], (e: Event | BaseEvent) => {
-  //     // e.features.getArray()[0].setStyle(pointStyle.hight)
-  //     // e.features.getArray()[0].setStyle(featureStyle.type2)
-  //   })
-  //   // 暂时屏蔽编辑功能
-  //   false && mapRef.map.addInteraction(interActionRef.modify!)
-
-  //   const pointSelect = new Select()
-  //   const dragBox = new DragBox({})
-  //   const boxSelect = new Select()
-  //   const toggleSelect = new Select({
-  //     condition: conditionClick,
-  //     toggleCondition: platformModifierKeyOnly,
-  //     style: (feature) => {
-  //       const geometryType = feature.getGeometry()?.getType()
-
-  //       return getStyle(geometryType)(
-  //         feature.get('sourceType'),
-  //         feature.get('typeStr') || '无类型',
-  //         feature.get('name'),
-  //         showText
-  //       )
-  //     },
-  //   })
-
-  //   // 框选鼠标按下清除高亮
-  //   dragBox.on('boxstart', function () {
-  //     selectedFeatures.clear()
-  //   })
-  // }
-
   function drawHistoryLayer() {
     if (!dataSource) return
     drawByDataSource(dataSource!, {
@@ -324,35 +272,6 @@ const HistoryMapBase = () => {
     refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
   }
 
-  // 删除draw交互行为
-  // function removeaddInteractions() {
-  //   if (interActionRef.draw && interActionRef.snap) {
-  //     mapRef.map.removeInteraction(interActionRef.draw)
-  //     mapRef.map.removeInteraction(interActionRef.snap)
-  //   }
-  // }
-
-  // 添加draw交互行为
-  // function addInteractions(type: string) {
-  //   if (type) {
-  //     if (interActionRef.draw) {
-  //       mapRef.map.removeInteraction(interActionRef.draw)
-  //     }
-  //     // if(interActionRef.snap) {
-  //     //   mapRef.map.removeInteraction(interActionRef.snap)
-  //     // }
-  //     interActionRef.draw = new Draw({
-  //       source: interActionRef.source,
-  //       type: type,
-  //     })
-  //     // 绑定绘制完成事件
-  //     interActionRef.draw.on('drawend', (e) => drawEnd(e, interActionRef.source!, setGeometryType))
-  //     mapRef.map.addInteraction(interActionRef.draw)
-  //     interActionRef.snap = new Snap({ source: interActionRef.source })
-  //     // mapRef.map.addInteraction(interActionRef.snap)
-  //   }
-  // }
-
   // 拖拽时是否需要吸附
   const needAdsorptionFn = useCallback(
     (flag: boolean) => {
@@ -371,48 +290,6 @@ const HistoryMapBase = () => {
         ></AdsorptionModal>
       )}
 
-      {dragBoxProps.visible && (
-        <div className="absolute top-80 left-80 z-500 text-white bg-gray-900 border-gray-50 bg-opacity-5">
-          <div
-            className="cursor-pointer hover:text-green-500"
-            onClick={() =>
-              onDragBoxPointSelect(
-                mode,
-                dragBoxProps,
-                'Point',
-                setState,
-                interActionRef,
-                sourceRef,
-                setDragBoxProps
-              )
-            }
-          >
-            框选电气设备
-          </div>
-          <div
-            className="cursor-pointer hover:text-green-500"
-            onClick={() =>
-              onDragBoxPointSelect(
-                mode,
-                dragBoxProps,
-                'LineString',
-                setState,
-                interActionRef,
-                sourceRef,
-                setDragBoxProps
-              )
-            }
-          >
-            框选线路
-          </div>
-          <div
-            className="cursor-pointer hover:text-green-500"
-            onClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef, sourceRef })}
-          >
-            取消
-          </div>
-        </div>
-      )}
       {dragBoxProps.visible && (
         <DragBoxModal
           position={dragBoxProps.position}

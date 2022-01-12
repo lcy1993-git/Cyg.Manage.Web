@@ -119,6 +119,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
       tooltip: {
         trigger: 'axis',
         enterable: true,
+        confine: true,
         backgroundColor: 'rgba(0,0,0,0.9)',
         borderColor: '#000',
         axisPointer: {

@@ -231,10 +231,15 @@ const ProjectMergeModal: React.FC<ProjectMergeModalProps> = (props) => {
       sourceProjectId: projectId,
       targetProjectId: targetProjectId,
     })
-    setMergeLoading(false)
-    message.success('项目合并成功')
-    finishEvent?.()
-    setState(false)
+      .then(() => {
+        setMergeLoading(false)
+        message.success('项目合并成功')
+        finishEvent?.()
+        setState(false)
+      })
+      .catch(() => {
+        setMergeLoading(false)
+      })
   }
 
   useEffect(() => {
