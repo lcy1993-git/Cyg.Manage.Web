@@ -411,6 +411,7 @@ function getMappingTagsDictionary() {
         entry_type: findenumsValue('EntryMode'),
       },
     }
+
     mappingTagsDictionary.cross_arm = {
       mappingTags1: {
         project_id: 'title',
@@ -424,7 +425,6 @@ function getMappingTagsDictionary() {
         project_id: 'title',
       },
       mappingTagValues: {
-        voltage: findenumsValue('KVLevel'),
         state: findenumsValue('SurveyState'),
       },
     }
@@ -517,9 +517,25 @@ function getMappingTagsDictionary() {
         state: findenumsValue('SurveyState'),
       },
     }
+
+    enums.push({
+      key: 'IscableType',
+      value: [
+        {
+          value: 0,
+          text: '架空型',
+        },
+        {
+          value: 1,
+          text: '电缆型',
+        },
+      ],
+    })
     mappingTagsDictionary.fault_indicator = {
       mappingTags: {
-        mode: '故障指示器型号',
+        is_cable: '类型',
+        parent_line_id: '所属线段',
+        mode: '型号',
         state: '状态',
         azimuth: '方位角',
         isupgraded: '是否改造',
@@ -527,6 +543,7 @@ function getMappingTagsDictionary() {
         project_id: 'title',
       },
       mappingTagValues: {
+        is_cable: findenumsValue('IscableType'),
         state: findenumsValue('SurveyState') || '',
       },
     }
@@ -558,6 +575,14 @@ function getMappingTagsDictionary() {
       },
       mappingTagValues: {
         state: findenumsValue('SurveyState') || '',
+      },
+    }
+
+    mappingTagsDictionary.cable_head = {
+      mappingTags: {
+        mode: '型号',
+        azimuth: '方位角',
+        project_id: 'title',
       },
     }
 

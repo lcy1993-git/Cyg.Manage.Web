@@ -49,6 +49,7 @@ const materiaLayers = [
   'electric_meter',
   'cross_arm',
   'user_line',
+  'fault_indicator',
 ]
 const commentLayers = ['tower', 'cable', 'cable_equipment', 'mark', 'transformer']
 const layerTypeEnum = {
@@ -82,6 +83,7 @@ const elementTypeEnum = {
   brace: '撑杆',
   Track: '轨迹点',
   TrackLine: '轨迹线',
+  cable_head: '电缆中间头',
 }
 const lineTowerType = [
   {
@@ -353,6 +355,15 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         pJSON[mappingTag] = mappingTagValues[p][feature.getProperties()[p]]
       } else {
         switch (p) {
+          case 'voltage':
+            let voltages = {
+              无: '无',
+              V220: '220V',
+              V380: '380V',
+              KV10: '10KV',
+            }
+            pJSON[mappingTag] = voltages[feature.getProperties()['voltage']]
+            break
           case 'company':
             pJSON[mappingTag] = feature.getProperties()['companyName']
             break
@@ -436,6 +447,18 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                 parentLayer === 'electric_meter'
                   ? (pJSON[mappingTag] = data.features[0].properties.name)
                   : (pJSON[mappingTag] = data.features[0].properties.code)
+              } else {
+                pJSON[mappingTag] = ''
+              }
+            })
+            break
+          case 'parent_line_id':
+            await loadLayer(
+              getCustomXmlData('id', feature.getProperties()['parent_id']),
+              `pdd:${layerType}_line`
+            ).then((data: any) => {
+              if (data.features && data.features.length === 1) {
+                pJSON[mappingTag] = data.features[0].properties.name
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -530,7 +553,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         const objectID =
           layerName === 'electric_meter'
             ? feature.getProperties().entry_id
-            : feature.getProperties().mode_id || feature.getProperties().equip_model_id
+            : feature.getProperties().mode_id ||
+              feature.getProperties().equip_model_id ||
+              feature.getProperties().model_id
 
         if (!feature.getProperties().kv_level) {
           let g = getLayerByName(layerType + 'Layer', map.getLayers().getArray()) // console.log(g.getLayers(),1);
@@ -547,8 +572,14 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           fs && feature.set('kv_level', fs.getProperties().features[0].getProperties().kv_level)
         }
 
+        let voltagelevel = {
+          无: 0,
+          V220: 1,
+          V380: 2,
+          KV10: 3,
+        }
         if (feature.getProperties().voltage)
-          feature.set('kv_level', feature.getProperties().voltage)
+          feature.set('kv_level', voltagelevel[feature.getProperties().voltage])
 
         pJSON['材料表'] = {
           params: {
