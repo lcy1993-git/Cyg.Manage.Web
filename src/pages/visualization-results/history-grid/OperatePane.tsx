@@ -1,5 +1,6 @@
 import { getProjectInfo } from '@/services/project-management/all-project'
-import { Button, Modal, Tooltip } from 'antd'
+import { useKeyPress } from 'ahooks'
+import { Button, Modal, Tooltip, Popover } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
 import { clearData } from './service/fetcher'
@@ -12,6 +13,7 @@ const OperationPane: FC = ({ children }) => {
     mode,
     UIStatus,
     dispatch,
+    geometryType,
     preDesignItemData,
     preDesignDataSource,
   } = useHistoryGridContext()
@@ -22,7 +24,25 @@ const OperationPane: FC = ({ children }) => {
     },
     [dispatch]
   )
-
+  useKeyPress('D', () => {
+    if (mode === 'recordEdit' && geometryType !== 'Point') {
+      dispatch({ type: 'changeGeometryType', payload: 'Point' })
+    } else {
+      dispatch({ type: 'changeGeometryType', payload: '' })
+    }
+  })
+  useKeyPress('x', () => {
+    if (mode === 'recordEdit' && geometryType !== 'LIneString') {
+      dispatch({ type: 'changeGeometryType', payload: 'LIneString' })
+    } else {
+      dispatch({ type: 'changeGeometryType', payload: '' })
+    }
+  })
+  useKeyPress('esc', () => {
+    if (mode === 'recordEdit' && geometryType !== '') {
+      dispatch({ type: 'changeGeometryType', payload: '' })
+    }
+  })
   useEffect(() => {
     if (mode === 'preDesign' || mode === 'preDesigning') {
       if (preDesignItemData) {
@@ -36,6 +56,9 @@ const OperationPane: FC = ({ children }) => {
       }
     } else {
       setCanDraw(true)
+    }
+    if (mode === 'recordEdit') {
+      dispatch({ type: 'changeGeometryType', payload: '' })
     }
   }, [mode, preDesignItemData, setCanDraw])
 
@@ -86,18 +109,24 @@ const OperationPane: FC = ({ children }) => {
           dispatch({ type: 'changeUIStatus', payload: { ...UIStatus, importModalVisible: true } })
         },
       },
-      // {
-      //   before: <span>|</span>,
-      //   text: '电气设备',
-      //   icon: 'icon-dianqishebei',
-      //   onClick: () => {},
-      // },
-      // {
-      //   text: '线路',
-      //   type: 'route',
-      //   icon: 'icon-xianlu',
-      //   onClick: () => {},
-      // },
+      {
+        before: <span>|</span>,
+        hoverText: '快捷键: D',
+        text: '电气设备',
+        icon: 'icon-dianqishebei',
+        onClick: () => {
+          dispatch({ type: 'changeGeometryType', payload: 'Point' })
+        },
+      },
+      {
+        text: '线路',
+        type: 'route',
+        hoverText: '快捷键: X',
+        icon: 'icon-xianlu',
+        onClick: () => {
+          dispatch({ type: 'changeGeometryType', payload: 'LIneString' })
+        },
+      },
       {
         text: '清屏',
         icon: 'icon-qingping',
@@ -134,6 +163,7 @@ const OperationPane: FC = ({ children }) => {
               payload: { ...UIStatus, drawing: false },
             })
             changeMode(mode === 'recordEdit' ? 'record' : 'preDesign')
+            dispatch({ type: 'changeGeometryType', payload: '' })
           }}
           type="back"
         />
@@ -178,17 +208,26 @@ interface OperateBtnProps {
   [key: string]: any
 }
 
-const OperateBtn = ({ text, icon, onClick, before, after }: OperateBtnProps) => {
+const OperateBtn = ({ text, icon, onClick, before, after, hoverText }: OperateBtnProps) => {
   const iconStyle = { verticalAlign: '-0.25rem', marginRight: '2px' } as CSSProperties
   const iconClass = 'w-5 h-5'
 
   return (
     <>
       {before}
-      <div className="cursor-pointer" onClick={onClick}>
-        <Iconfont style={iconStyle} className={iconClass} symbol={icon} />
-        {text && <span>{text}</span>}
-      </div>
+      {hoverText ? (
+        <Popover placement="bottom" content={hoverText} trigger={'hover'} size={'small'}>
+          <div className="cursor-pointer" onClick={onClick}>
+            <Iconfont style={iconStyle} className={iconClass} symbol={icon} />
+            {text && <span>{text}</span>}
+          </div>
+        </Popover>
+      ) : (
+        <div className="cursor-pointer" onClick={onClick}>
+          <Iconfont style={iconStyle} className={iconClass} symbol={icon} />
+          {text && <span>{text}</span>}
+        </div>
+      )}
       {after}
     </>
   )
