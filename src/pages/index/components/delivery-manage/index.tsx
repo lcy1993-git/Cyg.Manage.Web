@@ -1,18 +1,16 @@
 import BarChart from '@/components/bar-chart'
+import { AreaInfo, getConsigns } from '@/services/index'
 import { CaretDownOutlined } from '@ant-design/icons'
-import { Select, DatePicker, Button, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useRequest } from 'ahooks'
+import { Button, DatePicker, Select, Spin } from 'antd'
+import * as echarts from 'echarts/lib/echarts'
+import moment, { Moment } from 'moment'
+import React, { useEffect, useMemo, useState } from 'react'
+import borderStylesHTML from '../../utils/borderStylesHTML'
 import ChartBox from '../chart-box'
 import ChartTab from '../chart-tab'
-import * as echarts from 'echarts/lib/echarts'
-
 import styles from './index.less'
-import { useRequest } from 'ahooks'
-import { getConsigns, AreaInfo } from '@/services/index'
-import { useMemo } from 'react'
-import { Moment } from 'moment'
-import moment from 'moment'
-import borderStylesHTML from '../../utils/borderStylesHTML'
+
 const { Option } = Select
 
 const { RangePicker } = DatePicker
@@ -91,6 +89,7 @@ const DeliveryManage: React.FC<DeliveyManageProps> = (props) => {
         },
         tooltip: {
           trigger: 'axis',
+          confine: true,
           axisPointer: {
             type: 'shadow',
           },

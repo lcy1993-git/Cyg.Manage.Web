@@ -1,20 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import CyFormItem from '@/components/cy-form-item'
-import { DatePicker, Input, Cascader, Tooltip } from 'antd'
+import DataSelect from '@/components/data-select'
 import EnumSelect from '@/components/enum-select'
 import {
   FormImportantLevel,
   getCityAreas,
   ProjectLevel,
 } from '@/services/project-management/all-project'
-
-import Rule from './engineer-form-rule'
 import { useGetSelectData } from '@/utils/hooks'
-import DataSelect from '@/components/data-select'
+import useRequest from '@ahooksjs/use-request'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Cascader, DatePicker, Input, Tooltip } from 'antd'
 // import city from '@/assets/local-data/area'
 import moment from 'moment'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
-import useRequest from '@ahooksjs/use-request'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import Rule from './engineer-form-rule'
 
 interface CreateEngineerForm {
   exportDataChange?: (exportData: any) => void
@@ -24,6 +23,7 @@ interface CreateEngineerForm {
   canChange?: boolean
   minStart?: number
   maxEnd?: number
+  onLoadingFinish?: () => void
 }
 
 const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
@@ -35,6 +35,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     canChange = true,
     minStart,
     maxEnd,
+    onLoadingFinish,
   } = props
 
   const [areaId, setAreaId] = useState<string>('')
@@ -46,20 +47,23 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   }
 
   //获取区域
-  const { data: cityData } = useRequest(() => getCityAreas(), {
+  const { data: cityData, loading: cityLoading } = useRequest(() => getCityAreas(), {
     onSuccess: () => {
       if (cityData) {
         setCity(cityData.data)
       }
     },
   })
-  const { data: libSelectData = [] } = useGetSelectData({
+  const { data: libSelectData = [], loading: libLoading } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
   })
-  const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
+  const {
+    data: inventoryOverviewSelectData = [],
+    loading: inventoryOverviewLoading,
+  } = useGetSelectData(
     {
       url: `/Inventory/GetList?libId=${libId}`,
       valueKey: 'id',
@@ -73,7 +77,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     }
   )
 
-  const { data: warehouseSelectData = [] } = useGetSelectData(
+  const { data: warehouseSelectData = [], loading: warehouseLoading } = useGetSelectData(
     {
       url: '/WareHouse/GetWareHouseListByArea',
       extraParams: { area: areaId },
@@ -84,7 +88,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     { ready: !!areaId, refreshDeps: [areaId] }
   )
 
-  const { data: companySelectData = [] } = useGetSelectData(
+  const { data: companySelectData = [], loading: companyLoading } = useGetSelectData(
     {
       url: `/ElectricityCompany/GetListByAreaId?areaId=${areaId}`,
       // extraParams: { area: areaId },
@@ -93,6 +97,25 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     },
     { ready: !!areaId, refreshDeps: [areaId] }
   )
+
+  useEffect(() => {
+    if (
+      !cityLoading &&
+      !libLoading &&
+      !inventoryOverviewLoading &&
+      !warehouseLoading &&
+      !companyLoading
+    ) {
+      onLoadingFinish?.()
+    }
+  }, [
+    onLoadingFinish,
+    cityLoading,
+    libLoading,
+    inventoryOverviewLoading,
+    warehouseLoading,
+    companyLoading,
+  ])
 
   const mapHandleCityData = (data: any) => {
     return {
