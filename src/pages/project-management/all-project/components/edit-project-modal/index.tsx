@@ -1,6 +1,6 @@
 import { editProject, getProjectInfo } from '@/services/project-management/all-project'
 import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
+import { Button, Spin } from 'antd'
 import { Form, message, Modal } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useRequest } from 'ahooks'
@@ -40,7 +40,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     setInheritState,
   } = props
 
-  const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
+  const { data: projectInfo, run, loading } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
     onSuccess: (res) => {
       form.setFieldsValue({
@@ -128,18 +128,21 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
       }}
     >
       <Form form={form} preserve={false}>
-        <CreateProjectForm
-          pointVisible={pointVisible}
-          areaId={areaId}
-          company={company}
-          companyName={companyName}
-          status={status}
-          projectId={projectId}
-          engineerStart={startTime}
-          isEdit={true}
-          engineerEnd={endTime}
-          form={form}
-        />
+        <Spin spinning={loading}>
+          <CreateProjectForm
+            pointVisible={pointVisible}
+            areaId={areaId}
+            company={company}
+            companyName={companyName}
+            status={status}
+            projectId={projectId}
+            engineerStart={startTime}
+            isEdit={true}
+            engineerEnd={endTime}
+            form={form}
+            // onLoadingFinish={() => setLoading(true)}
+          />
+        </Spin>
       </Form>
     </Modal>
   )
