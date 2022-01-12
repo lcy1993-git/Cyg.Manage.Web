@@ -11,7 +11,7 @@ export type ReducerState = {
   /** record 历史网架, recordEdit 历史网架绘制, preDesign 预设计, preDesigning 预设计中 */
   mode: 'record' | 'recordEdit' | 'preDesign' | 'preDesigning'
   // 历史网架绘制状态
-  geometryType: 'Point' | 'LIneString' | ''
+  geometryType: 'Point' | 'LineString' | ''
   /** 当前定位的城市 */
   city?: CityWithProvince
   /** 触发定位 */

@@ -1,4 +1,5 @@
-import { drawByDataSource } from './drawBydataSource'
+import { drawByDataSource } from './drawByDataSource'
 import { drawEnd } from './drawEnd'
+import { drawMap } from './drawMap'
 
-export { drawEnd, drawByDataSource }
+export { drawEnd, drawByDataSource, drawMap }

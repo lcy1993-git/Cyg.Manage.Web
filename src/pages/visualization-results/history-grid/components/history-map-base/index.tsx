@@ -2,13 +2,12 @@ import '@/assets/icon/history-grid-icon.css'
 import { useMount, useReactive, useSize, useUpdateEffect } from 'ahooks'
 import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
-import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
 import { useCallback, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import AdsorptionModal from './components/adsorption-modal'
 import DragBoxModal from './components/drag-box-modal'
-import { drawByDataSource, drawEnd } from './draw'
+import { drawByDataSource, drawMap } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import {
   mapClick,
@@ -40,6 +39,7 @@ const HistoryMapBase = () => {
     locate,
     historyDataSource: dataSource,
     preDesignDataSource: importDesignData,
+    geometryType,
   } = useHistoryGridContext()
   const modeRef = useRef(preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign')
   const mode = modeRef.current
@@ -68,9 +68,6 @@ const HistoryMapBase = () => {
   // moveToByCityLocation,
   // cleanSelected,
   // } = state
-
-  // 绘制类型
-  const [geometryType, setGeometryType] = useState<string>('')
 
   const ref = useRef<HTMLDivElement>(null)
   const size = useSize(ref)
@@ -138,8 +135,9 @@ const HistoryMapBase = () => {
 
   // 处理geometryType变化
   useUpdateEffect(() => {
-    removeaddInteractions()
-    if (geometryType) addInteractions(geometryType)
+    drawMap({ geometryType })
+    // removeaddInteractions()
+    // if (geometryType) addInteractions(geometryType)
   }, [geometryType])
 
   // 处理当前地图类型变化
@@ -327,34 +325,35 @@ const HistoryMapBase = () => {
   }
 
   // 删除draw交互行为
-  function removeaddInteractions() {
-    if (interActionRef.draw && interActionRef.snap) {
-      mapRef.map.removeInteraction(interActionRef.draw)
-      mapRef.map.removeInteraction(interActionRef.snap)
-    }
-  }
+  // function removeaddInteractions() {
+  //   if (interActionRef.draw && interActionRef.snap) {
+  //     mapRef.map.removeInteraction(interActionRef.draw)
+  //     mapRef.map.removeInteraction(interActionRef.snap)
+  //   }
+  // }
 
   // 添加draw交互行为
-  function addInteractions(type: string) {
-    if (type) {
-      if (interActionRef.draw) {
-        mapRef.map.removeInteraction(interActionRef.draw)
-      }
-      // if(interActionRef.snap) {
-      //   mapRef.map.removeInteraction(interActionRef.snap)
-      // }
-      interActionRef.draw = new Draw({
-        source: interActionRef.source,
-        type: type,
-      })
-      // 绑定绘制完成事件
-      interActionRef.draw.on('drawend', (e) => drawEnd(e, interActionRef.source!, setGeometryType))
-      mapRef.map.addInteraction(interActionRef.draw)
-      interActionRef.snap = new Snap({ source: interActionRef.source })
-      // mapRef.map.addInteraction(interActionRef.snap)
-    }
-  }
+  // function addInteractions(type: string) {
+  //   if (type) {
+  //     if (interActionRef.draw) {
+  //       mapRef.map.removeInteraction(interActionRef.draw)
+  //     }
+  //     // if(interActionRef.snap) {
+  //     //   mapRef.map.removeInteraction(interActionRef.snap)
+  //     // }
+  //     interActionRef.draw = new Draw({
+  //       source: interActionRef.source,
+  //       type: type,
+  //     })
+  //     // 绑定绘制完成事件
+  //     interActionRef.draw.on('drawend', (e) => drawEnd(e, interActionRef.source!, setGeometryType))
+  //     mapRef.map.addInteraction(interActionRef.draw)
+  //     interActionRef.snap = new Snap({ source: interActionRef.source })
+  //     // mapRef.map.addInteraction(interActionRef.snap)
+  //   }
+  // }
 
+  // 拖拽时是否需要吸附
   const needAdsorptionFn = useCallback(
     (flag: boolean) => {
       needAdsorption({ modifyProps, sourceRef }, flag)

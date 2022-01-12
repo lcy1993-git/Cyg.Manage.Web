@@ -1,6 +1,6 @@
 import { getProjectInfo } from '@/services/project-management/all-project'
 import { useKeyPress } from 'ahooks'
-import { Button, Modal, Tooltip, Popover } from 'antd'
+import { Button, Modal, Popover, Tooltip } from 'antd'
 import { CSSProperties, FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import Iconfont from './components/iconfont'
 import { clearData } from './service/fetcher'
@@ -32,8 +32,8 @@ const OperationPane: FC = ({ children }) => {
     }
   })
   useKeyPress('x', () => {
-    if (mode === 'recordEdit' && geometryType !== 'LIneString') {
-      dispatch({ type: 'changeGeometryType', payload: 'LIneString' })
+    if (mode === 'recordEdit' && geometryType !== 'LineString') {
+      dispatch({ type: 'changeGeometryType', payload: 'LineString' })
     } else {
       dispatch({ type: 'changeGeometryType', payload: '' })
     }
@@ -127,11 +127,11 @@ const OperationPane: FC = ({ children }) => {
         text: '线路',
         type: 'route',
         hoverText: '快捷键: X',
-        value: 'LIneString',
+        value: 'LineString',
         icon: 'icon-xianlu',
         onClick: () => {
-          if (geometryType !== 'LIneString') {
-            dispatch({ type: 'changeGeometryType', payload: 'LIneString' })
+          if (geometryType !== 'LineString') {
+            dispatch({ type: 'changeGeometryType', payload: 'LineString' })
           } else {
             dispatch({ type: 'changeGeometryType', payload: '' })
           }
