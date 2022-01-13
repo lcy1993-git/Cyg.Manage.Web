@@ -159,7 +159,10 @@ const HistoryMapBase = () => {
     )
     const canFit = extend.every(Number.isFinite)
     if (canFit) {
-      viewRef.view.fit(extend)
+      viewRef.view.fit(extend, {
+        duration: 600,
+      })
+
       handlerGeographicSize({ mode, viewRef })
     } else {
       message.error('当前项目没有数据，无法定位')

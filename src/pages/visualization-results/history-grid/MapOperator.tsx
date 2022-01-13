@@ -1,13 +1,22 @@
 import { Tooltip } from 'antd'
-import { useCallback, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import FlowLayer from './components/flow-layer'
 import Iconfont from './components/iconfont'
 import MapSwitcher from './MapSwitcher'
 import { useHistoryGridContext } from './store'
 
 const MapOperator = () => {
-  const { UIStatus, dispatch } = useHistoryGridContext()
+  const { UIStatus, dispatch, historyDataSource, preDesignDataSource } = useHistoryGridContext()
   const { showTitle } = UIStatus
+
+  const isClickable: boolean = useMemo(() => {
+    return !!(
+      historyDataSource.equipments.length ||
+      historyDataSource.lines.length ||
+      preDesignDataSource.equipments.length ||
+      preDesignDataSource.lines.length
+    )
+  }, [historyDataSource, preDesignDataSource])
 
   const onClick = useCallback(
     (key: string) => {
@@ -51,10 +60,10 @@ const MapOperator = () => {
 
         <div>
           <IconSwitcher
-            title="定位到现有网架"
+            title={isClickable ? '定位到现有网架' : '无数据...'}
             flag="currentProject"
             onClick={onClick}
-            className="hover:text-theme-green"
+            className={isClickable ? `hover:text-theme-green cursor-pointer` : 'cursor-not-allowed'}
             icon="icon-a-dingweidaoxianyouwangjia_n-fuben"
           />
         </div>
@@ -77,7 +86,7 @@ interface IconSwitcherProps {
 }
 
 export const IconSwitcher = ({ title, className, icon, flag, onClick }: IconSwitcherProps) => {
-  const iconClass = 'w-7 h-7 bg-white cursor-pointer'
+  const iconClass = 'w-7 h-7 bg-white'
   const clickEvent = (flag: string) => {
     onClick(flag)
   }

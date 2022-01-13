@@ -85,7 +85,12 @@ export const checkUserLocation = (viewRef: ViewRef) => {
       } else {
         const point = res?.content?.point
         if (point?.x && point?.y) {
-          viewRef.view.setCenter(proj.transform([point.x, point.y], 'EPSG:4326', 'EPSG:3857'))
+          viewRef.view.animate({
+            center: proj.transform([point.x, point.y], 'EPSG:4326', 'EPSG:3857'),
+            zoom: 12.5,
+            duration: 600,
+          })
+          // viewRef.view.setCenter(proj.transform([point.x, point.y], 'EPSG:4326', 'EPSG:3857'))
         } else {
           message.error('获取当前位置信息失败')
         }
