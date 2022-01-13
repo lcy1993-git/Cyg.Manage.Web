@@ -25,12 +25,12 @@ export default defineConfig({
   theme: {
     'primary-color': defaultSettings.primaryColor,
   },
-  terserOptions: {
-    compress: {
-      drop_console: true,
-      drop_debugger: true,
-    },
-  },
+  // terserOptions: {
+  //   compress: {
+  //     drop_console: true,
+  //     drop_debugger: true,
+  //   },
+  // },
   title: '工程智慧云 | 管理',
   ignoreMomentLocale: true,
   proxy: proxy[REACT_APP_ENV || 'dev'],

@@ -115,6 +115,7 @@ const HistoryMapBase = () => {
 
   // 根据历史数据绘制点位线路
   useUpdateEffect(() => {
+    console.log('重新渲染了')
     drawHistoryLayer()
   }, [dataSource])
   // 根据预设计数据绘制点位线路
@@ -289,6 +290,7 @@ const HistoryMapBase = () => {
   // }
 
   function drawHistoryLayer() {
+    console.log('重新渲染了', dataSource)
     if (!dataSource) return
     drawByDataSource(dataSource!, {
       source: 'history',
