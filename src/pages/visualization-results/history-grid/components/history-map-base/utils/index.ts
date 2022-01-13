@@ -98,7 +98,7 @@ export const checkUserLocation = (viewRef: ViewRef) => {
         if (point?.x && point?.y) {
           viewRef.view.animate({
             center: proj.transform([point.x, point.y], 'EPSG:4326', 'EPSG:3857'),
-            zoom: 12.5,
+            zoom: 16,
             duration: 600,
           })
           // viewRef.view.setCenter(proj.transform([point.x, point.y], 'EPSG:4326', 'EPSG:3857'))
