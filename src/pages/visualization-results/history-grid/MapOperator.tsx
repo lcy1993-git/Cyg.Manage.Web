@@ -11,10 +11,10 @@ const MapOperator = () => {
 
   const isClickable: boolean = useMemo(() => {
     return !!(
-      historyDataSource.equipments.length ||
-      historyDataSource.lines.length ||
-      preDesignDataSource.equipments.length ||
-      preDesignDataSource.lines.length
+      historyDataSource?.equipments.length ||
+      historyDataSource?.lines.length ||
+      preDesignDataSource?.equipments.length ||
+      preDesignDataSource?.lines.length
     )
   }, [historyDataSource, preDesignDataSource])
 
