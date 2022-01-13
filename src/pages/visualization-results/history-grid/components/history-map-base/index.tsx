@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
@@ -112,9 +112,8 @@ const HistoryMapBase = () => {
 
   // 处理当前地图类型变化
   useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.streetLayer), [mapLayerType])
-
   // 根据历史数据绘制点位线路
-  useUpdateEffect(() => {
+  useEffect(() => {
     drawHistoryLayer()
   }, [dataSource])
   // 根据预设计数据绘制点位线路
@@ -159,7 +158,10 @@ const HistoryMapBase = () => {
     )
     const canFit = extend.every(Number.isFinite)
     if (canFit) {
-      viewRef.view.fit(extend)
+      viewRef.view.fit(extend, {
+        duration: 600,
+      })
+
       handlerGeographicSize({ mode, viewRef })
     } else {
       message.error('当前项目没有数据，无法定位')
