@@ -112,7 +112,7 @@ const HistoryMapBase = () => {
 
   // 处理当前地图类型变化
   useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.streetLayer), [mapLayerType])
-
+  console.log(dataSource, 'dataSource')
   // 根据历史数据绘制点位线路
   useUpdateEffect(() => {
     console.log('重新渲染了')
