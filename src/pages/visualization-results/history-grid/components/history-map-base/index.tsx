@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
@@ -114,7 +114,7 @@ const HistoryMapBase = () => {
   useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.streetLayer), [mapLayerType])
   console.log(dataSource, 'dataSource')
   // 根据历史数据绘制点位线路
-  useUpdateEffect(() => {
+  useEffect(() => {
     console.log('重新渲染了')
     drawHistoryLayer()
   }, [dataSource])
