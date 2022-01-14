@@ -4,7 +4,7 @@ import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
-import { useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
@@ -112,13 +112,12 @@ const HistoryMapBase = () => {
 
   // 处理当前地图类型变化
   useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.streetLayer), [mapLayerType])
-
   // 根据历史数据绘制点位线路
-  useUpdateEffect(() => {
+  useEffect(() => {
     drawHistoryLayer()
   }, [dataSource])
   // 根据预设计数据绘制点位线路
-  useUpdateEffect(() => {
+  useEffect(() => {
     drawDesignLayer()
   }, [importDesignData])
 
@@ -159,7 +158,10 @@ const HistoryMapBase = () => {
     )
     const canFit = extend.every(Number.isFinite)
     if (canFit) {
-      viewRef.view.fit(extend)
+      viewRef.view.fit(extend, {
+        duration: 600,
+      })
+
       handlerGeographicSize({ mode, viewRef })
     } else {
       message.error('当前项目没有数据，无法定位')
@@ -285,14 +287,8 @@ const HistoryMapBase = () => {
   //   })
   // }
 
-  function drawHistoryLayer() {
-    if (!dataSource) return
-    drawByDataSource(dataSource!, {
-      source: 'history',
-      sourceType: 'history',
-      sourceRef,
-    })
-    // 初次挂载自适应屏幕
+  // 初次挂载自适应屏幕
+  const autoSizeScreen = useCallback(() => {
     if (lifeStateRef.state.isFirstDrawHistory) {
       const extend = getFitExtend(
         historyLayerVisible && sourceRef.historyPointSource.getExtent(),
@@ -308,16 +304,37 @@ const HistoryMapBase = () => {
       }
     }
     lifeStateRef.state.isFirstDrawHistory = false
-  }
+  }, [
+    historyLayerVisible,
+    lifeStateRef.state,
+    mode,
+    sourceRef.designLineSource,
+    sourceRef.historyLineSource,
+    sourceRef.historyPointSource,
+    viewRef,
+  ])
 
-  function drawDesignLayer() {
+  const drawHistoryLayer = useCallback(() => {
+    if (!dataSource) return
+    drawByDataSource(
+      dataSource!,
+      {
+        source: 'history',
+        sourceType: 'history',
+        sourceRef,
+      },
+      autoSizeScreen
+    )
+  }, [autoSizeScreen, dataSource, sourceRef])
+
+  const drawDesignLayer = useCallback(() => {
     if (mode === 'preDesign')
       drawByDataSource(importDesignData!, {
         source: 'design',
         sourceType: 'design',
         sourceRef,
       })
-  }
+  }, [importDesignData, mode, sourceRef])
 
   // 删除draw交互行为
   function removeaddInteractions() {

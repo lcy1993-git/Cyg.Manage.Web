@@ -1,53 +1,55 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import {
-  EditOutlined,
-  PlusOutlined,
-  PoweroffOutlined,
-  DeleteOutlined,
-  EyeOutlined,
-  ImportOutlined,
-} from '@ant-design/icons';
-import { Input, Button, Modal, Form, message, Spin, Popconfirm } from 'antd';
-import React, { useState } from 'react';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, PoweroffOutlined, ImportOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, message, Spin } from 'antd'
+import React, { useMemo, useState } from 'react'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
 import {
   getWareHouseDetail,
   addWareHouseItem,
   updateWareHouseItem,
   deleteWareHouseItem,
   restartWareHouse,
-} from '@/services/material-config/ware-house';
-import { isArray } from 'lodash';
-import WareHouseForm from './components/add-edit-form';
-import WareHouseDetail from './components/detail-table';
-import ImportWareHouse from './components/import-form';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
+} from '@/services/material-config/ware-house'
+import { isArray } from 'lodash'
+import WareHouseForm from './components/add-edit-form'
+import WareHouseDetail from './components/detail-table'
+import ImportWareHouse from './components/import-form'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
+import { getCityAreas } from '@/services/project-management/all-project'
 
-const { Search } = Input;
+const { Search } = Input
 
 const WareHouse: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [currentSelectedId, setCurrentSelectedId] = useState<string>('');
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [currentSelectedId, setCurrentSelectedId] = useState<string>('')
   // const [selectedData, setSelectedData] = useState<object>({});
-  const [checkDetailVisible, setCheckDetailVisible] = useState<boolean>(false);
-  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
-
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [checkDetailVisible, setCheckDetailVisible] = useState<boolean>(false)
+  const [importFormVisible, setImportFormVisible] = useState<boolean>(false)
+  const [city, setCity] = useState<any>([])
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getWareHouseDetail, {
     manual: true,
-  });
+  })
+
+  const { data: cityData, run: getAreaData, loading: areaLoading } = useRequest(getCityAreas, {
+    manual: true,
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
 
   const searchComponent = () => {
     return (
@@ -63,24 +65,24 @@ const WareHouse: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
@@ -98,7 +100,7 @@ const WareHouse: React.FC = () => {
             )}
             {!buttonJurisdictionArray?.includes('ware-house-check') && <span>{record.name}</span>}
           </>
-        );
+        )
       },
     },
     {
@@ -125,12 +127,12 @@ const WareHouse: React.FC = () => {
       index: 'remark',
       title: '备注',
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddResourceLib = () => {
     addForm.validateFields().then(async (value) => {
@@ -142,43 +144,53 @@ const WareHouse: React.FC = () => {
           version: '',
           remark: '',
         },
-        value,
-      );
-      await addWareHouseItem(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addWareHouseItem(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   const reset = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.reset();
+      tableRef.current.reset()
     }
-  };
+  }
+
+  const provinceData = useMemo(() => {
+    const newProvinceData = city.map((item: any) => {
+      return {
+        label: item.shortName,
+        value: item.id,
+        children: item.children,
+      }
+    })
+    return newProvinceData
+  }, [JSON.stringify(city)])
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
-
-    setEditFormVisible(true);
-    const ResourceLibData = await run(editDataId);
-
-    editForm.setFieldsValue(ResourceLibData);
-  };
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
+    setEditFormVisible(true)
+    const ResourceLibData = await run(editDataId)
+    await getAreaData()
+    editForm.setFieldsValue(ResourceLibData)
+  }
 
   const sureEditResourceLib = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -189,54 +201,54 @@ const WareHouse: React.FC = () => {
           version: editData.version,
           remark: editData.remark,
         },
-        values,
-      );
-      await updateWareHouseItem(submitInfo);
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-      refresh();
-      reset();
-    });
-  };
+        values
+      )
+      await updateWareHouseItem(submitInfo)
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+      refresh()
+      reset()
+    })
+  }
 
   //重启资源服务
   const restartLib = async () => {
-    await restartWareHouse();
-    message.success('操作成功');
-  };
+    await restartWareHouse()
+    message.success('操作成功')
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteWareHouseItem(editDataId);
-    refresh();
-    message.success('删除成功');
-    setTableSelectRows([]);
-  };
+    await deleteWareHouseItem(editDataId)
+    refresh()
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
   //查看详情
   const checkDetail = (id: string) => {
-    setCurrentSelectedId(id);
-    setCheckDetailVisible(true);
-  };
+    setCurrentSelectedId(id)
+    setCheckDetailVisible(true)
+  }
 
   const importWareHouseEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
+      message.error('请选择要操作的行')
+      return
     }
-    setImportFormVisible(true);
-  };
+    setImportFormVisible(true)
+  }
 
   const uploadFinishEvent = () => {
-    refresh();
-  };
+    refresh()
+  }
 
   const tableElement = () => {
     return (
@@ -273,8 +285,8 @@ const WareHouse: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <PageCommonWrap>
@@ -319,8 +331,8 @@ const WareHouse: React.FC = () => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <Spin spinning={loading}>
-            <WareHouseForm />
+          <Spin spinning={areaLoading}>
+            <WareHouseForm provinceData={provinceData} />
           </Spin>
         </Form>
       </Modal>
@@ -350,7 +362,7 @@ const WareHouse: React.FC = () => {
         onChange={setImportFormVisible}
       />
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default WareHouse;
+export default WareHouse

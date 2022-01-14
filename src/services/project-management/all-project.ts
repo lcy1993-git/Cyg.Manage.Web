@@ -231,14 +231,14 @@ export interface AllProjectSearchParams extends AllProjectStatisticsParams {
   statisticalCategory?: string
 }
 
-// export interface ProjectTableRequestData {
-//   pagedData: TableRequestResult
-//   statistics: ProjectTableStatisticsResult
-// }
+export interface ProjectTableRequestData {
+  pagedData: TableRequestResult
+  statistics: ProjectTableStatisticsResult
+}
 
 // 获取我的项目列表
 export const getProjectTableList = (params: AllProjectSearchParams) => {
-  return cyRequest<TableRequestResult>(() =>
+  return cyRequest<ProjectTableRequestData>(() =>
     request(`${baseUrl.project}/ProjectList/GetAlls`, { method: 'POST', data: params })
   )
 }
