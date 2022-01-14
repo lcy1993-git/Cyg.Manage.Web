@@ -20,8 +20,10 @@ export function drawByDataSource(
     source: 'history' | 'design'
     sourceRef: SourceRef
     sourceType: keyof typeof SourceType
-  }
+  },
+  callback?: () => void | undefined
 ) {
+  let cache: number = 0
   if (data) {
     // 清理缓存
     if (source === 'history') {
@@ -33,7 +35,8 @@ export function drawByDataSource(
     }
 
     // 渲染设备
-    if (Array.isArray(data.equipments)) {
+    if (Array.isArray(data.equipments) && data.equipments.length > 0) {
+      cache += 1
       const points = data.equipments.map((p) => {
         const feature = new Feature<Point>()
         feature.setGeometry(new Point(proj.transform([p.lng!, p.lat!], 'EPSG:4326', 'EPSG:3857')))
@@ -45,7 +48,8 @@ export function drawByDataSource(
     }
 
     // 渲染线路
-    if (Array.isArray(data.lines)) {
+    if (Array.isArray(data.lines) && data.lines.length > 0) {
+      cache += 1
       const lines = data.lines.map((p) => {
         const feature = new Feature<LineString>()
         feature.setGeometry(
@@ -67,6 +71,11 @@ export function drawByDataSource(
         return feature
       })
       sourceRef[`${source}LineSource`].addFeatures(lines)
+    }
+
+    // 处理回调, 当数据加载完成时,cache > 0, 执行自适应屏幕回调
+    if (cache > 0) {
+      callback?.()
     }
   }
 }

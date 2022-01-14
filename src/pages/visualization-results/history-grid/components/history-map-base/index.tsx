@@ -3,7 +3,7 @@ import { useMount, useReactive, useSize, useUpdateEffect } from 'ahooks'
 import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
 import 'ol/ol.css'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import AdsorptionModal from './components/adsorption-modal'
 import DragBoxModal from './components/drag-box-modal'
@@ -29,6 +29,7 @@ import {
   moveToViewByLocation,
 } from './utils'
 import { useCurrentRef } from './utils/hooks'
+
 const HistoryMapBase = () => {
   // const [state, setState, mode] = useGridMap()
   const {
@@ -131,11 +132,11 @@ const HistoryMapBase = () => {
   useUpdateEffect(() => onMapLayerTypeChange(mapLayerType, layerRef.streetLayer), [mapLayerType])
 
   // 根据历史数据绘制点位线路
-  useUpdateEffect(() => {
+  useEffect(() => {
     drawHistoryLayer()
   }, [dataSource])
   // 根据预设计数据绘制点位线路
-  useUpdateEffect(() => {
+  useEffect(() => {
     drawDesignLayer()
   }, [importDesignData])
 
@@ -239,15 +240,70 @@ const HistoryMapBase = () => {
     })
   }
 
-  function drawHistoryLayer() {
-    if (!dataSource) return
-    drawByDataSource(dataSource!, {
-      source: 'history',
-      sourceType: 'history',
-      sourceRef,
-    })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
-    // 初次挂载自适应屏幕
+  // 初始化interaction
+  // function initInterAction() {
+  //   interActionRef.modify = new Modify({
+  //     source: interActionRef.source,
+  //     // 设置容差
+  //     style: undefined,
+  //     pixelTolerance: 25,
+  //   })
+  //   interActionRef.modify.on(['modifyend'], (e: Event | BaseEvent) => {
+  //     // e.features.getArray()[0].setStyle(pointStyle.hight)
+  //     // e.features.getArray()[0].setStyle(featureStyle.type2)
+  //   })
+  //   // 暂时屏蔽编辑功能
+  //   false && mapRef.map.addInteraction(interActionRef.modify!)
+
+  //   const pointSelect = new Select()
+  //   const dragBox = new DragBox({})
+  //   const boxSelect = new Select()
+  //   const toggleSelect = new Select({
+  //     condition: conditionClick,
+  //     toggleCondition: platformModifierKeyOnly,
+  //     style: (feature) => {
+  //       const geometryType = feature.getGeometry()?.getType()
+
+  //       return getStyle(geometryType)(
+  //         feature.get('sourceType'),
+  //         feature.get('typeStr') || '无类型',
+  //         feature.get('name'),
+  //         showText
+  //       )
+  //     },
+  //   })
+  //   // 绑定单选及多选回调事件
+  //   toggleSelect.on('select', (e: SelectEvent) =>
+  //     toggleSelectCallback(e, { interActionRef, setState, showText, mode })
+  //   )
+  //   pointSelect.on('select', (e: SelectEvent) =>
+  //     pointSelectCallback(e, { interActionRef, setState, showText, mode })
+  //   )
+  //   toggleSelect.setHitTolerance(8)
+  //   pointSelect.setHitTolerance(8)
+  //   interActionRef.select = {
+  //     pointSelect,
+  //     toggleSelect,
+  //   }
+
+  //   mapRef.map.addInteraction(interActionRef.select.pointSelect)
+
+  //   interActionRef.dragBox = dragBox
+  //   const selectedFeatures = boxSelect.getFeatures()
+  //   dragBox.on('boxend', function () {
+  //     var extent = dragBox.getGeometry().getExtent()
+  //     interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
+  //       selectedFeatures.push(feature)
+  //     })
+  //   })
+  //   // 框选鼠标按下清除高亮
+  //   dragBox.on('boxstart', function () {
+  //     selectedFeatures.clear()
+  //   })
+  // }
+
+  // 初次挂载自适应屏幕
+  const autoSizeScreen = useCallback(() => {
     if (lifeStateRef.state.isFirstDrawHistory) {
       const extend = getFitExtend(
         historyLayerVisible && sourceRef.historyPointSource.getExtent(),
@@ -263,17 +319,37 @@ const HistoryMapBase = () => {
       }
     }
     lifeStateRef.state.isFirstDrawHistory = false
-  }
+  }, [
+    historyLayerVisible,
+    lifeStateRef.state,
+    mode,
+    sourceRef.designLineSource,
+    sourceRef.historyLineSource,
+    sourceRef.historyPointSource,
+    viewRef,
+  ])
 
-  function drawDesignLayer() {
+  const drawHistoryLayer = useCallback(() => {
+    if (!dataSource) return
+    drawByDataSource(
+      dataSource!,
+      {
+        source: 'history',
+        sourceType: 'history',
+        sourceRef,
+      },
+      autoSizeScreen
+    )
+  }, [autoSizeScreen, dataSource, sourceRef])
+
+  const drawDesignLayer = useCallback(() => {
     if (mode === 'preDesign')
       drawByDataSource(importDesignData!, {
         source: 'design',
         sourceType: 'design',
         sourceRef,
       })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
-  }
+  }, [importDesignData, mode, sourceRef])
 
   // 拖拽时是否需要吸附
   const needAdsorptionFn = useCallback(
