@@ -1,11 +1,8 @@
-import * as extent from 'ol/extent'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
-import * as proj from 'ol/proj'
-import { Vector as VectorSource, WMTS as sourceWmts, XYZ } from 'ol/source'
-import tilegridWmts from 'ol/tilegrid/WMTS'
+import { Vector as VectorSource, XYZ } from 'ol/source'
 import { getLayerStyleByShowText } from '../styles'
 import { LayerRef, SourceRef } from './../typings/index'
 
@@ -23,36 +20,45 @@ function getVecLayer() {
 }
 
 function getStreetLayer() {
-  const matrixIds = [],
-    resolutions = []
-  //坐标系信息
-  const projection = proj.get('EPSG:4326')
+  // const matrixIds = [],
+  //   resolutions = []
+  // //坐标系信息
+  // const projection = proj.get('EPSG:4326')
 
-  var projectionExtent = projection.getExtent()
-  var size = extent.getWidth(projectionExtent) / 256
-  // 初始化分辨率组
-  for (let i = 0; i < 18; i++) {
-    resolutions[i] = size / Math.pow(2, i)
-    matrixIds[i] = i.toString()
-  }
-  // 街道图层
+  // var projectionExtent = projection.getExtent()
+  // var size = extent.getWidth(projectionExtent) / 256
+  // // 初始化分辨率组
+  // for (let i = 0; i < 18; i++) {
+  //   resolutions[i] = size / Math.pow(2, i)
+  //   matrixIds[i] = i.toString()
+  // }
+  // // 街道图层
+  // const street = new TileLayer({
+  //   source: new sourceWmts({
+  //     url:
+  //       window.localStorage.getItem('streetUrl') ||
+  //       'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5',
+  //     layer: 'vec',
+  //     matrixSet: 'c',
+  //     format: 'tiles',
+  //     style: 'default',
+  //     projection: proj.get('EPSG:4326'),
+  //     tileGrid: new tilegridWmts({
+  //       origin: extent.getTopLeft(projectionExtent),
+  //       resolutions: resolutions,
+  //       matrixIds: matrixIds,
+  //     }),
+  //     wrapX: false,
+  //   }),
+  // })
+
   const street = new TileLayer({
-    source: new sourceWmts({
+    source: new XYZ({
       url:
         window.localStorage.getItem('streetUrl') ||
         'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5',
-      layer: 'vec',
-      matrixSet: 'c',
-      format: 'tiles',
-      style: 'default',
-      projection: proj.get('EPSG:4326'),
-      tileGrid: new tilegridWmts({
-        origin: extent.getTopLeft(projectionExtent),
-        resolutions: resolutions,
-        matrixIds: matrixIds,
-      }),
-      wrapX: false,
     }),
+    preload: 18,
   })
   street.setVisible(false)
   return street
