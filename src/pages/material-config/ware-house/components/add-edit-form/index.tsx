@@ -1,32 +1,16 @@
-import React, { useMemo, useState } from 'react'
-import { Input } from 'antd'
+import React from 'react'
+import { Input, Spin } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import UrlSelect from '@/components/url-select'
-import { useRequest } from 'ahooks'
-import { getCityAreas } from '@/services/project-management/all-project'
 
 const { TextArea } = Input
+interface WareHouseParams {
+  provinceData?: any
+}
 
-const WareHouseForm: React.FC = () => {
-  const [city, setCity] = useState<any>([])
-  const { data: cityData } = useRequest(() => getCityAreas(), {
-    onSuccess: () => {
-      if (cityData) {
-        setCity(cityData.data)
-      }
-    },
-  })
+const WareHouseForm: React.FC<WareHouseParams> = (props) => {
+  const { provinceData } = props
 
-  const provinceData = useMemo(() => {
-    const newProvinceData = city.map((item: any) => {
-      return {
-        label: item.shortName,
-        value: item.id,
-        children: item.children,
-      }
-    })
-    return newProvinceData
-  }, [JSON.stringify(city)])
   return (
     <>
       <CyFormItem

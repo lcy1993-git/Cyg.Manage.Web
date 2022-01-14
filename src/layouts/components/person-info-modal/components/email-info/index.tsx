@@ -98,7 +98,7 @@ const EmailInfo: React.FC<EmailInfoProps> = ({ email, refresh, cancelEmail }) =>
               {email && (
                 <Popconfirm
                   placement="top"
-                  title="解绑后无法通过该手机号登录，是否解绑？"
+                  title="解绑后无法通过该邮箱号登录，是否解绑？"
                   onConfirm={handlerUnbindEmail}
                 >
                   <Button>解除绑定</Button>

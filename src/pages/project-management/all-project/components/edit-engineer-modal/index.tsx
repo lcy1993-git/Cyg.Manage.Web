@@ -1,8 +1,12 @@
-import { editEngineer, getEngineerInfo } from '@/services/project-management/all-project'
+import {
+  editEngineer,
+  getCityAreas,
+  getEngineerInfo,
+} from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Form, message, Modal, Spin } from 'antd'
 import moment from 'moment'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import CreateEngineerForm from '../create-engineer-form'
 
 interface EditEngineerProps {
@@ -20,15 +24,42 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
   const [areaId, setAreaId] = useState<string>('')
   const [libId, setLibId] = useState<string>('')
   const [canChange, setCanChange] = useState<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(false)
-
+  // const [loading, setLoading] = useState<boolean>(false)
+  const [city, setCity] = useState<any[]>([])
   const [form] = Form.useForm()
 
   const { engineerId, changeFinishEvent, minStart, maxEnd } = props
 
-  const { data: engineerInfo, run } = useRequest(() => getEngineerInfo(engineerId), {
+  const mapHandleCityData = (data: any) => {
+    return {
+      label: data.shortName,
+      value: data.id,
+      children: data.children
+        ? [
+            { label: '无', value: `${data.id}_null`, children: undefined },
+            ...data.children.map(mapHandleCityData),
+          ]
+        : undefined,
+    }
+  }
+
+  //获取区域
+  const { data: cityData, run: getAreaData, loading: cityLoading } = useRequest(getCityAreas, {
     manual: true,
-    onSuccess: (res) => {
+    onSuccess: () => {
+      if (cityData) {
+        setCity(cityData.data)
+      }
+    },
+  })
+
+  const afterHandleData = useMemo(() => {
+    return city?.map(mapHandleCityData)
+  }, [JSON.stringify(city)])
+
+  const { data: engineerInfo, run, loading } = useRequest(() => getEngineerInfo(engineerId), {
+    manual: true,
+    onSuccess: async (res) => {
       const provinceValue = [
         engineerInfo?.province,
         engineerInfo?.city ? engineerInfo?.city : `${engineerInfo?.province}_null`,
@@ -38,7 +69,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
           ? `${engineerInfo?.city}_null`
           : undefined,
       ]
-
+      await getAreaData()
       form.setFieldsValue({
         ...engineerInfo,
         compileTime: engineerInfo?.compileTime ? moment(engineerInfo?.compileTime) : null,
@@ -109,7 +140,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <Spin spinning={!loading}>
+        <Spin spinning={loading || cityLoading}>
           <CreateEngineerForm
             form={form}
             canChange={canChange}
@@ -117,7 +148,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
             libId={libId}
             minStart={minStart}
             maxEnd={maxEnd}
-            onLoadingFinish={() => setLoading(true)}
+            provinceData={afterHandleData}
           />
         </Spin>
       </Form>

@@ -23,7 +23,7 @@ interface CreateEngineerForm {
   canChange?: boolean
   minStart?: number
   maxEnd?: number
-  onLoadingFinish?: () => void
+  provinceData?: any
 }
 
 const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
@@ -35,7 +35,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     canChange = true,
     minStart,
     maxEnd,
-    onLoadingFinish,
+    provinceData,
   } = props
 
   const [areaId, setAreaId] = useState<string>('')
@@ -47,23 +47,21 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   }
 
   //获取区域
-  const { data: cityData, loading: cityLoading } = useRequest(() => getCityAreas(), {
+  const { data: cityData } = useRequest(() => getCityAreas(), {
     onSuccess: () => {
       if (cityData) {
         setCity(cityData.data)
       }
     },
   })
-  const { data: libSelectData = [], loading: libLoading } = useGetSelectData({
+
+  const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
   })
-  const {
-    data: inventoryOverviewSelectData = [],
-    loading: inventoryOverviewLoading,
-  } = useGetSelectData(
+  const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
     {
       url: `/Inventory/GetList?libId=${libId}`,
       valueKey: 'id',
@@ -77,7 +75,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     }
   )
 
-  const { data: warehouseSelectData = [], loading: warehouseLoading } = useGetSelectData(
+  const { data: warehouseSelectData = [] } = useGetSelectData(
     {
       url: '/WareHouse/GetWareHouseListByArea',
       extraParams: { area: areaId },
@@ -88,7 +86,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     { ready: !!areaId, refreshDeps: [areaId] }
   )
 
-  const { data: companySelectData = [], loading: companyLoading } = useGetSelectData(
+  const { data: companySelectData = [] } = useGetSelectData(
     {
       url: `/ElectricityCompany/GetListByAreaId?areaId=${areaId}`,
       // extraParams: { area: areaId },
@@ -97,25 +95,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     },
     { ready: !!areaId, refreshDeps: [areaId] }
   )
-
-  useEffect(() => {
-    if (
-      !cityLoading &&
-      !libLoading &&
-      !inventoryOverviewLoading &&
-      !warehouseLoading &&
-      !companyLoading
-    ) {
-      onLoadingFinish?.()
-    }
-  }, [
-    onLoadingFinish,
-    cityLoading,
-    libLoading,
-    inventoryOverviewLoading,
-    warehouseLoading,
-    companyLoading,
-  ])
 
   const mapHandleCityData = (data: any) => {
     return {
@@ -247,7 +226,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             required
             rules={Rule.area}
           >
-            <Cascader options={afterHandleData} />
+            <Cascader options={afterHandleData || provinceData} />
           </CyFormItem>
         </div>
       </div>

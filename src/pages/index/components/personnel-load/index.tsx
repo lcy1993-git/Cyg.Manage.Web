@@ -126,7 +126,7 @@ const PersonnelLoad: React.FC<Props> = (props) => {
           type: 'shadow',
         },
         position(pt: any) {
-          return [pt[0] + 0, pt[1] - 92]
+          return [pt[0] + 0, pt[1]]
         },
         formatter(params: any) {
           const [name] = params
