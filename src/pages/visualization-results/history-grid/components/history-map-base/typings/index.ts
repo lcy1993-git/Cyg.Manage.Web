@@ -170,3 +170,8 @@ export interface UpdateHistoryData {
   toBeDeletedEquipmentIds: string[]
   toBeDeletedLineIds: string[]
 }
+
+export interface CurrentLayers {
+  LineString: Layer<VectorSource<LineString>>
+  Point: Layer<VectorSource<Point>>
+}

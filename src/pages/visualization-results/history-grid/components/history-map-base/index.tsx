@@ -41,6 +41,7 @@ const HistoryMapBase = () => {
     historyDataSource: dataSource,
     preDesignDataSource: importDesignData,
     geometryType,
+    refetch,
   } = useHistoryGridContext()
   const modeRef = useRef(preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign')
   const mode = modeRef.current
@@ -54,6 +55,16 @@ const HistoryMapBase = () => {
     cleanSelected,
     disableShowTitle,
   } = UIStatus
+
+  // 刷新组件
+  const reFetchData = useCallback(
+    () =>
+      setState((state) => {
+        return { ...state, refetch: !state.refetch }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }),
+    []
+  )
 
   const showText = showTitle && disableShowTitle
 
@@ -72,8 +83,6 @@ const HistoryMapBase = () => {
 
   const sourceRef = useCurrentRef<SourceRef>({})
 
-  // const DragBoxRef = useRef()
-
   const [dragBoxProps, setDragBoxProps] = useState<DragBoxProps>({
     visible: false,
     position: [0, 0],
@@ -85,21 +94,6 @@ const HistoryMapBase = () => {
     position: [0, 0],
     currentState: null,
   })
-
-  // const [modifyProps, setModifyProps] = useState<ModifyProps>({
-  //   visible: false,
-  //   position: [0, 0],
-  //   currentState: null,
-  // })
-
-  // const bindEvent = useCallback(() => {
-  //   mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
-  //     mapClick(e, { interActionRef, mapRef, setState, UIStatus }))
-  //     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
-  // // 地图拖动事件
-  // mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
-  // viewRef.view.on('change:resolution', () => handlerGeographicSize({ mode, viewRef }))
-  // }, [])
 
   // 挂载地图
   useMount(() => {
@@ -133,10 +127,12 @@ const HistoryMapBase = () => {
   // 根据历史数据绘制点位线路
   useEffect(() => {
     drawHistoryLayer()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataSource])
   // 根据预设计数据绘制点位线路
   useEffect(() => {
     drawDesignLayer()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [importDesignData])
 
   // 处理select
@@ -164,7 +160,7 @@ const HistoryMapBase = () => {
       sourceRef.highLightSource.clear()
     }
     interActionRef.dragBox?.setActive(isDraw)
-  }, [isDraw])
+  }, [isDraw, refetch])
 
   // 定位当当前项目位置
   useUpdateEffect(() => {
@@ -239,68 +235,6 @@ const HistoryMapBase = () => {
     })
   }
 
-  // 初始化interaction
-  // function initInterAction() {
-  //   interActionRef.modify = new Modify({
-  //     source: interActionRef.source,
-  //     // 设置容差
-  //     style: undefined,
-  //     pixelTolerance: 25,
-  //   })
-  //   interActionRef.modify.on(['modifyend'], (e: Event | BaseEvent) => {
-  //     // e.features.getArray()[0].setStyle(pointStyle.hight)
-  //     // e.features.getArray()[0].setStyle(featureStyle.type2)
-  //   })
-  //   // 暂时屏蔽编辑功能
-  //   false && mapRef.map.addInteraction(interActionRef.modify!)
-
-  //   const pointSelect = new Select()
-  //   const dragBox = new DragBox({})
-  //   const boxSelect = new Select()
-  //   const toggleSelect = new Select({
-  //     condition: conditionClick,
-  //     toggleCondition: platformModifierKeyOnly,
-  //     style: (feature) => {
-  //       const geometryType = feature.getGeometry()?.getType()
-
-  //       return getStyle(geometryType)(
-  //         feature.get('sourceType'),
-  //         feature.get('typeStr') || '无类型',
-  //         feature.get('name'),
-  //         showText
-  //       )
-  //     },
-  //   })
-  //   // 绑定单选及多选回调事件
-  //   toggleSelect.on('select', (e: SelectEvent) =>
-  //     toggleSelectCallback(e, { interActionRef, setState, showText, mode })
-  //   )
-  //   pointSelect.on('select', (e: SelectEvent) =>
-  //     pointSelectCallback(e, { interActionRef, setState, showText, mode })
-  //   )
-  //   toggleSelect.setHitTolerance(8)
-  //   pointSelect.setHitTolerance(8)
-  //   interActionRef.select = {
-  //     pointSelect,
-  //     toggleSelect,
-  //   }
-
-  //   mapRef.map.addInteraction(interActionRef.select.pointSelect)
-
-  //   interActionRef.dragBox = dragBox
-  //   const selectedFeatures = boxSelect.getFeatures()
-  //   dragBox.on('boxend', function () {
-  //     var extent = dragBox.getGeometry().getExtent()
-  //     interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
-  //       selectedFeatures.push(feature)
-  //     })
-  //   })
-  //   // 框选鼠标按下清除高亮
-  //   dragBox.on('boxstart', function () {
-  //     selectedFeatures.clear()
-  //   })
-  // }
-
   // 初次挂载自适应屏幕
   const autoSizeScreen = useCallback(() => {
     if (lifeStateRef.state.isFirstDrawHistory) {
@@ -339,7 +273,8 @@ const HistoryMapBase = () => {
       },
       autoSizeScreen
     )
-  }, [autoSizeScreen, dataSource, sourceRef])
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
+  }, [dataSource, sourceRef, autoSizeScreen, mapRef, interActionRef, isDraw, mode, modifyProps])
 
   const drawDesignLayer = useCallback(() => {
     if (mode === 'preDesign')
@@ -348,14 +283,15 @@ const HistoryMapBase = () => {
         sourceType: 'design',
         sourceRef,
       })
-  }, [importDesignData, mode, sourceRef])
+    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
+  }, [mode, importDesignData, sourceRef, mapRef, interActionRef, isDraw, modifyProps])
 
   // 拖拽时是否需要吸附
   const needAdsorptionFn = useCallback(
     (flag: boolean) => {
-      needAdsorption({ modifyProps, sourceRef }, flag)
+      needAdsorption({ modifyProps, sourceRef, reFetchData }, flag)
     },
-    [modifyProps, sourceRef]
+    [modifyProps, sourceRef, reFetchData]
   )
 
   return (

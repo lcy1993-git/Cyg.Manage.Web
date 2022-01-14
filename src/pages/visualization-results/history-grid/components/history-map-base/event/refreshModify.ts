@@ -14,11 +14,11 @@ import {
   ElectricPointData,
   InterActionRef,
   MapRef,
+  ModifyProps,
   SourceRef,
   UpdateHistoryData,
 } from '../typings'
 import { getTypeByGeometry } from '../utils'
-import { ModifyProps } from './../typings/index'
 
 interface InitModify {
   interActionRef: InterActionRef
@@ -38,7 +38,9 @@ export function refreshModify({
   modifyProps,
 }: InitModify) {
   if (!isDraw) return
+
   const mode = preMode === 'record' ? 'history' : 'design'
+
   let memoFeatures: Feature<Geometry>[] = []
   const modify = new Modify({
     features: new Collection([
@@ -259,10 +261,20 @@ export function saveOperation(
     toBeDeletedEquipmentIds: [],
     toBeDeletedLineIds: [],
   }
+
+  /**
+   * 本地数据副作用操作
+   * 在上传服务器之前应同步本地数据
+   * 若上传服务器失败，则还原当前数据
+   * @effectLocalFeature 记录当前更新信息与还原信息
+   */
+  const effectLocalFeatures: any[] = []
+
   // 遍历被修改的元素
   eventFeatures.forEach((f) => {
     const geometry = f.getGeometry() as LineString | Point
-    const { ...resData } = f.getProperties()
+    const { geometry: _, ...resData } = f.getProperties()
+
     if (geometry.getType() === 'Point') {
       const [lng, lat] = proj.transform(
         geometry.getCoordinates() as number[],
@@ -271,6 +283,11 @@ export function saveOperation(
       )
       Object.assign(resData, { lng, lat })
       updateHistoryData.equipments.push(resData as ElectricPointData)
+      effectLocalFeatures.push({
+        feature: f,
+        old: { lng: resData.lng, lat: resData.lat },
+        new: { lng, lat },
+      })
     } else if (geometry.getType() === 'LineString') {
       const [startLng, startLat] = proj.transform(
         geometry.getCoordinates()[0] as number[],
@@ -286,6 +303,23 @@ export function saveOperation(
 
       Object.assign(resData, { startLng, startLat, endLng, endLat })
       updateHistoryData.lines.push(resData as ElectricLineData)
+      effectLocalFeatures.push({
+        feature: f,
+        old: {
+          startLng: resData.lng,
+          startLat: resData.lat,
+          endLng: resData.lng,
+          endLat: resData.lat,
+        },
+        new: { startLng, startLat, endLng, endLat },
+      })
+    }
+  })
+
+  // 将新值给Effect
+  effectLocalFeatures.forEach((item) => {
+    for (let k in item.new) {
+      item.feature.set(k, item.new[k])
     }
   })
 
@@ -295,8 +329,9 @@ export function saveOperation(
   // 将新的数据传递给服务器
   saveHistoryData(updateHistoryData).then((res) => {
     if (!(res.code === 200 && res.isSuccess === true)) {
-      message.error('操作失败，服务器未响应')
+      message.error('操作失败，服务器未响应1')
       refreshModifyCallBack()
+    } else {
     }
 
     modifyProps.visible = false

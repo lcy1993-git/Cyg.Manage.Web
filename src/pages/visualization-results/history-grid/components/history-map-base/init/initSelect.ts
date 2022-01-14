@@ -88,6 +88,7 @@ export default function initSelect({
     select.on('select', (e: SelectEvent) => {
       // @ts-ignore
       const selectedData = getDataByFeature(e.target?.getFeatures()?.getArray()) as SelectedData
+
       setState((data) => {
         return {
           ...data,

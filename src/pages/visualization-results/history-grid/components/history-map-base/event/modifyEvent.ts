@@ -1,4 +1,4 @@
-import { message } from 'antd'
+import { message } from 'antd/es'
 import { Feature } from 'ol'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
@@ -16,6 +16,7 @@ import {
 interface AdsorptionOptions {
   modifyProps: ModifyProps
   sourceRef: SourceRef
+  reFetchData: () => void
 }
 /**
  *
@@ -23,12 +24,12 @@ interface AdsorptionOptions {
  * @param needAdsorption
  */
 export function needAdsorption(
-  { modifyProps, sourceRef }: AdsorptionOptions,
+  { modifyProps, sourceRef, reFetchData }: AdsorptionOptions,
   needAdsorption: boolean
 ) {
   const { eventFeatures, refreshModifyCallBack } = modifyProps.currentState!
   if (needAdsorption) {
-    saveAdsorptionOperation(modifyProps.currentState!, sourceRef, modifyProps)
+    saveAdsorptionOperation(modifyProps.currentState!, sourceRef, modifyProps, reFetchData)
   } else {
     saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
   }
@@ -64,7 +65,8 @@ export function needNotAdsorption({ modifyProps, sourceRef }: AdsorptionOptions)
 function saveAdsorptionOperation(
   currentState: ModifyCurrentState,
   sourceRef: SourceRef,
-  modifyProps: ModifyProps
+  modifyProps: ModifyProps,
+  reFetchData: () => void
 ) {
   const { eventFeatures, atPixelFeatures, coordinate, refreshModifyCallBack } = currentState
 
@@ -138,18 +140,20 @@ function saveAdsorptionOperation(
     })
 
     // 将新的数据传递给服务器
-    saveHistoryData(updateHistoryData).then((res) => {
-      if (!(res.code === 200 && res.isSuccess === true)) {
-        message.error('操作失败，服务器未响应')
+    saveHistoryData(updateHistoryData)
+      .then((res) => {
+        if (!(res.code === 200 && res.isSuccess === true)) {
+          message.error(res?.message || '操作失败，服务器未响应')
 
-        refreshModifyCallBack()
-      } else {
-        // 操作成功刷新组件，重新拿数据
-      }
-      modifyProps.visible = false
-      modifyProps.position = [0, 0]
-      modifyProps.currentState = null
-    })
+          refreshModifyCallBack()
+        } else {
+          reFetchData()
+        }
+        modifyProps.visible = false
+        modifyProps.position = [0, 0]
+        modifyProps.currentState = null
+      })
+      .catch(message.error)
   }
 
   sourceRef.highLightSource.clear()
