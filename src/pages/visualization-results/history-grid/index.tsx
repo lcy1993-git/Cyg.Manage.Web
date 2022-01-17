@@ -11,7 +11,8 @@ import { usePreDesign } from './hooks/usePreDesign'
 import { useRefetch } from './hooks/useRefetch'
 import { useSavaData } from './hooks/useSaveData'
 import ImportGrid from './ImportGrid'
-import MapOperator from './MapOperator'
+import MapOperator, { GeographicLocation } from './MapOperator'
+import MapSwitcher from './MapSwitcher'
 import { HistoryGridContext, historyGridReducer, initializeHistoryState } from './store'
 
 const HistoryGrid = () => {
@@ -36,6 +37,8 @@ const HistoryGrid = () => {
           <DesignTitle />
           <MapOperator />
           <ConsoleWrapper />
+          <MapSwitcher />
+          <GeographicLocation />
           <DesignIconWrapper beforeIcon={<HistoryBtn />}>
             <DesignLabel />
             <Legend />
