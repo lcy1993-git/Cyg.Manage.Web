@@ -1,5 +1,3 @@
-import { useClickAway } from 'ahooks'
-import { useRef } from 'react'
 import styles from './index.less'
 
 interface DragBoxModalProps {
@@ -13,8 +11,8 @@ const DragBoxModal: React.FC<DragBoxModalProps> = ({ position, onSelectClick, on
     const type = (e.target as HTMLDivElement).dataset?.type as 'LineString' | 'Point' | undefined
     type ? onSelectClick(type) : onCancelClick()
   }
-  const ref = useRef()
-  useClickAway(onCancelClick, ref)
+  // const ref = useRef<HTMLDivElement>(null)
+  // useClickAway(onCancelClick, ref, "mousedown")
 
   return (
     <div

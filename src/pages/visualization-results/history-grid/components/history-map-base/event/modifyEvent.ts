@@ -33,6 +33,8 @@ export function needAdsorption(
   } else {
     saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
   }
+  // modifyProps.visible = false;
+
   // setModifyProps({
   //   visible: false,
   //   position: [0, 0],
@@ -149,9 +151,6 @@ function saveAdsorptionOperation(
         } else {
           reFetchData()
         }
-        modifyProps.visible = false
-        modifyProps.position = [0, 0]
-        modifyProps.currentState = null
       })
       .catch(message.error)
   }

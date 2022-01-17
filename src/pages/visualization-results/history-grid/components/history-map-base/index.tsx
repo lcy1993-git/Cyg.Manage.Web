@@ -290,6 +290,9 @@ const HistoryMapBase = () => {
   const needAdsorptionFn = useCallback(
     (flag: boolean) => {
       needAdsorption({ modifyProps, sourceRef, reFetchData }, flag)
+      modifyProps.visible = false
+      modifyProps.position = [0, 0]
+      modifyProps.currentState = null
     },
     [modifyProps, sourceRef, reFetchData]
   )

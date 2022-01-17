@@ -82,15 +82,14 @@ export function refreshModify({
     }) as Feature<Geometry | Point | LineString>[]
 
     if (
-      /**
-       * 如果当前feature数量和高亮的feature数量不等
-       * 说明当前modifyEnd的落点位于设备或者线路上
-       * 对当前点位的状态进行边缘情况分析
-       */
-      // features.length !== e.features.getLength() ||
-      // 当所有eFeatures移动一个点位时候 不提示吸附操作
-      needSpecialOperation(eventFeatures, features, coordinate)
+      // 如果eFeature和feature相等说明可以直接保存数据 不需要进行特殊逻辑操作
+      eventFeatures.length !== features.length
     ) {
+      /**
+       * 通过 isCheckAfterAdsorption 判断此处吸附是否合法，
+       * 如果合法，则反馈用户是否需要吸附
+       * 如果不合法，则直接视当前操作操作无吸附副作用
+       */
       if (
         // 当点位重合时的情况处理
         checkRepeatPoint(features) ||
@@ -106,13 +105,14 @@ export function refreshModify({
           refreshModifyCallBack,
         })
         return
-      } else {
+      } else if (
+        // 判断是否需要吸附操作
+        needSpecialOperation(eventFeatures, features, coordinate)
+      ) {
         /**
-         * 通过 isCheckAfterAdsorption 判断此处吸附是否合法，
-         * 如果合法，则反馈用户是否需要吸附
-         * 如果不合法，则直接视当前操作操作无吸附副作用
+         * 该分支说明当前操作需要告知用户是否需要处理设备与线路吸附关系情况
+         * 如果当前设备与线路需要吸附
          */
-
         modifyProps.visible = true
         modifyProps.position = [...pixel]
         modifyProps.currentState = {
@@ -121,23 +121,7 @@ export function refreshModify({
           coordinate,
           refreshModifyCallBack,
         }
-        // setModifyProps({
-        //   visible: true,
-        //   position: [0, 0],
-        //   currentState: {
-        //     eventFeatures,
-        //     atPixelFeatures: features,
-        //     coordinate,
-        //     refreshModifyCallBack,
-        //   },
-        // })
-
         return
-        /**
-         * 该分支说明当前操作需要告知用户是否需要处理设备与线路吸附关系情况
-         * 如果当前设备与线路需要吸附
-         * 则按发布订阅模式进行预patch，由回调方式进行按需处理
-         */
       }
     }
     // 保存操作
@@ -175,8 +159,12 @@ export function refreshModify({
 function checkRepeatPoint(features: (RenderFeature | Feature<Geometry>)[]) {
   let pointNum = 0
   for (let i = 0, len = features.length; i < len; i++) {
+    const a = features[i].getGeometry()?.getType()
+
     if (features[i].getGeometry()?.getType() === 'Point') {
-      if (++pointNum >= 2) {
+      pointNum++
+
+      if (pointNum > 1) {
         message.error('该点已存在其他电气设备，请检查后重试')
         return true
       }
@@ -194,8 +182,13 @@ function checkRepeatLine(features: (RenderFeature | Feature<Geometry>)[]): boole
   let lineObject = {}
   for (let i = 0, len = features.length; i < len; i++) {
     if (features[i].getGeometry()?.getType() === 'LineString') {
-      const [[x1, y1], [x2, y2]] = (features[i].getGeometry() as LineString).getCoordinates()
-      if (x1 === x2 && y1 === y2) {
+      const [x1, y1, x2, y2] = [
+        features[i]?.get('startLng'),
+        features[i]?.get('startLat'),
+        features[i]?.get('endLng'),
+        features[i]?.get('endLat'),
+      ]
+      if (isEqual(x1, x2) && isEqual(y1, y2)) {
         message.error('线段首尾端重合，请检查后重试')
         return true
       }
@@ -327,18 +320,12 @@ export function saveOperation(
   sourceRef.highLightSource.clear()
 
   // 将新的数据传递给服务器
-  saveHistoryData(updateHistoryData).then((res) => {
-    if (!(res.code === 200 && res.isSuccess === true)) {
-      message.error('操作失败，服务器未响应1')
-      refreshModifyCallBack()
-    } else {
-    }
-
-    modifyProps.visible = false
-    modifyProps.position = [0, 0]
-    modifyProps.currentState = null
-  })
+  const messageError = (e: any) => {
+    e?.message && message.error(e.message)
+  }
+  saveHistoryData(updateHistoryData).then(messageError).catch(messageError)
 }
+
 /**
  * 是否需要进行特殊操作
  * 当落点处有额外的线路，且不为线路的端点时，需要进行特殊操作
@@ -350,17 +337,25 @@ function needSpecialOperation(
   features: Feature<Geometry | Point | LineString>[],
   coordinate: number[]
 ): boolean {
-  if (eventFeatures.length === features.length) {
-    return false
-  } else {
-    const eventFeaturesIds = eventFeatures.map((f) => f.get('id'))
-    return features.some(
-      (f) =>
-        !eventFeaturesIds.includes(f.get('id')) &&
-        f.getGeometry()?.getType() === 'LineString' &&
-        (f.getGeometry() as LineString).getCoordinates().some((i) => {
-          return !(i[0] === coordinate[0] && i[1] === coordinate[1])
-        })
-    )
-  }
+  const eventFeaturesIds = eventFeatures.map((f) => f.get('id'))
+
+  const otherFeature = features.filter(
+    (f) => !eventFeaturesIds.includes(f.get('id')) && f.getGeometry()?.getType() === 'LineString'
+  )
+
+  const pixel = proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326')
+
+  // 判断当前操作点位是否再线段的中间
+  return otherFeature.some(
+    (f) =>
+      !(
+        (isEqual(f.get('startLng'), pixel[0]) && isEqual(f.get('startLat'), pixel[1])) ||
+        (isEqual(f.get('endLng'), pixel[0]) && isEqual(f.get('endLat'), pixel[1]))
+      )
+  )
+}
+
+// 判断是否相等, 取10位有效值
+function isEqual(n1: number, n2: number): boolean {
+  return Math.abs(n1 - n2) < 1e-10
 }
