@@ -1,24 +1,32 @@
+import { useCallback } from 'react'
 import MapDisplay from '../components/map-display'
-import { HistoryState } from './store'
+import FlowLayer from './components/flow-layer'
+import { useHistoryGridContext } from './store'
 
-export type MapType = HistoryState['UIStatus']['mapType']
+const MapSwitcher = () => {
+  const { UIStatus, dispatch } = useHistoryGridContext()
 
-export type MapSwitcherProps = {
-  onChange: (type: MapType) => void
-}
+  const onMapTypeChange = useCallback(
+    (type) => {
+      dispatch({
+        type: 'changeUIStatus',
+        payload: { ...UIStatus, mapType: type },
+      })
+    },
+    [UIStatus, dispatch]
+  )
 
-const MapSwitcher = ({ onChange }: MapSwitcherProps) => {
   return (
-    <div className="relative">
-      <MapDisplay
-        onSatelliteMapClick={() => {
-          onChange('satellite')
-        }}
-        onStreetMapClick={() => {
-          onChange('street')
-        }}
-      />
-    </div>
+    <FlowLayer bottom={40} right={15}>
+      <div className="h-30 flex justify-end">
+        <div className="relative">
+          <MapDisplay
+            onSatelliteMapClick={() => onMapTypeChange('satellite')}
+            onStreetMapClick={() => onMapTypeChange('street')}
+          />
+        </div>
+      </div>
+    </FlowLayer>
   )
 }
 
