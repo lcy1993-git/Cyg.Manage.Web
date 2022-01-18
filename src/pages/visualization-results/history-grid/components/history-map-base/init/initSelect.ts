@@ -18,6 +18,7 @@ interface SelectEventOps {
   interActionRef: InterActionRef
   sourceRef: SourceRef
   setDragBoxProps: Dispatch<SetStateAction<DragBoxProps>>
+  mode: string
 }
 
 export default function initSelect({
@@ -26,7 +27,10 @@ export default function initSelect({
   setState,
   sourceRef,
   setDragBoxProps,
+  mode,
 }: SelectEventOps) {
+  const modeSign = mode === 'record' ? 'history' : 'design'
+
   const boxSelect = new Select({
     style: (f) => {
       return getStyle(f.getGeometry()?.getType())?.(
@@ -119,10 +123,10 @@ export default function initSelect({
 
     const source = new VectorSource<Point | LineString>({
       features: [
-        ...sourceRef.historyPointSource.getFeatures(),
-        ...sourceRef.historyLineSource.getFeatures(),
-        ...sourceRef.designPointSource.getFeatures(),
-        ...sourceRef.designLineSource.getFeatures(),
+        ...sourceRef[`${modeSign}PointSource`].getFeatures(),
+        ...sourceRef[`${modeSign}LineSource`].getFeatures(),
+        // ...sourceRef.designPointSource.getFeatures(),
+        // ...sourceRef.designLineSource.getFeatures(),
       ],
     })
     const selected: Feature<Point | LineString>[] = []

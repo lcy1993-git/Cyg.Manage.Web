@@ -11,7 +11,6 @@ interface DragBoxCancelProps {
 }
 
 export function onDragBoxPointSelect(
-  mode: string,
   dragBoxProps: DragBoxProps,
   type: 'Point' | 'LineString',
   setState: HistoryDispatch,
@@ -19,14 +18,14 @@ export function onDragBoxPointSelect(
   sourceRef: SourceRef,
   setDragBoxProps: Dispatch<SetStateAction<DragBoxProps>>
 ) {
-  const sourceType = mode === 'record' ? 'history' : 'design'
+  // const sourceType = mode === 'record' ? 'history' : 'design'
   interActionRef.select.boxSelect.getFeatures().clear()
   const selectFeature = interActionRef.select.boxSelect.getFeatures()
 
   const filterFeature = dragBoxProps.selected.filter((feature) => {
     return (
       feature.getGeometry()?.getType() === type &&
-      feature.get('sourceType') === sourceType &&
+      // feature.get('sourceType') === sourceType &&
       selectFeature.push(feature)
     )
   })

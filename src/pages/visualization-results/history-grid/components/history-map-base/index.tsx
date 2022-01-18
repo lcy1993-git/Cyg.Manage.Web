@@ -349,7 +349,6 @@ const HistoryMapBase = () => {
           position={dragBoxProps.position}
           onSelectClick={(type: 'LineString' | 'Point') =>
             onDragBoxPointSelect(
-              mode,
               dragBoxProps,
               type,
               setState,
