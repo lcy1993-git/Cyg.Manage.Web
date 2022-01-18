@@ -165,6 +165,7 @@ export interface ModifyProps {
 }
 
 export interface UpdateHistoryData {
+  id?: string
   equipments: ElectricPointData[]
   lines: ElectricLineData[]
   toBeDeletedEquipmentIds: string[]

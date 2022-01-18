@@ -4,7 +4,7 @@ import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import * as proj from 'ol/proj'
 import { saveOperation } from '.'
-import { saveHistoryData } from '../../../service'
+import { saveData, saveHistoryData } from '../../../service'
 import {
   ElectricLineData,
   ElectricPointData,
@@ -17,6 +17,8 @@ interface AdsorptionOptions {
   modifyProps: ModifyProps
   sourceRef: SourceRef
   reFetchData: () => void
+  mode: string
+  preId: string | undefined
 }
 /**
  *
@@ -24,14 +26,21 @@ interface AdsorptionOptions {
  * @param needAdsorption
  */
 export function needAdsorption(
-  { modifyProps, sourceRef, reFetchData }: AdsorptionOptions,
+  { modifyProps, sourceRef, reFetchData, mode, preId }: AdsorptionOptions,
   needAdsorption: boolean
 ) {
   const { eventFeatures, refreshModifyCallBack } = modifyProps.currentState!
   if (needAdsorption) {
-    saveAdsorptionOperation(modifyProps.currentState!, sourceRef, modifyProps, reFetchData)
+    saveAdsorptionOperation(
+      modifyProps.currentState!,
+      sourceRef,
+      modifyProps,
+      reFetchData,
+      mode,
+      preId
+    )
   } else {
-    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
+    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps, mode, preId)
   }
   // modifyProps.visible = false;
 
@@ -45,9 +54,9 @@ export function needAdsorption(
  * 不吸附时候的点击事件
  * @param param0
  */
-export function needNotAdsorption({ modifyProps, sourceRef }: AdsorptionOptions) {
+export function needNotAdsorption({ modifyProps, sourceRef, mode, preId }: AdsorptionOptions) {
   const { eventFeatures, refreshModifyCallBack } = modifyProps.currentState!
-  saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
+  saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps, mode, preId)
   modifyProps.visible = false
   modifyProps.position = [0, 0]
   modifyProps.currentState = null
@@ -68,7 +77,9 @@ function saveAdsorptionOperation(
   currentState: ModifyCurrentState,
   sourceRef: SourceRef,
   modifyProps: ModifyProps,
-  reFetchData: () => void
+  reFetchData: () => void,
+  mode: string,
+  preId: string | undefined
 ) {
   const { eventFeatures, atPixelFeatures, coordinate, refreshModifyCallBack } = currentState
 
@@ -142,7 +153,9 @@ function saveAdsorptionOperation(
     })
 
     // 将新的数据传递给服务器
-    saveHistoryData(updateHistoryData)
+    const save = mode === 'history' ? saveHistoryData : saveData
+    const idProps = mode === 'history' ? {} : { id: preId! }
+    save({ ...updateHistoryData, ...idProps })
       .then((res) => {
         if (!(res.code === 200 && res.isSuccess === true)) {
           message.error(res?.message || '操作失败，服务器未响应')

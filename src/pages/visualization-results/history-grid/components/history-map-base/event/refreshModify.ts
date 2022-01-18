@@ -8,7 +8,7 @@ import { Modify, Snap } from 'ol/interaction'
 import { ModifyEvent } from 'ol/interaction/Modify'
 import * as proj from 'ol/proj'
 import RenderFeature from 'ol/render/Feature'
-import { saveHistoryData } from '../../../service'
+import { saveData, saveHistoryData } from '../../../service'
 import {
   ElectricLineData,
   ElectricPointData,
@@ -27,6 +27,7 @@ interface InitModify {
   isDraw: boolean
   mode: string
   modifyProps: ModifyProps
+  preId: string | undefined
 }
 
 export function refreshModify({
@@ -36,6 +37,7 @@ export function refreshModify({
   isDraw,
   mode: preMode,
   modifyProps,
+  preId,
 }: InitModify) {
   if (!isDraw) return
 
@@ -59,7 +61,7 @@ export function refreshModify({
   })
 
   const refreshModifyCallBack = () =>
-    refreshModify({ interActionRef, mapRef, sourceRef, isDraw, mode: preMode, modifyProps })
+    refreshModify({ interActionRef, mapRef, sourceRef, isDraw, mode: preMode, modifyProps, preId })
 
   modify.on('modifystart', (e: ModifyEvent) => {
     const featureArr = e.features.getArray() as Feature<Geometry>[]
@@ -78,7 +80,7 @@ export function refreshModify({
 
     const features = mapRef.map.getFeaturesAtPixel(pixel, {
       layerFilter: (f) =>
-        f.get('name') === 'historyPointLayer' || f.get('name') === 'historyLineLayer',
+        f.get('name') === `${mode}PointLayer` || f.get('name') === `${mode}LineLayer`,
     }) as Feature<Geometry | Point | LineString>[]
 
     if (
@@ -125,7 +127,7 @@ export function refreshModify({
       }
     }
     // 保存操作
-    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps)
+    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps, mode, preId)
   })
 
   // 移除前一个modify
@@ -159,8 +161,6 @@ export function refreshModify({
 function checkRepeatPoint(features: (RenderFeature | Feature<Geometry>)[]) {
   let pointNum = 0
   for (let i = 0, len = features.length; i < len; i++) {
-    const a = features[i].getGeometry()?.getType()
-
     if (features[i].getGeometry()?.getType() === 'Point') {
       pointNum++
 
@@ -246,7 +246,9 @@ export function saveOperation(
   eventFeatures: Feature<Geometry>[],
   refreshModifyCallBack: () => void,
   sourceRef: SourceRef,
-  modifyProps: ModifyProps
+  modifyProps: ModifyProps,
+  mode: string,
+  preId: string | undefined
 ): void {
   const updateHistoryData: UpdateHistoryData = {
     equipments: [],
@@ -321,9 +323,16 @@ export function saveOperation(
 
   // 将新的数据传递给服务器
   const messageError = (e: any) => {
-    e?.message && message.error(e.message)
+    if (e?.message) {
+      message.error(e.message)
+      refreshModifyCallBack()
+    }
   }
-  saveHistoryData(updateHistoryData).then(messageError).catch(messageError)
+  const save = mode === 'history' ? saveHistoryData : saveData
+  const idProps = mode === 'history' ? {} : { id: preId! }
+  save({ ...updateHistoryData, ...idProps })
+    .then(messageError)
+    .catch(messageError)
 }
 
 /**

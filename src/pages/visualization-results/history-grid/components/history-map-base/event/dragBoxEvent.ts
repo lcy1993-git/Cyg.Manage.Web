@@ -19,7 +19,7 @@ export function onDragBoxPointSelect(
   sourceRef: SourceRef,
   setDragBoxProps: Dispatch<SetStateAction<DragBoxProps>>
 ) {
-  const sourceType = mode === 'record' ? 'history' : 'preDesign'
+  const sourceType = mode === 'record' ? 'history' : 'design'
   interActionRef.select.boxSelect.getFeatures().clear()
   const selectFeature = interActionRef.select.boxSelect.getFeatures()
 
@@ -32,7 +32,7 @@ export function onDragBoxPointSelect(
   })
 
   const selectedData = getDataByFeature(filterFeature)
-  // interActionRef.select.boxSelect.getFeatures().remove(interActionRef.dragBoxFeature!)
+
   setState((data) => {
     return {
       ...data,

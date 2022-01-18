@@ -154,7 +154,15 @@ const HistoryMapBase = () => {
       payload: [],
     })
     if (isDraw) {
-      refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
+      refreshModify({
+        mapRef,
+        interActionRef,
+        sourceRef,
+        isDraw,
+        mode,
+        modifyProps,
+        preId: importDesignData?.id,
+      })
     } else {
       interActionRef.modify && mapRef.map.removeInteraction(interActionRef.modify)
       sourceRef.highLightSource.clear()
@@ -273,8 +281,26 @@ const HistoryMapBase = () => {
       },
       autoSizeScreen
     )
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
-  }, [dataSource, sourceRef, autoSizeScreen, mapRef, interActionRef, isDraw, mode, modifyProps])
+    refreshModify({
+      mapRef,
+      interActionRef,
+      sourceRef,
+      isDraw,
+      mode,
+      modifyProps,
+      preId: importDesignData?.id,
+    })
+  }, [
+    dataSource,
+    sourceRef,
+    autoSizeScreen,
+    mapRef,
+    interActionRef,
+    isDraw,
+    mode,
+    modifyProps,
+    importDesignData,
+  ])
 
   const drawDesignLayer = useCallback(() => {
     if (mode === 'preDesign')
@@ -283,18 +309,29 @@ const HistoryMapBase = () => {
         sourceType: 'design',
         sourceRef,
       })
-    refreshModify({ mapRef, interActionRef, sourceRef, isDraw, mode, modifyProps })
+    refreshModify({
+      mapRef,
+      interActionRef,
+      sourceRef,
+      isDraw,
+      mode,
+      modifyProps,
+      preId: importDesignData?.id,
+    })
   }, [mode, importDesignData, sourceRef, mapRef, interActionRef, isDraw, modifyProps])
 
   // 拖拽时是否需要吸附
   const needAdsorptionFn = useCallback(
     (flag: boolean) => {
-      needAdsorption({ modifyProps, sourceRef, reFetchData }, flag)
+      needAdsorption(
+        { modifyProps, sourceRef, reFetchData, mode, preId: importDesignData?.id },
+        flag
+      )
       modifyProps.visible = false
       modifyProps.position = [0, 0]
       modifyProps.currentState = null
     },
-    [modifyProps, sourceRef, reFetchData]
+    [modifyProps, sourceRef, reFetchData, mode, importDesignData]
   )
 
   return (
