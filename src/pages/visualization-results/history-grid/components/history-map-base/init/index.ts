@@ -46,6 +46,7 @@ function init({
     sourceRef,
     setState,
     setDragBoxProps,
+    mode,
   })
 
   // 显示比例尺
