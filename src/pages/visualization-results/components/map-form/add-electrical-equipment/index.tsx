@@ -1,5 +1,5 @@
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-import { useMount, useUnmount } from 'ahooks'
+import { useMount, useMouse } from 'ahooks'
 import { Button, Form, Input, message, Modal, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
@@ -17,6 +17,7 @@ import { useHistoryGridContext } from '@/pages/visualization-results/history-gri
 
 const { Option } = Select
 const { confirm } = Modal
+
 export interface ElectricalEquipmentForm {
   name: string
   id: string
@@ -38,6 +39,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     mode,
     UIStatus,
     selectedData = [], //被选中的元素
+    dispatch,
     currentGridData,
     historyDataSource, // 历史网架绘制元素的数据源
     preDesignDataSource, // 预设计网架绘制元素的数据源
@@ -94,8 +96,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       values.type = Number(values.type)
       values.voltageLevel = Number(values.voltageLevel)
       if (type === 'LineString') {
-        // @ts-ignore
-        data['lines'] =
+        data['lines'] = // @ts-ignore
           dataSource?.lines.filter((item: ElectricLineData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
@@ -103,8 +104,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
             }
           }) ?? []
       } else {
-        // @ts-ignore
-        data['equipments'] =
+        data['equipments'] = // @ts-ignore
           dataSource?.equipments.filter((item: ElectricPointData) => {
             if (item.id === selectedData[0]?.id) {
               item = Object.assign(item, values)
@@ -179,8 +179,13 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setEquipmentsType(Object.entries(ET.valueDesPairs) ?? [])
     }
   }
-  const hideModel = () => {
+  const hideModel = (e: React.MouseEvent) => {
+    e.stopPropagation()
     setVisible(false)
+    dispatch({
+      type: 'changeSelectedData',
+      payload: [],
+    })
   }
   const getLength = () => {
     let len = 0
@@ -224,11 +229,12 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
     }
     return data
   }
-  const dragDetails = (e: React.DragEvent<HTMLDivElement>) => {
+  const dragDetails = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.clientX !== 0 && e.clientY !== 0 && e.buttons === 1) {
-      setPosition([e.pageX - 100, e.pageY - 40])
+      setPosition([e.clientX - 90, e.clientY - 15])
     }
   }
+
   useEffect(() => {
     setVisible(false)
   }, [currentGridData])
@@ -263,6 +269,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
         form.setFieldsValue(val)
       })
     } else if (drawing && selectedData?.length > 1) {
+      setType(Object.keys(selectedData[0]).includes('startLng') ? 'LineString' : 'Point')
       form.setFieldsValue(getEqualData())
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLength()
@@ -277,6 +284,10 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       ) {
         setPosition([10, 155])
         setShowDetail(false)
+      } else if (mode === 'recordEdit' && selectedData.length > 1) {
+        setPosition([10, 155])
+        setShowDetail(false)
+        setVisible(true)
       } else {
         setPosition([10, 155])
         setShowDetail(false)
@@ -305,31 +316,19 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setVisible(true)
     }
   }, [showHistoryLayer, mode])
-  // useMount(()=>{
-  //   window.addEventListener('keydown',(key)=>{
-  //     if (key.key === 'Control'){
-  //       setDraging(true)
-  //     } else {
-  //       setDraging(false)
-  //     }
-  //   })
-  // })
-  useUnmount(() => {
-    window.removeEventListener('keydown', () => {})
-  })
+
   return (
     <div>
       {showDetail && visible && (
         <div
           className={styles.detailBox}
-          onMouseMove={(e) => dragDetails(e)}
           style={{
             width: 180,
-            top: position[1] + 20,
-            left: position[0] + 30,
+            top: position[1],
+            left: position[0],
           }}
         >
-          <div className={styles.detailHeader}>
+          <div className={styles.detailHeader} onMouseMove={(e) => dragDetails(e)}>
             <span>{type === 'LineString' ? '线路' : '电气设备'}</span>
             <CloseOutlined
               onClick={hideModel}
@@ -391,7 +390,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
             )}
             <CloseOutlined
               className={styles.closeIcon}
-              onClick={hideModel}
+              onClick={(e) => hideModel(e)}
               style={{ color: '#666666', fontSize: '14px' }}
             />
           </div>
