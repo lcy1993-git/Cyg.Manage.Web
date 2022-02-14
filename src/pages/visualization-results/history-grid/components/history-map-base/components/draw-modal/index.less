@@ -1,0 +1,36 @@
+.drawModalWrap {
+  position: absolute;
+  width: 320px;
+  padding: 10px;
+  padding-top: 6px;
+  background-color: #fff;
+  border-radius: 2px;
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    user-select: none;
+    .close {
+      position: relative;
+      top: -2px;
+
+      display: inline-block;
+      width: 20px;
+      text-align: center;
+      cursor: pointer;
+      :hover {
+        background-color: green;
+      }
+    }
+  }
+  .divider {
+    width: 100%;
+    color: #f0f0f0;
+    opacity: 0.4;
+  }
+  .footer {
+    display: flex;
+    justify-content: end;
+  }
+}
