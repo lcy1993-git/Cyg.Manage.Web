@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import AdsorptionModal from './components/adsorption-modal'
 import DragBoxModal from './components/drag-box-modal'
+import DrawModal from './components/draw-modal'
 import { drawByDataSource, drawMap } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import {
@@ -20,7 +21,15 @@ import {
 } from './event'
 import './index.css'
 import init from './init'
-import { DragBoxProps, InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
+import {
+  DragBoxProps,
+  DrawProps,
+  InterActionRef,
+  LayerRef,
+  LifeStateRef,
+  MapRef,
+  SourceRef,
+} from './typings'
 import {
   checkUserLocation,
   clearScreen,
@@ -93,6 +102,13 @@ const HistoryMapBase = () => {
     visible: false,
     position: [0, 0],
     currentState: null,
+  })
+
+  const drawProps = useReactive<DrawProps>({
+    visible: false,
+    position: [0, 0],
+    currentState: null,
+    type: 'Point',
   })
 
   // 挂载地图
@@ -360,6 +376,7 @@ const HistoryMapBase = () => {
           onCancelClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef, sourceRef })}
         ></DragBoxModal>
       )}
+      {drawProps.visible && <DrawModal drawProps={drawProps}></DrawModal>}
     </div>
   )
 }

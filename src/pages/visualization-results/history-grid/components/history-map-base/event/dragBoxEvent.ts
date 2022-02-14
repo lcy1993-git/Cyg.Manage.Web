@@ -32,12 +32,13 @@ export function onDragBoxPointSelect(
 
   const selectedData = getDataByFeature(filterFeature)
 
-  setState((data) => {
-    return {
-      ...data,
-      selectedData: selectedData,
-    }
-  })
+  selectedData.length > 0 &&
+    setState((data) => {
+      return {
+        ...data,
+        selectedData: selectedData,
+      }
+    })
   setDragBoxProps({ visible: false, position: [0, 0], selected: [] })
   // 清楚线框
   sourceRef.dragBoxSource.clear()

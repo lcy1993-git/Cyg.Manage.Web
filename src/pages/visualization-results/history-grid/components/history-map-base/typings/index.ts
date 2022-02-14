@@ -176,3 +176,10 @@ export interface CurrentLayers {
   LineString: Layer<VectorSource<LineString>>
   Point: Layer<VectorSource<Point>>
 }
+
+export interface DrawProps {
+  visible: boolean
+  position: [number, number]
+  currentState: any
+  type: 'Point' | 'LineString'
+}
