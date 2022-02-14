@@ -481,18 +481,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           </div>
           <div className="flex">
             <div className="flex1">
-              <CyFormItem label="人员安排" align="right" labelWidth={100}>
-                <div style={{ width: '275px' }}>
-                  <ChooseDesignAndSurvey
-                    ref={personRef}
-                    defaultValue={selectDefaultData}
-                    onChange={setPersonInfo}
-                  />
-                </div>
-              </CyFormItem>
-            </div>
-            <div className="flex1">
-              <CyFormItem label="电压等级" align="right" labelWidth={135}>
+              <CyFormItem label="电压等级" align="right" labelWidth={100}>
                 <div style={{ width: '275px' }}>
                   <UrlSelect
                     {...selectStyle}
@@ -505,6 +494,17 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                     placeholder="电压等级"
                   />
                 </div>
+              </CyFormItem>
+            </div>
+          </div>
+          <div className="flex">
+            <div className="flex1">
+              <CyFormItem label="人员安排" align="right" labelWidth={100} overflow={true}>
+                <ChooseDesignAndSurvey
+                  ref={personRef}
+                  defaultValue={selectDefaultData}
+                  onChange={setPersonInfo}
+                />
               </CyFormItem>
             </div>
           </div>
