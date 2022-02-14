@@ -15,7 +15,7 @@ import React, {
 } from 'react'
 import { useMyWorkStore } from '../../context'
 import ParentRow from '../virtual-table/ParentRow'
-import VirtualTable from '../virtual-table/VirtualTable'
+import VirtualTable, { VirtualTableInstance } from '../virtual-table/VirtualTable'
 import styles from './index.less'
 
 interface EngineerTableProps {
@@ -59,8 +59,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     throttleInterval: 500,
   })
 
-  const cache = useRef([])
-  const tableRef = useRef<HTMLDivElement>()
+  const cache = useRef<any[]>([])
+  const tableRef = useRef<VirtualTableInstance>(null)
 
   const tableResultData = useMemo(() => {
     if (tableData) {
@@ -205,8 +205,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }))
 
   const emptyTableSelect = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore TODO
+    if (tableRef.current) {
       tableRef.current.emptySelectEvent()
     }
   }

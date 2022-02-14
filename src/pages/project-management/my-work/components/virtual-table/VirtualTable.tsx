@@ -105,23 +105,31 @@ export type VirtualTableProps<T extends Record<string, any>> = {
   }
 }
 
+export type VirtualTableInstance = {
+  /** 刷新 */
+  emptySelectEvent: () => void
+  /** 全选 */
+  selectAll: () => void
+}
+
 /**
  * @see https://react-window.vercel.app/#/api/FixedSizeList
  */
 const VirtualTable = <T extends Record<string, any>>(
   { data, columns, rowHeight, rowSelection, style, className, ...rest }: VirtualTableProps<T>,
-  ref: Ref<any>
+  ref: Ref<VirtualTableInstance>
 ) => {
-  const { updateSelectedKeysFlow, emptySelectArray, selectedKeys } = useSelection<T>({
-    rowSelection,
-  })
+  const selection = useSelection({ rowSelection, data })
+  const { updateSelectedKeysFlow, emptySelectArray, selectedKeys, selectAll } = selection
 
-  useImperativeHandle(ref, () => ({
-    // 刷新
-    emptySelectEvent: () => {
-      emptySelectArray()
-    },
-  }))
+  useImperativeHandle(
+    ref,
+    () => ({
+      emptySelectEvent: emptySelectArray,
+      selectAll,
+    }),
+    [emptySelectArray, selectAll]
+  )
 
   return (
     <AutoSizer>
