@@ -334,7 +334,7 @@ const MyProject: React.FC = () => {
 
   const shareMenu = (
     <Menu>
-      {buttonJurisdictionArray?.includes('all-project-share') && (
+      {buttonJurisdictionArray?.includes('all-project-shared') && (
         <Menu.Item key="share" onClick={() => shareEvent()}>
           共享
         </Menu.Item>
@@ -614,7 +614,7 @@ const MyProject: React.FC = () => {
                   )}
                 </>
               )}
-              {(buttonJurisdictionArray?.includes('all-project-share') ||
+              {(buttonJurisdictionArray?.includes('all-project-shared') ||
                 buttonJurisdictionArray?.includes('all-project-share-recall')) && (
                 <Dropdown overlay={shareMenu}>
                   <Button className="mr7">
