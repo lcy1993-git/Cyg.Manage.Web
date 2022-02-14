@@ -120,7 +120,7 @@ interface ComponentPropertyParams {
 
 //获取单条明细数据
 export const getPropertyList = (params: { libId: string; componentId: string }) => {
-  return cyRequest<ComponentPropertyParams>(() =>
+  return cyRequest<ComponentPropertyParams[]>(() =>
     request(`${baseUrl.resource}/ComponentProperty/GetList`, {
       method: 'POST',
       data: params,

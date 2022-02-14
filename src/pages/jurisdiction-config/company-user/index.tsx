@@ -333,7 +333,6 @@ const CompanyUser: React.FC = () => {
             !record.isCurrentUser ? (
               record.userStatus === 1 ? (
                 <>
-                  {/* <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} /> */}
                   <span
                     style={{ cursor: 'pointer' }}
                     className="colorPrimary"
@@ -344,12 +343,6 @@ const CompanyUser: React.FC = () => {
                 </>
               ) : (
                 <>
-                  {/* <Switch
-                    checked={false}
-                    onChange={() => {
-                      updateStatus(record.id);
-                    }}
-                  /> */}
                   <span
                     style={{ cursor: 'pointer' }}
                     onClick={() => updateStatus(record.id)}
@@ -359,13 +352,10 @@ const CompanyUser: React.FC = () => {
                   </span>
                 </>
               )
-            ) : record.userStatus === 1 ? (
-              <span>已启用</span>
             ) : (
-              <span>已禁用</span>
+              !buttonJurisdictionArray?.includes('company-user-start-using') &&
+              (record.userStatus === 1 ? <span>已启用</span> : <span>已禁用</span>)
             )}
-            {!buttonJurisdictionArray?.includes('company-user-start-using') &&
-              (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
           </>
         )
       },

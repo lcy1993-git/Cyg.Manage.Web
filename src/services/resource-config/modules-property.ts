@@ -39,6 +39,7 @@ interface ModuleAttributeParams extends ItemDetailData {
   lineNumber: number
   conductorType: string
   conductorSpec: string
+  rodDiameter: number
 }
 
 //获取单条模块数据详情

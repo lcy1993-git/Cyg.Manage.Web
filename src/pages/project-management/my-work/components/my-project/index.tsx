@@ -9,6 +9,7 @@ import EditArrangeModal from '@/pages/project-management/all-project/components/
 import ExternalArrangeModal from '@/pages/project-management/all-project/components/external-arrange-modal'
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
+import ProjectRemovalModal from '@/pages/project-management/all-project/components/project-removal-modal'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
@@ -67,6 +68,9 @@ const MyProject: React.FC = () => {
   //外审
   const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false)
   const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false)
+
+  //项目迁移弹窗
+  const [removalModalVisible, setRemovalModalVisible] = useState<boolean>(false)
 
   const { userType = '' } = useGetUserInfo()
 
@@ -556,6 +560,11 @@ const MyProject: React.FC = () => {
     delayRefresh()
   }
 
+  //项目迁移
+  const removalEvent = () => {
+    setRemovalModalVisible(true)
+  }
+
   return (
     <div className={styles.myProjectContent}>
       <div className={styles.myProjectCommonContent}>
@@ -632,6 +641,11 @@ const MyProject: React.FC = () => {
                     />
                   </div>
                 )}
+              {/* {buttonJurisdictionArray?.includes('add-favorite-project') && !sideVisible && ( */}
+              <Button className="mr7" onClick={() => removalEvent()}>
+                项目迁移
+              </Button>
+              {/* // )} */}
             </div>
           )}
       </div>
@@ -744,6 +758,14 @@ const MyProject: React.FC = () => {
           visible={externalListModalVisible}
           onChange={setExternalListModalVisible}
           refresh={delayRefresh}
+        />
+      )}
+      {removalModalVisible && (
+        <ProjectRemovalModal
+          visible={removalModalVisible}
+          finishEvent={delayRefresh}
+          onChange={setRemovalModalVisible}
+          projectId={tableSelectKeys}
         />
       )}
     </div>

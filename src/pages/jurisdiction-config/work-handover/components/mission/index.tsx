@@ -1,24 +1,24 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import { Tabs } from 'antd';
-import styles from './index.less';
+import React, { Dispatch, SetStateAction } from 'react'
+import { Tabs } from 'antd'
+import styles from './index.less'
 // import DesignTable from './components/design-table';
-import ProspectTable from './components/prospect-table';
-import DesignTable from './components/design-table';
+import ProspectTable from './components/prospect-table'
+import DesignTable from './components/design-table'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 interface MissionParams {
-  userId: string;
-  recevierId: string | undefined;
-  setReceiverName?: Dispatch<SetStateAction<string>>;
-  getProjectIds?: Dispatch<SetStateAction<string[]>>;
-  getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
-  isFresh?: boolean;
-  doneFlag?: boolean;
-  setIsFresh?: Dispatch<SetStateAction<boolean>>;
-  setDoneFlag?: Dispatch<SetStateAction<boolean>>;
-  changeTabKey?: Dispatch<SetStateAction<string>>;
-  getEngineerData?: Dispatch<SetStateAction<any[]>>;
+  userId: string
+  recevierId: string | undefined
+  setReceiverName?: Dispatch<SetStateAction<string>>
+  getProjectIds?: Dispatch<SetStateAction<string[]>>
+  getReceiverId?: Dispatch<SetStateAction<string | undefined>>
+  isFresh?: boolean
+  doneFlag?: boolean
+  setIsFresh?: Dispatch<SetStateAction<boolean>>
+  setDoneFlag?: Dispatch<SetStateAction<boolean>>
+  changeTabKey?: Dispatch<SetStateAction<string>>
+  getEngineerData?: Dispatch<SetStateAction<any[]>>
 }
 
 const MissionTab: React.FC<MissionParams> = (props) => {
@@ -33,17 +33,17 @@ const MissionTab: React.FC<MissionParams> = (props) => {
     setIsFresh,
     setDoneFlag,
     setReceiverName,
-  } = props;
+  } = props
 
   return (
     <div className={styles.missionTabs}>
       <Tabs
         className="normalTabs noMargin"
         onChange={(key: string) => {
-          changeTabKey?.(key);
-          getReceiverId?.(undefined);
-          setReceiverName?.('');
-          setDoneFlag?.(false);
+          changeTabKey?.(key)
+          getReceiverId?.(undefined)
+          setReceiverName?.('')
+          setDoneFlag?.(false)
         }}
       >
         <TabPane tab="勘察任务" key="prospect">
@@ -70,9 +70,21 @@ const MissionTab: React.FC<MissionParams> = (props) => {
             getProjectIds={getProjectIds}
           />
         </TabPane>
+        <TabPane tab="造价任务" key="cost">
+          <DesignTable
+            isFresh={isFresh}
+            setIsFresh={setIsFresh}
+            userId={userId}
+            doneFlag={doneFlag}
+            setReceiverName={setReceiverName}
+            recevierId={recevierId}
+            getReceiverId={getReceiverId}
+            getProjectIds={getProjectIds}
+          />
+        </TabPane>
       </Tabs>
     </div>
-  );
-};
+  )
+}
 
-export default MissionTab;
+export default MissionTab

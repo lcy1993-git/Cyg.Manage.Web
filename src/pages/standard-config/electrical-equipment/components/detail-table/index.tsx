@@ -7,6 +7,7 @@ import {
   getComponentDetailItem,
   updateComponentDetailItem,
 } from '@/services/resource-config/component'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal } from 'antd'
@@ -35,6 +36,7 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const { data, run } = useRequest(getComponentDetailItem, {
     manual: true,
@@ -163,7 +165,6 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const sureEditcomponentDetail = () => {
     const editData = data!
-    console.log(editData)
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
@@ -197,15 +198,21 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRightSlot = (
     <>
-      <Button type="primary" className="mr7" onClick={() => addEvent()}>
-        <PlusOutlined />
-        添加
-      </Button>
-      <Button className="mr7" onClick={() => editEvent()}>
-        <EditOutlined />
-        编辑
-      </Button>
-      <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      {buttonJurisdictionArray?.includes('add-electric-detail') && (
+        <Button type="primary" className="mr7" onClick={() => addEvent()}>
+          <PlusOutlined />
+          添加
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('edit-electric-detail') && (
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+      )}
+      {buttonJurisdictionArray?.includes('delete-electric-detail') && (
+        <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+      )}
     </>
   )
 

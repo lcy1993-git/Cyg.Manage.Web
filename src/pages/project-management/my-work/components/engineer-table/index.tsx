@@ -51,9 +51,10 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     pageSize: 10,
     pageIndex: 1,
   })
-
+  //@ts-ignore
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'))
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
-  const { sideVisible, selectedFavId } = useMyWorkStore()
+  const { sideVisible, selectedFavId, currentClickTabType } = useMyWorkStore()
   const { data: tableData, run, loading, cancel } = useRequest(getTableData, {
     manual: true,
     throttleInterval: 500,
@@ -221,7 +222,13 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       <div className={styles.engineerTableContent}>
         {tableShowDataSource && tableShowDataSource.length === 0 && (
           <div className={styles.emptyTableContent}>
-            <EmptyTip />
+            <EmptyTip
+              description={
+                currentClickTabType === 'agent' && userType === 3
+                  ? '公司管理员无需使用该功能'
+                  : '没有找到匹配的记录'
+              }
+            />
           </div>
         )}
         {tableShowDataSource && tableShowDataSource.length > 0 && (
