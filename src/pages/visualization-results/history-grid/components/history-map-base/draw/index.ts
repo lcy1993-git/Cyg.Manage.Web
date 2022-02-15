@@ -1,5 +1,5 @@
 import { drawByDataSource } from './drawByDataSource'
 import { drawEnd } from './drawEnd'
-import { drawMap } from './drawMap'
+import { onDrawGeometryChange } from './onDrawGeometryChange'
 
-export { drawEnd, drawByDataSource, drawMap }
+export { drawEnd, drawByDataSource, onDrawGeometryChange }

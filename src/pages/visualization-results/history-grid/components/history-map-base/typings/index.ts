@@ -78,7 +78,11 @@ type selectKey =
   | 'boxSelect'
 
 export interface InterActionRef {
-  draw?: Draw
+  draw?: {
+    Point: Draw
+    LineString: Draw
+    current: Draw | null
+  }
   snap?: Snap
   source?: VectorSource<Geometry>
   hightLightSource?: VectorSource<Geometry>
@@ -103,6 +107,8 @@ export interface LayerRef {
   highLightLayer: Layer<VectorSource<Geometry>>
 
   dragBoxLayer: Layer<VectorSource<Polygon>>
+
+  drawLayer: Layer<VectorSource<Point | LineString>>
 }
 
 export interface ViewRef {
@@ -121,6 +127,7 @@ export interface SourceRef {
   designLineSource: VectorSource<LineString>
   highLightSource: VectorSource<Geometry>
   dragBoxSource: VectorSource<Polygon>
+  drawSource: VectorSource<Point | LineString>
 }
 
 export interface LifeStateRef {

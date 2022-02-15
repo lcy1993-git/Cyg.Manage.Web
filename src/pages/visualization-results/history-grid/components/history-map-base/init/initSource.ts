@@ -17,4 +17,7 @@ export function initSource(sourceRef: SourceRef) {
 
   // dragBox线框
   sourceRef.dragBoxSource = new VectorSource()
+
+  // 绘制
+  sourceRef.drawSource = new VectorSource()
 }

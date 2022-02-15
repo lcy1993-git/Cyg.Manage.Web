@@ -133,6 +133,12 @@ export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
   })
   layerRef.dragBoxLayer.setZIndex(4)
 
+  // 绘制图层
+  layerRef.drawLayer = new VectorLayer({
+    source: sourceRef.drawSource,
+    // style:
+  })
+
   const highLightLayer = new VectorLayer<VectorSource<Geometry>>({
     source: sourceRef.highLightSource,
     style(f) {

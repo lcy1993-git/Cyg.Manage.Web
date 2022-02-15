@@ -8,7 +8,7 @@ import { useHistoryGridContext } from '../../store'
 import AdsorptionModal from './components/adsorption-modal'
 import DragBoxModal from './components/drag-box-modal'
 import DrawModal from './components/draw-modal'
-import { drawByDataSource, drawMap } from './draw'
+import { drawByDataSource, onDrawGeometryChange } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import {
   mapClick,
@@ -133,7 +133,9 @@ const HistoryMapBase = () => {
 
   // 处理geometryType变化
   useUpdateEffect(() => {
-    drawMap({ geometryType })
+    // 在绘制时,关闭选择和框选，关闭绘制时打开
+
+    onDrawGeometryChange({ geometryType, map: mapRef.map, interActionRef })
     // removeaddInteractions()
     // if (geometryType) addInteractions(geometryType)
   }, [geometryType])
@@ -256,6 +258,12 @@ const HistoryMapBase = () => {
 
       // 修改比例尺
       handlerGeographicSize({ mode, viewRef })
+    })
+    interActionRef.draw!.Point.on('drawend', () => {
+      setState((data) => ({ ...data, geometryType: '' }))
+    })
+    interActionRef.draw!.LineString.on('drawend', () => {
+      setState((data) => ({ ...data, geometryType: '' }))
     })
   }
 

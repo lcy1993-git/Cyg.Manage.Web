@@ -1,10 +1,10 @@
-import { Snap } from 'ol/interaction'
 import { Dispatch, SetStateAction } from 'react'
 import { HistoryDispatch } from '../../../store'
 import { handlerGeographicSize } from '../effects'
 // import { select } from 'ol/interaction/Select'
 import { DragBoxProps, InterActionRef, LayerRef, MapRef, SourceRef, ViewRef } from './../typings'
 import { initControl } from './initControl'
+import initDraw from './initDraw'
 import { initLayer } from './initLayer'
 import { initMap } from './initMap'
 import initSelect from './initSelect'
@@ -48,7 +48,7 @@ function init({
     setDragBoxProps,
     mode,
   })
-
+  initDraw({ interActionRef, layerRef, sourceRef })
   // 显示比例尺
   handlerGeographicSize({ mode, viewRef })
 }

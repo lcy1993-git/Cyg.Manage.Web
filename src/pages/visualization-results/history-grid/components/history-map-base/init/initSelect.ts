@@ -72,8 +72,12 @@ export default function initSelect({
         )
       },
       filter(feature) {
+        // 非数据渲染的feature不会被选中
+        if (!feature.get('id')) return false
+
         // @ts-ignore
         const f = this?.getFeatures()?.getArray()[0]
+
         if (f) {
           const selectType = f.getGeometry().getType()
           if (selectType === (feature as Feature<Geometry>).getGeometry()?.getType()) {
