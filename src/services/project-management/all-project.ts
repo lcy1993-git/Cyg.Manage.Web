@@ -212,6 +212,7 @@ export interface AllProjectStatisticsParams {
   keyWord?: string
   category?: number[]
   pCategory?: number[]
+  plannedYear?: number
   stage?: number[]
   constructType?: number[]
   nature?: number[]

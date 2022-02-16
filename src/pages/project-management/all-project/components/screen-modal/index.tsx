@@ -1,21 +1,16 @@
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
-import { useControllableValue } from 'ahooks'
-import UrlSelect from '@/components/url-select'
-import { Button, Modal, Form, DatePicker, Tooltip } from 'antd'
-import { useGetProjectEnum } from '@/utils/hooks'
-import CyFormItem from '@/components/cy-form-item'
-import moment from 'moment'
 import AreaSelect from '@/components/area-select'
+import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
-import {
-  ProjectIdentityType,
-  ProjectSourceType,
-  ProjectStatus,
-} from '@/services/project-management/all-project'
+import UrlSelect from '@/components/url-select'
 import ChooseDesignAndSurvey from '@/pages/project-management/all-project/components/choose-design-and-survey'
-import styles from './index.less'
-import { useEffect } from 'react'
+import { ProjectIdentityType, ProjectSourceType } from '@/services/project-management/all-project'
+import { useGetProjectEnum } from '@/utils/hooks'
 import { QuestionCircleOutlined } from '@ant-design/icons'
+import { useControllableValue } from 'ahooks'
+import { Button, DatePicker, Form, Input, Modal, Tooltip } from 'antd'
+import moment from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
+import styles from './index.less'
 
 interface ScreenModalProps {
   visible: boolean
@@ -47,6 +42,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   // const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
   const [sourceType, setSourceType] = useState<number[]>([]) //项目来源
   const [identityType, setIdentityType] = useState<number[]>([]) //项目身份
+  const [plannedYear, setPlannedYear] = useState<number>(0)
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' })
   const [dataSourceType, setDataSourceType] = useState<number[]>([])
   const [personInfo, setPersonInfo] = useState<any>({ logicRelation: 2, design: '', survey: '' })
@@ -80,6 +76,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       pCategory,
       attribute,
       sourceType,
+      plannedYear: plannedYear ? plannedYear : 0,
       identityType,
       ...areaInfo,
       dataSourceType,
@@ -120,6 +117,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setDataSourceType([])
     setSourceType([])
     setStartTime(null)
+    setPlannedYear(0)
     setAreaInfo({ areaType: '-1', areaId: '' })
     setEndTime(null)
     resetRef()
@@ -133,6 +131,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       status: [],
       majorCategory: [],
       pType: [],
+      plannedYear: 0,
       reformAim: [],
       pCategory: [],
       attribute: [],
@@ -254,6 +253,11 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       } else {
         setPType([])
       }
+      if (searchParams.plannedYear) {
+        setPlannedYear(searchParams.plannedYear)
+      } else {
+        setPlannedYear(0)
+      }
       if (searchParams.reformAim) {
         setReformAim(searchParams.reformAim)
       } else {
@@ -294,6 +298,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       } else {
         setEndTime(null)
       }
+
       if (searchParams.logicRelation) {
         setSelectDefaultData({
           logicRelation: searchParams.logicRelation,
@@ -668,6 +673,28 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                       onChange={(value) => setDataSourceType(value as number[])}
                       className="widthAll"
                       placeholder="请选择"
+                    />
+                  </div>
+                </CyFormItem>
+              </div>
+              <div className="flex1">
+                <CyFormItem
+                  label="计划年度"
+                  align="right"
+                  name="plannedYear"
+                  labelWidth={135}
+                  rules={[
+                    {
+                      pattern: /^[0-9]{4}$/,
+                      message: '请输入正整数',
+                    },
+                  ]}
+                >
+                  <div style={{ width: '275px' }}>
+                    <Input
+                      placeholder="请输入正确的年份"
+                      value={plannedYear}
+                      onChange={(e: any) => setPlannedYear(e.target.value)}
                     />
                   </div>
                 </CyFormItem>
