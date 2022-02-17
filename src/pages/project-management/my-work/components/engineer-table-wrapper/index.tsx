@@ -340,7 +340,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             网架规划
           </Menu.Item>
         }
-        {tableItemData.identitys.findIndex((item: any) => item.value === 1) > -1 &&
+        {tableItemData.identitys.findIndex((item: any) => item.value === 4) > -1 &&
           status !== 30 &&
           status !== 31 && (
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
