@@ -42,7 +42,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   // const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
   const [sourceType, setSourceType] = useState<number[]>([]) //项目来源
   const [identityType, setIdentityType] = useState<number[]>([]) //项目身份
-  const [plannedYear, setPlannedYear] = useState<number>(0)
+  const [plannedYear, setPlannedYear] = useState<number | undefined>(undefined)
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' })
   const [dataSourceType, setDataSourceType] = useState<number[]>([])
   const [personInfo, setPersonInfo] = useState<any>({ logicRelation: 2, design: '', survey: '' })
@@ -117,7 +117,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setDataSourceType([])
     setSourceType([])
     setStartTime(null)
-    setPlannedYear(0)
+    setPlannedYear(undefined)
     setAreaInfo({ areaType: '-1', areaId: '' })
     setEndTime(null)
     resetRef()
@@ -131,7 +131,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       status: [],
       majorCategory: [],
       pType: [],
-      plannedYear: 0,
+      plannedYear: undefined,
       reformAim: [],
       pCategory: [],
       attribute: [],
@@ -256,7 +256,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       if (searchParams.plannedYear) {
         setPlannedYear(searchParams.plannedYear)
       } else {
-        setPlannedYear(0)
+        setPlannedYear(undefined)
       }
       if (searchParams.reformAim) {
         setReformAim(searchParams.reformAim)
