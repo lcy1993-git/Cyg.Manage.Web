@@ -686,13 +686,13 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   rules={[
                     {
                       pattern: /^[0-9]{4}$/,
-                      message: '请输入正整数',
+                      message: '请输入正确的年份',
                     },
                   ]}
                 >
                   <div style={{ width: '275px' }}>
                     <Input
-                      placeholder="请输入正确的年份"
+                      placeholder="请输入"
                       value={plannedYear}
                       onChange={(e: any) => setPlannedYear(e.target.value)}
                     />
