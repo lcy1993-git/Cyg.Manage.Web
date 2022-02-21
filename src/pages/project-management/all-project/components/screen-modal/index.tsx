@@ -691,7 +691,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
               >
                 <div style={{ width: '275px' }}>
                   <Input
-                    type="number"
+                    type="textArea"
+                    maxLength={4}
                     placeholder="请输入"
                     value={plannedYear}
                     onChange={(e: any) => setPlannedYear(e.target.value)}
