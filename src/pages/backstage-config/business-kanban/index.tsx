@@ -1,21 +1,21 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PageCommonWrap from '@/components/page-common-wrap'
 import styles from './index.less'
 import { Progress, Select, Table, Tooltip } from 'antd'
 import { LeftOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import GeneralTable from '@/components/general-table'
-import moment, {Moment} from "moment";
+import moment, { Moment } from 'moment'
 
 const BusinessBoard: React.FC = () => {
   const [statisticalType, setStatisticalType] = useState<string>('1')
   const [detail, setDetail] = useState<boolean>(false)
-  const [id,setId] = useState('');
+  const [id, setId] = useState('')
   const showDetail = (row: { companyId: React.SetStateAction<string> }) => {
     setId(row.companyId)
     setDetail(true)
   }
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const detailTableRef = React.useRef<HTMLDivElement>(null);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const detailTableRef = React.useRef<HTMLDivElement>(null)
   const columns = [
     {
       title: '公司名称',
@@ -78,22 +78,26 @@ const BusinessBoard: React.FC = () => {
       },
       dataIndex: 'progress',
       key: 'progress',
-      render: (progress:number) => {
-        return <div style={{
-          padding: '0 20px 00 10px'
-        }}>
-          <Progress percent={Number(progress.toFixed(0))} />
-        </div>
+      render: (progress: number) => {
+        return (
+          <div
+            style={{
+              padding: '0 20px 00 10px',
+            }}
+          >
+            <Progress percent={Number(progress.toFixed(0))} />
+          </div>
+        )
       },
     },
     {
       title: '最近操作时间',
-      width:150,
+      width: 150,
       dataIndex: 'lastUpdateTime',
       key: 'lastUpdateTime',
-      render: (time:Moment)=>{
+      render: (time: Moment) => {
         return moment(time).format('YYYY-MM-DD')
-      }
+      },
     },
   ]
   const detailColumns = [
@@ -118,9 +122,9 @@ const BusinessBoard: React.FC = () => {
       title: '计划天数',
       dataIndex: 'planDays',
       key: 'planDays',
-      render: (day:number)=>{
+      render: (day: number) => {
         return <span>{day}天</span>
-      }
+      },
     },
     {
       title: '当前阶段',
@@ -131,38 +135,42 @@ const BusinessBoard: React.FC = () => {
       title: '项目进度',
       dataIndex: 'progress',
       key: 'progress',
-      render: (progress:number) => {
-        return <div style={{
-          padding: '0 20px 00 10px'
-        }}>
-          <Progress percent={Number(progress.toFixed(0))} />
-        </div>
+      render: (progress: number) => {
+        return (
+          <div
+            style={{
+              padding: '0 20px 00 10px',
+            }}
+          >
+            <Progress percent={Number(progress.toFixed(0))} />
+          </div>
+        )
       },
     },
     {
       title: '超期情况',
       dataIndex: 'overdueDays',
       key: 'overdueDays',
-      render: (day:number)=>{
+      render: (day: number) => {
         return <span>已逾期{day}天</span>
-      }
+      },
     },
     {
       title: '最近操作时间',
       dataIndex: 'lastUpdateTime',
       key: 'lastUpdateTime',
-      render: (time:Moment)=>{
+      render: (time: Moment) => {
         return moment(time).format('YYYY-MM-DD')
-      }
+      },
     },
   ]
   const reset = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
   }
-  const rowSummary = (pageData: any[] | readonly object[] , name: string) => {
+  const rowSummary = (pageData: any[] | readonly object[], name: string) => {
     // @ts-ignore
     return pageData?.reduce((total: number, next: { [x: string]: any }) => {
       if (isNaN(total)) {
@@ -170,30 +178,28 @@ const BusinessBoard: React.FC = () => {
       } else {
         return Number(total) + Number(next[name])
       }
-    },0)
+    }, 0)
   }
   useEffect(() => {
     reset()
-  },[statisticalType])
-  useEffect(()=>{
-    if (detail && detailTableRef && detailTableRef.current){
+  }, [statisticalType])
+  useEffect(() => {
+    if (detail && detailTableRef && detailTableRef.current) {
       // @ts-ignore
       detailTableRef.current.search()
     } else {
       setId('')
-      if (tableRef && tableRef.current){
+      if (tableRef && tableRef.current) {
         // @ts-ignore
         tableRef.current.refresh()
       }
     }
-  },[detail])
+  }, [detail])
   return (
     <PageCommonWrap noPadding>
       <div className={styles.businessBoard}>
-        <div className={styles.businessBoardTitle}>业务看板</div>
         <br />
         <div>
-          统计模式 :&nbsp;&nbsp;
           <Select
             defaultValue="1"
             style={{ width: 200 }}
@@ -206,68 +212,71 @@ const BusinessBoard: React.FC = () => {
         </div>
         {detail ? (
           <div className={styles.tableTitleBack} onClick={() => setDetail(false)}>
-            <LeftOutlined /> 综合进度
+            <LeftOutlined /> 项目进度
           </div>
         ) : (
           <div className={styles.tableTitle}>综合进度</div>
         )}
         <div>
-          {detail  &&
+          {detail && (
             <GeneralTable
+              notShowSelect
+              needTitleLine={false}
               ref={detailTableRef}
-              rowKey={'companyId'}
+              rowKey={'number'}
               columns={detailColumns}
               extractParams={{
-                statisticalType:Number(statisticalType),
-                companyId:id
+                statisticalType: Number(statisticalType),
+                companyId: id,
               }}
               url={'/BusinessBoard/GetProjectProgress'}
-               />
-          }
-          {
-            !detail && <GeneralTable
+            />
+          )}
+          {!detail && (
+            <GeneralTable
+              notShowSelect
+              needTitleLine={false}
               ref={tableRef}
               rowKey={'companyId'}
               columns={columns}
               url={'/BusinessBoard/GetSyntheticalProgress'}
               extractParams={{
-                statisticalType:Number(statisticalType)
+                statisticalType: Number(statisticalType),
               }}
               summary={(pageData) => {
                 return (
                   <>
                     <Table.Summary.Row>
                       <Table.Summary.Cell index={0}>合计</Table.Summary.Cell>
-                      <Table.Summary.Cell index={1}>-</Table.Summary.Cell>
-                      <Table.Summary.Cell index={2}>
+                      <Table.Summary.Cell index={1}>
                         {rowSummary(pageData, 'establishmentQuntity')}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={3}>
+                      <Table.Summary.Cell index={2}>
                         {rowSummary(pageData, 'surveyQuntity')}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={4}>
+                      <Table.Summary.Cell index={3}>
                         {rowSummary(pageData, 'designQuntity')}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={5}>
+                      <Table.Summary.Cell index={4}>
                         {rowSummary(pageData, 'economyQuntity')}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={6}>
+                      <Table.Summary.Cell index={5}>
                         {rowSummary(pageData, 'reviewQuntity')}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={7}>
+                      <Table.Summary.Cell index={6}>
                         {rowSummary(pageData, 'closeQuntity')}
                       </Table.Summary.Cell>
-                      <Table.Summary.Cell index={8}>
+                      <Table.Summary.Cell index={7}>
                         {rowSummary(pageData, 'totalQuntity')}
                       </Table.Summary.Cell>
+                      <Table.Summary.Cell index={8}>-</Table.Summary.Cell>
                       <Table.Summary.Cell index={9}>-</Table.Summary.Cell>
-                      <Table.Summary.Cell index={10}>-</Table.Summary.Cell>
                     </Table.Summary.Row>
                   </>
                 )
               }}
             />
-          }
+          )}
         </div>
       </div>
     </PageCommonWrap>
