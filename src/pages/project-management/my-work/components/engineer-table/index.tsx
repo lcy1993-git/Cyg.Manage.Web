@@ -2,7 +2,7 @@ import EmptyTip from '@/components/empty-tip'
 import { getTableData } from '@/services/project-management/all-project'
 import { delay } from '@/utils/utils'
 import { useRequest } from 'ahooks'
-import { Pagination, Spin } from 'antd'
+import { Checkbox, Pagination, Spin } from 'antd'
 import React, {
   forwardRef,
   Key,
@@ -53,6 +53,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   })
 
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
+  const [allCheckValue, setAllCheckValue] = useState<boolean>(false)
+  const [indeterminate, setIndeterminate] = useState<boolean>(false)
   const { sideVisible, selectedFavId } = useMyWorkStore()
   const { data: tableData, run, loading, cancel } = useRequest(getTableData, {
     manual: true,
@@ -101,7 +103,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataEndIndex: 0,
       projectLen: 0,
     }
-  }, [JSON.stringify(tableData)])
+  }, [pageInfo.pageSize, tableData])
 
   // pageIndex变化
   const currentPageChangeEvent = (page: any, size: any) => {
@@ -210,6 +212,20 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     }
   }
 
+  const selectAll = () => {
+    if (tableRef.current) {
+      tableRef.current.selectAll()
+    }
+  }
+
+  const selectAllCheckboxOnChange = (checkedValue: boolean) => {
+    if (checkedValue) {
+      selectAll()
+    } else {
+      emptyTableSelect()
+    }
+  }
+
   return (
     <div className={styles.engineerTable}>
       {loading && (
@@ -253,12 +269,27 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               onSelectRowsChange: (rows) => {
                 getSelectRowData?.(rows)
               },
+              getSelectIndeterminate: (value) => {
+                setIndeterminate(value)
+              },
+              getCheckAllType: (value) => {
+                setAllCheckValue(value)
+              },
             }}
           />
         )}
       </div>
       {(!sideVisible || selectedFavId) && (
         <div className={styles.engineerTablePagingContent}>
+          <div className={styles.engineerTablePagingSelect}>
+            <Checkbox
+              checked={allCheckValue}
+              indeterminate={indeterminate}
+              onChange={(e) => selectAllCheckboxOnChange(e.target.checked)}
+            >
+              全选
+            </Checkbox>
+          </div>
           <div className={styles.engineerTablePagingLeft}>
             <span>显示第</span>
             <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>

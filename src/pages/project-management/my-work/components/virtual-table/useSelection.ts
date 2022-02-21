@@ -21,7 +21,26 @@ const useSelection = <T>(props: Pick<VirtualTableProps<T>, 'rowSelection' | 'dat
     if (rowSelection.onSelectRowsChange) {
       rowSelection.onSelectRowsChange(selectRows)
     }
-  }, [selectedKeys, rowSelection, selectRows])
+
+    const items = data.reduce((prev: any[], cur: any) => {
+      cur.id && !cur._parent && prev.push(cur)
+      return prev
+    }, [])
+
+    const selectLength = items.map(({ id }) => id).length
+
+    if (selectedKeys.length > 0 && selectedKeys.length < selectLength) {
+      rowSelection.getSelectIndeterminate?.(true)
+    } else {
+      rowSelection.getSelectIndeterminate?.(false)
+    }
+
+    if (selectedKeys.length > 0 && selectedKeys.length === selectLength) {
+      rowSelection.getCheckAllType?.(true)
+    } else {
+      rowSelection.getCheckAllType?.(false)
+    }
+  }, [selectedKeys, rowSelection, selectRows, data])
 
   const updateSelectedKeysFlow = (
     rowKeys: Key[],

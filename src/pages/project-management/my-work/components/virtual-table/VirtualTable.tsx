@@ -88,6 +88,8 @@ export type VirtualTableProps<T extends Record<string, any>> = {
     onChange?: (keys: Key[]) => void
     onSelect?: (key: Key, selected: boolean, rowData: T) => void
     onSelectRowsChange?: (selectRows: T[]) => void
+    getSelectIndeterminate?: (value: boolean) => void
+    getCheckAllType?: (value: boolean) => void
   }
   /**
    * 表头，返回 true 表示该行数据是表头
