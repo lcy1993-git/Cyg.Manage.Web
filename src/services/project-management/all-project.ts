@@ -387,6 +387,7 @@ interface ProjectInfoParams {
   name: string
   category: string
   categoryText: string
+  canEditStage: boolean
   pType: string
   pTypeText: string
   kvLevel: string
