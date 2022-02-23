@@ -1,7 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap'
 import TreeTable from '@/components/tree-table'
 import { updateCompanyStatus } from '@/services/system-config/subordinate-company'
-import { useSize } from 'ahooks'
 import { message, Switch } from 'antd'
 import React, { useRef } from 'react'
 import Styles from './index.less'
@@ -12,7 +11,6 @@ interface TableRef extends HTMLDivElement {
 
 const SubordinateCompany: React.FC = () => {
   const tableRef = useRef<TableRef>(null)
-  const tableContentRef = useRef<HTMLDivElement>(null)
   const updateStatus = async (data: any) => {
     const { id, isFilterTree } = data
     await updateCompanyStatus({ companyId: id, isFilterTree: !isFilterTree })
@@ -25,8 +23,6 @@ const SubordinateCompany: React.FC = () => {
       tableRef.current.refresh()
     }
   }
-
-  const contentSize = useSize(tableContentRef)
 
   const tableColumns = [
     {
@@ -58,7 +54,7 @@ const SubordinateCompany: React.FC = () => {
   ]
   return (
     <PageCommonWrap>
-      <div className={Styles.tableContent} ref={tableContentRef}>
+      <div className={Styles.tableContent}>
         <TreeTable
           needCheck={false}
           url="/CompanyTree/GetCompanyTreeList"
