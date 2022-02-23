@@ -2,7 +2,7 @@ import EmptyTip from '@/components/empty-tip'
 import { getTableData } from '@/services/project-management/all-project'
 import { delay } from '@/utils/utils'
 import { useRequest } from 'ahooks'
-import { Pagination, Spin } from 'antd'
+import { Checkbox, Pagination, Spin } from 'antd'
 import React, {
   forwardRef,
   Key,
@@ -15,7 +15,7 @@ import React, {
 } from 'react'
 import { useMyWorkStore } from '../../context'
 import ParentRow from '../virtual-table/ParentRow'
-import VirtualTable from '../virtual-table/VirtualTable'
+import VirtualTable, { VirtualTableInstance } from '../virtual-table/VirtualTable'
 import styles from './index.less'
 
 interface EngineerTableProps {
@@ -53,14 +53,16 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   })
 
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
+  const [allCheckValue, setAllCheckValue] = useState<boolean>(false)
+  const [indeterminate, setIndeterminate] = useState<boolean>(false)
   const { sideVisible, selectedFavId } = useMyWorkStore()
   const { data: tableData, run, loading, cancel } = useRequest(getTableData, {
     manual: true,
     throttleInterval: 500,
   })
 
-  const cache = useRef([])
-  const tableRef = useRef<HTMLDivElement>()
+  const cache = useRef<any[]>([])
+  const tableRef = useRef<VirtualTableInstance>(null)
 
   const tableResultData = useMemo(() => {
     if (tableData) {
@@ -101,7 +103,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       dataEndIndex: 0,
       projectLen: 0,
     }
-  }, [JSON.stringify(tableData)])
+  }, [pageInfo.pageSize, tableData])
 
   // pageIndex变化
   const currentPageChangeEvent = (page: any, size: any) => {
@@ -205,9 +207,22 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }))
 
   const emptyTableSelect = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore TODO
+    if (tableRef.current) {
       tableRef.current.emptySelectEvent()
+    }
+  }
+
+  const selectAll = () => {
+    if (tableRef.current) {
+      tableRef.current.selectAll()
+    }
+  }
+
+  const selectAllCheckboxOnChange = (checkedValue: boolean) => {
+    if (checkedValue) {
+      selectAll()
+    } else {
+      emptyTableSelect()
     }
   }
 
@@ -254,12 +269,27 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
               onSelectRowsChange: (rows) => {
                 getSelectRowData?.(rows)
               },
+              getSelectIndeterminate: (value) => {
+                setIndeterminate(value)
+              },
+              getCheckAllType: (value) => {
+                setAllCheckValue(value)
+              },
             }}
           />
         )}
       </div>
       {(!sideVisible || selectedFavId) && (
         <div className={styles.engineerTablePagingContent}>
+          <div className={styles.engineerTablePagingSelect}>
+            <Checkbox
+              checked={allCheckValue}
+              indeterminate={indeterminate}
+              onChange={(e) => selectAllCheckboxOnChange(e.target.checked)}
+            >
+              全选
+            </Checkbox>
+          </div>
           <div className={styles.engineerTablePagingLeft}>
             <span>显示第</span>
             <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>

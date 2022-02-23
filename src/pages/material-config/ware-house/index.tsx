@@ -1,25 +1,25 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, PoweroffOutlined, ImportOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin } from 'antd'
-import React, { useMemo, useState } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import {
-  getWareHouseDetail,
   addWareHouseItem,
-  updateWareHouseItem,
   deleteWareHouseItem,
+  getWareHouseDetail,
   restartWareHouse,
+  updateWareHouseItem,
 } from '@/services/material-config/ware-house'
+import { getCityAreas } from '@/services/project-management/all-project'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined, PlusOutlined, PoweroffOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
+import React, { useMemo, useState } from 'react'
 import WareHouseForm from './components/add-edit-form'
 import WareHouseDetail from './components/detail-table'
 import ImportWareHouse from './components/import-form'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import ModalConfirm from '@/components/modal-confirm'
-import { getCityAreas } from '@/services/project-management/all-project'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -131,6 +131,7 @@ const WareHouse: React.FC = () => {
 
   //添加
   const addEvent = () => {
+    getAreaData()
     setAddFormVisible(true)
   }
 
@@ -316,7 +317,7 @@ const WareHouse: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <WareHouseForm />
+          <WareHouseForm provinceData={provinceData} />
         </Form>
       </Modal>
       <Modal

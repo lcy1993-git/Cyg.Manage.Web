@@ -1,25 +1,25 @@
-import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, message, Switch } from 'antd';
-import { ApartmentOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from '@ant-design/icons';
-import { useRequest } from 'ahooks';
-import PageCommonWrap from '@/components/page-common-wrap';
+import React, { useRef, useState } from 'react'
+import { Button, Modal, Form, message, Switch } from 'antd'
+import { ApartmentOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import PageCommonWrap from '@/components/page-common-wrap'
 import {
   updateCompanyManageItem,
   addCompanyManageItem,
   getCompanyManageDetail,
   getTreeSelectData,
   changeCompanyStatus,
-} from '@/services/jurisdiction-config/company-manage';
-import { isArray } from 'lodash';
-import CompanyManageForm from './components/add-form';
-import EditCompanyManageForm from './components/edit-form';
-import TableStatus from '@/components/table-status';
-import uuid from 'node-uuid';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import moment from 'moment';
-import UnitConfig from './components/unit-config';
-import GeneralTable from '@/components/general-table';
-import CompanyShare from './components/company-share';
+} from '@/services/jurisdiction-config/company-manage'
+import { isArray } from 'lodash'
+import CompanyManageForm from './components/add-form'
+import EditCompanyManageForm from './components/edit-form'
+import TableStatus from '@/components/table-status'
+import uuid from 'node-uuid'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import moment from 'moment'
+import UnitConfig from './components/unit-config'
+import GeneralTable from '@/components/general-table'
+import CompanyShare from './components/company-share'
 
 const mapColor = {
   无: 'gray',
@@ -28,37 +28,37 @@ const mapColor = {
   评审端: 'greenThree',
   技经端: 'greenFour',
   设计端: 'greenFive',
-};
+}
 
 const CompanyManage: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
-  const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([]);
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [unitConfigVisible, setUnitConfigVisible] = useState<boolean>(false);
-  const [companyShareVisible, setCompanyShareVisible] = useState<boolean>(false);
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
+  const [currentCompanyData, setCurrentCompanyData] = useState<object[]>([])
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [unitConfigVisible, setUnitConfigVisible] = useState<boolean>(false)
+  const [companyShareVisible, setCompanyShareVisible] = useState<boolean>(false)
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
-  const { data: selectTreeData = [], run: getSelectTreeData } = useRequest(getTreeSelectData, {
+  const { data: selectTreeData = [] } = useRequest(getTreeSelectData, {
     manual: true,
-  });
+  })
 
   const { data, run } = useRequest(getCompanyManageDetail, {
     manual: true,
-  });
+  })
 
   //数据修改，局部刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   const companyTableColumns = [
     {
@@ -73,7 +73,7 @@ const CompanyManage: React.FC = () => {
       index: 'adminUserName',
       width: 180,
       render: (text: any, record: any) => {
-        return record.adminUserName ? record.adminUserName : '-';
+        return record.adminUserName ? record.adminUserName : '-'
       },
     },
     {
@@ -81,15 +81,15 @@ const CompanyManage: React.FC = () => {
       dataIndex: 'skus',
       index: 'skus',
       render: (text: any, record: any) => {
-        const { skus } = record;
+        const { skus } = record
         const element = (skus ?? []).map((item: any) => {
           return (
             <TableStatus className="mr7" color={mapColor[item.key.text] ?? 'gray'} key={uuid.v1()}>
               {item.key.text}（{item.value.totalQty}）
             </TableStatus>
-          );
-        });
-        return <>{element}</>;
+          )
+        })
+        return <>{element}</>
       },
     },
     // onChange={() => updateStatus(record.id)}
@@ -99,7 +99,7 @@ const CompanyManage: React.FC = () => {
       index: 'isEnabled',
       width: 120,
       render: (text: any, record: any) => {
-        const isChecked = !record.isEnabled;
+        const isChecked = !record.isEnabled
         return (
           <>
             {buttonJurisdictionArray?.includes('company-manage-state') &&
@@ -118,9 +118,9 @@ const CompanyManage: React.FC = () => {
                 </>
               ))}
             {!buttonJurisdictionArray?.includes('company-manage-state') &&
-              (isChecked ? <span>启用</span> : <span>禁用</span>)}
+              (!isChecked ? <span>启用</span> : <span>禁用</span>)}
           </>
-        );
+        )
       },
     },
     {
@@ -129,7 +129,7 @@ const CompanyManage: React.FC = () => {
       index: 'authorityExpireDate',
       width: 140,
       render: (text: any, record: any) => {
-        return text ? moment(text).format('YYYY-MM-DD') : '-';
+        return text ? moment(text).format('YYYY-MM-DD') : '-'
       },
     },
     {
@@ -142,22 +142,22 @@ const CompanyManage: React.FC = () => {
       dataIndex: 'remark',
       index: 'remark',
     },
-  ];
+  ]
 
   const changeStateEvent = async (id: string, isChecked: boolean) => {
     // 这里判断一下时间是否过期
     // 并且需要判断是否是从关闭到开启状态
-    const clickData = await run(id);
-    const nowDate = moment(new Date().getDate());
+    const clickData = await run(id)
+    const nowDate = moment(new Date().getDate())
 
     if (nowDate.isAfter(moment(clickData?.authorityExpireDate))) {
-      message.error('当前授权已超期，请修改授权期限');
+      message.error('当前授权已超期，请修改授权期限')
     } else {
-      await changeCompanyStatus(id, isChecked);
-      tableFresh();
-      message.success('状态修改成功');
+      await changeCompanyStatus(id, isChecked)
+      tableFresh()
+      message.success('状态修改成功')
     }
-  };
+  }
 
   const companyManageButton = () => {
     return (
@@ -187,30 +187,30 @@ const CompanyManage: React.FC = () => {
           </Button>
         )}
       </>
-    );
-  };
+    )
+  }
 
   const unitConfigEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请勾选需要配置的公司');
-      return;
+      message.warning('请勾选需要配置的公司')
+      return
     }
 
-    setUnitConfigVisible(true);
-  };
+    setUnitConfigVisible(true)
+  }
 
   const shareEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请勾选需要配置的公司');
-      return;
+      message.warning('请勾选需要配置的公司')
+      return
     }
 
-    setCompanyShareVisible(true);
-  };
+    setCompanyShareVisible(true)
+  }
 
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddCompanyManageItem = () => {
     addForm.validateFields().then(async (value) => {
@@ -220,7 +220,7 @@ const CompanyManage: React.FC = () => {
         { key: 32, value: value.skillBy },
         { key: 16, value: value.review },
         { key: 2, value: value.manage },
-      ];
+      ]
 
       const submitInfo = {
         name: value.name,
@@ -230,42 +230,42 @@ const CompanyManage: React.FC = () => {
         authorityExpireDate: value.authorityExpireDate,
         userSkuQtys,
         remark: value.remark,
-      };
+      }
 
-      await addCompanyManageItem(submitInfo);
-      tableFresh();
-      setAddFormVisible(false);
-      message.success('添加成功');
-      addForm.resetFields();
-      tableFresh();
-    });
-  };
+      await addCompanyManageItem(submitInfo)
+      tableFresh()
+      setAddFormVisible(false)
+      message.success('添加成功')
+      addForm.resetFields()
+      tableFresh()
+    })
+  }
 
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    const CompanyManageData = await run(editDataId);
-    setCurrentCompanyData(CompanyManageData?.skus);
-    setEditFormVisible(true);
+    const CompanyManageData = await run(editDataId)
+    setCurrentCompanyData(CompanyManageData?.skus)
+    setEditFormVisible(true)
     editForm.setFieldsValue({
       ...CompanyManageData,
       authorityExpireDate: CompanyManageData?.authorityExpireDate
         ? moment(CompanyManageData?.authorityExpireDate)
         : null,
-    });
-  };
+    })
+  }
 
   const sureEditCompanyManage = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请先选择一条数据进行编辑');
-      return;
+      message.error('请先选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (value) => {
       const userSkuQtys = [
@@ -274,7 +274,7 @@ const CompanyManage: React.FC = () => {
         { key: 32, value: value.skillBy },
         { key: 16, value: value.review },
         { key: 2, value: value.manage },
-      ];
+      ]
       const submitInfo = Object.assign(
         {
           id: editData.id,
@@ -285,16 +285,16 @@ const CompanyManage: React.FC = () => {
           authorityExpireDate: editData.authorityExpireDate,
           userSkuQtys,
         },
-        value,
-      );
+        value
+      )
 
-      await updateCompanyManageItem(submitInfo);
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-      tableFresh();
-    });
-  };
+      await updateCompanyManageItem(submitInfo)
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+      tableFresh()
+    })
+  }
 
   return (
     <PageCommonWrap>
@@ -347,7 +347,7 @@ const CompanyManage: React.FC = () => {
         companyId={tableSelectRows[0]?.id}
       />
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default CompanyManage;
+export default CompanyManage

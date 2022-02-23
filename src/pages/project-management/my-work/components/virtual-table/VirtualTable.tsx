@@ -88,6 +88,8 @@ export type VirtualTableProps<T extends Record<string, any>> = {
     onChange?: (keys: Key[]) => void
     onSelect?: (key: Key, selected: boolean, rowData: T) => void
     onSelectRowsChange?: (selectRows: T[]) => void
+    getSelectIndeterminate?: (value: boolean) => void
+    getCheckAllType?: (value: boolean) => void
   }
   /**
    * 表头，返回 true 表示该行数据是表头
@@ -105,23 +107,31 @@ export type VirtualTableProps<T extends Record<string, any>> = {
   }
 }
 
+export type VirtualTableInstance = {
+  /** 刷新 */
+  emptySelectEvent: () => void
+  /** 全选 */
+  selectAll: () => void
+}
+
 /**
  * @see https://react-window.vercel.app/#/api/FixedSizeList
  */
 const VirtualTable = <T extends Record<string, any>>(
   { data, columns, rowHeight, rowSelection, style, className, ...rest }: VirtualTableProps<T>,
-  ref: Ref<any>
+  ref: Ref<VirtualTableInstance>
 ) => {
-  const { updateSelectedKeysFlow, emptySelectArray, selectedKeys } = useSelection<T>({
-    rowSelection,
-  })
+  const selection = useSelection({ rowSelection, data })
+  const { updateSelectedKeysFlow, emptySelectArray, selectedKeys, selectAll } = selection
 
-  useImperativeHandle(ref, () => ({
-    // 刷新
-    emptySelectEvent: () => {
-      emptySelectArray()
-    },
-  }))
+  useImperativeHandle(
+    ref,
+    () => ({
+      emptySelectEvent: emptySelectArray,
+      selectAll,
+    }),
+    [emptySelectArray, selectAll]
+  )
 
   return (
     <AutoSizer>

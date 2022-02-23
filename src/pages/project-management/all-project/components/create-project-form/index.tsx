@@ -599,7 +599,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
-              disabled={isEdit}
+              disabled={!isEdit}
               titlekey="text"
               placeholder="请选择"
             />

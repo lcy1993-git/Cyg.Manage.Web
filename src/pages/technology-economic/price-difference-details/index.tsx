@@ -1,14 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useMount, useRequest } from 'ahooks';
-import { Button, Modal, message, Spin, Popconfirm, Form } from 'antd';
-import WrapperComponent from '@/components/page-common-wrap';
-import CommonTitle from '@/components/common-title';
-import styles from './index.less';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import RightComponent from './components/right-component';
-import AddOrEditForm from './components/add-edit-form';
-import ImportTemplateForm from './components/import-template/inex';
+import { useEffect, useState } from 'react'
+import { Button, Modal, message, Popconfirm, Form } from 'antd'
+import WrapperComponent from '@/components/page-common-wrap'
+import CommonTitle from '@/components/common-title'
+import styles from './index.less'
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
+import RightComponent from './components/right-component'
+import AddOrEditForm from './components/add-edit-form'
+import ImportTemplateForm from './components/import-template/inex'
 import {
   addArea,
   defaultPriceDifferenceTemplate,
@@ -16,46 +14,45 @@ import {
   getAllTemplateItemsById,
   importDefaultTemplateData,
   updateArea,
-} from '@/services/technology-economic/spread-coefficient';
-import qs from 'qs';
+} from '@/services/technology-economic/spread-coefficient'
+import qs from 'qs'
 
 interface ListData {
-  item1: string;
-  item2: string;
+  item1: string
+  item2: string
 }
 
 const PriceDifferenceDetails: React.FC = () => {
-  const prop = qs.parse(window.location.href.split('?')[1]);
-  const { id, name } = prop;
-  console.log(id);
+  const prop = qs.parse(window.location.href.split('?')[1])
+  const { id, name } = prop
 
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [importFormVisible, setImportFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [listData, setListData] = useState<ListData[]>([]);
-  const [activeValue, setActiveValue] = useState<ListData>({ item1: '', item2: '' });
-  const [rightData, setRightData] = useState<any>({});
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
-  const [importForm] = Form.useForm();
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [importFormVisible, setImportFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [listData, setListData] = useState<ListData[]>([])
+  const [activeValue, setActiveValue] = useState<ListData>({ item1: '', item2: '' })
+  const [rightData, setRightData] = useState<any>({})
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
+  const [importForm] = Form.useForm()
   useEffect(() => {
-    getList();
-  }, []);
+    getList()
+  }, [])
   // 列表刷新
   const refresh = () => {
-    getList();
-  };
+    getList()
+  }
   const getList = async () => {
     // console.log(1412293753747296256);
-    const result = await getAllTemplateItemsById(id);
-    setListData(result.content);
-    setActiveValue(result.content[0]);
-    getRightData(result.content[0] ? result.content[0].item2 : {});
-  };
+    const result = await getAllTemplateItemsById(id)
+    setListData(result.content)
+    setActiveValue(result.content[0])
+    getRightData(result.content[0] ? result.content[0].item2 : {})
+  }
   const getRightData = async (id: string) => {
-    const result = await defaultPriceDifferenceTemplate(id);
-    setRightData(result.content);
-  };
+    const result = await defaultPriceDifferenceTemplate(id)
+    setRightData(result.content)
+  }
   // const {
   //   data: listData = [],
   //   run: listDataRun,
@@ -79,83 +76,81 @@ const PriceDifferenceDetails: React.FC = () => {
         }`}
         key={item.item2}
         onClick={() => {
-          getRightData(item.item2);
-          setActiveValue(item);
+          getRightData(item.item2)
+          setActiveValue(item)
         }}
       >
         {item.item1}
       </div>
-    );
-  });
+    )
+  })
   // 创建按钮
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   // 删除
   const sureDeleteData = async () => {
     if (!activeValue) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const params = [activeValue.item2];
-    await deleteTemplateItem(params);
-    refresh();
-    message.success('删除成功');
-  };
+    const params = [activeValue.item2]
+    await deleteTemplateItem(params)
+    refresh()
+    message.success('删除成功')
+  }
 
   // 编辑
   const editEvent = () => {
-    console.log(activeValue);
     if (activeValue && activeValue.item2) {
-      setEditFormVisible(true);
+      setEditFormVisible(true)
       editForm.setFieldsValue({
         item1: activeValue.item1,
-      });
+      })
     }
-  };
+  }
   // 导入模板modal
   const importTemplate = () => {
-    setImportFormVisible(true);
-  };
+    setImportFormVisible(true)
+  }
   // 新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      console.log(values);
-      let value: any = {};
-      value.area = values.item1 ? values.item1 : '';
-      value.files = values.file;
-      value.templateId = id;
-      await addArea(value);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      let value: any = {}
+      value.area = values.item1 ? values.item1 : ''
+      value.files = values.file
+      value.templateId = id
+      await addArea(value)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
   // 编辑确认按钮
   const sureEditAuthorization = () => {
     editForm.validateFields().then(async (values) => {
-      let value = values;
-      value.area = values.item1 ? values.item1 : '';
-      value.templateId = id;
-      value.templateItemId = activeValue.item2;
+      let value = values
+      value.area = values.item1 ? values.item1 : ''
+      value.templateId = id
+      value.templateItemId = activeValue.item2
       // TODO 编辑接口
-      await updateArea(value);
-      refresh();
-      setEditFormVisible(false);
-      editForm.resetFields();
-    });
-  };
+      await updateArea(value)
+      refresh()
+      setEditFormVisible(false)
+      editForm.resetFields()
+    })
+  }
   // 导入模板确认
   const sureImportTemplate = () => {
     importForm.validateFields().then(async (values) => {
-      values.templateId = id;
-      await importDefaultTemplateData(values); // TODO
-      refresh();
-      setImportFormVisible(false);
-      importForm.resetFields();
-    });
-  };
+      values.templateId = id
+      await importDefaultTemplateData(values) // TODO
+      refresh()
+      setImportFormVisible(false)
+      importForm.resetFields()
+    })
+  }
   return (
     <WrapperComponent>
       <div className={styles.allDiv}>
@@ -251,7 +246,7 @@ const PriceDifferenceDetails: React.FC = () => {
         </Form>
       </Modal>
     </WrapperComponent>
-  );
-};
+  )
+}
 
-export default PriceDifferenceDetails;
+export default PriceDifferenceDetails

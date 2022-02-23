@@ -43,10 +43,10 @@ import ProjectNumber from '@/pages/index/components/project-number'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)
 
-const getComponentByType = (type: string, componentProps: any, currentAreaInfo) => {
+const getComponentByType = (type: string, componentProps: any, currentAreaInfo: any) => {
   switch (type) {
     case 'toDo':
-      return <ToDo componentProps={componentProps} />
+      return <ToDo />
       break
     case 'mapComponent':
       return <MapComponent componentProps={componentProps} />
