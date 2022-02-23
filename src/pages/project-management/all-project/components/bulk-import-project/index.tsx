@@ -371,7 +371,6 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
     setEngineerInfo(finalyResultData)
     setCurrentChooseEngineerInfo(finalyResultData[numberIndex])
   }
-
   const engineerTrElement = engineerInfo.map((item, index) => {
     let provinceValue = [
       item?.engineer.province,
@@ -494,7 +493,11 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             style={{ width: '100%' }}
             value={item.engineer.inventoryOverviewId}
             onChange={(value) => inventoryOverviewChange(value, index)}
-            options={item.selectData.inventoryOverviewSelectData}
+            options={
+              item.selectData.inventoryOverviewSelectData?.length !== 0
+                ? item.selectData.inventoryOverviewSelectData
+                : [{ label: '无', value: 'none' }]
+            }
             placeholder={item.libChange ? '请选择' : '同上'}
           />
         </td>
@@ -503,7 +506,11 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             style={{ width: '100%' }}
             value={item.engineer.warehouseId}
             onChange={(value) => wareHouseChangeEvent(value, index)}
-            options={item.selectData.warehouseSelectData}
+            options={
+              item.selectData.warehouseSelectData !== undefined
+                ? item.selectData.warehouseSelectData
+                : [{ label: '无', value: 'none' }]
+            }
             placeholder={item.areaChange ? '请选择' : '同上'}
           />
         </td>
