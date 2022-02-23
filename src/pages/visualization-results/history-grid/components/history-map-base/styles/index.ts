@@ -3,6 +3,7 @@ import { GetLineStyle, getLineStyle } from './lineStyle'
 import { GetPointStyle, getPointStyle } from './pointStyle'
 export * from './changeLayerStyleByShowText'
 export * from './getLayerStyleByShowText'
+export * from './polygonDragbox'
 export { getStyle }
 /**
  *
@@ -16,5 +17,9 @@ export { getStyle }
 function getStyle(type: 'Point'): GetPointStyle
 function getStyle(type: 'LineString'): GetLineStyle
 function getStyle(type: GemotType) {
-  return type === 'Point' ? getPointStyle : getLineStyle
+  return (
+    (type === 'Point' && getPointStyle) ||
+    (type === 'LineString' && getLineStyle) ||
+    (() => undefined)
+  )
 }

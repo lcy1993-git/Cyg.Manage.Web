@@ -1,8 +1,9 @@
 import '@/assets/icon/history-grid-icon.css'
-import { Map, View } from 'ol'
+import { Feature, Map, View } from 'ol'
 import Geometry from 'ol/geom/Geometry'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
+import { Polygon } from 'ol/geom/Polygon'
 import { DragBox, Draw, Modify, Select, Snap } from 'ol/interaction'
 import { Layer } from 'ol/layer'
 import 'ol/ol.css'
@@ -27,10 +28,10 @@ export interface ElectricLineData {
   name: string
   type: ElectricLineType | number
   typeStr: ElectricLineType
-  startLng?: number
-  startLat?: number
-  endLng?: number
-  endLat?: number
+  startLng?: string | number
+  startLat?: string | number
+  endLng?: string | number
+  endLat?: string | number
   remark?: string
   startId?: string
   endId?: string
@@ -45,8 +46,8 @@ export interface ElectricPointData {
   name: string
   type: ElectricPointType | number
   typeStr: ElectricPointType
-  lng?: number
-  lat?: number
+  lng?: string | number
+  lat?: string | number
   remark?: string
   voltageLevelStr: string
   voltageLevel: number
@@ -69,19 +70,28 @@ export type SelectedData = (ElectricPointData | ElectricLineData)[]
 
 export type SelectType = 'pointSelect' | 'toggleSelect'
 
-type selectKey = 'viewNoTextSelect' | 'viewTextSelect' | 'drawNoTextSelect' | 'drawTextSelect'
+type selectKey =
+  | 'viewNoTextSelect'
+  | 'viewTextSelect'
+  | 'drawNoTextSelect'
+  | 'drawTextSelect'
+  | 'boxSelect'
 
 export interface InterActionRef {
-  draw?: Draw
+  draw?: {
+    Point: Draw
+    LineString: Draw
+    current: Draw | null
+  }
   snap?: Snap
   source?: VectorSource<Geometry>
   hightLightSource?: VectorSource<Geometry>
   designSource: VectorSource<Geometry>
   modify?: Modify
   isDraw?: boolean
-
   select: Record<selectKey, Select> & { currentSelect: Select | null }
   dragBox?: DragBox
+  dragBoxFeature?: Feature<Polygon>
   isDragBox?: boolean
 }
 
@@ -94,8 +104,11 @@ export interface LayerRef {
   historyLineLayer: Layer<VectorSource<LineString>>
   designPointLayer: Layer<VectorSource<Point>>
   designLineLayer: Layer<VectorSource<LineString>>
-  highLightPointLayer: Layer<VectorSource<Point>>
-  highLightLineLayer: Layer<VectorSource<LineString>>
+  highLightLayer: Layer<VectorSource<Geometry>>
+
+  dragBoxLayer: Layer<VectorSource<Polygon>>
+
+  drawLayer: Layer<VectorSource<Point | LineString>>
 }
 
 export interface ViewRef {
@@ -112,8 +125,9 @@ export interface SourceRef {
   historyLineSource: VectorSource<LineString>
   designPointSource: VectorSource<Point>
   designLineSource: VectorSource<LineString>
-  highLightPointSource: VectorSource<Point>
-  highLightLineSource: VectorSource<LineString>
+  highLightSource: VectorSource<Geometry>
+  dragBoxSource: VectorSource<Polygon>
+  drawSource: VectorSource<Point | LineString>
 }
 
 export interface LifeStateRef {
@@ -136,4 +150,43 @@ export enum SourceType {
   'history' = 'rgba(0, 117, 206, 1)',
   'design' = 'rgba(20, 168, 107, 1)',
   'highLight' = 'rgba(249, 149, 52, 1)',
+}
+
+export interface DragBoxProps {
+  visible: boolean
+  position: number[]
+  selected: Feature<Point | LineString>[]
+}
+
+export interface ModifyCurrentState {
+  eventFeatures: Feature<Geometry | Point | LineString>[]
+  atPixelFeatures: Feature<Geometry | Point | LineString>[]
+  coordinate: [number, number]
+  refreshModifyCallBack: () => void
+}
+
+export interface ModifyProps {
+  visible: boolean
+  position: number[]
+  currentState: ModifyCurrentState | null
+}
+
+export interface UpdateHistoryData {
+  id?: string
+  equipments: ElectricPointData[]
+  lines: ElectricLineData[]
+  toBeDeletedEquipmentIds: string[]
+  toBeDeletedLineIds: string[]
+}
+
+export interface CurrentLayers {
+  LineString: Layer<VectorSource<LineString>>
+  Point: Layer<VectorSource<Point>>
+}
+
+export interface DrawProps {
+  visible: boolean
+  position: [number, number]
+  currentState: any
+  type: 'Point' | 'LineString'
 }
