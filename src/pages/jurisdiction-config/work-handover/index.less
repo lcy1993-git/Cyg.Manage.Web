@@ -21,13 +21,14 @@
     .moduleTabs {
       box-sizing: border-box;
       width: 100%;
-      height: calc(100% - 76px);
+      height: calc(100% - 47px);
       margin: 0;
 
       :global {
         .ant-tabs-card .ant-tabs-content {
           z-index: 999;
-          height: 100%;
+          height: calc(100% + 16px);
+          margin-top: 15px;
           background-color: white;
         }
         .ant-tabs .ant-tabs-nav {

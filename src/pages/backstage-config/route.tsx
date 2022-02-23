@@ -1,9 +1,13 @@
-import ManualManagement from '@/pages/backstage-config/manual-management'
 import Loading from '@ant-design/pro-layout/es/PageLoading'
 import Loadable from 'react-loadable'
 
 const FunctionModule = Loadable({
   loader: () => import('@/pages/backstage-config/function-module'),
+  loading: Loading,
+  delay: 150,
+})
+const ManualManagement = Loadable({
+  loader: () => import('@/pages/backstage-config/manual-management'),
   loading: Loading,
   delay: 150,
 })
@@ -57,6 +61,12 @@ const BasicData = Loadable({
 
 const CompanyStructure = Loadable({
   loader: () => import('@/pages/backstage-config/company-structure'),
+  loading: Loading,
+  delay: 150,
+})
+
+const BusinessBoard = Loadable({
+  loader: () => import('@/pages/backstage-config/business-kanban'),
   loading: Loading,
   delay: 150,
 })
@@ -122,5 +132,10 @@ export default [
     title: '供电公司架构',
     path: '/backstage-config/company-structure',
     component: <CompanyStructure />,
+  },
+  {
+    title: '业务看板',
+    path: '/backstage-config/business-kanban',
+    component: <BusinessBoard />,
   },
 ]

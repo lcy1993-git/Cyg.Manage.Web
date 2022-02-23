@@ -599,7 +599,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
-              disabled={isEdit}
+              disabled={!isEdit}
               titlekey="text"
               placeholder="请选择"
             />
@@ -866,6 +866,21 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 {
                   required: true,
                   message: '桩位范围不能为空',
+                },
+                () => ({
+                  validator(_, value) {
+                    if (value <= 999 && value > -1) {
+                      return Promise.resolve()
+                    }
+                    if (value > 999) {
+                      return Promise.reject('请填写0~999以内的整数')
+                    }
+                    return Promise.resolve()
+                  },
+                }),
+                {
+                  pattern: /^[0-9]\d*$/,
+                  message: '请输入正整数',
                 },
               ]}
             >

@@ -85,6 +85,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
     defaultPageSize = 10,
     postType = 'body',
     getTableRequestData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     hasFooter = true,
     cruxKey = '',
     requestConditions = true,
@@ -95,7 +96,7 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const [finallyColumns, setFinalyColumns] = useState<any[]>([])
-  const [onRequest, setOnRequest] = useState<boolean>(false)
+  // const [onRequest, setOnRequest] = useState<boolean>(false)
   const tableRef = useRef<HTMLDivElement>(null)
 
   const { data, run, loading } = useRequest(tableCommonRequest, {

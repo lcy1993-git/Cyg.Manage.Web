@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import WrapperComponent from '@/components/page-common-wrap'
 import EventNumber from '@/pages/adminIndex/home/child/eventsNumber'
 import styles from './index.less'
 import * as echarts from 'echarts/lib/echarts'
 import 'echarts/lib/component/grid'
 import 'echarts/lib/component/tooltip'
-import { TitleComponent } from 'echarts/components'
 import { useMount, useSize } from 'ahooks'
 import RecentlyWarned from '@/pages/adminIndex/home/child/recentlyWarned'
 import { Button, Table } from 'antd'
@@ -193,7 +192,7 @@ const AdminIndex: React.FC = () => {
       dataIndex: 'tags',
       render: (row: any) => {
         return (
-          <Button type={'link'} onClick={() => showReport(row)}>
+          <Button type={'link'} onClick={() => showReport()}>
             查看报表
           </Button>
         )
@@ -223,8 +222,7 @@ const AdminIndex: React.FC = () => {
       tags: ['cool', 'teacher'],
     },
   ]
-  const showReport = (row) => {
-    console.log(row)
+  const showReport = () => {
     history.push('/admin-index/report')
   }
   const initChart = () => {
@@ -286,6 +284,7 @@ const AdminIndex: React.FC = () => {
             <div className={styles.leftTable}>
               <div className={styles.tableTitle}>安全事件</div>
               <div className={styles.tableBox}>
+                {/*@ts-ignore*/}
                 <Table columns={columns as ColumnsType} bordered size={'small'} dataSource={data} />
               </div>
             </div>

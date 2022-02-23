@@ -2,7 +2,7 @@ import { Feature } from 'ol'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import * as proj from 'ol/proj'
-import { DataSource, InterActionRef, SourceRef, SourceType } from './../typings'
+import { DataSource, InterActionRef, SourceRef, SourceType } from '../typings'
 
 /**
  * 根据数据源渲染当前点位和线段

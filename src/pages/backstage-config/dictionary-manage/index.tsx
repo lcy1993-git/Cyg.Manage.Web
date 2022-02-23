@@ -1,29 +1,29 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, { useState, useMemo, useCallback, useReducer } from 'react';
-import DictionaryForm from './components/add-edit-form';
-import styles from './index.less';
-import { useRequest } from 'ahooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd'
+import React, { useState, useReducer } from 'react'
+import DictionaryForm from './components/add-edit-form'
+import styles from './index.less'
+import { useRequest } from 'ahooks'
 import {
   getDictionaryDetail,
   addDictionaryItem,
   updateDictionaryItemStatus,
   updateDictionaryItem,
   deleteDictionaryItem,
-} from '@/services/system-config/dictyionary-manage';
-import { isArray } from 'lodash';
-import TableImportButton from '@/components/table-import-button';
-import TableExportButton from '@/components/table-export-button';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/system-config/dictyionary-manage'
+import { isArray } from 'lodash'
+import TableImportButton from '@/components/table-import-button'
+import TableExportButton from '@/components/table-export-button'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
-const { Search } = Input;
+const { Search } = Input
 
 interface RouteListItem {
-  name: string;
-  id: string;
+  name: string
+  id: string
 }
 
 const ROUTE_LIST_STATE = {
@@ -33,46 +33,46 @@ const ROUTE_LIST_STATE = {
       id: '',
     },
   ],
-};
+}
 
 interface State {
-  routeList: RouteListItem[];
+  routeList: RouteListItem[]
 }
 
 const reducer = (state: State, action: any) => {
   switch (action.code) {
     case 'add':
-      return { routeList: [...state.routeList, { id: action.id, name: action.name }] };
+      return { routeList: [...state.routeList, { id: action.id, name: action.name }] }
     case 'edit':
-      const routeList = [...state.routeList];
-      const currentDataIndex = routeList.findIndex((item) => item.id === action.id);
+      const routeList = [...state.routeList]
+      const currentDataIndex = routeList.findIndex((item) => item.id === action.id)
       if (currentDataIndex !== routeList.length) {
-        routeList.splice(currentDataIndex + 1, routeList.length);
+        routeList.splice(currentDataIndex + 1, routeList.length)
       }
-      return { routeList: routeList };
+      return { routeList: routeList }
     default:
-      throw new Error('传入值不对');
+      throw new Error('传入值不对')
   }
-};
+}
 
 const DictionaryManage: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
-  const [state, dispatch] = useReducer(reducer, ROUTE_LIST_STATE);
+  const [state, dispatch] = useReducer(reducer, ROUTE_LIST_STATE)
 
-  const [selectIds, setSelectIds] = useState<string[]>([]);
+  const [selectIds, setSelectIds] = useState<string[]>([])
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
 
   const { data, run } = useRequest(getDictionaryDetail, {
     manual: true,
-  });
+  })
 
   const searchComponent = () => {
     return (
@@ -85,66 +85,66 @@ const DictionaryManage: React.FC = () => {
           placeholder="键名"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteDictionaryItem(editDataId);
-    refresh();
-    message.success('删除成功');
-  };
+    await deleteDictionaryItem(editDataId)
+    refresh()
+    message.success('删除成功')
+  }
 
   const updateStatus = async (record: any) => {
-    const { id } = record;
+    const { id } = record
 
-    await updateDictionaryItemStatus(id);
-    refresh();
-    message.success('状态修改成功');
-  };
+    await updateDictionaryItemStatus(id)
+    refresh()
+    message.success('状态修改成功')
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const searchByParams = (params: object) => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.searchByParams(params);
+      tableRef.current.searchByParams(params)
     }
-  };
+  }
 
   const keyCellClickEvent = (id: string, name: string) => {
-    dispatch({ code: 'add', id, name });
+    dispatch({ code: 'add', id, name })
     //setRouteList([...routeList, { id, name }]);
-    setSearchKeyWord('');
+    setSearchKeyWord('')
     searchByParams({
       keyWord: '',
       parentId: id,
-    });
-  };
+    })
+  }
 
   const columns = [
     {
@@ -160,7 +160,7 @@ const DictionaryManage: React.FC = () => {
           >
             {record.key}
           </span>
-        );
+        )
       },
     },
     {
@@ -187,8 +187,8 @@ const DictionaryManage: React.FC = () => {
       title: '状态',
       width: 100,
       render: (text: any, record: any) => {
-        const isChecked = !record.isDisable;
-        return <Switch checked={isChecked} onChange={() => updateStatus(record)} />;
+        const isChecked = !record.isDisable
+        return <Switch checked={isChecked} onChange={() => updateStatus(record)} />
       },
     },
     {
@@ -196,12 +196,12 @@ const DictionaryManage: React.FC = () => {
       index: 'remark',
       title: '描述',
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (value) => {
@@ -215,36 +215,36 @@ const DictionaryManage: React.FC = () => {
           isDisable: false,
           remark: '',
         },
-        value,
-      );
-      await addDictionaryItem(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addDictionaryItem(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   //编辑
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
-    const AuthorizationData = await run(editDataId);
+    setEditFormVisible(true)
+    const AuthorizationData = await run(editDataId)
 
-    editForm.setFieldsValue(AuthorizationData);
-  };
+    editForm.setFieldsValue(AuthorizationData)
+  }
 
   const sureEditAuthorization = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
-    const editData = data!;
+    const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -258,15 +258,15 @@ const DictionaryManage: React.FC = () => {
           remark: editData.remark,
           parentId: editData.parentId,
         },
-        values,
-      );
-      await updateDictionaryItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateDictionaryItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   const tableElement = () => {
     return (
@@ -304,17 +304,17 @@ const DictionaryManage: React.FC = () => {
           <TableExportButton selectIds={selectIds} exportUrl="/Dictionary/Export" />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const routeItemClickEvent = (id: string, name: string) => {
-    dispatch({ code: 'edit', id });
-    setSearchKeyWord('');
+    dispatch({ code: 'edit', id })
+    setSearchKeyWord('')
     searchByParams({
       keyWord: '',
       parentId: id,
-    });
-  };
+    })
+  }
 
   const routeElement = state.routeList.map((item) => {
     return (
@@ -325,8 +325,8 @@ const DictionaryManage: React.FC = () => {
       >
         {item.name}/
       </div>
-    );
-  });
+    )
+  })
 
   const titleSlotElement = () => {
     return (
@@ -334,13 +334,13 @@ const DictionaryManage: React.FC = () => {
         <span>/</span>
         {routeElement}
       </div>
-    );
-  };
+    )
+  }
 
   const tableSelectEvent = (data: any) => {
-    setTableSelectRows(data);
-    setSelectIds(data.map((item: any) => item.id));
-  };
+    setTableSelectRows(data)
+    setSelectIds(data.map((item: any) => item.id))
+  }
 
   return (
     <PageCommonWrap>
@@ -391,7 +391,7 @@ const DictionaryManage: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default DictionaryManage;
+export default DictionaryManage

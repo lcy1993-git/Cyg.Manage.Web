@@ -1,4 +1,6 @@
-import { drawByDataSource } from './drawBydataSource'
+import { drawByDataSource } from './drawByDataSource'
 import { drawEnd } from './drawEnd'
-
-export { drawEnd, drawByDataSource }
+import { drawEndByLineString } from './drawEndByLineString'
+import { drawEndByPoint } from './drawEndByPoint'
+import { onDrawGeometryChange } from './onDrawGeometryChange'
+export { drawEnd, drawByDataSource, onDrawGeometryChange, drawEndByLineString, drawEndByPoint }

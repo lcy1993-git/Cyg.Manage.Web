@@ -212,6 +212,7 @@ export interface AllProjectStatisticsParams {
   keyWord?: string
   category?: number[]
   pCategory?: number[]
+  plannedYear?: number
   stage?: number[]
   constructType?: number[]
   nature?: number[]
@@ -387,6 +388,7 @@ interface ProjectInfoParams {
   name: string
   category: string
   categoryText: string
+  canEditStage: boolean
   pType: string
   pTypeText: string
   kvLevel: string
