@@ -19,6 +19,7 @@
     "compat",
     "craco",
     "drawend",
+    "drawstart",
     "dumi",
     "echarts",
     "entrypoint",

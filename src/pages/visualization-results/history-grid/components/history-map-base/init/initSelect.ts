@@ -129,8 +129,6 @@ export default function initSelect({
       features: [
         ...sourceRef[`${modeSign}PointSource`].getFeatures(),
         ...sourceRef[`${modeSign}LineSource`].getFeatures(),
-        // ...sourceRef.designPointSource.getFeatures(),
-        // ...sourceRef.designLineSource.getFeatures(),
       ],
     })
     const selected: Feature<Point | LineString>[] = []

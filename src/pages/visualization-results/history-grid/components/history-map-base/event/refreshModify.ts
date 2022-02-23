@@ -328,6 +328,7 @@ export function saveOperation(
       refreshModifyCallBack()
     }
   }
+
   const save = mode === 'history' ? saveHistoryData : saveData
   const idProps = mode === 'history' ? {} : { id: preId! }
   save({ ...updateHistoryData, ...idProps })

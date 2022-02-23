@@ -29,6 +29,8 @@ export function needAdsorption(
   { modifyProps, sourceRef, reFetchData, mode, preId }: AdsorptionOptions,
   needAdsorption: boolean
 ) {
+  const preMode = mode === 'record' ? 'history' : 'design'
+
   const { eventFeatures, refreshModifyCallBack } = modifyProps.currentState!
   if (needAdsorption) {
     saveAdsorptionOperation(
@@ -36,19 +38,12 @@ export function needAdsorption(
       sourceRef,
       modifyProps,
       reFetchData,
-      mode,
+      preMode,
       preId
     )
   } else {
-    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps, mode, preId)
+    saveOperation(eventFeatures, refreshModifyCallBack, sourceRef, modifyProps, preMode, preId)
   }
-  // modifyProps.visible = false;
-
-  // setModifyProps({
-  //   visible: false,
-  //   position: [0, 0],
-  //   currentState: null,
-  // })
 }
 /**
  * 不吸附时候的点击事件
@@ -60,11 +55,6 @@ export function needNotAdsorption({ modifyProps, sourceRef, mode, preId }: Adsor
   modifyProps.visible = false
   modifyProps.position = [0, 0]
   modifyProps.currentState = null
-  // setModifyProps({
-  //   visible: false,
-  //   position: [0, 0],
-  //   currentState: null,
-  // })
 }
 
 /**

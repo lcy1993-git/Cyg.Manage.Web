@@ -2,16 +2,25 @@ import { getHistoriesEnums } from '@/pages/visualization-results/history-grid/se
 import { useMount } from 'ahooks'
 import { Button, Form, Input, Select } from 'antd'
 import { useState } from 'react'
-import { DrawProps } from '../../typings'
+import { drawEndByLineString, drawEndByPoint } from '../../draw'
+import { DrawProps, SourceRef } from '../../typings'
 import styles from './index.less'
 const { Item } = Form
 const { Option } = Select
 interface DrawModalProps {
   drawProps: DrawProps
+  sourceRef: SourceRef
+  mode: string
+  preId?: string
+  reFetchDraw: () => void
+  size: {
+    width?: number
+    height?: number
+  }
 }
 
-const DrawModal = ({ drawProps }: DrawModalProps) => {
-  const { position, currentState, type } = drawProps
+const DrawModal = ({ drawProps, sourceRef, mode, preId, reFetchDraw, size }: DrawModalProps) => {
+  const { position, type } = drawProps
   const [KVLevel, setKVLevel] = useState<[]>([])
   const [lineType, setLineType] = useState<[]>([])
   const [equipmentsType, setEquipmentsType] = useState<[]>([])
@@ -22,7 +31,8 @@ const DrawModal = ({ drawProps }: DrawModalProps) => {
     if (localEnums) {
       try {
         data = JSON.parse(localEnums)
-      } finally {
+      } catch {
+        data = null
       }
     }
 
@@ -53,12 +63,18 @@ const DrawModal = ({ drawProps }: DrawModalProps) => {
     getEnums()
   })
 
-  const onFinish = () => {
-    // console.log("完成事件");
+  const onFinish = (e) => {
+    const formData = getFormData(e)
+    if (type === 'LineString') {
+      drawEndByLineString({ formData, sourceRef, drawProps, mode, preId, reFetchDraw })
+    } else if (type === 'Point') {
+      drawEndByPoint({ formData, sourceRef, drawProps, mode, preId, reFetchDraw })
+    }
   }
 
   const onCancel = () => {
-    // console.log("取消");
+    drawProps.currentState = null
+    drawProps.visible = false
   }
 
   const formatOption = (i: string[]) => {
@@ -68,8 +84,25 @@ const DrawModal = ({ drawProps }: DrawModalProps) => {
     }
   }
 
+  function getFormData(e) {
+    const data = {}
+    for (let key in e) {
+      const val = e[key]
+      if (val) {
+        data[key] = val
+      }
+    }
+    return Object.assign({ type: '0' }, data)
+  }
+
   return (
-    <div className={styles.drawModalWrap} style={{ left: position[0], top: position[1] }}>
+    <div
+      className={styles.drawModalWrap}
+      style={{
+        left: Math.min(position[0], size.width! - 500),
+        top: Math.min(position[1], size.height! - 350),
+      }}
+    >
       <div className={styles.title}>
         <span>添加{type === 'Point' ? '设备' : '线路'}</span>
         <span className={styles.close} onClick={onCancel}>
@@ -91,9 +124,6 @@ const DrawModal = ({ drawProps }: DrawModalProps) => {
             <Option value={1}>123</Option>
           </Select>
         </Item>
-        <Item label="长度" name="length">
-          <Input></Input>
-        </Item>
         <Item label="备注" name="remark">
           <Input.TextArea
             placeholder="请输入备注"
@@ -103,7 +133,7 @@ const DrawModal = ({ drawProps }: DrawModalProps) => {
           ></Input.TextArea>
         </Item>
         <div className={styles.footer}>
-          <Button htmlType="button" style={{ marginRight: 10 }}>
+          <Button htmlType="button" style={{ marginRight: 10 }} onClick={onCancel}>
             删除
           </Button>
 

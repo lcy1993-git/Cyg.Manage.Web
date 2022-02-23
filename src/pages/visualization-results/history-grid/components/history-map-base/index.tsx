@@ -1,14 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import '@/assets/icon/history-grid-icon.css'
 import { useMount, useReactive, useSize, useUpdateEffect } from 'ahooks'
 import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
+import { DrawEvent } from 'ol/interaction/Draw'
 import 'ol/ol.css'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
 import AdsorptionModal from './components/adsorption-modal'
 import DragBoxModal from './components/drag-box-modal'
 import DrawModal from './components/draw-modal'
-import { drawByDataSource, onDrawGeometryChange } from './draw'
+import { drawByDataSource, drawEnd, onDrawGeometryChange } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
 import {
   mapClick,
@@ -70,7 +72,6 @@ const HistoryMapBase = () => {
     () =>
       setState((state) => {
         return { ...state, refetch: !state.refetch }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
       }),
     []
   )
@@ -111,6 +112,12 @@ const HistoryMapBase = () => {
     type: 'Point',
   })
 
+  // 绘制完成的操作
+  const reFetchDraw = useCallback(() => {
+    setState((state) => ({ ...state, geometryType: '', refetch: !state.refetch }))
+    drawProps.visible = false
+  }, [])
+
   // 挂载地图
   useMount(() => {
     init({
@@ -134,10 +141,7 @@ const HistoryMapBase = () => {
   // 处理geometryType变化
   useUpdateEffect(() => {
     // 在绘制时,关闭选择和框选，关闭绘制时打开
-
-    onDrawGeometryChange({ geometryType, map: mapRef.map, interActionRef })
-    // removeaddInteractions()
-    // if (geometryType) addInteractions(geometryType)
+    onDrawGeometryChange({ geometryType, map: mapRef.map, interActionRef, sourceRef })
   }, [geometryType])
 
   // 处理当前地图类型变化
@@ -259,12 +263,17 @@ const HistoryMapBase = () => {
       // 修改比例尺
       handlerGeographicSize({ mode, viewRef })
     })
-    interActionRef.draw!.Point.on('drawend', () => {
-      setState((data) => ({ ...data, geometryType: '' }))
-    })
-    interActionRef.draw!.LineString.on('drawend', () => {
-      setState((data) => ({ ...data, geometryType: '' }))
-    })
+
+    // 解决二次绘制造成的上次绘制的点线
+    interActionRef.draw!.Point.on('drawstart', () => sourceRef.drawSource.clear())
+    interActionRef.draw!.LineString.on('drawstart', () => sourceRef.drawSource.clear())
+    // 绘制点线逻辑
+    interActionRef.draw!.Point.on('drawend', (e: DrawEvent) =>
+      drawEnd({ sourceRef, drawProps, type: 'Point', e })
+    )
+    interActionRef.draw!.LineString.on('drawend', (e: DrawEvent) =>
+      drawEnd({ sourceRef, drawProps, type: 'LineString', e })
+    )
   }
 
   // 初次挂载自适应屏幕
@@ -384,7 +393,16 @@ const HistoryMapBase = () => {
           onCancelClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef, sourceRef })}
         ></DragBoxModal>
       )}
-      {drawProps.visible && <DrawModal drawProps={drawProps}></DrawModal>}
+      {drawProps.visible && (
+        <DrawModal
+          drawProps={drawProps}
+          sourceRef={sourceRef}
+          mode={mode === 'record' ? 'history' : 'preDesign'}
+          preId={importDesignData?.id}
+          reFetchDraw={reFetchDraw}
+          size={size}
+        ></DrawModal>
+      )}
     </div>
   )
 }
