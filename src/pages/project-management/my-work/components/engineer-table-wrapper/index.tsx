@@ -118,6 +118,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   })
   const [externalStepData] = useState<any>()
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+
   // 工程详情
   const [engineerModalVisible, setEngineerModalVisible] = useState(false)
   // 新增项目
@@ -342,7 +343,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         }
         {tableItemData.identitys.findIndex((item: any) => item.value === 4) > -1 &&
           status !== 30 &&
-          status !== 31 && (
+          status !== 31 &&
+          buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
           )}
       </Menu>
@@ -674,7 +676,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         const status = record.exportCoordinate
         return (
           <>
-            {buttonJurisdictionArray?.includes('export-coordinate') &&
+            {buttonJurisdictionArray?.includes('all-project-coordinate') &&
               (record.exportCoordinate === true ? (
                 <span
                   style={{ cursor: 'pointer' }}
@@ -692,7 +694,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   禁用
                 </span>
               ))}
-            {!buttonJurisdictionArray?.includes('export-coordinate') &&
+            {!buttonJurisdictionArray?.includes('all-project-coordinate') &&
               (record.exportCoordinate === true ? (
                 <span className="colorRed">启用</span>
               ) : (

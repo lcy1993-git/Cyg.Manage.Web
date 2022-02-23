@@ -17,6 +17,7 @@ const EmptyTip: React.FC<EmptyTipProps> = (props) => {
       image={imgSrc === 'finish' ? handFinishSrc : imgSrc === 'empty' ? emptyImageSrc : checkFavSrc}
       description={description}
       className={className}
+      style={{ color: '#8c8c8c' }}
     >
       {props.children}
     </Empty>
