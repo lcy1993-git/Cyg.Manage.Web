@@ -1,69 +1,32 @@
 .chooseDesignAndSurveySelect {
-  display: inline-block;
-  display: flex;
-  box-sizing: border-box;
-  height: 32px;
-  margin: 0;
-  padding: 0;
-  padding-left: 6px;
-  overflow: hidden;
-  color: rgba(0, 0, 0, 0.85);
-  font-size: 14px;
-  font-variant: tabular-nums;
-  line-height: 1.5715;
-  line-height: 32px;
-  list-style: none;
-  background-color: #fff;
-  border: 1px solid #d9d9d9;
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
-  font-feature-settings: 'tnum', 'tnum';
-  .chooseDesignAndSurveySelectContent {
-    display: flex;
-    width: 100%;
-  }
-  .selectPlaceholder {
-    flex: 1;
-    margin-right: 16px;
-    color: #bfbfbf;
-  }
-  .hasSelectTip {
-    flex: 1;
-    margin-right: 16px;
-  }
-  .selectFold {
-    padding-right: 8px;
-    color: #bfbfbf;
-  }
+  padding: 12px 0;
+  line-height: 26px;
 
-  .popContent {
-    position: fixed;
+  background-color: rgba(247, 244, 248, 0.7);
+  .firstLine {
+    display: flex;
+    justify-content: space-around;
+  }
+  .lastLine {
+    padding: 0 12px;
+  }
+  .popContentItem {
     z-index: 1000;
-    width: 260px;
-    padding: 18px 16px;
-    background-color: #fff;
-    background-clip: padding-box;
-    border-radius: 2px;
-    box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
-      0 9px 28px 8px rgba(0, 0, 0, 0.05);
-    .popContentItem {
-      display: flex;
-      width: 100%;
-      margin-bottom: 10px;
-      .popContentItemLabel {
-        flex-shrink: 0;
-        margin-right: 8px;
-      }
-      .popContentItemSelect {
-        flex: 1;
-      }
+    display: flex;
+    width: 30% !important;
+    margin-bottom: 10px;
+    .popContentItemLabel {
+      flex-shrink: 0;
+      margin-right: 8px;
     }
-    &.show {
-      display: block;
+    .popContentItemSelect {
+      flex: 1;
     }
-    &.hide {
-      display: none;
-    }
+  }
+  &.show {
+    display: block;
+  }
+  &.hide {
+    display: none;
   }
 }

@@ -63,7 +63,6 @@ const ReportApproveModal: React.FC<ReportApproveParams> = (props) => {
       <Form form={form}>
         <CyFormItem label="审核人" name="approveUserId" labelWidth={98}>
           <UrlSelect
-            disabled
             defaultData={approveUser}
             titlekey="label"
             valuekey="value"
