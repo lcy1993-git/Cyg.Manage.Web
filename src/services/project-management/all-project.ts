@@ -214,6 +214,7 @@ export interface AllProjectStatisticsParams {
   pCategory?: number[]
   plannedYear?: number
   stage?: number[]
+  childrenIds?: string[]
   constructType?: number[]
   nature?: number[]
   kvLevel?: number[]

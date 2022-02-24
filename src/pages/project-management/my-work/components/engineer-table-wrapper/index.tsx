@@ -89,6 +89,7 @@ const initSearchParams = {
   majorCategory: [],
   pType: [],
   plannedYear: undefined,
+  childrenIds: [],
   reformAim: [],
   classification: [],
   attribute: [],

@@ -1,7 +1,7 @@
 import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, message, Modal } from 'antd'
 import { isArray } from 'lodash'
-import React, { useEffect } from 'react'
+import React from 'react'
 
 interface ModalConfirmProps {
   title?: string

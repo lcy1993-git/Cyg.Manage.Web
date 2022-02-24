@@ -202,7 +202,7 @@ const MyProject: React.FC = () => {
     // setArrangeModalVisible(true);
     const projectIds = tableSelectKeys
     if (projectIds.length === 0) {
-      message.error('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
 
@@ -297,7 +297,7 @@ const MyProject: React.FC = () => {
     const projectIds = tableSelectKeys
 
     if (projectIds.length === 0) {
-      message.error('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
     await revokeAllot(projectIds as string[])
@@ -400,7 +400,7 @@ const MyProject: React.FC = () => {
 
   const auditKnotEvent = async () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.warning('请至少选择一条数据')
+      message.info('请至少选择一条数据')
       return
     }
     const projectIds = tableSelectKeys
@@ -410,7 +410,7 @@ const MyProject: React.FC = () => {
 
   const applyConfirm = () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.warning('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
     Modal.confirm({
@@ -454,6 +454,10 @@ const MyProject: React.FC = () => {
 
   // 外审安排
   const externalArrange = () => {
+    if (tableSelectKeys && tableSelectKeys.length === 0) {
+      message.info('请选择要操作的项目')
+      return
+    }
     setExternalArrangeModalVisible(true)
   }
 

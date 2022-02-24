@@ -43,7 +43,7 @@ const SubordinateCompany: React.FC = () => {
         return (
           <>
             <Switch checked={isChecked} onChange={() => updateStatus(record)} />
-            <span style={{ color: isChecked ? '#0E7B3B' : '#C1C1C1' }}>
+            <span style={{ color: isChecked ? '#0E7B3B' : '#C1C1C1', paddingLeft: '8px' }}>
               {isChecked ? '是' : '否'}
             </span>
           </>

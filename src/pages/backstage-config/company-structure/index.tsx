@@ -2,11 +2,13 @@ import CommonTitle from '@/components/common-title'
 import EmptyTip from '@/components/empty-tip'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { getCompanyStructureTreeList } from '@/services/backstage-config/company-structure'
+import {
+  getCompanyStructureTreeList,
+  deleteCompany,
+} from '@/services/backstage-config/company-structure'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { flatten } from '@/utils/utils'
 import {
-  DeleteOutlined,
   DownOutlined,
   EditOutlined,
   MinusSquareOutlined,
@@ -19,6 +21,7 @@ import React, { Key, useMemo, useState } from 'react'
 import AddModel from './components/add-model'
 import EditModel from './components/edit-model/idnex'
 import styles from './index.less'
+import ModalConfirm from '@/components/modal-confirm'
 
 const { Search } = Input
 
@@ -87,7 +90,7 @@ const CompanyStructure: React.FC = () => {
 
   const editEvent = () => {
     if (!checkRadioValue) {
-      message.error('请选择一个公司')
+      message.info('请选择一个公司')
       return
     }
     const companyName = flatten<{ text: string }>(data).find(
@@ -97,27 +100,44 @@ const CompanyStructure: React.FC = () => {
     setEditModelVisible(true)
   }
 
-  const deleteEvent = () => {}
+  const deleteEvent = async () => {
+    await deleteCompany({ companyId: checkRadioValue })
+    message.success('删除成功')
+    tableSearchEvent()
+  }
+
+  const deleteContent = () => {
+    return (
+      <>
+        <span>
+          此操作将会删除该公司及其全部子级公司，
+          <br />
+          确认删除选中项吗？
+        </span>
+      </>
+    )
+  }
 
   const tableButton = (
     <div>
-      {buttonJurisdictionArray?.includes('add-dictionary') && (
+      {buttonJurisdictionArray?.includes('add-structure-company') && (
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
           <PlusOutlined />
           添加
         </Button>
       )}
-      {buttonJurisdictionArray?.includes('edit-dictionary') && (
+      {buttonJurisdictionArray?.includes('edit-structure-company') && (
         <Button className="mr7" onClick={() => editEvent()}>
           <EditOutlined />
           编辑
         </Button>
       )}
-      {buttonJurisdictionArray?.includes('delete-dictionary') && (
-        <Button className="mr7" onClick={() => deleteEvent()}>
-          <DeleteOutlined />
-          删除
-        </Button>
+      {buttonJurisdictionArray?.includes('delete-structure-company') && (
+        <ModalConfirm
+          changeEvent={deleteEvent}
+          selectData={[checkRadioValue].filter(Boolean)}
+          contentSlot={deleteContent}
+        />
       )}
     </div>
   )

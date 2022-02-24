@@ -38,6 +38,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [reformAim, setReformAim] = useState<number[]>([]) //建设改造目的
   const [pCategory, setPCategory] = useState<number[]>([]) //项目类别
   const [attribute, setAttribute] = useState<number[]>([]) //项目属性
+  const [childrenIds, setChildrenIds] = useState<string[]>([]) //下级公司
   // const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
   // const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
   const [sourceType, setSourceType] = useState<number[]>([]) //项目来源
@@ -53,6 +54,8 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [searchForm] = Form.useForm()
   // 更多条件
   const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false)
+  //@ts-ignore
+  const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
 
   const [selectDefaultData, setSelectDefaultData] = useState({
     logicRelation: 2,
@@ -78,6 +81,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       pCategory,
       attribute,
       sourceType,
+      childrenIds,
       plannedYear: plannedYear ? plannedYear : 0,
       identityType,
       ...areaInfo,
@@ -114,6 +118,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     setReformAim([])
     setPCategory([])
     setAttribute([])
+    setChildrenIds([])
     setSourceType([])
     setIdentityType([])
     setDataSourceType([])
@@ -138,6 +143,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       pCategory: [],
       attribute: [],
       sourceType: [],
+      childrenIds: [],
       identityType: [],
       areaType: '-1',
       areaId: '',
@@ -229,6 +235,11 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
         setConstructType(searchParams.constructType)
       } else {
         setConstructType([])
+      }
+      if (searchParams.childrenIds) {
+        setChildrenIds(searchParams.childrenIds)
+      } else {
+        setChildrenIds([])
       }
       if (searchParams.nature) {
         setNature(searchParams.nature)
@@ -512,6 +523,30 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
             </CyFormItem>
           </div>
         </div>
+
+        <div className="flex">
+          <div className="flex1">
+            <CyFormItem label="下级公司" align="right" labelWidth={100}>
+              <div style={{ width: '275px' }}>
+                <UrlSelect
+                  {...selectStyle}
+                  allowClear
+                  mode="multiple"
+                  url="/CompanyTree/GetChildren"
+                  value={childrenIds}
+                  titlekey="key"
+                  valuekey="value"
+                  extraParams={{ companyId: companyId }}
+                  onChange={(value) => setChildrenIds(value as string[])}
+                  className="widthAll"
+                  placeholder="下级公司"
+                  requestType="post"
+                />
+              </div>
+            </CyFormItem>
+          </div>
+        </div>
+
         <div className={styles.moreInfo}>
           {!showMoreFlag ? (
             <>

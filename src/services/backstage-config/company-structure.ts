@@ -36,3 +36,9 @@ export const editCompany = (data: EditCompanyParams) => {
     request(`${baseUrl.project}/CompanyTree/ModifyCompany`, { method: 'POST', data })
   )
 }
+
+export const deleteCompany = (data: { companyId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/CompanyTree/DeleteCompanyTree`, { method: 'POST', data })
+  )
+}
