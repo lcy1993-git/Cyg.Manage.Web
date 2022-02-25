@@ -2,9 +2,11 @@ import Control from 'ol/control/Control'
 import { default as Group, default as LayerGroup } from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import TileLayer from 'ol/layer/Tile'
+import BMap from 'ol/Map'
 import * as proj from 'ol/proj'
 import XYZ from 'ol/source/XYZ'
 import View from 'ol/View'
+import { getLayerByName } from './methods'
 
 export interface BaseMapProps {
   layers: Layer[]
@@ -108,6 +110,36 @@ export const initLayers = (resData: any): Layer[] => {
   annLayer.set('name', 'annLayer')
 
   return [imgLayer, vecLayer, annLayer]
+}
+
+export const changBaseMap = (type: number, url: string, map: BMap) => {
+  if (type === 1) {
+    // 影像图层
+    let imgLayer = getLayerByName('imgLayer', map.getLayers().getArray())
+    imgLayer && map.removeLayer(imgLayer)
+    imgLayer = new TileLayer({
+      source: new XYZ({
+        url: decodeURI(url),
+      }),
+      zIndex: 1,
+      preload: 18,
+    })
+    imgLayer.set('name', 'imgLayer')
+    map.addLayer(imgLayer)
+  } else if (type === 2) {
+    // 街道图层
+    let vecLayer = getLayerByName('vecLayer', map.getLayers().getArray())
+    vecLayer && map.removeLayer(vecLayer)
+    vecLayer = new TileLayer({
+      source: new XYZ({
+        url: decodeURI(url),
+      }),
+      zIndex: 1,
+      preload: 18,
+    })
+    vecLayer.set('name', 'vecLayer')
+    map.addLayer(vecLayer)
+  }
 }
 
 export const initOtherLayers = (): LayerGroup[] => {
