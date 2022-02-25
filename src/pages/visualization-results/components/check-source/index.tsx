@@ -1,8 +1,8 @@
 import { getUseFulMapList } from '@/services/visualization-results/visualization-results'
-import { CloseOutlined } from '@ant-design/icons'
+import { useClickAway } from 'ahooks'
 import { message, Select } from 'antd'
 import Map from 'ol/Map'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { useHistory } from 'umi'
 import { changBaseMap } from './changeBaseMap'
 import styles from './index.less'
@@ -17,6 +17,21 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
   const history = useHistory()
 
   const [options, setOptions] = useState([])
+
+  const ref = useRef<HTMLDivElement>(null)
+
+  const close = () => {
+    setSourceType('')
+  }
+
+  const onSelect = (url: string) => {
+    changBaseMap(type, url, map)
+  }
+
+  useClickAway((e) => {
+    // @ts-ignore
+    e.srcElement!.nodeName === 'CANVAS' && close()
+  }, ref)
 
   useEffect(() => {
     if (type) {
@@ -51,19 +66,11 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type])
 
-  const close = () => {
-    setSourceType('')
-  }
-
-  const onSelect = (url: string) => {
-    changBaseMap(type, url, map)
-  }
-
   return !!type ? (
-    <div className={styles.checkSourceWrap}>
+    <div ref={ref} className={styles.checkSourceWrap}>
       <div className={styles.title}>
         <span>切换地图源</span>
-        <CloseOutlined className={styles.close} onClick={close} />
+        {/* <CloseOutlined className={styles.close} onClick={close} /> */}
       </div>
       <hr></hr>
       <Select onSelect={onSelect} style={{ width: '100%' }} options={options}></Select>
