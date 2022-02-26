@@ -18,8 +18,8 @@ export const changBaseMap = (type: number | string, url: string, map: Map) => {
     })
     imgLayer.set('name', 'imgLayer')
     map.addLayer(imgLayer)
-    imgLayer.setVisible(true)
-    vecLayer.setVisible(false)
+    imgLayer?.setVisible(true)
+    vecLayer?.setVisible(false)
   } else if (type === 2) {
     // 街道图层
     vecLayer && map.removeLayer(vecLayer)
@@ -32,7 +32,7 @@ export const changBaseMap = (type: number | string, url: string, map: Map) => {
     })
     vecLayer.set('name', 'vecLayer')
     map.addLayer(vecLayer)
-    imgLayer.setVisible(false)
-    vecLayer.setVisible(true)
+    imgLayer?.setVisible(false)
+    vecLayer?.setVisible(true)
   }
 }
