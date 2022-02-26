@@ -26,6 +26,7 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
 
   const onSelect = (url: string) => {
     changBaseMap(type, url, map)
+    close()
   }
 
   useClickAway((e) => {
