@@ -1,3 +1,4 @@
+import { getUseFulList } from './../common'
 import request from '@/utils/request'
 import JsonP from 'jsonp'
 import noTokenRequest from 'umi-request'
@@ -19,6 +20,14 @@ export interface ProjectList {
 // 获取地图资源
 export const getMapList = (params: any) => {
   return noTokenRequest('https://bbgl.gczhyun.com/common/api/Map/GetList', {
+    method: 'POST',
+    data: { ...params },
+  })
+}
+
+// 获取地图资源
+export const getUseFulMapList = (params: any) => {
+  return noTokenRequest('https://bbgl.gczhyun.com/common/api/Map/getUseFulList', {
     method: 'POST',
     data: { ...params },
   })
