@@ -43,6 +43,8 @@ export const initLayers = (resData: any): Layer[] => {
     }
   })
 
+  vecUrl =
+    'http://t{0-7}.tianditu.gov.cn/DataServer?T=img_c&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   // 卫星图
   // imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
   const imgLayer = new TileLayer({
@@ -100,7 +102,7 @@ export const initLayers = (resData: any): Layer[] => {
 
   // ann图
   const annUrl =
-    'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
+    'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_c&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   const annLayer = new TileLayer({
     source: new XYZ({
       url: decodeURI(annUrl),
@@ -113,32 +115,36 @@ export const initLayers = (resData: any): Layer[] => {
 }
 
 export const changBaseMap = (type: number, url: string, map: BMap) => {
+  let imgLayer = getLayerByName('imgLayer', map.getLayers().getArray())
+  let vecLayer = getLayerByName('vecLayer', map.getLayers().getArray())
   if (type === 1) {
     // 影像图层
-    let imgLayer = getLayerByName('imgLayer', map.getLayers().getArray())
     imgLayer && map.removeLayer(imgLayer)
     imgLayer = new TileLayer({
       source: new XYZ({
         url: decodeURI(url),
       }),
-      zIndex: 1,
+      zIndex: 0,
       preload: 18,
     })
     imgLayer.set('name', 'imgLayer')
     map.addLayer(imgLayer)
+    imgLayer.setVisible(true)
+    vecLayer.setVisible(false)
   } else if (type === 2) {
     // 街道图层
-    let vecLayer = getLayerByName('vecLayer', map.getLayers().getArray())
     vecLayer && map.removeLayer(vecLayer)
     vecLayer = new TileLayer({
       source: new XYZ({
         url: decodeURI(url),
       }),
-      zIndex: 1,
+      zIndex: 0,
       preload: 18,
     })
     vecLayer.set('name', 'vecLayer')
     map.addLayer(vecLayer)
+    imgLayer.setVisible(false)
+    vecLayer.setVisible(true)
   }
 }
 
