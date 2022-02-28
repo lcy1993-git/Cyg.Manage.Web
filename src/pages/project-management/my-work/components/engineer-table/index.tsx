@@ -286,44 +286,47 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
           />
         )}
       </div>
-      {(!sideVisible || selectedFavId) && (
-        <div className={styles.engineerTablePagingContent}>
-          <div className={styles.engineerTablePagingSelect}>
-            <Checkbox
-              checked={allCheckValue}
-              indeterminate={indeterminate}
-              onChange={(e) => selectAllCheckboxOnChange(e.target.checked)}
-            >
-              全选
-            </Checkbox>
-          </div>
-          <div className={styles.engineerTablePagingLeft}>
-            <span>显示第</span>
-            <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
-            <span>到第</span>
-            <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
-            <span>条记录，总共</span>
-            <span className={styles.importantTip}>{tableResultData.engineerLen}</span>
-            <span>个工程，</span>
-            <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
-          </div>
-          <div className={styles.engineerTablePagingRight}>
-            <Pagination
-              pageSize={pageInfo.pageSize}
-              onChange={currentPageChangeEvent}
-              size="small"
-              total={tableResultData.total}
-              current={pageInfo.pageIndex}
-              // hideOnSinglePage={true}
-              showSizeChanger
-              showQuickJumper
-              onShowSizeChange={currentPageSizeChangeEvent}
-              style={{ display: 'inline-flex', paddingRight: '25px' }}
-            />
-          </div>
-          {pagingSlot}
+
+      <div className={styles.engineerTablePagingContent}>
+        <div className={styles.engineerTablePagingSelect}>
+          <Checkbox
+            checked={allCheckValue}
+            indeterminate={indeterminate}
+            onChange={(e) => selectAllCheckboxOnChange(e.target.checked)}
+          >
+            全选
+          </Checkbox>
         </div>
-      )}
+        {(!sideVisible || selectedFavId) && (
+          <>
+            <div className={styles.engineerTablePagingLeft}>
+              <span>显示第</span>
+              <span className={styles.importantTip}>{tableResultData.dataStartIndex}</span>
+              <span>到第</span>
+              <span className={styles.importantTip}>{tableResultData.dataEndIndex}</span>
+              <span>条记录，总共</span>
+              <span className={styles.importantTip}>{tableResultData.engineerLen}</span>
+              <span>个工程，</span>
+              <span className={styles.importantTip}>{tableResultData.projectLen}</span>个项目
+            </div>
+            <div className={styles.engineerTablePagingRight}>
+              <Pagination
+                pageSize={pageInfo.pageSize}
+                onChange={currentPageChangeEvent}
+                size="small"
+                total={tableResultData.total}
+                current={pageInfo.pageIndex}
+                // hideOnSinglePage={true}
+                showSizeChanger
+                showQuickJumper
+                onShowSizeChange={currentPageSizeChangeEvent}
+                style={{ display: 'inline-flex', paddingRight: '25px' }}
+              />
+            </div>
+            {pagingSlot}
+          </>
+        )}
+      </div>
     </div>
   )
 }
