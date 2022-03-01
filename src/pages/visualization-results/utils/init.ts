@@ -25,29 +25,18 @@ export const initLayers = (resData: any): Layer[] => {
 
   let vecUrl = ''
   let imgUrl = ''
-
-  resData.data.forEach((item: any) => {
-    if (item.layerType === 1) {
-      // vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
-      vecUrl = item.url.replace(
-        '{s}',
-        '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}'
-      )
-    } else if (item.layerType === 2) {
-      imgUrl = item.url.replace(
-        '{s}',
-        '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}'
-      )
-    }
-  })
-
+  let data = resData.data[0]
   // 卫星图
+  imgUrl = data.url.replace(
+    '{s}',
+    '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
+  )
   imgUrl =
     imgUrl ||
     'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   const imgLayer = new TileLayer({
     source: new XYZ({
-      url: decodeURI(vecUrl),
+      url: decodeURI(imgUrl),
     }),
     preload: 18,
   })
@@ -55,7 +44,6 @@ export const initLayers = (resData: any): Layer[] => {
 
   // 街道图
   vecUrl =
-    vecUrl ||
     'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   // const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
   //分辨率数组
@@ -93,7 +81,7 @@ export const initLayers = (resData: any): Layer[] => {
 
   const vecLayer = new TileLayer({
     source: new XYZ({
-      url: decodeURI(imgUrl),
+      url: decodeURI(vecUrl),
     }),
     preload: 18,
   })

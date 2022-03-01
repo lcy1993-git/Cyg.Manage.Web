@@ -43,8 +43,8 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
         getUseFulMapList({
           serverCode: server,
           layerType: type,
-          enableStatus: 1,
-          availableStatus: 0,
+          enableStatus: 0,
+          // availableStatus: 0,
         }).then((res) => {
           if (res.code === 200 && res.isSuccess) {
             const currentOptions = res.data.reduce((pre: any[], val: any) => {
