@@ -51,7 +51,7 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
               return [
                 ...pre,
                 {
-                  text: val.anotherName,
+                  label: val.anotherName,
                   value: val.url.replace(
                     '{s}',
                     '{' + val.servers[0] + '-' + val.servers[val.servers.length - 1] + '}'
