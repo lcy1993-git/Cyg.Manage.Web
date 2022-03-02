@@ -51,6 +51,7 @@ const CheckSource: React.FC<CheckSourceProps> = ({
         history.push('/login')
       } else {
         getUseFulMapList({
+          // serverCode: '171.223.214.154' || server,
           serverCode: server,
           layerType: type,
           enableStatus: 0,
@@ -89,10 +90,11 @@ const CheckSource: React.FC<CheckSourceProps> = ({
       <hr></hr>
       {options && (
         <Select
-          defaultValue={options[satellite === 1 ? satellite : street]?.label}
+          defaultValue={options[type === 1 ? street : satellite]?.label || '数据源1'}
           onSelect={onSelect}
           style={{ width: '100%' }}
           options={options}
+          key={type + options[type === 1 ? street : satellite]?.label}
         ></Select>
       )}
     </div>
