@@ -54,7 +54,7 @@ const CheckSource: React.FC<CheckSourceProps> = ({
           // serverCode: '171.223.214.154' || server,
           serverCode: server,
           layerType: type,
-          enableStatus: 0,
+          enableStatus: 1,
           // availableStatus: 0,
         }).then((res) => {
           if (res.code === 200 && res.isSuccess) {

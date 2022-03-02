@@ -11,7 +11,7 @@ const UrlMapContainerBox = (props: any) => {
     getUseFulMapList({
       serverCode: localStorage.getItem('serverCode'),
       layerType: 1,
-      enableStatus: 0,
+      enableStatus: 1,
       // availableStatus: 0,
     })
   )
