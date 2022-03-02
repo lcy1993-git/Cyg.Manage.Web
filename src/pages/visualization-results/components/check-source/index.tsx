@@ -13,10 +13,18 @@ interface CheckSourceProps {
   setSourceType: Dispatch<SetStateAction<string>>
 }
 
-const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) => {
+const CheckSource: React.FC<CheckSourceProps> = ({
+  type,
+  map,
+  setSourceType,
+  street,
+  setStreet,
+  satellite,
+  setSatellite,
+}) => {
   const history = useHistory()
 
-  const [options, setOptions] = useState([])
+  const [options, setOptions] = useState<any>(null)
 
   const ref = useRef<HTMLDivElement>(null)
 
@@ -26,6 +34,8 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
 
   const onSelect = (url: string) => {
     changBaseMap(type, url, map)
+    const index = options.find((i: any) => i.value === url)
+    type === 1 ? setStreet(index) : setSatellite(index)
     close()
   }
 
@@ -47,11 +57,11 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
           // availableStatus: 0,
         }).then((res) => {
           if (res.code === 200 && res.isSuccess) {
-            const currentOptions = res.data.reduce((pre: any[], val: any) => {
+            const currentOptions = res.data.reduce((pre: any[], val: any, index: number) => {
               return [
                 ...pre,
                 {
-                  label: val.anotherName,
+                  label: `数据源${index + 1}`,
                   value: val.url.replace(
                     '{s}',
                     '{' + val.servers[0] + '-' + val.servers[val.servers.length - 1] + '}'
@@ -77,7 +87,14 @@ const CheckSource: React.FC<CheckSourceProps> = ({ type, map, setSourceType }) =
         {/* <CloseOutlined className={styles.close} onClick={close} /> */}
       </div>
       <hr></hr>
-      <Select onSelect={onSelect} style={{ width: '100%' }} options={options}></Select>
+      {options && (
+        <Select
+          defaultValue={options[satellite === 1 ? satellite : street]?.label}
+          onSelect={onSelect}
+          style={{ width: '100%' }}
+          options={options}
+        ></Select>
+      )}
     </div>
   ) : null
 }
