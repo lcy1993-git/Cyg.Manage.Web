@@ -34,7 +34,7 @@ const CheckSource: React.FC<CheckSourceProps> = ({
 
   const onSelect = (url: string) => {
     changBaseMap(type, url, map)
-    const index = options.find((i: any) => i.value === url)
+    const index = options.findIndex((i: any) => i.value === url)
     type === 1 ? setStreet(index) : setSatellite(index)
     close()
   }
