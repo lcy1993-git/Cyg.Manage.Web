@@ -128,8 +128,8 @@ const BusinessBoard: React.FC = () => {
     },
     {
       title: '当前阶段',
-      dataIndex: 'statusText',
-      key: 'statusText',
+      dataIndex: 'frontStatus',
+      key: 'frontStatus',
     },
     {
       title: '项目进度',
