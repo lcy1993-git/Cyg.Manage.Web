@@ -13,7 +13,7 @@ const MapSwitcher = ({ onChange }: MapSwitcherProps) => {
   const { dispatch, sourceType, map } = useHistoryGridContext()
 
   const [street, setStreet] = useState(0)
-  const [satellite, setSatellite] = useState(1)
+  const [satellite, setSatellite] = useState(0)
 
   const prop = { street, setStreet, satellite, setSatellite }
 

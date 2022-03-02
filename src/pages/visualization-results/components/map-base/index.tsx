@@ -216,6 +216,11 @@ const BaseMap = observer((props: BaseMapProps) => {
     getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
   }, [dismantleLayerVisible])
 
+  const [street, setStreet] = useState(0)
+  const [satellite, setSatellite] = useState(0)
+
+  const prop = { street, setStreet, satellite, setSatellite }
+
   const onlocationClick = () => {
     // 当点击定位按钮时
     let promise = initIpLocation()
@@ -293,7 +298,12 @@ const BaseMap = observer((props: BaseMapProps) => {
           setSourceType={setSourceType}
         />
       </div>
-      <CheckSource type={sourceType} map={map!} setSourceType={setSourceType}></CheckSource>
+      <CheckSource
+        type={sourceType}
+        map={map!}
+        setSourceType={setSourceType}
+        {...prop}
+      ></CheckSource>
       <div className={styles.footer}>
         <Footer onlocationClick={onlocationClick} />
       </div>
