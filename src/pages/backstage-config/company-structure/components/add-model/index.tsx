@@ -85,10 +85,15 @@ const AddModel: React.FC<AddModelParams> = (props) => {
       onCancel={() => modalCloseEvent()}
     >
       <Form form={form} preserve={false}>
-        <CyFormItem label="上级公司" name="parentId" required>
+        <CyFormItem label="上级公司" name="parentId">
           <TreeSelect placeholder="公司A名称" treeData={handleData} treeDefaultExpandAll={true} />
         </CyFormItem>
-        <CyFormItem label="添加公司" name="companyId" required>
+        <CyFormItem
+          label="添加公司"
+          name="companyId"
+          required
+          rules={[{ required: true, message: '添加公司不能为空' }]}
+        >
           <DataSelect style={{ width: '100%' }} options={childList} placeholder="公司B名称" />
         </CyFormItem>
       </Form>
