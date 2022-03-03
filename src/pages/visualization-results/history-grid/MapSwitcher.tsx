@@ -1,32 +1,47 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
+import CheckSource from '../components/check-source'
 import MapDisplay from '../components/map-display'
-import FlowLayer from './components/flow-layer'
-import { useHistoryGridContext } from './store'
+import { HistoryState, useHistoryGridContext } from './store'
 
-const MapSwitcher = () => {
-  const { UIStatus, dispatch } = useHistoryGridContext()
+export type MapType = HistoryState['UIStatus']['mapType']
 
-  const onMapTypeChange = useCallback(
-    (type) => {
-      dispatch({
-        type: 'changeUIStatus',
-        payload: { ...UIStatus, mapType: type },
-      })
+export type MapSwitcherProps = {
+  onChange: (type: MapType) => void
+}
+
+const MapSwitcher = ({ onChange }: MapSwitcherProps) => {
+  const { dispatch, sourceType, map } = useHistoryGridContext()
+
+  const [street, setStreet] = useState(0)
+  const [satellite, setSatellite] = useState(0)
+
+  const prop = { street, setStreet, satellite, setSatellite }
+
+  const setSourceType = useCallback(
+    (v) => {
+      dispatch((d) => ({ ...d, sourceType: v }))
     },
-    [UIStatus, dispatch]
+    [dispatch]
   )
 
   return (
-    <FlowLayer bottom={40} right={15}>
-      <div className="h-30 flex justify-end">
-        <div className="relative">
-          <MapDisplay
-            onSatelliteMapClick={() => onMapTypeChange('satellite')}
-            onStreetMapClick={() => onMapTypeChange('street')}
-          />
-        </div>
-      </div>
-    </FlowLayer>
+    <div className="relative">
+      <MapDisplay
+        onSatelliteMapClick={() => {
+          onChange('satellite')
+        }}
+        onStreetMapClick={() => {
+          onChange('street')
+        }}
+        setSourceType={setSourceType}
+      />
+      <CheckSource
+        type={sourceType}
+        map={map!}
+        setSourceType={setSourceType}
+        {...prop}
+      ></CheckSource>
+    </div>
   )
 }
 

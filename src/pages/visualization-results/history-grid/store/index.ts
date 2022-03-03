@@ -1,4 +1,5 @@
 import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
+import Map from 'ol/Map'
 import { createContext, useContext } from 'react'
 import { CityWithProvince } from '../components/city-picker/type'
 import { DataSource, SelectedData } from './../components/history-map-base/typings'
@@ -35,6 +36,10 @@ export type ReducerState = {
   /** 预设计网架数据 */
   preDesignDataSource: DataSource
   gridMapState: GridMapGlobalState
+  /** 图层源状态 */
+  sourceType: string | number
+  /** 地图实例 */
+  map: Map | null
 
   /** UI 状态 */
   UIStatus: {

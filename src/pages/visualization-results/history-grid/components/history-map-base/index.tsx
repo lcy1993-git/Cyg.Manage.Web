@@ -132,6 +132,7 @@ const HistoryMapBase = () => {
       setDragBoxProps,
     })
     bindEvent()
+    setState((d) => ({ ...d, map: mapRef.map }))
   })
 
   useUpdateEffect(() => {

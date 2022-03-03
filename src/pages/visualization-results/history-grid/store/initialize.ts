@@ -34,6 +34,8 @@ export const INITIAL_STATE: Omit<HistoryState, 'mode'> = {
     cleanSelected: false,
     currentMousePosition: [0, 0],
   },
+  sourceType: '',
+  map: null,
 }
 
 /** 惰性初始化 */
