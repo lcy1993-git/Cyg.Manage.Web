@@ -1,7 +1,6 @@
 import { webConfig } from '@/global'
 import { baseUrl, cyRequest } from '@/services/common'
 import request from 'umi-request'
-import { UpdateHistoryData } from '../components/history-map-base/typings'
 
 const historyGridRequest = (url: string, options?: Parameters<typeof request>[1]) => {
   const _url = `${baseUrl.netFrameworkHistory}/${url.startsWith('/') ? url.slice(1) : url}`
@@ -108,7 +107,7 @@ export const recordVersionData = (data: { force: boolean; remark: string }) => {
 }
 
 /** 保存历史网架数据 */
-export const saveHistoryData = (data: UpdateHistoryData) => {
+export const saveHistoryData = (data: any) => {
   return historyGridRequest('NetFrameworkHistory/SaveHistory', { method: 'POST', data })
 }
 

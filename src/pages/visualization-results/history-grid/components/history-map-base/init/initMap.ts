@@ -1,8 +1,5 @@
 import { Map } from 'ol'
-import { defaults, DragPan } from 'ol/interaction'
-import { mouseOnWheel } from '../event'
 import { LayerRef, MapRef, ViewRef } from './../typings'
-
 interface InitMapOps {
   layerRef: LayerRef
   mapRef: MapRef
@@ -15,15 +12,6 @@ export function initMap({ layerRef, mapRef, viewRef, ref }: InitMapOps) {
     target: ref,
     layers: Object.values(layerRef),
     view: viewRef.view,
-    interactions: defaults({
-      doubleClickZoom: false,
-      shiftDragZoom: false,
-      pinchZoom: false,
-      dragPan: false,
-    }).extend([
-      new DragPan({
-        condition: mouseOnWheel,
-      }),
-    ]),
+    // controls: defaults({attribution: false})
   })
 }

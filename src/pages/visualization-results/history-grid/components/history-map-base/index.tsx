@@ -1,37 +1,17 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import '@/assets/icon/history-grid-icon.css'
-import { useMount, useReactive, useSize, useUpdateEffect } from 'ahooks'
+import { useMount, useSize, useUpdateEffect } from 'ahooks'
 import { message } from 'antd'
 import { MapBrowserEvent, MapEvent, View } from 'ol'
-import { DrawEvent } from 'ol/interaction/Draw'
+import { Draw, Snap } from 'ol/interaction'
 import 'ol/ol.css'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useHistoryGridContext } from '../../store'
-import AdsorptionModal from './components/adsorption-modal'
-import DragBoxModal from './components/drag-box-modal'
-import DrawModal from './components/draw-modal'
-import { drawByDataSource, drawEnd, onDrawGeometryChange } from './draw'
+import { drawByDataSource, drawEnd } from './draw'
 import { handlerGeographicSize, onMapLayerTypeChange } from './effects'
-import {
-  mapClick,
-  moveend,
-  needAdsorption,
-  onDragBoxCancel,
-  onDragBoxPointSelect,
-  pointermove,
-  refreshModify,
-} from './event'
-import './index.css'
+import { mapClick, moveend, pointermove } from './event'
 import init from './init'
-import {
-  DragBoxProps,
-  DrawProps,
-  InterActionRef,
-  LayerRef,
-  LifeStateRef,
-  MapRef,
-  SourceRef,
-} from './typings'
+import { changeLayerStyleByShowText } from './styles'
+import { InterActionRef, LayerRef, LifeStateRef, MapRef, SourceRef } from './typings'
 import {
   checkUserLocation,
   clearScreen,
@@ -51,11 +31,8 @@ const HistoryMapBase = () => {
     locate,
     historyDataSource: dataSource,
     preDesignDataSource: importDesignData,
-    geometryType,
-    refetch,
   } = useHistoryGridContext()
-  const modeRef = useRef(preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign')
-  const mode = modeRef.current
+  const mode = preMode === 'record' || preMode === 'recordEdit' ? 'record' : 'preDesign'
   const {
     showTitle,
     showHistoryLayer: historyLayerVisible,
@@ -67,16 +44,23 @@ const HistoryMapBase = () => {
     disableShowTitle,
   } = UIStatus
 
-  // 刷新组件
-  const reFetchData = useCallback(
-    () =>
-      setState((state) => {
-        return { ...state, refetch: !state.refetch }
-      }),
-    []
-  )
-
   const showText = showTitle && disableShowTitle
+
+  // const {
+  // mapLayerType,
+  // isDraw,
+  // dataSource,
+  // onProjectLocationClick,
+  // onCurrentLocationClick,
+  // showText,
+  // importDesignData,
+  // historyLayerVisible,
+  // moveToByCityLocation,
+  // cleanSelected,
+  // } = state
+
+  // 绘制类型
+  const [geometryType, setGeometryType] = useState<string>('')
 
   const ref = useRef<HTMLDivElement>(null)
   const size = useSize(ref)
@@ -92,31 +76,14 @@ const HistoryMapBase = () => {
   const lifeStateRef = useCurrentRef<LifeStateRef>({ state: { isFirstDrawHistory: true } })
 
   const sourceRef = useCurrentRef<SourceRef>({})
-
-  const [dragBoxProps, setDragBoxProps] = useState<DragBoxProps>({
-    visible: false,
-    position: [0, 0],
-    selected: [],
-  })
-
-  const modifyProps = useReactive({
-    visible: false,
-    position: [0, 0],
-    currentState: null,
-  })
-
-  const drawProps = useReactive<DrawProps>({
-    visible: false,
-    position: [0, 0],
-    currentState: null,
-    type: 'Point',
-  })
-
-  // 绘制完成的操作
-  const reFetchDraw = useCallback(() => {
-    setState((state) => ({ ...state, geometryType: '', refetch: !state.refetch }))
-    drawProps.visible = false
-  }, [])
+  // const bindEvent = useCallback(() => {
+  //   mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
+  //     mapClick(e, { interActionRef, mapRef, setState, UIStatus }))
+  //     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
+  // // 地图拖动事件
+  // mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
+  // viewRef.view.on('change:resolution', () => handlerGeographicSize({ mode, viewRef }))
+  // }, [])
 
   // 挂载地图
   useMount(() => {
@@ -129,7 +96,6 @@ const HistoryMapBase = () => {
       ref: ref.current!,
       setState,
       mode,
-      setDragBoxProps,
     })
     bindEvent()
     setState((d) => ({ ...d, map: mapRef.map }))
@@ -141,8 +107,8 @@ const HistoryMapBase = () => {
 
   // 处理geometryType变化
   useUpdateEffect(() => {
-    // 在绘制时,关闭选择和框选，关闭绘制时打开
-    onDrawGeometryChange({ geometryType, map: mapRef.map, interActionRef, sourceRef })
+    removeaddInteractions()
+    if (geometryType) addInteractions(geometryType)
   }, [geometryType])
 
   // 处理当前地图类型变化
@@ -150,12 +116,10 @@ const HistoryMapBase = () => {
   // 根据历史数据绘制点位线路
   useEffect(() => {
     drawHistoryLayer()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataSource])
   // 根据预设计数据绘制点位线路
   useEffect(() => {
     drawDesignLayer()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [importDesignData])
 
   // 处理select
@@ -167,7 +131,7 @@ const HistoryMapBase = () => {
   }, [isDraw, showText])
 
   // 处理绘制状态的select
-  // useUpdateEffect(() => changeLayerStyleByShowText(sourceRef, showText), [showText])
+  useUpdateEffect(() => changeLayerStyleByShowText(sourceRef, showText), [showText])
 
   // 当绘制状态改变时
   useUpdateEffect(() => {
@@ -176,22 +140,14 @@ const HistoryMapBase = () => {
       type: 'changeSelectedData',
       payload: [],
     })
-    if (isDraw) {
-      refreshModify({
-        mapRef,
-        interActionRef,
-        sourceRef,
-        isDraw,
-        mode,
-        modifyProps,
-        preId: importDesignData?.id,
-      })
-    } else {
-      interActionRef.modify && mapRef.map.removeInteraction(interActionRef.modify)
-      sourceRef.highLightSource.clear()
-    }
-    interActionRef.dragBox?.setActive(isDraw)
-  }, [isDraw, refetch])
+    // if (isDraw) {
+    //   mapRef.map.removeInteraction(interActionRef.select!.pointSelect)
+    //   mapRef.map.addInteraction(interActionRef.select!.toggleSelect)
+    // } else {
+    //   mapRef.map.removeInteraction(interActionRef.select!.toggleSelect)
+    //   mapRef.map.addInteraction(interActionRef.select!.pointSelect)
+    // }
+  }, [isDraw])
 
   // 定位当当前项目位置
   useUpdateEffect(() => {
@@ -232,8 +188,8 @@ const HistoryMapBase = () => {
 
   // 绑定事件
   function bindEvent() {
-    mapRef.map.on('click', (e: MapBrowserEvent<MouseEvent>) =>
-      mapClick(e, { interActionRef, mapRef, setState, setDragBoxProps, sourceRef })
+    mapRef.map.on('click', (e: MapBrowserEvent<UIEvent>) =>
+      mapClick(e, { interActionRef, mapRef, setState, sourceRef })
     )
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
@@ -261,21 +217,76 @@ const HistoryMapBase = () => {
         })
       }
 
+      // if(viewRef.view.getZoom() >  16.6){
+
+      // }
+
       // 修改比例尺
       handlerGeographicSize({ mode, viewRef })
     })
-
-    // 解决二次绘制造成的上次绘制的点线
-    interActionRef.draw!.Point.on('drawstart', () => sourceRef.drawSource.clear())
-    interActionRef.draw!.LineString.on('drawstart', () => sourceRef.drawSource.clear())
-    // 绘制点线逻辑
-    interActionRef.draw!.Point.on('drawend', (e: DrawEvent) =>
-      drawEnd({ sourceRef, drawProps, type: 'Point', e })
-    )
-    interActionRef.draw!.LineString.on('drawend', (e: DrawEvent) =>
-      drawEnd({ sourceRef, drawProps, type: 'LineString', e })
-    )
   }
+
+  // 初始化interaction
+  // function initInterAction() {
+  //   interActionRef.modify = new Modify({
+  //     source: interActionRef.source,
+  //     // 设置容差
+  //     style: undefined,
+  //     pixelTolerance: 25,
+  //   })
+  //   interActionRef.modify.on(['modifyend'], (e: Event | BaseEvent) => {
+  //     // e.features.getArray()[0].setStyle(pointStyle.hight)
+  //     // e.features.getArray()[0].setStyle(featureStyle.type2)
+  //   })
+  //   // 暂时屏蔽编辑功能
+  //   false && mapRef.map.addInteraction(interActionRef.modify!)
+
+  //   const pointSelect = new Select()
+  //   const dragBox = new DragBox({})
+  //   const boxSelect = new Select()
+  //   const toggleSelect = new Select({
+  //     condition: conditionClick,
+  //     toggleCondition: platformModifierKeyOnly,
+  //     style: (feature) => {
+  //       const geometryType = feature.getGeometry()?.getType()
+
+  //       return getStyle(geometryType)(
+  //         feature.get('sourceType'),
+  //         feature.get('typeStr') || '无类型',
+  //         feature.get('name'),
+  //         showText
+  //       )
+  //     },
+  //   })
+  //   // 绑定单选及多选回调事件
+  //   toggleSelect.on('select', (e: SelectEvent) =>
+  //     toggleSelectCallback(e, { interActionRef, setState, showText, mode })
+  //   )
+  //   pointSelect.on('select', (e: SelectEvent) =>
+  //     pointSelectCallback(e, { interActionRef, setState, showText, mode })
+  //   )
+  //   toggleSelect.setHitTolerance(8)
+  //   pointSelect.setHitTolerance(8)
+  //   interActionRef.select = {
+  //     pointSelect,
+  //     toggleSelect,
+  //   }
+
+  //   mapRef.map.addInteraction(interActionRef.select.pointSelect)
+
+  //   interActionRef.dragBox = dragBox
+  //   const selectedFeatures = boxSelect.getFeatures()
+  //   dragBox.on('boxend', function () {
+  //     var extent = dragBox.getGeometry().getExtent()
+  //     interActionRef.source!.forEachFeatureIntersectingExtent(extent, function (feature) {
+  //       selectedFeatures.push(feature)
+  //     })
+  //   })
+  //   // 框选鼠标按下清除高亮
+  //   dragBox.on('boxstart', function () {
+  //     selectedFeatures.clear()
+  //   })
+  // }
 
   // 初次挂载自适应屏幕
   const autoSizeScreen = useCallback(() => {
@@ -315,26 +326,7 @@ const HistoryMapBase = () => {
       },
       autoSizeScreen
     )
-    refreshModify({
-      mapRef,
-      interActionRef,
-      sourceRef,
-      isDraw,
-      mode,
-      modifyProps,
-      preId: importDesignData?.id,
-    })
-  }, [
-    dataSource,
-    sourceRef,
-    autoSizeScreen,
-    mapRef,
-    interActionRef,
-    isDraw,
-    mode,
-    modifyProps,
-    importDesignData,
-  ])
+  }, [autoSizeScreen, dataSource, sourceRef])
 
   const drawDesignLayer = useCallback(() => {
     if (mode === 'preDesign')
@@ -343,67 +335,34 @@ const HistoryMapBase = () => {
         sourceType: 'design',
         sourceRef,
       })
-    refreshModify({
-      mapRef,
-      interActionRef,
-      sourceRef,
-      isDraw,
-      mode,
-      modifyProps,
-      preId: importDesignData?.id,
-    })
-  }, [mode, importDesignData, sourceRef, mapRef, interActionRef, isDraw, modifyProps])
+  }, [importDesignData, mode, sourceRef])
 
-  // 拖拽时是否需要吸附
-  const needAdsorptionFn = useCallback(
-    (flag: boolean) => {
-      needAdsorption(
-        { modifyProps, sourceRef, reFetchData, mode, preId: importDesignData?.id },
-        flag
-      )
-      modifyProps.visible = false
-      modifyProps.position = [0, 0]
-      modifyProps.currentState = null
-    },
-    [modifyProps, sourceRef, reFetchData, mode, importDesignData]
-  )
+  // 删除draw交互行为
+  function removeaddInteractions() {
+    if (interActionRef.draw && interActionRef.snap) {
+      mapRef.map.removeInteraction(interActionRef.draw)
+      mapRef.map.removeInteraction(interActionRef.snap)
+    }
+  }
+
+  // 添加draw交互行为
+  function addInteractions(type: string) {
+    if (type) {
+      interActionRef.draw = new Draw({
+        source: interActionRef.source,
+        type: type,
+      })
+      // 绑定绘制完成事件
+      interActionRef.draw.on('drawend', (e) => drawEnd(e, interActionRef.source!, setGeometryType))
+      mapRef.map.addInteraction(interActionRef.draw)
+      interActionRef.snap = new Snap({ source: interActionRef.source })
+      mapRef.map.addInteraction(interActionRef.snap)
+    }
+  }
 
   return (
-    <div className="w-full h-full relative">
-      <div ref={ref} className="w-full h-full absolute"></div>
-      {modifyProps.visible && (
-        <AdsorptionModal
-          position={modifyProps.position}
-          needAdsorption={needAdsorptionFn}
-        ></AdsorptionModal>
-      )}
-
-      {dragBoxProps.visible && (
-        <DragBoxModal
-          position={dragBoxProps.position}
-          onSelectClick={(type: 'LineString' | 'Point') =>
-            onDragBoxPointSelect(
-              dragBoxProps,
-              type,
-              setState,
-              interActionRef,
-              sourceRef,
-              setDragBoxProps
-            )
-          }
-          onCancelClick={() => onDragBoxCancel({ setDragBoxProps, interActionRef, sourceRef })}
-        ></DragBoxModal>
-      )}
-      {drawProps.visible && (
-        <DrawModal
-          drawProps={drawProps}
-          sourceRef={sourceRef}
-          mode={mode === 'record' ? 'history' : 'preDesign'}
-          preId={importDesignData?.id}
-          reFetchDraw={reFetchDraw}
-          size={size}
-        ></DrawModal>
-      )}
+    <div className="w-full h-full">
+      <div ref={ref} className="w-full h-full"></div>
     </div>
   )
 }

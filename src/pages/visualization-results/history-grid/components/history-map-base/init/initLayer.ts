@@ -1,10 +1,9 @@
-import Geometry from 'ol/geom/Geometry'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import TileLayer from 'ol/layer/Tile'
 import VectorLayer from 'ol/layer/Vector'
 import { Vector as VectorSource, XYZ } from 'ol/source'
-import { getLayerStyleByShowText, getStyle, polygonDragBox } from '../styles'
+import { getLayerStyleByShowText } from '../styles'
 import { LayerRef, SourceRef } from './../typings/index'
 
 // 卫星图层
@@ -118,48 +117,10 @@ export function initLayer(layerRef: LayerRef, sourceRef: SourceRef) {
 
   // 历史网架 线路
   layerRef.historyLineLayer = getLineVectorLayer(sourceRef.historyLineSource)
-  layerRef.historyLineLayer.set('name', 'historyLineLayer')
-  layerRef.historyLineLayer.setZIndex(1)
   // 预设计 线路
   layerRef.designLineLayer = getLineVectorLayer(sourceRef.designLineSource)
-  layerRef.designLineLayer.set('name', 'designLineLayer')
-  layerRef.designLineLayer.setZIndex(2)
-
   // 历史网架 设备
   layerRef.historyPointLayer = getPointVectorLayer(sourceRef.historyPointSource)
-  layerRef.historyPointLayer.set('name', 'historyPointLayer')
-  layerRef.historyPointLayer.setZIndex(3)
   // 预设计 设备
   layerRef.designPointLayer = getPointVectorLayer(sourceRef.designPointSource)
-  layerRef.designPointLayer.set('name', 'designPointLayer')
-  layerRef.designPointLayer.setZIndex(4)
-
-  // dragBOX线框
-  layerRef.dragBoxLayer = new VectorLayer({
-    source: sourceRef.dragBoxSource,
-    style: polygonDragBox,
-  })
-  layerRef.dragBoxLayer.setZIndex(4)
-
-  // 绘制图层
-  layerRef.drawLayer = new VectorLayer({
-    source: sourceRef.drawSource,
-    // style:
-  })
-
-  const highLightLayer = new VectorLayer<VectorSource<Geometry>>({
-    source: sourceRef.highLightSource,
-    style(f) {
-      return getStyle(f.getGeometry()!.getType())(
-        f.get('sourceType'),
-        f.get('typeStr') || '无类型',
-        f.get('name'),
-        true,
-        true
-      )
-    },
-  })
-  highLightLayer.setZIndex(0)
-  layerRef.highLightLayer = highLightLayer
-  layerRef.highLightLayer.setZIndex(5)
 }

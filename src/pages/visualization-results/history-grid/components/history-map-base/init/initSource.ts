@@ -13,11 +13,6 @@ export function initSource(sourceRef: SourceRef) {
   sourceRef.designPointSource = new VectorSource()
   sourceRef.designLineSource = new VectorSource()
   // 高亮
-  sourceRef.highLightSource = new VectorSource()
-
-  // dragBox线框
-  sourceRef.dragBoxSource = new VectorSource()
-
-  // 绘制
-  sourceRef.drawSource = new VectorSource()
+  sourceRef.highLightPointSource = new VectorSource()
+  sourceRef.highLightLineSource = new VectorSource()
 }

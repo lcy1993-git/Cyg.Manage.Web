@@ -6,14 +6,7 @@ import { Select } from 'ol/interaction'
 import * as proj from 'ol/proj'
 import { handlerGeographicSize } from '../effects'
 import { getStyle } from '../styles'
-import {
-  ElectricLineData,
-  ElectricPointData,
-  InterActionRef,
-  SelectedData,
-  SourceRef,
-  ViewRef,
-} from '../typings'
+import { InterActionRef, SourceRef, ViewRef } from '../typings'
 import { DataSource } from './../typings/index'
 
 // 清空选择器和高亮图层
@@ -51,12 +44,8 @@ export function clearScreen({ sourceRef, interActionRef }: ClearScreenOps) {
 // }
 
 // 获取元素类型
-export function getGeometryType(f: Feature<Geometry>): any {
-  return f.getGeometry()!.getType() === 'Point'
-}
-// 获取元素类型
-export function getTypeByGeometry(f: Feature<Geometry>): any {
-  return f.getGeometry()!.getType() === 'Point' ? 'Point' : 'Line'
+export function getGeometryType(f: Feature<Geometry>) {
+  return f.getGeometry()!.getType()
 }
 
 // 添加高亮样式
@@ -78,10 +67,10 @@ export function addHightStyle(fs: Feature<Geometry>[], showText: boolean) {
 }
 
 // 讲feature转为Data数组
-export function getDataByFeature(f: Feature<Geometry>[]): SelectedData {
+export function getDataByFeature(f: Feature<Geometry>[]) {
   return f.map((f) => {
     const { geometry, ...props } = f.getProperties()
-    return props as ElectricPointData | ElectricLineData
+    return props
   })
 }
 
