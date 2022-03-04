@@ -541,6 +541,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   className="widthAll"
                   placeholder="下级公司"
                   requestType="post"
+                  postType="query"
                 />
               </div>
             </CyFormItem>
