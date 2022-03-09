@@ -1016,6 +1016,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       //@ts-ignore
       tableRef.current.searchByParams({
         ...searchParams,
+        engineerFavoritesId: selectedFavId,
         keyWord,
       })
     }

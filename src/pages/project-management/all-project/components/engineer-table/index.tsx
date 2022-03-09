@@ -95,8 +95,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     company: '',
     companyName: '',
   })
-  const [currentProName, setCurrentProName] = useState<string | undefined>('')
-  const [externalStepData, setExternalStepData] = useState<any>()
+  const [externalStepData] = useState<any>()
 
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false)
@@ -323,7 +322,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   // 外审安排
   const externalArrange = async (projectId: string, proName?: string) => {
     setCurrentClickProjectId(projectId)
-    setCurrentProName(proName)
     setExternalArrangeModalVisible(true)
   }
 

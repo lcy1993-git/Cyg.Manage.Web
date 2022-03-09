@@ -117,6 +117,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       cancel()
       run(url, {
         ...searchParams,
+        engineerFavoritesId: selectedFavId,
         pageIndex: page,
         pageSize: size,
       })
@@ -132,6 +133,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
     cancel()
     run(url, {
       ...searchParams,
+      engineerFavoritesId: selectedFavId,
       pageIndex: 1,
       pageSize: size,
     })

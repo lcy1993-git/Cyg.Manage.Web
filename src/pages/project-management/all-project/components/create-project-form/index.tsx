@@ -599,7 +599,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
-              disabled={!isEdit && !isInherit} //判断是否参与继承 && 是否开始继承
+              disabled={!isEdit && !isInherit} //判断是否参与继承 && 是否开始继承 &&是否新增项目
               titlekey="text"
               placeholder="请选择"
             />
