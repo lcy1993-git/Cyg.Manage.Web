@@ -822,15 +822,21 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   <span className="canClick" onClick={() => reportApprove([record.id])}>
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 95 ? (
                   <span className="canClick" onClick={() => externalArrange([record.id])}>
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 100 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 100 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 105 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 105 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>
