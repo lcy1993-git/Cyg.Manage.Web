@@ -1,10 +1,14 @@
-import React from 'react'
-import { Col, Input, Row } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
+import { Col, Input, Row } from 'antd'
+import React, { useState } from 'react'
 
-const { TextArea } = Input
+interface MapSourceFormProps {
+  addForm?: any
+}
 
-const MapSourceForm: React.FC = () => {
+const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
+  const { addForm } = props
+
   return (
     <>
       <CyFormItem label="地图源名称" name="libName" required align="right">
@@ -23,10 +27,36 @@ const MapSourceForm: React.FC = () => {
             label="最小级别"
             name="minLevel"
             required
+            dependencies={['maxLevel']}
             align="right"
-            rules={[{ pattern: /^(?:0|[1-9][0-9]?|18)$/, message: '请输入0-18以内的正整数' }]}
+            initialValue={0}
+            rules={[
+              { pattern: /^\d+$|^\d+[.]?\d+$/, message: '请输入0-18的正整数' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    value &&
+                    getFieldValue('maxLevel') &&
+                    Number(value) > Number(getFieldValue('maxLevel'))
+                  ) {
+                    return Promise.reject('最小级别不可大于最大级别')
+                  }
+                  return Promise.resolve()
+                },
+              }),
+            ]}
           >
-            <Input type="number" placeholder="请输入最小级别" />
+            <Input
+              type="number"
+              placeholder="请输入最小级别"
+              min={0}
+              onChange={(e) => {
+                if (Number(e.target.value) > 18) {
+                  addForm.setFieldsValue({ minLevel: 18 })
+                  return
+                }
+              }}
+            />
           </CyFormItem>
         </Col>
         <Col span={12}>
@@ -34,10 +64,36 @@ const MapSourceForm: React.FC = () => {
             label="最大级别"
             name="maxLevel"
             required
+            dependencies={['minLevel']}
             align="right"
-            rules={[{ pattern: /^([0-4]?\d{1}|18)$/g, message: '请输入0-18以内的正整数' }]}
+            initialValue={0}
+            rules={[
+              { pattern: /^\d+$|^\d+[.]?\d+$/, message: '请输入0-18的正整数' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (
+                    value &&
+                    getFieldValue('minLevel') &&
+                    Number(value) < Number(getFieldValue('minLevel'))
+                  ) {
+                    return Promise.reject('最大级别不可小于最小级别')
+                  }
+                  return Promise.resolve()
+                },
+              }),
+            ]}
           >
-            <Input type="number" placeholder="请输入最大级别" />
+            <Input
+              type="number"
+              placeholder="请输入最大级别"
+              min={0}
+              onChange={(e) => {
+                if (Number(e.target.value) > 18) {
+                  addForm.setFieldsValue({ maxLevel: 18 })
+                  return
+                }
+              }}
+            />
           </CyFormItem>
         </Col>
       </Row>

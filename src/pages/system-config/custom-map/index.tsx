@@ -112,7 +112,26 @@ const CustomMap: React.FC = () => {
 
   const importEvent = () => {}
 
-  const editEvent = () => {}
+  const editEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行编辑')
+      return
+    }
+
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
+    // const ApproveGroupData = await run(editDataId)
+    setEditFormVisible(true)
+    // const users = ApproveGroupData.users?.map((item: any) => item.value)
+    // setEditFormVisible(true)
+    // // setEditPersonUserIds(users)
+    // editForm.setFieldsValue({
+    //   name: ApproveGroupData.name,
+    //   userId: ApproveGroupData.userId,
+    //   userIds: users,
+    //   remark: ApproveGroupData.remark,
+    // })
+  }
 
   const userFeedBackButton = () => {
     return (
@@ -203,7 +222,7 @@ const CustomMap: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <MapSourceForm />
+          <MapSourceForm addForm={addForm} />
         </Form>
       </Modal>
       <Modal
