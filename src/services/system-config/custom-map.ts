@@ -53,3 +53,10 @@ export const importCustomMap = (files: any[]) => {
     })
   )
 }
+
+// 更改状态
+export const updateCustomMapStatus = (params: { id: string; isEnable: boolean }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/MapSourceConfig/ModifyIsEnable`, { method: 'POST', data: params })
+  )
+}

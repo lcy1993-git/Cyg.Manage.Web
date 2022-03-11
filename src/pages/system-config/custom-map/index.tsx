@@ -21,6 +21,7 @@ import {
   addCustomMapItem,
   deleteCustomMap,
   getCustomMapDetail,
+  updateCustomMapStatus,
 } from '@/services/system-config/custom-map'
 import { isArray } from 'lodash'
 
@@ -73,8 +74,8 @@ const CustomMap: React.FC = () => {
   }
 
   const updateStatus = async (id: string, status: boolean) => {
-    // await updateNewsState(id, status)
-    search()
+    await updateCustomMapStatus({ id: id, isEnable: status })
+    refresh()
     message.success('状态修改成功')
   }
 
@@ -124,7 +125,7 @@ const CustomMap: React.FC = () => {
         const isChecked = !record.isEnable
         return (
           <>
-            {buttonJurisdictionArray?.includes('start-forbid') &&
+            {buttonJurisdictionArray?.includes('update-custom-map') &&
               (isChecked ? (
                 <span
                   style={{ cursor: 'pointer' }}
@@ -142,16 +143,8 @@ const CustomMap: React.FC = () => {
                   启用
                 </span>
               ))}
-            {!buttonJurisdictionArray?.includes('start-forbid') &&
-              (isChecked ? (
-                <span style={{ cursor: 'pointer' }} className="colorRed">
-                  禁用
-                </span>
-              ) : (
-                <span style={{ cursor: 'pointer' }} className="colorPrimary">
-                  启用
-                </span>
-              ))}
+            {!buttonJurisdictionArray?.includes('update-custom-map') &&
+              (isChecked ? <span>已禁用</span> : <span>已启用</span>)}
           </>
         )
       },
@@ -262,6 +255,7 @@ const CustomMap: React.FC = () => {
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={customMapButtonSlot}
         url="/MapSourceConfig/GetPageList"
+        extractParams={{ keyWord: searchKeyWord }}
       />
       <Modal
         maskClosable={false}

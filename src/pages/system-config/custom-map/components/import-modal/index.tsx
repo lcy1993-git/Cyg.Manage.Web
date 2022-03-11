@@ -59,6 +59,8 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
     })
   }
 
+  const downTempEvent = () => {}
+
   return (
     <Modal
       maskClosable={false}
@@ -90,6 +92,13 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
             uploadFileFn={saveMapEvent}
           />
         </CyFormItem>
+
+        <span
+          style={{ fontSize: '12px', color: '#3c6ef3', cursor: 'pointer' }}
+          onClick={() => downTempEvent()}
+        >
+          点击下载文件模板
+        </span>
       </Form>
     </Modal>
   )
