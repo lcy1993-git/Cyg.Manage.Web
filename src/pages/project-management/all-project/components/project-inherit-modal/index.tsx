@@ -129,7 +129,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
           areaId={areaId}
           company={company}
           companyName={companyName}
-          status={status}
+          status={1}
           projectId={projectId}
           engineerStart={startTime}
           engineerEnd={endTime}

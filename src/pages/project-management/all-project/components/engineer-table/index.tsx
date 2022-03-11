@@ -147,8 +147,8 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   }
 
   const copyProjectEvent = (info: any) => {
-    setCopyProjectVisible(true)
     setCurrentCopyProjectInfo(info)
+    setCopyProjectVisible(true)
   }
 
   const editEngineerEvent = async (data: AddProjectValue) => {

@@ -29,7 +29,6 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     changeFinishEvent,
     areaId,
     company,
-    status,
     engineerId,
     companyName,
     startTime,
@@ -116,7 +115,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           company={company}
           projectId={projectId}
           form={form}
-          status={status}
+          status={1}
           engineerStart={startTime}
           engineerEnd={endTime}
           isEdit={true}
