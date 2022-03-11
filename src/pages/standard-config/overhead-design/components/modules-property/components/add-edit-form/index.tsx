@@ -96,7 +96,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
-          libId={resourceLibId}
+          extraParams={{ libId: resourceLibId }}
         />
       </CyFormItem>
       <CyFormItem label="加工图" name="processChartIds" labelWidth={108}>
@@ -110,7 +110,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
-          libId={resourceLibId}
+          extraParams={{ libId: resourceLibId }}
         />
       </CyFormItem>
       <CyFormItem label="杆型一览图" name="towerModelChartIds" labelWidth={108}>
@@ -124,7 +124,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
-          libId={resourceLibId}
+          extraParams={{ libId: resourceLibId }}
         />
       </CyFormItem>
 

@@ -132,7 +132,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
           valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
-          libId={resourceLibId}
+          extraParams={{ libId: resourceLibId }}
         />
       </CyFormItem>
     </>
