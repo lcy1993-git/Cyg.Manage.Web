@@ -1,6 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
+
 import { Col, Input, Row } from 'antd'
-import React, { useState } from 'react'
+import React from 'react'
+import rule from '../../rule'
 
 interface MapSourceFormProps {
   addForm?: any
@@ -11,14 +13,14 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
 
   return (
     <>
-      <CyFormItem label="地图源名称" name="libName" required align="right">
+      <CyFormItem label="地图源名称" name="name" required align="right" rules={rule.name}>
         <Input placeholder="请输入地图源名称"></Input>
       </CyFormItem>
-      <CyFormItem label="地址" name="address" align="right" required>
+      <CyFormItem label="地址" name="url" align="right" required rules={rule.url}>
         <Input placeholder="请输入地图源地址" />
       </CyFormItem>
 
-      <CyFormItem label="主机编号" name="remark" align="right">
+      <CyFormItem label="主机编号" name="hostId" align="right" initialValue="">
         <Input placeholder="请输入主机编号" />
       </CyFormItem>
       <Row>
@@ -66,7 +68,7 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
             required
             dependencies={['minLevel']}
             align="right"
-            initialValue={0}
+            initialValue={18}
             rules={[
               { pattern: /^\d+$|^\d+[.]?\d+$/, message: '请输入0-18的正整数' },
               ({ getFieldValue }) => ({

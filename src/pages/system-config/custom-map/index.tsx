@@ -16,7 +16,13 @@ import styles from './index.less'
 import TableSearch from '@/components/table-search'
 import ModalConfirm from '@/components/modal-confirm'
 import MapSourceForm from './components/add-edit-form'
-import { isArray } from '@umijs/deps/compiled/lodash'
+import ImportCustomMap from './components/import-modal'
+import {
+  addCustomMapItem,
+  deleteCustomMap,
+  getCustomMapDetail,
+} from '@/services/system-config/custom-map'
+import { isArray } from 'lodash'
 
 const { Search } = Input
 
@@ -27,6 +33,7 @@ const CustomMap: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -65,75 +72,117 @@ const CustomMap: React.FC = () => {
     )
   }
 
-  const feedBackColumns = [
+  const updateStatus = async (id: string, status: boolean) => {
+    // await updateNewsState(id, status)
+    search()
+    message.success('状态修改成功')
+  }
+
+  const columns = [
     {
       title: '序号',
-      dataIndex: 'categoryText',
-      index: 'categoryText',
-      width: 120,
+      dataIndex: 'number',
+      index: 'number',
+      render: (text: any, record: any, index: number) => `${index + 1}`,
+      width: 50,
     },
     {
       title: '地图源名称',
-      dataIndex: 'title',
-      index: 'title',
-      width: 140,
+      dataIndex: 'name',
+      index: 'name',
+      width: 240,
     },
     {
       title: '地址',
-      dataIndex: 'lastProcessDate',
-      index: 'lastProcessDate',
-      render: (text: string) => {
-        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>
-      },
+      dataIndex: 'url',
+      index: 'url',
+    },
+    {
+      title: '主机编号',
+      dataIndex: 'hostId',
+      index: 'hostId',
+      width: 200,
     },
     {
       title: '最小级别',
-      dataIndex: 'processStatusText',
-      index: 'processStatusText',
-      width: 170,
+      dataIndex: 'minLevel',
+      index: 'minLevel',
+      width: 100,
     },
     {
       title: '最大级别',
-      dataIndex: 'createdOn',
-      index: 'createdOn',
-      render: (text: string) => {
-        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>
-      },
+      dataIndex: 'maxLevel',
+      index: 'maxLevel',
+      width: 100,
     },
     {
       title: '启用状态',
       dataIndex: 'processStatusText',
       index: 'processStatusText',
-      width: 170,
+      width: 160,
+      render: (text: any, record: any) => {
+        const isChecked = !record.isEnable
+        return (
+          <>
+            {buttonJurisdictionArray?.includes('start-forbid') &&
+              (isChecked ? (
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className="colorRed"
+                  onClick={() => updateStatus(record.id, isChecked)}
+                >
+                  禁用
+                </span>
+              ) : (
+                <span
+                  onClick={() => updateStatus(record.id, isChecked)}
+                  style={{ cursor: 'pointer' }}
+                  className="colorPrimary"
+                >
+                  启用
+                </span>
+              ))}
+            {!buttonJurisdictionArray?.includes('start-forbid') &&
+              (isChecked ? (
+                <span style={{ cursor: 'pointer' }} className="colorRed">
+                  禁用
+                </span>
+              ) : (
+                <span style={{ cursor: 'pointer' }} className="colorPrimary">
+                  启用
+                </span>
+              ))}
+          </>
+        )
+      },
     },
   ]
 
-  const sureDeleteData = () => {}
+  const sureDeleteData = async () => {
+    const selectDataId = tableSelectRows[0].id
+    await deleteCustomMap(selectDataId)
+    refresh()
+    message.success('删除成功')
+    setTableSelectRows([])
+  }
 
-  const importEvent = () => {}
+  const importEvent = () => {
+    setImportModalVisible(true)
+  }
 
-  const editEvent = () => {
+  const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
+      message.warning('请选择一条数据进行编辑')
       return
     }
 
-    const editData = tableSelectRows[0]
-    const editDataId = editData.id
-    // const ApproveGroupData = await run(editDataId)
+    const editId = tableSelectRows[0].id
     setEditFormVisible(true)
-    // const users = ApproveGroupData.users?.map((item: any) => item.value)
-    // setEditFormVisible(true)
-    // // setEditPersonUserIds(users)
-    // editForm.setFieldsValue({
-    //   name: ApproveGroupData.name,
-    //   userId: ApproveGroupData.userId,
-    //   userIds: users,
-    //   remark: ApproveGroupData.remark,
-    // })
+    const CustomMapData = await getCustomMapDetail(editId)
+    editForm.setFieldsValue(CustomMapData)
   }
 
-  const userFeedBackButton = () => {
+  const customMapButtonSlot = () => {
     return (
       <>
         {buttonJurisdictionArray?.includes('add-custom-map') && (
@@ -161,7 +210,7 @@ const CustomMap: React.FC = () => {
     )
   }
 
-  const addEvent = async () => {
+  const addEvent = () => {
     setAddFormVisible(true)
   }
 
@@ -169,15 +218,15 @@ const CustomMap: React.FC = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          SourceType: 1,
-          category: '',
-          title: '',
-          phone: '',
-          describe: '',
+          name: '',
+          url: '',
+          hostId: '',
+          maxLevel: '',
+          minLevel: '',
         },
         value
       )
-      await addUserFeedBackItem(submitInfo)
+      await addCustomMapItem(submitInfo)
       tableFresh()
       setAddFormVisible(false)
       addForm.resetFields()
@@ -185,11 +234,6 @@ const CustomMap: React.FC = () => {
   }
 
   const sureEditMapSource = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
-
     editForm.validateFields().then(async (values) => {
       message.success('更新成功')
       editForm.resetFields()
@@ -197,18 +241,27 @@ const CustomMap: React.FC = () => {
     })
   }
 
+  const refresh = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.refresh()
+    }
+  }
+
+  const uploadFinishEvent = () => {
+    refresh()
+  }
+
   return (
     <PageCommonWrap>
       <GeneralTable
-        noPaging={true}
-        requestSource="common"
         ref={tableRef}
         tableTitle="地图源配置"
-        columns={feedBackColumns}
+        columns={columns}
         getSelectData={(data) => setTableSelectRows(data)}
         buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={userFeedBackButton}
-        url="/Feedback/GetList"
+        buttonRightContentSlot={customMapButtonSlot}
+        url="/MapSourceConfig/GetPageList"
       />
       <Modal
         maskClosable={false}
@@ -240,6 +293,11 @@ const CustomMap: React.FC = () => {
           <MapSourceForm />
         </Form>
       </Modal>
+      <ImportCustomMap
+        visible={importModalVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportModalVisible}
+      />
     </PageCommonWrap>
   )
 }

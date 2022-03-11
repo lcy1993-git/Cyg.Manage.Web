@@ -295,7 +295,9 @@ const SignManage: React.FC = () => {
     })
     let finallyFileName = `${tableSelectRows[0].name}.${suffix}`
     //for IE
+    //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE
