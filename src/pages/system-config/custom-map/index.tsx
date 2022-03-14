@@ -1,16 +1,9 @@
 import React, { useRef, useState } from 'react'
 import { Button, Modal, Form, message, Input } from 'antd'
-import { EditOutlined, EyeOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
-import { useRequest } from 'ahooks'
+import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
 import PageCommonWrap from '@/components/page-common-wrap'
-import {
-  getUserFeedBackDetail,
-  addUserFeedBackItem,
-  replyTheFeedback,
-} from '@/services/personnel-config/feedback'
+
 import GeneralTable from '@/components/general-table'
-import moment from 'moment'
-import { Spin } from 'antd'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import styles from './index.less'
 import TableSearch from '@/components/table-search'
@@ -30,7 +23,6 @@ const { Search } = Input
 const CustomMap: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
-  const [clickId, setClickId] = useState<string>('')
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)

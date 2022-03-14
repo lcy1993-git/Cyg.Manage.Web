@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
-import { importCustomMap } from '@/services/system-config/custom-map'
+import { exportMapTemp, importCustomMap } from '@/services/system-config/custom-map'
 import { useBoolean, useControllableValue } from 'ahooks'
-import { Button, Form, message, Modal } from 'antd'
+import { Button, Form, message, Modal, Spin } from 'antd'
 import React, { useState } from 'react'
 import { Dispatch } from 'react'
 import { SetStateAction } from 'react'
@@ -17,6 +17,7 @@ interface UploadDrawingProps {
 
 const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [loading, setLoading] = useState<boolean>(false)
   const { changeFinishEvent } = props
   const [
     triggerUploadFile,
@@ -30,8 +31,6 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
       .validateFields()
       .then((values) => {
         const { file } = values
-
-        setRequestLoading(true)
         return importCustomMap(file)
       })
       .then(
@@ -59,7 +58,33 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
     })
   }
 
-  const downTempEvent = () => {}
+  //下载模板
+  const downTempEvent = async () => {
+    setLoading(true)
+    const res = await exportMapTemp()
+    let blob = new Blob([res], {
+      type: `application/xlsx`,
+    })
+    let finallyFileName = `自定义地图源模板.xlsx`
+    //for IE
+    //@ts-ignore
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
+      window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
+    } else {
+      // for Non-IE
+      let objectUrl = URL.createObjectURL(blob)
+      let link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', finallyFileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+      document.body.removeChild(link)
+    }
+    setLoading(false)
+    message.success('下载成功')
+  }
 
   return (
     <Modal
@@ -77,29 +102,31 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
       onCancel={() => setState(false)}
       destroyOnClose
     >
-      <Form form={form} preserve={false}>
-        <CyFormItem
-          label="导入"
-          name="file"
-          required
-          rules={[{ required: true, message: '请上传地图源配置文件' }]}
-        >
-          <FileUpload
-            accept=".xlsx,xls"
-            uploadFileBtn
-            trigger={triggerUploadFile}
-            maxCount={1}
-            uploadFileFn={saveMapEvent}
-          />
-        </CyFormItem>
+      <Spin spinning={loading} tip="模板下载中...">
+        <Form form={form} preserve={false}>
+          <CyFormItem
+            label="导入"
+            name="file"
+            required
+            rules={[{ required: true, message: '请上传地图源配置文件' }]}
+          >
+            <FileUpload
+              accept=".xlsx,xls"
+              uploadFileBtn
+              trigger={triggerUploadFile}
+              maxCount={1}
+              uploadFileFn={saveMapEvent}
+            />
+          </CyFormItem>
 
-        <span
-          style={{ fontSize: '12px', color: '#3c6ef3', cursor: 'pointer' }}
-          onClick={() => downTempEvent()}
-        >
-          点击下载文件模板
-        </span>
-      </Form>
+          <span
+            style={{ fontSize: '12px', color: '#3c6ef3', cursor: 'pointer' }}
+            onClick={() => downTempEvent()}
+          >
+            点击下载文件模板
+          </span>
+        </Form>
+      </Spin>
     </Modal>
   )
 }

@@ -60,3 +60,12 @@ export const updateCustomMapStatus = (params: { id: string; isEnable: boolean })
     request(`${baseUrl.project}/MapSourceConfig/ModifyIsEnable`, { method: 'POST', data: params })
   )
 }
+
+//下载模板
+export const exportMapTemp = () => {
+  return request(`${baseUrl.project}/MapSourceConfig/Export`, {
+    method: 'POST',
+    data: ['string'],
+    responseType: 'blob',
+  })
+}

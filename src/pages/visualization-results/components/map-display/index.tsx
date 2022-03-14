@@ -27,6 +27,20 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
         onMouseEnter={() => setActive(true)}
         onMouseLeave={() => setActive(false)}
       >
+        <div className={`${styles.icon} `}>
+          <div className={styles.list}>
+            <img
+              className={styles.img}
+              src={require('@/assets/image/webgis/卫星图.png')}
+              alt="自定义"
+              onClick={() => onChange('satellite')}
+            />
+            <div className={styles.text}>自定义</div>
+            <div className={styles.moreSource} onClick={() => setSourceType(1)} title="切换图层源">
+              ···
+            </div>
+          </div>
+        </div>
         <div className={`${styles.icon} ${isStreet ? '' : styles.streetActive}`}>
           <div className={styles.list}>
             <img
