@@ -53,7 +53,7 @@ export type ReducerState = {
     /** 是否定位到现有网架 */
     currentProject: boolean
     /** 地图类型 street 街道 satellite 卫星 */
-    mapType: 'street' | 'satellite'
+    mapType: 'street' | 'satellite' | 'custom'
     /** 是否为绘制状态 */
     drawing: boolean
     /** 是否显示导入模态框 */

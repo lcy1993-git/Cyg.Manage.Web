@@ -6,8 +6,8 @@ import { getLayerByName } from '../../utils/methods'
 export const changBaseMap = (type: number | string, url: string, map: Map) => {
   let imgLayer = getLayerByName('imgLayer', map.getLayers().getArray())
   let vecLayer = getLayerByName('vecLayer', map.getLayers().getArray())
-  if (type === 1) {
-    // 影像图层
+  if (type === 1 || type === 3) {
+    // 影像(卫星)图层
     imgLayer && map.removeLayer(imgLayer)
     imgLayer = new TileLayer({
       source: new XYZ({

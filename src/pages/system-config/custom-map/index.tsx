@@ -14,6 +14,7 @@ import {
   addCustomMapItem,
   deleteCustomMap,
   getCustomMapDetail,
+  modifyCustomMap,
   updateCustomMapStatus,
 } from '@/services/system-config/custom-map'
 import { isArray } from 'lodash'
@@ -167,6 +168,30 @@ const CustomMap: React.FC = () => {
     editForm.setFieldsValue(CustomMapData)
   }
 
+  const sureEditMapSource = () => {
+    const editData = tableSelectRows[0]
+
+    editForm.validateFields().then(async (values) => {
+      const submitInfo = Object.assign(
+        {
+          id: editData.id,
+          name: editData.name,
+          url: editData.url,
+          hostId: editData.hostId,
+          minLevel: editData.minLevel,
+          maxLevel: editData.maxLevel,
+          isEnable: editData.isEnable,
+        },
+        values
+      )
+      await modifyCustomMap(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
+
   const customMapButtonSlot = () => {
     return (
       <>
@@ -215,14 +240,6 @@ const CustomMap: React.FC = () => {
       tableFresh()
       setAddFormVisible(false)
       addForm.resetFields()
-    })
-  }
-
-  const sureEditMapSource = () => {
-    editForm.validateFields().then(async (values) => {
-      message.success('更新成功')
-      editForm.resetFields()
-      setEditFormVisible(false)
     })
   }
 

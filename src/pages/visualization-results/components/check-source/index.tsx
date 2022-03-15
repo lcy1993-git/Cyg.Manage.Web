@@ -1,4 +1,7 @@
-import { getUseFulMapList } from '@/services/visualization-results/visualization-results'
+import {
+  getCustomMapList,
+  getUseFulMapList,
+} from '@/services/visualization-results/visualization-results'
 import { useClickAway } from 'ahooks'
 import { message, Select } from 'antd'
 import Map from 'ol/Map'
@@ -10,7 +13,11 @@ import styles from './index.less'
 interface CheckSourceProps {
   type: string | number
   map: Map
+  street: number
+  satellite: number
   setSourceType: Dispatch<SetStateAction<string>>
+  setStreet: Dispatch<SetStateAction<number>>
+  setSatellite: Dispatch<SetStateAction<number>>
 }
 
 const CheckSource: React.FC<CheckSourceProps> = ({
@@ -46,6 +53,20 @@ const CheckSource: React.FC<CheckSourceProps> = ({
 
   useEffect(() => {
     if (type) {
+      if (type === 3) {
+        ;(async function runCustom() {
+          const data = await getCustomMapList({ isEnable: 1 })
+          const customOptions = data?.map((item: any) => {
+            return {
+              label: item.name,
+              value: item.url,
+              key: item.id,
+            }
+          })
+          setOptions(customOptions)
+        })()
+        return
+      }
       const server = localStorage.getItem('serverCode')
       if (!server || server === 'undefined') {
         history.push('/login')

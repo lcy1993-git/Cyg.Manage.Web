@@ -1,4 +1,4 @@
-import { getUseFulList } from './../common'
+import { cyRequest } from './../common'
 import request from '@/utils/request'
 import JsonP from 'jsonp'
 import noTokenRequest from 'umi-request'
@@ -31,6 +31,16 @@ export const getUseFulMapList = (params: any) => {
     method: 'POST',
     data: { ...params },
   })
+}
+
+//获取自定义地图源下拉选项
+export const getCustomMapList = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/MapSourceConfig/GetList`, {
+      method: 'POST',
+      data: params,
+    })
+  )
 }
 
 // 有些想要展示的字段需要通过接口进行查询

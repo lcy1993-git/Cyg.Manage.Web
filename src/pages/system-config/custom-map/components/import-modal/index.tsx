@@ -59,32 +59,32 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
   }
 
   //下载模板
-  const downTempEvent = async () => {
-    setLoading(true)
-    const res = await exportMapTemp()
-    let blob = new Blob([res], {
-      type: `application/xlsx`,
-    })
-    let finallyFileName = `自定义地图源模板.xlsx`
-    //for IE
-    //@ts-ignore
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      //@ts-ignore
-      window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
-    } else {
-      // for Non-IE
-      let objectUrl = URL.createObjectURL(blob)
-      let link = document.createElement('a')
-      link.href = objectUrl
-      link.setAttribute('download', finallyFileName)
-      document.body.appendChild(link)
-      link.click()
-      window.URL.revokeObjectURL(link.href)
-      document.body.removeChild(link)
-    }
-    setLoading(false)
-    message.success('下载成功')
-  }
+  // const downTempEvent = async () => {
+  //   setLoading(true)
+  //   const res = await exportMapTemp()
+  //   let blob = new Blob([res], {
+  //     type: `application/xlsx`,
+  //   })
+  //   let finallyFileName = `自定义地图源模板.xlsx`
+  //   //for IE
+  //   //@ts-ignore
+  //   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+  //     //@ts-ignore
+  //     window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
+  //   } else {
+  //     // for Non-IE
+  //     let objectUrl = URL.createObjectURL(blob)
+  //     let link = document.createElement('a')
+  //     link.href = objectUrl
+  //     link.setAttribute('download', finallyFileName)
+  //     document.body.appendChild(link)
+  //     link.click()
+  //     window.URL.revokeObjectURL(link.href)
+  //     document.body.removeChild(link)
+  //   }
+  //   setLoading(false)
+  //   message.success('下载成功')
+  // }
 
   return (
     <Modal
@@ -118,13 +118,14 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
               uploadFileFn={saveMapEvent}
             />
           </CyFormItem>
-
-          <span
-            style={{ fontSize: '12px', color: '#3c6ef3', cursor: 'pointer' }}
-            onClick={() => downTempEvent()}
+          <a
+            title="下载地图源配置模板"
+            href="/template/mapTemp.xlsx"
+            download="地图源配置模板.xlsx"
+            style={{ fontSize: '12px', color: '#3c6ef3' }}
           >
             点击下载文件模板
-          </span>
+          </a>
         </Form>
       </Spin>
     </Modal>
