@@ -33,11 +33,7 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
         onMouseEnter={() => setActive(true)}
         onMouseLeave={() => setActive(false)}
       >
-        <div
-          className={`${styles.icon2} ${active ? styles.icon2Active : ''} ${
-            isCustom ? styles.streetActive : ''
-          }`}
-        >
+        <div className={`${styles.icon2}  ${isCustom ? styles.streetActive : ''}`}>
           <div className={styles.list}>
             <img
               className={styles.img}

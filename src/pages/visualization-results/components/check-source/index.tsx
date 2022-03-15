@@ -59,7 +59,10 @@ const CheckSource: React.FC<CheckSourceProps> = ({
           const customOptions = data?.map((item: any) => {
             return {
               label: item.name,
-              value: item.url,
+              value: item.url.replace(
+                '{s}',
+                '{' + item.hostId[0] + '-' + item.hostId[item.hostId.length - 1] + '}'
+              ),
               key: item.id,
             }
           })
