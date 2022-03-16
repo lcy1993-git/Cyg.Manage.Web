@@ -33,7 +33,8 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
             align="right"
             initialValue={0}
             rules={[
-              { pattern: /^\d+$|^\d+[.]?\d+$/, message: '请输入0-18的正整数' },
+              { required: true, message: '最小级别不能为空' },
+              { pattern: /^\d+$|^\d?\d+$/, message: '请输入0-18的正整数' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
@@ -57,6 +58,10 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
                   addForm.setFieldsValue({ minLevel: 18 })
                   return
                 }
+                // if (e.target.value === '') {
+                //   addForm.setFieldsValue({ minLevel: 0 })
+                //   return
+                // }
               }}
             />
           </CyFormItem>
@@ -70,7 +75,8 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
             align="right"
             initialValue={18}
             rules={[
-              { pattern: /^\d+$|^\d+[.]?\d+$/, message: '请输入0-18的正整数' },
+              { required: true, message: '最大级别不能为空' },
+              { pattern: /^\d+$|^\d?\d+$/, message: '请输入0-18的正整数' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
