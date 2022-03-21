@@ -50,7 +50,7 @@ const EditModel: React.FC<EditModelParams> = (props) => {
   return (
     <Modal
       maskClosable={false}
-      title="添加公司"
+      title="编辑公司"
       centered
       width={780}
       visible={state as boolean}
@@ -70,7 +70,11 @@ const EditModel: React.FC<EditModelParams> = (props) => {
         <CyFormItem label="当前公司">
           <span>{sourceName}</span>
         </CyFormItem>
-        <CyFormItem label="修改公司" name="companyId">
+        <CyFormItem
+          label="修改公司"
+          name="companyId"
+          rules={[{ required: true, message: '请选择修改后的公司' }]}
+        >
           <DataSelect style={{ width: '100%' }} options={childList} placeholder="公司名称" />
         </CyFormItem>
       </Form>
