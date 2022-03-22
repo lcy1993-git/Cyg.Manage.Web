@@ -114,7 +114,7 @@ const BusinessBoard: React.FC = () => {
       key: 'projectName',
     },
     {
-      title: '立项/执行公司',
+      title: statisticalType === '1' ? '执行公司' : '立项公司',
       dataIndex: 'companyName',
       key: 'companyName',
     },
