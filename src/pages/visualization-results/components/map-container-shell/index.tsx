@@ -1,4 +1,5 @@
 import {
+  getCustomMapList,
   getUseFulMapList,
   initIpLocation,
 } from '@/services/visualization-results/visualization-results'
@@ -15,6 +16,9 @@ const UrlMapContainerBox = (props: any) => {
       // availableStatus: 0,
     })
   )
+
+  const { data: customData } = useRequest(() => getCustomMapList({ isEnable: 1 }))
+
   const getLocation = async () => {
     await initIpLocation()
   }
@@ -25,8 +29,11 @@ const UrlMapContainerBox = (props: any) => {
 
   return (
     <>
-      {mapData && mapData.code === 200 && (
-        <MapContainer mapData={mapData} {...props}></MapContainer>
+      {customData && (
+        <MapContainer
+          mapData={customData && customData.length > 0 ? customData : mapData}
+          {...props}
+        ></MapContainer>
       )}
     </>
   )

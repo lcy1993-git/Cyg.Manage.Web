@@ -247,14 +247,14 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   const onSatelliteMapClick = () => {
     // 卫星图点击时
-    getLayerByName('imgLayer', layers).setVisible(true)
-    getLayerByName('vecLayer', layers).setVisible(false)
+    getLayerByName('imgLayer', layers)?.setVisible(true)
+    getLayerByName('vecLayer', layers)?.setVisible(false)
   }
 
   const onStreetMapClick = () => {
     // 街道图点击时
-    getLayerByName('imgLayer', layers).setVisible(false)
-    getLayerByName('vecLayer', layers).setVisible(true)
+    getLayerByName('imgLayer', layers)?.setVisible(false)
+    getLayerByName('vecLayer', layers)?.setVisible(true)
   }
   const controlLayersProps = {
     surveyLayerVisible: surveyLayerVisible,

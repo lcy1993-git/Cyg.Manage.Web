@@ -21,16 +21,22 @@ export interface BaseMapProps {
 export const initLayers = (resData: any): Layer[] => {
   // 初始化data
 
-  if (resData && resData.code !== 200) return []
+  if (resData && resData.code && resData.code !== 200) return []
 
   let vecUrl = ''
   let imgUrl = ''
-  let data = resData.data[0]
+
+  let data = resData.code ? resData.data[0] : resData[0]
   // 卫星图
-  imgUrl = data.url.replace(
-    '{s}',
-    '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
-  )
+  imgUrl = resData.code
+    ? data.url.replace(
+        '{s}',
+        '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
+      )
+    : data.url.replace(
+        '{s}',
+        '{' + data.hostId[0] + '-' + data.hostId[data.hostId.length - 1] + '}'
+      )
   imgUrl =
     imgUrl ||
     'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
@@ -43,7 +49,12 @@ export const initLayers = (resData: any): Layer[] => {
   imgLayer.set('name', 'imgLayer')
 
   // 街道图
+  // vecUrl = data.url.replace(
+  //   '{s}',
+  //   '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
+  // )
   vecUrl =
+    // vecUrl ||
     'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   // const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
   //分辨率数组
