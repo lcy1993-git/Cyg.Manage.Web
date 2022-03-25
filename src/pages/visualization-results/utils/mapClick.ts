@@ -49,6 +49,7 @@ const materiaLayers = [
   'electric_meter',
   'cross_arm',
   'user_line',
+  'cable_channel',
   'fault_indicator',
 ]
 const commentLayers = ['tower', 'cable', 'cable_equipment', 'mark', 'transformer']
