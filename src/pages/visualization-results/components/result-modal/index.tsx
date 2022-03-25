@@ -38,7 +38,6 @@ const ResultModal: React.FC<Props> = (props) => {
         visible={state}
         onChange={setState}
         projectInfo={{ ...projectInfo, projectId }}
-        isResult={true}
       />
     </Modal>
   )

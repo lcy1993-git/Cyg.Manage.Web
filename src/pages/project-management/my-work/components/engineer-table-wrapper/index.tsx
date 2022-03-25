@@ -88,6 +88,8 @@ const initSearchParams = {
   status: [],
   majorCategory: [],
   pType: [],
+  plannedYear: undefined,
+  childrenIds: [],
   reformAim: [],
   classification: [],
   attribute: [],
@@ -117,6 +119,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   })
   const [externalStepData] = useState<any>()
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+
   // 工程详情
   const [engineerModalVisible, setEngineerModalVisible] = useState(false)
   // 新增项目
@@ -339,9 +342,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             网架规划
           </Menu.Item>
         }
-        {tableItemData.identitys.findIndex((item: any) => item.value === 1) > -1 &&
+        {tableItemData.identitys.findIndex((item: any) => item.value === 4) > -1 &&
           status !== 30 &&
-          status !== 31 && (
+          status !== 31 &&
+          buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
           )}
       </Menu>
@@ -673,7 +677,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         const status = record.exportCoordinate
         return (
           <>
-            {buttonJurisdictionArray?.includes('export-coordinate') &&
+            {buttonJurisdictionArray?.includes('all-project-coordinate') &&
               (record.exportCoordinate === true ? (
                 <span
                   style={{ cursor: 'pointer' }}
@@ -691,7 +695,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   禁用
                 </span>
               ))}
-            {!buttonJurisdictionArray?.includes('export-coordinate') &&
+            {!buttonJurisdictionArray?.includes('all-project-coordinate') &&
               (record.exportCoordinate === true ? (
                 <span className="colorRed">启用</span>
               ) : (
@@ -818,15 +822,21 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   <span className="canClick" onClick={() => reportApprove([record.id])}>
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 95 ? (
                   <span className="canClick" onClick={() => externalArrange([record.id])}>
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 100 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 100 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 105 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 105 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>
@@ -1012,6 +1022,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       //@ts-ignore
       tableRef.current.searchByParams({
         ...searchParams,
+        engineerFavoritesId: selectedFavId,
         keyWord,
       })
     }

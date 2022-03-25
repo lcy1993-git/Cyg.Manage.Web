@@ -8,6 +8,7 @@ import ProjectBaseInfo from '../project-base-info'
 import styles from './index.less'
 import ProjectProcessInfo from '../project-process-info/index'
 import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 const { TabPane } = Tabs
 
 interface ProjectDetailInfoProps {
@@ -19,7 +20,7 @@ interface ProjectDetailInfoProps {
 
 const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const { projectId } = props
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
@@ -59,7 +60,8 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
               projectInfo.stateInfo.status !== 14 &&
               projectInfo.stateInfo.status !== 30 &&
               projectInfo.stateInfo.status !== 31) ||
-              projectInfo.stateInfo.status === 4) && (
+              projectInfo.stateInfo.status === 4) &&
+            buttonJurisdictionArray?.includes('all-project-check-result') && (
               <TabPane key="result" tab="项目成果">
                 <CheckResultModal projectInfo={{ ...projectInfo, projectId: projectInfo?.id }} />
               </TabPane>

@@ -84,10 +84,16 @@ export const getSmsCode = (params: GetSmsCodeProps) => {
 export const getDataByUrl = (
   url: string,
   params: object,
-  requestSource: 'common' | 'project' | 'resource' | 'tecEco' | 'tecEco1',
+  requestSource:
+    | 'common'
+    | 'project'
+    | 'resource'
+    | 'tecEco'
+    | 'tecEco1'
+    | 'component'
+    | 'material',
   requestType = 'get',
-  postType = 'body',
-  libId: string
+  postType = 'body'
 ) => {
   const requestFinallyBaseUrl = baseUrl[requestSource]
 
@@ -102,7 +108,7 @@ export const getDataByUrl = (
     )
   }
   return cyRequest<any[]>(() =>
-    tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params: { libId } })
+    tokenRequest(`${requestFinallyBaseUrl}${url}`, { method: requestType, params })
   )
 }
 

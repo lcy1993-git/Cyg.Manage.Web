@@ -1,36 +1,33 @@
-import React, { useState, useRef, useEffect } from 'react'
-import styles from './index.less'
-import { WidthProvider, Responsive } from 'react-grid-layout'
 import bgSrc from '@/assets/image/index/bg.png'
-import { useRequest, useSize } from 'ahooks'
-import { getChartConfig } from '@/services/operation-config/cockpit'
-
+import PageCommonWrap from '@/components/page-common-wrap'
+import DeliveryManage from '@/pages/index/components/index-delivery-manage-component'
 import MapComponent from '@/pages/index/components/index-map-component'
 import PersonnelLoad from '@/pages/index/components/index-personnel-load-component'
-import ToDo from '@/pages/index/components/index-to-do-component'
-import DeliveryManage from '@/pages/index/components/index-delivery-manage-component'
+import ProjectProgress from '@/pages/index/components/index-project-progress-component'
 import ProjectSituation from '@/pages/index/components/index-project-situation-component'
 import ProjectType from '@/pages/index/components/index-project-type-component'
-import ProjectProgress from '@/pages/index/components/index-project-progress-component'
-import ProjectNumber from './components/project-number-component'
-
-import { IndexContext } from './context'
+import ToDo from '@/pages/index/components/index-to-do-component'
+import { getChartConfig } from '@/services/operation-config/cockpit'
+import { useRequest, useSize } from 'ahooks'
 import { Spin } from 'antd'
 import { divide, multiply, subtract } from 'lodash'
 import uuid from 'node-uuid'
-import PageCommonWrap from '@/components/page-common-wrap'
-import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex'
-
+import React, { useEffect, useRef, useState } from 'react'
+import { Responsive, WidthProvider } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import HealthPolling from './components/health-polling'
+import ProjectNumber from './components/project-number-component'
+import ProjectRefreshListWrapper from './components/refresh-list-wrapper/idnex'
+import { IndexContext } from './context'
+import styles from './index.less'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)
 
 const getComponentByType = (type: string, componentProps: any) => {
   switch (type) {
     case 'toDo':
-      return <ToDo componentProps={componentProps} />
+      return <ToDo />
       break
     case 'mapComponent':
       return <MapComponent componentProps={componentProps} />

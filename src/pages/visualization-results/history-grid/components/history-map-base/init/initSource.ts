@@ -1,11 +1,11 @@
-import VectorSource from 'ol/source/Vector';
-import { SourceRef } from './../typings/index';
+import VectorSource from 'ol/source/Vector'
+import { SourceRef } from './../typings/index'
 
 /**
  * 初始化数据源
  * @param sourceRef
  */
-export function initSource(sourceRef:SourceRef) {
+export function initSource(sourceRef: SourceRef) {
   // 历史网架
   sourceRef.historyPointSource = new VectorSource()
   sourceRef.historyLineSource = new VectorSource()

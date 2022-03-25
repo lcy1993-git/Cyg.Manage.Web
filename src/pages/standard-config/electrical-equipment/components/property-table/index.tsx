@@ -1,5 +1,6 @@
 import GeneralTable from '@/components/general-table'
 import { getPropertyList, updateComponentPropertyItem } from '@/services/resource-config/component'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { EditOutlined } from '@ant-design/icons'
 import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
@@ -17,6 +18,7 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [formData, setFormData] = useState<any>()
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [editForm] = Form.useForm()
 
@@ -84,11 +86,12 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
         <PlusOutlined />
         添加
       </Button> */}
-      <Button className="mr7" onClick={() => editEvent()}>
-        <EditOutlined />
-        编辑
-      </Button>
-      {/* <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} /> */}
+      {buttonJurisdictionArray?.includes('edit-electric-property') && (
+        <Button className="mr7" onClick={() => editEvent()}>
+          <EditOutlined />
+          编辑
+        </Button>
+      )}
     </>
   )
 

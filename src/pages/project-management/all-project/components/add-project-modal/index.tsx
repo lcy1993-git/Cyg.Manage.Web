@@ -85,6 +85,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           engineerStart={moment(engineerInfo?.startTime)}
           engineerEnd={moment(engineerInfo?.endTime)}
           status={1}
+          isEdit={true}
         />
       </Form>
     </Modal>

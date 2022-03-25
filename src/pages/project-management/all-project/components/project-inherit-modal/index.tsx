@@ -36,7 +36,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     startTime,
     endTime,
     engineerId,
-    pointVisible,
+    // pointVisible,
   } = props
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
@@ -56,7 +56,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
         disclosureRange: handleDisclosureRange,
         pileRange: handlePileRange,
         dataSourceType: projectInfo?.dataSourceType === 1 ? 0 : projectInfo?.dataSourceType,
-        stage: isNumber(projectInfo?.stage) ? projectInfo?.stage + 1 : 1,
+        stage: isNumber(projectInfo?.stage) && projectInfo ? projectInfo?.stage + 1 : 1,
       })
     },
   })
@@ -129,7 +129,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
           areaId={areaId}
           company={company}
           companyName={companyName}
-          status={status}
+          status={1}
           projectId={projectId}
           engineerStart={startTime}
           engineerEnd={endTime}

@@ -21,6 +21,7 @@ import {
   refreshMap,
   relocateMap,
 } from '../../utils/methods'
+import CheckSource from '../check-source'
 import Footer from '../footer'
 import MapDisplay from '../map-display'
 import SideMenuTree from '../side-menu-tree'
@@ -66,6 +67,9 @@ const BaseMap = observer((props: BaseMapProps) => {
   const { kvLevel } = filterCondition
 
   const boxSize = useSize(mapElement)
+
+  // 图层切换模态框类型
+  const [sourceType, setSourceType] = useState<string | number>('')
 
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false)
@@ -212,6 +216,11 @@ const BaseMap = observer((props: BaseMapProps) => {
     getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
   }, [dismantleLayerVisible])
 
+  const [street, setStreet] = useState(0)
+  const [satellite, setSatellite] = useState(0)
+
+  const prop = { street, setStreet, satellite, setSatellite }
+
   const onlocationClick = () => {
     // 当点击定位按钮时
     let promise = initIpLocation()
@@ -283,8 +292,18 @@ const BaseMap = observer((props: BaseMapProps) => {
         <SurveyTrack />
       </div>
       <div className={`${styles.mapDisplay} ${!sideMenuVisibel ? styles.mapDisplayCloese : ''}`}>
-        <MapDisplay onSatelliteMapClick={onSatelliteMapClick} onStreetMapClick={onStreetMapClick} />
+        <MapDisplay
+          onSatelliteMapClick={onSatelliteMapClick}
+          onStreetMapClick={onStreetMapClick}
+          setSourceType={setSourceType}
+        />
       </div>
+      <CheckSource
+        type={sourceType}
+        map={map!}
+        setSourceType={setSourceType}
+        {...prop}
+      ></CheckSource>
       <div className={styles.footer}>
         <Footer onlocationClick={onlocationClick} />
       </div>

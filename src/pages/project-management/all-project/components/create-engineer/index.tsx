@@ -130,6 +130,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                       setCopyFlag={setCopyFlag}
                       status={1}
                       form={form}
+                      isEdit={true}
                     />
                   </TabPane>
                 ))}

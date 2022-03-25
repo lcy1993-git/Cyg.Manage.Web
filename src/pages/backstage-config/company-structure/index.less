@@ -1,0 +1,49 @@
+.companyStructureSearch {
+  display: flex;
+  padding-bottom: 16px;
+
+  .companyStructureLeft {
+    flex: 1;
+  }
+}
+
+.companyStructureContainer {
+  height: calc(100% - 118px);
+  border: 1px solid #e8e8e8;
+
+  .tableEmpty {
+    margin-top: 200px;
+  }
+
+  .companyStructureTableHeader {
+    padding: 9px 24px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+
+  .singleButton {
+    color: #666;
+    cursor: pointer;
+
+    &:hover {
+      color: @primary-color;
+    }
+  }
+
+  :global {
+    .ant-radio-inner {
+      border-radius: 0;
+    }
+
+    .ant-radio-group {
+      width: 100%;
+    }
+
+    .ant-tree-treenode {
+      width: 100%;
+      padding: 4px;
+    }
+    .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+      background-color: #fff;
+    }
+  }
+}

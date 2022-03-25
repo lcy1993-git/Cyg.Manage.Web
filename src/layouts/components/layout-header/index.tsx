@@ -7,6 +7,7 @@ import { useGetFunctionModules, useGetUserInfo } from '@/utils/hooks'
 import { BellOutlined } from '@ant-design/icons'
 import { useInterval } from 'ahooks'
 import { Badge, Dropdown, Menu } from 'antd'
+import uuid from 'node-uuid'
 import React, { useState } from 'react'
 import { history } from 'umi'
 import CutAccount from '../cut-account'
@@ -87,7 +88,7 @@ const LayoutHeader: React.FC = () => {
     ?.filter((item) => item.category === 1)
     .map((item, index) => {
       return (
-        <>
+        <div key={uuid.v1()} style={{ height: '100%' }}>
           <LayoutHeaderMenu
             key={`headerMenu_${index}`}
             onSelect={menuSelectEvent}
@@ -95,7 +96,7 @@ const LayoutHeader: React.FC = () => {
             icon={item.icon}
             menuData={item.children}
           />
-        </>
+        </div>
       )
     })
 

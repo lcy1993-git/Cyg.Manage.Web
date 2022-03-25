@@ -1,4 +1,5 @@
 import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
+import Map from 'ol/Map'
 import { createContext, useContext } from 'react'
 import { CityWithProvince } from '../components/city-picker/type'
 import { DataSource, SelectedData } from './../components/history-map-base/typings'
@@ -34,6 +35,10 @@ export type ReducerState = {
   /** 预设计网架数据 */
   preDesignDataSource: DataSource
   gridMapState: GridMapGlobalState
+  /** 图层源状态 */
+  sourceType: string | number
+  /** 地图实例 */
+  map: Map | null
 
   /** UI 状态 */
   UIStatus: {
@@ -48,7 +53,7 @@ export type ReducerState = {
     /** 是否定位到现有网架 */
     currentProject: boolean
     /** 地图类型 street 街道 satellite 卫星 */
-    mapType: 'street' | 'satellite'
+    mapType: 'street' | 'satellite' | 'custom'
     /** 是否为绘制状态 */
     drawing: boolean
     /** 是否显示导入模态框 */

@@ -599,7 +599,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
-              disabled={isEdit}
+              disabled={!isEdit && !isInherit} //判断是否参与继承 && 是否开始继承 &&是否新增项目
               titlekey="text"
               placeholder="请选择"
             />
@@ -853,7 +853,12 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 style={{ width: '100%' }}
               />
             </CyFormItem>
-          ) : status === 1 || status === 2 || status === 14 || status === 30 || status === 31 ? (
+          ) : status === 1 ||
+            status === 2 ||
+            status === 14 ||
+            status === 30 ||
+            status === 31 ||
+            isInherit ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}
@@ -866,6 +871,21 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 {
                   required: true,
                   message: '桩位范围不能为空',
+                },
+                () => ({
+                  validator(_, value) {
+                    if (value <= 999 && value > -1) {
+                      return Promise.resolve()
+                    }
+                    if (value > 999) {
+                      return Promise.reject('请填写0~999以内的整数')
+                    }
+                    return Promise.resolve()
+                  },
+                }),
+                {
+                  pattern: /^[0-9]\d*$/,
+                  message: '请输入正整数',
                 },
               ]}
             >

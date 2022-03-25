@@ -1,4 +1,5 @@
 import { commonExport } from '@/services/common'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { DownOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message } from 'antd'
 import React from 'react'
@@ -13,6 +14,8 @@ interface TableExportButtonProps {
 
 const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
   const { selectIds = [], exportUrl = '', extraParams, fileName = '表格', selectSlot } = props
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+
   const exportChoosedRow = async () => {
     if (selectIds && selectIds.length === 0) {
       message.error('请选择需要导出的数据')
@@ -24,7 +27,9 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
     })
     let finalyFileName = `${fileName}.xlsx`
     // for IE
+    //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
     } else {
       // for Non-IE
@@ -46,7 +51,9 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
     })
     let finalyFileName = `${fileName}.xlsx`
     // for IE
+    //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
     } else {
       // for Non-IE
@@ -63,12 +70,16 @@ const TableExportButton: React.FC<TableExportButtonProps> = (props) => {
 
   const importButoonMenu = (
     <Menu>
-      <Menu.Item key="exportPart" onClick={() => exportChoosedRow()}>
-        导出所选
-      </Menu.Item>
-      <Menu.Item key="exportAll" onClick={() => exportAllRow()}>
-        导出所有
-      </Menu.Item>
+      {buttonJurisdictionArray?.includes('all-project-export-selected') && (
+        <Menu.Item key="exportPart" onClick={() => exportChoosedRow()}>
+          导出所选
+        </Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('all-project-export-all') && (
+        <Menu.Item key="exportAll" onClick={() => exportAllRow()}>
+          导出所有
+        </Menu.Item>
+      )}
       {selectSlot ? <Menu.Item>{selectSlot?.()}</Menu.Item> : null}
     </Menu>
   )

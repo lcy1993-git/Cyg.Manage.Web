@@ -98,6 +98,7 @@ const HistoryMapBase = () => {
       mode,
     })
     bindEvent()
+    setState((d) => ({ ...d, map: mapRef.map }))
   })
 
   useUpdateEffect(() => {

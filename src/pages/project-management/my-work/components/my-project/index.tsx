@@ -9,6 +9,7 @@ import EditArrangeModal from '@/pages/project-management/all-project/components/
 import ExternalArrangeModal from '@/pages/project-management/all-project/components/external-arrange-modal'
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
+// import ProjectRemovalModal from '@/pages/project-management/all-project/components/project-removal-modal'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
@@ -67,6 +68,9 @@ const MyProject: React.FC = () => {
   //外审
   const [externalArrangeModalVisible, setExternalArrangeModalVisible] = useState<boolean>(false)
   const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false)
+
+  //项目迁移弹窗
+  // const [removalModalVisible, setRemovalModalVisible] = useState<boolean>(false)
 
   const { userType = '' } = useGetUserInfo()
 
@@ -198,7 +202,7 @@ const MyProject: React.FC = () => {
     // setArrangeModalVisible(true);
     const projectIds = tableSelectKeys
     if (projectIds.length === 0) {
-      message.error('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
 
@@ -293,7 +297,7 @@ const MyProject: React.FC = () => {
     const projectIds = tableSelectKeys
 
     if (projectIds.length === 0) {
-      message.error('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
     await revokeAllot(projectIds as string[])
@@ -330,7 +334,7 @@ const MyProject: React.FC = () => {
 
   const shareMenu = (
     <Menu>
-      {buttonJurisdictionArray?.includes('all-project-share') && (
+      {buttonJurisdictionArray?.includes('all-project-shared') && (
         <Menu.Item key="share" onClick={() => shareEvent()}>
           共享
         </Menu.Item>
@@ -396,7 +400,7 @@ const MyProject: React.FC = () => {
 
   const auditKnotEvent = async () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.warning('请至少选择一条数据')
+      message.info('请至少选择一条数据')
       return
     }
     const projectIds = tableSelectKeys
@@ -406,7 +410,7 @@ const MyProject: React.FC = () => {
 
   const applyConfirm = () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.warning('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
     Modal.confirm({
@@ -450,6 +454,10 @@ const MyProject: React.FC = () => {
 
   // 外审安排
   const externalArrange = () => {
+    if (tableSelectKeys && tableSelectKeys.length === 0) {
+      message.info('请选择要操作的项目')
+      return
+    }
     setExternalArrangeModalVisible(true)
   }
 
@@ -556,6 +564,11 @@ const MyProject: React.FC = () => {
     delayRefresh()
   }
 
+  //项目迁移
+  // const removalEvent = () => {
+  //   setRemovalModalVisible(true)
+  // }
+
   return (
     <div className={styles.myProjectContent}>
       <div className={styles.myProjectCommonContent}>
@@ -605,7 +618,7 @@ const MyProject: React.FC = () => {
                   )}
                 </>
               )}
-              {(buttonJurisdictionArray?.includes('all-project-share') ||
+              {(buttonJurisdictionArray?.includes('all-project-shared') ||
                 buttonJurisdictionArray?.includes('all-project-share-recall')) && (
                 <Dropdown overlay={shareMenu}>
                   <Button className="mr7">
@@ -632,6 +645,11 @@ const MyProject: React.FC = () => {
                     />
                   </div>
                 )}
+              {/* {buttonJurisdictionArray?.includes('add-favorite-project') && !sideVisible && ( */}
+              {/* <Button className="mr7" onClick={() => removalEvent()}>
+                项目迁移
+              </Button> */}
+              {/* // )} */}
             </div>
           )}
       </div>
@@ -746,6 +764,14 @@ const MyProject: React.FC = () => {
           refresh={delayRefresh}
         />
       )}
+      {/* {removalModalVisible && (
+        <ProjectRemovalModal
+          visible={removalModalVisible}
+          finishEvent={delayRefresh}
+          onChange={setRemovalModalVisible}
+          projectId={tableSelectKeys}
+        />
+      )} */}
     </div>
   )
 }

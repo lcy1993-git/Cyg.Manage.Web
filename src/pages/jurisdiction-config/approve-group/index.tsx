@@ -4,7 +4,6 @@ import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { getUsersIds } from '@/pages/standard-config/info-manage/utils'
 import {
   createApproveGroup,
   deleteApproveGroup,
