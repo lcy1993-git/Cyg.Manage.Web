@@ -17,7 +17,7 @@ export interface BaseMapProps {
   setTrackLayerGroups: (arg0: LayerGroup[]) => void
   setView: (arg0: View) => void
 }
-
+//@ts-ignore
 export const initLayers = (resData: any): Layer[] => {
   // 初始化data
 
@@ -26,9 +26,9 @@ export const initLayers = (resData: any): Layer[] => {
   let vecUrl = ''
   let imgUrl = ''
 
-  let data = resData.code ? resData.data[0] : resData[0]
+  let data = resData?.code ? resData.data[0] : resData[0]
   // 卫星图
-  imgUrl = resData.code
+  imgUrl = resData?.code
     ? data.url.replace(
         '{s}',
         '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
