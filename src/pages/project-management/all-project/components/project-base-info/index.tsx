@@ -233,6 +233,11 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
             {projectInfo?.deadline ? moment(projectInfo?.deadline).format('YYYY-MM-DD') : ''}
           </ReadonlyItem>
         </div>
+        <div className="flex1">
+          <ReadonlyItem label="备注" labelWidth={100}>
+            {projectInfo?.deadline ? moment(projectInfo?.deadline).format('YYYY-MM-DD') : '无'}
+          </ReadonlyItem>
+        </div>
       </div>
     </div>
   )
