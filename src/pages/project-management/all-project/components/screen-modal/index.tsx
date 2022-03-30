@@ -49,7 +49,12 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [identityType, setIdentityType] = useState<number[]>([]) //项目身份
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' })
   const [dataSourceType, setDataSourceType] = useState<number[]>([])
-  const [personInfo, setPersonInfo] = useState<any>({ logicRelation: 2, design: '', survey: '' })
+  const [personInfo, setPersonInfo] = useState<any>({
+    logicRelation: 2,
+    design: '',
+    survey: '',
+    cost: '',
+  })
   const [startTime, setStartTime] = useState<null | string>('')
   const [endTime, setEndTime] = useState<null | string>('')
   const areaRef = useRef<HTMLDivElement>(null)
@@ -62,6 +67,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     logicRelation: 2,
     survey: '',
     design: '',
+    cost: '',
   })
 
   const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png')
@@ -299,12 +305,14 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           logicRelation: searchParams.logicRelation,
           design: searchParams.designUser,
           survey: searchParams.surveyUser,
+          cost: searchParams.cost,
         })
       } else {
         setSelectDefaultData({
           logicRelation: 2,
           design: '',
           survey: '',
+          cost: '',
         })
       }
       if (searchParams.areaType !== '-1') {

@@ -19,6 +19,7 @@ export interface ChooseDesignAndSurveyValue {
   survey: string
   logicRelation: number
   design: string
+  cost: string
 }
 
 interface SelectProps {
@@ -32,7 +33,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
   const [survey, setSurvey] = useState<string>('')
   const [logicRelation, setLogicRelation] = useState<number>(2)
   const [design, setDesign] = useState<string>('')
-  const [rule, setRule] = useState<string>('')
+  const [cost, setCost] = useState<string>('')
 
   const { data: personData = [] } = useGetSelectData({
     url: '/CompanyUser/GetList',
@@ -51,6 +52,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
         logicRelation: 2,
         survey: '',
         design: '',
+        cost: '',
       })
     },
     setValue: (params: any) => {
@@ -62,6 +64,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
         logicRelation: params?.logicRelation ?? 2,
         survey: params?.survey ?? '',
         design: params?.design ?? '',
+        cost: params?.cost ?? '',
       })
     },
   }))
@@ -71,6 +74,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
       survey: survey === '-1' ? '' : survey,
       logicRelation,
       design: design === '-1' ? '' : design,
+      cost: cost === '-1' ? '' : cost,
     })
   }, [survey, logicRelation, design])
 
@@ -79,11 +83,12 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
       setDesign(defaultValue?.design)
       setLogicRelation(defaultValue?.logicRelation)
       setSurvey(defaultValue?.survey)
+      setCost(defaultValue?.cost)
     }
   }, [JSON.stringify(defaultValue)])
   const options = [
-    { label: '筛选同时符合以上条件的项', value: 'Apple' },
-    { label: '筛选符合以上任意条件的项', value: 'Pear' },
+    { label: '筛选同时符合以上条件的项', value: 1 },
+    { label: '筛选符合以上任意条件的项', value: 2 },
   ]
   return (
     <div className={styles.chooseDesignAndSurveySelect}>
@@ -118,9 +123,9 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
           <span className={styles.popContentItemLabel}>造价人</span>
           <div className={styles.popContentItemSelect}>
             <DataSelect
-              value={design}
+              value={cost}
               placeholder="请选择"
-              onChange={(value) => setDesign(value as string)}
+              onChange={(value) => setCost(value as string)}
               getPopupContainer={(triggerNode) => triggerNode.parentElement}
               style={{ width: '100%' }}
               options={[{ label: '全部', value: '-1' }, ...personData]}
@@ -129,7 +134,11 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
         </div>
       </div>
       <div className={styles.lastLine}>
-        <Radio.Group options={options} value={rule} onChange={(e) => setRule(e.target.value)} />
+        <Radio.Group
+          options={options}
+          value={logicRelation}
+          onChange={(e) => setLogicRelation(e.target.value as LogicRelation)}
+        />
       </div>
     </div>
   )
