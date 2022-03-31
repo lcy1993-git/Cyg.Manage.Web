@@ -1,14 +1,13 @@
-import React, { Dispatch, memo, SetStateAction, useEffect } from 'react'
-
+import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal'
 import { getProjectInfo } from '@/services/project-management/all-project'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Modal, Tabs } from 'antd'
+import React, { Dispatch, memo, SetStateAction, useEffect } from 'react'
 import ProjectBaseInfo from '../project-base-info'
-
-import styles from './index.less'
 import ProjectProcessInfo from '../project-process-info/index'
-import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import styles from './index.less'
+
 const { TabPane } = Tabs
 
 interface ProjectDetailInfoProps {
@@ -60,8 +59,7 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
               projectInfo.stateInfo.status !== 14 &&
               projectInfo.stateInfo.status !== 30 &&
               projectInfo.stateInfo.status !== 31) ||
-              projectInfo.stateInfo.status === 4) &&
-            buttonJurisdictionArray?.includes('all-project-check-result') && (
+              projectInfo.stateInfo.status === 4) && (
               <TabPane key="result" tab="项目成果">
                 <CheckResultModal projectInfo={{ ...projectInfo, projectId: projectInfo?.id }} />
               </TabPane>

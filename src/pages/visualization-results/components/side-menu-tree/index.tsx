@@ -698,7 +698,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       <div className={styles.buttonArea}>
         <SiderMenuAreaButtons
           buttonProps={[
-            buttonJurisdictionArray?.includes('result-manage') && {
+            {
               title: '成果管理',
               dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
               light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
