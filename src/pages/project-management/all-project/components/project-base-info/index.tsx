@@ -235,7 +235,9 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
         </div>
         <div className="flex1">
           <ReadonlyItem label="备注" labelWidth={100}>
-            {projectInfo?.deadline ? moment(projectInfo?.deadline).format('YYYY-MM-DD') : '无'}
+            <Tooltip title={projectInfo?.remark} placement="topLeft">
+              {projectInfo?.remark ? projectInfo?.remark : '无'}
+            </Tooltip>
           </ReadonlyItem>
         </div>
       </div>

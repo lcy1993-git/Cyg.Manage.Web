@@ -507,7 +507,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'cityCompany' : [field.name, 'cityCompany']}
             labelWidth={120}
             align="right"
-            rules={Rule.wordsLimit}
+            rules={[{ required: true, message: '所属市公司不能为空' }]}
+            required
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -540,7 +541,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'countyCompany' : [field.name, 'countyCompany']}
             labelWidth={120}
             align="right"
-            rules={Rule.wordsLimit}
+            required
+            rules={[{ required: true, message: '所属县公司不能为空' }]}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -917,12 +919,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         <div className="flex1 flowHidden">
           <CyFormItem
             label="备注"
-            initialValue={1}
             fieldKey={[field.fieldKey, 'remark']}
             name={isEmpty(field) ? 'remark' : [field.name, 'remark']}
             labelWidth={120}
             align="right"
-            rules={Rule.required}
           >
             <TextArea
               placeholder="请输入备注"

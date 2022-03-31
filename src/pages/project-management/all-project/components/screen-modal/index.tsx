@@ -532,7 +532,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
                   {...selectStyle}
                   allowClear
                   mode="multiple"
-                  url="/CompanyTree/GetChildren"
+                  url="/CompanyTree/GetTreeList"
                   value={childrenIds}
                   titlekey="key"
                   valuekey="value"

@@ -395,7 +395,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 name="cityCompany"
                 labelWidth={120}
                 align="right"
-                rules={Rule.wordsLimit}
+                required
+                rules={[{ required: true, message: '所属市公司不能为空' }]}
               >
                 <Input placeholder="请输入" />
               </CyFormItem>
@@ -426,7 +427,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 name="countyCompany"
                 labelWidth={120}
                 align="right"
-                rules={Rule.wordsLimit}
+                required
+                rules={[{ required: true, message: '所属县公司不能为空' }]}
               >
                 <Input placeholder="请输入" />
               </CyFormItem>
