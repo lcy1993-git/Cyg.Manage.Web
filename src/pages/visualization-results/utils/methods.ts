@@ -103,6 +103,16 @@ const checkZoom = (evt: any, map: any) => {
   } else {
     timer && clearInterval(timer)
   }
+
+  // if(mapResolution < 0.2) {
+  //   let surveyLayer = getLayerByName('surveyLayer', map.getLayers().getArray());
+  //   console.log(surveyLayer);
+  //   console.log(surveyLayer.getLayers().getArray());
+  //   surveyLayer.getLayers().getArray().forEach((item:any) => {
+  //     console.log(item.get('name'));
+  //     console.log(item.getStyle());
+  //   })
+  // }
 }
 
 const loadSurveyLayers = async (postData: string, groupLayers: LayerGroup[]) => {
@@ -453,7 +463,13 @@ const loadWFSData = (
         //   style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
         //   styleCache[size] = style;
         // }
-        var style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false)
+        var style = pointStyle(
+          layerType + '_' + layerName,
+          feature.get('features')[0],
+          false,
+          false,
+          resolution
+        )
         return style
       }
     } else if (item.type === 'line' || item.type === 'cable_channel') {
