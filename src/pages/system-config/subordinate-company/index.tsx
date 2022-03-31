@@ -11,6 +11,8 @@ interface TableRef extends HTMLDivElement {
 
 const SubordinateCompany: React.FC = () => {
   const tableRef = useRef<TableRef>(null)
+  //@ts-ignore
+  const { userType } = JSON.parse(localStorage.getItem('userInfo'))
   const updateStatus = async (data: any) => {
     const { id, isFilterTree } = data
     await updateCompanyStatus({ companyId: id, isFilterTree: !isFilterTree })
@@ -54,20 +56,24 @@ const SubordinateCompany: React.FC = () => {
   ]
   return (
     <PageCommonWrap>
-      <div className={Styles.tableContent}>
-        <TreeTable
-          needCheck={false}
-          url="/CompanyTree/GetCompanyTreeList"
-          ref={tableRef}
-          tableTitle="下级公司配置"
-          columns={tableColumns}
-        />
-      </div>
-      <div className={Styles.tipInfo}>
-        <span>
-          说明：通过该功能，可以配置是否将下级公司立项的项目数据纳入您的“首页统计”、“我的工作台”、“网架可视化”当中进行统一管理。
-        </span>
-      </div>
+      {userType !== 4 && (
+        <>
+          <div className={Styles.tableContent}>
+            <TreeTable
+              needCheck={false}
+              url="/CompanyTree/GetCompanyTreeList"
+              ref={tableRef}
+              tableTitle="下级公司配置"
+              columns={tableColumns}
+            />
+          </div>
+          <div className={Styles.tipInfo}>
+            <span>
+              说明：通过该功能，可以配置是否将下级公司立项的项目数据纳入您的“首页统计”、“我的工作台”、“网架可视化”当中进行统一管理。
+            </span>
+          </div>
+        </>
+      )}
     </PageCommonWrap>
   )
 }

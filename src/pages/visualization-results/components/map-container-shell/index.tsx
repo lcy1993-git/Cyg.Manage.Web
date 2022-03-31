@@ -29,7 +29,7 @@ const UrlMapContainerBox = (props: any) => {
 
   return (
     <>
-      {customData && (
+      {customData && mapData && (
         <MapContainer
           mapData={customData && customData.length > 0 ? customData : mapData}
           {...props}
