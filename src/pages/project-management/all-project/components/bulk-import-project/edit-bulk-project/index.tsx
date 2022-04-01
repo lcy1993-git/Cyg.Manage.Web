@@ -19,6 +19,8 @@ interface EditBulkProjectProps {
   currentChooseEngineerInfo: any
 }
 
+const { TextArea } = Input
+
 const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [nature, setNature] = useState<string>()
@@ -719,6 +721,18 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   <InputNumber placeholder="请输入桩位范围" style={{ width: '100%' }} />
                 </CyFormItem>
               )}
+            </div>
+          </div>
+          <div className="flex">
+            <div className="flex1 flowHidden">
+              <CyFormItem label="备注" name="remark" labelWidth={120} align="right">
+                <TextArea
+                  placeholder="请输入备注"
+                  showCount
+                  maxLength={200}
+                  style={{ width: '100%' }}
+                />
+              </CyFormItem>
             </div>
           </div>
         </Form>

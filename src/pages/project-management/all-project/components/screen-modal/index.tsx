@@ -46,7 +46,12 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [plannedYear, setPlannedYear] = useState<number | undefined>(undefined)
   const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' })
   const [dataSourceType, setDataSourceType] = useState<number[]>([])
-  const [personInfo, setPersonInfo] = useState<any>({ logicRelation: 2, design: '', survey: '' })
+  const [personInfo, setPersonInfo] = useState<any>({
+    logicRelation: 2,
+    design: '',
+    survey: '',
+    cost: '',
+  })
   const [startTime, setStartTime] = useState<null | string>('')
   const [endTime, setEndTime] = useState<null | string>('')
   const areaRef = useRef<HTMLDivElement>(null)
@@ -61,6 +66,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
     logicRelation: 2,
     survey: '',
     design: '',
+    cost: '',
   })
 
   const imgSrc = require('../../../../../assets/icon-image/' + icon + '.png')
@@ -90,6 +96,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       endTime: endTime ?? '',
       surveyUser: personInfo.survey,
       designUser: personInfo.design,
+      costUser: personInfo.cost,
       logicRelation: personInfo.logicRelation,
     })
     setState(false)
@@ -153,6 +160,7 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
       endTime: '',
       designUser: '',
       surveyUser: '',
+      costUser: '',
     })
     setState(false)
   }
@@ -317,12 +325,14 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
           logicRelation: searchParams.logicRelation,
           design: searchParams.designUser,
           survey: searchParams.surveyUser,
+          cost: searchParams.costUser,
         })
       } else {
         setSelectDefaultData({
           logicRelation: 2,
           design: '',
           survey: '',
+          cost: '',
         })
       }
       if (searchParams.areaType !== '-1') {
@@ -496,12 +506,19 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
         </div>
         <div className="flex">
           <div className="flex1">
-            <CyFormItem label="人员安排" align="right" labelWidth={100}>
+            <CyFormItem label="下级公司" align="right" labelWidth={100}>
               <div style={{ width: '275px' }}>
-                <ChooseDesignAndSurvey
-                  ref={personRef}
-                  defaultValue={selectDefaultData}
-                  onChange={setPersonInfo}
+                <UrlSelect
+                  {...selectStyle}
+                  allowClear
+                  mode="multiple"
+                  url="/Company/GetChildrenForQueryProject"
+                  value={childrenIds}
+                  titlekey="key"
+                  valuekey="value"
+                  onChange={(value) => setChildrenIds(value as string[])}
+                  className="widthAll"
+                  placeholder="下级公司"
                 />
               </div>
             </CyFormItem>
@@ -526,24 +543,12 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
 
         <div className="flex">
           <div className="flex1">
-            <CyFormItem label="下级公司" align="right" labelWidth={100}>
-              <div style={{ width: '275px' }}>
-                <UrlSelect
-                  {...selectStyle}
-                  allowClear
-                  mode="multiple"
-                  url="/CompanyTree/GetTreeList"
-                  value={childrenIds}
-                  titlekey="key"
-                  valuekey="value"
-                  extraParams={{ companyId: companyId }}
-                  onChange={(value) => setChildrenIds(value as string[])}
-                  className="widthAll"
-                  placeholder="下级公司"
-                  requestType="post"
-                  postType="query"
-                />
-              </div>
+            <CyFormItem label="人员安排" align="right" labelWidth={100} overflow={true}>
+              <ChooseDesignAndSurvey
+                ref={personRef}
+                defaultValue={selectDefaultData}
+                onChange={setPersonInfo}
+              />
             </CyFormItem>
           </div>
         </div>

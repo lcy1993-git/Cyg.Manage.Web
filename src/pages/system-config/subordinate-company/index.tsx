@@ -57,7 +57,7 @@ const SubordinateCompany: React.FC = () => {
       <div className={Styles.tableContent}>
         <TreeTable
           needCheck={false}
-          url="/CompanyTree/GetCompanyTreeList"
+          url="/Company/GetChildrenTreeList"
           ref={tableRef}
           tableTitle="下级公司配置"
           columns={tableColumns}
