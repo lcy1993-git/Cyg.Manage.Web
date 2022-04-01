@@ -36,7 +36,7 @@ const EditModel: React.FC<EditModelParams> = (props) => {
     form.validateFields().then(async (values) => {
       try {
         const { companyId } = values
-        await editCompany({ sourceCompanyId, targetCompanyId: companyId })
+        await editCompany({ sourceCompanyId, replaceTargetCompanyId: companyId })
         setRequestLoading(true)
         setState(false)
         finishEvent()

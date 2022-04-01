@@ -8,7 +8,7 @@ interface CompanyStructureSearchParams {
 //获取公司列表
 export const getCompanyStructureTreeList = (params: CompanyStructureSearchParams) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.project}/CompanyTree/GetTreeList`, { method: 'GET', params })
+    request(`${baseUrl.project}/CompanyTree/GetTreeList`, { method: 'POST', data: params })
   )
 }
 
@@ -19,26 +19,24 @@ interface AddCompanyParams {
 
 // 新增公司
 export const addCompany = (data: AddCompanyParams) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/CompanyTree/AddCompany`, { method: 'POST', data })
-  )
+  return cyRequest(() => request(`${baseUrl.project}/CompanyTree/Create`, { method: 'POST', data }))
 }
 
 // 修改公司
 
 interface EditCompanyParams {
   sourceCompanyId: string
-  targetCompanyId: string
+  replaceTargetCompanyId: string
 }
 
 export const editCompany = (data: EditCompanyParams) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/CompanyTree/ModifyCompany`, { method: 'POST', data })
+    request(`${baseUrl.project}/CompanyTree/Replace`, { method: 'POST', data })
   )
 }
 
-export const deleteCompany = (data: { companyId: string }) => {
+export const deleteCompany = (companyId: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/CompanyTree/DeleteCompanyTree`, { method: 'POST', data })
+    request(`${baseUrl.project}/CompanyTree/Delete`, { method: 'GET', params: { companyId } })
   )
 }

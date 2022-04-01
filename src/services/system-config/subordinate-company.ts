@@ -8,10 +8,6 @@ interface UpdateCompanyStatus {
 
 export const updateCompanyStatus = (params: UpdateCompanyStatus) => {
   return cyRequest(() =>
-    request(
-      `${baseUrl.project}/CompanyTree/SaveCompanyConfig
-    `,
-      { method: 'POST', data: params }
-    )
+    request(`${baseUrl.project}/CompanyTree/ModifyConfig`, { method: 'POST', data: params })
   )
 }
