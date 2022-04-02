@@ -100,7 +100,9 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({ params, hasAuthorization = fa
   useMount(() => {
     initPdfFileViewer()
   })
-
+  useEffect(() => {
+    initPdfFileViewer()
+  }, [params])
   useEffect(() => {
     // @ts-ignore
     // 隔离原生onwhell事件
