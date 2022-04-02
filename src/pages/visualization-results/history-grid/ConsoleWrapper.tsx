@@ -50,8 +50,10 @@ const ConsoleWrapper = () => {
           }}
         >
           <span
-            onClick={() => dispatch('locate')}
-            className="cursor-pointer text-base text-theme-green"
+            onClick={() => city && dispatch('locate')}
+            className={
+              city ? 'cursor-pointer text-base text-theme-green' : 'text-theme-gray text-base'
+            }
           >
             <EnvironmentFilled className="pr-1" />
             定位

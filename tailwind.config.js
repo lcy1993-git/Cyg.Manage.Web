@@ -23,6 +23,7 @@ module.exports = {
         'theme-green-dark': '#0E7B3B',
         'theme-green-darker': '#4DA944',
         'theme-blue': '#0E6CA5',
+        'theme-gray': '#9CA3AF',
       },
     },
   },
