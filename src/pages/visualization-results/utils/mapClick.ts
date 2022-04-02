@@ -40,7 +40,7 @@ const LevelEnmu = ['无', '220V', '380V', '10kV']
 
 // const mappingTagsData = getMappingTagsDictionary();
 // const mappingTagsDictionary: any =typeof mappingTagsData === 'string' ? JSON.parse(mappingTagsData) : {};
-const mediaLayers = ['tower', 'cable', 'cable_equipment', 'electric_meter']
+const mediaLayers = ['tower', 'cable', 'cable_equipment', 'electric_meter', 'mark']
 const materiaLayers = [
   'tower',
   'transformer',
