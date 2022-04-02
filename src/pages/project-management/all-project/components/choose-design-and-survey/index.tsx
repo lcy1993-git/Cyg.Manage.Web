@@ -37,6 +37,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
       setLogicRelation(2)
       setSurvey('')
       setDesign('')
+      setCost('')
       onChange?.({
         logicRelation: 2,
         survey: '',
@@ -48,6 +49,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
       setLogicRelation(params?.logicRelation ?? 2)
       setSurvey(params?.survey ?? '')
       setDesign(params?.design ?? '')
+      setCost(params?.cost ?? '')
 
       onChange?.({
         logicRelation: params?.logicRelation ?? 2,
@@ -65,7 +67,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
       design: design === '-1' ? '' : design,
       cost: cost === '-1' ? '' : cost,
     })
-  }, [survey, logicRelation, design])
+  }, [survey, logicRelation, design, cost])
 
   useEffect(() => {
     if (defaultValue) {
@@ -75,6 +77,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
       setCost(defaultValue?.cost)
     }
   }, [JSON.stringify(defaultValue)])
+
   const options = [
     { label: '筛选同时符合以上条件的项', value: 2 },
     { label: '筛选符合以上任意条件的项', value: 1 },

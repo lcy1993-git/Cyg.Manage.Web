@@ -103,6 +103,7 @@ const initSearchParams = {
   endTime: '',
   designUser: '',
   surveyUser: '',
+  costUser: '',
   statisticalCategory: '-1',
 }
 const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) => {
