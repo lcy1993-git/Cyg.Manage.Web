@@ -145,12 +145,12 @@ _一种写 JavaScript 更合理的代码风格。_
   - `symbol`
 
   ```javascript
-  const foo = 1;
-  let bar = foo;
+  const foo = 1
+  let bar = foo
 
-  bar = 9;
+  bar = 9
 
-  console.log(foo, bar); // => 1, 9
+  console.log(foo, bar) // => 1, 9
   ```
 
   - 标识符不能完全被支持，因此在针对不支持的浏览器或者环境时不应该使用它们。
@@ -164,12 +164,12 @@ _一种写 JavaScript 更合理的代码风格。_
   - `function`
 
   ```javascript
-  const foo = [1, 2];
-  const bar = foo;
+  const foo = [1, 2]
+  const bar = foo
 
-  bar[0] = 9;
+  bar[0] = 9
 
-  console.log(foo[0], bar[0]); // => 9, 9
+  console.log(foo[0], bar[0]) // => 9, 9
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -184,12 +184,12 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  var a = 1;
-  var b = 2;
+  var a = 1
+  var b = 2
 
   // good
-  const a = 1;
-  const b = 2;
+  const a = 1
+  const b = 2
   ```
 
 <a name="references--disallow-var"></a><a name="2.2"></a>
@@ -200,15 +200,15 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  var count = 1;
+  var count = 1
   if (true) {
-    count += 1;
+    count += 1
   }
 
   // good, use the let.
-  let count = 1;
+  let count = 1
   if (true) {
-    count += 1;
+    count += 1
   }
   ```
 
@@ -219,11 +219,11 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // const 和 let 只存在于他们定义的块中。
   {
-    let a = 1;
-    const b = 1;
+    let a = 1
+    const b = 1
   }
-  console.log(a); // ReferenceError
-  console.log(b); // ReferenceError
+  console.log(a) // ReferenceError
+  console.log(b) // ReferenceError
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -236,10 +236,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const item = new Object();
+  const item = new Object()
 
   // good
-  const item = {};
+  const item = {}
   ```
 
 <a name="es6-computed-properties"></a><a name="3.4"></a>
@@ -250,22 +250,22 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   function getKey(k) {
-    return `a key named ${k}`;
+    return `a key named ${k}`
   }
 
   // bad
   const obj = {
     id: 5,
     name: 'San Francisco',
-  };
-  obj[getKey('enabled')] = true;
+  }
+  obj[getKey('enabled')] = true
 
   // good
   const obj = {
     id: 5,
     name: 'San Francisco',
     [getKey('enabled')]: true,
-  };
+  }
   ```
 
 <a name="es6-object-shorthand"></a><a name="3.5"></a>
@@ -278,18 +278,18 @@ _一种写 JavaScript 更合理的代码风格。_
     value: 1,
 
     addValue: function (value) {
-      return atom.value + value;
+      return atom.value + value
     },
-  };
+  }
 
   // good
   const atom = {
     value: 1,
 
     addValue(value) {
-      return atom.value + value;
+      return atom.value + value
     },
-  };
+  }
   ```
 
 <a name="es6-object-concise"></a><a name="3.6"></a>
@@ -299,17 +299,17 @@ _一种写 JavaScript 更合理的代码风格。_
   > 为什么? 它的写法和描述较短。
 
   ```javascript
-  const lukeSkywalker = 'Luke Skywalker';
+  const lukeSkywalker = 'Luke Skywalker'
 
   // bad
   const obj = {
     lukeSkywalker: lukeSkywalker,
-  };
+  }
 
   // good
   const obj = {
     lukeSkywalker,
-  };
+  }
   ```
 
 <a name="objects--grouped-shorthand"></a><a name="3.7"></a>
@@ -319,8 +319,8 @@ _一种写 JavaScript 更合理的代码风格。_
   > 为什么? 这样更容易的判断哪些属性使用的简写。
 
   ```javascript
-  const anakinSkywalker = 'Anakin Skywalker';
-  const lukeSkywalker = 'Luke Skywalker';
+  const anakinSkywalker = 'Anakin Skywalker'
+  const lukeSkywalker = 'Luke Skywalker'
 
   // bad
   const obj = {
@@ -330,7 +330,7 @@ _一种写 JavaScript 更合理的代码风格。_
     episodeThree: 3,
     mayTheFourth: 4,
     anakinSkywalker,
-  };
+  }
 
   // good
   const obj = {
@@ -340,7 +340,7 @@ _一种写 JavaScript 更合理的代码风格。_
     twoJediWalkIntoACantina: 2,
     episodeThree: 3,
     mayTheFourth: 4,
-  };
+  }
   ```
 
 <a name="objects--quoted-props"></a><a name="3.8"></a>
@@ -355,14 +355,14 @@ _一种写 JavaScript 更合理的代码风格。_
     foo: 3,
     bar: 4,
     'data-blah': 5,
-  };
+  }
 
   // good
   const good = {
     foo: 3,
     bar: 4,
     'data-blah': 5,
-  };
+  }
   ```
 
 <a name="objects--prototype-builtins"></a>
@@ -373,17 +373,17 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  console.log(object.hasOwnProperty(key));
+  console.log(object.hasOwnProperty(key))
 
   // good
-  console.log(Object.prototype.hasOwnProperty.call(object, key));
+  console.log(Object.prototype.hasOwnProperty.call(object, key))
 
   // best
-  const has = Object.prototype.hasOwnProperty; // 在模块范围内的缓存中查找一次
+  const has = Object.prototype.hasOwnProperty // 在模块范围内的缓存中查找一次
   /* or */
-  import has from 'has'; // https://www.npmjs.com/package/has
+  import has from 'has' // https://www.npmjs.com/package/has
   // ...
-  console.log(has.call(object, key));
+  console.log(has.call(object, key))
   ```
 
 <a name="objects--rest-spread"></a>
@@ -392,19 +392,19 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // very bad
-  const original = { a: 1, b: 2 };
-  const copy = Object.assign(original, { c: 3 }); // 变异的 `original` ಠ_ಠ
-  delete copy.a; // 这....
+  const original = { a: 1, b: 2 }
+  const copy = Object.assign(original, { c: 3 }) // 变异的 `original` ಠ_ಠ
+  delete copy.a // 这....
 
   // bad
-  const original = { a: 1, b: 2 };
-  const copy = Object.assign({}, original, { c: 3 }); // copy => { a: 1, b: 2, c: 3 }
+  const original = { a: 1, b: 2 }
+  const copy = Object.assign({}, original, { c: 3 }) // copy => { a: 1, b: 2, c: 3 }
 
   // good
-  const original = { a: 1, b: 2 };
-  const copy = { ...original, c: 3 }; // copy => { a: 1, b: 2, c: 3 }
+  const original = { a: 1, b: 2 }
+  const copy = { ...original, c: 3 } // copy => { a: 1, b: 2, c: 3 }
 
-  const { a, ...noA } = copy; // noA => { b: 2, c: 3 }
+  const { a, ...noA } = copy // noA => { b: 2, c: 3 }
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -417,10 +417,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const items = new Array();
+  const items = new Array()
 
   // good
-  const items = [];
+  const items = []
   ```
 
 <a name="arrays--push"></a><a name="4.2"></a>
@@ -428,13 +428,13 @@ _一种写 JavaScript 更合理的代码风格。_
 - [4.2](#arrays--push) 使用 [Array#push](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/push) 取代直接赋值来给数组添加项。
 
   ```javascript
-  const someStack = [];
+  const someStack = []
 
   // bad
-  someStack[someStack.length] = 'abracadabra';
+  someStack[someStack.length] = 'abracadabra'
 
   // good
-  someStack.push('abracadabra');
+  someStack.push('abracadabra')
   ```
 
 <a name="es6-array-spreads"></a><a name="4.3"></a>
@@ -443,16 +443,16 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const len = items.length;
-  const itemsCopy = [];
-  let i;
+  const len = items.length
+  const itemsCopy = []
+  let i
 
   for (i = 0; i < len; i += 1) {
-    itemsCopy[i] = items[i];
+    itemsCopy[i] = items[i]
   }
 
   // good
-  const itemsCopy = [...items];
+  const itemsCopy = [...items]
   ```
 
 <a name="arrays--from"></a><a name="4.4"></a>
@@ -460,13 +460,13 @@ _一种写 JavaScript 更合理的代码风格。_
 - [4.4](#arrays--from) 将一个类数组对象转换成一个数组， 使用展开方法 `...` 代替 [`Array.from`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/from)。
 
   ```javascript
-  const foo = document.querySelectorAll('.foo');
+  const foo = document.querySelectorAll('.foo')
 
   // good
-  const nodes = Array.from(foo);
+  const nodes = Array.from(foo)
 
   // best
-  const nodes = [...foo];
+  const nodes = [...foo]
   ```
 
 <a name="arrays--mapping"></a>
@@ -475,10 +475,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const baz = [...foo].map(bar);
+  const baz = [...foo].map(bar)
 
   // good
-  const baz = Array.from(foo, bar);
+  const baz = Array.from(foo, bar)
   ```
 
 <a name="arrays--callback-return"></a><a name="4.5"></a>
@@ -487,54 +487,54 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // good
-  [1, 2, 3].map((x) => {
-    const y = x + 1;
-    return x * y;
-  });
+  ;[1, 2, 3].map((x) => {
+    const y = x + 1
+    return x * y
+  })
 
   // good
-  [1, 2, 3].map((x) => x + 1);
+  ;[1, 2, 3].map((x) => x + 1)
 
   // bad - 没有返回值，意味着在第一次迭代后 `acc` 没有被定义
-  [
+  ;[
     [0, 1],
     [2, 3],
     [4, 5],
   ].reduce((acc, item, index) => {
-    const flatten = acc.concat(item);
-    acc[index] = flatten;
-  });
+    const flatten = acc.concat(item)
+    acc[index] = flatten
+  })
 
   // good
-  [
+  ;[
     [0, 1],
     [2, 3],
     [4, 5],
   ].reduce((acc, item, index) => {
-    const flatten = acc.concat(item);
-    acc[index] = flatten;
-    return flatten;
-  });
+    const flatten = acc.concat(item)
+    acc[index] = flatten
+    return flatten
+  })
 
   // bad
   inbox.filter((msg) => {
-    const { subject, author } = msg;
+    const { subject, author } = msg
     if (subject === 'Mockingbird') {
-      return author === 'Harper Lee';
+      return author === 'Harper Lee'
     } else {
-      return false;
+      return false
     }
-  });
+  })
 
   // good
   inbox.filter((msg) => {
-    const { subject, author } = msg;
+    const { subject, author } = msg
     if (subject === 'Mockingbird') {
-      return author === 'Harper Lee';
+      return author === 'Harper Lee'
     }
 
-    return false;
-  });
+    return false
+  })
   ```
 
 <a name="arrays--bracket-newline"></a>
@@ -547,7 +547,7 @@ _一种写 JavaScript 更合理的代码风格。_
     [0, 1],
     [2, 3],
     [4, 5],
-  ];
+  ]
 
   const objectInArray = [
     {
@@ -556,16 +556,16 @@ _一种写 JavaScript 更合理的代码风格。_
     {
       id: 2,
     },
-  ];
+  ]
 
-  const numberInArray = [1, 2];
+  const numberInArray = [1, 2]
 
   // good
   const arr = [
     [0, 1],
     [2, 3],
     [4, 5],
-  ];
+  ]
 
   const objectInArray = [
     {
@@ -574,9 +574,9 @@ _一种写 JavaScript 更合理的代码风格。_
     {
       id: 2,
     },
-  ];
+  ]
 
-  const numberInArray = [1, 2];
+  const numberInArray = [1, 2]
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -592,21 +592,21 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function getFullName(user) {
-    const firstName = user.firstName;
-    const lastName = user.lastName;
+    const firstName = user.firstName
+    const lastName = user.lastName
 
-    return `${firstName} ${lastName}`;
+    return `${firstName} ${lastName}`
   }
 
   // good
   function getFullName(user) {
-    const { firstName, lastName } = user;
-    return `${firstName} ${lastName}`;
+    const { firstName, lastName } = user
+    return `${firstName} ${lastName}`
   }
 
   // best
   function getFullName({ firstName, lastName }) {
-    return `${firstName} ${lastName}`;
+    return `${firstName} ${lastName}`
   }
   ```
 
@@ -615,14 +615,14 @@ _一种写 JavaScript 更合理的代码风格。_
 - [5.2](#destructuring--array) 使用数组解构。 eslint: [`prefer-destructuring`](https://eslint.org/docs/rules/prefer-destructuring)
 
   ```javascript
-  const arr = [1, 2, 3, 4];
+  const arr = [1, 2, 3, 4]
 
   // bad
-  const first = arr[0];
-  const second = arr[1];
+  const first = arr[0]
+  const second = arr[1]
 
   // good
-  const [first, second] = arr;
+  const [first, second] = arr
   ```
 
 <a name="destructuring--object-over-array"></a><a name="5.3"></a>
@@ -635,20 +635,20 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   function processInput(input) {
     // 处理代码...
-    return [left, right, top, bottom];
+    return [left, right, top, bottom]
   }
 
   // 调用者需要考虑返回数据的顺序。
-  const [left, __, top] = processInput(input);
+  const [left, __, top] = processInput(input)
 
   // good
   function processInput(input) {
     // 处理代码...
-    return { left, right, top, bottom };
+    return { left, right, top, bottom }
   }
 
   // 调用者只选择他们需要的数据。
-  const { left, top } = processInput(input);
+  const { left, top } = processInput(input)
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -661,13 +661,13 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const name = 'Capt. Janeway';
+  const name = 'Capt. Janeway'
 
   // bad - 模板文字应该包含插值或换行。
-  const name = `Capt. Janeway`;
+  const name = `Capt. Janeway`
 
   // good
-  const name = 'Capt. Janeway';
+  const name = 'Capt. Janeway'
   ```
 
 <a name="strings--line-length"></a><a name="6.2"></a>
@@ -682,17 +682,17 @@ _一种写 JavaScript 更合理的代码风格。_
     'This is a super long error that was thrown because \
   of Batman. When you stop to think about how Batman had anything to do \
   with this, you would get nowhere \
-  fast.';
+  fast.'
 
   // bad
   const errorMessage =
     'This is a super long error that was thrown because ' +
     'of Batman. When you stop to think about how Batman had anything to do ' +
-    'with this, you would get nowhere fast.';
+    'with this, you would get nowhere fast.'
 
   // good
   const errorMessage =
-    'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
+    'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.'
   ```
 
 <a name="es6-template-literals"></a><a name="6.4"></a>
@@ -704,22 +704,22 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function sayHi(name) {
-    return 'How are you, ' + name + '?';
+    return 'How are you, ' + name + '?'
   }
 
   // bad
   function sayHi(name) {
-    return ['How are you, ', name, '?'].join();
+    return ['How are you, ', name, '?'].join()
   }
 
   // bad
   function sayHi(name) {
-    return `How are you, ${name}?`;
+    return `How are you, ${name}?`
   }
 
   // good
   function sayHi(name) {
-    return `How are you, ${name}?`;
+    return `How are you, ${name}?`
   }
   ```
 
@@ -735,11 +735,11 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const foo = '\'this\' is "quoted"';
+  const foo = '\'this\' is "quoted"'
 
   // good
-  const foo = '\'this\' is "quoted"';
-  const foo = `my name is '${name}'`;
+  const foo = '\'this\' is "quoted"'
+  const foo = `my name is '${name}'`
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -761,13 +761,13 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   const foo = function () {
     // ...
-  };
+  }
 
   // good
   // 从变量引用调用中区分的词汇名称
   const short = function longUniqueMoreDescriptiveLexicalFoo() {
     // ...
-  };
+  }
   ```
 
 <a name="functions--iife"></a><a name="7.2"></a>
@@ -778,9 +778,9 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // immediately-invoked function expression (IIFE) 立即调用的函数表达式
-  (function () {
-    console.log('Welcome to the Internet. Please follow me.');
-  })();
+  ;(function () {
+    console.log('Welcome to the Internet. Please follow me.')
+  })()
   ```
 
 <a name="functions--in-blocks"></a><a name="7.3"></a>
@@ -795,16 +795,16 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   if (currentUser) {
     function test() {
-      console.log('Nope.');
+      console.log('Nope.')
     }
   }
 
   // good
-  let test;
+  let test
   if (currentUser) {
     test = () => {
-      console.log('Yup.');
-    };
+      console.log('Yup.')
+    }
   }
   ```
 
@@ -833,13 +833,13 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function concatenateAll() {
-    const args = Array.prototype.slice.call(arguments);
-    return args.join('');
+    const args = Array.prototype.slice.call(arguments)
+    return args.join('')
   }
 
   // good
   function concatenateAll(...args) {
-    return args.join('');
+    return args.join('')
   }
   ```
 
@@ -853,14 +853,14 @@ _一种写 JavaScript 更合理的代码风格。_
     // No! We shouldn’t mutate function arguments.
     // Double bad: if opts is falsy it'll be set to an object which may
     // be what you want but it can introduce subtle bugs.
-    opts = opts || {};
+    opts = opts || {}
     // ...
   }
 
   // still bad
   function handleThings(opts) {
     if (opts === void 0) {
-      opts = {};
+      opts = {}
     }
     // ...
   }
@@ -878,15 +878,15 @@ _一种写 JavaScript 更合理的代码风格。_
   > 为什么? 他们很容易混淆。
 
   ```javascript
-  var b = 1;
+  var b = 1
   // bad
   function count(a = b++) {
-    console.log(a);
+    console.log(a)
   }
-  count(); // 1
-  count(); // 2
-  count(3); // 3
-  count(); // 3
+  count() // 1
+  count() // 2
+  count(3) // 3
+  count() // 3
   ```
 
 <a name="functions--defaults-last"></a><a name="7.9"></a>
@@ -913,10 +913,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  var add = new Function('a', 'b', 'return a + b');
+  var add = new Function('a', 'b', 'return a + b')
 
   // still bad
-  var subtract = Function('a', 'b', 'return a - b');
+  var subtract = Function('a', 'b', 'return a - b')
   ```
 
 <a name="functions--signature-spacing"></a><a name="7.11"></a>
@@ -927,13 +927,13 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const f = function () {};
-  const g = function () {};
-  const h = function () {};
+  const f = function () {}
+  const g = function () {}
+  const h = function () {}
 
   // good
-  const x = function () {};
-  const y = function a() {};
+  const x = function () {}
+  const y = function a() {}
   ```
 
 <a name="functions--mutate-params"></a><a name="7.12"></a>
@@ -945,12 +945,12 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function f1(obj) {
-    obj.key = 1;
+    obj.key = 1
   }
 
   // good
   function f2(obj) {
-    const key = Object.prototype.hasOwnProperty.call(obj, 'key') ? obj.key : 1;
+    const key = Object.prototype.hasOwnProperty.call(obj, 'key') ? obj.key : 1
   }
   ```
 
@@ -963,20 +963,20 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function f1(a) {
-    a = 1;
+    a = 1
     // ...
   }
 
   function f2(a) {
     if (!a) {
-      a = 1;
+      a = 1
     }
     // ...
   }
 
   // good
   function f3(a) {
-    const b = a || 1;
+    const b = a || 1
     // ...
   }
 
@@ -993,18 +993,18 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const x = [1, 2, 3, 4, 5];
-  console.log.apply(console, x);
+  const x = [1, 2, 3, 4, 5]
+  console.log.apply(console, x)
 
   // good
-  const x = [1, 2, 3, 4, 5];
-  console.log(...x);
+  const x = [1, 2, 3, 4, 5]
+  console.log(...x)
 
   // bad
-  new (Function.prototype.bind.apply(Date, [null, 2016, 8, 5]))();
+  new (Function.prototype.bind.apply(Date, [null, 2016, 8, 5]))()
 
   // good
-  new Date(...[2016, 8, 5]);
+  new Date(...[2016, 8, 5])
   ```
 
 <a name="functions--signature-invocation-indentation"></a>
@@ -1023,10 +1023,10 @@ _一种写 JavaScript 更合理的代码风格。_
   }
 
   // bad
-  console.log(foo, bar, baz);
+  console.log(foo, bar, baz)
 
   // good
-  console.log(foo, bar, baz);
+  console.log(foo, bar, baz)
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -1043,16 +1043,16 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  [1, 2, 3].map(function (x) {
-    const y = x + 1;
-    return x * y;
-  });
+  ;[1, 2, 3].map(function (x) {
+    const y = x + 1
+    return x * y
+  })
 
   // good
-  [1, 2, 3].map((x) => {
-    const y = x + 1;
-    return x * y;
-  });
+  ;[1, 2, 3].map((x) => {
+    const y = x + 1
+    return x * y
+  })
   ```
 
 <a name="arrows--implicit-return"></a><a name="8.2"></a>
@@ -1063,42 +1063,42 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  [1, 2, 3].map((number) => {
-    const nextNumber = number + 1;
-    `A string containing the ${nextNumber}.`;
-  });
+  ;[1, 2, 3].map((number) => {
+    const nextNumber = number + 1
+    ;`A string containing the ${nextNumber}.`
+  })
 
   // good
-  [1, 2, 3].map((number) => `A string containing the ${number}.`);
+  ;[1, 2, 3].map((number) => `A string containing the ${number}.`)
 
   // good
-  [1, 2, 3].map((number) => {
-    const nextNumber = number + 1;
-    return `A string containing the ${nextNumber}.`;
-  });
+  ;[1, 2, 3].map((number) => {
+    const nextNumber = number + 1
+    return `A string containing the ${nextNumber}.`
+  })
 
   // good
-  [1, 2, 3].map((number, index) => ({
+  ;[1, 2, 3].map((number, index) => ({
     [index]: number,
-  }));
+  }))
 
   // 没有副作用的隐式返回
   function foo(callback) {
-    const val = callback();
+    const val = callback()
     if (val === true) {
       // 如果回调返回 true 执行
     }
   }
 
-  let bool = false;
+  let bool = false
 
   // bad
-  foo(() => (bool = true));
+  foo(() => (bool = true))
 
   // good
   foo(() => {
-    bool = true;
-  });
+    bool = true
+  })
   ```
 
 <a name="arrows--paren-wrap"></a><a name="8.3"></a>
@@ -1109,14 +1109,14 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  ['get', 'post', 'put'].map((httpMethod) =>
-    Object.prototype.hasOwnProperty.call(httpMagicObjectWithAVeryLongName, httpMethod),
-  );
+  ;['get', 'post', 'put'].map((httpMethod) =>
+    Object.prototype.hasOwnProperty.call(httpMagicObjectWithAVeryLongName, httpMethod)
+  )
 
   // good
-  ['get', 'post', 'put'].map((httpMethod) =>
-    Object.prototype.hasOwnProperty.call(httpMagicObjectWithAVeryLongName, httpMethod),
-  );
+  ;['get', 'post', 'put'].map((httpMethod) =>
+    Object.prototype.hasOwnProperty.call(httpMagicObjectWithAVeryLongName, httpMethod)
+  )
   ```
 
 <a name="arrows--one-arg-parens"></a><a name="8.4"></a>
@@ -1127,28 +1127,28 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  [1, 2, 3].map((x) => x * x);
+  ;[1, 2, 3].map((x) => x * x)
 
   // good
-  [1, 2, 3].map((x) => x * x);
+  ;[1, 2, 3].map((x) => x * x)
 
   // good
-  [1, 2, 3].map(
+  ;[1, 2, 3].map(
     (number) =>
-      `A long string with the ${number}. It’s so long that we don’t want it to take up space on the .map line!`,
-  );
+      `A long string with the ${number}. It’s so long that we don’t want it to take up space on the .map line!`
+  )
 
   // bad
-  [1, 2, 3].map((x) => {
-    const y = x + 1;
-    return x * y;
-  });
+  ;[1, 2, 3].map((x) => {
+    const y = x + 1
+    return x * y
+  })
 
   // good
-  [1, 2, 3].map((x) => {
-    const y = x + 1;
-    return x * y;
-  });
+  ;[1, 2, 3].map((x) => {
+    const y = x + 1
+    return x * y
+  })
   ```
 
 <a name="arrows--confusing"></a><a name="8.5"></a>
@@ -1157,19 +1157,19 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const itemHeight = (item) => (item.height > 256 ? item.largeSize : item.smallSize);
+  const itemHeight = (item) => (item.height > 256 ? item.largeSize : item.smallSize)
 
   // bad
-  const itemHeight = (item) => (item.height > 256 ? item.largeSize : item.smallSize);
+  const itemHeight = (item) => (item.height > 256 ? item.largeSize : item.smallSize)
 
   // good
-  const itemHeight = (item) => (item.height > 256 ? item.largeSize : item.smallSize);
+  const itemHeight = (item) => (item.height > 256 ? item.largeSize : item.smallSize)
 
   // good
   const itemHeight = (item) => {
-    const { height, largeSize, smallSize } = item;
-    return height > 256 ? largeSize : smallSize;
-  };
+    const { height, largeSize, smallSize } = item
+    return height > 256 ? largeSize : smallSize
+  }
   ```
 
 <a name="whitespace--implicit-arrow-linebreak"></a>
@@ -1178,14 +1178,14 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  (foo) => bar;
+  ;(foo) => bar
 
-  (foo) => bar;
+  ;(foo) => bar
 
   // good
-  (foo) => bar;
-  (foo) => bar;
-  (foo) => bar;
+  ;(foo) => bar
+  ;(foo) => bar
+  ;(foo) => bar
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -1201,23 +1201,23 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function Queue(contents = []) {
-    this.queue = [...contents];
+    this.queue = [...contents]
   }
   Queue.prototype.pop = function () {
-    const value = this.queue[0];
-    this.queue.splice(0, 1);
-    return value;
-  };
+    const value = this.queue[0]
+    this.queue.splice(0, 1)
+    return value
+  }
 
   // good
   class Queue {
     constructor(contents = []) {
-      this.queue = [...contents];
+      this.queue = [...contents]
     }
     pop() {
-      const value = this.queue[0];
-      this.queue.splice(0, 1);
-      return value;
+      const value = this.queue[0]
+      this.queue.splice(0, 1)
+      return value
     }
   }
   ```
@@ -1230,19 +1230,19 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const inherits = require('inherits');
+  const inherits = require('inherits')
   function PeekableQueue(contents) {
-    Queue.apply(this, contents);
+    Queue.apply(this, contents)
   }
-  inherits(PeekableQueue, Queue);
+  inherits(PeekableQueue, Queue)
   PeekableQueue.prototype.peek = function () {
-    return this.queue[0];
-  };
+    return this.queue[0]
+  }
 
   // good
   class PeekableQueue extends Queue {
     peek() {
-      return this.queue[0];
+      return this.queue[0]
     }
   }
   ```
@@ -1254,34 +1254,34 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   Jedi.prototype.jump = function () {
-    this.jumping = true;
-    return true;
-  };
+    this.jumping = true
+    return true
+  }
 
   Jedi.prototype.setHeight = function (height) {
-    this.height = height;
-  };
+    this.height = height
+  }
 
-  const luke = new Jedi();
-  luke.jump(); // => true
-  luke.setHeight(20); // => undefined
+  const luke = new Jedi()
+  luke.jump() // => true
+  luke.setHeight(20) // => undefined
 
   // good
   class Jedi {
     jump() {
-      this.jumping = true;
-      return this;
+      this.jumping = true
+      return this
     }
 
     setHeight(height) {
-      this.height = height;
-      return this;
+      this.height = height
+      return this
     }
   }
 
-  const luke = new Jedi();
+  const luke = new Jedi()
 
-  luke.jump().setHeight(20);
+  luke.jump().setHeight(20)
   ```
 
 <a name="constructors--tostring"></a><a name="9.4"></a>
@@ -1291,15 +1291,15 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   class Jedi {
     constructor(options = {}) {
-      this.name = options.name || 'no name';
+      this.name = options.name || 'no name'
     }
 
     getName() {
-      return this.name;
+      return this.name
     }
 
     toString() {
-      return `Jedi - ${this.getName()}`;
+      return `Jedi - ${this.getName()}`
     }
   }
   ```
@@ -1314,22 +1314,22 @@ _一种写 JavaScript 更合理的代码风格。_
     constructor() {}
 
     getName() {
-      return this.name;
+      return this.name
     }
   }
 
   // bad
   class Rey extends Jedi {
     constructor(...args) {
-      super(...args);
+      super(...args)
     }
   }
 
   // good
   class Rey extends Jedi {
     constructor(...args) {
-      super(...args);
-      this.name = 'Rey';
+      super(...args)
+      this.name = 'Rey'
     }
   }
   ```
@@ -1344,24 +1344,24 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   class Foo {
     bar() {
-      return 1;
+      return 1
     }
     bar() {
-      return 2;
-    }
-  }
-
-  // good
-  class Foo {
-    bar() {
-      return 1;
+      return 2
     }
   }
 
   // good
   class Foo {
     bar() {
-      return 2;
+      return 1
+    }
+  }
+
+  // good
+  class Foo {
+    bar() {
+      return 2
     }
   }
   ```
@@ -1398,10 +1398,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  import * as AirbnbStyleGuide from './AirbnbStyleGuide';
+  import * as AirbnbStyleGuide from './AirbnbStyleGuide'
 
   // good
-  import AirbnbStyleGuide from './AirbnbStyleGuide';
+  import AirbnbStyleGuide from './AirbnbStyleGuide'
   ```
 
 <a name="modules--no-export-from-import"></a><a name="10.3"></a>
@@ -1429,15 +1429,15 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  import foo from 'foo';
+  import foo from 'foo'
   // … 其他导入 … //
-  import { named1, named2 } from 'foo';
+  import { named1, named2 } from 'foo'
 
   // good
-  import foo, { named1, named2 } from 'foo';
+  import foo, { named1, named2 } from 'foo'
 
   // good
-  import foo, { named1, named2 } from 'foo';
+  import foo, { named1, named2 } from 'foo'
   ```
 
 <a name="modules--no-mutable-exports"></a>
@@ -1448,12 +1448,12 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  let foo = 3;
-  export { foo };
+  let foo = 3
+  export { foo }
 
   // good
-  const foo = 3;
-  export { foo };
+  const foo = 3
+  export { foo }
   ```
 
 <a name="modules--prefer-default-export"></a>
@@ -1478,16 +1478,16 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  import foo from 'foo';
-  foo.init();
+  import foo from 'foo'
+  foo.init()
 
-  import bar from 'bar';
+  import bar from 'bar'
 
   // good
-  import foo from 'foo';
-  import bar from 'bar';
+  import foo from 'foo'
+  import bar from 'bar'
 
-  foo.init();
+  foo.init()
   ```
 
 <a name="modules--multiline-imports-over-newlines"></a>
@@ -1498,10 +1498,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  import { longNameA, longNameB, longNameC, longNameD, longNameE } from 'path';
+  import { longNameA, longNameB, longNameC, longNameD, longNameE } from 'path'
 
   // good
-  import { longNameA, longNameB, longNameC, longNameD, longNameE } from 'path';
+  import { longNameA, longNameB, longNameC, longNameD, longNameE } from 'path'
   ```
 
 <a name="modules--no-webpack-loader-syntax"></a>
@@ -1512,12 +1512,12 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  import fooSass from 'css!sass!foo.scss';
-  import barCss from 'style!css!bar.css';
+  import fooSass from 'css!sass!foo.scss'
+  import barCss from 'style!css!bar.css'
 
   // good
-  import fooSass from 'foo.scss';
-  import barCss from 'bar.css';
+  import fooSass from 'foo.scss'
+  import barCss from 'bar.css'
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -1533,40 +1533,40 @@ _一种写 JavaScript 更合理的代码风格。_
   > 使用 `map()` / `every()` / `filter()` / `find()` / `findIndex()` / `reduce()` / `some()` / ... 遍历数组， 和使用 `Object.keys()` / `Object.values()` / `Object.entries()` 迭代你的对象生成数组。
 
   ```javascript
-  const numbers = [1, 2, 3, 4, 5];
+  const numbers = [1, 2, 3, 4, 5]
 
   // bad
-  let sum = 0;
+  let sum = 0
   for (let num of numbers) {
-    sum += num;
+    sum += num
   }
-  sum === 15;
+  sum === 15
 
   // good
-  let sum = 0;
+  let sum = 0
   numbers.forEach((num) => {
-    sum += num;
-  });
-  sum === 15;
+    sum += num
+  })
+  sum === 15
 
   // best (use the functional force)
-  const sum = numbers.reduce((total, num) => total + num, 0);
-  sum === 15;
+  const sum = numbers.reduce((total, num) => total + num, 0)
+  sum === 15
 
   // bad
-  const increasedByOne = [];
+  const increasedByOne = []
   for (let i = 0; i < numbers.length; i++) {
-    increasedByOne.push(numbers[i] + 1);
+    increasedByOne.push(numbers[i] + 1)
   }
 
   // good
-  const increasedByOne = [];
+  const increasedByOne = []
   numbers.forEach((num) => {
-    increasedByOne.push(num + 1);
-  });
+    increasedByOne.push(num + 1)
+  })
 
   // best (keeping it functional)
-  const increasedByOne = numbers.map((num) => num + 1);
+  const increasedByOne = numbers.map((num) => num + 1)
   ```
 
 <a name="generators--nope"></a><a name="11.2"></a>
@@ -1590,17 +1590,17 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   const bar = function* () {
     // ...
-  };
+  }
 
   // bad
   const baz = function* () {
     // ...
-  };
+  }
 
   // bad
   const quux = function* () {
     // ...
-  };
+  }
 
   // bad
   function* foo() {
@@ -1620,7 +1620,7 @@ _一种写 JavaScript 更合理的代码风格。_
   // very bad
   const wat = function* () {
     // ...
-  };
+  }
 
   // good
   function* foo() {
@@ -1630,7 +1630,7 @@ _一种写 JavaScript 更合理的代码风格。_
   // good
   const foo = function* () {
     // ...
-  };
+  }
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -1645,13 +1645,13 @@ _一种写 JavaScript 更合理的代码风格。_
   const luke = {
     jedi: true,
     age: 28,
-  };
+  }
 
   // bad
-  const isJedi = luke['jedi'];
+  const isJedi = luke['jedi']
 
   // good
-  const isJedi = luke.jedi;
+  const isJedi = luke.jedi
   ```
 
 <a name="properties--bracket"></a><a name="12.2"></a>
@@ -1662,13 +1662,13 @@ _一种写 JavaScript 更合理的代码风格。_
   const luke = {
     jedi: true,
     age: 28,
-  };
-
-  function getProp(prop) {
-    return luke[prop];
   }
 
-  const isJedi = getProp('jedi');
+  function getProp(prop) {
+    return luke[prop]
+  }
+
+  const isJedi = getProp('jedi')
   ```
 
   <a name="es2016-properties--exponentiation-operator"></a>
@@ -1677,10 +1677,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const binary = Math.pow(2, 10);
+  const binary = Math.pow(2, 10)
 
   // good
-  const binary = 2 ** 10;
+  const binary = 2 ** 10
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -1693,10 +1693,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  superPower = new SuperPower();
+  superPower = new SuperPower()
 
   // good
-  const superPower = new SuperPower();
+  const superPower = new SuperPower()
   ```
 
 <a name="variables--one-const"></a><a name="13.2"></a>
@@ -1709,18 +1709,18 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   const items = getItems(),
     goSportsTeam = true,
-    dragonball = 'z';
+    dragonball = 'z'
 
   // bad
   // (compare to above, and try to spot the mistake)
   const items = getItems(),
-    goSportsTeam = true;
-  dragonball = 'z';
+    goSportsTeam = true
+  dragonball = 'z'
 
   // good
-  const items = getItems();
-  const goSportsTeam = true;
-  const dragonball = 'z';
+  const items = getItems()
+  const goSportsTeam = true
+  const dragonball = 'z'
   ```
 
 <a name="variables--const-let-group"></a><a name="13.3"></a>
@@ -1735,21 +1735,21 @@ _一种写 JavaScript 更合理的代码风格。_
     len,
     dragonball,
     items = getItems(),
-    goSportsTeam = true;
+    goSportsTeam = true
 
   // bad
-  let i;
-  const items = getItems();
-  let dragonball;
-  const goSportsTeam = true;
-  let len;
+  let i
+  const items = getItems()
+  let dragonball
+  const goSportsTeam = true
+  let len
 
   // good
-  const goSportsTeam = true;
-  const items = getItems();
-  let dragonball;
-  let i;
-  let length;
+  const goSportsTeam = true
+  const items = getItems()
+  let dragonball
+  let i
+  let length
   ```
 
 <a name="variables--define-where-used"></a><a name="13.4"></a>
@@ -1761,34 +1761,34 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad - 不必要的函数调用
   function checkName(hasName) {
-    const name = getName();
+    const name = getName()
 
     if (hasName === 'test') {
-      return false;
+      return false
     }
 
     if (name === 'test') {
-      this.setName('');
-      return false;
+      this.setName('')
+      return false
     }
 
-    return name;
+    return name
   }
 
   // good
   function checkName(hasName) {
     if (hasName === 'test') {
-      return false;
+      return false
     }
 
-    const name = getName();
+    const name = getName()
 
     if (name === 'test') {
-      this.setName('');
-      return false;
+      this.setName('')
+      return false
     }
 
-    return name;
+    return name
   }
   ```
 
@@ -1800,27 +1800,27 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  (function example() {
+  ;(function example() {
     // JavaScript 把它解释为
     // let a = ( b = ( c = 1 ) );
     // let 关键词只适用于变量 a ；变量 b 和变量 c 则变成了全局变量。
-    let a = (b = c = 1);
-  })();
+    let a = (b = c = 1)
+  })()
 
-  console.log(a); // throws ReferenceError
-  console.log(b); // 1
-  console.log(c); // 1
+  console.log(a) // throws ReferenceError
+  console.log(b) // 1
+  console.log(c) // 1
 
   // good
-  (function example() {
-    let a = 1;
-    let b = a;
-    let c = a;
-  })();
+  ;(function example() {
+    let a = 1
+    let b = a
+    let c = a
+  })()
 
-  console.log(a); // throws ReferenceError
-  console.log(b); // throws ReferenceError
-  console.log(c); // throws ReferenceError
+  console.log(a) // throws ReferenceError
+  console.log(b) // throws ReferenceError
+  console.log(c) // throws ReferenceError
 
   // 对于 `const` 也一样
   ```
@@ -1834,30 +1834,30 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
 
-  const array = [1, 2, 3];
-  let num = 1;
-  num++;
-  --num;
+  const array = [1, 2, 3]
+  let num = 1
+  num++
+  --num
 
-  let sum = 0;
-  let truthyCount = 0;
+  let sum = 0
+  let truthyCount = 0
   for (let i = 0; i < array.length; i++) {
-    let value = array[i];
-    sum += value;
+    let value = array[i]
+    sum += value
     if (value) {
-      truthyCount++;
+      truthyCount++
     }
   }
 
   // good
 
-  const array = [1, 2, 3];
-  let num = 1;
-  num += 1;
-  num -= 1;
+  const array = [1, 2, 3]
+  let num = 1
+  num += 1
+  num -= 1
 
-  const sum = array.reduce((a, b) => a + b, 0);
-  const truthyCount = array.filter(Boolean).length;
+  const sum = array.reduce((a, b) => a + b, 0)
+  const truthyCount = array.filter(Boolean).length
   ```
 
 <a name="variables--linebreak"></a>
@@ -1868,16 +1868,16 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const foo = superLongLongLongLongLongLongLongLongFunctionName();
+  const foo = superLongLongLongLongLongLongLongLongFunctionName()
 
   // bad
-  const foo = 'superLongLongLongLongLongLongLongLongString';
+  const foo = 'superLongLongLongLongLongLongLongLongString'
 
   // good
-  const foo = superLongLongLongLongLongLongLongLongFunctionName();
+  const foo = superLongLongLongLongLongLongLongLongFunctionName()
 
   // good
-  const foo = 'superLongLongLongLongLongLongLongLongString';
+  const foo = 'superLongLongLongLongLongLongLongLongString'
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -1891,29 +1891,29 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // 我们知道这个行不通 (假设没有未定义的全局变量)
   function example() {
-    console.log(notDefined); // => throws a ReferenceError
+    console.log(notDefined) // => throws a ReferenceError
   }
 
   // 在引用变量后创建变量声明将会因变量提升而起作用。
   // 注意: 真正的值 `true` 不会被提升。
   function example() {
-    console.log(declaredButNotAssigned); // => undefined
-    var declaredButNotAssigned = true;
+    console.log(declaredButNotAssigned) // => undefined
+    var declaredButNotAssigned = true
   }
 
   // 解释器将变量提升到函数的顶部
   // 这意味着我们可以将上边的例子重写为：
   function example() {
-    let declaredButNotAssigned;
-    console.log(declaredButNotAssigned); // => undefined
-    declaredButNotAssigned = true;
+    let declaredButNotAssigned
+    console.log(declaredButNotAssigned) // => undefined
+    declaredButNotAssigned = true
   }
 
   // 使用 const 和 let
   function example() {
-    console.log(declaredButNotAssigned); // => throws a ReferenceError
-    console.log(typeof declaredButNotAssigned); // => throws a ReferenceError
-    const declaredButNotAssigned = true;
+    console.log(declaredButNotAssigned) // => throws a ReferenceError
+    console.log(typeof declaredButNotAssigned) // => throws a ReferenceError
+    const declaredButNotAssigned = true
   }
   ```
 
@@ -1923,13 +1923,13 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   function example() {
-    console.log(anonymous); // => undefined
+    console.log(anonymous) // => undefined
 
-    anonymous(); // => TypeError anonymous is not a function
+    anonymous() // => TypeError anonymous is not a function
 
     var anonymous = function () {
-      console.log('anonymous function expression');
-    };
+      console.log('anonymous function expression')
+    }
   }
   ```
 
@@ -1939,26 +1939,26 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   function example() {
-    console.log(named); // => undefined
+    console.log(named) // => undefined
 
-    named(); // => TypeError named is not a function
+    named() // => TypeError named is not a function
 
-    superPower(); // => ReferenceError superPower is not defined
+    superPower() // => ReferenceError superPower is not defined
 
     var named = function superPower() {
-      console.log('Flying');
-    };
+      console.log('Flying')
+    }
   }
 
   // 当函数名和变量名相同时也是如此。
   function example() {
-    console.log(named); // => undefined
+    console.log(named) // => undefined
 
-    named(); // => TypeError named is not a function
+    named() // => TypeError named is not a function
 
     var named = function named() {
-      console.log('named');
-    };
+      console.log('named')
+    }
   }
   ```
 
@@ -1968,10 +1968,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   function example() {
-    superPower(); // => Flying
+    superPower() // => Flying
 
     function superPower() {
-      console.log('Flying');
+      console.log('Flying')
     }
   }
   ```
@@ -2054,16 +2054,16 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   switch (foo) {
     case 1:
-      let x = 1;
-      break;
+      let x = 1
+      break
     case 2:
-      const y = 2;
-      break;
+      const y = 2
+      break
     case 3:
       function f() {
         // ...
       }
-      break;
+      break
     default:
       class C {}
   }
@@ -2071,22 +2071,22 @@ _一种写 JavaScript 更合理的代码风格。_
   // good
   switch (foo) {
     case 1: {
-      let x = 1;
-      break;
+      let x = 1
+      break
     }
     case 2: {
-      const y = 2;
-      break;
+      const y = 2
+      break
     }
     case 3: {
       function f() {
         // ...
       }
-      break;
+      break
     }
     case 4:
-      bar();
-      break;
+      bar()
+      break
     default: {
       class C {}
     }
@@ -2099,16 +2099,16 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const foo = maybe1 > maybe2 ? 'bar' : value1 > value2 ? 'baz' : null;
+  const foo = maybe1 > maybe2 ? 'bar' : value1 > value2 ? 'baz' : null
 
   // 分离为两个三目表达式
-  const maybeNull = value1 > value2 ? 'baz' : null;
+  const maybeNull = value1 > value2 ? 'baz' : null
 
   // better
-  const foo = maybe1 > maybe2 ? 'bar' : maybeNull;
+  const foo = maybe1 > maybe2 ? 'bar' : maybeNull
 
   // best
-  const foo = maybe1 > maybe2 ? 'bar' : maybeNull;
+  const foo = maybe1 > maybe2 ? 'bar' : maybeNull
   ```
 
 <a name="comparison--unneeded-ternary"></a><a name="15.7"></a>
@@ -2117,14 +2117,14 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const foo = a ? a : b;
-  const bar = c ? true : false;
-  const baz = c ? false : true;
+  const foo = a ? a : b
+  const bar = c ? true : false
+  const baz = c ? false : true
 
   // good
-  const foo = a || b;
-  const bar = !!c;
-  const baz = !c;
+  const foo = a || b
+  const bar = !!c
+  const baz = !c
   ```
 
 <a name="comparison--no-mixed-operators"></a>
@@ -2135,30 +2135,30 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const foo = (a && b < 0) || c > 0 || d + 1 === 0;
+  const foo = (a && b < 0) || c > 0 || d + 1 === 0
 
   // bad
-  const bar = a ** b - (5 % d);
+  const bar = a ** b - (5 % d)
 
   // bad
   // 可能陷入一种 (a || b) && c 的思考
   if (a || (b && c)) {
-    return d;
+    return d
   }
 
   // good
-  const foo = (a && b < 0) || c > 0 || d + 1 === 0;
+  const foo = (a && b < 0) || c > 0 || d + 1 === 0
 
   // good
-  const bar = a ** b - (5 % d);
+  const bar = a ** b - (5 % d)
 
   // good
   if (a || (b && c)) {
-    return d;
+    return d
   }
 
   // good
-  const bar = a + (b / c) * d;
+  const bar = a + (b / c) * d
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -2171,24 +2171,24 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  if (test) return false;
+  if (test) return false
 
   // good
-  if (test) return false;
+  if (test) return false
 
   // good
   if (test) {
-    return false;
+    return false
   }
 
   // bad
   function foo() {
-    return false;
+    return false
   }
 
   // good
   function bar() {
-    return false;
+    return false
   }
   ```
 
@@ -2199,18 +2199,18 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   if (test) {
-    thing1();
-    thing2();
+    thing1()
+    thing2()
   } else {
-    thing3();
+    thing3()
   }
 
   // good
   if (test) {
-    thing1();
-    thing2();
+    thing1()
+    thing2()
   } else {
-    thing3();
+    thing3()
   }
   ```
 
@@ -2222,28 +2222,28 @@ _一种写 JavaScript 更合理的代码风格。_
   // bad
   function foo() {
     if (x) {
-      return x;
+      return x
     } else {
-      return y;
+      return y
     }
   }
 
   // bad
   function cats() {
     if (x) {
-      return x;
+      return x
     } else if (y) {
-      return y;
+      return y
     }
   }
 
   // bad
   function dogs() {
     if (x) {
-      return x;
+      return x
     } else {
       if (y) {
-        return y;
+        return y
       }
     }
   }
@@ -2251,20 +2251,20 @@ _一种写 JavaScript 更合理的代码风格。_
   // good
   function foo() {
     if (x) {
-      return x;
+      return x
     }
 
-    return y;
+    return y
   }
 
   // good
   function cats() {
     if (x) {
-      return x;
+      return x
     }
 
     if (y) {
-      return y;
+      return y
     }
   }
 
@@ -2272,10 +2272,10 @@ _一种写 JavaScript 更合理的代码风格。_
   function dogs(x) {
     if (x) {
       if (z) {
-        return y;
+        return y
       }
     } else {
-      return z;
+      return z
     }
   }
   ```
@@ -2297,27 +2297,27 @@ _一种写 JavaScript 更合理的代码风格。_
     doesItLookGoodWhenItBecomesThatLong() &&
     isThisReallyHappening()
   ) {
-    thing1();
+    thing1()
   }
 
   // bad
   if (foo === 123 && bar === 'abc') {
-    thing1();
+    thing1()
   }
 
   // bad
   if (foo === 123 && bar === 'abc') {
-    thing1();
+    thing1()
   }
 
   // bad
   if (foo === 123 && bar === 'abc') {
-    thing1();
+    thing1()
   }
 
   // good
   if (foo === 123 && bar === 'abc') {
-    thing1();
+    thing1()
   }
 
   // good
@@ -2326,12 +2326,12 @@ _一种写 JavaScript 更合理的代码风格。_
     doesItLookGoodWhenItBecomesThatLong() &&
     isThisReallyHappening()
   ) {
-    thing1();
+    thing1()
   }
 
   // good
   if (foo === 123 && bar === 'abc') {
-    thing1();
+    thing1()
   }
   ```
 
@@ -2341,11 +2341,11 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  !isRunning && startRunning();
+  !isRunning && startRunning()
 
   // good
   if (!isRunning) {
-    startRunning();
+    startRunning()
   }
   ```
 
@@ -2367,7 +2367,7 @@ _一种写 JavaScript 更合理的代码风格。_
   function make(tag) {
     // ...
 
-    return element;
+    return element
   }
 
   // good
@@ -2378,7 +2378,7 @@ _一种写 JavaScript 更合理的代码风格。_
   function make(tag) {
     // ...
 
-    return element;
+    return element
   }
   ```
 
@@ -2388,37 +2388,37 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const active = true; // is current tab
+  const active = true // is current tab
 
   // good
   // is current tab
-  const active = true;
+  const active = true
 
   // bad
   function getType() {
-    console.log('fetching type...');
+    console.log('fetching type...')
     // set the default type to 'no type'
-    const type = this.type || 'no type';
+    const type = this.type || 'no type'
 
-    return type;
+    return type
   }
 
   // good
   function getType() {
-    console.log('fetching type...');
+    console.log('fetching type...')
 
     // set the default type to 'no type'
-    const type = this.type || 'no type';
+    const type = this.type || 'no type'
 
-    return type;
+    return type
   }
 
   // also good
   function getType() {
     // set the default type to 'no type'
-    const type = this.type || 'no type';
+    const type = this.type || 'no type'
 
-    return type;
+    return type
   }
   ```
 
@@ -2429,11 +2429,11 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   //is current tab
-  const active = true;
+  const active = true
 
   // good
   // is current tab
-  const active = true;
+  const active = true
 
   // bad
   /**
@@ -2443,7 +2443,7 @@ _一种写 JavaScript 更合理的代码风格。_
   function make(tag) {
     // ...
 
-    return element;
+    return element
   }
 
   // good
@@ -2454,7 +2454,7 @@ _一种写 JavaScript 更合理的代码风格。_
   function make(tag) {
     // ...
 
-    return element;
+    return element
   }
   ```
 
@@ -2469,10 +2469,10 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   class Calculator extends Abacus {
     constructor() {
-      super();
+      super()
 
       // FIXME: 这里不应该使用全局变量
-      total = 0;
+      total = 0
     }
   }
   ```
@@ -2484,10 +2484,10 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   class Calculator extends Abacus {
     constructor() {
-      super();
+      super()
 
       // TODO: total 应该由一个 param 的选项配置
-      this.total = 0;
+      this.total = 0
     }
   }
   ```
@@ -2524,25 +2524,25 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function test() {
-    console.log('test');
+    console.log('test')
   }
 
   // good
   function test() {
-    console.log('test');
+    console.log('test')
   }
 
   // bad
   dog.set('attr', {
     age: '1 year',
     breed: 'Bernese Mountain Dog',
-  });
+  })
 
   // good
   dog.set('attr', {
     age: '1 year',
     breed: 'Bernese Mountain Dog',
-  });
+  })
   ```
 
 <a name="whitespace--around-keywords"></a><a name="18.3"></a>
@@ -2552,22 +2552,22 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   if (isJedi) {
-    fight();
+    fight()
   }
 
   // good
   if (isJedi) {
-    fight();
+    fight()
   }
 
   // bad
   function fight() {
-    console.log('Swooosh!');
+    console.log('Swooosh!')
   }
 
   // good
   function fight() {
-    console.log('Swooosh!');
+    console.log('Swooosh!')
   }
   ```
 
@@ -2577,10 +2577,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const x = y + 5;
+  const x = y + 5
 
   // good
-  const x = y + 5;
+  const x = y + 5
   ```
 
 <a name="whitespace--newline-at-end"></a><a name="18.5"></a>
@@ -2589,9 +2589,9 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  import { es6 } from './AirbnbStyleGuide';
+  import { es6 } from './AirbnbStyleGuide'
   // ...
-  export default es6;
+  export default es6
   ```
 
   ```javascript
@@ -2615,13 +2615,13 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  $('#items').find('.selected').highlight().end().find('.open').updateCount();
+  $('#items').find('.selected').highlight().end().find('.open').updateCount()
 
   // bad
-  $('#items').find('.selected').highlight().end().find('.open').updateCount();
+  $('#items').find('.selected').highlight().end().find('.open').updateCount()
 
   // good
-  $('#items').find('.selected').highlight().end().find('.open').updateCount();
+  $('#items').find('.selected').highlight().end().find('.open').updateCount()
 
   // bad
   const leds = stage
@@ -2633,7 +2633,7 @@ _一种写 JavaScript 更合理的代码风格。_
     .attr('width', (radius + margin) * 2)
     .append('svg:g')
     .attr('transform', `translate(${radius + margin},${radius + margin})`)
-    .call(tron.led);
+    .call(tron.led)
 
   // good
   const leds = stage
@@ -2645,10 +2645,10 @@ _一种写 JavaScript 更合理的代码风格。_
     .attr('width', (radius + margin) * 2)
     .append('svg:g')
     .attr('transform', `translate(${radius + margin},${radius + margin})`)
-    .call(tron.led);
+    .call(tron.led)
 
   // good
-  const leds = stage.selectAll('.led').data(data);
+  const leds = stage.selectAll('.led').data(data)
   ```
 
 <a name="whitespace--after-blocks"></a><a name="18.7"></a>
@@ -2658,41 +2658,41 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   if (foo) {
-    return bar;
+    return bar
   }
-  return baz;
+  return baz
 
   // good
   if (foo) {
-    return bar;
+    return bar
   }
 
-  return baz;
+  return baz
 
   // bad
   const obj = {
     foo() {},
     bar() {},
-  };
-  return obj;
+  }
+  return obj
 
   // good
   const obj = {
     foo() {},
 
     bar() {},
-  };
+  }
 
-  return obj;
+  return obj
 
   // bad
-  const arr = [function foo() {}, function bar() {}];
-  return arr;
+  const arr = [function foo() {}, function bar() {}]
+  return arr
 
   // good
-  const arr = [function foo() {}, function bar() {}];
+  const arr = [function foo() {}, function bar() {}]
 
-  return arr;
+  return arr
   ```
 
 <a name="whitespace--padded-blocks"></a><a name="18.8"></a>
@@ -2702,33 +2702,33 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function bar() {
-    console.log(foo);
+    console.log(foo)
   }
 
   // bad
   if (baz) {
-    console.log(qux);
+    console.log(qux)
   } else {
-    console.log(foo);
+    console.log(foo)
   }
 
   // bad
   class Foo {
     constructor(bar) {
-      this.bar = bar;
+      this.bar = bar
     }
   }
 
   // good
   function bar() {
-    console.log(foo);
+    console.log(foo)
   }
 
   // good
   if (baz) {
-    console.log(qux);
+    console.log(qux)
   } else {
-    console.log(foo);
+    console.log(foo)
   }
   ```
 
@@ -2739,22 +2739,22 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function bar(foo) {
-    return foo;
+    return foo
   }
 
   // good
   function bar(foo) {
-    return foo;
+    return foo
   }
 
   // bad
   if (foo) {
-    console.log(foo);
+    console.log(foo)
   }
 
   // good
   if (foo) {
-    console.log(foo);
+    console.log(foo)
   }
   ```
 
@@ -2764,12 +2764,12 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const foo = [1, 2, 3];
-  console.log(foo[0]);
+  const foo = [1, 2, 3]
+  console.log(foo[0])
 
   // good
-  const foo = [1, 2, 3];
-  console.log(foo[0]);
+  const foo = [1, 2, 3]
+  console.log(foo[0])
   ```
 
 <a name="whitespace--in-braces"></a><a name="18.11"></a>
@@ -2778,10 +2778,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const foo = { clark: 'kent' };
+  const foo = { clark: 'kent' }
 
   // good
-  const foo = { clark: 'kent' };
+  const foo = { clark: 'kent' }
   ```
 
 <a name="whitespace--max-len"></a><a name="18.12"></a>
@@ -2798,12 +2798,12 @@ _一种写 JavaScript 更合理的代码风格。_
     jsonData.foo.bar &&
     jsonData.foo.bar.baz &&
     jsonData.foo.bar.baz.quux &&
-    jsonData.foo.bar.baz.quux.xyzzy;
+    jsonData.foo.bar.baz.quux.xyzzy
 
   // bad
   $.ajax({ method: 'POST', url: 'https://airbnb.com/', data: { name: 'John' } })
     .done(() => console.log('Congratulations!'))
-    .fail(() => console.log('You have failed this city.'));
+    .fail(() => console.log('You have failed this city.'))
 
   // good
   const foo =
@@ -2812,7 +2812,7 @@ _一种写 JavaScript 更合理的代码风格。_
     jsonData.foo.bar &&
     jsonData.foo.bar.baz &&
     jsonData.foo.bar.baz.quux &&
-    jsonData.foo.bar.baz.quux.xyzzy;
+    jsonData.foo.bar.baz.quux.xyzzy
 
   // good
   $.ajax({
@@ -2821,7 +2821,7 @@ _一种写 JavaScript 更合理的代码风格。_
     data: { name: 'John' },
   })
     .done(() => console.log('Congratulations!'))
-    .fail(() => console.log('You have failed this city.'));
+    .fail(() => console.log('You have failed this city.'))
   ```
 
 <a name="whitespace--block-spacing"></a>
@@ -2831,18 +2831,18 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function foo() {
-    return true;
+    return true
   }
   if (foo) {
-    bar = 0;
+    bar = 0
   }
 
   // good
   function foo() {
-    return true;
+    return true
   }
   if (foo) {
-    bar = 0;
+    bar = 0
   }
   ```
 
@@ -2853,13 +2853,13 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   var foo = 1,
-    bar = 2;
-  var arr = [1, 2];
+    bar = 2
+  var arr = [1, 2]
 
   // good
   var foo = 1,
-    bar = 2;
-  var arr = [1, 2];
+    bar = 2
+  var arr = [1, 2]
   ```
 
 <a name="whitespace--computed-property-spacing"></a>
@@ -2868,16 +2868,16 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  obj[foo];
-  obj['foo'];
-  var x = { [b]: a };
-  obj[foo[bar]];
+  obj[foo]
+  obj['foo']
+  var x = { [b]: a }
+  obj[foo[bar]]
 
   // good
-  obj[foo];
-  obj['foo'];
-  var x = { [b]: a };
-  obj[foo[bar]];
+  obj[foo]
+  obj['foo']
+  var x = { [b]: a }
+  obj[foo[bar]]
   ```
 
 <a name="whitespace--func-call-spacing"></a>
@@ -2886,12 +2886,12 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  func();
+  func()
 
-  func();
+  func()
 
   // good
-  func();
+  func()
   ```
 
 <a name="whitespace--key-spacing"></a>
@@ -2900,11 +2900,11 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  var obj = { foo: 42 };
-  var obj2 = { foo: 42 };
+  var obj = { foo: 42 }
+  var obj2 = { foo: 42 }
 
   // good
-  var obj = { foo: 42 };
+  var obj = { foo: 42 }
   ```
 
 <a name="whitespace--no-trailing-spaces"></a>
@@ -2919,14 +2919,14 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  var x = 1;
+  var x = 1
 
-  var y = 2;
+  var y = 2
 
   // good
-  var x = 1;
+  var x = 1
 
-  var y = 2;
+  var y = 2
   ```
 
   <!-- markdownlint-enable MD012 -->
@@ -2941,10 +2941,10 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const story = [once, upon, aTime];
+  const story = [once, upon, aTime]
 
   // good
-  const story = [once, upon, aTime];
+  const story = [once, upon, aTime]
 
   // bad
   const hero = {
@@ -2952,7 +2952,7 @@ _一种写 JavaScript 更合理的代码风格。_
     lastName: 'Lovelace',
     birthYear: 1815,
     superPower: 'computers',
-  };
+  }
 
   // good
   const hero = {
@@ -2960,7 +2960,7 @@ _一种写 JavaScript 更合理的代码风格。_
     lastName: 'Lovelace',
     birthYear: 1815,
     superPower: 'computers',
-  };
+  }
   ```
 
 <a name="commas--dangling"></a><a name="19.2"></a>
@@ -2991,17 +2991,17 @@ _一种写 JavaScript 更合理的代码风格。_
   const hero = {
     firstName: 'Dana',
     lastName: 'Scully',
-  };
+  }
 
-  const heroes = ['Batman', 'Superman'];
+  const heroes = ['Batman', 'Superman']
 
   // good
   const hero = {
     firstName: 'Dana',
     lastName: 'Scully',
-  };
+  }
 
-  const heroes = ['Batman', 'Superman'];
+  const heroes = ['Batman', 'Superman']
 
   // bad
   function createHero(firstName, lastName, inventorOf) {
@@ -3019,13 +3019,13 @@ _一种写 JavaScript 更合理的代码风格。_
   }
 
   // bad
-  createHero(firstName, lastName, inventorOf);
+  createHero(firstName, lastName, inventorOf)
 
   // good
-  createHero(firstName, lastName, inventorOf);
+  createHero(firstName, lastName, inventorOf)
 
   // good (注意逗号不能出现在 "rest" 元素后边)
-  createHero(firstName, lastName, inventorOf, ...heroArgs);
+  createHero(firstName, lastName, inventorOf, ...heroArgs)
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -3040,40 +3040,40 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad - 可能异常
-  const luke = {};
-  const leia = {}[(luke, leia)].forEach((jedi) => (jedi.father = 'vader'));
+  const luke = {}
+  const leia = {}[(luke, leia)].forEach((jedi) => (jedi.father = 'vader'))
 
   // bad - 可能异常
   const reaction = "No! That's impossible!"(
     (async function meanwhileOnTheFalcon() {
       // handle `leia`, `lando`, `chewie`, `r2`, `c3p0`
       // ...
-    })(),
-  );
+    })()
+  )
 
   // bad - 返回 `undefined` 而不是下一行的值 - 当 `return` 单独一行的时候 ASI 总是会发生
   function foo() {
-    return;
-    ('search your feelings, you know it to be foo');
+    return
+    ;('search your feelings, you know it to be foo')
   }
 
   // good
-  const luke = {};
-  const leia = {};
-  [luke, leia].forEach((jedi) => {
-    jedi.father = 'vader';
-  });
+  const luke = {}
+  const leia = {}
+  ;[luke, leia].forEach((jedi) => {
+    jedi.father = 'vader'
+  })
 
   // good
-  const reaction = "No! That's impossible!";
-  (async function meanwhileOnTheFalcon() {
+  const reaction = "No! That's impossible!"
+  ;(async function meanwhileOnTheFalcon() {
     // handle `leia`, `lando`, `chewie`, `r2`, `c3p0`
     // ...
-  })();
+  })()
 
   // good
   function foo() {
-    return 'search your feelings, you know it to be foo';
+    return 'search your feelings, you know it to be foo'
   }
   ```
 
@@ -3095,16 +3095,16 @@ _一种写 JavaScript 更合理的代码风格。_
   // => this.reviewScore = 9;
 
   // bad
-  const totalScore = new String(this.reviewScore); // typeof totalScore is "object" not "string"
+  const totalScore = new String(this.reviewScore) // typeof totalScore is "object" not "string"
 
   // bad
-  const totalScore = this.reviewScore + ''; // invokes this.reviewScore.valueOf()
+  const totalScore = this.reviewScore + '' // invokes this.reviewScore.valueOf()
 
   // bad
-  const totalScore = this.reviewScore.toString(); // isn’t guaranteed to return a string
+  const totalScore = this.reviewScore.toString() // isn’t guaranteed to return a string
 
   // good
-  const totalScore = String(this.reviewScore);
+  const totalScore = String(this.reviewScore)
   ```
 
 <a name="coercion--numbers"></a><a name="21.3"></a>
@@ -3112,25 +3112,25 @@ _一种写 JavaScript 更合理的代码风格。_
 - [22.3](#coercion--numbers) 数字类型：使用 `Number` 进行类型铸造和 `parseInt` 总是通过一个基数来解析一个字符串。 eslint: [`radix`](https://eslint.org/docs/rules/radix) [`no-new-wrappers`](https://eslint.org/docs/rules/no-new-wrappers)
 
   ```javascript
-  const inputValue = '4';
+  const inputValue = '4'
 
   // bad
-  const val = new Number(inputValue);
+  const val = new Number(inputValue)
 
   // bad
-  const val = +inputValue;
+  const val = +inputValue
 
   // bad
-  const val = inputValue >> 0;
+  const val = inputValue >> 0
 
   // bad
-  const val = parseInt(inputValue);
+  const val = parseInt(inputValue)
 
   // good
-  const val = Number(inputValue);
+  const val = Number(inputValue)
 
   // good
-  const val = parseInt(inputValue, 10);
+  const val = parseInt(inputValue, 10)
   ```
 
 <a name="coercion--comment-deviations"></a><a name="21.4"></a>
@@ -3143,7 +3143,7 @@ _一种写 JavaScript 更合理的代码风格。_
    * parseInt 使我的代码变慢。
    * 位运算将一个字符串转换成数字更快。
    */
-  const val = inputValue >> 0;
+  const val = inputValue >> 0
   ```
 
 <a name="coercion--bitwise"></a><a name="21.5"></a>
@@ -3151,9 +3151,9 @@ _一种写 JavaScript 更合理的代码风格。_
 - [22.5](#coercion--bitwise) **注意：** 当你使用位运算的时候要小心。 数字总是被以 [64-bit 值](https://es5.github.io/#x4.3.19) 的形式表示，但是位运算总是返回一个 32-bit 的整数 ([来源](https://es5.github.io/#x11.7))。 对于大于 32 位的整数值，位运算可能会导致意外行为。[讨论](https://github.com/airbnb/javascript/issues/109)。 最大的 32 位整数是： 2,147,483,647。
 
   ```javascript
-  2147483647 >> 0; // => 2147483647
-  2147483648 >> 0; // => -2147483648
-  2147483649 >> 0; // => -2147483647
+  2147483647 >> 0 // => 2147483647
+  2147483648 >> 0 // => -2147483648
+  2147483649 >> 0 // => -2147483647
   ```
 
 <a name="coercion--booleans"></a><a name="21.6"></a>
@@ -3161,16 +3161,16 @@ _一种写 JavaScript 更合理的代码风格。_
 - [22.6](#coercion--booleans) 布尔类型： eslint: [`no-new-wrappers`](https://eslint.org/docs/rules/no-new-wrappers)
 
   ```javascript
-  const age = 0;
+  const age = 0
 
   // bad
-  const hasAge = new Boolean(age);
+  const hasAge = new Boolean(age)
 
   // good
-  const hasAge = Boolean(age);
+  const hasAge = Boolean(age)
 
   // best
-  const hasAge = !!age;
+  const hasAge = !!age
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -3199,12 +3199,12 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const OBJEcttsssss = {};
-  const this_is_my_object = {};
+  const OBJEcttsssss = {}
+  const this_is_my_object = {}
   function c() {}
 
   // good
-  const thisIsMyObject = {};
+  const thisIsMyObject = {}
   function thisIsMyFunction() {}
   ```
 
@@ -3215,23 +3215,23 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function user(options) {
-    this.name = options.name;
+    this.name = options.name
   }
 
   const bad = new user({
     name: 'nope',
-  });
+  })
 
   // good
   class User {
     constructor(options) {
-      this.name = options.name;
+      this.name = options.name
     }
   }
 
   const good = new User({
     name: 'yup',
-  });
+  })
   ```
 
 <a name="naming--leading-underscore"></a><a name="22.4"></a>
@@ -3242,17 +3242,17 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  this.__firstName__ = 'Panda';
-  this.firstName_ = 'Panda';
-  this._firstName = 'Panda';
+  this.__firstName__ = 'Panda'
+  this.firstName_ = 'Panda'
+  this._firstName = 'Panda'
 
   // good
-  this.firstName = 'Panda';
+  this.firstName = 'Panda'
 
   // 好，在 WeakMapx 可用的环境中
   // see https://kangax.github.io/compat-table/es6/#test-WeakMap
-  const firstNames = new WeakMap();
-  firstNames.set(this, 'Panda');
+  const firstNames = new WeakMap()
+  firstNames.set(this, 'Panda')
   ```
 
 <a name="naming--self-this"></a><a name="22.5"></a>
@@ -3262,25 +3262,25 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function foo() {
-    const self = this;
+    const self = this
     return function () {
-      console.log(self);
-    };
+      console.log(self)
+    }
   }
 
   // bad
   function foo() {
-    const that = this;
+    const that = this
     return function () {
-      console.log(that);
-    };
+      console.log(that)
+    }
   }
 
   // good
   function foo() {
     return () => {
-      console.log(this);
-    };
+      console.log(this)
+    }
   }
   ```
 
@@ -3332,7 +3332,7 @@ _一种写 JavaScript 更合理的代码风格。_
     // ...
   }
 
-  export default makeStyleGuide;
+  export default makeStyleGuide
   ```
 
 <a name="naming--PascalCase-singleton"></a><a name="22.8"></a>
@@ -3342,9 +3342,9 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   const AirbnbStyleGuide = {
     es6: {},
-  };
+  }
 
-  export default AirbnbStyleGuide;
+  export default AirbnbStyleGuide
   ```
 
 <a name="naming--Acronyms-and-Initialisms"></a>
@@ -3355,33 +3355,33 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  import SmsContainer from './containers/SmsContainer';
+  import SmsContainer from './containers/SmsContainer'
 
   // bad
   const HttpRequests = [
     // ...
-  ];
+  ]
 
   // good
-  import SMSContainer from './containers/SMSContainer';
+  import SMSContainer from './containers/SMSContainer'
 
   // good
   const HTTPRequests = [
     // ...
-  ];
+  ]
 
   // also good
   const httpRequests = [
     // ...
-  ];
+  ]
 
   // best
-  import TextMessageContainer from './containers/TextMessageContainer';
+  import TextMessageContainer from './containers/TextMessageContainer'
 
   // best
   const requests = [
     // ...
-  ];
+  ]
   ```
 
 <a name="naming--uppercase"></a>
@@ -3395,33 +3395,33 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const PRIVATE_VARIABLE = 'should not be unnecessarily uppercased within a file';
+  const PRIVATE_VARIABLE = 'should not be unnecessarily uppercased within a file'
 
   // bad
-  export const THING_TO_BE_CHANGED = 'should obviously not be uppercased';
+  export const THING_TO_BE_CHANGED = 'should obviously not be uppercased'
 
   // bad
-  export let REASSIGNABLE_VARIABLE = 'do not use let with uppercase variables';
+  export let REASSIGNABLE_VARIABLE = 'do not use let with uppercase variables'
 
   // ---
 
   // 允许，但是不提供语义值
-  export const apiKey = 'SOMEKEY';
+  export const apiKey = 'SOMEKEY'
 
   // 多数情况下，很好
-  export const API_KEY = 'SOMEKEY';
+  export const API_KEY = 'SOMEKEY'
 
   // ---
 
   // bad - 不必要大写 key 没有增加语义值
   export const MAPPING = {
     KEY: 'value',
-  };
+  }
 
   // good
   export const MAPPING = {
     key: 'value',
-  };
+  }
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -3467,12 +3467,12 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   if (!dragon.age()) {
-    return false;
+    return false
   }
 
   // good
   if (!dragon.hasAge()) {
-    return false;
+    return false
   }
   ```
 
@@ -3483,16 +3483,16 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   class Jedi {
     constructor(options = {}) {
-      const lightsaber = options.lightsaber || 'blue';
-      this.set('lightsaber', lightsaber);
+      const lightsaber = options.lightsaber || 'blue'
+      this.set('lightsaber', lightsaber)
     }
 
     set(key, val) {
-      this[key] = val;
+      this[key] = val
     }
 
     get(key) {
-      return this[key];
+      return this[key]
     }
   }
   ```
@@ -3507,26 +3507,26 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  $(this).trigger('listingUpdated', listing.id);
+  $(this).trigger('listingUpdated', listing.id)
 
   // ...
 
   $(this).on('listingUpdated', (e, listingID) => {
     // do something with listingID
-  });
+  })
   ```
 
   更好的写法：
 
   ```javascript
   // good
-  $(this).trigger('listingUpdated', { listingID: listing.id });
+  $(this).trigger('listingUpdated', { listingID: listing.id })
 
   // ...
 
   $(this).on('listingUpdated', (e, data) => {
     // do something with data.listingID
-  });
+  })
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -3539,13 +3539,13 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const sidebar = $('.sidebar');
+  const sidebar = $('.sidebar')
 
   // good
-  const $sidebar = $('.sidebar');
+  const $sidebar = $('.sidebar')
 
   // good
-  const $sidebarBtn = $('.sidebar-btn');
+  const $sidebarBtn = $('.sidebar-btn')
   ```
 
 <a name="jquery--cache"></a><a name="25.2"></a>
@@ -3555,25 +3555,25 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   function setSidebar() {
-    $('.sidebar').hide();
+    $('.sidebar').hide()
 
     // ...
 
     $('.sidebar').css({
       'background-color': 'pink',
-    });
+    })
   }
 
   // good
   function setSidebar() {
-    const $sidebar = $('.sidebar');
-    $sidebar.hide();
+    const $sidebar = $('.sidebar')
+    $sidebar.hide()
 
     // ...
 
     $sidebar.css({
       'background-color': 'pink',
-    });
+    })
   }
   ```
 
@@ -3587,19 +3587,19 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  $('ul', '.sidebar').hide();
+  $('ul', '.sidebar').hide()
 
   // bad
-  $('.sidebar').find('ul').hide();
+  $('.sidebar').find('ul').hide()
 
   // good
-  $('.sidebar ul').hide();
+  $('.sidebar ul').hide()
 
   // good
-  $('.sidebar > ul').hide();
+  $('.sidebar > ul').hide()
 
   // good
-  $sidebar.find('ul').hide();
+  $sidebar.find('ul').hide()
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -3657,12 +3657,12 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  isNaN('1.2'); // false
-  isNaN('1.2.3'); // true
+  isNaN('1.2') // false
+  isNaN('1.2.3') // true
 
   // good
-  Number.isNaN('1.2.3'); // false
-  Number.isNaN(Number('1.2.3')); // true
+  Number.isNaN('1.2.3') // false
+  Number.isNaN(Number('1.2.3')) // true
   ```
 
 <a name="standard-library--isfinite"></a>
@@ -3675,11 +3675,11 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  isFinite('2e3'); // true
+  isFinite('2e3') // true
 
   // good
-  Number.isFinite('2e3'); // false
-  Number.isFinite(parseInt('2e3', 10)); // true
+  Number.isFinite('2e3') // false
+  Number.isFinite(parseInt('2e3', 10)) // true
   ```
 
 **[⬆ 返回目录](#table-of-contents)**
@@ -3692,7 +3692,7 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   function foo() {
-    return true;
+    return true
   }
   ```
 
@@ -3711,7 +3711,6 @@ _一种写 JavaScript 更合理的代码风格。_
 ## <a id="the-javascript-style-guide-guide">JavaScript 风格指南的指南</a>
 
 - [Reference](https://github.com/airbnb/javascript/wiki/The-JavaScript-Style-Guide-Guide)
-
 
 ### 目前依赖说明
 
