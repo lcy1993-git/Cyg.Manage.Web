@@ -11,7 +11,7 @@ interface BtnProps {
 }
 
 interface SiderMenuAreaButtonsProps {
-  buttonProps: BtnProps[]
+  buttonProps: any[]
 }
 
 const SiderMenuAreaButtons: React.FC<SiderMenuAreaButtonsProps> = ({ buttonProps }) => {
@@ -19,7 +19,7 @@ const SiderMenuAreaButtons: React.FC<SiderMenuAreaButtonsProps> = ({ buttonProps
 
   return (
     <>
-      {buttonProps.map((item, index) => {
+      {buttonProps.map((item: any, index: any) => {
         return (
           <Button
             key={item.title}

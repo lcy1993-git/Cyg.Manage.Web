@@ -698,16 +698,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       <div className={styles.buttonArea}>
         <SiderMenuAreaButtons
           buttonProps={[
-            {
-              title: '成果管理',
-              dart: require('@/assets/icon-image/menu-tree-icon/成果管理.png'),
-              light: require('@/assets/icon-image/menu-tree-icon/成果管理-light.png'),
-              onClick: () => isClickAble() && setResultVisibel(true),
-              style:
-                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length !== 1
-                  ? { opacity: 0.4 }
-                  : {},
-            },
             buttonJurisdictionArray?.includes('material-statistics') && {
               title: '材料统计',
               dart: require('@/assets/icon-image/menu-tree-icon/材料统计.png'),

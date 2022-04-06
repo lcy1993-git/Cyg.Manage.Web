@@ -101,7 +101,7 @@ const CompanyStructure: React.FC = () => {
   }
 
   const deleteEvent = async () => {
-    await deleteCompany({ companyId: checkRadioValue })
+    await deleteCompany(checkRadioValue)
     message.success('删除成功')
     tableSearchEvent()
   }

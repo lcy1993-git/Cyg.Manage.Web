@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import PageCommonWrap from '@/components/page-common-wrap'
 import styles from './index.less'
 import { Progress, Select, Table, Tooltip } from 'antd'
 import { LeftOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 import GeneralTable from '@/components/general-table'
 import moment, { Moment } from 'moment'
+import { useUpdateEffect } from 'ahooks'
 
 const BusinessBoard: React.FC = () => {
   const [statisticalType, setStatisticalType] = useState<string>('1')
@@ -180,21 +181,10 @@ const BusinessBoard: React.FC = () => {
       }
     }, 0)
   }
-  useEffect(() => {
+  useUpdateEffect(() => {
     reset()
   }, [statisticalType])
-  useEffect(() => {
-    if (detail && detailTableRef && detailTableRef.current) {
-      // @ts-ignore
-      detailTableRef.current.search()
-    } else {
-      setId('')
-      if (tableRef && tableRef.current) {
-        // @ts-ignore
-        tableRef.current.refresh()
-      }
-    }
-  }, [detail])
+
   return (
     <PageCommonWrap noPadding>
       <div className={styles.businessBoard}>
