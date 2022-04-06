@@ -44,7 +44,11 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
   }
 
   //获取区域
-  const { data: cityData, run: getAreaData, loading: cityLoading } = useRequest(getCityAreas, {
+  const {
+    data: cityData,
+    run: getAreaData,
+    loading: cityLoading,
+  } = useRequest(getCityAreas, {
     manual: true,
     onSuccess: () => {
       if (cityData) {
@@ -57,7 +61,11 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
     return city?.map(mapHandleCityData)
   }, [JSON.stringify(city)])
 
-  const { data: engineerInfo, run, loading } = useRequest(() => getEngineerInfo(engineerId), {
+  const {
+    data: engineerInfo,
+    run,
+    loading,
+  } = useRequest(() => getEngineerInfo(engineerId), {
     manual: true,
     onSuccess: async (res) => {
       const provinceValue = [

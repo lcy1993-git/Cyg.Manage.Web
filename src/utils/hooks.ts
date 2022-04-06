@@ -48,7 +48,11 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
     otherKey = '',
   } = params
 
-  const { data: resData = [], loading, run } = useRequest(
+  const {
+    data: resData = [],
+    loading,
+    run,
+  } = useRequest(
     () => getCommonSelectData({ url, method, params: extraParams, requestSource, postType }),
     {
       ...options,
@@ -58,12 +62,17 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
   const afterHanldeData = useMemo(() => {
     if (otherKey) {
       return resData.map((item: any) => {
-        return { label: item[titleKey], value: item[valueKey], otherKey: item[otherKey] }
+        return {
+          label: item[titleKey],
+          value: item[valueKey],
+          otherKey: item[otherKey],
+          isDisabled: item.isDisabled,
+        }
       })
     }
     if (resData) {
       return resData.map((item: any) => {
-        return { label: item[titleKey], value: item[valueKey] }
+        return { label: item[titleKey], value: item[valueKey], isDisabled: item.isDisabled }
       })
     }
     return []
