@@ -42,7 +42,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   const [libId, setLibId] = useState<string>('')
   const [city, setCity] = useState<any[]>([])
 
-  const [newlibSelectData, setnewlibSelectData] = useState([])
+  const [newLibSelectData, setNewLibSelectData] = useState([])
 
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01')
@@ -198,7 +198,14 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
           item.disabled = item.isDisabled
           return item
         })
-      setnewlibSelectData(selectData)
+      setNewLibSelectData(selectData)
+    } else {
+      const copyData = libSelectData.filter((item: any) => {
+        if (!item.isDisabled) {
+          return item
+        }
+      })
+      setNewLibSelectData(copyData)
     }
   }, [province, inputLibId, libSelectData])
 
@@ -254,7 +261,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             required
             rules={Rule.lib}
           >
-            <DataSelect placeholder="请选择" options={newlibSelectData} />
+            <DataSelect placeholder="请选择" options={newLibSelectData} />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
