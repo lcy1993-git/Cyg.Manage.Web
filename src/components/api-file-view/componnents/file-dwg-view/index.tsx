@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-shadow */
-import React, { useState, useEffect, useRef } from 'react'
-import { Spin, message } from 'antd'
 import { useMount, useUpdateEffect } from 'ahooks'
+import { message, Spin } from 'antd'
+import classNames from 'classnames'
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf'
 import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry'
-import styles from './index.less'
 import { PDFPageProxy } from 'pdfjs-dist/types/display/api'
-import classNames from 'classnames'
+import React, { useEffect, useRef, useState } from 'react'
+import styles from './index.less'
 // import type { PDFWorker } from 'pdfjs-dist';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
@@ -267,9 +267,6 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
     if (currentscale < 1 || currentscale > maxScale) return
     changeMode(false)
     setCssScale(currentscale)
-    console.log(currentscale, 'scale')
-    console.log(e.nativeEvent.offsetX, 'offsetX')
-    console.log(e.nativeEvent.offsetX * (currentscale - cssScale), 'offsetX-a')
     setDisplacement({
       x: e.nativeEvent.offsetX * (currentscale - cssScale),
       y: e.nativeEvent.offsetY * (currentscale - cssScale),

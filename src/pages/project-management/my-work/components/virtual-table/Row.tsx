@@ -42,13 +42,11 @@ const VTRow = memo(
     const isXScroll = usefulWidth < maxRowWidth
     // 分配宽度
     const widthBuckets = allocateWidth(usefulWidth, columns.length)
-
     const _columns = columns.map((c, index) => ({
       ...c,
       // 分配宽度
       width: !isXScroll ? widthBuckets[index] : c.width,
     }))
-
     const renderParams = {
       ...rest,
       rowData,
