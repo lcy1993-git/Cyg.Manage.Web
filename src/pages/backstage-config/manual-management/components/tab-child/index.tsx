@@ -120,6 +120,7 @@ const ManualUpload: React.FC<Props> = (props) => {
   useMount(() => {
     getLastFile()
   })
+
   return (
     <Spin tip="请稍等... " spinning={isSpinning}>
       <div className={styles.content}>
@@ -139,7 +140,7 @@ const ManualUpload: React.FC<Props> = (props) => {
               onChange={onChange}
               uploadFileFn={upLoadFn}
               maxCount={1}
-              accept=".docx"
+              accept=".docx,.pdf"
             />
           </div>
         </div>

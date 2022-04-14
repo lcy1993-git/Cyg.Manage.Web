@@ -24,7 +24,7 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
 
   const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('')
-  const [mergeLoading, setMergeLoading] = useState<boolean>(false)
+  // const [mergeLoading, setMergeLoading] = useState<boolean>(false)
   const { finishEvent, projectId } = props
 
   const { data = [], run, loading } = useRequest(getComparisonResult, {
@@ -134,7 +134,7 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
       destroyOnClose
       footer={null}
       onCancel={() => closeEvent()}
-      bodyStyle={{ padding: '12px 24px 0px', height: '550px' }}
+      bodyStyle={{ padding: '20px 24px 0px', height: '600px', overflowY: 'auto' }}
     >
       <>
         <div className={styles.removalTitle}>

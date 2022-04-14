@@ -1012,7 +1012,7 @@ export const receiveProject = (projectIds: string[]) => {
 
 //合并项目获取结果
 export const getComparisonResult = (params: {
-  sourceProjectId: string
+  sourceProjectId: string[]
   targetProjectId: string
 }) => {
   return cyRequest(() =>

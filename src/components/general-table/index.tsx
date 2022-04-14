@@ -95,7 +95,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
   const [currentPage, setCurrentPage] = useState<number>(1)
 
   const [finallyColumns, setFinalyColumns] = useState<any[]>([])
-  const [onRequest, setOnRequest] = useState<boolean>(false)
   const tableRef = useRef<HTMLDivElement>(null)
 
   const { data, run, loading } = useRequest(tableCommonRequest, {
