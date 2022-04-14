@@ -524,7 +524,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     {
       title: '项目名称',
       dataIndex: 'name',
-      width: 300,
+      width: 600,
       render: projectNameCompleteRender,
       fixed: 'left',
       ellipsis: true,

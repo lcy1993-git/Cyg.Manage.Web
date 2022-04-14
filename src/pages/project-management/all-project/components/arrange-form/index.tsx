@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TreeSelect, message, Divider } from 'antd'
+import { TreeSelect, message, Divider, Input } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import {
@@ -24,6 +24,8 @@ interface GetGroupUserProps {
   dataSourceType?: number
   groupId?: string
 }
+
+const { TextArea } = Input
 
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const {
@@ -292,6 +294,9 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           <ReadonlyItem label="单位名称" align="left">
             {companyInfo?.text}
           </ReadonlyItem>
+          <CyFormItem label="备注">
+            <TextArea showCount maxLength={100} placeholder="备注说明" />
+          </CyFormItem>
         </>
       )}
       {checkedValue === '3' && (
