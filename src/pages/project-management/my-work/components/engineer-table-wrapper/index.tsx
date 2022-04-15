@@ -530,6 +530,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       ellipsis: true,
     },
     {
+      title: '项目编号',
+      dataIndex: 'id',
+      width: 180,
+      ellipsis: true,
+    },
+    {
       title: '现场数据来源',
       dataIndex: 'dataSourceTypeText',
       width: 120,

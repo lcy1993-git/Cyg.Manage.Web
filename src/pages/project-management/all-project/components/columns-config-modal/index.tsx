@@ -29,6 +29,10 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       must: true,
     },
     {
+      title: '项目编号',
+      dataIndex: 'id',
+    },
+    {
       title: '现场数据来源',
       dataIndex: 'dataSourceTypeText',
     },
