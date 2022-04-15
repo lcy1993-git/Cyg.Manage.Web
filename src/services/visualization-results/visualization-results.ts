@@ -103,7 +103,7 @@ export const getModulesRequest = (params: any) => {
 }
 
 //
-export const getModuleDetailView = () => {
+export const getModuleDetailView = (params: any) => {
   return request(`${baseUrl.resourceV1}/LibraryDesign/GetModuleDetailView`, {
     method: 'POST',
     data: { ...params },
