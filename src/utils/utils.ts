@@ -304,13 +304,16 @@ type Login = {
   userName: string
   pwd: string
 }
+
+export const productCode = '1301726010322214912'
+
 export const getStopServerList = (
   loginFuc: CallableFunction,
   values: Login,
   stopLoginFuc?: CallableFunction
 ) => {
   getProductServerList({
-    productCode: '1301726010322214912',
+    productCode,
     category: 0,
     status: 0,
     province: '',

@@ -88,6 +88,8 @@ const initSearchParams = {
   status: [],
   majorCategory: [],
   pType: [],
+  plannedYear: undefined,
+  childrenIds: [],
   reformAim: [],
   classification: [],
   attribute: [],
@@ -101,6 +103,7 @@ const initSearchParams = {
   endTime: '',
   designUser: '',
   surveyUser: '',
+  costUser: '',
   statisticalCategory: '-1',
 }
 const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) => {
@@ -340,7 +343,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             网架规划
           </Menu.Item>
         }
-        {tableItemData.identitys.findIndex((item: any) => item.value === 1) > -1 &&
+        {tableItemData.identitys.findIndex((item: any) => item.value === 4) > -1 &&
           status !== 30 &&
           status !== 31 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
@@ -521,7 +524,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     {
       title: '项目名称',
       dataIndex: 'name',
-      width: 300,
+      width: 400, // TODO:
       render: projectNameCompleteRender,
       fixed: 'left',
       ellipsis: true,
@@ -820,15 +823,21 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   <span className="canClick" onClick={() => reportApprove([record.id])}>
                     {stateInfo?.statusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 95 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 95 ? (
                   <span className="canClick" onClick={() => externalArrange([record.id])}>
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 100 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 100 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>
-                ) : stateInfo.status === 8 && stateInfo.outsideStatus === 105 ? (
+                ) : identitys.findIndex((item: any) => item.value === 4) > -1 &&
+                  stateInfo.status === 8 &&
+                  stateInfo.outsideStatus === 105 ? (
                   <span className="canClick" onClick={() => externalEdit(record.id)}>
                     {stateInfo?.outsideStatusText}
                   </span>
@@ -1014,6 +1023,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       //@ts-ignore
       tableRef.current.searchByParams({
         ...searchParams,
+        engineerFavoritesId: selectedFavId,
         keyWord,
       })
     }

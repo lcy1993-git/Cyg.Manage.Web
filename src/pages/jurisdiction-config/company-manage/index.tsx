@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Button, Modal, Form, message, Switch } from 'antd'
+import { Button, Modal, Form, message, Switch, Input } from 'antd'
 import { ApartmentOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import PageCommonWrap from '@/components/page-common-wrap'
@@ -20,6 +20,9 @@ import moment from 'moment'
 import UnitConfig from './components/unit-config'
 import GeneralTable from '@/components/general-table'
 import CompanyShare from './components/company-share'
+import TableSearch from '@/components/table-search'
+
+const { Search } = Input
 
 const mapColor = {
   无: 'gray',
@@ -38,6 +41,7 @@ const CompanyManage: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [unitConfigVisible, setUnitConfigVisible] = useState<boolean>(false)
   const [companyShareVisible, setCompanyShareVisible] = useState<boolean>(false)
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
@@ -157,6 +161,31 @@ const CompanyManage: React.FC = () => {
       tableFresh()
       message.success('状态修改成功')
     }
+  }
+
+  const search = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.search()
+    }
+  }
+
+  const searchComponent = () => {
+    return (
+      <TableSearch width="263px">
+        <Search
+          value={searchKeyWord}
+          onChange={(e) => setSearchKeyWord(e.target.value)}
+          onSearch={() => tableSearchEvent()}
+          enterButton
+          placeholder="请输入公司名称/管理员账号"
+        />
+      </TableSearch>
+    )
+  }
+
+  const tableSearchEvent = () => {
+    search()
   }
 
   const companyManageButton = () => {
@@ -305,6 +334,8 @@ const CompanyManage: React.FC = () => {
         buttonRightContentSlot={companyManageButton}
         getSelectData={(data) => setTableSelectRows(data)}
         url="/Company/GetPagedList"
+        buttonLeftContentSlot={searchComponent}
+        extractParams={{ keyWord: searchKeyWord }}
       />
       <Modal
         maskClosable={false}

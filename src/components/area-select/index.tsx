@@ -77,7 +77,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>) => {
       return {
         label: item.shortName,
         value: item.id,
-        children: item.children,
+        children: item.children ?? [],
       }
     })
     return [{ label: '-全部-', value: '', children: [] }, ...newProvinceData]
@@ -90,7 +90,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>) => {
       return {
         label: item.shortName,
         value: item.id,
-        children: item.children,
+        children: item.children ?? [],
       }
     })
     setCitySelectData([{ label: '-全部-', value: '', children: [] }, ...newCityData])
@@ -114,7 +114,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>) => {
       return {
         label: item.shortName,
         value: item.id,
-        children: item.children,
+        children: item.children ?? [],
       }
     })
     setAreaSelectData([{ label: '-全部-', value: '', children: [] }, ...newAreaData])

@@ -1,49 +1,53 @@
-import Loadable from 'react-loadable';
-import Loading from '@ant-design/pro-layout/es/PageLoading';
-import ManualManagement from '@/pages/backstage-config/manual-management';
+import Loading from '@ant-design/pro-layout/es/PageLoading'
+import Loadable from 'react-loadable'
 
 const FunctionModule = Loadable({
   loader: () => import('@/pages/backstage-config/function-module'),
   loading: Loading,
   delay: 150,
-});
+})
+const ManualManagement = Loadable({
+  loader: () => import('@/pages/backstage-config/manual-management'),
+  loading: Loading,
+  delay: 150,
+})
 const LogManage = Loadable({
   loader: () => import('@/pages/backstage-config/log-manage'),
   loading: Loading,
   delay: 150,
-});
+})
 
 const DictionaryManage = Loadable({
   loader: () => import('@/pages/backstage-config/dictionary-manage'),
   loading: Loading,
   delay: 150,
-});
+})
 
 const ElectricCompany = Loadable({
   loader: () => import('@/pages/backstage-config/electric-company'),
   loading: Loading,
   delay: 150,
-});
+})
 const ReportLog = Loadable({
   loader: () => import('@/pages/backstage-config/report-log'),
   loading: Loading,
   delay: 150,
-});
+})
 const FeedBack = Loadable({
   loader: () => import('@/pages/backstage-config/platform-feedback'),
   loading: Loading,
   delay: 150,
-});
+})
 const MapField = Loadable({
   loader: () => import('@/pages/backstage-config/map-field'),
   loading: Loading,
   delay: 150,
-});
+})
 const LoginStrategy = Loadable({
   loader: () => import('@/pages/backstage-config/login-strategy'),
   loading: Loading,
   delay: 150,
-});
+})
 // const TerminalUnit = Loadable({
 //   loader: () => import('@/pages/backstage-config/terminal-unit'),
 //   loading: Loading,
@@ -53,7 +57,19 @@ const BasicData = Loadable({
   loader: () => import('@/pages/backstage-config/basic-data'),
   loading: Loading,
   delay: 150,
-});
+})
+
+const CompanyStructure = Loadable({
+  loader: () => import('@/pages/backstage-config/company-structure'),
+  loading: Loading,
+  delay: 150,
+})
+
+const BusinessBoard = Loadable({
+  loader: () => import('@/pages/backstage-config/business-kanban'),
+  loading: Loading,
+  delay: 150,
+})
 
 export default [
   {
@@ -112,4 +128,14 @@ export default [
     path: '/backstage-config/manual-management',
     component: <ManualManagement />,
   },
-];
+  {
+    title: '供电公司架构',
+    path: '/backstage-config/company-structure',
+    component: <CompanyStructure />,
+  },
+  {
+    title: '业务看板',
+    path: '/backstage-config/business-kanban',
+    component: <BusinessBoard />,
+  },
+]

@@ -59,6 +59,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
       centered
       width={780}
       visible={state as boolean}
+      bodyStyle={{ height: '780px', overflowY: 'auto' }}
       destroyOnClose
       footer={[
         <Button key="cancle" onClick={() => modalCloseEvent()}>
@@ -85,6 +86,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           engineerStart={moment(engineerInfo?.startTime)}
           engineerEnd={moment(engineerInfo?.endTime)}
           status={1}
+          isEdit={true}
         />
       </Form>
     </Modal>

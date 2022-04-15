@@ -1,5 +1,5 @@
 import { Map } from 'ol'
-import { LayerRef, MapRef, ViewRef  } from './../typings';
+import { LayerRef, MapRef, ViewRef } from './../typings'
 interface InitMapOps {
   layerRef: LayerRef
   mapRef: MapRef
@@ -7,7 +7,7 @@ interface InitMapOps {
   ref: HTMLDivElement
 }
 
-export function initMap ({layerRef, mapRef, viewRef, ref}: InitMapOps) {
+export function initMap({ layerRef, mapRef, viewRef, ref }: InitMapOps) {
   mapRef.map = new Map({
     target: ref,
     layers: Object.values(layerRef),

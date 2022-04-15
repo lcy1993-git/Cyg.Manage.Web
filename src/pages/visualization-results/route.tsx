@@ -1,6 +1,5 @@
 import { useLayoutStore } from '@/layouts/context'
 import Loading from '@ant-design/pro-layout/es/PageLoading'
-import React from 'react'
 import Loadable from 'react-loadable'
 
 const ResultPage = Loadable({
@@ -26,7 +25,7 @@ const HashHistoryGrid = () => {
 
 const routes = [
   {
-    title: '网架可视化',
+    title: '在建网架',
     path: '/visualization-results/result-page',
     component: <ResultPage />,
   },

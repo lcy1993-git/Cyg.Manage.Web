@@ -10,6 +10,7 @@ import ExternalArrangeModal from '@/pages/project-management/all-project/compone
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
 import ProjectRemovalModal from '@/pages/project-management/all-project/components/project-removal-modal'
+// import ProjectRemovalModal from '@/pages/project-management/all-project/components/project-removal-modal'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
@@ -202,7 +203,7 @@ const MyProject: React.FC = () => {
     // setArrangeModalVisible(true);
     const projectIds = tableSelectKeys
     if (projectIds.length === 0) {
-      message.error('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
 
@@ -297,7 +298,7 @@ const MyProject: React.FC = () => {
     const projectIds = tableSelectKeys
 
     if (projectIds.length === 0) {
-      message.error('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
     await revokeAllot(projectIds as string[])
@@ -400,7 +401,7 @@ const MyProject: React.FC = () => {
 
   const auditKnotEvent = async () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.warning('请至少选择一条数据')
+      message.info('请至少选择一条数据')
       return
     }
     const projectIds = tableSelectKeys
@@ -410,7 +411,7 @@ const MyProject: React.FC = () => {
 
   const applyConfirm = () => {
     if (tableSelectKeys && tableSelectKeys.length === 0) {
-      message.warning('请至少选择一个项目')
+      message.info('请至少选择一个项目')
       return
     }
     Modal.confirm({
@@ -454,6 +455,10 @@ const MyProject: React.FC = () => {
 
   // 外审安排
   const externalArrange = () => {
+    if (tableSelectKeys && tableSelectKeys.length === 0) {
+      message.info('请选择要操作的项目')
+      return
+    }
     setExternalArrangeModalVisible(true)
   }
 

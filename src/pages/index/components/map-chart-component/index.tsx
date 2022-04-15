@@ -351,7 +351,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
       const res = await exportHomeStatisticData({
         areaCode: currentAreaInfo.areaId!,
         areaType: currentAreaInfo.areaLevel!,
-        ganttChartLimit: 1000,
+        ganttChartLimit: 100,
       })
       let blob = new Blob([res], {
         type: 'application/vnd.ms-excel;charset=utf-8',

@@ -17,42 +17,45 @@ export interface BaseMapProps {
   setTrackLayerGroups: (arg0: LayerGroup[]) => void
   setView: (arg0: View) => void
 }
-
+//@ts-ignore
 export const initLayers = (resData: any): Layer[] => {
   // 初始化data
 
-  if (resData && resData.code !== 200) return []
+  if (resData && resData.code && resData.code !== 200) return []
 
   let vecUrl = ''
   let imgUrl = ''
 
-  resData.data.forEach((item: any) => {
-    if (item.layerType === 1) {
-      // vecUrl = item.url.replace('{s}', '{' + item.servers.split(',')[0] + '-' + item.servers.split(',')[item.servers.split(',').length - 1] + '}');
-      vecUrl = item.url.replace(
-        '{s}',
-        '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}'
-      )
-    } else if (item.layerType === 2) {
-      imgUrl = item.url.replace(
-        '{s}',
-        '{' + item.servers[0] + '-' + item.servers[item.servers.length - 1] + '}'
-      )
-    }
-  })
-
+  let data = resData?.code ? resData.data[0] : resData[0]
   // 卫星图
-  // imgUrl = imgUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  imgUrl = resData?.code
+    ? data.url.replace(
+        '{s}',
+        '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
+      )
+    : data.url.replace(
+        '{s}',
+        '{' + data.hostId[0] + '-' + data.hostId[data.hostId.length - 1] + '}'
+      )
+  imgUrl =
+    imgUrl ||
+    'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   const imgLayer = new TileLayer({
     source: new XYZ({
-      url: decodeURI(vecUrl),
+      url: decodeURI(imgUrl),
     }),
     preload: 18,
   })
   imgLayer.set('name', 'imgLayer')
 
   // 街道图
-  // vecUrl = vecUrl || "https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5";
+  // vecUrl = data.url.replace(
+  //   '{s}',
+  //   '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
+  // )
+  vecUrl =
+    // vecUrl ||
+    'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
   // const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
   //分辨率数组
   // var resolutions = []
@@ -89,7 +92,7 @@ export const initLayers = (resData: any): Layer[] => {
 
   const vecLayer = new TileLayer({
     source: new XYZ({
-      url: decodeURI(imgUrl),
+      url: decodeURI(vecUrl),
     }),
     preload: 18,
   })
@@ -97,17 +100,17 @@ export const initLayers = (resData: any): Layer[] => {
   vecLayer.set('name', 'vecLayer')
 
   // ann图
-  const annUrl =
-    'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
-  const annLayer = new TileLayer({
-    source: new XYZ({
-      url: decodeURI(annUrl),
-    }),
-    preload: 18,
-  })
-  annLayer.set('name', 'annLayer')
+  // const annUrl =
+  //   'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_c&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
+  // const annLayer = new TileLayer({
+  //   source: new XYZ({
+  //     url: decodeURI(annUrl),
+  //   }),
+  //   preload: 18,
+  // })
+  // annLayer.set('name', 'annLayer')
 
-  return [imgLayer, vecLayer, annLayer]
+  return [imgLayer, vecLayer]
 }
 
 export const initOtherLayers = (): LayerGroup[] => {

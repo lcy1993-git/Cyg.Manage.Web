@@ -1,29 +1,29 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react'
 
-import { Select } from 'antd';
-import { useRequest } from 'ahooks';
-import { getDataByUrl } from '@/services/common';
+import { Select } from 'antd'
+import { useRequest } from 'ahooks'
+import { getDataByUrl } from '@/services/common'
 
 export interface UrlSelectProps {
-  url?: string;
-  titlekey?: string;
-  valuekey?: string;
-  extraParams?: object;
-  defaultData?: any[];
-  needFilter?: boolean;
-  requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component' | 'tecEco';
-  requestType?: 'post' | 'get';
-  paramsMust?: string[];
-  postType?: 'query' | 'body';
-  libId?: string;
-  needAll?: boolean;
-  allValue?: string;
-  manual?: boolean; //是否手动执行fetch数据
-  trigger?: boolean; //用来触发fetch方法
+  url?: string
+  titlekey?: string
+  valuekey?: string
+  extraParams?: object
+  defaultData?: any[]
+  needFilter?: boolean
+  requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component' | 'tecEco'
+  requestType?: 'post' | 'get'
+  paramsMust?: string[]
+  postType?: 'query' | 'body'
+  libId?: string
+  needAll?: boolean
+  allValue?: string
+  manual?: boolean //是否手动执行fetch数据
+  trigger?: boolean //用来触发fetch方法
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
-  props: P & UrlSelectProps,
+  props: P & UrlSelectProps
 ) => {
   const {
     url = '',
@@ -37,16 +37,15 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     requestType = 'get',
     postType = 'body',
     needAll = false,
-    libId = '',
     allValue = '',
     ...rest
-  } = props;
+  } = props
 
   // URL 有数值
   // defaultData 没有数值
   // 必须传的参数不为空
   const { data: resData } = useRequest(
-    () => getDataByUrl(url, extraParams, requestSource, requestType, postType, libId),
+    () => getDataByUrl(url, extraParams, requestSource, requestType, postType),
     {
       ready: !!(
         url &&
@@ -54,32 +53,32 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
         !(paramsMust.filter((item) => !extraParams[item]).length > 0)
       ),
       refreshDeps: [url, JSON.stringify(extraParams)],
-    },
-  );
+    }
+  )
 
   const afterHanldeData = useMemo(() => {
     if (defaultData) {
-      const copyData = [...defaultData];
+      const copyData = [...defaultData]
       if (needAll) {
-        const newObject = {};
-        newObject[titlekey] = '全部';
-        newObject[valuekey] = allValue;
-        copyData.unshift(newObject);
+        const newObject = {}
+        newObject[titlekey] = '全部'
+        newObject[valuekey] = allValue
+        copyData.unshift(newObject)
       }
       return copyData.map((item: any) => {
-        return { label: item[titlekey], value: item[valuekey] };
-      });
+        return { label: item[titlekey], value: item[valuekey] }
+      })
     }
     if (!(url && !defaultData && !(paramsMust.filter((item) => !extraParams[item]).length > 0))) {
-      return [];
+      return []
     }
     if (resData) {
       return resData.map((item: any) => {
-        return { label: item[titlekey], value: item[valuekey] };
-      });
+        return { label: item[titlekey], value: item[valuekey] }
+      })
     }
-    return [];
-  }, [JSON.stringify(resData), JSON.stringify(defaultData)]);
+    return []
+  }, [JSON.stringify(resData), JSON.stringify(defaultData)])
 
   return (
     <WrapperComponent
@@ -90,7 +89,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
         option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
     />
-  );
-};
+  )
+}
 
-export default withUrlSelect(Select);
+export default withUrlSelect(Select)

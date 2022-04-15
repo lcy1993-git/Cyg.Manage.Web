@@ -92,7 +92,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
           valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
-          libId={resourceLibId}
+          extraParams={{ libId: resourceLibId }}
         />
       </CyFormItem>
       <CyFormItem label="加工图" name="processChartIds" labelWidth={130} align="right">
@@ -106,7 +106,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
           valuekey="chartId"
           placeholder="请选择图纸"
           postType="query"
-          libId={resourceLibId}
+          extraParams={{ libId: resourceLibId }}
         />
       </CyFormItem>
 

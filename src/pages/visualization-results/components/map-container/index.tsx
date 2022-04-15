@@ -9,6 +9,7 @@ const MapContainer = (props: any) => {
   const { mapData } = props
 
   // 图层
+  //@ts-ignore
   const [layers, setLayers] = useState<Layer[]>(initLayers(mapData))
   const [layerGroups, setLayerGroups] = useState<LayerGroup[]>(initOtherLayers())
   const [trackLayers, setTrackLayerGroups] = useState<LayerGroup[]>(initTrackLayers())

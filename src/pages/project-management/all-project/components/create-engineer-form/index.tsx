@@ -42,6 +42,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   const [libId, setLibId] = useState<string>('')
   const [city, setCity] = useState<any[]>([])
 
+  const [newLibSelectData, setNewLibSelectData] = useState([])
+
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01')
   }
@@ -56,7 +58,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   })
 
   const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList?status=1',
+    url: '/ResourceLib/GetList?status=0',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
@@ -185,8 +187,27 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     }
     if (inputLibId) {
       setLibId(inputLibId)
+      const selectData = libSelectData
+        .filter((item: any) => {
+          if (item.isDisabled) {
+            return item.value === inputLibId
+          }
+          return true
+        })
+        .map((item: { disabled: any; isDisabled: any }) => {
+          item.disabled = item.isDisabled
+          return item
+        })
+      setNewLibSelectData(selectData)
+    } else {
+      const copyData = libSelectData.filter((item: any) => {
+        if (!item.isDisabled) {
+          return item
+        }
+      })
+      setNewLibSelectData(copyData)
     }
-  }, [province, inputLibId])
+  }, [province, inputLibId, libSelectData])
 
   const invSlot = () => {
     return (
@@ -240,7 +261,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             required
             rules={Rule.lib}
           >
-            <DataSelect placeholder="请选择" options={libSelectData} />
+            <DataSelect placeholder="请选择" options={newLibSelectData} />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">

@@ -140,7 +140,7 @@ const ManualUpload: React.FC<Props> = (props) => {
               onChange={onChange}
               uploadFileFn={upLoadFn}
               maxCount={1}
-              accept=".docx,.pdf"
+              accept=".docx"
             />
           </div>
         </div>

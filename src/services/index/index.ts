@@ -1,7 +1,7 @@
+import { webConfig } from '@/global'
 import request from '@/utils/request'
 import { Moment } from 'moment'
-import { cyRequest, baseUrl } from '../common'
-import { webConfig } from '@/global'
+import { baseUrl, cyRequest } from '../common'
 
 interface ToDoRequestResult {
   awaitKnot: number
@@ -170,7 +170,7 @@ export const getMapStatisticsData = (params: HomeStatisticCommonParams) => {
 // 获取甘特图的数据
 export const getProjectGanttData = ({
   pageIndex = 1,
-  pageSize = 1000,
+  pageSize = 100,
   areaType = '1',
   sort = {},
   keyWord = '',

@@ -1,29 +1,42 @@
-import React from 'react';
-import MapContainer from '../map-container';
-import { useMount, useRequest } from 'ahooks';
-import { getMapList, initIpLocation } from '@/services/visualization-results/visualization-results';
+import {
+  getCustomMapList,
+  getUseFulMapList,
+  initIpLocation,
+} from '@/services/visualization-results/visualization-results'
+import { useMount, useRequest } from 'ahooks'
+import MapContainer from '../map-container'
 
 const UrlMapContainerBox = (props: any) => {
- 
-  
   const { data: mapData } = useRequest(() =>
-    getMapList({ sourceType: 0, layerType: 0, enableStatus: 1, availableStatus: 0 }),
-  );
+    // getMapList({ sourceType: 0, layerType: 0, enableStatus: 1, availableStatus: 0 }),
+    getUseFulMapList({
+      serverCode: localStorage.getItem('serverCode'),
+      layerType: 1,
+      enableStatus: 1,
+      // availableStatus: 0,
+    })
+  )
+
+  const { data: customData } = useRequest(() => getCustomMapList({ isEnable: 1 }))
+
   const getLocation = async () => {
-    await initIpLocation();
-  };
+    await initIpLocation()
+  }
 
   useMount(() => {
-    getLocation();
-  });
+    getLocation()
+  })
 
   return (
     <>
-      {mapData && mapData.code === 200 && (
-        <MapContainer mapData={mapData} {...props}></MapContainer>
+      {customData && mapData && (
+        <MapContainer
+          mapData={customData && customData.length > 0 ? customData : mapData}
+          {...props}
+        ></MapContainer>
       )}
     </>
-  );
-};
+  )
+}
 
-export default UrlMapContainerBox;
+export default UrlMapContainerBox

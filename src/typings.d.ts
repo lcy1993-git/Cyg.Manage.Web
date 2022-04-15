@@ -13,6 +13,25 @@ declare module '*.tiff'
 declare module 'omit.js'
 declare module '*.docx'
 
+declare module 'react-virtualized-auto-sizer' {
+  /**
+   * @see https://github.com/bvaughn/react-virtualized/blob/master/docs/AutoSizer.md#prop-types
+   */
+  type Props = {
+    children: (param: { width: number; height: number }) => JSX.Element
+    className?: string
+    defaultHeight?: number
+    defaultWidth?: number
+    disableWidth?: boolean
+    disableHeight?: boolean
+    nonce?: string
+    onResize?: (param: { height: number; width: number }) => void
+    style?: React.CSSProperties
+  }
+
+  export default function AutoSizer(props: Props): JSX.Element
+}
+
 // google analytics interface
 interface GAFieldsObject {
   eventCategory: string

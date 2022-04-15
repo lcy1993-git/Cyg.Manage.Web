@@ -26,13 +26,15 @@ const OperationPane: FC = ({ children }) => {
   useEffect(() => {
     if (mode === 'preDesign' || mode === 'preDesigning') {
       if (preDesignItemData) {
-        getProjectInfo(preDesignItemData.id).then((res) => {
-          if (res.identitys.some((s: any) => s.value! === 4)) {
-            setCanDraw(true)
-          } else {
-            setCanDraw(false)
-          }
-        })
+        getProjectInfo(preDesignItemData.id)
+          .then((res) => {
+            if (res?.identitys.some((s: any) => s.value! === 4)) {
+              setCanDraw(true)
+            } else {
+              setCanDraw(false)
+            }
+          })
+          .catch((err) => {})
       }
     } else {
       setCanDraw(true)

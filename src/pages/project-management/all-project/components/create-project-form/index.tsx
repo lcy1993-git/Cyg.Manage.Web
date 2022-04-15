@@ -27,6 +27,8 @@ interface CreateProjectFormProps {
   pointVisible?: boolean
 }
 
+const { TextArea } = Input
+
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const {
     field = {},
@@ -505,7 +507,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'cityCompany' : [field.name, 'cityCompany']}
             labelWidth={120}
             align="right"
-            rules={Rule.wordsLimit}
+            rules={[{ required: true, message: '所属市公司不能为空' }]}
+            required
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -538,7 +541,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'countyCompany' : [field.name, 'countyCompany']}
             labelWidth={120}
             align="right"
-            rules={Rule.wordsLimit}
+            required
+            rules={[{ required: true, message: '所属县公司不能为空' }]}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -599,7 +603,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
-              disabled={isEdit}
+              disabled={!isEdit && !isInherit} //判断是否参与继承 && 是否开始继承 &&是否新增项目
               titlekey="text"
               placeholder="请选择"
             />
@@ -853,7 +857,12 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 style={{ width: '100%' }}
               />
             </CyFormItem>
-          ) : status === 1 || status === 2 || status === 14 || status === 30 || status === 31 ? (
+          ) : status === 1 ||
+            status === 2 ||
+            status === 14 ||
+            status === 30 ||
+            status === 31 ||
+            isInherit ? (
             <CyFormItem
               label="桩位范围(米)"
               // initialValue={'50'}
@@ -904,6 +913,24 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <InputNumber value={pileRangeValue} disabled style={{ width: '100%' }} />
             </CyFormItem>
           )}
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="备注"
+            fieldKey={[field.fieldKey, 'remark']}
+            name={isEmpty(field) ? 'remark' : [field.name, 'remark']}
+            labelWidth={120}
+            align="right"
+          >
+            <TextArea
+              placeholder="请输入备注"
+              showCount
+              maxLength={200}
+              style={{ width: '100%' }}
+            />
+          </CyFormItem>
         </div>
       </div>
     </>

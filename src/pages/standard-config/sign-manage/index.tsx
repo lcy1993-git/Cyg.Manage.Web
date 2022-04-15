@@ -1,8 +1,8 @@
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, DeleteOutlined, DownloadOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip, Tabs } from 'antd'
+import { EditOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons'
+import { Button, Modal, Form, Popconfirm, message, Spin, Tooltip, Tabs } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
@@ -31,7 +31,6 @@ import { TableRequestResult } from '@/services/table'
 import SignFileForm from './components/add-edit-form'
 import ModalConfirm from '@/components/modal-confirm'
 
-const { Search } = Input
 const { TabPane } = Tabs
 
 const SignManage: React.FC = () => {
@@ -39,6 +38,7 @@ const SignManage: React.FC = () => {
   const approvalRef = React.useRef<HTMLDivElement>(null)
   const checkRef = React.useRef<HTMLDivElement>(null)
   const designRef = React.useRef<HTMLDivElement>(null)
+  const insRef = React.useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
@@ -124,6 +124,13 @@ const SignManage: React.FC = () => {
       if (designRef && designRef.current) {
         // @ts-ignore
         designRef.current.refresh()
+        return
+      }
+    }
+    if (tabKey === 'ins') {
+      if (insRef && insRef.current) {
+        // @ts-ignore
+        insRef.current.refresh()
         return
       }
     }
@@ -267,6 +274,7 @@ const SignManage: React.FC = () => {
           audit: defaultData.audit,
           calibration: defaultData.calibration,
           designSurvey: defaultData.designSurvey,
+          designChiefEngineer: defaultData.designChiefEngineer,
         },
         values
       )
@@ -295,7 +303,9 @@ const SignManage: React.FC = () => {
     })
     let finallyFileName = `${tableSelectRows[0].name}.${suffix}`
     //for IE
+    //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE
@@ -368,6 +378,16 @@ const SignManage: React.FC = () => {
         designRef.current.searchByParams({
           groupId: signGroupId,
           category: 4,
+        })
+        return
+      }
+    }
+    if (value === 'ins') {
+      if (insRef && insRef.current) {
+        // @ts-ignore
+        insRef.current.searchByParams({
+          groupId: signGroupId,
+          category: 5,
         })
         return
       }
@@ -546,6 +566,24 @@ const SignManage: React.FC = () => {
                 />
               )}
             </TabPane>
+            <TabPane tab="设总" key="ins">
+              {signGroupId && (
+                <GeneralTable
+                  titleSlot={titleSlotElement}
+                  getTableRequestData={setTableData}
+                  ref={insRef}
+                  columns={columns}
+                  url="/CompanySign/GetPagedList"
+                  tableTitle="设总"
+                  getSelectData={(data) => setTableSelectRows(data)}
+                  extractParams={{
+                    keyWord: searchKeyWord,
+                    groupId: signGroupId,
+                    category: 5,
+                  }}
+                />
+              )}
+            </TabPane>
           </Tabs>
 
           <div className={styles.buttonArea}>
@@ -624,7 +662,7 @@ const SignManage: React.FC = () => {
       <Modal
         maskClosable={false}
         title="默认参数"
-        width="780px"
+        width="680px"
         visible={defaultParamsVisible}
         okText="确认"
         onOk={() => saveDefaultOptionsEvent()}

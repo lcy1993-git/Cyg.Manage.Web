@@ -2,13 +2,13 @@
   display: flex;
 
   .cyFormItemLabel {
-    font-size: 13px;
-    min-width: 50px;
-    line-height: 27px;
-    color: @second-black-color;
-    padding-right: 20px;
-    text-align: left;
     flex-shrink: 0;
+    min-width: 50px;
+    padding-right: 20px;
+    color: @second-black-color;
+    font-size: 13px;
+    line-height: 27px;
+    text-align: left;
     &.right {
       text-align: right;
     }
@@ -17,17 +17,16 @@
       position: relative;
 
       &::before {
-        content: "*";
         position: absolute;
         left: -10px;
         color: @red-color;
+        content: '*';
       }
     }
   }
 
   .cyFormItemContent {
     flex: 1;
-    overflow: hidden;
   }
 
   :global {
@@ -77,8 +76,8 @@
 
     .ant-select.ant-select-multiple {
       .ant-select-selector {
-        padding: 0 4px !important;
         box-sizing: border-box;
+        padding: 0 4px !important;
         &::after {
           margin: 1px 0 0px 0 !important;
         }
@@ -86,17 +85,17 @@
           margin: 0 !important;
         }
         .ant-select-selection-item {
+          height: 19px;
           margin: 4px 4px 4px 0 !important;
           padding: 2px 3px !important;
-          height: 19px;
           color: @primary-color !important;
           background-color: @light-primary-color;
           .ant-select-selection-item-content {
             line-height: 1;
           }
           .ant-select-selection-item-remove {
-            line-height: 1;
             color: @primary-color !important;
+            line-height: 1;
           }
         }
       }
@@ -128,10 +127,12 @@
     }
 
     .ant-form-item-has-error .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-      border: 1px solid @red-color  !important;
+      border: 1px solid @red-color !important;
     }
 
-    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-search-input {
+    .ant-select-single:not(.ant-select-customize-input)
+      .ant-select-selector
+      .ant-select-selection-search-input {
       height: 27px;
       line-height: 27px;
     }
@@ -147,8 +148,8 @@
 
     .ant-form-item-explain,
     .ant-form-item-extra {
-      line-height: 1.9;
       font-size: 12px;
+      line-height: 1.9;
     }
 
     .ant-picker {
@@ -159,7 +160,6 @@
     .ant-input-group-addon {
       .ant-btn {
         padding: 0;
-
       }
       .ant-input-search-button {
         height: 27px;

@@ -70,7 +70,7 @@ const MissionTab: React.FC<MissionParams> = (props) => {
             getProjectIds={getProjectIds}
           />
         </TabPane>
-        <TabPane tab="造价任务" key="cost">
+        {/* <TabPane tab="造价任务" key="cost">
           <DesignTable
             isFresh={isFresh}
             setIsFresh={setIsFresh}
@@ -81,7 +81,7 @@ const MissionTab: React.FC<MissionParams> = (props) => {
             getReceiverId={getReceiverId}
             getProjectIds={getProjectIds}
           />
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </div>
   )

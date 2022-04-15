@@ -12,7 +12,7 @@ export default {
       // http://10.6.1.54:21525/api/
       // 171.223.214.154:21573
       target: 'https://srthkf2.gczhyun.com:21530',
-      // target: 'https://srthcs2.gczhyun.com:21574',
+      // target: 'https://srthcs1.gczhyun.com:21564',
       // target: 'https://srthk8scs2.gczhyun.com:21530',
       // 测试服 1
       // target: 'http://171.223.214.154:21563',
