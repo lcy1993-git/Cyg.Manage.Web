@@ -1,32 +1,36 @@
-import React, { useEffect, useState } from 'react'
-
 import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
-import { Empty, message, Spin } from 'antd'
-import { useMount } from 'ahooks'
-import { getLatestInstructions } from '@/services/system-config/manual-management'
 import { baseUrl } from '@/services/common'
+import { getLatestInstructions } from '@/services/system-config/manual-management'
+import { useMount } from 'ahooks'
+import { message } from 'antd'
+import React, { useEffect, useState } from 'react'
 
 interface Props {}
 const pageType = [
   {
-    path: 'instructionsManage',
+    path: 'instructionsManage', // 管理端
     category: 1,
+    title: '工程智慧云 | 管理',
   },
   {
-    path: 'instructionsInvestigate',
+    path: 'instructionsInvestigate', // 勘察端
     category: 2,
+    title: '工程智慧云 | 勘察',
   },
   {
-    path: 'instructionsDesign',
+    path: 'instructionsDesign', // 设计端
     category: 3,
+    title: '工程智慧云 | 设计',
   },
   {
-    path: 'instructionsReview',
+    path: 'instructionsReview', // 评审端
     category: 4,
+    title: '工程智慧云 | 评审',
   },
   {
-    path: 'instructionsCost',
+    path: 'instructionsCost', // 造价端
     category: 5,
+    title: '工程智慧云 | 造价',
   },
 ]
 const ManualUpload: React.FC<Props> = () => {
@@ -74,6 +78,12 @@ const ManualUpload: React.FC<Props> = () => {
       message.warn('缺少请求token')
       return
     }
+
+    const docTitle = pageType.find((item) => `/${item.path}` === window.location.pathname)
+    if (docTitle) {
+      document.title = docTitle.title
+    }
+
     const newFile = await getLatestInstructions(current)
     if (!newFile) {
       message.warn('没有找到可用的说明书!')
