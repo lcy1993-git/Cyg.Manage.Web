@@ -1,7 +1,11 @@
 import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
 import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
-import { getComparisonResult } from '@/services/project-management/all-project'
+import {
+  checkCanRemoval,
+  getComparisonResult,
+  sureRemoval,
+} from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Input, message, Modal, Spin } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
@@ -10,14 +14,13 @@ const { Search } = Input
 
 interface ProjectRemovalModalProps {
   visible: boolean
-  projectId: string[]
+  projectIds: string[]
   onChange: Dispatch<SetStateAction<boolean>>
   finishEvent: () => void
 }
 
 const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const [companyId, setCompanyId] = useState('')
   const [keyWord, setKeyWord] = useState('')
   const [checkData, setCheckData] = useState<any>([])
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
@@ -25,15 +28,10 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
 
   const [currentClickEngineerId, setCurrentClickEngineerId] = useState<string>('')
   // const [mergeLoading, setMergeLoading] = useState<boolean>(false)
-  const { finishEvent, projectId } = props
+  const { finishEvent, projectIds } = props
 
-  const { data = [], run, loading } = useRequest(getComparisonResult, {
+  const { run, loading } = useRequest(checkCanRemoval, {
     manual: true,
-    onSuccess: () => {
-      if (data) {
-        setCheckData(data)
-      }
-    },
   })
 
   const tableRef = useRef<HTMLDivElement>(null)
@@ -54,19 +52,19 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
 
   const tableColumns = [
     {
-      dataIndex: 'engineer',
-      index: 'engineer',
+      dataIndex: 'value',
+      index: 'value',
       title: '工程',
       render: (text: any, record: any) => {
         return (
           <u
             className="canClick"
             onClick={() => {
-              setCurrentClickEngineerId(record.engineer.value)
+              setCurrentClickEngineerId(record.value)
               setEngineerModalVisible(true)
             }}
           >
-            {record.engineer.text}
+            {record.text}
           </u>
         )
       },
@@ -93,7 +91,7 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
     return (
       <>
         <div className="flex">
-          <Button type="primary" onClick={() => checkMergeEvent()}>
+          <Button type="primary" onClick={() => checkRemovalEvent()}>
             确认迁移
           </Button>
         </div>
@@ -101,18 +99,25 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
     )
   }
 
-  const checkMergeEvent = async () => {
+  const checkRemovalEvent = async () => {
     if (tableSelectRows && tableSelectRows.length === 0) {
-      message.warning('请选择需要合并的项目')
+      message.warning('请选择需要迁入的工程')
       return
     }
 
-    const targetId = tableSelectRows[0].project.value
-    await run({
-      sourceProjectId: projectId,
-      targetProjectId: targetId,
+    const targetId = tableSelectRows[0].value
+
+    await run({ projectIds: projectIds })
+    sureRemoval({
+      targetEngineerId: targetId,
+      projectIds: projectIds,
     })
-    finishEvent?.()
+      .then(() => {
+        message.success('迁移成功')
+        closeEvent()
+        finishEvent?.()
+      })
+      .catch((err: string) => {})
   }
 
   const closeEvent = () => {
@@ -148,10 +153,10 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
             buttonRightContentSlot={tableButtonRightContent}
             buttonLeftContentSlot={tableButton}
             columns={tableColumns}
-            extractParams={{ companyId: companyId, keyWord: keyWord }}
+            extractParams={{ projectIds: projectIds, keyWord: keyWord }}
             needTitleLine={false}
-            rowKey="project"
-            url="/ProjectMerge/GetTargetProjects"
+            rowKey="value"
+            url="/PorjectMigrate/GetTargetEngineers"
           />
         </Spin>
       </>

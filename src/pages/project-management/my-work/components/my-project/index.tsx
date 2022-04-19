@@ -18,6 +18,7 @@ import {
   applyKnot,
   canEditArrange,
   checkCanArrange,
+  checkCanRemoval,
   deleteProject,
   getProjectInfo,
   receiveProject,
@@ -566,7 +567,24 @@ const MyProject: React.FC = () => {
   }
 
   //项目迁移
-  const removalEvent = () => {
+  const removalEvent = async () => {
+    if (tableSelectKeys && tableSelectKeys.length === 0) {
+      message.info('请先选择需要迁移的项目')
+      return
+    }
+    //后端判断身份
+    await checkCanRemoval({ projectIds: tableSelectKeys })
+
+    //前端判断项目身份
+    // const canRemoval = tableSelectRowData
+    //   .map((item: any) => {
+    //     return item.identitys.findIndex((item: any) => item.value === 1) > -1
+    //   })
+    //   .includes(false)
+    // if (canRemoval) {
+    //   message.error('存在项目身份不是[立项]，无法执行此操作')
+    //   return
+    // }
     setRemovalModalVisible(true)
   }
 
@@ -770,7 +788,7 @@ const MyProject: React.FC = () => {
           visible={removalModalVisible}
           finishEvent={delayRefresh}
           onChange={setRemovalModalVisible}
-          projectId={tableSelectKeys}
+          projectIds={tableSelectKeys}
         />
       )}
     </div>

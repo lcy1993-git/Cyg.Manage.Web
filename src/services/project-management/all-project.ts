@@ -1040,3 +1040,23 @@ export const saveProjectMerge = (params: { sourceProjectId: string; targetProjec
 export const getCityAreas = () => {
   return request(`${webConfig.commonServer}/api/Area/GetTreeList`)
 }
+
+//迁移前置检查
+export const checkCanRemoval = (params: { projectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/PorjectMigrate/CheckPreconditions`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+
+//确认项目迁移
+export const sureRemoval = (params: { targetEngineerId: string; projectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/PorjectMigrate/Migrate`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
