@@ -42,47 +42,46 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
           </ReadonlyItem>
         </div>
         <div className="flex1">
+          <ReadonlyItem label="项目编码" labelWidth={100}>
+            {projectInfo?.code}
+          </ReadonlyItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1">
           <ReadonlyItem label="立项日期" labelWidth={100}>
             {projectInfo?.createdOn
               ? moment(projectInfo?.createdOn).format('YYYY-MM-DD HH:mm:ss')
               : ''}
           </ReadonlyItem>
         </div>
-      </div>
-      <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="状态" labelWidth={100}>
             {projectInfo?.stateInfo.showStatusText}
           </ReadonlyItem>
         </div>
+      </div>
+      <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="身份" labelWidth={100}>
             {tagElement}
           </ReadonlyItem>
         </div>
-      </div>
-      <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="分类" labelWidth={100}>
             {projectInfo?.categoryText}
           </ReadonlyItem>
         </div>
+      </div>
+      <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="立项组织" labelWidth={100}>
             {projectInfo?.createdCompanyName}
           </ReadonlyItem>
         </div>
-      </div>
-      <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="项目批次" labelWidth={100}>
             {projectInfo?.batchText}
-          </ReadonlyItem>
-        </div>
-
-        <div className="flex1">
-          <ReadonlyItem label="电压等级" labelWidth={100}>
-            {projectInfo?.kvLevelText}
           </ReadonlyItem>
         </div>
       </div>
@@ -93,30 +92,30 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
           </ReadonlyItem>
         </div>
         <div className="flex1">
-          <ReadonlyItem label="项目性质" labelWidth={100}>
-            {natureElement}
+          <ReadonlyItem label="电压等级" labelWidth={100}>
+            {projectInfo?.kvLevelText}
           </ReadonlyItem>
         </div>
       </div>
       <div className="flex">
+        <div className="flex1">
+          <ReadonlyItem label="项目性质" labelWidth={100}>
+            {natureElement}
+          </ReadonlyItem>
+        </div>
         <div className="flex1">
           <ReadonlyItem label="总投资(万元)" labelWidth={100}>
             {projectInfo?.totalInvest}
           </ReadonlyItem>
         </div>
+      </div>
+      <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="专业类别" labelWidth={100}>
             {projectInfo?.majorCategoryText}
           </ReadonlyItem>
         </div>
-      </div>
-      <div className="flex">
-        <div className="flex1">
-          <ReadonlyItem label="项目日期" labelWidth={100}>
-            {projectInfo?.startTime ? moment(projectInfo?.startTime).format('YYYY-MM-DD') : ''}至
-            {projectInfo?.endTime ? moment(projectInfo?.endTime).format('YYYY-MM-DD') : ''}
-          </ReadonlyItem>
-        </div>
+
         <div className="flex1">
           <ReadonlyItem label="资产性质" labelWidth={100}>
             {projectInfo?.assetsNatureText}
@@ -125,8 +124,9 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="改造原因" labelWidth={100}>
-            {projectInfo?.reformCauseText}
+          <ReadonlyItem label="项目日期" labelWidth={100}>
+            {projectInfo?.startTime ? moment(projectInfo?.startTime).format('YYYY-MM-DD') : ''}至
+            {projectInfo?.endTime ? moment(projectInfo?.endTime).format('YYYY-MM-DD') : ''}
           </ReadonlyItem>
         </div>
 
@@ -138,10 +138,11 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="供电所/班组" labelWidth={100}>
-            {projectInfo?.powerSupplyText}
+          <ReadonlyItem label="改造原因" labelWidth={100}>
+            {projectInfo?.reformCauseText}
           </ReadonlyItem>
         </div>
+
         <div className="flex1">
           <ReadonlyItem label="改造目的" labelWidth={100}>
             {projectInfo?.reformAimText}
@@ -150,15 +151,13 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="资产所属单位" labelWidth={100}>
-            {projectInfo?.assetsOrganization}
+          <ReadonlyItem label="供电所/班组" labelWidth={100}>
+            {projectInfo?.powerSupplyText}
           </ReadonlyItem>
         </div>
         <div className="flex1">
-          <ReadonlyItem label="所属市公司" labelWidth={100}>
-            <Tooltip title={projectInfo?.cityCompany} placement="topLeft">
-              {projectInfo?.cityCompany ? projectInfo?.cityCompany : '无'}
-            </Tooltip>
+          <ReadonlyItem label="资产所属单位" labelWidth={100}>
+            {projectInfo?.assetsOrganization}
           </ReadonlyItem>
         </div>
       </div>
@@ -176,16 +175,17 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
+          <ReadonlyItem label="所属市公司" labelWidth={100}>
+            <Tooltip title={projectInfo?.cityCompany} placement="topLeft">
+              {projectInfo?.cityCompany ? projectInfo?.cityCompany : '无'}
+            </Tooltip>
+          </ReadonlyItem>
+        </div>
+        <div className="flex1">
           <ReadonlyItem label="所属县公司" labelWidth={100}>
             <Tooltip title={projectInfo?.countyCompany}>
               {projectInfo?.countyCompany ? projectInfo?.countyCompany : '无'}
             </Tooltip>
-          </ReadonlyItem>
-        </div>
-
-        <div className="flex1">
-          <ReadonlyItem label="项目阶段" labelWidth={100}>
-            {projectInfo?.stageText}
           </ReadonlyItem>
         </div>
       </div>
@@ -203,13 +203,13 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
       </div>
       <div className="flex">
         <div className="flex1">
-          <ReadonlyItem label="现场数据来源" labelWidth={100}>
-            {projectInfo?.dataSourceTypeText}
+          <ReadonlyItem label="项目阶段" labelWidth={100}>
+            {projectInfo?.stageText}
           </ReadonlyItem>
         </div>
         <div className="flex1">
-          <ReadonlyItem label="气象区" labelWidth={100}>
-            {projectInfo?.meteorologicText}
+          <ReadonlyItem label="现场数据来源" labelWidth={100}>
+            {projectInfo?.dataSourceTypeText}
           </ReadonlyItem>
         </div>
       </div>
@@ -233,6 +233,13 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
             {projectInfo?.deadline ? moment(projectInfo?.deadline).format('YYYY-MM-DD') : ''}
           </ReadonlyItem>
         </div>
+        <div className="flex1">
+          <ReadonlyItem label="气象区" labelWidth={100}>
+            {projectInfo?.meteorologicText}
+          </ReadonlyItem>
+        </div>
+      </div>
+      <div className="flex">
         <div className="flex1">
           <ReadonlyItem label="备注" labelWidth={100}>
             <Tooltip title={projectInfo?.remark} placement="topLeft">
