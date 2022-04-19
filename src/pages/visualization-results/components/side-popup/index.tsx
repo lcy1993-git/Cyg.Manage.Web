@@ -637,7 +637,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         width="96%"
         onOk={onOkClick}
         onCancel={() => store.setMediaListVisibel(false)}
-        width={1200}
+        // width={1200}
         maskClosable={true}
       >
         <Table

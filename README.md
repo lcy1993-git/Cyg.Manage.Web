@@ -1179,7 +1179,6 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   ;(foo) => bar
-
   ;(foo) => bar
 
   // good
@@ -1378,16 +1377,16 @@ _一种写 JavaScript 更合理的代码风格。_
 
   ```javascript
   // bad
-  const AirbnbStyleGuide = require('./AirbnbStyleGuide');
-  module.exports = AirbnbStyleGuide.es6;
+  const AirbnbStyleGuide = require('./AirbnbStyleGuide')
+  module.exports = AirbnbStyleGuide.es6
 
   // ok
-  import AirbnbStyleGuide from './AirbnbStyleGuide';
-  export default AirbnbStyleGuide.es6;
+  import AirbnbStyleGuide from './AirbnbStyleGuide'
+  export default AirbnbStyleGuide.es6
 
   // best
-  import { es6 } from './AirbnbStyleGuide';
-  export default es6;
+  import { es6 } from './AirbnbStyleGuide'
+  export default es6
   ```
 
 <a name="modules--no-wildcard"></a><a name="10.2"></a>
@@ -1413,12 +1412,12 @@ _一种写 JavaScript 更合理的代码风格。_
   ```javascript
   // bad
   // filename es6.js
-  export { es6 as default } from './AirbnbStyleGuide';
+  export { es6 as default } from './AirbnbStyleGuide'
 
   // good
   // filename es6.js
-  import { es6 } from './AirbnbStyleGuide';
-  export default es6;
+  import { es6 } from './AirbnbStyleGuide'
+  export default es6
   ```
 
 <a name="modules--no-duplicate-imports"></a>
@@ -3293,11 +3292,11 @@ _一种写 JavaScript 更合理的代码风格。_
   class CheckBox {
     // ...
   }
-  export default CheckBox;
+  export default CheckBox
 
   // file 2 contents
   export default function fortyTwo() {
-    return 42;
+    return 42
   }
 
   // file 3 contents
@@ -3305,21 +3304,21 @@ _一种写 JavaScript 更合理的代码风格。_
 
   // in some other file
   // bad
-  import CheckBox from './checkBox'; // PascalCase import/export, camelCase filename
-  import FortyTwo from './FortyTwo'; // PascalCase import/filename, camelCase export
-  import InsideDirectory from './InsideDirectory'; // PascalCase import/filename, camelCase export
+  import CheckBox from './checkBox' // PascalCase import/export, camelCase filename
+  import FortyTwo from './FortyTwo' // PascalCase import/filename, camelCase export
+  import InsideDirectory from './InsideDirectory' // PascalCase import/filename, camelCase export
 
   // bad
-  import CheckBox from './check_box'; // PascalCase import/export, snake_case filename
-  import forty_two from './forty_two'; // snake_case import/filename, camelCase export
-  import inside_directory from './inside_directory'; // snake_case import, camelCase export
-  import index from './inside_directory/index'; // requiring the index file explicitly
-  import insideDirectory from './insideDirectory/index'; // requiring the index file explicitly
+  import CheckBox from './check_box' // PascalCase import/export, snake_case filename
+  import forty_two from './forty_two' // snake_case import/filename, camelCase export
+  import inside_directory from './inside_directory' // snake_case import, camelCase export
+  import index from './inside_directory/index' // requiring the index file explicitly
+  import insideDirectory from './insideDirectory/index' // requiring the index file explicitly
 
   // good
-  import CheckBox from './CheckBox'; // PascalCase export/import/filename
-  import fortyTwo from './fortyTwo'; // camelCase export/import/filename
-  import insideDirectory from './insideDirectory'; // camelCase export/import/directory name/implicit "index"
+  import CheckBox from './CheckBox' // PascalCase export/import/filename
+  import fortyTwo from './fortyTwo' // camelCase export/import/filename
+  import insideDirectory from './insideDirectory' // camelCase export/import/directory name/implicit "index"
   // ^ supports both insideDirectory.js and insideDirectory/index.js
   ```
 

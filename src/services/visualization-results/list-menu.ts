@@ -9,7 +9,7 @@ export interface MaterialDataType {
   pieceWeight?: number
   spec?: string
   state?: string
-  type: string
+  type?: string
   unit?: string
   unitPrice?: number
   remark?: string

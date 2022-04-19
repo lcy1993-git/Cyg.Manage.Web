@@ -9,6 +9,7 @@ import EditArrangeModal from '@/pages/project-management/all-project/components/
 import ExternalArrangeModal from '@/pages/project-management/all-project/components/external-arrange-modal'
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
+import ProjectRemovalModal from '@/pages/project-management/all-project/components/project-removal-modal'
 // import ProjectRemovalModal from '@/pages/project-management/all-project/components/project-removal-modal'
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
@@ -17,6 +18,7 @@ import {
   applyKnot,
   canEditArrange,
   checkCanArrange,
+  checkCanRemoval,
   deleteProject,
   getProjectInfo,
   receiveProject,
@@ -70,7 +72,7 @@ const MyProject: React.FC = () => {
   const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false)
 
   //项目迁移弹窗
-  // const [removalModalVisible, setRemovalModalVisible] = useState<boolean>(false)
+  const [removalModalVisible, setRemovalModalVisible] = useState<boolean>(false)
 
   const { userType = '' } = useGetUserInfo()
 
@@ -565,9 +567,26 @@ const MyProject: React.FC = () => {
   }
 
   //项目迁移
-  // const removalEvent = () => {
-  //   setRemovalModalVisible(true)
-  // }
+  const removalEvent = async () => {
+    if (tableSelectKeys && tableSelectKeys.length === 0) {
+      message.info('请先选择需要迁移的项目')
+      return
+    }
+    //后端判断身份
+    await checkCanRemoval({ projectIds: tableSelectKeys })
+
+    //前端判断项目身份
+    // const canRemoval = tableSelectRowData
+    //   .map((item: any) => {
+    //     return item.identitys.findIndex((item: any) => item.value === 1) > -1
+    //   })
+    //   .includes(false)
+    // if (canRemoval) {
+    //   message.error('存在项目身份不是[立项]，无法执行此操作')
+    //   return
+    // }
+    setRemovalModalVisible(true)
+  }
 
   return (
     <div className={styles.myProjectContent}>
@@ -646,9 +665,9 @@ const MyProject: React.FC = () => {
                   </div>
                 )}
               {/* {buttonJurisdictionArray?.includes('add-favorite-project') && !sideVisible && ( */}
-              {/* <Button className="mr7" onClick={() => removalEvent()}>
+              <Button className="mr7" onClick={() => removalEvent()}>
                 项目迁移
-              </Button> */}
+              </Button>
               {/* // )} */}
             </div>
           )}
@@ -764,14 +783,14 @@ const MyProject: React.FC = () => {
           refresh={delayRefresh}
         />
       )}
-      {/* {removalModalVisible && (
+      {removalModalVisible && (
         <ProjectRemovalModal
           visible={removalModalVisible}
           finishEvent={delayRefresh}
           onChange={setRemovalModalVisible}
-          projectId={tableSelectKeys}
+          projectIds={tableSelectKeys}
         />
-      )} */}
+      )}
     </div>
   )
 }

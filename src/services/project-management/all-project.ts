@@ -1015,7 +1015,7 @@ export const receiveProject = (projectIds: string[]) => {
 
 //合并项目获取结果
 export const getComparisonResult = (params: {
-  sourceProjectId: string
+  sourceProjectId: string[]
   targetProjectId: string
 }) => {
   return cyRequest(() =>
@@ -1039,4 +1039,24 @@ export const saveProjectMerge = (params: { sourceProjectId: string; targetProjec
 //获取行政区域
 export const getCityAreas = () => {
   return request(`${webConfig.commonServer}/api/Area/GetTreeList`)
+}
+
+//迁移前置检查
+export const checkCanRemoval = (params: { projectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/PorjectMigrate/CheckPreconditions`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+
+//确认项目迁移
+export const sureRemoval = (params: { targetEngineerId: string; projectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/PorjectMigrate/Migrate`, {
+      method: 'POST',
+      data: params,
+    })
+  )
 }
