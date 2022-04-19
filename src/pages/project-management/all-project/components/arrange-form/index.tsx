@@ -19,6 +19,7 @@ import styles from './index.less'
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void
   getCompanyInfo?: (companyInfo: any) => void
+  getRemark?: (allotInfo: any) => void
   defaultType?: string
   allotCompanyId?: string | undefined
   dataSourceType?: number
@@ -30,6 +31,7 @@ const { TextArea } = Input
 const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const {
     onChange,
+    getRemark,
     getCompanyInfo,
     defaultType = '2',
     allotCompanyId = '',
@@ -295,7 +297,12 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
             {companyInfo?.text}
           </ReadonlyItem>
           <CyFormItem label="备注">
-            <TextArea showCount maxLength={100} placeholder="备注说明" />
+            <TextArea
+              showCount
+              maxLength={100}
+              placeholder="备注说明"
+              onChange={(e) => getRemark?.(e.target.value)}
+            />
           </CyFormItem>
         </>
       )}

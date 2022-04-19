@@ -115,6 +115,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     key: 'remark',
   },
 ]
+
 export const MaterialTableNew: FC<MaterialTableProps> = (props) => {
   const { data, loading } = props
   return (

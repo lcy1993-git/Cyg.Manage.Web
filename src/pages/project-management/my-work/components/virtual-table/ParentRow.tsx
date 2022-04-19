@@ -5,10 +5,10 @@ import Expander from './Expander'
 import { Column, OriginParams } from './VirtualTable'
 
 export function allocateWidth(width: number, buckets: number) {
-  const result = []
+  const result = [600]
 
   while (buckets) {
-    const slicedWidth = ~~(width / buckets)
+    const slicedWidth = ~~((width - 600) / (buckets - 1))
     result.push(slicedWidth)
     width -= slicedWidth
     buckets--

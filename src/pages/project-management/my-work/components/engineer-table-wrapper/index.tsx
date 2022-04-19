@@ -524,14 +524,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     {
       title: '项目名称',
       dataIndex: 'name',
-      width: 600,
+      width: 400, // TODO:
       render: projectNameCompleteRender,
       fixed: 'left',
       ellipsis: true,
     },
     {
       title: '项目编号',
-      dataIndex: 'id',
+      dataIndex: 'code',
       width: 180,
       ellipsis: true,
     },

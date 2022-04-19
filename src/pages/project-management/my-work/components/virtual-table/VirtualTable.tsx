@@ -144,13 +144,12 @@ const VirtualTable = <T extends Record<string, any>>(
           rowHeight: itemSize,
           tableWidth,
           tableHeight,
-          maxRowWidth: columns.reduce((s, c) => (s += c.width), 0),
+          maxRowWidth: columns.reduce((s, c) => (s += c.width ? c.width : 0), 0),
           rowSelection,
           selectedKeys,
           updateSelectedKeysFlow,
           ...rest,
         }
-
         return (
           <FixedSizeList
             style={style}
