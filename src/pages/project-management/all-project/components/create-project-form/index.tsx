@@ -32,8 +32,8 @@ const { TextArea } = Input
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const {
     field = {},
-    areaId,
-    company,
+    // areaId,
+    // company,
     pointVisible,
     status,
     projectId,
@@ -491,22 +491,12 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         <div className="flex1 flowHidden">
           <CyFormItem
             label="供电所/班组"
-            rules={Rule.powerSupply}
             fieldKey={[field.fieldKey, 'powerSupply']}
             name={isEmpty(field) ? 'powerSupply' : [field.name, 'powerSupply']}
             labelWidth={120}
             align="right"
-            required
           >
-            <UrlSelect
-              url="/ElectricityCompany/GetPowerSupplys"
-              extraParams={{ areaId, company }}
-              paramsMust={['areaId', 'company']}
-              requestType="post"
-              placeholder="请选择"
-              valuekey="value"
-              titlekey="text"
-            />
+            <Input placeholder="请输入供电所/班组" />
           </CyFormItem>
         </div>
       </div>

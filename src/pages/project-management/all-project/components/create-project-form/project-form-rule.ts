@@ -32,5 +32,4 @@ export default {
   ],
   natures: [{ required: true, message: '项目性质不能为空' }],
   assetsNature: [{ required: true, message: '资产性质不能为空' }],
-  powerSupply: [{ required: true, message: '供电所/班组不能为空' }],
 }

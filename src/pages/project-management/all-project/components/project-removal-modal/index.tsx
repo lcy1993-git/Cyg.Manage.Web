@@ -22,7 +22,6 @@ interface ProjectRemovalModalProps {
 const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [keyWord, setKeyWord] = useState('')
-  const [checkData, setCheckData] = useState<any>([])
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
 

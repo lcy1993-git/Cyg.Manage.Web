@@ -24,7 +24,7 @@ const { TextArea } = Input
 const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [nature, setNature] = useState<string>()
-  const [powerSupplySelectData, setPowerSupplySelectData] = useState<any[]>([])
+  // const [powerSupplySelectData, setPowerSupplySelectData] = useState<any[]>([])
   const [powerSupply, setPowerSupply] = useState<string>('')
   const [dataSourceType, setDataSourceType] = useState<number>()
   const [disRangeValue, setDisRangeValue] = useState<number>()
@@ -58,7 +58,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           : projectInfo?.pileRange,
     })
     setDataSourceType(projectInfo?.dataSourceType)
-    setPowerSupplySelectData(selectData.departmentSelectData)
+    // setPowerSupplySelectData(selectData.departmentSelectData)
     setPowerSupply(projectInfo.powerSupply)
   }, [JSON.stringify(projectInfo)])
 
@@ -140,6 +140,13 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1 flowHidden">
+              <CyFormItem label="项目编码" name="code" labelWidth={120} align="right">
+                <Input placeholder="请输入项目编码" />
+              </CyFormItem>
+            </div>
+          </div>
+          <div className="flex">
+            <div className="flex1 flowHidden">
               <CyFormItem
                 label="项目分类"
                 initialValue={1}
@@ -155,6 +162,11 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   titlekey="text"
                   placeholder="请选择"
                 />
+              </CyFormItem>
+            </div>
+            <div className="flex1 flowHidden">
+              <CyFormItem label="截止日期" name="deadline" labelWidth={120} align="right">
+                <DatePicker placeholder="请选择" />
               </CyFormItem>
             </div>
           </div>
@@ -192,33 +204,6 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   valuekey="value"
                   titlekey="text"
                   placeholder="请选择"
-                />
-              </CyFormItem>
-            </div>
-          </div>
-          <div className="flex">
-            <div className="flex1 flowHidden">
-              <CyFormItem label="总投资(万元)" labelWidth={120} align="right" name="totalInvest">
-                <Input placeholder="请输入" />
-              </CyFormItem>
-            </div>
-            <div className="flex1 flowHidden">
-              <CyFormItem
-                label="项目性质"
-                labelWidth={120}
-                align="right"
-                rules={Rule.required}
-                name="natures"
-                required
-              >
-                <UrlSelect
-                  defaultData={projectNature}
-                  mode="multiple"
-                  valuekey="value"
-                  titlekey="text"
-                  placeholder="请选择"
-                  value={nature}
-                  onChange={(value) => setNature(value as string)}
                 />
               </CyFormItem>
             </div>
@@ -305,6 +290,33 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           </div>
           <div className="flex">
             <div className="flex1 flowHidden">
+              <CyFormItem label="总投资(万元)" labelWidth={120} align="right" name="totalInvest">
+                <Input placeholder="请输入" />
+              </CyFormItem>
+            </div>
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                label="项目性质"
+                labelWidth={120}
+                align="right"
+                rules={Rule.required}
+                name="natures"
+                required
+              >
+                <UrlSelect
+                  defaultData={projectNature}
+                  mode="multiple"
+                  valuekey="value"
+                  titlekey="text"
+                  placeholder="请选择"
+                  value={nature}
+                  onChange={(value) => setNature(value as string)}
+                />
+              </CyFormItem>
+            </div>
+          </div>
+          <div className="flex">
+            <div className="flex1 flowHidden">
               <CyFormItem
                 label="是否跨年项目"
                 initialValue={'false'}
@@ -359,20 +371,12 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               </CyFormItem>
             </div>
             <div className="flex1 flowHidden">
-              <CyFormItem
-                label="供电所/班组"
-                rules={Rule.required}
-                name="powerSupply"
-                labelWidth={120}
-                align="right"
-                required
-              >
+              <CyFormItem label="供电所/班组" name="powerSupply" labelWidth={120} align="right">
                 <div>
-                  <DataSelect
-                    style={{ width: '100%' }}
+                  <Input
+                    placeholder="请输入供电所/班组"
                     value={powerSupply}
-                    options={powerSupplySelectData}
-                    onChange={(value) => powerSupplyOnchange(value)}
+                    onChange={(e: any) => powerSupplyOnchange(e.target.value)}
                   />
                 </div>
               </CyFormItem>
@@ -553,11 +557,6 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
 
           <div className="flex">
             <div className="flex1 flowHidden">
-              <CyFormItem label="截止日期" name="deadline" labelWidth={120} align="right">
-                <DatePicker placeholder="请选择" />
-              </CyFormItem>
-            </div>
-            <div className="flex1 flowHidden">
               <CyFormItem
                 label="现场数据来源"
                 initialValue={0}
@@ -581,9 +580,6 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 />
               </CyFormItem>
             </div>
-          </div>
-
-          <div className="flex">
             <div className="flex1 flowHidden">
               {dataSourceType === 2 || disRangeValue === 0 ? (
                 <CyFormItem
@@ -655,6 +651,9 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 </CyFormItem>
               )}
             </div>
+          </div>
+
+          <div className="flex">
             <div className="flex1 flowHidden">
               {dataSourceType === 2 ? (
                 <CyFormItem
@@ -722,8 +721,6 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 </CyFormItem>
               )}
             </div>
-          </div>
-          <div className="flex">
             <div className="flex1 flowHidden">
               <CyFormItem label="备注" name="remark" labelWidth={120} align="right">
                 <TextArea
