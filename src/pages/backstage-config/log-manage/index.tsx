@@ -1,37 +1,37 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { EyeOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker } from 'antd';
-import React, { useRef, useState } from 'react';
-import { isArray } from 'lodash';
-import TableSearch from '@/components/table-search';
-import styles from './index.less';
-import LogDetailTab from './components/tabs';
-import moment, { Moment } from 'moment';
-import UrlSelect from '@/components/url-select';
-import { useRequest } from 'ahooks';
-import { getLogManageDetail } from '@/services/system-config/log-manage';
-import { Spin } from 'antd';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { EyeOutlined } from '@ant-design/icons'
+import { Button, Modal, message, Input, DatePicker } from 'antd'
+import React, { useRef, useState } from 'react'
+import { isArray } from 'lodash'
+import TableSearch from '@/components/table-search'
+import styles from './index.less'
+import LogDetailTab from './components/tabs'
+import moment, { Moment } from 'moment'
+import UrlSelect from '@/components/url-select'
+import { useRequest } from 'ahooks'
+import { getLogManageDetail } from '@/services/system-config/log-manage'
+import { Spin } from 'antd'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
-const { Search } = Input;
+const { Search } = Input
 
 const LogManage: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
-  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
-  const [searchContentKeyWord, setSearchContentKeyWord] = useState<string>('');
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
+  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('')
+  const [searchContentKeyWord, setSearchContentKeyWord] = useState<string>('')
 
-  const [beginDate, setBeginDate] = useState<Moment | null>();
-  const [endDate, setEndDate] = useState<Moment | null>();
-  const [applications, setApplications] = useState<string | undefined>();
-  const [level, setLevel] = useState<string | undefined>();
-  const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const [beginDate, setBeginDate] = useState<Moment | null>()
+  const [endDate, setEndDate] = useState<Moment | null>()
+  const [applications, setApplications] = useState<string | undefined>()
+  const [level, setLevel] = useState<string | undefined>()
+  const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const { loading, run: getDetailData, data: detailData = {} } = useRequest(getLogManageDetail, {
     manual: true,
-  });
+  })
 
   const rightButton = () => {
     return (
@@ -43,42 +43,42 @@ const LogManage: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const searchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据查看详情');
-      return;
+      message.error('请选择一条数据查看详情')
+      return
     }
-    setLogDetailVisible(true);
+    setLogDetailVisible(true)
 
-    await getDetailData(tableSelectRows[0].id);
-  };
+    await getDetailData(tableSelectRows[0].id)
+  }
 
   //重置后，条件添加onChange事件重新获取value
   const handleBeginDate = (value: any) => {
-    setBeginDate(value);
-  };
+    setBeginDate(value)
+  }
   const handleEndDate = (value: any) => {
-    setEndDate(value);
-  };
+    setEndDate(value)
+  }
 
   const handleAppSelect = (value: any) => {
-    setApplications(value);
-  };
+    setApplications(value)
+  }
   const handleLevelSelect = (value: any) => {
-    setLevel(value);
-  };
+    setLevel(value)
+  }
 
   const leftSearchElement = () => {
     return (
       <div className={styles.searchGroup}>
-        <TableSearch label="搜索" width="208px">
+        <TableSearch width="208px">
           <Search
             value={searchApiKeyWord}
             onSearch={() => search()}
@@ -87,7 +87,7 @@ const LogManage: React.FC = () => {
             enterButton
           />
         </TableSearch>
-        <TableSearch label="" width="200px">
+        <TableSearch label="" width="200px" marginLeft="20px">
           <Search
             value={searchContentKeyWord}
             onSearch={() => search()}
@@ -143,33 +143,33 @@ const LogManage: React.FC = () => {
           </div>
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search();
+      tableRef.current?.search()
     }
-  };
+  }
   //数据修改刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   //重置搜索条件
   const resetEvent = () => {
-    setSearchApiKeyWord('');
-    setSearchContentKeyWord('');
-    setBeginDate(null);
-    setEndDate(null);
-    setApplications(undefined);
-    setLevel(undefined);
-    tableFresh();
-  };
+    setSearchApiKeyWord('')
+    setSearchContentKeyWord('')
+    setBeginDate(null)
+    setEndDate(null)
+    setApplications(undefined)
+    setLevel(undefined)
+    tableFresh()
+  }
 
   const columns = [
     {
@@ -207,7 +207,7 @@ const LogManage: React.FC = () => {
       index: 'executeDate',
       width: 180,
       render: (text: any, record: any) => {
-        return moment(record.executeDate).format('YYYY-MM-DD HH:MM:SS');
+        return moment(record.executeDate).format('YYYY-MM-DD HH:MM:SS')
       },
     },
     {
@@ -220,10 +220,10 @@ const LogManage: React.FC = () => {
           <span style={{ color: '#FA4E25' }}>{record.timeCost.toFixed(2)}</span>
         ) : (
           <span>{record.timeCost.toFixed(2)}</span>
-        );
+        )
       },
     },
-  ];
+  ]
 
   return (
     <PageCommonWrap>
@@ -261,7 +261,7 @@ const LogManage: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default LogManage;
+export default LogManage

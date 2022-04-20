@@ -387,6 +387,7 @@ export interface OperateLog {
 interface ProjectInfoParams {
   id: string
   name: string
+  amountWork: string
   category: string
   categoryText: string
   canEditStage: boolean

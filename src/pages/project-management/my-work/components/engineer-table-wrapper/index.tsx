@@ -1175,7 +1175,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <div className={styles.engineerTableWrapperSearchLeft}>
           <TableSearch className="mr22" label="" width="300px">
             <Search
-              placeholder="请输入工程/项目名称"
+              placeholder="请输入工程/项目名称/项目编码"
               enterButton
               value={keyWord}
               onChange={(e) => setKeyWord(e.target.value)}

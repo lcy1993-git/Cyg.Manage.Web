@@ -54,6 +54,9 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           <TabPane key="process" tab="项目过程" style={{ height: '650px', overflowY: 'auto' }}>
             <ProjectProcessInfo operateLog={projectInfo?.operateLog ?? []} />
           </TabPane>
+          <TabPane key="amountWork" tab="工程量" style={{ height: '650px', overflowY: 'auto' }}>
+            <div className={styles.amountWork}>{projectInfo?.amountWork ?? []} </div>
+          </TabPane>
           {projectInfo &&
             ((projectInfo.stateInfo.status > 4 &&
               projectInfo.stateInfo.status !== 14 &&
