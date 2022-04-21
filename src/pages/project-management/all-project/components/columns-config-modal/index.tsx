@@ -29,7 +29,7 @@ const ColumnsConfigModal: React.FC<ColumnsConfigProps> = (props) => {
       must: true,
     },
     {
-      title: '项目编号',
+      title: '项目编码',
       dataIndex: 'code',
     },
     {

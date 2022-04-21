@@ -664,11 +664,11 @@ const MyProject: React.FC = () => {
                     />
                   </div>
                 )}
-              {/* {buttonJurisdictionArray?.includes('add-favorite-project') && !sideVisible && ( */}
-              <Button className="mr7" onClick={() => removalEvent()}>
-                项目迁移
-              </Button>
-              {/* // )} */}
+              {buttonJurisdictionArray?.includes('all-project-removal') && (
+                <Button className="mr7" onClick={() => removalEvent()}>
+                  项目迁移
+                </Button>
+              )}
             </div>
           )}
       </div>

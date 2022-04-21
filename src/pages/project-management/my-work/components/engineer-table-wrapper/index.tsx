@@ -418,7 +418,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     const projects = record.engineerInfo.projects
     const parentData = projects.filter((item: any) => item.id === record.inheritId)
 
-    if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
+    if (record.stateInfo.inheritStatus) {
       if (record.stateInfo.inheritStatus === 3) {
         return (
           <>
@@ -530,10 +530,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       ellipsis: true,
     },
     {
-      title: '项目编号',
+      title: '项目编码',
       dataIndex: 'code',
-      width: 180,
+      width: 200,
       ellipsis: true,
+      render: (text: any, record: any) => {
+        return showNameTips(record.code)
+      },
     },
     {
       title: '现场数据来源',

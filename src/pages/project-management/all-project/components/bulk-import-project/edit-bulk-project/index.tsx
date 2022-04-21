@@ -141,7 +141,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
             </div>
             <div className="flex1 flowHidden">
               <CyFormItem label="项目编码" name="code" labelWidth={120} align="right">
-                <Input placeholder="请输入项目编码" />
+                <Input placeholder="请输入项目编码" maxLength={64} />
               </CyFormItem>
             </div>
           </div>
