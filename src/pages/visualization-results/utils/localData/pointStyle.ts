@@ -167,7 +167,21 @@ const pointStyle = function (
   let value = type.substring(type.split('_')[0].length + 1, type.length)
   let scale = 1
   if (resolution && resolution < 0.2) {
-    scale = 0.2 / resolution
+    if (resolution >= 0.1) {
+      scale = 0.15 / resolution
+    } else if (resolution >= 0.05 && resolution < 0.1) {
+      scale = 0.12 / resolution
+    } else if (resolution >= 0.02 && resolution < 0.05) {
+      scale = 0.09 / resolution
+    } else if (resolution >= 0.01 && resolution < 0.02) {
+      scale = 0.06 / resolution
+    } else if (resolution >= 0.005 && resolution < 0.01) {
+      scale = 0.03 / resolution
+    } else if (resolution < 0.005) {
+      scale = 0.02 / resolution
+    } else {
+      scale = 0.2 / resolution
+    }
   }
   size = Styles[value].size * scale
   backgroundColor = Styles[value].backgroundColor
@@ -758,10 +772,10 @@ const pointStyle = function (
 
   if (selected) {
     // 选中样式
-    size = Styles[value].selected.size
+    size = Styles[value].selected.size * scale
     backgroundColor = Styles[value].selected.backgroundColor
-    fillSize = Styles[value].selected.fillSize
-    strokeSize = Styles[value].selected.strokeSize
+    fillSize = Styles[value].selected.fillSize * scale
+    strokeSize = Styles[value].selected.strokeSize * scale
     color = Styles[value].selected.color
     fillColor = Styles[value].selected.fillColor
     strokeColor = Styles[value].selected.strokeColor

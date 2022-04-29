@@ -310,7 +310,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         if (layerName === 'zero_guy') {
           highlightStyle = zero_guy_style(featureClone, true)
         } else if (type.indexOf('point') >= 0) {
-          highlightStyle = pointStyle(layer.getProperties().name, featureClone, true)
+          highlightStyle = pointStyle(
+            layer.getProperties().name,
+            featureClone,
+            true,
+            false,
+            map.getView().getResolution()
+          )
         } else if (layerName === 'cable_channel') {
           highlightStyle = cable_channel_styles(featureClone, true)
         } else {
