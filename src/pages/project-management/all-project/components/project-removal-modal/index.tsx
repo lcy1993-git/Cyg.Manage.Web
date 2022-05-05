@@ -1,11 +1,7 @@
 import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
 import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
-import {
-  checkCanRemoval,
-  getComparisonResult,
-  sureRemoval,
-} from '@/services/project-management/all-project'
+import { checkCanRemoval, sureRemoval } from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Input, message, Modal, Spin } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
@@ -142,7 +138,7 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
     >
       <>
         <div className={styles.removalTitle}>
-          *项目仅可在您立项的工作之间进行迁移；以下列表仅列出符合上述条件的工程；
+          *项目仅可在您立项的工程之间进行迁移；以下列表仅列出符合上述条件的工程；
         </div>
         {/* <div className={styles.mergeTitle}>&nbsp;</div> */}
         <Spin spinning={loading} tip="项目迁移中...">
