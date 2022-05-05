@@ -158,7 +158,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         const handleProjects = item.projects.map((ite: any) => {
           return {
             ...ite,
-            powerSupply: null,
+            // powerSupply: null,
           }
         })
         return {
@@ -300,7 +300,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         const handleProjects = item.projects.map((ite: any) => {
           return {
             ...ite,
-            powerSupply: null,
+            // powerSupply: null,
           }
         })
         return {
@@ -760,14 +760,14 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         tipMessage += '未选择协议库。'
       }
 
-      if (judgeInfo.errorInfo.departmentNoChoose.length > 0) {
-        judgeInfo.errorInfo.departmentNoChoose.forEach((item, index) => {
-          tipMessage = tipMessage + item.name
-        })
-        tipMessage += '下第一个项目未选择部组。'
-      }
-      message.error(tipMessage)
-      return
+      // if (judgeInfo.errorInfo.departmentNoChoose.length > 0) {
+      //   judgeInfo.errorInfo.departmentNoChoose.forEach((item, index) => {
+      //     tipMessage = tipMessage + item.name
+      //   })
+      //   tipMessage += '下第一个项目未选择部组。'
+      // }
+      // message.error(tipMessage)
+      // return
     }
 
     const submitInfo = handleFinallyData()
