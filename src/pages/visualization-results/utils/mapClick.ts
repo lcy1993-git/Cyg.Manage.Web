@@ -111,12 +111,12 @@ const lineTowerType = [
 /**
  * 用于记录当前鼠标停留的要素
  */
-let selectedFeature: any = null
+let selectedFeature = null
 /**
  * 用于筛选展示的勘察、交底轨迹点位
  */
 let trackRecordDate = ''
-let mapContent: any = null
+let mapContent = null
 export const mapClick = (evt: any, map: any, ops: any) => {
   mapContent = map
 
@@ -310,6 +310,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         if (layerName === 'zero_guy') {
           highlightStyle = zero_guy_style(featureClone, true)
         } else if (type.indexOf('point') >= 0) {
+          featureClone.set('feature_name', layer.getProperties().name)
           highlightStyle = pointStyle(
             layer.getProperties().name,
             featureClone,
@@ -628,7 +629,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     // 相应数据到右侧边栏
     const resData = []
-    const propertiesData: any = []
+    const propertiesData = []
     if (elementTypeEnum[layerName] !== '轨迹点') {
       resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' })
     }
@@ -736,7 +737,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             })
             if (materialItemData.isSuccess) {
               const materialId = feature.getProperties().material_id
-              const currentItem = materialItemData?.content?.find((item: any) => {
+              const currentItem = materialItemData?.content?.find((item) => {
                 return item.addFlagID && item.addFlagID === materialId
               })
 
@@ -814,6 +815,30 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
 // 当前经纬度映射到HTML节点
 export const mapPointermove = (evt: any, map: any) => {
+  let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
+  if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
+    let type = highlightLayer
+      .getSource()
+      .getFeatures()[0]
+      .getGeometry()
+      .getType()
+      .toLocaleLowerCase()
+
+    if (type.indexOf('point') >= 0) {
+      highlightLayer
+        .getSource()
+        .getFeatures()[0]
+        .setStyle(
+          pointStyle(
+            highlightLayer.getSource().getFeatures()[0].get('feature_name'),
+            highlightLayer.getSource().getFeatures()[0],
+            true,
+            false,
+            map.getView().getResolution()
+          )
+        )
+    }
+  }
   let coordinate = evt.coordinate
   let lont = transform(coordinate, 'EPSG:3857', 'EPSG:4326')
   const x = document.getElementById('currentPositionX')
@@ -856,7 +881,7 @@ export const mapPointermove = (evt: any, map: any) => {
     // 获取的图层时轨迹点图层
     if (layerName === 'survey_Track' || layerName === 'disclosure_Track') {
       // 获取全部地图图层
-      map.getLayers().forEach((item: any) => {
+      map.getLayers().forEach((item) => {
         if (
           item.get('name') === 'surveyTrackLayers' ||
           item.get('name') === 'disclosureTrackLayers'
@@ -869,7 +894,7 @@ export const mapPointermove = (evt: any, map: any) => {
             .item(1)
             ?.getSource()
             .getFeatures()
-            .forEach((item: any) => {
+            .forEach((item) => {
               if (
                 item.getProperties().record_date.substr(0, 10) ===
                 feature.getProperties().record_date.substr(0, 10)
@@ -883,7 +908,7 @@ export const mapPointermove = (evt: any, map: any) => {
     // 获取的图层时轨迹线图层
     else if (layerName === 'survey_TrackLine' || layerName === 'disclosure_TrackLine') {
       // 获取全部地图图层
-      map.getLayers().forEach((item: any) => {
+      map.getLayers().forEach((item) => {
         if (
           item.get('name') === 'surveyTrackLayers' ||
           item.get('name') === 'disclosureTrackLayers'
@@ -894,7 +919,7 @@ export const mapPointermove = (evt: any, map: any) => {
             .item(1)
             ?.getSource()
             .getFeatures()
-            .forEach((item: any) => {
+            .forEach((item) => {
               if (
                 item.getProperties().record_date.substr(0, 10) ===
                 feature.getProperties().record_date.substr(0, 10)
@@ -924,14 +949,14 @@ export const chooseCurDayTrack = (currentDate: string) => {
 }
 
 function setTrackLayerDefaultStyle(map: any, locked: boolean = false) {
-  map.getLayers().forEach((item: any) => {
+  map.getLayers().forEach((item) => {
     if (item.get('name') === 'surveyTrackLayers' || item.get('name') === 'disclosureTrackLayers') {
       item
         .getLayers()
         .item(0)
         ?.getSource()
         .getFeatures()
-        .forEach((item: any) => {
+        .forEach((item) => {
           // 为所有轨迹点设置默认样式
           item.setStyle(trackStyle(isCurDayTrack(item), false, locked))
         })
@@ -940,7 +965,7 @@ function setTrackLayerDefaultStyle(map: any, locked: boolean = false) {
         .item(1)
         ?.getSource()
         .getFeatures()
-        .forEach((item: any) => {
+        .forEach((item) => {
           // 为整条轨迹线设置默认样式
           item.setStyle(trackLineStyle(item, isCurDayTrack(item), false, locked))
         })
