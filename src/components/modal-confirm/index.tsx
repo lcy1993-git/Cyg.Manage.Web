@@ -27,7 +27,6 @@ const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
     }
     Modal.confirm({
       title: '提示',
-      bodyStyle: { padding: 0 },
       icon: <ExclamationCircleOutlined />,
       content: contentSlot ? contentSlot?.() : content,
       okText: '确认',
