@@ -17,7 +17,6 @@ import Cluster from 'ol/source/Cluster'
 import VectorSource from 'ol/source/Vector'
 import { getStyle } from '../history-grid/components/history-map-base/styles'
 import { getDataByProjectId } from '../history-grid/service'
-import { layerLevleParams } from './localData/layerLevle'
 import { layerParams, LayerParams } from './localData/layerParamsData'
 import {
   cable_channel_styles,
@@ -277,16 +276,9 @@ const loadLayers = (
   layerParams.forEach((item: LayerParams) => {
     // if (postData.length > 576) {
     let layerName = item.layerName
-    let layerLevelData = layerLevleParams.find((item: any) => item.layerName === layerName)
-    if (
-      layerLevelData &&
-      map.getView().getResolution() >= layerLevelData.minLevel &&
-      map.getView().getResolution() <= layerLevelData.maxLevel
-    ) {
-      loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
-        loadWFSData(data, layerType, layerName, group, groupLayers, item)
-      )
-    }
+    loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
+      loadWFSData(data, layerType, layerName, group, groupLayers, item)
+    )
 
     // }
   })

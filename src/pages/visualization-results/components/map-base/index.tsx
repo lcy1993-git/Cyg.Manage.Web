@@ -118,7 +118,7 @@ const BaseMap = observer((props: BaseMapProps) => {
     )
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap))
     initialMap.on('moveend', (e: Event) => {
-      refreshMap(ops, null)
+      // refreshMap(ops, null)
       mapMoveend(e, initialMap)
     })
     initialMap.getView().on('change:resolution', (e: Event) => checkZoom(e, initialMap))

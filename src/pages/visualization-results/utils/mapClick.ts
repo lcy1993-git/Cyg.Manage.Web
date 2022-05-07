@@ -310,6 +310,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         if (layerName === 'zero_guy') {
           highlightStyle = zero_guy_style(featureClone, true)
         } else if (type.indexOf('point') >= 0) {
+          featureClone.set('feature_name', layer.getProperties().name)
           highlightStyle = pointStyle(
             layer.getProperties().name,
             featureClone,
@@ -814,6 +815,30 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
 // 当前经纬度映射到HTML节点
 export const mapPointermove = (evt: any, map: any) => {
+  let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
+  if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
+    let type = highlightLayer
+      .getSource()
+      .getFeatures()[0]
+      .getGeometry()
+      .getType()
+      .toLocaleLowerCase()
+
+    if (type.indexOf('point') >= 0) {
+      highlightLayer
+        .getSource()
+        .getFeatures()[0]
+        .setStyle(
+          pointStyle(
+            highlightLayer.getSource().getFeatures()[0].get('feature_name'),
+            highlightLayer.getSource().getFeatures()[0],
+            true,
+            false,
+            map.getView().getResolution()
+          )
+        )
+    }
+  }
   let coordinate = evt.coordinate
   let lont = transform(coordinate, 'EPSG:3857', 'EPSG:4326')
   const x = document.getElementById('currentPositionX')
