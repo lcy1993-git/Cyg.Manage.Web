@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite'
 import LayerGroup from 'ol/layer/Group'
 import Map from 'ol/Map'
 import { transform } from 'ol/proj'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useContainer } from '../../result-page/mobx-store'
 import { bd09Towgs84 } from '../../utils'
 import { BaseMapProps } from '../../utils/init'
@@ -104,6 +104,8 @@ const BaseMap = observer((props: BaseMapProps) => {
       initialMap.addLayer(item)
     })
 
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel }
+
     // 地图点击事件
     initialMap.on('click', (e: Event) =>
       mapClick(e, initialMap, {
@@ -115,10 +117,12 @@ const BaseMap = observer((props: BaseMapProps) => {
       })
     )
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap))
-    initialMap.on('moveend', (e: Event) => mapMoveend(e, initialMap))
+    initialMap.on('moveend', (e: Event) => {
+      // refreshMap(ops, null)
+      mapMoveend(e, initialMap)
+    })
     initialMap.getView().on('change:resolution', (e: Event) => checkZoom(e, initialMap))
 
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel }
     refreshMap(ops, projects!)
     setMap(initialMap)
 
