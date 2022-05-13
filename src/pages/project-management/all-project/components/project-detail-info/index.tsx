@@ -32,6 +32,14 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
     }
   }, [state])
 
+  const processTitle = () => {
+    return (
+      <span>
+        项目过程<span className={styles.unread}></span>
+      </span>
+    )
+  }
+
   return (
     <Modal
       maskClosable={false}
@@ -51,7 +59,12 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           {/* <TabPane key="schedule" tab="项目进度">
             <ProjectSchedule />
           </TabPane> */}
-          <TabPane key="process" tab="项目过程" style={{ height: '650px', overflowY: 'auto' }}>
+
+          <TabPane
+            key="process"
+            tab={processTitle()}
+            style={{ height: '650px', overflowY: 'auto' }}
+          >
             <ProjectProcessInfo operateLog={projectInfo?.operateLog ?? []} />
           </TabPane>
           <TabPane key="amountWork" tab="工程量" style={{ height: '650px', overflowY: 'auto' }}>

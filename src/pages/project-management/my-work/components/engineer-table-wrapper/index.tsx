@@ -33,6 +33,7 @@ import {
   BarsOutlined,
   ExclamationCircleOutlined,
   LinkOutlined,
+  MessageOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
@@ -371,9 +372,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     // 代表未继承
     if (!record.stateInfo.inheritStatus) {
       return (
-        <u className="canClick" onClick={() => checkProjectDetail(record.id)}>
-          {record.name}
-        </u>
+        <>
+          <u className="canClick" onClick={() => checkProjectDetail(record.id)}>
+            {/* <span className={styles.unread}></span> */}
+            {/* <Tooltip title="未读信息">
+              <MessageOutlined style={{ color: 'red', marginRight: '5px' }} />
+            </Tooltip> */}
+            {record.name}
+          </u>
+        </>
       )
     }
     if (record.stateInfo.inheritStatus) {
