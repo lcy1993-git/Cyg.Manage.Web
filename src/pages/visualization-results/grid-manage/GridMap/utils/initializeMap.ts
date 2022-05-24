@@ -5,6 +5,7 @@ import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
 import XYZ from 'ol/source/XYZ'
 import View from 'ol/View'
+import { loadAllLineLayer, loadAllPointLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 
 interface InitOps {
@@ -31,6 +32,11 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
   mapRef.map.on('moveend', (e: Event) => {
     mapMoveend(e, mapRef.map)
   })
+}
+
+export const loadMapLayers = (ids: string[], map: any) => {
+  loadAllPointLayer(ids, map)
+  loadAllLineLayer(ids, map)
 }
 
 // 获取比例尺
