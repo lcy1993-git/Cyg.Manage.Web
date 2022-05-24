@@ -1,38 +1,31 @@
-import React, { useEffect } from 'react';
-import styles from './index.less';
-import classNames from 'classnames';
-import PageCommonWrap from '@/components/page-common-wrap';
-import SideTree from '../components/side-tree';
-import MapContainerShell from '../components/map-container-shell';
-import Filterbar from '../components/filter-bar';
-import { Provider, useContainer } from './mobx-store';
-import { observer } from 'mobx-react-lite';
-import { MenuFoldOutlined } from '@ant-design/icons';
+import PageCommonWrap from '@/components/page-common-wrap'
+import { observer } from 'mobx-react-lite'
+import React, { useEffect } from 'react'
+import MapContainerShell from '../components/map-container-shell'
+import { Provider, useContainer } from './mobx-store'
 
 const VisualizationResults: React.FC = observer(() => {
-  const store = useContainer();
-  const { vState } = store;
-  const { visibleLeftSidebar } = vState;
+  const store = useContainer()
   useEffect(() => {
     return () => {
-      store.clear();
-    };
-  }, []);
+      store.clear()
+    }
+  }, [])
 
   return (
     <PageCommonWrap noPadding={true}>
       {/* <Filterbar /> */}
       <MapContainerShell />
     </PageCommonWrap>
-  );
-});
+  )
+})
 
 const StoreProvider: React.FC = () => {
   return (
     <Provider>
       <VisualizationResults />
     </Provider>
-  );
-};
+  )
+}
 
-export default StoreProvider;
+export default StoreProvider

@@ -18,7 +18,6 @@ const UrlMapContainerBox = (props: any) => {
   )
 
   const { data: customData } = useRequest(() => getCustomMapList({ isEnable: 1 }))
-
   const getLocation = async () => {
     await initIpLocation()
   }
@@ -26,7 +25,6 @@ const UrlMapContainerBox = (props: any) => {
   useMount(() => {
     getLocation()
   })
-
   return (
     <>
       {customData && mapData && (
