@@ -6,11 +6,12 @@ import CityList from './CityList'
 
 const DrawGridToolbar = (props: any) => {
   const [visible, setVisible] = useState(false)
-  const { setdrawToolbarVisible } = useMyContext()
-
+  const { setdrawToolbarVisible, setImportModalVisible } = useMyContext()
   const menu = (
     <Menu>
-      <Menu.Item key="projectDetail">数据导入</Menu.Item>
+      <Menu.Item key="projectDetail" onClick={() => setImportModalVisible(true)}>
+        数据导入
+      </Menu.Item>
       <Menu.Item key="handDrawn" onClick={() => setdrawToolbarVisible(true)}>
         手动绘制
       </Menu.Item>

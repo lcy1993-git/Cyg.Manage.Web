@@ -3,16 +3,57 @@ import { useState } from 'react'
 import ChangMapUrl from './ChangeMapUrl'
 import { MyContextType, MyWorkProvider, useMyContext } from './Context'
 import DrawToolbar from './DrawToolbar'
+import ExcelImportData from './ExcelImportData'
 import Footer from './Footer'
 import GridMap from './GridMap'
 import styles from './index.less'
 import LeftMenu from './LeftMenu'
 const LEFTMENUWIDTH = 260
 
+const GradManage: React.FC = () => {
+  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(false)
+
+  const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
+
+  const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
+    {} as MyContextType['selectCity']
+  )
+  return (
+    <MyWorkProvider
+      value={{
+        drawToolbarVisible,
+        setdrawToolbarVisible,
+        selectCity,
+        setselectCity,
+        importModalVisible,
+        setImportModalVisible,
+      }}
+    >
+      <GradManageWrap />
+    </MyWorkProvider>
+  )
+}
+
 const GradManageWrap: React.FC = () => {
   // 左侧菜单 显示、隐藏
   const [leftMenuVisible, setLeftMenuVisible] = useState<boolean>(true)
   const { drawToolbarVisible } = useMyContext()
+
+  // const { data, loading, run } = useRequest(fetchGridManageMenu, {
+  //     manual: true,
+  //     onSuccess: () => {
+  //       console.log(data)
+  //       console.log(loading)
+
+  //     },
+  //     onError: () => {
+  //       message.warning('获取数据失败');
+  //     },
+  //   });
+
+  //   useEffect(() => {
+  //     run()
+  //   }, [])
 
   return (
     <div className="h-full w-full">
@@ -54,39 +95,18 @@ const GradManageWrap: React.FC = () => {
           {/* 工具栏 */}
           <DrawToolbar
             style={{
-              width: leftMenuVisible
-                ? `calc(100% - ${LEFTMENUWIDTH + 40}px)`
-                : `calc(100% - ${40}px)`,
               transition: 'all 0.5s',
-              display: drawToolbarVisible ? 'block' : 'none',
+              transform: drawToolbarVisible ? 'translateY(0px)' : 'translateY(-500px)',
             }}
           />
           <ChangMapUrl />
+          <ExcelImportData />
         </div>
       </div>
       {/* 底部 */}
 
       <Footer />
     </div>
-  )
-}
-
-const GradManage: React.FC = () => {
-  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(false)
-  const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
-    {} as MyContextType['selectCity']
-  )
-  return (
-    <MyWorkProvider
-      value={{
-        drawToolbarVisible,
-        setdrawToolbarVisible,
-        selectCity,
-        setselectCity,
-      }}
-    >
-      <GradManageWrap />
-    </MyWorkProvider>
   )
 }
 
