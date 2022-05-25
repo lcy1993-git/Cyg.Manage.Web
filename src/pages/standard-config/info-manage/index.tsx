@@ -1,7 +1,7 @@
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd'
 import React, { useMemo, useRef, useState } from 'react'
 import styles from './index.less'

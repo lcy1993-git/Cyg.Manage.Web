@@ -71,6 +71,12 @@ const BusinessBoard = Loadable({
   delay: 150,
 })
 
+const VisualConfig = Loadable({
+  loader: () => import('@/pages/backstage-config/visual-config'),
+  loading: Loading,
+  delay: 150,
+})
+
 export default [
   {
     title: '功能管理',
@@ -137,5 +143,10 @@ export default [
     title: '业务看板',
     path: '/backstage-config/business-kanban',
     component: <BusinessBoard />,
+  },
+  {
+    title: '可视化配置',
+    path: '/backstage-config/visual-config',
+    component: <VisualConfig />,
   },
 ]
