@@ -5,11 +5,11 @@ import React from 'react'
 import rule from '../../rule'
 
 interface MapSourceFormProps {
-  addForm?: any
+  form?: any
 }
 
 const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
-  const { addForm } = props
+  const { form } = props
 
   return (
     <>
@@ -55,7 +55,7 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
               min={0}
               onChange={(e) => {
                 if (Number(e.target.value) > 18) {
-                  addForm.setFieldsValue({ minLevel: 18 })
+                  form.setFieldsValue({ minLevel: 18 })
                   return
                 }
                 // if (e.target.value === '') {
@@ -97,7 +97,7 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
               min={0}
               onChange={(e) => {
                 if (Number(e.target.value) > 18) {
-                  addForm.setFieldsValue({ maxLevel: 18 })
+                  form.setFieldsValue({ maxLevel: 18 })
                   return
                 }
               }}

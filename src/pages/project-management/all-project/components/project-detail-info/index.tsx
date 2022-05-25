@@ -1,6 +1,6 @@
 import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal'
 import { getProjectInfo } from '@/services/project-management/all-project'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+// import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Modal, Tabs } from 'antd'
 import React, { Dispatch, memo, SetStateAction, useEffect } from 'react'
@@ -15,12 +15,13 @@ interface ProjectDetailInfoProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
   isResult?: boolean
+  judgmentMark?: { showEntrustTip: boolean }
 }
 
 const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-  const { projectId } = props
+  // const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const { projectId, judgmentMark } = props
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
@@ -31,6 +32,18 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
       run()
     }
   }, [state])
+
+  const processTitle = () => {
+    return (
+      <span>
+        项目过程
+        {projectInfo?.sources.includes('被委托') &&
+          projectInfo?.identitys.findIndex((item: any) => item.value === 4) > -1 &&
+          projectInfo?.stateInfo.status === 14 &&
+          judgmentMark?.showEntrustTip && <span className={styles.unread}></span>}
+      </span>
+    )
+  }
 
   return (
     <Modal
@@ -51,7 +64,12 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
           {/* <TabPane key="schedule" tab="项目进度">
             <ProjectSchedule />
           </TabPane> */}
-          <TabPane key="process" tab="项目过程" style={{ height: '650px', overflowY: 'auto' }}>
+
+          <TabPane
+            key="process"
+            tab={processTitle()}
+            style={{ height: '650px', overflowY: 'auto' }}
+          >
             <ProjectProcessInfo operateLog={projectInfo?.operateLog ?? []} />
           </TabPane>
           <TabPane key="amountWork" tab="工程量" style={{ height: '650px', overflowY: 'auto' }}>

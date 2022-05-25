@@ -33,6 +33,7 @@ import {
   BarsOutlined,
   ExclamationCircleOutlined,
   LinkOutlined,
+  MessageOutlined,
   SettingOutlined,
 } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
@@ -360,20 +361,37 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     setProjectMergeVisible(true)
   }
 
-  const checkProjectDetail = (projectId: string) => {
+  const checkProjectDetail = (projectId: string, judgmentMark: boolean) => {
     setModalInfo({
       projectId,
+      judgmentMark,
     })
     setProjectModalVisible(true)
   }
 
   const projectNameRender = (record: any) => {
     // 代表未继承
+
     if (!record.stateInfo.inheritStatus) {
       return (
-        <u className="canClick" onClick={() => checkProjectDetail(record.id)}>
-          {record.name}
-        </u>
+        <>
+          <u
+            className="canClick"
+            onClick={() => checkProjectDetail(record.id, record.judgmentMark)}
+          >
+            {/* <span className={styles.unread}></span> */}
+            {record.sources.includes('被委托') &&
+              record.identitys.findIndex((item: any) => item.value === 4) > -1 &&
+              record.stateInfo.status === 14 &&
+              record.judgmentMark.showEntrustTip && (
+                <Tooltip title="未处理">
+                  <MessageOutlined style={{ color: 'red', marginRight: '5px' }} />
+                </Tooltip>
+              )}
+
+            {record.name}
+          </u>
+        </>
       )
     }
     if (record.stateInfo.inheritStatus) {
@@ -382,7 +400,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       }
       if (record.stateInfo.inheritStatus === 2) {
         return (
-          <u className="canClick" onClick={() => checkProjectDetail(record.id)}>
+          <u
+            className="canClick"
+            onClick={() => checkProjectDetail(record.id, record.judgmentMark)}
+          >
             {record.name}
           </u>
         )
@@ -422,6 +443,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       if (record.stateInfo.inheritStatus === 3) {
         return (
           <>
+            {record.sources.includes('被委托') &&
+              record.identitys.findIndex((item: any) => item.value === 4) > -1 &&
+              record.stateInfo.status === 14 &&
+              record.judgmentMark.showEntrustTip && (
+                <Tooltip title="未处理">
+                  <MessageOutlined style={{ color: 'red', marginRight: '5px' }} />
+                </Tooltip>
+              )}
             <Tooltip title={`继承自${record.inheritName}`}>
               <span className={styles.inheritIcon}>
                 <LinkOutlined />
@@ -1260,6 +1289,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       {projectModalVisible && (
         <ProjectDetailInfo
           projectId={modalNeedInfo.projectId}
+          judgmentMark={modalNeedInfo.judgmentMark}
           visible={projectModalVisible}
           onChange={setProjectModalVisible}
         />

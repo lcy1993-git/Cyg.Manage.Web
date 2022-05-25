@@ -278,7 +278,7 @@ const CustomMap: React.FC = () => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <MapSourceForm addForm={addForm} />
+          <MapSourceForm form={addForm} />
         </Form>
       </Modal>
       <Modal
@@ -293,7 +293,7 @@ const CustomMap: React.FC = () => {
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
-          <MapSourceForm />
+          <MapSourceForm form={editForm} />
         </Form>
       </Modal>
       <ImportCustomMap
