@@ -1,6 +1,8 @@
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
+import { MapRef } from './hooks'
 
 export interface MyContextType {
+  mapRef: MapRef
   /** 手动绘制数据 工具栏状态 */
   drawToolbarVisible: boolean
   setdrawToolbarVisible: Dispatch<SetStateAction<boolean>>

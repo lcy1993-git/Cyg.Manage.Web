@@ -1,14 +1,11 @@
 import { useMount } from 'ahooks'
 import { useRef } from 'react'
-import { MapRef } from '../../history-grid/components/history-map-base/typings'
-import { useCurrentRef } from '../../history-grid/components/history-map-base/utils/hooks'
+import { useMyContext } from '../Context'
 import { initMap } from './utils/initializeMap'
 
 const GridMap = () => {
+  const { mapRef } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
-  // 地图实例
-  const mapRef = useCurrentRef<MapRef>({ map: {} })
-
   // 挂载地图
   useMount(() => {
     initMap({ mapRef, ref })

@@ -16,7 +16,7 @@ export const pointStyle = (data: any, selected: boolean = false) => {
   let text
   let color = selected ? `rgba(8,210,42,1)` : `rgba(189,206,198,1)`
   // 根据点位的类型设置图符
-  switch (data.type) {
+  switch (data.featureType) {
     case POWERSUPPLY:
       text = '\ue86d'
       break
