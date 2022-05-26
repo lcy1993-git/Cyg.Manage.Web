@@ -8,6 +8,7 @@ const GridMap = () => {
   const ref = useRef<HTMLDivElement>(null)
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
+
   // 挂载地图
   useMount(() => {
     initMap({ mapRef, ref })
