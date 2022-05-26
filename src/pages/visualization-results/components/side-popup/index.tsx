@@ -16,6 +16,7 @@ import {
   getlibId_new,
   getMedium,
   getMaterialItemData,
+  getHouseholdLineInfo,
 } from '@/services/visualization-results/visualization-results'
 import {
   CommentRequestType,
@@ -241,6 +242,27 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     }
   )
 
+  const { data: householdData, run: houseHoldRun, loading: houseHoldLoading } = useRequest(
+    getHouseholdLineInfo,
+    {
+      manual: true,
+      onSuccess(data) {
+        if (data?.content?.length > 0) {
+          data.content.forEach((item: any) => {
+            if (item.unit === 'km') {
+              item.itemNumber = item.itemNumber / 1000
+            }
+          })
+          householdRef.current!.innerHTML = '查看'
+          householdRef.current!.className = 'mapSideBarlinkBtn'
+        } else {
+          householdRef.current!.innerHTML = '暂无数据'
+          householdRef.current!.className = ''
+        }
+      },
+    }
+  )
+
   const returnlibId = async (materialParams: any) => {
     await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data) => {
       if (data.isSuccess) {
@@ -274,6 +296,19 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       } else {
         setMmaterialRefNone()
       }
+
+      //入户线数据请求
+      const houseHoldParams =
+        dataResource?.find((item: any) => item.propertyName === '入户线')?.data?.params ?? {}
+      if (houseHoldParams?.rest?.objectID && houseHoldParams?.getProperties.project_id) {
+        houseHoldRun({
+          deviceId: commentRquestBody?.deviceId,
+          projectId: commentRquestBody?.projectId,
+        })
+      } else {
+        setMmaterialRefNone()
+      }
+
       // 审阅数据
       const reviewData = dataResource?.find((item: any) => item.propertyName === '审阅')?.data ?? {}
       if (reviewData?.id) {
@@ -283,6 +318,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   }, [JSON.stringify(dataResource), rightSidebarVisible])
 
   const mediaRef = useRef<HTMLSpanElement>(null)
+  const householdRef = useRef<HTMLSpanElement>(null)
   const materialRef = useRef<HTMLSpanElement>(null)
   const reviewRef = useRef<HTMLSpanElement>(null)
 
@@ -310,6 +346,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     }
   }
 
+  const handlerHouseHoldClick = () => {
+    if (householdRef.current?.innerHTML === '查看') {
+      setActiveType('houseHold')
+    }
+  }
+
   const columns = [
     {
       title: '属性名',
@@ -322,6 +364,8 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       // ellipsis: true,
       render(value: any, record: any, index: any) {
+        // console.log(record, '000')
+
         if (record.propertyName === 'title') return null
         if (record.propertyName === '三维模型') {
           if (record.data) {
@@ -355,6 +399,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           return (
             <span onClick={handlerMaterialClick} ref={materialRef}>
               {materialRef ? '暂无数据' : '数据请求中'}
+            </span>
+          )
+        } else if (record.propertyName === '入户线') {
+          return (
+            <span onClick={handlerHouseHoldClick} ref={householdRef}>
+              {householdRef ? '暂无数据' : '数据请求中'}
             </span>
           )
         } else if (record.propertyName === '审阅') {

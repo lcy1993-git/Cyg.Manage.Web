@@ -381,7 +381,7 @@ const VisualConfig: React.FC = () => {
       <Modal
         maskClosable={false}
         title="编辑-可视化配置"
-        width="880px"
+        width="600px"
         visible={editFormVisible}
         okText="保存"
         onOk={() => sureEditConfig()}
