@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { importGridManageData } from '@/services/grid-manage/treeMenu'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Form, message, Modal, Upload } from 'antd'
 import { useCallback } from 'react'
@@ -16,24 +18,19 @@ const ExcelImportData = () => {
     }
     const data = new FormData()
     files.forEach((f) => data.append('files', f.originFileObj, f.name))
-    // console.log(data, '导入数据')
-    // console.log(files, '导入数据')
-    // try {
-    //   const res =
-    //     mode === 'preDesigning'
-    //       ? await importEquipments(data, preDesignDataSource.id as string)
-    //       : await importHistoryEquipments(data)
-    //   if (res.isSuccess) {
-    //     message.success('上传成功')
-    //     dispatch('refetch')
-    //     closeModal()
-    //   } else {
-    //     message.error(res.message)
-    //   }
-    // } catch (e: any) {
-    //   message.error(e.message || '上传出错，请重试')
-    // }
-  }, [])
+
+    try {
+      const res = await importGridManageData(data)
+      if (res.isSuccess) {
+        message.success('上传成功')
+        closeModal()
+      } else {
+        message.error(res.message)
+      }
+    } catch (e: any) {
+      message.error(e.message || '上传出错，请重试')
+    }
+  }, [form])
 
   const closeModal = useCallback(() => {
     setImportModalVisible(false)

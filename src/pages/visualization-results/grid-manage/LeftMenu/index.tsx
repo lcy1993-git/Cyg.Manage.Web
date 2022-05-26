@@ -10,10 +10,10 @@ const LeftMenu = (props: any) => {
       </div>
       <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
         <div className={`w-full flex-none`}>
-          <PowerSupplyTree />
+          <SubstationTree />
         </div>
         <div className={`w-full flex-1`}>
-          <SubstationTree />
+          <PowerSupplyTree />
         </div>
       </div>
     </div>
