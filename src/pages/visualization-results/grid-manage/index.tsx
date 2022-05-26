@@ -6,9 +6,11 @@ import DrawToolbar from './DrawToolbar'
 import ExcelImportData from './ExcelImportData'
 import Footer from './Footer'
 import GridMap from './GridMap'
+import { MapRef, useCurrentRef } from './hooks'
 import styles from './index.less'
 import LeftMenu from './LeftMenu'
 const LEFTMENUWIDTH = 260
+
 const GradManage: React.FC = () => {
   /** 网架绘制 手动绘制工具栏状态 **/
   const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(false)
@@ -18,6 +20,9 @@ const GradManage: React.FC = () => {
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
   )
+  // 地图实例
+  const mapRef = useCurrentRef<MapRef>({ map: {} })
+
   return (
     <MyWorkProvider
       value={{
@@ -27,6 +32,7 @@ const GradManage: React.FC = () => {
         setselectCity,
         importModalVisible,
         setImportModalVisible,
+        mapRef,
       }}
     >
       <GradManageWrap />

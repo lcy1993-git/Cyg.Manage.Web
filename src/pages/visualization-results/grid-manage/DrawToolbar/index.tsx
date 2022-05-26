@@ -12,6 +12,7 @@ import {
 } from 'antd'
 import { useState } from 'react'
 import { useMyContext } from '../Context'
+import { drawPoint } from '../GridMap/utils/initializeMap'
 import {
   BELONGINGCAPACITY,
   BELONGINGLINE,
@@ -29,7 +30,7 @@ const { Option } = Select
 const { useForm } = Form
 
 const DrawToolbar = () => {
-  const { drawToolbarVisible, setdrawToolbarVisible } = useMyContext()
+  const { drawToolbarVisible, setdrawToolbarVisible, mapRef } = useMyContext()
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   const [selectLineType, setselectLineType] = useState('')
   const [kelevelOptions, setkelevelOptions] = useState([
@@ -67,9 +68,10 @@ const DrawToolbar = () => {
 
   /** 插入图元 */
   const createFeature = () => {
-    // const formData = form.getFieldsValue();
+    const formData = form.getFieldsValue()
     // console.log(formData, '666')
     // ! 点击插入元素： 1、判断当前经纬度是否有值，如果有则
+    drawPoint(mapRef.map, formData)
   }
 
   return (
