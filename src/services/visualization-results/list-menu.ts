@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
-
 export interface MaterialDataType {
   description?: string
   itemNumber?: number
@@ -17,6 +16,16 @@ export interface MaterialDataType {
   supplySide?: string
   children?: MaterialDataType[]
   key?: string
+}
+
+export interface HouseholdDataType {
+  length?: number
+  state?: number
+  kvLevel?: number
+  mode?: string
+  type?: string
+  surveyTime?: Date
+  remark?: string
 }
 
 export interface ProjectCommentListItemType {

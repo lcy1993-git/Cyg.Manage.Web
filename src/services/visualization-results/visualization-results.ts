@@ -68,7 +68,7 @@ export const publishMessage = (params: any) => {
 export const getHouseholdLineInfo = (params: any) => {
   return request(`${baseUrl.manage}//WebGis/GetHomeLines`, {
     method: 'GET',
-    data: { ...params },
+    params,
   })
 }
 

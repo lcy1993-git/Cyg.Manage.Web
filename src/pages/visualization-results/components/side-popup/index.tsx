@@ -29,6 +29,7 @@ import CableSection from '../cable-section'
 import MediaModal from '../media-modal'
 import classnames from 'classnames'
 import { MaterialTableNew } from '../material-table-new'
+import { HouseholdTable } from '../household-table'
 
 export interface TableDataType {
   [propName: string]: any
@@ -146,6 +147,7 @@ const modalTitle = {
   media: '查看多媒体文件',
   material: '查看材料表',
   annotation: '创建审阅',
+  household: '查看入户线',
 }
 
 const DEVICE_TYPE: { [propertyName: string]: string } = {
@@ -291,6 +293,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       // 材料表数据请求
       const materialParams =
         dataResource?.find((item: any) => item.propertyName === '材料表')?.data?.params ?? {}
+
       if (materialParams?.rest?.objectID && materialParams?.getProperties.project_id) {
         returnlibId(materialParams)
       } else {
@@ -300,13 +303,13 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       //入户线数据请求
       const houseHoldParams =
         dataResource?.find((item: any) => item.propertyName === '入户线')?.data?.params ?? {}
-      if (houseHoldParams?.rest?.objectID && houseHoldParams?.getProperties.project_id) {
+
+      if (houseHoldParams?.projectId && houseHoldParams?.deviceId) {
         houseHoldRun({
-          deviceId: commentRquestBody?.deviceId,
-          projectId: commentRquestBody?.projectId,
+          deviceId: houseHoldParams?.deviceId,
+          projectId: houseHoldParams?.projectId,
+          scope: houseHoldParams?.type,
         })
-      } else {
-        setMmaterialRefNone()
       }
 
       // 审阅数据
@@ -348,7 +351,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const handlerHouseHoldClick = () => {
     if (householdRef.current?.innerHTML === '查看') {
-      setActiveType('houseHold')
+      setActiveType('household')
     }
   }
 
@@ -364,8 +367,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       // ellipsis: true,
       render(value: any, record: any, index: any) {
-        // console.log(record, '000')
-
         if (record.propertyName === 'title') return null
         if (record.propertyName === '三维模型') {
           if (record.data) {
@@ -656,6 +657,11 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         {activeType === 'material' && (
           <MaterialTableNew data={materialDataRes} loading={matiralsLoading} />
         )}
+
+        {activeType === 'household' && (
+          <HouseholdTable data={householdData?.content} loading={houseHoldLoading} />
+        )}
+
         {activeType?.split('&')[0] === 'annotation' && (
           <>
             <div>
@@ -680,6 +686,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           </>
         )}
       </Modal>
+
       <Modal
         title="查看多媒体文件"
         centered
