@@ -1,7 +1,7 @@
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import ChangMapUrl from './ChangeMapUrl'
-import { MyContextType, MyWorkProvider, useMyContext } from './Context'
+import { MyContextType, MyWorkProvider } from './Context'
 import DrawToolbar from './DrawToolbar'
 import ExcelImportData from './ExcelImportData'
 import Footer from './Footer'
@@ -37,26 +37,9 @@ const GradManage: React.FC = () => {
 const GradManageWrap: React.FC = () => {
   // 左侧菜单 显示、隐藏
   const [leftMenuVisible, setLeftMenuVisible] = useState<boolean>(true)
-  const { drawToolbarVisible } = useMyContext()
-
-  // const { data, loading, run } = useRequest(fetchGridManageMenu, {
-  //     manual: true,
-  //     onSuccess: () => {
-  //       console.log(data)
-  //       console.log(loading)
-
-  //     },
-  //     onError: () => {
-  //       message.warning('获取数据失败');
-  //     },
-  //   });
-
-  //   useEffect(() => {
-  //     run()
-  //   }, [])
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full gridManageWrap">
       {/* 内容区 */}
       <div
         className="w-full relative overflow-hidden"
@@ -89,22 +72,17 @@ const GradManageWrap: React.FC = () => {
             <RightOutlined style={{ fontSize: 10 }} />
           )}
         </div>
-        <div className="w-full h-full">
+        <div className="w-full h-full relative">
           {/* 地图组件 */}
           <GridMap />
           {/* 工具栏 */}
-          <DrawToolbar
-            style={{
-              transition: 'all 0.5s',
-              transform: drawToolbarVisible ? 'translateY(0px)' : 'translateY(-500px)',
-            }}
-          />
+          <DrawToolbar />
+
           <ChangMapUrl />
           <ExcelImportData />
         </div>
       </div>
       {/* 底部 */}
-
       <Footer />
     </div>
   )

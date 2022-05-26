@@ -1,42 +1,43 @@
+import { fetchGridManageMenu } from '@/services/grid-manage/treeMenu'
+import { useRequest } from 'ahooks'
 import { Tree } from 'antd'
 import { useState } from 'react'
 
+interface PowerSupplyListType {
+  companyId: string // 公司编号
+  createdBy: string // 创建人
+  geom: string // 经纬度坐标
+  id: string
+  installedCapacity: number // 装机容器
+  kvLevel: number // 电压等级
+  name: string // 厂站名称
+  powerType: string // 电源类型
+  schedulingMode: string // 调度方式
+}
+
 const PowerSupplyTree = () => {
+  const { data } = useRequest(() => fetchGridManageMenu())
+
   const treeData = [
     {
-      title: '变电站',
+      title: '电源',
       key: '0-0',
-      children: [
-        {
-          // title: () => {
-          //   return <span style={{color: 'red', width: '100%', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis'}}>
-          //     '330KV变asdasdasdasd电czx山东高速对方水电费水电费水电费站'
-          //   </span>
-          // },
-          title: '330KV变电站',
-          key: '0-0-0',
-          children: [
-            { title: '330KV房屋变电站', key: '0-0-0-0' },
-            { title: '330KV道路变电站', key: '0-0-0-1' },
-            { title: '330KV河流变电站', key: '0-0-0-2' },
-          ],
-        },
-        {
-          title: '220KV变电站',
-          key: '0-0-1',
-          children: [
-            { title: '220KV民阿卡哈师大看空间看就好了客家话啊用变电站', key: '0-0-1-0' },
-            { title: '220KV商用变电站', key: '0-0-1-1' },
-            { title: '220KV军事变电站', key: '0-0-1-2' },
-          ],
-        },
-        {
-          title: '110KV变电站',
-          key: '0-0-2',
-        },
-      ],
+      children: data?.map((item, index) => {
+        return {
+          title: item.type,
+          key: index,
+          children: item.powerSupplyList.map((child: PowerSupplyListType) => {
+            return {
+              ...child,
+              title: child.name,
+              key: child.id,
+            }
+          }),
+        }
+      }),
     },
   ]
+
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1'])
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['0-0-0'])
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([])

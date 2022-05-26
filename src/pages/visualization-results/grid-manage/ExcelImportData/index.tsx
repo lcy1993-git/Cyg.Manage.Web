@@ -1,5 +1,5 @@
 import { UploadOutlined } from '@ant-design/icons'
-import { Button, Form, Modal, Upload } from 'antd'
+import { Button, Form, message, Modal, Upload } from 'antd'
 import { useCallback } from 'react'
 import { useMyContext } from '../Context'
 const { Dragger } = Upload
@@ -9,13 +9,15 @@ const ExcelImportData = () => {
   const [form] = useForm()
 
   const onOk = useCallback(async () => {
-    // const files = form.getFieldValue('files')
-    // if (!Array.isArray(files) || files.length === 0) {
-    //   message.error('请先选择需要上传的文件')
-    //   return
-    // }
-    // const data = new FormData()
-    // files.forEach((f) => data.append('files', f.originFileObj, f.name))
+    const files = form.getFieldValue('files')
+    if (!Array.isArray(files) || files.length === 0) {
+      message.error('请先选择需要上传的文件')
+      return
+    }
+    const data = new FormData()
+    files.forEach((f) => data.append('files', f.originFileObj, f.name))
+    // console.log(data, '导入数据')
+    // console.log(files, '导入数据')
     // try {
     //   const res =
     //     mode === 'preDesigning'
