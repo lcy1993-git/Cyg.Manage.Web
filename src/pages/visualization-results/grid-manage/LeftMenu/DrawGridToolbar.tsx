@@ -12,7 +12,12 @@ const DrawGridToolbar = (props: any) => {
       <Menu.Item key="projectDetail" onClick={() => setImportModalVisible(true)}>
         数据导入
       </Menu.Item>
-      <Menu.Item key="handDrawn" onClick={() => setdrawToolbarVisible(true)}>
+      <Menu.Item
+        key="handDrawn"
+        onClick={() => {
+          setdrawToolbarVisible(true)
+        }}
+      >
         手动绘制
       </Menu.Item>
     </Menu>
