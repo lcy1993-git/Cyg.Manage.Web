@@ -1,10 +1,12 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
-import { Tile as TileLayer } from 'ol/layer'
+import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
-import { XYZ } from 'ol/source'
+import { Vector as VectorSource, XYZ } from 'ol/source'
+import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 import View from 'ol/View'
+import DrawTool from './draw'
 import { loadAllLineLayer, loadAllPointLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 
@@ -12,6 +14,9 @@ interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
 }
+var drawTool: any
+var layer: any
+
 export const initMap = ({ mapRef, ref }: InitOps) => {
   mapRef.map = new Map({
     target: 'map',
@@ -34,9 +39,33 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
   })
 }
 
-// export const draw = (type:string) {
+export const drawPoint = (map: any, options: any) => {
+  if (!layer) {
+    layer = new VectorLayer({
+      source: new VectorSource(),
+      style: new Style({
+        fill: new Fill({
+          color: 'rgba(255, 255, 255, 0.2)',
+        }),
+        stroke: new Stroke({
+          color: '#ffcc33',
+          width: 2,
+        }),
+        image: new CircleStyle({
+          radius: 7,
+          fill: new Fill({
+            color: '#ffcc33',
+          }),
+        }),
+      }),
+    })
+  }
 
-// }
+  map.addLayer(layer)
+  options.type_ = 'Point'
+  if (!drawTool) drawTool = new DrawTool(map, layer.getSource(), options)
+  drawTool.drawPoint(options)
+}
 
 export const loadMapLayers = (ids: string[], map: any) => {
   loadAllPointLayer(ids, map)

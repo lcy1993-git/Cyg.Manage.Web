@@ -1,28 +1,73 @@
-import { Fill, Icon, Stroke, Style, Text } from 'ol/style'
-
+import { Fill, Stroke, Style, Text } from 'ol/style'
+import {
+  BOXTRANSFORMER,
+  CABLEBRANCHBOX,
+  CABLEWELL,
+  COLUMNCIRCUITBREAKER,
+  COLUMNTRANSFORMER,
+  ELECTRICITYDISTRIBUTIONROOM,
+  POWERSUPPLY,
+  RINGNETWORKCABINET,
+  SWITCHINGSTATION,
+  TOWER,
+  TRANSFORMERSUBSTATION,
+} from '../../DrawToolbar/GridUtils'
 export const pointStyle = (data: any, selected: boolean = false) => {
-  let iconUrl
+  let text
   let color = selected ? `rgba(8,210,42,1)` : `rgba(189,206,198,1)`
   // 根据点位的类型设置图符
   switch (data.type) {
-    case 'tower':
-      iconUrl = ''
+    case POWERSUPPLY:
+      text = '\ue86d'
+      break
+    case TRANSFORMERSUBSTATION:
+      text = '\ue86d'
+      break
+    case CABLEWELL:
+      text = '\ue869'
+      break
+    case TOWER:
+      text = '\ue870'
+      break
+    case BOXTRANSFORMER:
+      text = '\ue863'
+      break
+    case RINGNETWORKCABINET:
+      text = '\ue84f'
+      break
+    case ELECTRICITYDISTRIBUTIONROOM:
+      text = '\ue85b'
+      break
+    case SWITCHINGSTATION:
+      text = '\ue849'
+      break
+    case COLUMNCIRCUITBREAKER:
+      text = '\ue85a'
+      break
+    case COLUMNTRANSFORMER:
+      text = '\ue84a'
+      break
+    case CABLEBRANCHBOX:
+      text = '\ue845'
       break
 
     default:
       break
   }
-  let imgStyle = new Style({
-    image: new Icon({
-      src: iconUrl,
-      color,
-      scale: 1,
-      // size: [24, 24], // 图片大小
-      // anchor: [11, 11] // 图片位置
+  return new Style({
+    text: new Text({
+      font: 'Normal 22px webgisIconFont',
+      text,
+      fill: new Fill({
+        color: color,
+      }),
+      stroke: new Stroke({
+        color: color,
+        width: 1,
+      }),
     }),
-    zIndex: selected ? 100 : 3,
+    // zIndex: zIndex
   })
-  return imgStyle
 }
 
 export const lineStyle = (data: any, selected: boolean = false) => {
