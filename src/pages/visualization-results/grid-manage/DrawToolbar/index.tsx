@@ -68,6 +68,8 @@ const DrawToolbar = () => {
   /** 插入图元 */
   const createFeature = () => {
     // const formData = form.getFieldsValue();
+    // console.log(formData, '666')
+    // ! 点击插入元素： 1、判断当前经纬度是否有值，如果有则
   }
 
   return (
@@ -133,11 +135,7 @@ const DrawToolbar = () => {
           属性栏
         </Divider>
 
-        <Form.Item
-          name="name"
-          // label={`${FEATUERTYPE[currentFeatureType]}名称`}
-          label="名称"
-        >
+        <Form.Item name="name" label="名称">
           <Input />
         </Form.Item>
         <Form.Item name="kvLevel" label="电压等级">

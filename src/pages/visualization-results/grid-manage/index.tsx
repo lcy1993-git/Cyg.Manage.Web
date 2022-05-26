@@ -11,7 +11,7 @@ import LeftMenu from './LeftMenu'
 const LEFTMENUWIDTH = 260
 
 const GradManage: React.FC = () => {
-  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(true)
+  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(false)
 
   const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
 
@@ -37,16 +37,6 @@ const GradManage: React.FC = () => {
 const GradManageWrap: React.FC = () => {
   // 左侧菜单 显示、隐藏
   const [leftMenuVisible, setLeftMenuVisible] = useState<boolean>(true)
-
-  // const {data, loading, run} = useRequest(fetchGridManageMenu, {
-  //   manual: true,
-  //   onSuccess: () => {
-  //   }
-  // })
-
-  // useEffect(() => {
-  //   run()
-  // }, [])
 
   return (
     <div className="h-full w-full gridManageWrap">
