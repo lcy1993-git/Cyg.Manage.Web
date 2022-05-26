@@ -52,6 +52,8 @@ const materiaLayers = [
   'cable_channel',
   'fault_indicator',
 ]
+const householdLayers = ['electric_meter']
+
 const commentLayers = ['tower', 'cable', 'cable_equipment', 'mark', 'transformer']
 const layerTypeEnum = {
   survey: '勘察',
@@ -382,9 +384,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           case 'recorder':
             pJSON[mappingTag] = feature.getProperties()['recorderName']
             break
-          // case 'household_line':
-          //   pJSON[mappingTag] = '查看'
-          //   break
 
           case 'surveyor':
             if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员'
@@ -549,6 +548,24 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         // await getMedium(params).then((data: any) => {
         //   pJSON['多媒体'] = data.content || [];
         // });
+      }
+    }
+
+    if (
+      layerType == 'survey' ||
+      layerType === 'plan' ||
+      layerType === 'design' ||
+      layerType === 'dismantle'
+    ) {
+      if (householdLayers.indexOf(layerName) >= 0) {
+        let params = {
+          type: layerType,
+          projectId: feature.getProperties().project_id,
+          deviceId: featureId,
+          getProperties: feature.getProperties(),
+        }
+
+        pJSON['入户线'] = { params }
       }
     }
 
