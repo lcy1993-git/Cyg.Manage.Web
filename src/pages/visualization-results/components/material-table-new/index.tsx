@@ -1,7 +1,7 @@
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import React, { FC } from 'react'
+import { FC } from 'react'
 
 export interface MaterialTableProps {
   data?: MaterialDataType[]
@@ -115,6 +115,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     key: 'remark',
   },
 ]
+
 export const MaterialTableNew: FC<MaterialTableProps> = (props) => {
   const { data, loading } = props
   return (
@@ -126,7 +127,7 @@ export const MaterialTableNew: FC<MaterialTableProps> = (props) => {
       rowKey="id"
       pagination={false}
       dataSource={data}
-      scroll={{ x: 1400, y: 1000 }}
+      scroll={{ x: 1400, y: 690 }}
       defaultExpandAllRows
     />
   )

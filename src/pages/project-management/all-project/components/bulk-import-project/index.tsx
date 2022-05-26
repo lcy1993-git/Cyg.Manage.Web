@@ -6,7 +6,7 @@ import { useGetSelectData } from '@/utils/hooks'
 import useRequest from '@ahooksjs/use-request'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
-import { Button, Cascader, Checkbox, message, Modal, Tooltip } from 'antd'
+import { Button, Cascader, Checkbox, Input, message, Modal, Tooltip } from 'antd'
 import { cloneDeep } from 'lodash'
 import uuid from 'node-uuid'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
@@ -63,7 +63,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true })
   const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
-  const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
+  // const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
 
   const { data: libSelectData = [] } = useGetSelectData({
     url: '/ResourceLib/GetList?status=1',
@@ -158,7 +158,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         const handleProjects = item.projects.map((ite: any) => {
           return {
             ...ite,
-            powerSupply: null,
+            // powerSupply: null,
           }
         })
         return {
@@ -281,26 +281,26 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   const companyChangeEvent = async (value: any, numberIndex: number) => {
     const copyEngineerInfo = cloneDeep(engineerInfo)
 
-    const departmentSelectData = await getDepartmentSelectData({
-      url: '/ElectricityCompany/GetPowerSupplys',
-      method: 'post',
-      params: { areaId: copyEngineerInfo[numberIndex].engineer.areaId, company: value },
-      requestSource: 'project',
-    })
+    // const departmentSelectData = await getDepartmentSelectData({
+    //   url: '/ElectricityCompany/GetPowerSupplys',
+    //   method: 'post',
+    //   params: { areaId: copyEngineerInfo[numberIndex].engineer.areaId, company: value },
+    //   requestSource: 'project',
+    // })
 
-    const handleDepartmentSelectData = departmentSelectData.map((item: any) => {
-      return {
-        label: item.text,
-        value: item.value,
-      }
-    })
+    // const handleDepartmentSelectData = departmentSelectData.map((item: any) => {
+    //   return {
+    //     label: item.text,
+    //     value: item.value,
+    //   }
+    // })
 
     const handleData = copyEngineerInfo.map((item, index) => {
       if (index === numberIndex) {
         const handleProjects = item.projects.map((ite: any) => {
           return {
             ...ite,
-            powerSupply: null,
+            // powerSupply: null,
           }
         })
         return {
@@ -314,7 +314,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           },
           selectData: {
             ...item.selectData,
-            departmentSelectData: handleDepartmentSelectData,
+            // departmentSelectData: handleDepartmentSelectData,
           },
           projects: handleProjects,
         }
@@ -574,11 +574,11 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         <tr key={`${currentChooseEngineerInfo.id}_${index}`}>
           <td>{item.name}</td>
           <td>
-            <DataSelect
+            <Input
               style={{ width: '100%' }}
               value={item.powerSupply}
-              onChange={(value) => departmentChangeEvent(value, index)}
-              options={currentChooseEngineerInfo.selectData.departmentSelectData}
+              onChange={(e) => departmentChangeEvent(e.target.value, index)}
+              // options={currentChooseEngineerInfo.selectData.departmentSelectData}
               placeholder={
                 currentChooseEngineerInfo.index === 0 || currentChooseEngineerInfo.companyChange
                   ? '部组'
@@ -598,11 +598,10 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       <tr key={`${currentChooseEngineerInfo.id}_${index}`}>
         <td>{item.name}</td>
         <td>
-          <DataSelect
+          <Input
             style={{ width: '100%' }}
             value={item.powerSupply}
-            onChange={(value) => departmentChangeEvent(value, index)}
-            options={currentChooseEngineerInfo.selectData.departmentSelectData}
+            onChange={(e) => departmentChangeEvent(e.target.value, index)}
             placeholder="同上"
           />
         </td>
@@ -761,14 +760,14 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         tipMessage += '未选择协议库。'
       }
 
-      if (judgeInfo.errorInfo.departmentNoChoose.length > 0) {
-        judgeInfo.errorInfo.departmentNoChoose.forEach((item, index) => {
-          tipMessage = tipMessage + item.name
-        })
-        tipMessage += '下第一个项目未选择部组。'
-      }
-      message.error(tipMessage)
-      return
+      // if (judgeInfo.errorInfo.departmentNoChoose.length > 0) {
+      //   judgeInfo.errorInfo.departmentNoChoose.forEach((item, index) => {
+      //     tipMessage = tipMessage + item.name
+      //   })
+      //   tipMessage += '下第一个项目未选择部组。'
+      // }
+      // message.error(tipMessage)
+      // return
     }
 
     const submitInfo = handleFinallyData()

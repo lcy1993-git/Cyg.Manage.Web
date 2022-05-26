@@ -91,7 +91,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
 
   const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true })
   const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
-  const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
+  // const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
 
   //获取区域
   const { data: cityData } = useRequest(() => getCityAreas(), {
@@ -268,13 +268,13 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
   const companyChange = async (value: any) => {
     setCompany(value)
 
-    const [province] = provinceValue
-    const departmentSelectData = await getDepartmentSelectData({
-      url: '/ElectricityCompany/GetPowerSupplys',
-      method: 'post',
-      params: { areaId: province, company: value },
-      requestSource: 'project',
-    })
+    // const [province] = provinceValue
+    // const departmentSelectData = await getDepartmentSelectData({
+    //   url: '/ElectricityCompany/GetPowerSupplys',
+    //   method: 'post',
+    //   params: { areaId: province, company: value },
+    //   requestSource: 'project',
+    // })
 
     const handleDepartmentSelectData = departmentSelectData?.map((item: any) => {
       return {

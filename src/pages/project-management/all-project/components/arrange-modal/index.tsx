@@ -20,6 +20,7 @@ interface ArrangeModalProps {
 const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [companyInfo, setCompanyInfo] = useState<any>()
+  const [allotInfo, setAllotInfo] = useState<any>()
   const {
     projectIds,
     finishEvent,
@@ -69,6 +70,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
             allotType: selectType,
             projectIds,
             allotOrganizeUser: companyInfo.value,
+            remark: allotInfo,
           },
           values
         )
@@ -137,6 +139,7 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           defaultType={defaultSelectType}
           allotCompanyId={allotCompanyId}
           getCompanyInfo={getCompanyInfo}
+          getRemark={setAllotInfo}
           onChange={(value) => setSelectType(value)}
           dataSourceType={dataSourceType}
           groupId={groupId}

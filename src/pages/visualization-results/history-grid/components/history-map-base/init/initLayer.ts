@@ -8,7 +8,7 @@ import { LayerRef, SourceRef } from './../typings/index'
 
 // 卫星图层
 function getVecLayer() {
-  return new TileLayer({
+  let imgLayer = new TileLayer({
     source: new XYZ({
       url: decodeURI(
         window.localStorage.getItem('vecUrl') ||
@@ -17,6 +17,8 @@ function getVecLayer() {
     }),
     preload: 18,
   })
+  imgLayer.set('name', 'imgLayer')
+  return imgLayer
 }
 
 function getStreetLayer() {
@@ -61,6 +63,7 @@ function getStreetLayer() {
     preload: 18,
   })
   street.setVisible(false)
+  street.set('name', 'vecLayer')
   return street
 }
 
@@ -85,6 +88,7 @@ function getPointVectorLayer(source: VectorSource<Point>): VectorLayer<VectorSou
   return new VectorLayer({
     source: source,
     style: getLayerStyleByShowText(true),
+    zIndex: 2,
   })
 }
 /**
@@ -98,6 +102,7 @@ export function getLineVectorLayer(
   return new VectorLayer({
     source: source,
     style: getLayerStyleByShowText(true),
+    zIndex: 1,
   })
 }
 

@@ -48,11 +48,7 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
     otherKey = '',
   } = params
 
-  const {
-    data: resData = [],
-    loading,
-    run,
-  } = useRequest(
+  const { data: resData = [], loading, run } = useRequest(
     () => getCommonSelectData({ url, method, params: extraParams, requestSource, postType }),
     {
       ...options,

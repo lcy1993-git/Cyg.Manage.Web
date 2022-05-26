@@ -418,7 +418,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     const projects = record.engineerInfo.projects
     const parentData = projects.filter((item: any) => item.id === record.inheritId)
 
-    if (record.stateInfo.inheritStatus && parentData && parentData.length > 0) {
+    if (record.stateInfo.inheritStatus) {
       if (record.stateInfo.inheritStatus === 3) {
         return (
           <>
@@ -528,6 +528,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       render: projectNameCompleteRender,
       fixed: 'left',
       ellipsis: true,
+    },
+    {
+      title: '项目编码',
+      dataIndex: 'code',
+      width: 200,
+      ellipsis: true,
+      render: (text: any, record: any) => {
+        return showNameTips(record.code)
+      },
     },
     {
       title: '现场数据来源',
@@ -1169,7 +1178,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <div className={styles.engineerTableWrapperSearchLeft}>
           <TableSearch className="mr22" label="" width="300px">
             <Search
-              placeholder="请输入工程/项目名称"
+              placeholder="请输入工程/项目名称/项目编码"
               enterButton
               value={keyWord}
               onChange={(e) => setKeyWord(e.target.value)}

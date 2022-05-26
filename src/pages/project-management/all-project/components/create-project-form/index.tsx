@@ -32,8 +32,8 @@ const { TextArea } = Input
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const {
     field = {},
-    areaId,
-    company,
+    // areaId,
+    // company,
     pointVisible,
     status,
     projectId,
@@ -140,6 +140,19 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
+            label="项目编码"
+            fieldKey={[field.fieldKey, 'code']}
+            name={isEmpty(field) ? 'code' : [field.name, 'code']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input placeholder="请输入项目编码" maxLength={64} />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
             label="项目分类"
             fieldKey={[field.fieldKey, 'category']}
             initialValue={1}
@@ -155,6 +168,17 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               titlekey="text"
               placeholder="请选择"
             />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="截止日期"
+            fieldKey={[field.fieldKey, 'deadline']}
+            name={isEmpty(field) ? 'deadline' : [field.name, 'deadline']}
+            labelWidth={120}
+            align="right"
+          >
+            <DatePicker placeholder="请选择" />
           </CyFormItem>
         </div>
       </div>
@@ -467,22 +491,12 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         <div className="flex1 flowHidden">
           <CyFormItem
             label="供电所/班组"
-            rules={Rule.powerSupply}
             fieldKey={[field.fieldKey, 'powerSupply']}
             name={isEmpty(field) ? 'powerSupply' : [field.name, 'powerSupply']}
             labelWidth={120}
             align="right"
-            required
           >
-            <UrlSelect
-              url="/ElectricityCompany/GetPowerSupplys"
-              extraParams={{ areaId, company }}
-              paramsMust={['areaId', 'company']}
-              requestType="post"
-              placeholder="请选择"
-              valuekey="value"
-              titlekey="text"
-            />
+            <Input placeholder="请输入供电所/班组" />
           </CyFormItem>
         </div>
       </div>
@@ -673,17 +687,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="截止日期"
-            fieldKey={[field.fieldKey, 'deadline']}
-            name={isEmpty(field) ? 'deadline' : [field.name, 'deadline']}
-            labelWidth={120}
-            align="right"
-          >
-            <DatePicker placeholder="请选择" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
             label="现场数据来源"
             initialValue={0}
             fieldKey={[field.fieldKey, 'dataSourceType']}
@@ -743,9 +746,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             )}
           </CyFormItem>
         </div>
-      </div>
-
-      <div className="flex">
         <div className="flex1 flowHidden">
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
@@ -822,6 +822,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             </CyFormItem>
           )}
         </div>
+      </div>
+
+      <div className="flex">
         <div className="flex1 flowHidden">
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
@@ -836,8 +839,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <InputNumber
                 value={pileRangeValue}
                 disabled
-                placeholder="“免勘察”项目，免设置此条目"
                 style={{ width: '100%' }}
+                placeholder="“免勘察”项目，免设置此条目"
               />
             </CyFormItem>
           ) : dataSourceType === 1 || (copyFlag && copyFlag[index] && copyFlag[index] === 1) ? (
@@ -896,8 +899,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               <Input
                 type="number"
                 placeholder="请输入桩位范围"
-                style={{ width: '100%' }}
                 onKeyPress={keyPressEvent}
+                style={{ width: '100%' }}
               />
             </CyFormItem>
           ) : (
@@ -914,8 +917,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             </CyFormItem>
           )}
         </div>
-      </div>
-      <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
             label="备注"
@@ -933,6 +934,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
+      <div className="flex"></div>
     </>
   )
 }

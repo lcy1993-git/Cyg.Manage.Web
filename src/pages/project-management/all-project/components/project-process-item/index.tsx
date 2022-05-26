@@ -127,7 +127,7 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
   }
 
   const remarkInfo = useMemo(() => {
-    if (category === 70 || category === 72) {
+    if (category === 70 || category === 72 || category === 2) {
       return getValueByName('remark', jsonData)
     }
     return
@@ -171,7 +171,7 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
           </>
         )}
       </div>
-      <div className={styles.remarkInfo}>{remarkInfo && <span>{remarkInfo}</span>}</div>
+      <div className={styles.remarkInfo}>{remarkInfo && <span>备注：{remarkInfo}</span>}</div>
       {Array.isArray(allotUsers) && (
         <div className={styles.usersInfo}>{usersElement(allotUsers)}</div>
       )}
