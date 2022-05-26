@@ -20,8 +20,9 @@ export let webConfig = {
     manage: '/manage/api',
     geoserver: '/geoserver',
     design: '/design/api',
+    grid: '/gridremediation/api',
     geoServerUrl: '/geoserver/pdd/ows/',
-    netFrameworkHistory: "/gridpredesign/api"
+    netFrameworkHistory: '/gridpredesign/api',
   },
   logoUrl: {
     '218.6.242.125': 'ke-rui-logo.png',

@@ -1,7 +1,10 @@
+import { fetchGridManageMenu } from '@/services/grid-manage/treeMenu'
+import { useRequest } from 'ahooks'
 import { Tree } from 'antd'
 import { useState } from 'react'
 
 const PowerSupplyTree = () => {
+  const { data } = useRequest(() => fetchGridManageMenu())
   const treeData = [
     {
       title: '变电站',
@@ -70,7 +73,7 @@ const PowerSupplyTree = () => {
       checkedKeys={checkedKeys}
       onSelect={onSelect}
       selectedKeys={selectedKeys}
-      treeData={treeData}
+      treeData={data}
     />
   )
 }

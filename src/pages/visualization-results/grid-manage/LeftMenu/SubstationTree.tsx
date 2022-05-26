@@ -1,7 +1,11 @@
+import { getTransformerSubstationMenu } from '@/services/grid-manage/treeMenu'
+import { useRequest } from 'ahooks'
 import { Tree } from 'antd'
 import { useState } from 'react'
 
 const SubstationTree = () => {
+  const { data } = useRequest(() => getTransformerSubstationMenu())
+
   const treeData = [
     {
       title: '电源',
@@ -59,7 +63,7 @@ const SubstationTree = () => {
       checkedKeys={checkedKeys}
       onSelect={onSelect}
       selectedKeys={selectedKeys}
-      treeData={treeData}
+      treeData={data}
     />
   )
 }
