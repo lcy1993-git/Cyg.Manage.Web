@@ -1,11 +1,12 @@
 import WKT from 'ol/format/WKT'
 import { Vector } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
+import { POINTS } from '../../DrawToolbar/GridUtils'
 import Configs from './config'
-import { lineStyle, pointStyle } from './style'
+import { pointStyle } from './style'
 
 // 加载所有点图层
-export const loadAllPointLayer = (ids: string[], map: any) => {
+export const loadAllPointLayer = (data: any, map: any) => {
   let pointLayer = map
     .getLayers()
     .getArray()
@@ -19,8 +20,9 @@ export const loadAllPointLayer = (ids: string[], map: any) => {
     })
     map.addLayer(pointLayer)
   }
-  Configs.point.forEach((item: any) => {
-    loadPointLayer(ids, item, 'point', pointLayer)
+
+  POINTS.forEach((item: any) => {
+    loadPointLayer(data, item, pointLayer)
   })
 }
 
@@ -50,9 +52,8 @@ export const loadAllLineLayer = (ids: string[], map: any) => {
  * @param type 点位类型
  * @param layer
  */
-export const loadPointLayer = (ids: string[], type: string, geomType: string, layer: any) => {
+export const loadPointLayer = (data: any, type: string, layer: any) => {
   // 根据ids获取杆塔数据
-  const data: any = []
   data.forEach((item: any) => {
     // 根据wkt数据格式加载feature
     let format = new WKT()
@@ -64,8 +65,7 @@ export const loadPointLayer = (ids: string[], type: string, geomType: string, la
     item.dataType = type
     feature.set('data', item)
     // 设置样式
-    if (geomType === 'point') feature.setStyle(pointStyle(feature.get('data'), false))
-    else feature.setStyle(lineStyle(feature.get('data'), false))
+    feature.setStyle(pointStyle(feature.get('data'), false))
     // 加载数据到图层
     layer.getSource().addFeature(feature)
   })
