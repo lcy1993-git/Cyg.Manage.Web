@@ -1,10 +1,12 @@
 import {
+  getData,
   getMediaSign,
   loadLayer,
   ProjectList,
 } from '@/services/visualization-results/visualization-results'
 import Feature from 'ol/Feature'
 import GeoJSON from 'ol/format/GeoJSON'
+import WKT from 'ol/format/WKT'
 import LineString from 'ol/geom/LineString'
 import MultiLineString from 'ol/geom/MultiLineString'
 import Point from 'ol/geom/Point'
@@ -33,6 +35,8 @@ var layerGroups: LayerGroup[]
 var mediaSign: boolean
 var mediaSignData: any
 var timer: any
+var mapMovetimer: any
+var mapMoveEnds: any[] = []
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -58,23 +62,76 @@ const refreshMap = async (
 ) => {
   if (projects_) projects = projects_
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops
-  clearGroups(groupLayers)
-  clearHighlightLayer(map)
-  lineClusters = []
-  if (projects.length === 0) return
 
-  const postData = getXmlData(projects, startDate, endDate)
+  // if(currentLevel && currentLevel === Math.round(map.getView().getZoom())){
+  //   if(projects_ === null){
+  //     return false;
+  //   }
+  // }
+  // currentLevel = Math.round(map.getView().getZoom());
 
-  await loadSurveyLayers(postData, groupLayers, map)
-  await loadPlanLayers(postData, groupLayers, map)
-  await loadDismantleLayers(postData, groupLayers, map)
-  await loadDesignLayers(postData, groupLayers, view, setView, map, location)
-  await loadPreDesignLayers(groupLayers)
-  for (let index = 0; index < lineClusters.length; index++) {
-    const lineCluster = lineClusters[index]
-    lineCluster.updateLabelControlValue(false)
+  if (projects.length === 0) {
+    return false
   }
-  setLayerGroups(groupLayers)
+  lineClusters = []
+
+  let extent = map.getView().calculateExtent(map.getSize())
+  let minExtent = transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326')
+  let maxExtent = transform([extent[2], extent[3]], 'EPSG:3857', 'EPSG:4326')
+  extent = [minExtent[0], minExtent[1], maxExtent[0], maxExtent[1]]
+
+  let ids: any = []
+  projects.forEach((item: any) => {
+    ids.push({ id: item.id })
+  })
+
+  let params = {
+    polygonCoordinates: [
+      [extent[0], extent[1]],
+      [extent[2], extent[1]],
+      [extent[2], extent[3]],
+      [extent[0], extent[3]],
+      [extent[0], extent[1]],
+    ],
+    zoomLevel: Math.round(map.getView().getZoom()),
+    layerTypes: [1, 2, 4, 8],
+    projects: ids,
+  }
+
+  mapMoveEnds.push(new Date())
+  let startLength = mapMoveEnds.length
+  mapMovetimer && clearInterval(mapMovetimer)
+  mapMovetimer = setInterval(function () {
+    if (startLength === mapMoveEnds.length) {
+      const promise = getData(params)
+      promise.then(async (data: any) => {
+        clearGroups(groupLayers)
+        clearHighlightLayer(map)
+
+        data.content.survey && (await loadSurveyLayers(data.content.survey, groupLayers, map))
+        data.content.plan && (await loadPlanLayers(data.content.plan, groupLayers, map))
+        data.content.design &&
+          (await loadDesignLayers(data.content.design, groupLayers, view, setView, map, location))
+        data.content.dismantle &&
+          (await loadDismantleLayers(data.content.dismantle, groupLayers, map))
+      })
+      mapMoveEnds = []
+    } else {
+      mapMovetimer && clearInterval(mapMovetimer)
+    }
+  }, 500)
+
+  // const postData = getXmlData(projects, startDate, endDate)
+
+  // await loadPlanLayers(postData, groupLayers, map)
+  // await loadDismantleLayers(postData, groupLayers, map)
+  // await loadDesignLayers(postData, groupLayers, view, setView, map, location)
+  // await loadPreDesignLayers(groupLayers)
+  // for (let index = 0; index < lineClusters.length; index++) {
+  //   const lineCluster = lineClusters[index]
+  //   lineCluster.updateLabelControlValue(false)
+  // }
+  // setLayerGroups(groupLayers)
 }
 
 const checkZoom = (evt: any, map: any) => {
@@ -116,80 +173,99 @@ const checkZoom = (evt: any, map: any) => {
   // }
 }
 
-const loadSurveyLayers = async (postData: string, groupLayers: LayerGroup[], map: any) => {
-  await loadLayers(
-    postData,
-    getLayerGroupByName('surveyLayer', groupLayers),
-    'survey',
-    groupLayers,
-    map
-  )
+const loadSurveyLayers = async (data: any, groupLayers: LayerGroup[], map: any) => {
+  layerParams.forEach((item: LayerParams) => {
+    let layerName = item.layerName
+    let layerNames_ = layerName.split('_')
+    let footlayerName_ = ''
+    layerNames_.forEach((item: any) => {
+      footlayerName_ += item[0].toLocaleUpperCase() + item.substring(1)
+    })
+    let layerName_ = footlayerName_[0].toLocaleLowerCase() + footlayerName_.substring(1)
+    if (data[layerName_])
+      loadWFSData(
+        data[layerName_],
+        'survey',
+        layerName,
+        getLayerGroupByName('surveyLayer', groupLayers),
+        groupLayers,
+        item
+      )
+  })
 }
 
-const loadPlanLayers = async (postData: string, groupLayers: LayerGroup[], map: any) => {
-  await loadLayers(
-    postData,
-    getLayerGroupByName('planLayer', groupLayers),
-    'plan',
-    groupLayers,
-    map
-  )
+const loadPlanLayers = async (data: any, groupLayers: LayerGroup[], map: any) => {
+  layerParams.forEach((item: LayerParams) => {
+    let layerName = item.layerName
+    let layerNames_ = layerName.split('_')
+    let footlayerName_ = ''
+    layerNames_.forEach((item: any) => {
+      footlayerName_ += item[0].toLocaleUpperCase() + item.substring(1)
+    })
+    let layerName_ = footlayerName_[0].toLocaleLowerCase() + footlayerName_.substring(1)
+    if (data[layerName_])
+      loadWFSData(
+        data[layerName_],
+        'plan',
+        layerName,
+        getLayerGroupByName('planLayer', groupLayers),
+        groupLayers,
+        item
+      )
+  })
 }
 
 const loadDesignLayers = async (
-  postData: string,
+  data: any,
   groupLayers: LayerGroup[],
   view: any,
   setView: any,
   map: any,
   location: boolean
 ) => {
-  await loadLayers(
-    postData,
-    getLayerGroupByName('designLayer', groupLayers),
-    'design',
-    groupLayers,
-    map
-  )
-  if (postData.length > 576) {
-    await loadWFS(postData, 'pdd:design_pull_line', (data: any) => {
-      if (groupLayers['design_pull_line']) {
-        groupLayers['design_pull_line'].getSource().clear()
-      } else {
-        var source = new VectorSource()
-        groupLayers['design_pull_line'] = new Vector({
-          source,
-          zIndex: 1,
-          // declutter: true
-        })
-        groupLayers['design_pull_line'].set('name', 'design_pull_line')
-        getLayerGroupByName('designLayer', groupLayers)
-          .getLayers()
-          .push(groupLayers['design_pull_line'])
-      }
-      if (data.features != undefined && data.features.length > 0) {
-        let pJSON = new GeoJSON().readFeatures(data)
-        for (var i = 0; i < pJSON.length; i++) {
-          pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'))
-          let s: any = pointStyle('design_pull_line', pJSON[i], false)
-          pJSON[i].setStyle(s)
-        }
-        groupLayers['design_pull_line'].getSource().addFeatures(pJSON)
-      }
-    })
-  }
+  let layerParams_: any = layerParams
 
-  relocateMap('', groupLayers, view, setView, map, location)
+  layerParams.forEach((item: LayerParams) => {
+    let layerName = item.layerName
+    let layerNames_ = layerName.split('_')
+    let footlayerName_ = ''
+    layerNames_.forEach((item: any) => {
+      footlayerName_ += item[0].toLocaleUpperCase() + item.substring(1)
+    })
+    let layerName_ = footlayerName_[0].toLocaleLowerCase() + footlayerName_.substring(1)
+    if (data[layerName_])
+      loadWFSData(
+        data[layerName_],
+        'design',
+        layerName,
+        getLayerGroupByName('designLayer', groupLayers),
+        groupLayers,
+        item
+      )
+  })
+
+  // relocateMap('', groupLayers, view, setView, map, location)
 }
 
-const loadDismantleLayers = async (postData: string, groupLayers: LayerGroup[], map: any) => {
-  await loadLayers(
-    postData,
-    getLayerGroupByName('dismantleLayer', groupLayers),
-    'dismantle',
-    groupLayers,
-    map
-  )
+const loadDismantleLayers = async (data: any, groupLayers: LayerGroup[], map: any) => {
+  layerParams.forEach((item: LayerParams) => {
+    let layerName = item.layerName
+    let layerNames_ = layerName.split('_')
+    let footlayerName_ = ''
+    layerNames_.forEach((item: any) => {
+      footlayerName_ += item[0].toLocaleUpperCase() + item.substring(1)
+    })
+    let layerName_ = footlayerName_[0].toLocaleLowerCase() + footlayerName_.substring(1)
+    if (data[layerName_])
+      loadWFSData(
+        data[layerName_],
+        'dismantle',
+        layerName,
+        getLayerGroupByName('dismantleLayer', groupLayers),
+        groupLayers,
+        item
+      )
+  })
 }
 
 const loadPreDesignLayers = async (groupLayers: LayerGroup[]) => {
@@ -266,24 +342,6 @@ const loadPreDesignLayers = async (groupLayers: LayerGroup[]) => {
   })
 }
 
-const loadLayers = (
-  postData: string,
-  group: LayerGroup,
-  layerType: string,
-  groupLayers: LayerGroup[],
-  map: any
-) => {
-  layerParams.forEach((item: LayerParams) => {
-    // if (postData.length > 576) {
-    let layerName = item.layerName
-    loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
-      loadWFSData(data, layerType, layerName, group, groupLayers, item)
-    )
-
-    // }
-  })
-}
-
 const loadWFSData = (
   data: any,
   layerType: string,
@@ -297,19 +355,22 @@ const loadWFSData = (
       groupLayers[layerType + '_' + layerName].getSource().getSource().clear()
     else groupLayers[layerType + '_' + layerName].getSource().clear()
   }
-  let pJSON
-  if (data.features && data.features.length > 0) {
-    pJSON = new GeoJSON().readFeatures(data)
-    for (var i = 0; i < pJSON.length; i++) {
-      pJSON[i].setGeometry(pJSON[i].getGeometry()?.transform('EPSG:4326', 'EPSG:3857'))
+  let pJSON: any = []
+
+  if (data && data.length > 0) {
+    for (let i = 0; i < data.length; i++) {
+      let format = new WKT()
+      let feature = format.readFeature(data[i].geom)
+      feature.setGeometry(feature.getGeometry()?.transform('EPSG:4326', 'EPSG:3857'))
+      feature.setProperties(data[i])
       if (item.type !== 'point') {
         let style
         // 普通线路
         if (item.type == 'line') {
-          let props = pJSON[i].getProperties()
+          let props = feature.getProperties()
           // 电缆线
           if (props?.is_cable) {
-            pJSON[i].setProperties({
+            feature.setProperties({
               layer_name: 'line',
               showLabel: true,
               showLengthLabel: false,
@@ -317,7 +378,7 @@ const loadWFSData = (
           }
           // 架空线路
           else {
-            pJSON[i].setProperties({
+            feature.setProperties({
               layer_name: 'line',
               showLabel: false,
               showLengthLabel: false,
@@ -330,31 +391,31 @@ const loadWFSData = (
               let lengthLabelIndex = props?.lable?.indexOf(lengthLabel)
               if (lengthLabelIndex > 0) {
                 // 删除线路型号label中的距离label
-                pJSON[i].setProperties({ lable: props?.lable.substr(0, lengthLabelIndex) })
+                feature.setProperties({ lable: props?.lable.substr(0, lengthLabelIndex) })
               }
 
               // 为线簇数组添加线簇
               let isAdded = false
               for (let index = 0; index < lineClusters.length; index++) {
                 const lineCluster = lineClusters[index]
-                if (lineCluster.isShouldContainLine(pJSON[i])) {
-                  pJSON[i].setProperties({ line_cluster_id: lineCluster.id })
-                  lineCluster.insertLine(pJSON[i], 'line')
+                if (lineCluster.isShouldContainLine(feature)) {
+                  feature.setProperties({ line_cluster_id: lineCluster.id })
+                  lineCluster.insertLine(feature, 'line')
                   isAdded = true
                 }
               }
 
               if (!isAdded) {
                 if (lineClusters.length === 130) {
-                  // console.log(pJSON[i], props.start_id, props.end_id);
+                  // console.log(feature, props.start_id, props.end_id);
                 }
-                pJSON[i].setProperties({ line_cluster_id: lineClusters.length + 1 })
+                feature.setProperties({ line_cluster_id: lineClusters.length + 1 })
                 lineClusters.push(
                   new LineCluster(
                     lineClusters.length + 1,
                     props.start_id,
                     props.end_id,
-                    [pJSON[i]],
+                    [feature],
                     []
                   )
                 )
@@ -362,89 +423,92 @@ const loadWFSData = (
             }
           }
 
-          style = line_style(pJSON[i], false)
+          style = line_style(feature, false)
         }
         // 水平拉线
         else if (item.type === 'zero_guy') {
-          pJSON[i].setProperties({
+          feature.setProperties({
             layer_name: 'zero_guy',
             showLabel: false,
             showLengthLabel: false,
           })
-          let props = pJSON[i].getProperties()
+          let props = feature.getProperties()
           if (!props.mode) {
             let index = props.label?.indexOf(props.length)
-            pJSON[i].setProperties({ mode: props.label?.substr(0, index - 1) })
+            feature.setProperties({ mode: props.label?.substr(0, index - 1) })
           }
           if (props.mode_id?.startsWith('NULL')) {
             let index = props.label?.indexOf(props.length)
-            pJSON[i].setProperties({ mode_id: props.label?.substr(0, index - 1) })
+            feature.setProperties({ mode_id: props.label?.substr(0, index - 1) })
           }
           if (layerType === 'design') {
             switch (props.state) {
               case 1:
-                pJSON[i].setProperties({ symbol_id: 2010 })
+                feature.setProperties({ symbol_id: 2010 })
                 break
               case 2:
-                pJSON[i].setProperties({ symbol_id: 2011 })
+                feature.setProperties({ symbol_id: 2011 })
                 break
               case 3:
-                pJSON[i].setProperties({ symbol_id: 2012 })
+                feature.setProperties({ symbol_id: 2012 })
                 break
               case 4:
-                pJSON[i].setProperties({ symbol_id: 2013 })
+                feature.setProperties({ symbol_id: 2013 })
                 break
               default:
-                pJSON[i].setProperties({ symbol_id: 2011 })
+                feature.setProperties({ symbol_id: 2011 })
             }
           } else if (layerType === 'dismantle') {
-            pJSON[i].setProperties({ symbol_id: 2020 })
+            feature.setProperties({ symbol_id: 2020 })
           }
 
           // 为线簇数组添加线簇
           let isAdded = false
           for (let index = 0; index < lineClusters.length; index++) {
             const lineCluster = lineClusters[index]
-            if (lineCluster.isShouldContainLine(pJSON[i])) {
-              pJSON[i].setProperties({ line_cluster_id: lineCluster.id })
-              lineCluster.insertLine(pJSON[i], 'zero_guy')
+            if (lineCluster.isShouldContainLine(feature)) {
+              feature.setProperties({ line_cluster_id: lineCluster.id })
+              lineCluster.insertLine(feature, 'zero_guy')
               isAdded = true
             }
           }
           if (!isAdded) {
-            pJSON[i].setProperties({ line_cluster_id: lineClusters.length + 1 })
+            feature.setProperties({ line_cluster_id: lineClusters.length + 1 })
             lineClusters.push(
-              new LineCluster(lineClusters.length + 1, props.start_id, props.end_id, [], [pJSON[i]])
+              new LineCluster(lineClusters.length + 1, props.start_id, props.end_id, [], [feature])
             )
           }
 
-          style = zero_guy_style(pJSON[i], false)
+          style = zero_guy_style(feature, false)
         }
         // 电缆线路
         else if (item.type === 'cable_channel') {
-          pJSON[i].setProperties({
+          feature.setProperties({
             layer_name: 'cable_channel',
             showLabel: true,
             showLengthLabel: false,
           })
-          let props = pJSON[i].getProperties()
-          if (!pJSON[i].getProperties().symbol_id) {
-            if (layerType === 'dismantle' || pJSON[i].getProperties().state === 4) {
-              pJSON[i].setProperties({ symbol_id: '3020' })
+          if (!feature.getProperties().symbol_id) {
+            if (layerType === 'dismantle' || feature.getProperties().state === 4) {
+              feature.setProperties({ symbol_id: '3020' })
             } else {
-              pJSON[i].setProperties({ symbol_id: '3010' })
+              feature.setProperties({ symbol_id: '3010' })
             }
           }
 
-          style = cable_channel_styles(pJSON[i])
+          style = cable_channel_styles(feature)
         } else if (item.type === 'special_point') {
-          style = pointStyle(layerType + '_' + layerName, pJSON[i], false)
+          style = pointStyle(layerType + '_' + layerName, feature, false)
+        } else if (item.type === 'pull_line') {
+          style = pointStyle(layerType + '_' + layerName, feature, false)
         }
+
         //  else if (item.type === 'subline') {
         //   style = fzx_styles();
         // }
-        pJSON[i].setStyle(style)
+        feature.setStyle(style)
       }
+      pJSON.push(feature)
     }
     // groupLayers[layerType + '_' + layerName].getSource().addFeatures(pJSON);
   }
