@@ -1,9 +1,9 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
-import TileLayer from 'ol/layer/Tile'
+import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
-import XYZ from 'ol/source/XYZ'
+import { XYZ } from 'ol/source'
 import View from 'ol/View'
 import { loadAllLineLayer, loadAllPointLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
@@ -33,6 +33,10 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
     mapMoveend(e, mapRef.map)
   })
 }
+
+// export const draw = (type:string) {
+
+// }
 
 export const loadMapLayers = (ids: string[], map: any) => {
   loadAllPointLayer(ids, map)
