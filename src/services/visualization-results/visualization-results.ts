@@ -64,6 +64,14 @@ export const publishMessage = (params: any) => {
   })
 }
 
+//获取单个户表入户线信息
+export const getHouseholdLineInfo = (params: any) => {
+  return request(`${baseUrl.manage}//WebGis/GetHomeLines`, {
+    method: 'GET',
+    data: { ...params },
+  })
+}
+
 // 获取材料表数据
 export const getMaterialItemData = (params: any) => {
   /**

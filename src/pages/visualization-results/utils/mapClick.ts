@@ -357,6 +357,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     })
 
     var pJSON = {}
+
     for (var p in mappingTags) {
       var mappingTag = mappingTags[p]
       if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
@@ -381,6 +382,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           case 'recorder':
             pJSON[mappingTag] = feature.getProperties()['recorderName']
             break
+          // case 'household_line':
+          //   pJSON[mappingTag] = '查看'
+          //   break
+
           case 'surveyor':
             if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员'
             pJSON[mappingTag] = feature.getProperties()['surveyorName']
