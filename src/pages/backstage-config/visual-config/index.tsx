@@ -128,7 +128,7 @@ const VisualConfig: React.FC = () => {
       dataIndex: 'layerTypes',
       index: 'layerTypes',
       title: '图层类别',
-      width: 300,
+      width: 320,
       render: (text: any, record: any) => {
         const { layerTypes } = record
         const el = layerTypes.map((item: any) => {
@@ -143,11 +143,12 @@ const VisualConfig: React.FC = () => {
         return <>{el}</>
       },
     },
+
     {
       title: '状态',
       dataIndex: 'isDisabled',
       index: 'isDisabled',
-      width: 120,
+      width: 100,
       render: (text: any, record: any) => {
         const isChecked = record.isDisabled
         return (
@@ -186,6 +187,19 @@ const VisualConfig: React.FC = () => {
     },
 
     {
+      dataIndex: 'minZoomLevel',
+      index: 'minZoomLevel',
+      title: '最小缩放等级',
+      width: 120,
+    },
+    {
+      dataIndex: 'maxZoomLevel',
+      index: 'maxZoomLevel',
+      title: '最大缩放等级',
+      width: 120,
+    },
+
+    {
       dataIndex: 'elementType',
       index: 'elementType',
       title: '元素类别',
@@ -198,25 +212,39 @@ const VisualConfig: React.FC = () => {
           )
         })
       },
+      width: '30%',
     },
     {
       dataIndex: 'limitQty',
       index: 'limitQty',
-      title: '限制查询数量',
+      title: '限制总数量',
       width: 120,
+      render: (text: any, record: any) => {
+        return (
+          <span>
+            {record.limitQty == -1 ? '不限制' : record.limitQty == 0 ? '不查询' : record.limitQty}
+          </span>
+        )
+      },
     },
     {
-      dataIndex: 'minZoomLevel',
-      index: 'minZoomLevel',
-      title: '最小缩放等级',
-      width: 150,
+      dataIndex: 'projectLimitQty',
+      index: 'projectLimitQty',
+      title: '按项目限制数量',
+      width: 120,
+      render: (text: any, record: any) => {
+        return (
+          <span>
+            {record.projectLimitQty == -1
+              ? '不限制'
+              : record.projectLimitQty == 0
+              ? '不查询'
+              : record.projectLimitQty}
+          </span>
+        )
+      },
     },
-    {
-      dataIndex: 'maxZoomLevel',
-      index: 'maxZoomLevel',
-      title: '最大缩放等级',
-      width: 150,
-    },
+
     {
       dataIndex: 'remark',
       index: 'remark',
