@@ -1,8 +1,10 @@
 import { Feature } from 'ol'
 import { Coordinate } from 'ol/coordinate'
+import { LineString, Point } from 'ol/geom'
 import Geometry from 'ol/geom/Geometry'
-import LineString from 'ol/geom/LineString'
 import { Draw, Modify, Snap } from 'ol/interaction'
+import { CABLECIRCUIT, CABLEWELL, LINE, TOWER } from '../../DrawToolbar/GridUtils'
+import { getLayer } from './loadLayer'
 import { lineStyle, pointStyle } from './style'
 class DrawTool {
   map: any
@@ -70,7 +72,25 @@ class DrawTool {
       const coordinates = feature.getGeometry().getCoordinates() as Coordinate[]
       const features = coordinates.reduce((pre: Feature<Geometry>[], [x, y], index, origin) => {
         if (!origin[index + 1]) return pre
-        const [nextPonintX, nextPonintY] = origin[index + 1]
+        let nextPonintX = origin[index + 1][0]
+        let nextPonintY = origin[index + 1][1]
+
+        const node1: any = this.handleLine_node(x, y, feature.get('data').featureType)
+        if (node1) {
+          x = node1.getGeometry().getCoordinates()[0]
+          y = node1.getGeometry().getCoordinates()[1]
+        }
+
+        const node2: any = this.handleLine_node(
+          nextPonintX,
+          nextPonintY,
+          feature.get('data').featureType
+        )
+        if (node2) {
+          nextPonintX = node2.getGeometry().getCoordinates()[0]
+          nextPonintY = node2.getGeometry().getCoordinates()[1]
+        }
+
         const lineString = new LineString([
           [x, y],
           [nextPonintX, nextPonintY],
@@ -86,5 +106,26 @@ class DrawTool {
       source.addFeatures(features)
     }, 0)
   }
+
+  handleLine_node = (lont: number, lat: number, featureType: string) => {
+    let node
+    let pixel = this.map.getPixelFromCoordinate([lont, lat])
+    this.map.forEachFeatureAtPixel(pixel, function (feature: any, layer: any) {
+      if (layer.get('name') === 'pointLayer') node = feature
+    })
+    if (!node) {
+      let pointLayer = getLayer(this.map, 'pointLayer', 3)
+      let point = new Point([lont, lat])
+      const feature = new Feature(point)
+      if (featureType === LINE) {
+        feature.setStyle(pointStyle({ featureType: TOWER }))
+      } else if (featureType === CABLECIRCUIT) {
+        feature.setStyle(pointStyle({ featureType: CABLEWELL }))
+      }
+      pointLayer.getSource().addFeature(feature)
+    }
+    return node
+  }
 }
+
 export default DrawTool
