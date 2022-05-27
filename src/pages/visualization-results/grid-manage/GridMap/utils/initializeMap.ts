@@ -39,7 +39,7 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
   })
 
   // drawPoint(mapRef.map, {})
-  drawLine(mapRef.map, { featureType: 'Line' })
+  // drawLine(mapRef.map, { featureType: 'Line' })
 }
 
 export const drawPoint = (map: any, options: any) => {
