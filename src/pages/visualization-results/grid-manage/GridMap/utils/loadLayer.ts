@@ -1,7 +1,7 @@
 import WKT from 'ol/format/WKT'
 import { Vector } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
-import { LINES, POINTS } from '../../DrawToolbar/GridUtils'
+import { LINE, POINTS } from '../../DrawToolbar/GridUtils'
 import { lineStyle, pointStyle } from './style'
 
 export const loadAllLayer = (data: any, map: any) => {
@@ -23,10 +23,11 @@ export const loadAllPointLayer = (data: any, map: any) => {
 export const loadAllLineayer = (data: any, map: any) => {
   let lineLayer = getLayer(map, 'lineLayer', 3, true)
 
-  LINES.forEach((item: any) => {
-    const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
-    data[item_] && loadLayer(data[item_], item, lineLayer)
-  })
+  // LINES.forEach((item: any) => {
+  //   const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
+  //   data[item_] && loadLayer(data[item_], item, lineLayer)
+  // })
+  data.lineRelationList && loadLayer(data.lineRelationList, LINE, lineLayer)
 }
 
 /**
