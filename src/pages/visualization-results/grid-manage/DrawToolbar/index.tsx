@@ -77,7 +77,7 @@ const DrawToolbar = () => {
       title="绘制图元"
       placement="right"
       getContainer={false}
-      style={{ position: 'absolute' }}
+      style={{ position: 'absolute', width: '378px' }}
       mask={false}
       onClose={onClose}
       visible={drawToolbarVisible}
