@@ -5,11 +5,13 @@ import {
 import { useRequest } from 'ahooks'
 import { Tree } from 'antd'
 import { useEffect, useState } from 'react'
+import { useMyContext } from '../Context'
 import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
+import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
 const SubstationTree = () => {
   const { data } = useRequest(() => getTransformerSubstationMenu())
-
+  const { mapRef } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
 
   const treeData = [
@@ -51,7 +53,7 @@ const SubstationTree = () => {
     {
       manual: true,
       onSuccess: () => {
-        //! 请求网架数据，调用绘制方法 console.log(TreeData, '55555')
+        loadMapLayers(TreeData, mapRef.map)
       },
     }
   )
@@ -63,6 +65,24 @@ const SubstationTree = () => {
   const getSubstationTreeData = (checkedKeys: any) => {
     const checkedIds = checkedKeys.filter((item: string) => !item.includes('-'))
     setCheckedKeys(checkedIds)
+    if (!checkedIds.length) {
+      loadMapLayers(
+        {
+          boxTransformerList: [], // 箱变列表
+          cableBranchBoxList: [], // 电缆分支箱
+          cableWellList: [], // 电缆井
+          columnCircuitBreakerList: [], // 柱上断路器
+          columnTransformerList: [], // 柱上变压器
+          electricityDistributionRoomList: [], // 配电室
+          lineRelationList: [], // 线路连接关系表
+          ringNetworkCabinetList: [], // 环网柜
+          switchingStationList: [], // 开闭所
+          towerList: [], // 杆塔
+          lineList: [], // 线路表
+        },
+        mapRef.map
+      )
+    }
   }
 
   return <Tree checkable defaultExpandAll onCheck={getSubstationTreeData} treeData={treeData} />

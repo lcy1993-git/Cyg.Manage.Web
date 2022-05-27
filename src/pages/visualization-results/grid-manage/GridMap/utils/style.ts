@@ -2,10 +2,12 @@ import { Fill, Stroke, Style, Text } from 'ol/style'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
+  CABLECIRCUIT,
   CABLEWELL,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   ELECTRICITYDISTRIBUTIONROOM,
+  LINE,
   POWERSUPPLY,
   RINGNETWORKCABINET,
   SWITCHINGSTATION,
@@ -14,7 +16,7 @@ import {
 } from '../../DrawToolbar/GridUtils'
 export const pointStyle = (data: any, selected: boolean = false) => {
   let text
-  let color = selected ? `rgba(8,210,42,1)` : `rgba(189,206,198,1)`
+  let color = selected ? `rgba(8,210,42,1)` : `rgba(145, 145, 255, 1)`
   // 根据点位的类型设置图符
   switch (data.featureType) {
     case POWERSUPPLY:
@@ -72,14 +74,16 @@ export const pointStyle = (data: any, selected: boolean = false) => {
 
 export const lineStyle = (data: any, selected: boolean = false) => {
   let color,
-    width = 1,
-    zIndex = 2
-  switch (data.type) {
-    case 'line':
-      color = ''
+    width = 1
+  switch (data.featureType) {
+    case LINE:
+      color = 'blue'
       width = 2
       break
-
+    case CABLECIRCUIT:
+      color = 'red'
+      width = 2
+      break
     default:
       break
   }

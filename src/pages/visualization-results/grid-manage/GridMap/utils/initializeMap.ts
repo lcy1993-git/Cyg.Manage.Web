@@ -1,13 +1,12 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
-import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
+import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
-import { Vector as VectorSource, XYZ } from 'ol/source'
-import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
+import { XYZ } from 'ol/source'
 import View from 'ol/View'
 import DrawTool from './draw'
-import { loadAllLineLayer, loadAllPointLayer } from './loadLayer'
+import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 
 interface InitOps {
@@ -15,7 +14,8 @@ interface InitOps {
   ref: React.ReactNode
 }
 var drawTool: any
-var layer: any
+var pointLayer: any
+var lineLayer: any
 
 export const initMap = ({ mapRef, ref }: InitOps) => {
   mapRef.map = new Map({
@@ -29,7 +29,7 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
       }),
     ],
     view: new View({
-      center: transform([118.5144, 31.6807], 'EPSG:4326', 'EPSG:3857'),
+      center: transform([98.21940745, 39.89627774], 'EPSG:4326', 'EPSG:3857'),
       zoom: 10,
     }),
   })
@@ -37,39 +37,36 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
   mapRef.map.on('moveend', (e: Event) => {
     mapMoveend(e, mapRef.map)
   })
+
+  // drawPoint(mapRef.map, {})
+  // drawLine(mapRef.map, { featureType: 'Line' })
 }
 
 export const drawPoint = (map: any, options: any) => {
-  if (!layer) {
-    layer = new VectorLayer({
-      source: new VectorSource(),
-      style: new Style({
-        fill: new Fill({
-          color: 'rgba(255, 255, 255, 0.2)',
-        }),
-        stroke: new Stroke({
-          color: '#ffcc33',
-          width: 2,
-        }),
-        image: new CircleStyle({
-          radius: 7,
-          fill: new Fill({
-            color: '#ffcc33',
-          }),
-        }),
-      }),
-    })
-  }
+  pointLayer = getLayer(map, 'pointLayer', 3)
 
-  map.addLayer(layer)
   options.type_ = 'Point'
-  if (!drawTool) drawTool = new DrawTool(map, layer.getSource(), options)
-  drawTool.drawPoint(options)
+  if (!drawTool) drawTool = new DrawTool(map, options)
+  drawTool.setSource(pointLayer.getSource())
+  drawTool.drawGeometry(options)
 }
 
-export const loadMapLayers = (ids: string[], map: any) => {
-  loadAllPointLayer(ids, map)
-  loadAllLineLayer(ids, map)
+export const drawLine = (map: any, options: any) => {
+  lineLayer = getLayer(map, 'lineLayer', 2)
+  options.type_ = 'LineString'
+  if (!drawTool) drawTool = new DrawTool(map, options)
+  drawTool.setSource(lineLayer.getSource())
+  drawTool.drawGeometry(options)
+}
+
+export const loadMapLayers = (data: any, map: any) => {
+  loadAllLayer(data, map)
+}
+
+export const clear = () => {
+  drawTool.snap && drawTool.snap.setActive(false)
+  drawTool.draw && drawTool.draw.setActive(false)
+  drawTool.modify && drawTool.modify.setActive(false)
 }
 
 // 获取比例尺

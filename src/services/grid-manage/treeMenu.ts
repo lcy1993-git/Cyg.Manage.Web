@@ -23,6 +23,12 @@ export const featchSubstationTreeData = (params: string[]) => {
   )
 }
 
+export const featchPowerSupplyTreeData = (params: { ids: string[] }) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/GridDesign/GetLinesByPower`, { method: 'POST', data: params })
+  )
+}
+
 export const fetchGridManageMenu = () => {
   return cyRequest<any[]>(() => request(`${baseUrl.grid}/PowerSupply/Tree`, { method: 'GET' }))
 }

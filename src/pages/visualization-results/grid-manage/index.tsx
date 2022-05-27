@@ -13,7 +13,7 @@ const LEFTMENUWIDTH = 260
 
 const GradManage: React.FC = () => {
   /** 网架绘制 手动绘制工具栏状态 **/
-  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(false)
+  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(true)
   /** 网架绘制 Excel数据导入模态框状态 **/
   const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
   /** 当前选择的城市 **/
