@@ -6,7 +6,7 @@ import ProjUnits from 'ol/proj/Units'
 import { Vector as VectorSource, XYZ } from 'ol/source'
 import View from 'ol/View'
 import DrawTool from './draw'
-import { loadAllLineLayer, loadAllPointLayer } from './loadLayer'
+import { loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 
 interface InitOps {
@@ -40,7 +40,7 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
 
 export const drawPoint = (map: any, options: any) => {
   if (!pointLayer) {
-    let pointLayer = map
+    pointLayer = map
       .getLayers()
       .getArray()
       .find((item: any) => item.get('name') === 'pointLayer')
@@ -60,9 +60,8 @@ export const drawPoint = (map: any, options: any) => {
   drawTool.drawPoint(options)
 }
 
-export const loadMapLayers = (ids: string[], map: any) => {
-  loadAllPointLayer(ids, map)
-  loadAllLineLayer(ids, map)
+export const loadMapLayers = (data: any, map: any) => {
+  loadAllLayer(data, map)
 }
 
 // 获取比例尺

@@ -2,8 +2,11 @@ import WKT from 'ol/format/WKT'
 import { Vector } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import { POINTS } from '../../DrawToolbar/GridUtils'
-import Configs from './config'
 import { pointStyle } from './style'
+
+export const loadAllLayer = (data: any, map: any) => {
+  // console.log(data);
+}
 
 // 加载所有点图层
 export const loadAllPointLayer = (data: any, map: any) => {
@@ -27,24 +30,24 @@ export const loadAllPointLayer = (data: any, map: any) => {
 }
 
 // 加载所有线图层
-export const loadAllLineLayer = (ids: string[], map: any) => {
-  let lineLayer = map
-    .getLayers()
-    .getArray()
-    .find((item: any) => item.get('name') === 'lineLayer')
-  if (lineLayer) {
-    lineLayer.getSource().clear()
-  } else {
-    lineLayer = new Vector({
-      source: new VectorSource(),
-      zIndex: 2,
-    })
-    map.addLayer(lineLayer)
-  }
-  Configs.line.forEach((item: any) => {
-    loadPointLayer(ids, item, 'line', lineLayer)
-  })
-}
+// export const loadAllLineLayer = (data: any, map: any) => {
+//   let lineLayer = map
+//     .getLayers()
+//     .getArray()
+//     .find((item: any) => item.get('name') === 'lineLayer')
+//   if (lineLayer) {
+//     lineLayer.getSource().clear()
+//   } else {
+//     lineLayer = new Vector({
+//       source: new VectorSource(),
+//       zIndex: 2,
+//     })
+//     map.addLayer(lineLayer)
+//   }
+//   Configs.line.forEach((item: any) => {
+//     loadPointLayer(data, item, 'line', lineLayer)
+//   })
+// }
 
 /**
  * 加载数据
