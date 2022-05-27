@@ -2,17 +2,17 @@ import { Feature } from 'ol'
 import { Coordinate } from 'ol/coordinate'
 import { LineString, Point } from 'ol/geom'
 import Geometry from 'ol/geom/Geometry'
-import { Draw, Modify, Snap } from 'ol/interaction'
+import { Draw, Snap } from 'ol/interaction'
 import { CABLECIRCUIT, CABLEWELL, LINE, TOWER } from '../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
+import { setSelectActive } from './select'
 import { lineStyle, pointStyle } from './style'
 class DrawTool {
   map: any
   options: any
-  select: any
   draw: any
   snap: any
-  modify: any
+  selset: any
   source: any
 
   constructor(map: any, options: any) {
@@ -27,6 +27,7 @@ class DrawTool {
   }
 
   drawGeometry(options: any) {
+    setSelectActive(false)
     this.options = options
     this.draw && this.map.removeInteraction(this.draw)
     this.snap && this.map.removeInteraction(this.snap)
@@ -61,11 +62,6 @@ class DrawTool {
     this.map.addInteraction(this.snap)
   }
 
-  addModify = () => {
-    this.modify = new Modify({ source: this.source })
-    this.map.addInteraction(this.modify)
-  }
-
   handleLine = (source: any, feature: any) => {
     setTimeout(() => {
       // 获取绘制点点位信息数组
@@ -75,16 +71,19 @@ class DrawTool {
         let nextPonintX = origin[index + 1][0]
         let nextPonintY = origin[index + 1][1]
 
-        const node1: any = this.handleLine_node(x, y, feature.get('data').featureType)
+        const node1: any = this.handleLine_node(x, y, feature.get('data').featureType, true)
         if (node1) {
           x = node1.getGeometry().getCoordinates()[0]
           y = node1.getGeometry().getCoordinates()[1]
         }
 
+        let isAdd = false
+        if (index === coordinates.length - 2) isAdd = true
         const node2: any = this.handleLine_node(
           nextPonintX,
           nextPonintY,
-          feature.get('data').featureType
+          feature.get('data').featureType,
+          isAdd
         )
         if (node2) {
           nextPonintX = node2.getGeometry().getCoordinates()[0]
@@ -107,21 +106,25 @@ class DrawTool {
     }, 0)
   }
 
-  handleLine_node = (lont: number, lat: number, featureType: string) => {
+  handleLine_node = (lont: number, lat: number, featureType: string, isAdd: boolean) => {
     let node
     let pixel = this.map.getPixelFromCoordinate([lont, lat])
     this.map.forEachFeatureAtPixel(pixel, function (feature: any, layer: any) {
       if (layer.get('name') === 'pointLayer') node = feature
     })
-    if (!node) {
+    if (!node && isAdd) {
       let pointLayer = getLayer(this.map, 'pointLayer', 3)
       let point = new Point([lont, lat])
       const feature = new Feature(point)
+      const data: any = {}
       if (featureType === LINE) {
-        feature.setStyle(pointStyle({ featureType: TOWER }))
+        data.featureType = TOWER
+        feature.setStyle(pointStyle(data))
       } else if (featureType === CABLECIRCUIT) {
-        feature.setStyle(pointStyle({ featureType: CABLEWELL }))
+        data.featureType = CABLEWELL
+        feature.setStyle(pointStyle(data))
       }
+      feature.set('data', data)
       pointLayer.getSource().addFeature(feature)
     }
     return node

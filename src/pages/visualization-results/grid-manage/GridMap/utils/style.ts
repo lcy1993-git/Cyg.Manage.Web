@@ -2,12 +2,10 @@ import { Fill, Stroke, Style, Text } from 'ol/style'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
-  CABLECIRCUIT,
   CABLEWELL,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   ELECTRICITYDISTRIBUTIONROOM,
-  LINE,
   POWERSUPPLY,
   RINGNETWORKCABINET,
   SWITCHINGSTATION,
@@ -74,19 +72,20 @@ export const pointStyle = (data: any, selected: boolean = false) => {
 
 export const lineStyle = (data: any, selected: boolean = false) => {
   let color,
-    width = 1
-  switch (data.featureType) {
-    case LINE:
-      color = 'blue'
-      width = 2
-      break
-    case CABLECIRCUIT:
-      color = 'red'
-      width = 2
-      break
-    default:
-      break
-  }
+    width = 2
+  // switch (data.featureType) {
+  //   case LINE:
+  //     color = 'blue'
+  //     width = 2
+  //     break
+  //   case CABLECIRCUIT:
+  //     color = 'red'
+  //     width = 2
+  //     break
+  //   default:
+  //     break
+  // }
+  color = selected ? `rgba(8,210,42,1)` : 'blue'
   let text = data.length ? data.length.toFixed(2) + 'm' : ''
   let style = new Style({
     stroke: new Stroke({

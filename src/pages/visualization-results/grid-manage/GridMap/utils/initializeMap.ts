@@ -8,6 +8,7 @@ import View from 'ol/View'
 import DrawTool from './draw'
 import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
+import { initSelect, setSelectActive } from './select'
 
 interface InitOps {
   mapRef: MapRef
@@ -38,6 +39,7 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
     mapMoveend(e, mapRef.map)
   })
 
+  initSelect(mapRef.map)
   // drawPoint(mapRef.map, {})
   // drawLine(mapRef.map, { featureType: 'Line' })
 }
@@ -64,9 +66,9 @@ export const loadMapLayers = (data: any, map: any) => {
 }
 
 export const clear = () => {
-  drawTool.snap && drawTool.snap.setActive(false)
-  drawTool.draw && drawTool.draw.setActive(false)
-  drawTool.modify && drawTool.modify.setActive(false)
+  drawTool && drawTool.snap && drawTool.snap.setActive(false)
+  drawTool && drawTool.draw && drawTool.draw.setActive(false)
+  setSelectActive(true)
 }
 
 // 获取比例尺
