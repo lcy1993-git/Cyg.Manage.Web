@@ -1,10 +1,13 @@
 import { Tooltip } from 'antd'
 import Map from 'ol/Map'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import CheckSource from '../../components/check-source'
 import Iconfont from '../../history-grid/components/iconfont'
+import MapSwitcher from '../../history-grid/MapSwitcher'
+import { useHistoryGridContext } from '../../history-grid/store'
 import FlowLayer from './FlowLayer'
 const ChangMapUrl = () => {
+  const { UIStatus, dispatch, historyDataSource, preDesignDataSource } = useHistoryGridContext()
   // 图层切换模态框类型
   const [sourceType, setSourceType] = useState<string | number>('')
   const [map, setMap] = useState<Map | null>(null)
@@ -12,6 +15,25 @@ const ChangMapUrl = () => {
   const [satellite, setSatellite] = useState(0)
 
   const prop = { street, setStreet, satellite, setSatellite }
+
+  const onClick = useCallback(
+    (key: string) => {
+      const payload = { ...UIStatus, [key]: !UIStatus[key] }
+      dispatch({ type: 'changeUIStatus', payload })
+    },
+    [dispatch, UIStatus]
+  )
+
+  const onMapTypeChange = useCallback(
+    (type) => {
+      dispatch({
+        type: 'changeUIStatus',
+        payload: { ...UIStatus, mapType: type },
+      })
+    },
+    [UIStatus, dispatch]
+  )
+
   return (
     <FlowLayer className="select-none z-50" bottom={0} right={15}>
       <div className="text-right">
@@ -19,7 +41,7 @@ const ChangMapUrl = () => {
           <IconSwitcher
             title="显示/关闭名称"
             flag="showTitle"
-            onClick={() => {}}
+            onClick={onClick}
             icon={false ? 'icon-xianshi' : 'icon-yincang'}
           />
         </div>
@@ -45,8 +67,11 @@ const ChangMapUrl = () => {
           />
         </div>
       </div>
-      <div className="w-full h-30 flex justify-end">
+      {/* <div className="w-full h-30 flex justify-end">
         <CheckSource type={sourceType} map={map!} setSourceType={() => {}} {...prop} />
+      </div> */}
+      <div className="w-full h-30 flex justify-end">
+        <MapSwitcher onChange={onMapTypeChange} />
       </div>
       <GeographicLocation />
     </FlowLayer>
