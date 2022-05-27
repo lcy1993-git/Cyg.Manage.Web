@@ -1,12 +1,12 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
-import { Tile as TileLayer, Vector } from 'ol/layer'
+import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
-import { Vector as VectorSource, XYZ } from 'ol/source'
+import { XYZ } from 'ol/source'
 import View from 'ol/View'
 import DrawTool from './draw'
-import { loadAllLayer } from './loadLayer'
+import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 
 interface InitOps {
@@ -15,6 +15,7 @@ interface InitOps {
 }
 var drawTool: any
 var pointLayer: any
+var lineLayer: any
 
 export const initMap = ({ mapRef, ref }: InitOps) => {
   mapRef.map = new Map({
@@ -36,28 +37,27 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
   mapRef.map.on('moveend', (e: Event) => {
     mapMoveend(e, mapRef.map)
   })
+
+  // drawPoint(mapRef.map, {})
+  drawLine(mapRef.map, { featureType: 'Line' })
 }
 
 export const drawPoint = (map: any, options: any) => {
-  if (!pointLayer) {
-    pointLayer = map
-      .getLayers()
-      .getArray()
-      .find((item: any) => item.get('name') === 'pointLayer')
-    if (pointLayer) {
-      pointLayer.getSource().clear()
-    } else {
-      pointLayer = new Vector({
-        source: new VectorSource(),
-        zIndex: 3,
-      })
-      map.addLayer(pointLayer)
-    }
-  }
+  pointLayer = getLayer(map, 'pointLayer', 3)
 
   options.type_ = 'Point'
-  if (!drawTool) drawTool = new DrawTool(map, pointLayer.getSource(), options)
-  drawTool.drawPoint(options)
+  if (!drawTool) drawTool = new DrawTool(map, options)
+  drawTool.setSource(pointLayer.getSource())
+  drawTool.drawGeometry(options)
+}
+
+export const drawLine = (map: any, options: any) => {
+  lineLayer = getLayer(map, 'lineLayer', 3)
+
+  options.type_ = 'LineString'
+  if (!drawTool) drawTool = new DrawTool(map, options)
+  drawTool.setSource(lineLayer.getSource())
+  drawTool.drawGeometry(options)
 }
 
 export const loadMapLayers = (data: any, map: any) => {

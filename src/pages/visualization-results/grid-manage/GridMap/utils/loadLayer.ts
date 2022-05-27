@@ -10,19 +10,7 @@ export const loadAllLayer = (data: any, map: any) => {
 
 // 加载所有点图层
 export const loadAllPointLayer = (data: any, map: any) => {
-  let pointLayer = map
-    .getLayers()
-    .getArray()
-    .find((item: any) => item.get('name') === 'pointLayer')
-  if (pointLayer) {
-    pointLayer.getSource().clear()
-  } else {
-    pointLayer = new Vector({
-      source: new VectorSource(),
-      zIndex: 3,
-    })
-    map.addLayer(pointLayer)
-  }
+  let pointLayer = getLayer(map, 'pointLayer', 3)
 
   POINTS.forEach((item: any) => {
     loadPointLayer(data, item, pointLayer)
@@ -72,4 +60,22 @@ export const loadPointLayer = (data: any, type: string, layer: any) => {
     // 加载数据到图层
     layer.getSource().addFeature(feature)
   })
+}
+
+export const getLayer = (map: any, layerName: string, zIndex: number) => {
+  let layer = map
+    .getLayers()
+    .getArray()
+    .find((item: any) => item.get('name') === layerName)
+  if (layer) {
+    // layer.getSource().clear()
+  } else {
+    layer = new Vector({
+      source: new VectorSource(),
+      zIndex,
+    })
+    layer.set('name', layerName)
+    map.addLayer(layer)
+  }
+  return layer
 }
