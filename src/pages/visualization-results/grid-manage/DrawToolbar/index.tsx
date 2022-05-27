@@ -69,8 +69,6 @@ const DrawToolbar = () => {
   /** 插入图元 */
   const createFeature = () => {
     const formData = form.getFieldsValue()
-    // console.log(formData, '666')
-    // ! 点击插入元素： 1、判断当前经纬度是否有值，如果有则
     drawPoint(mapRef.map, formData)
   }
 
@@ -79,7 +77,7 @@ const DrawToolbar = () => {
       title="绘制图元"
       placement="right"
       getContainer={false}
-      style={{ position: 'absolute' }}
+      style={{ position: 'absolute', width: '378px' }}
       mask={false}
       onClose={onClose}
       visible={drawToolbarVisible}
@@ -90,19 +88,6 @@ const DrawToolbar = () => {
         form={form}
         initialValues={{ featureType: 'PowerSupply' }}
       >
-        <Form.Item name="featureType" label="绘制图符">
-          <Radio.Group
-            className="EditFeature"
-            options={FEATUREOPTIONS}
-            onChange={selectDrawFeature}
-          />
-        </Form.Item>
-        <Row style={{ display: 'flex', marginBottom: '16px', justifyContent: 'flex-end' }}>
-          <Button style={{ marginRight: '16px' }} type="primary" onClick={createFeature}>
-            插入图符
-          </Button>
-        </Row>
-        <Divider plain></Divider>
         <Form.Item name="lineType" label="选择线路">
           <Row gutter={3}>
             <Col span={16}>
@@ -133,6 +118,21 @@ const DrawToolbar = () => {
             </Select>
           </Form.Item>
         )}
+        <Divider plain></Divider>
+
+        <Form.Item name="featureType" label="绘制图符">
+          <Radio.Group
+            className="EditFeature"
+            options={FEATUREOPTIONS}
+            onChange={selectDrawFeature}
+          />
+        </Form.Item>
+        <Row style={{ display: 'flex', marginBottom: '16px', justifyContent: 'flex-end' }}>
+          <Button style={{ marginRight: '16px' }} type="primary" onClick={createFeature}>
+            插入图符
+          </Button>
+        </Row>
+
         <Divider plain orientation="center">
           属性栏
         </Divider>
