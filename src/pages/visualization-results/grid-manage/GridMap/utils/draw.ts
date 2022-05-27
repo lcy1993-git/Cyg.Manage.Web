@@ -50,6 +50,7 @@ class DrawTool {
 
     this.draw.on('drawend', function (e: any) {
       e.feature.set('data', this_.options)
+
       if (e.feature.getGeometry().getType() === 'LineString') {
         e.feature.setStyle(lineStyle(this_.options))
         this_.handleLine(this_.source, e.feature)

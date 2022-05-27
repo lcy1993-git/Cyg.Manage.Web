@@ -20,6 +20,7 @@ import {
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
   CABLECIRCUITMODEL,
+  createFeatureId,
   FEATUREOPTIONS,
   KVLEVELOPTIONS,
   KVLEVELTYPES,
@@ -35,6 +36,7 @@ const DrawToolbar = () => {
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   const [selectLineType, setselectLineType] = useState('')
   const [currentFeature, setcurrentFeature] = useState('feature')
+  const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [kelevelOptions, setkelevelOptions] = useState([
     ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
       item.belonging.find((type: string) => type.includes(currentFeatureType))
@@ -44,6 +46,10 @@ const DrawToolbar = () => {
   const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 18 },
+  }
+  const lineformLayout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 17 },
   }
 
   /** 关闭模态框 **/
@@ -78,7 +84,10 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
-      drawPoint(mapRef.map, formData)
+      drawPoint(mapRef.map, {
+        ...formData,
+        id: createFeatureId(),
+      })
     } catch (err) {}
   }
 
@@ -90,13 +99,14 @@ const DrawToolbar = () => {
       drawLine(mapRef.map, {
         ...formData,
         featureType: formData.lineType,
+        id: createFeatureId(),
       })
     } catch (err) {}
   }
 
   return (
     <Drawer
-      title="绘制图元"
+      title="手动绘制"
       placement="right"
       getContainer={false}
       style={{ position: 'absolute', width: '378px', height: '100%', overflow: 'hidden' }}
@@ -224,10 +234,10 @@ const DrawToolbar = () => {
                 </Form.Item>
               )}
 
-              <Form.Item name="lat" label="经度">
+              <Form.Item name="lng" label="经度">
                 <Input />
               </Form.Item>
-              <Form.Item name="lng" label="纬度">
+              <Form.Item name="lat" label="纬度">
                 <Input />
               </Form.Item>
             </Form>
@@ -235,7 +245,7 @@ const DrawToolbar = () => {
         </TabPane>
         <TabPane tab="绘制线路" key="drawline">
           {currentFeature === 'drawline' && (
-            <Form {...formItemLayout} style={{ marginTop: '10px' }} form={form}>
+            <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
               <Form.Item
                 name="lineType"
                 label="选择线路"
@@ -274,6 +284,61 @@ const DrawToolbar = () => {
                       ))}
                 </Select>
               </Form.Item>
+              <Form.Item name="name" label="名称">
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="belonging"
+                label="所属厂站"
+                rules={[{ required: true, message: '请选择所属厂站' }]}
+              >
+                <Select allowClear>
+                  <Option value="CableCircuit">电缆线路</Option>
+                  <Option value="Line">架空线路</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item name="kvLevel" label="电压等级">
+                <Select
+                  onChange={(value: number) => {
+                    setcurrentLineKvLevel(value)
+                  }}
+                >
+                  {KVLEVELOPTIONS.filter((level) => level.belonging.includes('Line')).map(
+                    (item) => (
+                      <Option key={item.kvLevel} value={item.kvLevel}>
+                        {item.label}
+                      </Option>
+                    )
+                  )}
+                </Select>
+              </Form.Item>
+              <Form.Item name="lineProperties" label="线路性质">
+                <Select>
+                  <Option value="公用">公用</Option>
+                  <Option value="专用">专用</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item name="totalLength" label="线路总长度">
+                <Input disabled />
+              </Form.Item>
+              <Form.Item name="totalCapacity" label="配变总容量">
+                <Input disabled />
+              </Form.Item>
+              {!currentLineKvLevel && (
+                <Form.Item
+                  name="belonging"
+                  label="线路颜色"
+                  rules={[{ required: true, message: '请选择线路颜色' }]}
+                >
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )}
             </Form>
           )}
         </TabPane>

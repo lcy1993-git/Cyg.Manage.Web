@@ -20,6 +20,9 @@ const GradManage: React.FC = () => {
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
   )
+  /** 页面所有线路 */
+  const [lineAssemble, setlineAssemble] = useState<{ value: string; label: string }[]>([])
+
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
 
@@ -33,6 +36,8 @@ const GradManage: React.FC = () => {
         importModalVisible,
         setImportModalVisible,
         mapRef,
+        lineAssemble,
+        setlineAssemble,
       }}
     >
       <GradManageWrap />

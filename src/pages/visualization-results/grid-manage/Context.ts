@@ -18,6 +18,8 @@ export interface MyContextType {
   setselectCity: Dispatch<SetStateAction<MyContextType['selectCity']>>
   importModalVisible: boolean
   setImportModalVisible: Dispatch<SetStateAction<boolean>>
+  lineAssemble: { value: string; label: string }[]
+  setlineAssemble: Dispatch<SetStateAction<{ value: string; label: string }[]>>
 }
 
 // 全局状态管理

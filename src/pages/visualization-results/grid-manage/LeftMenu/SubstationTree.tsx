@@ -11,7 +11,7 @@ import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
 const SubstationTree = () => {
   const { data } = useRequest(() => getTransformerSubstationMenu())
-  const { mapRef } = useMyContext()
+  const { mapRef, lineAssemble, setlineAssemble } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
 
   const treeData = [

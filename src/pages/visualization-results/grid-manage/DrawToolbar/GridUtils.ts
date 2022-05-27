@@ -105,22 +105,23 @@ export const KVLEVELOPTIONS = [
       RINGNETWORKCABINET,
       SWITCHINGSTATION,
       CABLEBRANCHBOX,
+      LINE,
     ],
   },
   {
     kvLevel: 1,
     label: '20KV',
-    belonging: [TRANSFORMERSUBSTATION, TOWER, CABLEWELL],
+    belonging: [TRANSFORMERSUBSTATION, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 3,
     label: '35KV',
-    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL],
+    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 4,
     label: '110KV',
-    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL],
+    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 5,
@@ -179,3 +180,17 @@ export const CABLECIRCUITMODEL = [
   { label: '电力电缆，300', value: '电力电缆，300' },
   { label: '电力电缆，400', value: '电力电缆，400' },
 ]
+
+export const createFeatureId = () => {
+  const s = []
+  const hexDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  for (let i = 0; i < 36; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
+  }
+  s[14] = '4' // bits 12-15 of the time_hi_and_version field to 0010
+  s[19] = hexDigits.substr(0x3 | 0x8, 1) // bits 6-7 of the clock_seq_hi_and_reserved to 01
+  s[8] = s[13] = s[18] = s[23] = '-'
+
+  var uuid = s.join('')
+  return uuid
+}
