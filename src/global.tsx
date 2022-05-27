@@ -13,7 +13,7 @@ export let webConfig = {
     comment: '/project/api',
     tecEco: '/quota/api',
     tecEco1: '/technicaleconomy/api',
-    review: '/review/api',
+    review: '/review/v2/api',
     component: '/component/api',
     material: '/material/api/',
     resourceV1: '/resource/api',
@@ -21,7 +21,7 @@ export let webConfig = {
     geoserver: '/geoserver',
     design: '/design/api',
     geoServerUrl: '/geoserver/pdd/ows/',
-    netFrameworkHistory: "/gridpredesign/api"
+    netFrameworkHistory: '/gridpredesign/api',
   },
   logoUrl: {
     '218.6.242.125': 'ke-rui-logo.png',

@@ -9,7 +9,7 @@
         "comment": "/project/api",
         "tecEco": "/quota/api",
         "tecEco1": "/technicaleconomy/api",
-        "review": "/review/api",
+        "review": "/review/v2/api",
         "component": "/component/api",
         "material": "/material/api/",
         "resourceV1": "/resource/api",
