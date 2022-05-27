@@ -51,12 +51,12 @@ const getTrackRecordDateArray = () => {
 
 const refreshMap = async (
   ops: any,
-  projects_: ProjectList[],
-  location: boolean = true,
+  projects_: any,
+  location: boolean = false,
   startDate?: string,
   endDate?: string
 ) => {
-  projects = projects_
+  if (projects_) projects = projects_
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops
   clearGroups(groupLayers)
   clearHighlightLayer(map)
@@ -64,10 +64,11 @@ const refreshMap = async (
   if (projects.length === 0) return
 
   const postData = getXmlData(projects, startDate, endDate)
-  await loadSurveyLayers(postData, groupLayers)
-  await loadPlanLayers(postData, groupLayers)
-  await loadDismantleLayers(postData, groupLayers)
-  await loadDesignLayers(postData, groupLayers, view, setView, map)
+
+  await loadSurveyLayers(postData, groupLayers, map)
+  await loadPlanLayers(postData, groupLayers, map)
+  await loadDismantleLayers(postData, groupLayers, map)
+  await loadDesignLayers(postData, groupLayers, view, setView, map, location)
   await loadPreDesignLayers(groupLayers)
   for (let index = 0; index < lineClusters.length; index++) {
     const lineCluster = lineClusters[index]
@@ -115,12 +116,24 @@ const checkZoom = (evt: any, map: any) => {
   // }
 }
 
-const loadSurveyLayers = async (postData: string, groupLayers: LayerGroup[]) => {
-  await loadLayers(postData, getLayerGroupByName('surveyLayer', groupLayers), 'survey', groupLayers)
+const loadSurveyLayers = async (postData: string, groupLayers: LayerGroup[], map: any) => {
+  await loadLayers(
+    postData,
+    getLayerGroupByName('surveyLayer', groupLayers),
+    'survey',
+    groupLayers,
+    map
+  )
 }
 
-const loadPlanLayers = async (postData: string, groupLayers: LayerGroup[]) => {
-  await loadLayers(postData, getLayerGroupByName('planLayer', groupLayers), 'plan', groupLayers)
+const loadPlanLayers = async (postData: string, groupLayers: LayerGroup[], map: any) => {
+  await loadLayers(
+    postData,
+    getLayerGroupByName('planLayer', groupLayers),
+    'plan',
+    groupLayers,
+    map
+  )
 }
 
 const loadDesignLayers = async (
@@ -128,9 +141,16 @@ const loadDesignLayers = async (
   groupLayers: LayerGroup[],
   view: any,
   setView: any,
-  map: any
+  map: any,
+  location: boolean
 ) => {
-  await loadLayers(postData, getLayerGroupByName('designLayer', groupLayers), 'design', groupLayers)
+  await loadLayers(
+    postData,
+    getLayerGroupByName('designLayer', groupLayers),
+    'design',
+    groupLayers,
+    map
+  )
   if (postData.length > 576) {
     await loadWFS(postData, 'pdd:design_pull_line', (data: any) => {
       if (groupLayers['design_pull_line']) {
@@ -159,15 +179,16 @@ const loadDesignLayers = async (
     })
   }
 
-  relocateMap('', groupLayers, view, setView, map)
+  relocateMap('', groupLayers, view, setView, map, location)
 }
 
-const loadDismantleLayers = async (postData: string, groupLayers: LayerGroup[]) => {
+const loadDismantleLayers = async (postData: string, groupLayers: LayerGroup[], map: any) => {
   await loadLayers(
     postData,
     getLayerGroupByName('dismantleLayer', groupLayers),
     'dismantle',
-    groupLayers
+    groupLayers,
+    map
   )
 }
 
@@ -249,7 +270,8 @@ const loadLayers = (
   postData: string,
   group: LayerGroup,
   layerType: string,
-  groupLayers: LayerGroup[]
+  groupLayers: LayerGroup[],
+  map: any
 ) => {
   layerParams.forEach((item: LayerParams) => {
     // if (postData.length > 576) {
@@ -257,6 +279,7 @@ const loadLayers = (
     loadWFS(postData, 'pdd:' + layerType + '_' + layerName, (data: any) =>
       loadWFSData(data, layerType, layerName, group, groupLayers, item)
     )
+
     // }
   })
 }
@@ -815,6 +838,7 @@ const relocateMap = (
   map: any,
   refresh: boolean = true
 ) => {
+  if (!refresh) return
   // if (extent && !refresh) {
   //   view.fit(extent, map!.getSize());
   //   setView(view);
