@@ -1,8 +1,10 @@
 import { Feature } from 'ol'
 import { Coordinate } from 'ol/coordinate'
+import WKT from 'ol/format/WKT'
 import { LineString, Point } from 'ol/geom'
 import Geometry from 'ol/geom/Geometry'
 import { Draw, Snap } from 'ol/interaction'
+import { transform } from 'ol/proj'
 import { CABLECIRCUIT, CABLEWELL, LINE, TOWER } from '../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
 import { setSelectActive } from './select'
@@ -53,7 +55,16 @@ class DrawTool {
       if (e.feature.getGeometry().getType() === 'LineString') {
         e.feature.setStyle(lineStyle(this_.options))
         this_.handleLine(this_.source, e.feature)
-      } else e.feature.setStyle(pointStyle(this_.options))
+      } else {
+        e.feature.setStyle(pointStyle(this_.options))
+        const coordinates = e.feature.getGeometry().getCoordinates()
+        const lont = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
+        this_.options.lng = lont[0]
+        this_.options.lat = lont[1]
+        var format = new WKT()
+        this_.options.geom = format.writeGeometry(e.feature.getGeometry())
+        // 添加点位到数据库 this_.options
+      }
     })
   }
 
@@ -97,6 +108,10 @@ class DrawTool {
         const feature_ = new Feature(lineString)
         feature_.set('data', feature.get('data'))
         feature_.setStyle(lineStyle(feature.get('data')))
+        var format = new WKT()
+        feature.get('data').geom = format.writeGeometry(lineString)
+        // 添加线路到数据库 feature.get('data')
+
         return pre.concat(feature_)
       }, [])
       // 移除原有要素层
@@ -117,6 +132,13 @@ class DrawTool {
       let point = new Point([lont, lat])
       const feature = new Feature(point)
       const data: any = {}
+      const coordinates = point.getCoordinates()
+      const lont_ = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
+      data.lng = lont_[0]
+      data.lat = lont_[1]
+      var format = new WKT()
+      data.geom = format.writeGeometry(point)
+
       if (featureType === LINE) {
         data.featureType = TOWER
         feature.setStyle(pointStyle(data))
@@ -124,8 +146,11 @@ class DrawTool {
         data.featureType = CABLEWELL
         feature.setStyle(pointStyle(data))
       }
+
       feature.set('data', data)
       pointLayer.getSource().addFeature(feature)
+
+      // 添加点位到数据库 data
     }
     return node
   }
