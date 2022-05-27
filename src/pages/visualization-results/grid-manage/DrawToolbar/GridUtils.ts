@@ -51,6 +51,8 @@ export const POINTS = [
   TRANSFORMERSUBSTATION,
 ]
 
+export const LINES = [LINE, CABLECIRCUIT]
+
 /** 要素类型 */
 export const FEATUERTYPE = {
   [POWERSUPPLY]: '电源',

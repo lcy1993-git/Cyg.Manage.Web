@@ -1,41 +1,33 @@
 import WKT from 'ol/format/WKT'
 import { Vector } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
-import { POINTS } from '../../DrawToolbar/GridUtils'
-import { pointStyle } from './style'
+import { LINES, POINTS } from '../../DrawToolbar/GridUtils'
+import { lineStyle, pointStyle } from './style'
 
 export const loadAllLayer = (data: any, map: any) => {
-  // console.log(data);
+  loadAllPointLayer(data, map)
+  loadAllLineayer(data, map)
 }
 
 // 加载所有点图层
 export const loadAllPointLayer = (data: any, map: any) => {
-  let pointLayer = getLayer(map, 'pointLayer', 3)
+  let pointLayer = getLayer(map, 'pointLayer', 3, true)
 
   POINTS.forEach((item: any) => {
-    loadPointLayer(data, item, pointLayer)
+    const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
+    data[item_] && loadLayer(data[item_], item, pointLayer)
   })
 }
 
 // 加载所有线图层
-// export const loadAllLineLayer = (data: any, map: any) => {
-//   let lineLayer = map
-//     .getLayers()
-//     .getArray()
-//     .find((item: any) => item.get('name') === 'lineLayer')
-//   if (lineLayer) {
-//     lineLayer.getSource().clear()
-//   } else {
-//     lineLayer = new Vector({
-//       source: new VectorSource(),
-//       zIndex: 2,
-//     })
-//     map.addLayer(lineLayer)
-//   }
-//   Configs.line.forEach((item: any) => {
-//     loadPointLayer(data, item, 'line', lineLayer)
-//   })
-// }
+export const loadAllLineayer = (data: any, map: any) => {
+  let lineLayer = getLayer(map, 'lineLayer', 3, true)
+
+  LINES.forEach((item: any) => {
+    const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
+    data[item_] && loadLayer(data[item_], item, lineLayer)
+  })
+}
 
 /**
  * 加载数据
@@ -43,7 +35,7 @@ export const loadAllPointLayer = (data: any, map: any) => {
  * @param type 点位类型
  * @param layer
  */
-export const loadPointLayer = (data: any, type: string, layer: any) => {
+export const loadLayer = (data: any, type: string, layer: any) => {
   // 根据ids获取杆塔数据
   data.forEach((item: any) => {
     // 根据wkt数据格式加载feature
@@ -53,22 +45,23 @@ export const loadPointLayer = (data: any, type: string, layer: any) => {
       featureProjection: 'EPSG:3857',
     })
     // 设置数据类型
-    item.dataType = type
+    item.featureType = type
     feature.set('data', item)
     // 设置样式
-    feature.setStyle(pointStyle(feature.get('data'), false))
+    if (layer.get('name') === 'pointLayer') feature.setStyle(pointStyle(feature.get('data'), false))
+    else feature.setStyle(lineStyle(feature.get('data'), false))
     // 加载数据到图层
     layer.getSource().addFeature(feature)
   })
 }
 
-export const getLayer = (map: any, layerName: string, zIndex: number) => {
+export const getLayer = (map: any, layerName: string, zIndex: number, clear: boolean = false) => {
   let layer = map
     .getLayers()
     .getArray()
     .find((item: any) => item.get('name') === layerName)
   if (layer) {
-    // layer.getSource().clear()
+    clear && layer.getSource().clear()
   } else {
     layer = new Vector({
       source: new VectorSource(),

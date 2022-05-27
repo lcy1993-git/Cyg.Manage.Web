@@ -29,7 +29,7 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
       }),
     ],
     view: new View({
-      center: transform([118.5144, 31.6807], 'EPSG:4326', 'EPSG:3857'),
+      center: transform([98.21940745, 39.89627774], 'EPSG:4326', 'EPSG:3857'),
       zoom: 10,
     }),
   })
@@ -52,8 +52,7 @@ export const drawPoint = (map: any, options: any) => {
 }
 
 export const drawLine = (map: any, options: any) => {
-  lineLayer = getLayer(map, 'lineLayer', 3)
-
+  lineLayer = getLayer(map, 'lineLayer', 2)
   options.type_ = 'LineString'
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(lineLayer.getSource())

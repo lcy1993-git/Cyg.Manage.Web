@@ -53,7 +53,7 @@ const SubstationTree = () => {
     {
       manual: true,
       onSuccess: () => {
-        loadMapLayers(TreeData, mapRef)
+        loadMapLayers(TreeData, mapRef.map)
       },
     }
   )
@@ -80,7 +80,7 @@ const SubstationTree = () => {
           towerList: [], // 杆塔
           lineList: [], // 线路表
         },
-        mapRef
+        mapRef.map
       )
     }
   }

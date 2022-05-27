@@ -46,7 +46,7 @@ const PowerSupplyTree = () => {
     {
       manual: true,
       onSuccess: () => {
-        loadMapLayers(TreeData, mapRef)
+        loadMapLayers(TreeData, mapRef.map)
       },
     }
   )
@@ -73,7 +73,7 @@ const PowerSupplyTree = () => {
           towerList: [], // 杆塔
           lineList: [], // 线路表
         },
-        mapRef
+        mapRef.map
       )
     }
   }
