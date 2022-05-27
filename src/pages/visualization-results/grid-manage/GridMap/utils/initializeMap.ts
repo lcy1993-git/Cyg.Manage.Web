@@ -63,6 +63,12 @@ export const loadMapLayers = (data: any, map: any) => {
   loadAllLayer(data, map)
 }
 
+export const clear = () => {
+  drawTool.snap && drawTool.snap.setActive(false)
+  drawTool.draw && drawTool.draw.setActive(false)
+  drawTool.modify && drawTool.modify.setActive(false)
+}
+
 // 获取比例尺
 export const getScale = (map: any) => {
   const view = map.getView()
