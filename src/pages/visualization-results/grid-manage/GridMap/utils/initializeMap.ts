@@ -24,8 +24,7 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
     layers: [
       new TileLayer({
         source: new XYZ({
-          url:
-            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
@@ -46,7 +45,6 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
 
 export const drawPoint = (map: any, options: any) => {
   pointLayer = getLayer(map, 'pointLayer', 3)
-
   options.type_ = 'Point'
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(pointLayer.getSource())
@@ -59,6 +57,16 @@ export const drawLine = (map: any, options: any) => {
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(lineLayer.getSource())
   drawTool.drawGeometry(options)
+}
+
+export const getDrawPoints = () => {
+  if (drawTool) return drawTool.getAllDrawPoints()
+  else return null
+}
+
+export const getDrawLines = () => {
+  if (drawTool) return drawTool.getAllDrawLines()
+  else return null
 }
 
 export const loadMapLayers = (data: any, map: any) => {

@@ -5,7 +5,8 @@ import { LineString, Point } from 'ol/geom'
 import Geometry from 'ol/geom/Geometry'
 import { Draw, Snap } from 'ol/interaction'
 import { transform } from 'ol/proj'
-import { CABLECIRCUIT, CABLEWELL, createFeatureId, LINE, TOWER } from '../../DrawToolbar/GridUtils'
+import { CABLECIRCUIT, CABLEWELL, LINE, TOWER, TYPENUMS } from '../../DrawToolbar/GridUtils'
+import { createFeatureId } from './../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
 import { setSelectActive } from './select'
 import { lineStyle, pointStyle } from './style'
@@ -31,12 +32,68 @@ class DrawTool {
   }
 
   drawGeometry(options: any) {
+    if (options.lng && options.lat) {
+      options.lng = parseFloat(options.lng)
+      options.lat = parseFloat(options.lat)
+      const point = new Point([options.lng, options.lat]).transform('EPSG:4326', 'EPSG:3857')
+      const feature: any = new Feature(point)
+      feature.setStyle(pointStyle(options))
+      var format = new WKT()
+      options.geom = format.writeGeometry(
+        feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
+      )
+      feature.set('data', options)
+      this.source.addFeature(feature)
+      return
+    }
     setSelectActive(false)
     this.options = options
     this.draw && this.map.removeInteraction(this.draw)
     this.snap && this.map.removeInteraction(this.snap)
     this.addDraw(this.options.type_)
     this.addSnap()
+  }
+
+  getAllDrawPoints() {
+    let featrues: any = []
+    let pointLayer = getLayer(this.map, 'pointLayer')
+    pointLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'Point') featrues.push(feature.get('data'))
+      })
+    return featrues
+  }
+
+  getAllDrawLines() {
+    let featrues: any = []
+    let lineLayer = getLayer(this.map, 'lineLayer')
+    lineLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'LineString') featrues.push(feature.get('data'))
+      })
+    return featrues
+  }
+
+  deleteAll() {
+    let pointLayer = getLayer(this.map, 'pointLayer')
+    pointLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'Point') pointLayer.getSource().removeFeature(feature)
+      })
+
+    let lineLayer = getLayer(this.map, 'lineLayer')
+    lineLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'LineString') lineLayer.getSource().removeFeature(feature)
+      })
   }
 
   addDraw = (type: string) => {
@@ -62,13 +119,16 @@ class DrawTool {
         e.feature.setStyle(pointStyle(this_.options))
         const coordinates = e.feature.getGeometry().getCoordinates()
         const lont = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
-        this_.options.lng = lont[0]
-        this_.options.lat = lont[1]
+        const featureData = { ...this_.options }
+        featureData.lng = lont[0]
+        featureData.lat = lont[1]
+        featureData.seId = createFeatureId()
         var format = new WKT()
-        this_.options.geom = format.writeGeometry(e.feature.getGeometry())
-        this_.options.seId = createFeatureId()
-        // !!添加点位到数据库 this_.options
-        storeLocalFeatureData(this_.options)
+        featureData.geom = format.writeGeometry(
+          e.feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
+        )
+        storeLocalFeatureData(featureData)
+        // 添加点位到数据库 this_.options
       }
     })
   }
@@ -87,11 +147,12 @@ class DrawTool {
         let nextPonintX = origin[index + 1][0]
         let nextPonintY = origin[index + 1][1]
 
+        const featureData = { ...feature.getProperties().data }
         const node1: any = this.handleLine_node(x, y, feature.get('data').featureType, true)
-        if (node1) {
-          x = node1.getGeometry().getCoordinates()[0]
-          y = node1.getGeometry().getCoordinates()[1]
-        }
+        x = node1.getGeometry().getCoordinates()[0]
+        y = node1.getGeometry().getCoordinates()[1]
+        featureData.startId = node1.get('data').seId
+        featureData.startType = TYPENUMS[node1.get('data').featureType.toLocaleUpperCase()]
 
         let isAdd = false
         if (index === coordinates.length - 2) isAdd = true
@@ -101,9 +162,12 @@ class DrawTool {
           feature.get('data').featureType,
           isAdd
         )
+
         if (node2) {
           nextPonintX = node2.getGeometry().getCoordinates()[0]
           nextPonintY = node2.getGeometry().getCoordinates()[1]
+          featureData.endId = node2.get('data').seId
+          featureData.endType = TYPENUMS[node2.get('data').featureType]
         }
 
         const lineString = new LineString([
@@ -111,53 +175,62 @@ class DrawTool {
           [nextPonintX, nextPonintY],
         ])
         const feature_ = new Feature(lineString)
+
         var format = new WKT()
-        feature.get('data').geom = format.writeGeometry(lineString)
-        feature.get('data').id = createFeatureId()
-
-        feature_.set('data', feature.get('data'))
+        featureData.geom = format.writeGeometry(
+          lineString.clone().transform('EPSG:3857', 'EPSG:4326')
+        )
+        // featureData.id = createFeatureId()
+        feature_.set('data', featureData)
         feature_.setStyle(lineStyle(feature.get('data')))
-
-        // !! 添加线路到数据库 feature.get('data')
-        // console.log(feature.get('data'), '45454445')
-        // storeLocalFeatureData(feature.get('data'))
-        return pre.concat(feature_)
+        let datas: any = pre.concat(feature_)
+        if (datas.length > 1) {
+          datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
+          datas[datas.length - 2].get('data').endType =
+            datas[datas.length - 1].get('data').startType
+        }
+        return datas
       }, [])
+
+      // !保存线路
+
       // 移除原有要素层
       source.removeFeature(feature)
       // 将拆分生成的新要素层添加至图层
+
       source.addFeatures(features)
     }, 0)
   }
 
   handleLine_node = (lont: number, lat: number, featureType: string, isAdd: boolean) => {
     let node
-    let pixel = this.map.getPixelFromCoordinate([lont, lat])
+    const pixel = this.map.getPixelFromCoordinate([lont, lat])
     this.map.forEachFeatureAtPixel(pixel, function (feature: any, layer: any) {
       if (layer.get('name') === 'pointLayer') node = feature
     })
     if (!node && isAdd) {
       let pointLayer = getLayer(this.map, 'pointLayer', 3)
       let point = new Point([lont, lat])
-      const feature = new Feature(point)
+      node = new Feature(point)
       const data: any = {}
       const coordinates = point.getCoordinates()
       const lont_ = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
       data.lng = lont_[0]
       data.lat = lont_[1]
       var format = new WKT()
-      data.geom = format.writeGeometry(point)
-      data.seId = createFeatureId()
+      data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
+
       if (featureType === LINE) {
         data.featureType = TOWER
-        feature.setStyle(pointStyle(data))
+        node.setStyle(pointStyle(data))
       } else if (featureType === CABLECIRCUIT) {
         data.featureType = CABLEWELL
-        feature.setStyle(pointStyle(data))
+        node.setStyle(pointStyle(data))
       }
-
-      feature.set('data', data)
-      pointLayer.getSource().addFeature(feature)
+      data.seId = createFeatureId()
+      data.type_ = 'Point'
+      node.set('data', data)
+      pointLayer.getSource().addFeature(node)
 
       // !! 生成线路带出的点位信息添加点位到数据库 data
       // console.log(data, '123456555')
