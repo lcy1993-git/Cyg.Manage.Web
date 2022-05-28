@@ -34,6 +34,9 @@ const GridMap = () => {
 
   /** 上传本地数据 **/
   const uploadLocalData = async () => {
+    // const data = getAllDrawLines()
+    // const pointData = getDrawPoints()
+    // console.log(pointData, '点位')
     // const towerList = JSON.parse(localStorage.getItem('towerList') || '[]')
     // const switchingStationList = JSON.parse(localStorage.getItem('switchingStationList') || '[]')
     // const ringNetworkCabinetList = JSON.parse(
@@ -73,7 +76,6 @@ const GridMap = () => {
     initMap({ mapRef, ref })
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 27) {
-        // console.log(getDrawLines(), '线路')
         // console.log(getDrawPoints(), '点位')
 
         uploadLocalData()
