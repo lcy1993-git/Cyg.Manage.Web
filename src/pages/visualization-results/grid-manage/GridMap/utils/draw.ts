@@ -153,7 +153,7 @@ class DrawTool {
         const node1: any = this.handleLine_node(x, y, feature.get('data').featureType, true)
         x = node1.getGeometry().getCoordinates()[0]
         y = node1.getGeometry().getCoordinates()[1]
-        featureData.startId = node1.get('data').seId
+        featureData.startId = node1.get('data').id
         featureData.startType = TYPENUMS[node1.get('data').featureType.toLocaleUpperCase()]
 
         let isAdd = false
@@ -168,7 +168,7 @@ class DrawTool {
         if (node2) {
           nextPonintX = node2.getGeometry().getCoordinates()[0]
           nextPonintY = node2.getGeometry().getCoordinates()[1]
-          featureData.endId = node2.get('data').seId
+          featureData.endId = node2.get('data').id
           featureData.endType = TYPENUMS[node2.get('data').featureType]
         }
 
@@ -182,7 +182,7 @@ class DrawTool {
         featureData.geom = format.writeGeometry(
           lineString.clone().transform('EPSG:3857', 'EPSG:4326')
         )
-        // featureData.id = createFeatureId()
+        featureData.id = createFeatureId()
         feature_.set('data', featureData)
         feature_.setStyle(lineStyle(featureData))
         let datas: any = pre.concat(feature_)
@@ -226,7 +226,7 @@ class DrawTool {
         data.featureType = CABLEWELL
         node.setStyle(pointStyle(data))
       }
-      data.seId = createFeatureId()
+      data.id = createFeatureId()
       data.type_ = 'Point'
       node.set('data', data)
       pointLayer.getSource().addFeature(node)
