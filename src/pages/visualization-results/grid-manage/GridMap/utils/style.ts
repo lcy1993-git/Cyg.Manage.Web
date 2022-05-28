@@ -131,6 +131,7 @@ export const lineStyle = (data: any, selected: boolean = false) => {
   const geomtery: any = format.readGeometry(data.geom)
   const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
 
+  data.conductorModel = data.conductorModel ? data.conductorModel : ''
   let text = `${data.conductorModel}   `
   text += length ? length.toFixed(2) + 'm' : ''
   let style = new Style({
