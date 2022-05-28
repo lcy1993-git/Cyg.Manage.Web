@@ -120,7 +120,7 @@ class DrawTool {
         const featureData = { ...this_.options }
         featureData.lng = lont[0]
         featureData.lat = lont[1]
-        featureData.seId = createFeatureId()
+        featureData.id = createFeatureId()
         var format = new WKT()
         featureData.geom = format.writeGeometry(
           e.feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')

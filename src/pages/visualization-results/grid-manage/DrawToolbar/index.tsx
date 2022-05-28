@@ -167,10 +167,18 @@ const DrawToolbar = () => {
                 属性栏
               </Divider>
 
-              <Form.Item name="name" label="名称">
+              <Form.Item
+                name="name"
+                label="名称"
+                rules={[{ required: true, message: '请输入名称' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="kvLevel" label="电压等级">
+              <Form.Item
+                name="kvLevel"
+                label="电压等级"
+                rules={[{ required: true, message: '请输入名称' }]}
+              >
                 <Select>
                   {kelevelOptions.map((item) => (
                     <Option key={item.kvLevel} value={item.kvLevel}>
@@ -196,7 +204,11 @@ const DrawToolbar = () => {
               {/* 电源 */}
               {currentFeatureType === POWERSUPPLY && (
                 <>
-                  <Form.Item name="powerType" label="电源类型">
+                  <Form.Item
+                    name="powerType"
+                    label="电源类型"
+                    rules={[{ required: true, message: '请输入名称' }]}
+                  >
                     <Select>
                       <Option value="水电">水电</Option>
                       <Option value="火电">火电</Option>
