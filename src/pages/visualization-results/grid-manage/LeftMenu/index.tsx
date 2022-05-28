@@ -2,7 +2,7 @@ import { createLine, GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, Modal, Radio, Select } from 'antd'
 import { useEffect, useState } from 'react'
-import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
+import { createFeatureId, KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
 import DrawGridToolbar from './DrawGridToolbar'
 import styles from './index.less'
 import PowerSupplyTree from './PowerSupplyTree'
@@ -38,7 +38,11 @@ const LeftMenu = (props: any) => {
   const handleOk = () => {
     setConfirmLoading(true)
     const formData = form.getFieldsValue()
-    createLineItem(formData)
+    const params = {
+      ...formData,
+      id: createFeatureId(),
+    }
+    createLineItem(params)
   }
 
   // 创建线路

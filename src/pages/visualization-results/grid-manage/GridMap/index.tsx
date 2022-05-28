@@ -27,6 +27,21 @@ const GridMap = () => {
     },
   })
 
+  /** 清楚本地网架数据 */
+  const clearLocalGridManageData = () => {
+    localStorage.setItem('transformerStatiionList', JSON.stringify([]))
+    localStorage.setItem('powerSupplyList', JSON.stringify([]))
+    localStorage.setItem('boxTransformerList', JSON.stringify([]))
+    localStorage.setItem('cableBranchBoxList', JSON.stringify([]))
+    localStorage.setItem('cableWellList', JSON.stringify([]))
+    localStorage.setItem('columnCircuitBreakerList', JSON.stringify([]))
+    localStorage.setItem('columnTransformerList', JSON.stringify([]))
+    localStorage.setItem('electricityDistributionRoomList', JSON.stringify([]))
+    localStorage.setItem('ringNetworkCabinetList', JSON.stringify([]))
+    localStorage.setItem('switchingStationList', JSON.stringify([]))
+    localStorage.setItem('towerList', JSON.stringify([]))
+  }
+
   /** 上传本地数据 **/
   const uploadLocalData = () => {
     const towerList = JSON.parse(localStorage.getItem('towerList') || '[]')
@@ -65,6 +80,7 @@ const GridMap = () => {
 
   // 挂载地图
   useMount(() => {
+    clearLocalGridManageData()
     initMap({ mapRef, ref })
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 27) {
