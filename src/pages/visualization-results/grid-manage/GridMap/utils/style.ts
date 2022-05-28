@@ -1,4 +1,6 @@
+import WKT from 'ol/format/WKT'
 import { Fill, Stroke, Style, Text } from 'ol/style'
+import proj4 from 'proj4'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
@@ -124,7 +126,13 @@ export const lineStyle = (data: any, selected: boolean = false) => {
       break
   }
   color = selected ? `rgba(110, 74, 192, 1)` : color
-  let text = data.length ? data.length.toFixed(2) + 'm' : ''
+
+  var format = new WKT()
+  const geomtery: any = format.readGeometry(data.geom)
+  const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
+
+  let text = `${data.conductorModel}   `
+  text += length ? length.toFixed(2) + 'm' : ''
   let style = new Style({
     stroke: new Stroke({
       color,
@@ -152,4 +160,22 @@ export const lineStyle = (data: any, selected: boolean = false) => {
     zIndex: 2,
   })
   return style
+}
+
+export const calculateDistance = (startLont: any, endLont: any) => {
+  // 获取UTM坐标系的epsg值
+  let zid = Math.round((startLont[0] + endLont[0]) / 2 / 6 + 31)
+  let start = 32601
+  let epsg = start + zid - 1
+  // 通过proj4将wgs84坐标转成UTM投影坐标
+  let code = 'EPSG:' + epsg
+  let info = '+proj=utm +zone=' + zid + ' +datum=WGS84 +units=m +no_defs'
+  proj4.defs([[code, info]])
+  let startLontUTM = proj4('EPSG:4326', code, startLont)
+  let endLonttUTM = proj4('EPSG:4326', code, endLont)
+  // 计算距离
+  let distance = Math.sqrt(
+    (startLontUTM[0] - endLonttUTM[0]) ** 2 + (startLontUTM[1] - endLonttUTM[1]) ** 2
+  )
+  return distance
 }
