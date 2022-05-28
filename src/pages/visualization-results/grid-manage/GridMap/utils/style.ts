@@ -15,19 +15,19 @@ import {
 export const pointStyle = (data: any, selected: boolean = false) => {
   let text,
     font = 'gridManageIconfont'
-  let color = selected ? `rgba(110, 74, 192, 1)` : `rgba(8,210,42,1)`
+  let color = `rgba(8,210,42,1)`
   switch (data.kvLevel) {
-    case 5:
+    case 7:
       color = `rgba(8,210,42,1)`
       break
-    case 4:
+    case 6:
       color = `rgba(64,56,31,1)`
       break
-    case 3:
-    case 1:
+    case 5:
+    case 4:
       color = `rgba(170,170,85,1)`
       break
-    case 0:
+    case 3:
       color = `rgba(212,212,0,1)`
       break
     default:
@@ -44,15 +44,16 @@ export const pointStyle = (data: any, selected: boolean = false) => {
       else text = '\ue11a'
       break
     case TRANSFORMERSUBSTATION: // 变电站
-      if (data.kvLevel === 5)
+      if (data.kvLevel === 7)
         // 330KV
         text = '\ue12a'
-      else if (data.kvLevel === 4)
+      else if (data.kvLevel === 6)
         // 110KV
         text = '\ue127'
-      else if (data.kvLevel === 1 || data.kvLevel === 3)
+      else if (data.kvLevel === 5 || data.kvLevel === 4)
         // 35KV/20KV
         text = '\ue128'
+      else text = '\ue12a'
       break
 
     case CABLEWELL: /* 电缆井 */
@@ -84,9 +85,11 @@ export const pointStyle = (data: any, selected: boolean = false) => {
     default:
       break
   }
+
+  color = selected ? `rgba(110, 74, 192, 1)` : color
   return new Style({
     text: new Text({
-      font: 'Normal 52px ' + font,
+      font: 'Normal 28px ' + font,
       text,
       fill: new Fill({
         color: color,
@@ -101,21 +104,26 @@ export const pointStyle = (data: any, selected: boolean = false) => {
 }
 
 export const lineStyle = (data: any, selected: boolean = false) => {
-  let color,
+  let color = `rgba(8,210,42,1)`,
     width = 2
-  // switch (data.featureType) {
-  //   case LINE:
-  //     color = 'blue'
-  //     width = 2
-  //     break
-  //   case CABLECIRCUIT:
-  //     color = 'red'
-  //     width = 2
-  //     break
-  //   default:
-  //     break
-  // }
-  color = selected ? `rgba(8,210,42,1)` : 'blue'
+  switch (data.kvLevel) {
+    case 7:
+      color = `rgba(8,210,42,1)`
+      break
+    case 6:
+      color = `rgba(64,56,31,1)`
+      break
+    case 5:
+    case 4:
+      color = `rgba(170,170,85,1)`
+      break
+    case 3:
+      color = `rgba(212,212,0,1)`
+      break
+    default:
+      break
+  }
+  color = selected ? `rgba(110, 74, 192, 1)` : color
   let text = data.length ? data.length.toFixed(2) + 'm' : ''
   let style = new Style({
     stroke: new Stroke({

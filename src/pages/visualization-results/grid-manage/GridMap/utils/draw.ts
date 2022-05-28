@@ -111,9 +111,7 @@ class DrawTool {
 
     this.draw.on('drawend', function (e: any) {
       e.feature.set('data', this_.options)
-
       if (e.feature.getGeometry().getType() === 'LineString') {
-        e.feature.setStyle(lineStyle(this_.options))
         this_.handleLine(this_.source, e.feature)
       } else {
         e.feature.setStyle(pointStyle(this_.options))
@@ -182,12 +180,13 @@ class DrawTool {
         )
         // featureData.id = createFeatureId()
         feature_.set('data', featureData)
-        feature_.setStyle(lineStyle(feature.get('data')))
+        feature_.setStyle(lineStyle(featureData))
         let datas: any = pre.concat(feature_)
         if (datas.length > 1) {
           datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
-          datas[datas.length - 2].get('data').endType =
-            datas[datas.length - 1].get('data').startType
+          datas[datas.length - 2].get('data').endType = datas[datas.length - 1].get(
+            'data'
+          ).startType
         }
         return datas
       }, [])
