@@ -1,3 +1,5 @@
+import { getAllBelongingLineItem } from '@/services/grid-manage/treeMenu'
+import { useRequest } from 'ahooks'
 import {
   Button,
   Col,
@@ -11,7 +13,7 @@ import {
   Select,
   Tabs,
 } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import { drawLine, drawPoint } from '../GridMap/utils/initializeMap'
 import {
@@ -20,7 +22,6 @@ import {
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
   CABLECIRCUITMODEL,
-  createFeatureId,
   FEATUREOPTIONS,
   KVLEVELOPTIONS,
   KVLEVELTYPES,
@@ -31,12 +32,23 @@ import {
 const { Option } = Select
 const { useForm } = Form
 const { TabPane } = Tabs
+
+interface BelongingLineType {
+  id: string
+  name: string
+  isOverhead: boolean
+  isPower: boolean
+}
+
 const DrawToolbar = () => {
   const { drawToolbarVisible, setdrawToolbarVisible, mapRef } = useMyContext()
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   const [selectLineType, setselectLineType] = useState('')
   const [currentFeature, setcurrentFeature] = useState('feature')
-  const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
+  /**所属线路数据**/
+  const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
+  /**所属厂站**/
+
   const [kelevelOptions, setkelevelOptions] = useState([
     ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
       item.belonging.find((type: string) => type.includes(currentFeatureType))
@@ -86,7 +98,6 @@ const DrawToolbar = () => {
       const formData = form.getFieldsValue()
       drawPoint(mapRef.map, {
         ...formData,
-        id: createFeatureId(),
       })
     } catch (err) {}
   }
@@ -99,10 +110,21 @@ const DrawToolbar = () => {
       drawLine(mapRef.map, {
         ...formData,
         featureType: formData.lineType,
-        id: createFeatureId(),
       })
     } catch (err) {}
   }
+
+  // 获取所有所属线路
+  const { data, run } = useRequest(getAllBelongingLineItem, {
+    manual: true,
+    onSuccess: () => {
+      setbelongingLineData(data)
+    },
+  })
+
+  useEffect(() => {
+    run()
+  }, [])
 
   return (
     <Drawer
@@ -200,10 +222,11 @@ const DrawToolbar = () => {
                   rules={[{ required: true, message: '请选择所属线路' }]}
                 >
                   <Select>
-                    <Option value="111">线路一</Option>
-                    <Option value="222">线路二</Option>
-                    <Option value="110KV">线路三</Option>
-                    <Option value="330KV">线路四</Option>
+                    {belongingLineData.map((item) => (
+                      <Option value={item.id} key={item.id}>
+                        {item.name}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               )}
@@ -284,61 +307,6 @@ const DrawToolbar = () => {
                       ))}
                 </Select>
               </Form.Item>
-              <Form.Item name="name" label="名称">
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="belonging"
-                label="所属厂站"
-                rules={[{ required: true, message: '请选择所属厂站' }]}
-              >
-                <Select allowClear>
-                  <Option value="CableCircuit">电缆线路</Option>
-                  <Option value="Line">架空线路</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item name="kvLevel" label="电压等级">
-                <Select
-                  onChange={(value: number) => {
-                    setcurrentLineKvLevel(value)
-                  }}
-                >
-                  {KVLEVELOPTIONS.filter((level) => level.belonging.includes('Line')).map(
-                    (item) => (
-                      <Option key={item.kvLevel} value={item.kvLevel}>
-                        {item.label}
-                      </Option>
-                    )
-                  )}
-                </Select>
-              </Form.Item>
-              <Form.Item name="lineProperties" label="线路性质">
-                <Select>
-                  <Option value="公用">公用</Option>
-                  <Option value="专用">专用</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item name="totalLength" label="线路总长度">
-                <Input disabled />
-              </Form.Item>
-              <Form.Item name="totalCapacity" label="配变总容量">
-                <Input disabled />
-              </Form.Item>
-              {!currentLineKvLevel && (
-                <Form.Item
-                  name="belonging"
-                  label="线路颜色"
-                  rules={[{ required: true, message: '请选择线路颜色' }]}
-                >
-                  <Select allowClear>
-                    <Option value="#00FFFF">青</Option>
-                    <Option value="#1EB9FF">蓝</Option>
-                    <Option value="#F2DA00">黄</Option>
-                    <Option value="#FF3E3E">红</Option>
-                    <Option value="#FF5ECF">洋红</Option>
-                  </Select>
-                </Form.Item>
-              )}
             </Form>
           )}
         </TabPane>

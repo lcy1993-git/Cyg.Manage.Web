@@ -9,11 +9,16 @@ const GridManageRequest = (url: string, options?: Parameters<typeof request>[1])
 
 /** 导入网架数据 */
 export const importGridManageData = (data: FormData) => {
-  return GridManageRequest('/Import/All', {
+  return GridManageRequest('/Import/Template', {
     method: 'POST',
     data,
     requestType: 'form',
   })
+}
+
+/** 下载网架数据模板 */
+export const downloadExcelTemplate = () => {
+  return GridManageRequest('NetFramework/Templates', { responseType: 'blob' })
 }
 
 /** 获取变电站下面的网架数据 **/
@@ -40,6 +45,37 @@ export const getTransformerSubstationMenu = () => {
   )
 }
 
+// 获取所属线路
+export const getAllBelongingLineItem = () => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/GridDesign/GetLineItems`, { method: 'GET' })
+  )
+}
+// 获取所有厂站
+export const GetStationItems = () => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/GridDesign/GetStationItems`, { method: 'GET' })
+  )
+}
+
+// 创建线路
+export const createLine = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Line/Create`, { method: 'POST', data: params })
+  )
+}
+
+// 上传所有点位
+export const uploadAllFeature = (params: any) => {
+  //! console.log(params, '66666666')
+  return cyRequest(() =>
+    request(`${baseUrl.project}/GridDesign/SaveGridDesign`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+
 export const deleteCompany = (companyId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyTree/Delete`, { method: 'GET', params: { companyId } })
@@ -56,5 +92,12 @@ export const createTransformerSubstation = (params: TransformerSubstationType) =
 export const createPowerSupply = (params: PowerSupplyType) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/PowerSupply/Create`, { method: 'POST', data: params })
+  )
+}
+
+/** 创建杆塔 **/
+export const createTower = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Tower/Create`, { method: 'POST', data: params })
   )
 }

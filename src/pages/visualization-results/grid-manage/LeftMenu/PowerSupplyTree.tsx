@@ -17,8 +17,9 @@ interface PowerSupplyListType {
   schedulingMode: string // 调度方式
 }
 
-const PowerSupplyTree = () => {
-  const { data } = useRequest(() => fetchGridManageMenu())
+const PowerSupplyTree = (props: { isRefresh: boolean }) => {
+  const { isRefresh } = props
+  const { data, run: getTree } = useRequest(() => fetchGridManageMenu(), { manual: true })
   const { mapRef } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   const treeData = [
@@ -50,6 +51,9 @@ const PowerSupplyTree = () => {
       },
     }
   )
+  useEffect(() => {
+    isRefresh && getTree()
+  }, [getTree, isRefresh])
 
   useEffect(() => {
     checkedKeys.length && getTreeData()

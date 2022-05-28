@@ -5,10 +5,11 @@ import { LineString, Point } from 'ol/geom'
 import Geometry from 'ol/geom/Geometry'
 import { Draw, Snap } from 'ol/interaction'
 import { transform } from 'ol/proj'
-import { CABLECIRCUIT, CABLEWELL, LINE, TOWER } from '../../DrawToolbar/GridUtils'
+import { CABLECIRCUIT, CABLEWELL, createFeatureId, LINE, TOWER } from '../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
 import { setSelectActive } from './select'
 import { lineStyle, pointStyle } from './style'
+import { storeLocalFeatureData } from './utils'
 class DrawTool {
   map: any
   options: any
@@ -16,10 +17,11 @@ class DrawTool {
   snap: any
   selset: any
   source: any
-
+  gridManageData: any[]
   constructor(map: any, options: any) {
     this.map = map
     this.options = options
+    this.gridManageData = []
     // this.addDraw(this.source, this.options.type_)
     // this.addSnap(this.source)
   }
@@ -64,7 +66,9 @@ class DrawTool {
         this_.options.lat = lont[1]
         var format = new WKT()
         this_.options.geom = format.writeGeometry(e.feature.getGeometry())
-        // 添加点位到数据库 this_.options
+        this_.options.seId = createFeatureId()
+        // !!添加点位到数据库 this_.options
+        storeLocalFeatureData(this_.options)
       }
     })
   }
@@ -107,12 +111,16 @@ class DrawTool {
           [nextPonintX, nextPonintY],
         ])
         const feature_ = new Feature(lineString)
-        feature_.set('data', feature.get('data'))
-        feature_.setStyle(lineStyle(feature.get('data')))
         var format = new WKT()
         feature.get('data').geom = format.writeGeometry(lineString)
-        // 添加线路到数据库 feature.get('data')
+        feature.get('data').id = createFeatureId()
 
+        feature_.set('data', feature.get('data'))
+        feature_.setStyle(lineStyle(feature.get('data')))
+
+        // !! 添加线路到数据库 feature.get('data')
+        // console.log(feature.get('data'), '45454445')
+        // storeLocalFeatureData(feature.get('data'))
         return pre.concat(feature_)
       }, [])
       // 移除原有要素层
@@ -139,7 +147,7 @@ class DrawTool {
       data.lat = lont_[1]
       var format = new WKT()
       data.geom = format.writeGeometry(point)
-
+      data.seId = createFeatureId()
       if (featureType === LINE) {
         data.featureType = TOWER
         feature.setStyle(pointStyle(data))
@@ -151,7 +159,9 @@ class DrawTool {
       feature.set('data', data)
       pointLayer.getSource().addFeature(feature)
 
-      // 添加点位到数据库 data
+      // !! 生成线路带出的点位信息添加点位到数据库 data
+      // console.log(data, '123456555')
+      storeLocalFeatureData(data)
     }
     return node
   }

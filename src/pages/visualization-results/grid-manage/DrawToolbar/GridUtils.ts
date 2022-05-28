@@ -92,7 +92,7 @@ export type KVLEVELTYPES = {
 /** 电压等级 */
 export const KVLEVELOPTIONS = [
   {
-    kvLevel: 0,
+    kvLevel: 3,
     label: '10KV',
     belonging: [
       POWERSUPPLY,
@@ -109,22 +109,22 @@ export const KVLEVELOPTIONS = [
     ],
   },
   {
-    kvLevel: 1,
+    kvLevel: 4,
     label: '20KV',
     belonging: [TRANSFORMERSUBSTATION, TOWER, CABLEWELL, LINE],
   },
   {
-    kvLevel: 3,
+    kvLevel: 5,
     label: '35KV',
     belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
-    kvLevel: 4,
+    kvLevel: 6,
     label: '110KV',
     belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
-    kvLevel: 5,
+    kvLevel: 7,
     label: '330KV',
     belonging: [TRANSFORMERSUBSTATION],
   },
@@ -142,6 +142,10 @@ export const BELONGINGLINE = [
   SWITCHINGSTATION,
   CABLEBRANCHBOX,
 ]
+
+/** 存储数据 **/
+export const ALLFEATRUETYPE = [...BELONGINGLINE, POWERSUPPLY, TRANSFORMERSUBSTATION]
+
 /** 要素属性是否在表单中展示型号 **/
 export const BELONGINGMODEL = [RINGNETWORKCABINET]
 /** 要素属性是否在表单中展示配变性值 **/
