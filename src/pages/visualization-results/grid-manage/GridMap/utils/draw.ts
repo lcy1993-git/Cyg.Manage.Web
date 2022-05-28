@@ -62,7 +62,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'Point') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = null
+          feature.get('data').type_ = ''
         }
       })
     return featrues
@@ -77,7 +77,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'LineString') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = null
+          feature.get('data').type_ = ''
         }
       })
     return featrues
@@ -128,6 +128,9 @@ class DrawTool {
         featureData.geom = format.writeGeometry(
           e.feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
         )
+        e.feature.set('data', featureData)
+        // storeLocalFeatureData(featureData)
+        // 添加点位到数据库 this_.options
       }
     })
   }
@@ -227,6 +230,10 @@ class DrawTool {
       data.type_ = 'Point'
       node.set('data', data)
       pointLayer.getSource().addFeature(node)
+
+      // !! 生成线路带出的点位信息添加点位到数据库 data
+      // console.log(data, '123456555')
+      // storeLocalFeatureData(data)
     }
     return node
   }

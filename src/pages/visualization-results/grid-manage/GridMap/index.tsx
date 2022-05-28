@@ -2,7 +2,21 @@ import { uploadAllFeature } from '@/services/grid-manage/treeMenu'
 import { useMount, useRequest } from 'ahooks'
 import { useRef } from 'react'
 import { useMyContext } from '../Context'
-import { clear, initMap } from './utils/initializeMap'
+import {
+  BOXTRANSFORMER,
+  CABLEBRANCHBOX,
+  CABLEWELL,
+  COLUMNCIRCUITBREAKER,
+  COLUMNTRANSFORMER,
+  ELECTRICITYDISTRIBUTIONROOM,
+  LINE,
+  POWERSUPPLY,
+  RINGNETWORKCABINET,
+  SWITCHINGSTATION,
+  TOWER,
+  TRANSFORMERSUBSTATION,
+} from '../DrawToolbar/GridUtils'
+import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
 import { deletCurrrentSelectFeature } from './utils/select'
 
 const GridMap = () => {
@@ -10,65 +24,67 @@ const GridMap = () => {
   const ref = useRef<HTMLDivElement>(null)
 
   // 上传所有点位
-  const { run: stationItemsHandle } = useRequest(uploadAllFeature, {
-    manual: true,
-    onSuccess: () => {
-      // clearLocalGridManageData()
-    },
-  })
-
-  /** 清楚本地网架数据 */
-  // const clearLocalGridManageData = () => {
-  //   localStorage.setItem('transformerStationList', JSON.stringify([]))
-  //   localStorage.setItem('powerSupplyList', JSON.stringify([]))
-  //   localStorage.setItem('boxTransformerList', JSON.stringify([]))
-  //   localStorage.setItem('cableBranchBoxList', JSON.stringify([]))
-  //   localStorage.setItem('cableWellList', JSON.stringify([]))
-  //   localStorage.setItem('columnCircuitBreakerList', JSON.stringify([]))
-  //   localStorage.setItem('columnTransformerList', JSON.stringify([]))
-  //   localStorage.setItem('electricityDistributionRoomList', JSON.stringify([]))
-  //   localStorage.setItem('ringNetworkCabinetList', JSON.stringify([]))
-  //   localStorage.setItem('switchingStationList', JSON.stringify([]))
-  //   localStorage.setItem('towerList', JSON.stringify([]))
-  // }
+  const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
 
   /** 上传本地数据 **/
   const uploadLocalData = async () => {
-    // const data = getAllDrawLines()
-    // const pointData = getDrawPoints()
-    // console.log(pointData, '点位')
-    // const towerList = JSON.parse(localStorage.getItem('towerList') || '[]')
-    // const switchingStationList = JSON.parse(localStorage.getItem('switchingStationList') || '[]')
-    // const ringNetworkCabinetList = JSON.parse(
-    //   localStorage.getItem('ringNetworkCabinetList') || '[]'
-    // )
-    // const electricityDistributionRoomList = JSON.parse(
-    //   localStorage.getItem('electricityDistributionRoomList') || '[]'
-    // )
-    // const columnTransformerList = JSON.parse(localStorage.getItem('columnTransformerList') || '[]')
-    // const columnCircuitBreakerList = JSON.parse(
-    //   localStorage.getItem('columnCircuitBreakerList') || '[]'
-    // )
-    // const cableWellList = JSON.parse(localStorage.getItem('cableWellList') || '[]')
-    // const cableBranchBoxList = JSON.parse(localStorage.getItem('cableBranchBoxList') || '[]')
-    // const boxTransformerList = JSON.parse(localStorage.getItem('boxTransformerList') || '[]')
-    // const powerSupplyList = JSON.parse(localStorage.getItem('powerSupplyList') || '[]')
-    // const transformerStationList = JSON.parse(
-    //   localStorage.getItem('transformerStationList') || '[]'
-    // )
-    await stationItemsHandle({
-      // towerList,
-      // switchingStationList,
-      // ringNetworkCabinetList,
-      // electricityDistributionRoomList,
-      // columnTransformerList,
-      // columnCircuitBreakerList,
-      // cableWellList,
-      // cableBranchBoxList,
-      // boxTransformerList,
-      // powerSupplyList,
-      // transformerStationList,
-    })
+    const pointData = getDrawPoints()
+    const lineData = getDrawLines()
+    if (pointData.length || lineData.length) {
+      const powerSupplyList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === POWERSUPPLY
+      )
+      const transformerStationList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === TRANSFORMERSUBSTATION
+      )
+      const cableWellList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === CABLEWELL
+      )
+      const towerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === TOWER
+      )
+      const boxTransformerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === BOXTRANSFORMER
+      )
+      const ringNetworkCabinetList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === RINGNETWORKCABINET
+      )
+      const electricityDistributionRoomList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === ELECTRICITYDISTRIBUTIONROOM
+      )
+      const switchingStationList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === SWITCHINGSTATION
+      )
+      const columnCircuitBreakerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === COLUMNCIRCUITBREAKER
+      )
+      const columnTransformerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === COLUMNTRANSFORMER
+      )
+      const cableBranchBoxList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === CABLEBRANCHBOX
+      )
+      const lineElementRelationList = lineData.map((item: { lineType: string }) => {
+        return {
+          ...item,
+          isOverhead: item.lineType === LINE,
+        }
+      })
+      await stationItemsHandle({
+        towerList,
+        switchingStationList,
+        ringNetworkCabinetList,
+        electricityDistributionRoomList,
+        columnTransformerList,
+        columnCircuitBreakerList,
+        cableWellList,
+        cableBranchBoxList,
+        boxTransformerList,
+        powerSupplyList,
+        transformerStationList,
+        lineElementRelationList,
+      })
+    }
   }
 
   // 挂载地图
@@ -76,9 +92,9 @@ const GridMap = () => {
     initMap({ mapRef, ref })
     document.addEventListener('keydown', (e) => {
       if (e.keyCode === 27) {
-        // console.log(getDrawPoints(), '点位')
-
+        // 上传本地绘制数据
         uploadLocalData()
+        // 退出手动绘制
         clear()
       }
 
