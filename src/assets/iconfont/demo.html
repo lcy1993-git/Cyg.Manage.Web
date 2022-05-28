@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Design Iconfont Demo</title>
+  <link rel="stylesheet" href="iconfont.css">
+  <link rel="stylesheet" href="demo.css">
+  <script src="iconfont.js"></script>
+</head>
+
+<body>
+  <div class="design-demo">
+    <h1>Design Iconfont Demo</h1>
+    <ul class="design-demo__des">
+      <li><strong>Unicode</strong>：支持 IE6+；支持按字体方式调整颜色大小等；</li>
+      <li><strong>Class</strong>：支持 IE8+；支持按字体方式调整颜色大小等；</li>
+      <li><strong>Symbol</strong>：支持 IE9+；支持多色图标；支持调整大小；</li>
+    </ul>
+    <div class="design-demo__nav">
+      <ul id="tabs" class="design-demo__nav-tabs">
+        <li class="design-demo__nav-tab active" data-target="unicode"><span>Unicode</span></li>
+        <li class="design-demo__nav-tab" data-target="iconfont"><span>Class</span></li>
+        <li class="design-demo__nav-tab" data-target="symbol"><span>Symbol</span></li>
+      </ul>
+
+      <a href="https://codesign.qq.com/app/icon/6GD5OjERNm93eAX" target="_blank" class="design-demo__nav-project">查看项目</a>
+
+    </div>
+
+    <div id="unicode" class="design-demo__container design-demo__container--unicode active">
+      <ul class="design-demo__icon-lists">
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe118;</span>
+          <div class="name">柱上变压器</div>
+          <div class="code-name">&amp;#xe118</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe119;</span>
+          <div class="name">架空线</div>
+          <div class="code-name">&amp;#xe119</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe119;</span>
+          <div class="name">生物质能</div>
+          <div class="code-name">&amp;#xe119</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe119;</span>
+          <div class="name">光伏</div>
+          <div class="code-name">&amp;#xe119</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe119;</span>
+          <div class="name">杆塔</div>
+          <div class="code-name">&amp;#xe119</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe11a;</span>
+          <div class="name">配电室</div>
+          <div class="code-name">&amp;#xe11a</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe11a;</span>
+          <div class="name">柱上断路器</div>
+          <div class="code-name">&amp;#xe11a</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe11a;</span>
+          <div class="name">水电</div>
+          <div class="code-name">&amp;#xe11a</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe11c;</span>
+          <div class="name">箱变</div>
+          <div class="code-name">&amp;#xe11c</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe11a;</span>
+          <div class="name">风电</div>
+          <div class="code-name">&amp;#xe11a</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe11d;</span>
+          <div class="name">环网箱</div>
+          <div class="code-name">&amp;#xe11d</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe123;</span>
+          <div class="name">电缆分支箱</div>
+          <div class="code-name">&amp;#xe123</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe124;</span>
+          <div class="name">火电</div>
+          <div class="code-name">&amp;#xe124</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe125;</span>
+          <div class="name">开闭所</div>
+          <div class="code-name">&amp;#xe125</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe127;</span>
+          <div class="name">变电站-110kv</div>
+          <div class="code-name">&amp;#xe127</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe128;</span>
+          <div class="name">变电站-20kv</div>
+          <div class="code-name">&amp;#xe128</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 unicode">
+          <span class="icon iconfont">&#xe12a;</span>
+          <div class="name">变电站-330kv</div>
+          <div class="code-name">&amp;#xe12a</div>
+        </li>
+      </ul>
+      <div class="design-demo__usage markdown">
+        <h2>Unicode 引用</h2>
+        <hr>
+        <h3>1. 添加 <code>@font-face</code> 块, 引用图标字体文件；</h3>
+        <pre><code>@font-face {
+  font-family: 'iconfont';
+  src: url('iconfont.eot');
+  src: url('iconfont.eot?#iefix') format('embedded-opentype'),
+  url('iconfont.woff2') format('woff2'),
+  url('iconfont.woff') format('woff'),
+  url('iconfont.ttf') format('truetype'),
+  url('iconfont.svg#iconfont') format('svg');
+}
+        </code></pre>
+        <h3>2. 设置 <code>.iconfont</code> 的基本样式；</h3>
+        <pre><code>.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+        </code></pre>
+        <h3>3. 应用图标，输入对应的 Unicode 值。</h3>
+        <pre><code>&lt;span class="iconfont"&gt;&amp;#xe624;&lt;/span&gt;</code></pre>
+        <blockquote>
+          <p>
+            "iconfont" 是项目下的 “iconfont family” 字段，可以通过编辑项目查看，默认是 "iconfont"。
+          </p>
+        </blockquote>
+      </div>
+    </div>
+
+    <div id="iconfont" class="design-demo__container design-demo__container--iconfont">
+      <ul class="design-demo__icon-lists">
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-zhushangbianyaqi"></span>
+          <div class="name">
+            柱上变压器
+          </div>
+          <div class="code-name" title=".icon-zhushangbianyaqi">
+            .icon-zhushangbianyaqi</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-jiakongxian"></span>
+          <div class="name">
+            架空线
+          </div>
+          <div class="code-name" title=".icon-jiakongxian">
+            .icon-jiakongxian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-shengwuzhitai"></span>
+          <div class="name">
+            生物质能
+          </div>
+          <div class="code-name" title=".icon-shengwuzhitai">
+            .icon-shengwuzhitai</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-guangfu"></span>
+          <div class="name">
+            光伏
+          </div>
+          <div class="code-name" title=".icon-guangfu">
+            .icon-guangfu</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-ganta"></span>
+          <div class="name">
+            杆塔
+          </div>
+          <div class="code-name" title=".icon-ganta">
+            .icon-ganta</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-peidianshi"></span>
+          <div class="name">
+            配电室
+          </div>
+          <div class="code-name" title=".icon-peidianshi">
+            .icon-peidianshi</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-zhushangduanluoqi"></span>
+          <div class="name">
+            柱上断路器
+          </div>
+          <div class="code-name" title=".icon-zhushangduanluoqi">
+            .icon-zhushangduanluoqi</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-shuidian"></span>
+          <div class="name">
+            水电
+          </div>
+          <div class="code-name" title=".icon-shuidian">
+            .icon-shuidian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-xiangbian"></span>
+          <div class="name">
+            箱变
+          </div>
+          <div class="code-name" title=".icon-xiangbian">
+            .icon-xiangbian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-fengdian"></span>
+          <div class="name">
+            风电
+          </div>
+          <div class="code-name" title=".icon-fengdian">
+            .icon-fengdian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-huanwangxiang"></span>
+          <div class="name">
+            环网箱
+          </div>
+          <div class="code-name" title=".icon-huanwangxiang">
+            .icon-huanwangxiang</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-dianlanfenzhixiang"></span>
+          <div class="name">
+            电缆分支箱
+          </div>
+          <div class="code-name" title=".icon-dianlanfenzhixiang">
+            .icon-dianlanfenzhixiang</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-huodian"></span>
+          <div class="name">
+            火电
+          </div>
+          <div class="code-name" title=".icon-huodian">
+            .icon-huodian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-kaibisuo"></span>
+          <div class="name">
+            开闭所
+          </div>
+          <div class="code-name" title=".icon-kaibisuo">
+            .icon-kaibisuo</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-biandianzhan-110kv"></span>
+          <div class="name">
+            变电站-110kv
+          </div>
+          <div class="code-name" title=".icon-biandianzhan-110kv">
+            .icon-biandianzhan-110kv</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-biandianzhan-20kv"></span>
+          <div class="name">
+            变电站-20kv
+          </div>
+          <div class="code-name" title=".icon-biandianzhan-20kv">
+            .icon-biandianzhan-20kv</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制类名">
+          <span class="icon iconfont icon-biandianzhan-330kv"></span>
+          <div class="name">
+            变电站-330kv
+          </div>
+          <div class="code-name" title=".icon-biandianzhan-330kv">
+            .icon-biandianzhan-330kv</div>
+        </li>
+      </ul>
+      <div class="design-demo__usage markdown">
+        <h2>Class 引用</h2>
+        <hr>
+        <h3>1. 引入已经将 unicode 与类名一一对应的 <code>iconfont.css</code> 文件；</h3>
+        <pre><code class="language-html">&lt;link rel="stylesheet" href="./iconfont.css"&gt;
+        </code></pre>
+        <h3>2. 应用图标，使用对应的类名。</h3>
+        <pre><code class="language-html">&lt;span class="iconfont prefix-classname"&gt;&lt;/span&gt;
+        </code></pre>
+        <blockquote>
+          <p>
+            "iconfont" 是项目下的 “iconfont family” 字段，可以通过编辑项目查看，默认是 "iconfont"。<br>
+            "prefix-" 是项目下的“iconfont 前缀”字段，可以通过编辑项目查看，默认是 "icon-"。
+          </p>
+        </blockquote>
+      </div>
+    </div>
+
+    <div id="symbol" class="design-demo__container design-demo__container--symbol">
+      <ul class="design-demo__icon-lists">
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-zhushangbianyaqi"></use>
+          </svg>
+          <div class="name">柱上变压器</div>
+          <div class="code-name">#icon-zhushangbianyaqi</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-jiakongxian"></use>
+          </svg>
+          <div class="name">架空线</div>
+          <div class="code-name">#icon-jiakongxian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-shengwuzhitai"></use>
+          </svg>
+          <div class="name">生物质能</div>
+          <div class="code-name">#icon-shengwuzhitai</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-guangfu"></use>
+          </svg>
+          <div class="name">光伏</div>
+          <div class="code-name">#icon-guangfu</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-ganta"></use>
+          </svg>
+          <div class="name">杆塔</div>
+          <div class="code-name">#icon-ganta</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-peidianshi"></use>
+          </svg>
+          <div class="name">配电室</div>
+          <div class="code-name">#icon-peidianshi</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-zhushangduanluoqi"></use>
+          </svg>
+          <div class="name">柱上断路器</div>
+          <div class="code-name">#icon-zhushangduanluoqi</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-shuidian"></use>
+          </svg>
+          <div class="name">水电</div>
+          <div class="code-name">#icon-shuidian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-xiangbian"></use>
+          </svg>
+          <div class="name">箱变</div>
+          <div class="code-name">#icon-xiangbian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-fengdian"></use>
+          </svg>
+          <div class="name">风电</div>
+          <div class="code-name">#icon-fengdian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-huanwangxiang"></use>
+          </svg>
+          <div class="name">环网箱</div>
+          <div class="code-name">#icon-huanwangxiang</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-dianlanfenzhixiang"></use>
+          </svg>
+          <div class="name">电缆分支箱</div>
+          <div class="code-name">#icon-dianlanfenzhixiang</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-huodian"></use>
+          </svg>
+          <div class="name">火电</div>
+          <div class="code-name">#icon-huodian</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-kaibisuo"></use>
+          </svg>
+          <div class="name">开闭所</div>
+          <div class="code-name">#icon-kaibisuo</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-biandianzhan-110kv"></use>
+          </svg>
+          <div class="name">变电站-110kv</div>
+          <div class="code-name">#icon-biandianzhan-110kv</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-biandianzhan-20kv"></use>
+          </svg>
+          <div class="name">变电站-20kv</div>
+          <div class="code-name">#icon-biandianzhan-20kv</div>
+        </li>
+        <li class="design-demo__icon-item" title="双击复制 id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-biandianzhan-330kv"></use>
+          </svg>
+          <div class="name">变电站-330kv</div>
+          <div class="code-name">#icon-biandianzhan-330kv</div>
+        </li>
+      </ul>
+      <div class="design-demo__usage markdown">
+        <h2>Symbol 引用</h2>
+        <hr>
+        <h3>1. 引入 <code>iconfont.js</code> 文件，向页面添加 SVG sprite；</h3>
+        <pre><code class="language-html">&lt;script src="./iconfont.js"&gt;&lt;/script&gt;
+</code></pre>
+        <h3>2. 设置基本样式；</h3>
+        <pre><code class="language-html">&lt;style&gt;
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+&lt;/style&gt;
+</code></pre>
+        <h3>3. 应用图标，使用对应的 id 值。</h3>
+        <pre><code class="language-html">&lt;svg class="icon" aria-hidden="true"&gt;
+&lt;use xlink:href="#prefix-xxx"&gt;&lt;/use&gt;
+&lt;/svg&gt;
+</code></pre>
+        <blockquote>
+          <p>
+            "iconfont" 是项目下的 “iconfont family” 字段，可以通过编辑项目查看，默认是 "iconfont"。<br>
+            "prefix-" 是项目下的“iconfont 前缀”字段，可以通过编辑项目查看，默认是 "icon-"。
+          </p>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function ready(callback) {
+      if (document.readyState != 'loading') callback();
+      else if (document.addEventListener) document.addEventListener('DOMContentLoaded', callback);
+      else document.attachEvent('onreadystatechange', function () {
+        if (document.readyState == 'complete') callback();
+      });
+    }
+
+    ready(function () {
+      const tabs = document.querySelectorAll('.design-demo__nav-tab');
+      const tabPanels = document.querySelectorAll(".design-demo__container");
+
+      const tabClickHandler = function (tabClickEvent) {
+        for (let i = 0; i < tabs.length; i++) {
+          tabs[i].classList.remove("active");
+        }
+
+        let clickedTab = tabClickEvent.currentTarget;
+        clickedTab.classList.add("active");
+        tabClickEvent.preventDefault();
+
+        for (i = 0; i < tabPanels.length; i++) {
+          tabPanels[i].classList.remove("active");
+        }
+        let activePanelId = clickedTab.getAttribute("data-target");
+        let activePanel = document.querySelector("#" + activePanelId);
+        activePanel.classList.add("active");
+      }
+
+      for (i = 0; i < tabs.length; i++) {
+        tabs[i].addEventListener("click", tabClickHandler);
+      }
+
+      const icons =  document.querySelectorAll(".design-demo__icon-item")
+      console.log('icons', icons)
+      //给每个li绑定事件
+      for(let i = 0; i < icons.length; i++){
+        icons[i].ondblclick = function (e) {
+          //弹出对应的li节点里面的内容
+          console.log(e.currentTarget)
+          const iconName = e.currentTarget.querySelector('.code-name')
+          console.log(iconName)
+
+          const input = document.createElement('input')
+          document.body.appendChild(input)
+          input.setAttribute('value', iconName.innerText)
+          input.select()
+          if (document.execCommand('copy')) {
+            document.execCommand('copy')
+            console.log('复制成功')
+          }
+          document.body.removeChild(input)
+
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
