@@ -52,6 +52,48 @@ class DrawTool {
     this.addSnap()
   }
 
+  getAllDrawPoints() {
+    let featrues: any = []
+    let pointLayer = getLayer(this.map, 'pointLayer')
+    pointLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'Point') featrues.push(feature.get('data'))
+      })
+    return featrues
+  }
+
+  getAllDrawLines() {
+    let featrues: any = []
+    let lineLayer = getLayer(this.map, 'lineLayer')
+    lineLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'LineString') featrues.push(feature.get('data'))
+      })
+    return featrues
+  }
+
+  deleteAll() {
+    let pointLayer = getLayer(this.map, 'pointLayer')
+    pointLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'Point') pointLayer.getSource().removeFeature(feature)
+      })
+
+    let lineLayer = getLayer(this.map, 'lineLayer')
+    lineLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (feature.get('data').type_ === 'LineString') lineLayer.getSource().removeFeature(feature)
+      })
+  }
+
   addDraw = (type: string) => {
     this.draw = new Draw({
       source: this.source,
@@ -182,6 +224,7 @@ class DrawTool {
         node.setStyle(pointStyle(data))
       }
       data.seId = createFeatureId()
+      data.type_ = 'Point'
       node.set('data', data)
       pointLayer.getSource().addFeature(node)
 

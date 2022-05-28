@@ -46,7 +46,6 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
 
 export const drawPoint = (map: any, options: any) => {
   pointLayer = getLayer(map, 'pointLayer', 3)
-
   options.type_ = 'Point'
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(pointLayer.getSource())
@@ -59,6 +58,16 @@ export const drawLine = (map: any, options: any) => {
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(lineLayer.getSource())
   drawTool.drawGeometry(options)
+}
+
+export const getDrawPoints = () => {
+  if (drawTool) return drawTool.getAllDrawPoints()
+  else return null
+}
+
+export const getDrawLines = () => {
+  if (drawTool) return drawTool.getAllDrawLines()
+  else return null
 }
 
 export const loadMapLayers = (data: any, map: any) => {
