@@ -69,7 +69,7 @@ export const createLine = (params: any) => {
 export const uploadAllFeature = (params: any) => {
   //! console.log(params, '66666666')
   return cyRequest(() =>
-    request(`${baseUrl.project}/GridDesign/SaveGridDesign`, {
+    request(`${baseUrl.grid}/GridDesign/SaveGridDesign`, {
       method: 'POST',
       data: params,
     })

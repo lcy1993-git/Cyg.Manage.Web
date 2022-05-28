@@ -14,7 +14,7 @@ import {
 } from '../../DrawToolbar/GridUtils'
 export const pointStyle = (data: any, selected: boolean = false) => {
   let text,
-    font = 'webgisIconFont'
+    font = 'gridManageIconfont'
   let color = selected ? `rgba(110, 74, 192, 1)` : `rgba(8,210,42,1)`
   switch (data.kvLevel) {
     case 5:

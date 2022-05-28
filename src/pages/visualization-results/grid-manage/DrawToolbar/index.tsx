@@ -118,7 +118,7 @@ const DrawToolbar = () => {
   const { data, run } = useRequest(getAllBelongingLineItem, {
     manual: true,
     onSuccess: () => {
-      setbelongingLineData(data)
+      data && setbelongingLineData(data)
     },
   })
 

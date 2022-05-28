@@ -1,7 +1,7 @@
 import { createLine, GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, Modal, Radio, Select } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
 import DrawGridToolbar from './DrawGridToolbar'
 import styles from './index.less'
@@ -56,7 +56,7 @@ const LeftMenu = (props: any) => {
   const { data: stationItems, run: stationItemsHandle } = useRequest(GetStationItems, {
     manual: true,
     onSuccess: () => {
-      setstationItemsData(stationItems)
+      stationItems && setstationItemsData(stationItems)
     },
   })
 
