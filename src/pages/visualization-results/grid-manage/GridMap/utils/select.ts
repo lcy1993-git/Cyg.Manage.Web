@@ -45,17 +45,14 @@ export const deletCurrrentSelectFeature = (map: any) => {
     currrentSelectFeature = null
   } else if (geomType === 'Point') {
     pointLayer.getSource().removeFeature(currrentSelectFeature)
-    const pointId = currrentSelectFeature.get('data').seId
-    const startLine = lineLayer
+    const pointId = currrentSelectFeature.get('data').id
+    lineLayer
       .getSource()
       .getFeatures()
-      .find((item: any) => item.get('data').startId === pointId)
-    startLine && lineLayer.getSource().removeFeature(startLine)
-    const endLine = lineLayer
-      .getSource()
-      .getFeatures()
-      .find((item: any) => item.get('data').endId === pointId)
-    endLine && lineLayer.getSource().removeFeature(endLine)
+      .forEach((item: any) => {
+        if (item.get('data').startId === pointId || item.get('data').endId === pointId)
+          lineLayer.getSource().removeFeature(item)
+      })
     currrentSelectFeature = null
   }
 }
