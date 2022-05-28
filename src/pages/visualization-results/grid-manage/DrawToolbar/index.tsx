@@ -286,6 +286,19 @@ const DrawToolbar = () => {
           {currentFeature === 'drawline' && (
             <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
               <Form.Item
+                name="lineId"
+                label="所属线路"
+                rules={[{ required: true, message: '请选择所属线路' }]}
+              >
+                <Select>
+                  {belongingLineData.map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item
                 name="lineType"
                 label="选择线路"
                 rules={[{ required: true, message: '请选择线路类型' }]}

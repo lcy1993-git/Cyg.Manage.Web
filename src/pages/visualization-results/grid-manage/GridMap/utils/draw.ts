@@ -10,7 +10,6 @@ import { createFeatureId } from './../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
 import { setSelectActive } from './select'
 import { lineStyle, pointStyle } from './style'
-import { storeLocalFeatureData } from './utils'
 class DrawTool {
   map: any
   options: any
@@ -105,9 +104,7 @@ class DrawTool {
     let this_ = this
     this.draw.on('drawabort ', function (e: any) {})
 
-    this.draw.on('drawstart', function (e: any) {
-      // console.log(this_.source.getFeatures())
-    })
+    this.draw.on('drawstart', function (e: any) {})
 
     this.draw.on('drawend', function (e: any) {
       e.feature.set('data', this_.options)
@@ -125,8 +122,6 @@ class DrawTool {
         featureData.geom = format.writeGeometry(
           e.feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
         )
-        storeLocalFeatureData(featureData)
-        // 添加点位到数据库 this_.options
       }
     })
   }
@@ -184,19 +179,15 @@ class DrawTool {
         let datas: any = pre.concat(feature_)
         if (datas.length > 1) {
           datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
-          datas[datas.length - 2].get('data').endType = datas[datas.length - 1].get(
-            'data'
-          ).startType
+          datas[datas.length - 2].get('data').endType =
+            datas[datas.length - 1].get('data').startType
         }
         return datas
       }, [])
 
-      // !保存线路
-
       // 移除原有要素层
       source.removeFeature(feature)
       // 将拆分生成的新要素层添加至图层
-
       source.addFeatures(features)
     }, 0)
   }
@@ -230,10 +221,6 @@ class DrawTool {
       data.type_ = 'Point'
       node.set('data', data)
       pointLayer.getSource().addFeature(node)
-
-      // !! 生成线路带出的点位信息添加点位到数据库 data
-      // console.log(data, '123456555')
-      storeLocalFeatureData(data)
     }
     return node
   }
