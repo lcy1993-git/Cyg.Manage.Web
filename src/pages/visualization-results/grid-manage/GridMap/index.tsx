@@ -20,7 +20,7 @@ import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeM
 import { deletCurrrentSelectFeature } from './utils/select'
 
 const GridMap = () => {
-  const { mapRef } = useMyContext()
+  const { mapRef, setisRefresh } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
 
   // 上传所有点位
@@ -96,6 +96,8 @@ const GridMap = () => {
         uploadLocalData()
         // 退出手动绘制
         clear()
+        // 刷新列表
+        setisRefresh(true)
       }
 
       if (e.keyCode === 46 || e.keyCode === 8) {

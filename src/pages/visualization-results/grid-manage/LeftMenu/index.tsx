@@ -2,6 +2,7 @@ import { createLine, GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, Modal, Radio, Select } from 'antd'
 import { useEffect, useState } from 'react'
+import { useMyContext } from '../Context'
 import { createFeatureId, KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
 import DrawGridToolbar from './DrawGridToolbar'
 import styles from './index.less'
@@ -26,8 +27,8 @@ const LeftMenu = (props: any) => {
   const [visible, setVisible] = useState(false)
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const { setisRefresh } = useMyContext()
 
-  const [isRefresh, setisRefresh] = useState(true)
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const showModal = () => {
@@ -75,10 +76,10 @@ const LeftMenu = (props: any) => {
       </div>
       <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
         <div className={`w-full flex-none`}>
-          <SubstationTree isRefresh={isRefresh} />
+          <SubstationTree />
         </div>
         <div className={`w-full flex-1`}>
-          <PowerSupplyTree isRefresh={isRefresh} />
+          <PowerSupplyTree />
         </div>
       </div>
       <div

@@ -24,6 +24,9 @@ export const initSelect = (map: any) => {
   select.on('select', (evt: any) => {
     if (evt.selected.length > 0) {
       currrentSelectFeature = evt.selected[0]
+
+      /* 弹出属性显示框 **/
+      // !! console.log(currrentSelectFeature.get('data'), '当前要素')
     } else {
       currrentSelectFeature = null
     }
@@ -42,16 +45,22 @@ export const deletCurrrentSelectFeature = (map: any) => {
     lineLayer = getLayer(map, 'lineLayer')
   if (geomType === 'LineString') {
     lineLayer.getSource().removeFeature(currrentSelectFeature)
+
+    //! 删除线路 ....currrentSelectFeature.get('data')
+
     currrentSelectFeature = null
   } else if (geomType === 'Point') {
     pointLayer.getSource().removeFeature(currrentSelectFeature)
+    // !!  1. 删除点位 首先要删除当前点位 currrentSelectFeature.get('data')
     const pointId = currrentSelectFeature.get('data').id
     lineLayer
       .getSource()
       .getFeatures()
       .forEach((item: any) => {
-        if (item.get('data').startId === pointId || item.get('data').endId === pointId)
+        if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
+          // !  2... 然后删除线路  item.get('data')
           lineLayer.getSource().removeFeature(item)
+        }
       })
     currrentSelectFeature = null
   }

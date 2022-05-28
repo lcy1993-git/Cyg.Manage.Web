@@ -20,6 +20,8 @@ export interface MyContextType {
   setImportModalVisible: Dispatch<SetStateAction<boolean>>
   lineAssemble: { value: string; label: string }[]
   setlineAssemble: Dispatch<SetStateAction<{ value: string; label: string }[]>>
+  isRefresh: boolean
+  setisRefresh: Dispatch<SetStateAction<boolean>>
 }
 
 // 全局状态管理
