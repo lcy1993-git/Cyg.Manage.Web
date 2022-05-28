@@ -60,7 +60,10 @@ class DrawTool {
       .getSource()
       .getFeatures()
       .forEach((feature: any) => {
-        if (feature.get('data').type_ === 'Point') featrues.push(feature.get('data'))
+        if (feature.get('data').type_ === 'Point') {
+          featrues.push(feature.get('data'))
+          feature.get('data').type_ = null
+        }
       })
     return featrues
   }
@@ -72,7 +75,10 @@ class DrawTool {
       .getSource()
       .getFeatures()
       .forEach((feature: any) => {
-        if (feature.get('data').type_ === 'LineString') featrues.push(feature.get('data'))
+        if (feature.get('data').type_ === 'LineString') {
+          featrues.push(feature.get('data'))
+          feature.get('data').type_ = null
+        }
       })
     return featrues
   }
