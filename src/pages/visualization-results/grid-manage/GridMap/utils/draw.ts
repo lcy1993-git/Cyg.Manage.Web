@@ -10,7 +10,6 @@ import { createFeatureId } from './../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
 import { setSelectActive } from './select'
 import { lineStyle, pointStyle } from './style'
-import { storeLocalFeatureData } from './utils'
 class DrawTool {
   map: any
   options: any
@@ -63,7 +62,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'Point') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = null
+          feature.get('data').type_ = ''
         }
       })
     return featrues
@@ -78,7 +77,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'LineString') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = null
+          feature.get('data').type_ = ''
         }
       })
     return featrues
@@ -131,7 +130,8 @@ class DrawTool {
         featureData.geom = format.writeGeometry(
           e.feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
         )
-        storeLocalFeatureData(featureData)
+        e.feature.set('data', featureData)
+        // storeLocalFeatureData(featureData)
         // 添加点位到数据库 this_.options
       }
     })
@@ -239,7 +239,7 @@ class DrawTool {
 
       // !! 生成线路带出的点位信息添加点位到数据库 data
       // console.log(data, '123456555')
-      storeLocalFeatureData(data)
+      // storeLocalFeatureData(data)
     }
     return node
   }
