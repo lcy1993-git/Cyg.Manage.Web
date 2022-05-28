@@ -67,7 +67,6 @@ export const createLine = (params: any) => {
 
 // 上传所有点位
 export const uploadAllFeature = (params: any) => {
-  //! console.log(params, '66666666')
   return cyRequest(() =>
     request(`${baseUrl.grid}/GridDesign/SaveGridDesign`, {
       method: 'POST',
