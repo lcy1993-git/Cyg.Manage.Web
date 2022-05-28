@@ -76,6 +76,10 @@ const DrawToolbar = () => {
       item.belonging.find((type: string) => type.includes(result.target.value))
     )
     setkelevelOptions(kelevelOptions)
+    form.resetFields()
+    form.setFieldsValue({
+      featureType: result.target.value,
+    })
   }
   /** 选择线路型号 */
   const onChangeLineType = (value: string) => {

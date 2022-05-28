@@ -154,10 +154,10 @@ export const storeLocalFeatureData = (featureData: any) => {
       localStorage.setItem('powerSupplyList', JSON.stringify(powerSupplyList))
       break
     case TRANSFORMERSUBSTATION:
-      const transformerStatiionList = JSON.parse(
-        localStorage.getItem('transformerStatiionList') || '[]'
+      const transformerStationList = JSON.parse(
+        localStorage.getItem('transformerStationList') || '[]'
       )
-      transformerStatiionList.push({
+      transformerStationList.push({
         geom: featureData.geom,
         kvLevel: featureData.kvLevel,
         name: featureData.name,
@@ -165,7 +165,7 @@ export const storeLocalFeatureData = (featureData: any) => {
         designScaleMainTransformer: featureData.designScaleMainTransformer,
         builtScaleMainTransformer: featureData.builtScaleMainTransformer,
       })
-      localStorage.setItem('transformerStatiionList', JSON.stringify(transformerStatiionList))
+      localStorage.setItem('transformerStationList', JSON.stringify(transformerStationList))
       break
     case CABLECIRCUIT:
     // 线路段

@@ -13,7 +13,7 @@ const GridMap = () => {
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, {
     manual: true,
     onSuccess: () => {
-      localStorage.setItem('transformerStatiionList', JSON.stringify([]))
+      localStorage.setItem('transformerStationList', JSON.stringify([]))
       localStorage.setItem('powerSupplyList', JSON.stringify([]))
       localStorage.setItem('boxTransformerList', JSON.stringify([]))
       localStorage.setItem('cableBranchBoxList', JSON.stringify([]))
@@ -29,7 +29,7 @@ const GridMap = () => {
 
   /** 清楚本地网架数据 */
   const clearLocalGridManageData = () => {
-    localStorage.setItem('transformerStatiionList', JSON.stringify([]))
+    localStorage.setItem('transformerStationList', JSON.stringify([]))
     localStorage.setItem('powerSupplyList', JSON.stringify([]))
     localStorage.setItem('boxTransformerList', JSON.stringify([]))
     localStorage.setItem('cableBranchBoxList', JSON.stringify([]))
@@ -60,8 +60,8 @@ const GridMap = () => {
     const cableBranchBoxList = JSON.parse(localStorage.getItem('cableBranchBoxList') || '[]')
     const boxTransformerList = JSON.parse(localStorage.getItem('boxTransformerList') || '[]')
     const powerSupplyList = JSON.parse(localStorage.getItem('powerSupplyList') || '[]')
-    const transformerStatiionList = JSON.parse(
-      localStorage.getItem('transformerStatiionList') || '[]'
+    const transformerStationList = JSON.parse(
+      localStorage.getItem('transformerStationList') || '[]'
     )
     stationItemsHandle({
       towerList,
@@ -74,7 +74,7 @@ const GridMap = () => {
       cableBranchBoxList,
       boxTransformerList,
       powerSupplyList,
-      transformerStatiionList,
+      transformerStationList,
     })
   }
 
