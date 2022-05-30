@@ -25,6 +25,8 @@ const GradManage: React.FC = () => {
   /** 页面所有线路 */
   const [lineAssemble, setlineAssemble] = useState<{ value: string; label: string }[]>([])
 
+  /**  **/
+  const [zIndex, setzIndex] = useState('create')
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
 
@@ -42,6 +44,8 @@ const GradManage: React.FC = () => {
         setisRefresh,
         lineAssemble,
         setlineAssemble,
+        zIndex,
+        setzIndex,
       }}
     >
       <GradManageWrap />

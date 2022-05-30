@@ -9,16 +9,34 @@ import DrawTool from './draw'
 import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 import { initSelect, setSelectActive } from './select'
-
+interface pointType {
+  featureType: string
+  name?: string
+  kvLevel?: string
+  designScaleMainTransformer?: string
+  builtScaleMainTransformer?: string
+  mainWiringMode?: string
+  powerType?: string
+  installedCapacity?: string
+  schedulingMode?: string
+  lineId?: string
+  capacity?: string
+  model?: string
+  properties?: string
+  lng?: string
+  geom: string
+  id: string
+}
 interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
+  isActiveFeature: (data: pointType) => void
 }
 var drawTool: any
 var pointLayer: any
 var lineLayer: any
 
-export const initMap = ({ mapRef, ref }: InitOps) => {
+export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   mapRef.map = new Map({
     target: 'map',
     layers: [
@@ -38,7 +56,7 @@ export const initMap = ({ mapRef, ref }: InitOps) => {
     mapMoveend(e, mapRef.map)
   })
 
-  initSelect(mapRef.map)
+  initSelect(mapRef.map, isActiveFeature)
   // drawPoint(mapRef.map, {})
   // drawLine(mapRef.map, { featureType: 'Line' })
 }

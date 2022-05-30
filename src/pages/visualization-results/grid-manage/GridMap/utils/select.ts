@@ -1,10 +1,27 @@
 import { Select } from 'ol/interaction'
 import { getLayer } from './loadLayer'
 import { lineStyle, pointStyle } from './style'
-
+interface pointType {
+  featureType: string
+  name?: string
+  kvLevel?: string
+  designScaleMainTransformer?: string
+  builtScaleMainTransformer?: string
+  mainWiringMode?: string
+  powerType?: string
+  installedCapacity?: string
+  schedulingMode?: string
+  lineId?: string
+  capacity?: string
+  model?: string
+  properties?: string
+  lng?: string
+  geom: string
+  id: string
+}
 var select: any
 var currrentSelectFeature: any
-export const initSelect = (map: any) => {
+export const initSelect = (map: any, isActiveFeature: (data: pointType) => void) => {
   let pointLayer = getLayer(map, 'pointLayer', 3)
   let lineLayer = getLayer(map, 'lineLayer', 2)
   let layers = [pointLayer, lineLayer]
@@ -26,6 +43,7 @@ export const initSelect = (map: any) => {
       currrentSelectFeature = evt.selected[0]
       /* 弹出属性显示框 **/
       // console.log(currrentSelectFeature.get('data'), '当前要素')
+      isActiveFeature(currrentSelectFeature.get('data'))
     } else {
       currrentSelectFeature = null
     }
