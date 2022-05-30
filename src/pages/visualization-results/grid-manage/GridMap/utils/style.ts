@@ -31,7 +31,7 @@ export const pointStyle = (data: any, selected: boolean = false, isShowText: boo
       color = `rgba(170,170,85,1)`
       break
     case 3:
-      color = `rgba(212,212,0,1)`
+      color = data.color ? data.color : `rgba(212,212,0,1)`
       break
     default:
       break
@@ -147,7 +147,7 @@ export const lineStyle = (data: any, selected: boolean = false) => {
       color = `rgba(170,170,85,1)`
       break
     case 3:
-      color = `rgba(212,212,0,1)`
+      color = data.color ? data.color : `rgba(212,212,0,1)`
       break
     default:
       break
