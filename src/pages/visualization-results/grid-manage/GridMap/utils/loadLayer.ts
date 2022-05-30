@@ -81,3 +81,25 @@ export const getLayer = (
   }
   return layer
 }
+
+export const locationLayer = (map: any) => {
+  var source = new VectorSource()
+  var features = []
+  const pointLayer = getLayer(map, 'pointLayer')
+  const lineLayer = getLayer(map, 'lineLayer')
+  features = pointLayer.getSource().getFeatures()
+  features = features.concat(lineLayer.getSource().getFeatures())
+  if (features.length > 0) {
+    source.addFeatures(features)
+    var extent = source.getExtent()
+    let dx = extent[2] - extent[0]
+    let dy = extent[3] - extent[1]
+    extent = [
+      extent[0] * (1 - dx / extent[0] / 10),
+      extent[1] * (1 - dy / extent[1] / 10),
+      extent[2] * (1 + dx / extent[2] / 10),
+      extent[3] * (1 + dy / extent[3] / 10),
+    ]
+    map.getView().fit(extent, map!.getSize())
+  }
+}

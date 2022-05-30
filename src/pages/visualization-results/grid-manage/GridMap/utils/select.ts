@@ -72,13 +72,13 @@ export const deletCurrrentSelectFeature = (map: any) => {
     lineLayer = getLayer(map, 'lineLayer')
   if (geomType === 'LineString') {
     lineLayer.getSource().removeFeature(currrentSelectFeature)
-    deleFeatures.push(currrentSelectFeature)
+    deleFeatures.push(currrentSelectFeature.get('data'))
     //! 删除线路 ....currrentSelectFeature.get('data')
 
     currrentSelectFeature = null
   } else if (geomType === 'Point') {
     pointLayer.getSource().removeFeature(currrentSelectFeature)
-    deleFeatures.push(currrentSelectFeature)
+    deleFeatures.push(currrentSelectFeature.get('data'))
     // !!  1. 删除点位 首先要删除当前点位 currrentSelectFeature.get('data')
     const pointId = currrentSelectFeature.get('data').id
     lineLayer
@@ -88,7 +88,7 @@ export const deletCurrrentSelectFeature = (map: any) => {
         if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
           // !  2... 然后删除线路  item.get('data')
           lineLayer.getSource().removeFeature(item)
-          deleFeatures.push(item)
+          deleFeatures.push(item.get('data'))
         }
       })
   }
