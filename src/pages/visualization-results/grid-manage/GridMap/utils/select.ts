@@ -24,9 +24,8 @@ export const initSelect = (map: any) => {
   select.on('select', (evt: any) => {
     if (evt.selected.length > 0) {
       currrentSelectFeature = evt.selected[0]
-
       /* 弹出属性显示框 **/
-      // !! console.log(currrentSelectFeature.get('data'), '当前要素')
+      // console.log(currrentSelectFeature.get('data'), '当前要素')
     } else {
       currrentSelectFeature = null
     }

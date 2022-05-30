@@ -9,7 +9,7 @@ const GridManageRequest = (url: string, options?: Parameters<typeof request>[1])
 
 /** 导入网架数据 */
 export const importGridManageData = (data: FormData) => {
-  return GridManageRequest('/Import/Template', {
+  return GridManageRequest('/Import/All', {
     method: 'POST',
     data,
     requestType: 'form',
@@ -18,7 +18,7 @@ export const importGridManageData = (data: FormData) => {
 
 /** 下载网架数据模板 */
 export const downloadExcelTemplate = () => {
-  return GridManageRequest('NetFramework/Templates', { responseType: 'blob' })
+  return GridManageRequest('/Import/Template', { responseType: 'blob' })
 }
 
 /** 获取变电站下面的网架数据 **/

@@ -39,16 +39,14 @@ const ExcelImportData = () => {
 
   /** 下载导入模板 */
   const download = async () => {
-    // const blob = new Blob()
     const res = await downloadExcelTemplate()
     let blob = new Blob([res], {
       type: `application/xlsx`,
     })
-    // console.log(blob, '666666')
     const url = URL.createObjectURL(blob)
     let a: HTMLAnchorElement | null = document.createElement('a')
     a.href = url
-    a.download = '导入模板'
+    a.download = '导入模板.xlsx'
     a.click()
     a = null
   }
