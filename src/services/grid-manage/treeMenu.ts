@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
-import { PowerSupplyType, TransformerSubstationType } from './interface'
 
 const GridManageRequest = (url: string, options?: Parameters<typeof request>[1]) => {
   const _url = `${baseUrl.grid}/${url.startsWith('/') ? url.slice(1) : url}`
@@ -82,21 +81,82 @@ export const deleteCompany = (companyId: string) => {
 }
 
 /** 创建变电站 */
-export const createTransformerSubstation = (params: TransformerSubstationType) => {
-  return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/TransformerSubstation/Create`, { method: 'POST', data: params })
-  )
-}
+// export const createTransformerSubstation = (params: TransformerSubstationType) => {
+//   return cyRequest<any[]>(() =>
+//     request(`${baseUrl.grid}/TransformerSubstation/Create`, { method: 'POST', data: params })
+//   )
+// }
 /** 创建电源 */
-export const createPowerSupply = (params: PowerSupplyType) => {
-  return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/PowerSupply/Create`, { method: 'POST', data: params })
-  )
-}
+// export const createPowerSupply = (params: PowerSupplyType) => {
+//   return cyRequest<any[]>(() =>
+//     request(`${baseUrl.grid}/PowerSupply/Create`, { method: 'POST', data: params })
+//   )
+// }
 
 /** 创建杆塔 **/
-export const createTower = (params: any) => {
+// export const createTower = (params: any) => {
+//   return cyRequest<any[]>(() =>
+//     request(`${baseUrl.grid}/Tower/Create`, { method: 'POST', data: params })
+//   )
+// }
+
+/** 更新杆塔信息 **/
+export const modifyTower = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/Tower/Create`, { method: 'POST', data: params })
+    request(`${baseUrl.grid}/Tower/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新箱变信息 **/
+export const modifyBoxTransformer = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/CableBranchBox/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新电缆井信息 **/
+export const modifyCableWell = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/CableWell/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新柱上断路器信息 **/
+export const modifyColumnCircuitBreaker = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/ColumnCircuitBreaker/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新柱上变压器信息 **/
+export const modifyColumnTransformer = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/ColumnTransformer/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新配电室信息 **/
+export const modifyElectricityDistributionRoom = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/ElectricityDistributionRoom/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新电源信息 **/
+export const modifyPowerSupply = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/PowerSupply/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新环网柜信息 **/
+export const modifyRingNetworkCabinet = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/RingNetworkCabinet/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新开闭所信息 **/
+export const modifySwitchingStation = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/SwitchingStation/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新变电站信息 **/
+export const modifyTransformerSubstation = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/TransformerSubstation/Modify`, { method: 'POST', data: params })
   )
 }

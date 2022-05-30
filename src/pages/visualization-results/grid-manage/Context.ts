@@ -22,6 +22,8 @@ export interface MyContextType {
   setlineAssemble: Dispatch<SetStateAction<{ value: string; label: string }[]>>
   isRefresh: boolean
   setisRefresh: Dispatch<SetStateAction<boolean>>
+  zIndex: string
+  setzIndex: Dispatch<SetStateAction<string>>
 }
 
 // 全局状态管理
