@@ -160,3 +160,91 @@ export const modifyTransformerSubstation = (params: any) => {
     request(`${baseUrl.grid}/TransformerSubstation/Modify`, { method: 'POST', data: params })
   )
 }
+/** 更新变电站信息 **/
+export const modifyCableBranchBox = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/CableBranchBox/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新线路信息 **/
+export const modifyLine = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Line/Modify`, { method: 'POST', data: params })
+  )
+}
+
+/** //!! 删除杆塔信息 **/
+export const deleteTower = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Tower/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除箱变信息 **/
+export const deleteBoxTransformer = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/BoxTransformer/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除电缆井信息 **/
+export const deleteCableWell = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/CableWell/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除柱上断路器信息 **/
+export const deleteColumnCircuitBreaker = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/ColumnCircuitBreaker/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除柱上变压器信息 **/
+export const deleteColumnTransformer = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/ColumnTransformer/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除配电室信息 **/
+export const deleteElectricityDistributionRoom = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/ElectricityDistributionRoom/DeleteById`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+/** 删除电源信息 **/
+export const deletePowerSupply = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/PowerSupply/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除环网柜信息 **/
+export const deleteRingNetworkCabinet = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/RingNetworkCabinet/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除开闭所信息 **/
+export const deleteSwitchingStation = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/SwitchingStation/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除变电站信息 **/
+export const deleteTransformerSubstation = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/TransformerSubstation/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除电缆分支箱信息 **/
+export const deleteCableBranchBox = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/CableBranchBox/DeleteById`, { method: 'POST', data: params })
+  )
+}
+/** 删除线路信息 **/
+export const deleteLine = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Line/DeleteLineRelationsById`, { method: 'POST', data: params })
+  )
+}

@@ -153,7 +153,7 @@ const DrawToolbar = () => {
         width: '378px',
         height: '100%',
         overflow: 'hidden',
-        zIndex: zIndex === 'create' ? 2000 : 1000,
+        zIndex: zIndex === 'create' ? 1000 : 900,
       }}
       mask={false}
       onClose={onClose}

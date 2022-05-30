@@ -7,6 +7,7 @@ import { lineStyle, pointStyle } from './style'
 export const loadAllLayer = (data: any, map: any) => {
   loadAllPointLayer(data, map)
   loadAllLineayer(data, map)
+  locationLayer(map)
 }
 
 // 加载所有点图层

@@ -1,10 +1,25 @@
 import {
+  deleteBoxTransformer,
+  deleteCableBranchBox,
+  deleteCableWell,
+  deleteColumnCircuitBreaker,
+  deleteColumnTransformer,
+  deleteElectricityDistributionRoom,
+  deleteLine,
+  deletePowerSupply,
+  deleteRingNetworkCabinet,
+  deleteSwitchingStation,
+  deleteTower,
+  deleteTransformerSubstation,
   getAllBelongingLineItem,
   modifyBoxTransformer,
+  modifyCableBranchBox,
   modifyCableWell,
   modifyColumnCircuitBreaker,
   modifyColumnTransformer,
   modifyElectricityDistributionRoom,
+  modifyLine,
+  modifyPowerSupply,
   modifyRingNetworkCabinet,
   modifySwitchingStation,
   modifyTower,
@@ -23,6 +38,7 @@ import {
   BELONGINGPROPERITIES,
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
+  CABLECIRCUIT,
   CABLEWELL,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
@@ -38,7 +54,7 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
-import { deletCurrrentSelectFeature } from './utils/select'
+import { deletCurrrentSelectFeature, getDeleFeatures } from './utils/select'
 interface BelongingLineType {
   id: string
   name: string
@@ -176,6 +192,7 @@ const GridMap = () => {
       ...value,
       ...currentfeatureData,
     }
+
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -185,7 +202,7 @@ const GridMap = () => {
           await modifyBoxTransformer(params)
           break
         case POWERSUPPLY:
-          await modifyBoxTransformer(params)
+          await modifyPowerSupply(params)
           break
         case TRANSFORMERSUBSTATION:
           await modifyTransformerSubstation(params)
@@ -208,11 +225,82 @@ const GridMap = () => {
         case COLUMNTRANSFORMER:
           await modifyColumnTransformer(params)
           break
+        case CABLEBRANCHBOX:
+          await modifyCableBranchBox(params)
+          break
+        case CABLECIRCUIT: // 电缆线路
+          await modifyLine({
+            ...params,
+            isOverhead: false,
+          })
+          break
+        case LINE: // 架空线路
+          await modifyLine({
+            ...params,
+            isOverhead: true,
+          })
+          break
       }
       message.info('上传成功')
     } catch (err) {
       message.error('上传失败')
     }
+  }
+
+  // 删除地图要素
+  const deleteFeature = async () => {
+    const deleteData = getDeleFeatures()
+    const PromiseAll = []
+    for (let i = 0; i < deleteData.length; i++) {
+      switch (deleteData[i].featureType) {
+        case TOWER:
+          PromiseAll.push(deleteTower([deleteData[i].id]))
+          break
+        case BOXTRANSFORMER:
+          PromiseAll.push(deleteBoxTransformer([deleteData[i].id]))
+          break
+        case POWERSUPPLY:
+          PromiseAll.push(deletePowerSupply([deleteData[i].id]))
+          break
+        case TRANSFORMERSUBSTATION:
+          PromiseAll.push(deleteTransformerSubstation([deleteData[i].id]))
+          break
+        case CABLEWELL:
+          PromiseAll.push(deleteCableWell([deleteData[i].id]))
+          break
+        case RINGNETWORKCABINET:
+          PromiseAll.push(deleteRingNetworkCabinet([deleteData[i].id]))
+          break
+        case ELECTRICITYDISTRIBUTIONROOM:
+          PromiseAll.push(deleteElectricityDistributionRoom([deleteData[i].id]))
+          break
+        case SWITCHINGSTATION:
+          PromiseAll.push(deleteSwitchingStation([deleteData[i].id]))
+          break
+        case COLUMNCIRCUITBREAKER:
+          PromiseAll.push(deleteColumnCircuitBreaker([deleteData[i].id]))
+          break
+        case COLUMNTRANSFORMER:
+          PromiseAll.push(deleteColumnTransformer([deleteData[i].id]))
+          break
+        case CABLEBRANCHBOX:
+          PromiseAll.push(deleteCableBranchBox([deleteData[i].id]))
+          break
+        case CABLECIRCUIT: // 电缆线路
+          PromiseAll.push(deleteLine([deleteData[i].id]))
+          break
+        case LINE: // 架空线路
+          PromiseAll.push(deleteLine([deleteData[i].id]))
+          break
+      }
+    }
+    Promise.all(PromiseAll)
+      .then((res) => {
+        message.info('删除成功')
+      })
+      .catch((err) => {
+        message.info('删除失败')
+      })
   }
 
   // 挂载地图
@@ -229,6 +317,7 @@ const GridMap = () => {
       }
       if (e.keyCode === 46) {
         deletCurrrentSelectFeature(mapRef.map)
+        deleteFeature()
       }
     })
   })
@@ -257,7 +346,7 @@ const GridMap = () => {
           width: '378px',
           height: '100%',
           overflow: 'hidden',
-          zIndex: zIndex === 'edit' ? 2000 : 1000,
+          zIndex: zIndex === 'edit' ? 1000 : 900,
         }}
         mask={false}
         onClose={onClose}
@@ -362,12 +451,18 @@ const GridMap = () => {
             </Form.Item>
           )}
 
-          <Form.Item name="lng" label="经度">
-            <Input />
-          </Form.Item>
-          <Form.Item name="lat" label="纬度">
-            <Input />
-          </Form.Item>
+          {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
+            <></>
+          ) : (
+            <>
+              <Form.Item name="lng" label="经度">
+                <Input />
+              </Form.Item>
+              <Form.Item name="lat" label="纬度">
+                <Input />
+              </Form.Item>
+            </>
+          )}
           <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
             <Button type="primary" htmlType="submit">
               确定
