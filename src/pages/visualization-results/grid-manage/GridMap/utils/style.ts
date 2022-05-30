@@ -122,8 +122,8 @@ export const pointStyle = (data: any, selected: boolean = false, isShowText: boo
             color: 'rgba(21, 32, 32, 1)',
             width: 2,
           }),
-          offsetX: 6,
-          offsetY: 1,
+          offsetX: 1,
+          offsetY: 20,
         }),
         zIndex: zIndex,
       })
