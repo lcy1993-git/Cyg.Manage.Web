@@ -81,7 +81,12 @@ export const getMaterialItemData = (params: any) => {
    */
   let { type = 0, ...rest } = params
   if (params.layerName !== 'tower') type = 1
-  const url = ['/LibraryDesign/GetModuleDetailView', '/LibraryComponent/GetComponentDetailView']
+  if (params.layerName == 'cable_channel') type = 2
+  const url = [
+    '/LibraryDesign/GetModuleDetailView',
+    '/LibraryComponent/GetComponentDetailView',
+    '/LibraryCable/GetCableChannelDetailView',
+  ]
   return request(
     `${baseUrl.resourceV1}` + url[type],
     // 'http://10.6.1.36:8015/api/LibraryDesign/GetModuleDetailView',

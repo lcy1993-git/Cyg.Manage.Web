@@ -16,6 +16,13 @@ const stateMenu = {
   4: '换装',
 }
 
+const kvEnum = {
+  0: '无',
+  1: '220V',
+  2: '380V',
+  3: '10kV',
+}
+
 export const columns: ColumnsType<HouseholdDataType> = [
   {
     title: '长度(m)',
@@ -37,6 +44,9 @@ export const columns: ColumnsType<HouseholdDataType> = [
     width: 80,
     dataIndex: 'kvLevel',
     key: 'kvLevel',
+    render: (text: any, record: any) => {
+      return kvEnum[record.kvLevel]
+    },
   },
   {
     title: '型号',

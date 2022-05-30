@@ -269,6 +269,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data) => {
       if (data.isSuccess) {
         const resourceLibID = data?.content
+
         materialDataRun({
           resourceLibID,
           ...materialParams.rest,
