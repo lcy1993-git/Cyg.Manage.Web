@@ -188,8 +188,9 @@ class DrawTool {
         let datas: any = pre.concat(feature_)
         if (datas.length > 1) {
           datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
-          datas[datas.length - 2].get('data').endType =
-            datas[datas.length - 1].get('data').startType
+          datas[datas.length - 2].get('data').endType = datas[datas.length - 1].get(
+            'data'
+          ).startType
         }
         return datas
       }, [])
@@ -214,6 +215,7 @@ class DrawTool {
       const data: any = {}
       const coordinates = point.getCoordinates()
       const lont_ = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
+      data.lineId = this.options.lineId
       data.lng = lont_[0]
       data.lat = lont_[1]
       var format = new WKT()
