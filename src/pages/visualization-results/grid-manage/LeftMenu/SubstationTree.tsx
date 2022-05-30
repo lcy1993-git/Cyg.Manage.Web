@@ -9,10 +9,9 @@ import { useMyContext } from '../Context'
 import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
-const SubstationTree = (props: { isRefresh: boolean }) => {
-  const { isRefresh } = props
+const SubstationTree = () => {
   const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu(), { manual: true })
-  const { mapRef } = useMyContext()
+  const { mapRef, isRefresh } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
 
   const treeData = [

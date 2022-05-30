@@ -41,10 +41,11 @@ interface BelongingLineType {
 }
 
 const DrawToolbar = () => {
-  const { drawToolbarVisible, setdrawToolbarVisible, mapRef } = useMyContext()
+  const { drawToolbarVisible, setdrawToolbarVisible, mapRef, setisRefresh } = useMyContext()
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   const [selectLineType, setselectLineType] = useState('')
   const [currentFeature, setcurrentFeature] = useState('feature')
+
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   /**所属厂站**/
@@ -100,6 +101,9 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
+      setisRefresh(false)
+      // !!! 如果是变电站或者电源就需要刷新树形列表
+
       drawPoint(mapRef.map, {
         ...formData,
       })
@@ -285,6 +289,19 @@ const DrawToolbar = () => {
         <TabPane tab="绘制线路" key="drawline">
           {currentFeature === 'drawline' && (
             <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
+              <Form.Item
+                name="lineId"
+                label="所属线路"
+                rules={[{ required: true, message: '请选择所属线路' }]}
+              >
+                <Select>
+                  {belongingLineData.map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
               <Form.Item
                 name="lineType"
                 label="选择线路"

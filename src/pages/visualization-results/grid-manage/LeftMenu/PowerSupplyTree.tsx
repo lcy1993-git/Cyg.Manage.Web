@@ -30,10 +30,9 @@ interface PowerSupplyListType {
   lines: Array<lineListItemType>
 }
 
-const PowerSupplyTree = (props: { isRefresh: boolean }) => {
-  const { isRefresh } = props
+const PowerSupplyTree = () => {
   const { data, run: getTree } = useRequest(() => fetchGridManageMenu(), { manual: true })
-  const { mapRef } = useMyContext()
+  const { mapRef, isRefresh } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   // console.log(data, '数据')
   const treeData = [

@@ -110,9 +110,7 @@ class DrawTool {
     let this_ = this
     this.draw.on('drawabort ', function (e: any) {})
 
-    this.draw.on('drawstart', function (e: any) {
-      // console.log(this_.source.getFeatures())
-    })
+    this.draw.on('drawstart', function (e: any) {})
 
     this.draw.on('drawend', function (e: any) {
       e.feature.set('data', this_.options)
@@ -190,19 +188,15 @@ class DrawTool {
         let datas: any = pre.concat(feature_)
         if (datas.length > 1) {
           datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
-          datas[datas.length - 2].get('data').endType = datas[datas.length - 1].get(
-            'data'
-          ).startType
+          datas[datas.length - 2].get('data').endType =
+            datas[datas.length - 1].get('data').startType
         }
         return datas
       }, [])
 
-      // !保存线路
-
       // 移除原有要素层
       source.removeFeature(feature)
       // 将拆分生成的新要素层添加至图层
-
       source.addFeatures(features)
     }, 0)
   }
