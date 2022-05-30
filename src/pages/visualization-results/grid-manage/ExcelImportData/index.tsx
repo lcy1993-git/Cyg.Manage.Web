@@ -1,14 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { importGridManageData } from '@/services/grid-manage/treeMenu'
+import { downloadExcelTemplate, importGridManageData } from '@/services/grid-manage/treeMenu'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Form, message, Modal, Upload } from 'antd'
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useMyContext } from '../Context'
 const { Dragger } = Upload
 const { useForm } = Form
 const ExcelImportData = () => {
-  const { importModalVisible, setImportModalVisible } = useMyContext()
+  const { importModalVisible, setImportModalVisible, setisRefresh } = useMyContext()
   const [form] = useForm()
+  const [confirmLoading, setConfirmLoading] = useState(false)
 
   const onOk = useCallback(async () => {
     const files = form.getFieldValue('files')
@@ -20,14 +21,20 @@ const ExcelImportData = () => {
     files.forEach((f) => data.append('files', f.originFileObj, f.name))
 
     try {
+      setisRefresh(false)
+      setConfirmLoading(true)
       const res = await importGridManageData(data)
       if (res.isSuccess) {
         message.success('上传成功')
+        setConfirmLoading(false)
+        setisRefresh(true)
         closeModal()
       } else {
+        setConfirmLoading(false)
         message.error(res.message)
       }
     } catch (e: any) {
+      setConfirmLoading(false)
       message.error(e.message || '上传出错，请重试')
     }
   }, [form])
@@ -39,13 +46,14 @@ const ExcelImportData = () => {
 
   /** 下载导入模板 */
   const download = async () => {
-    const blob = new Blob()
-    // await downloadTemplate()
+    const res = await downloadExcelTemplate()
+    let blob = new Blob([res], {
+      type: `application/xlsx`,
+    })
     const url = URL.createObjectURL(blob)
-
     let a: HTMLAnchorElement | null = document.createElement('a')
     a.href = url
-    a.download = '导入模板'
+    a.download = '导入模板.xlsx'
     a.click()
     a = null
   }
@@ -62,6 +70,7 @@ const ExcelImportData = () => {
       destroyOnClose
       centered
       title="导入网架.xlsx"
+      confirmLoading={confirmLoading}
       visible={importModalVisible}
       onCancel={closeModal}
       onOk={onOk}

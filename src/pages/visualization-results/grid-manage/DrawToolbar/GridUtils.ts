@@ -51,6 +51,21 @@ export const POINTS = [
   TRANSFORMERSUBSTATION,
 ]
 
+export const TYPENUMS = {
+  [TRANSFORMERSUBSTATION]: 1,
+  [POWERSUPPLY]: 2,
+  [LINE]: 3,
+  [TOWER]: 4,
+  [BOXTRANSFORMER]: 5,
+  [CABLEBRANCHBOX]: 6,
+  [CABLEWELL]: 7,
+  [COLUMNCIRCUITBREAKER]: 8,
+  [COLUMNTRANSFORMER]: 9,
+  [ELECTRICITYDISTRIBUTIONROOM]: 10,
+  [RINGNETWORKCABINET]: 11,
+  [SWITCHINGSTATION]: 12,
+}
+
 export const LINES = [LINE, CABLECIRCUIT]
 
 /** 要素类型 */
@@ -66,6 +81,8 @@ export const FEATUERTYPE = {
   [COLUMNCIRCUITBREAKER]: '柱上断路器',
   [COLUMNTRANSFORMER]: '柱上变压器',
   [CABLEBRANCHBOX]: '电缆分支箱',
+  [CABLECIRCUIT]: '电缆线路',
+  [LINE]: '架空线路',
 }
 
 /** 可以绘制的图元 */
@@ -92,7 +109,7 @@ export type KVLEVELTYPES = {
 /** 电压等级 */
 export const KVLEVELOPTIONS = [
   {
-    kvLevel: 0,
+    kvLevel: 3,
     label: '10KV',
     belonging: [
       POWERSUPPLY,
@@ -105,25 +122,26 @@ export const KVLEVELOPTIONS = [
       RINGNETWORKCABINET,
       SWITCHINGSTATION,
       CABLEBRANCHBOX,
+      LINE,
     ],
   },
   {
-    kvLevel: 1,
-    label: '20KV',
-    belonging: [TRANSFORMERSUBSTATION, TOWER, CABLEWELL],
-  },
-  {
-    kvLevel: 3,
-    label: '35KV',
-    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL],
-  },
-  {
     kvLevel: 4,
-    label: '110KV',
-    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL],
+    label: '20KV',
+    belonging: [TRANSFORMERSUBSTATION, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 5,
+    label: '35KV',
+    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
+  },
+  {
+    kvLevel: 6,
+    label: '110KV',
+    belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
+  },
+  {
+    kvLevel: 7,
     label: '330KV',
     belonging: [TRANSFORMERSUBSTATION],
   },
@@ -141,6 +159,10 @@ export const BELONGINGLINE = [
   SWITCHINGSTATION,
   CABLEBRANCHBOX,
 ]
+
+/** 存储数据 **/
+export const ALLFEATRUETYPE = [...BELONGINGLINE, POWERSUPPLY, TRANSFORMERSUBSTATION]
+
 /** 要素属性是否在表单中展示型号 **/
 export const BELONGINGMODEL = [RINGNETWORKCABINET]
 /** 要素属性是否在表单中展示配变性值 **/
@@ -179,3 +201,17 @@ export const CABLECIRCUITMODEL = [
   { label: '电力电缆，300', value: '电力电缆，300' },
   { label: '电力电缆，400', value: '电力电缆，400' },
 ]
+
+export const createFeatureId = () => {
+  const s = []
+  const hexDigits = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  for (let i = 0; i < 36; i++) {
+    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
+  }
+  s[14] = '4' // bits 12-15 of the time_hi_and_version field to 0010
+  s[19] = hexDigits.substr(0x3 | 0x8, 1) // bits 6-7 of the clock_seq_hi_and_reserved to 01
+  s[8] = s[13] = s[18] = s[23] = '-'
+
+  var uuid = s.join('')
+  return uuid
+}

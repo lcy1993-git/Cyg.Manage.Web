@@ -1,0 +1,163 @@
+{
+  "id": "1908048",
+  "name": "lcy",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "30062394",
+      "name": "箱变",
+      "font_class": "xiangbian",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "30062294",
+      "name": "变电站-110kv",
+      "font_class": "biandianzhan-110kv",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "30062295",
+      "name": "电缆分支箱",
+      "font_class": "dianlanfenzhixiang",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "30062296",
+      "name": "变电站-20kv",
+      "font_class": "biandianzhan-20kv",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "30062297",
+      "name": "生物质能",
+      "font_class": "shengwuzhineng",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "30062298",
+      "name": "风电",
+      "font_class": "fengdian",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "30062282",
+      "name": "杆塔",
+      "font_class": "ganta",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "30062283",
+      "name": "火电",
+      "font_class": "huodian",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "30062284",
+      "name": "光伏",
+      "font_class": "guangfu",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "30062285",
+      "name": "架空线",
+      "font_class": "jiakongxian",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "30062286",
+      "name": "配电室",
+      "font_class": "peidianshi",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "30062287",
+      "name": "环网箱",
+      "font_class": "huanwangxiang",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "30062288",
+      "name": "开闭所",
+      "font_class": "kaibisuo",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "30062290",
+      "name": "水电",
+      "font_class": "shuidian",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "30062291",
+      "name": "柱上变压器",
+      "font_class": "zhushangbianyaqi",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "30062292",
+      "name": "柱上断路器",
+      "font_class": "zhushangduanluqi",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "30062293",
+      "name": "变电站-330kv",
+      "font_class": "biandianzhan-330kv",
+      "unicode": "e617",
+      "unicode_decimal": 58903
+    },
+    {
+      "icon_id": "10249013",
+      "name": "测距",
+      "font_class": "ceju",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "10249024",
+      "name": "罗盘",
+      "font_class": "luopan",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "10705600",
+      "name": "坐标定位",
+      "font_class": "zuobiaodingwei",
+      "unicode": "e66a",
+      "unicode_decimal": 58986
+    },
+    {
+      "icon_id": "10249007",
+      "name": "缩小",
+      "font_class": "suoxiao",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "10248998",
+      "name": "放大",
+      "font_class": "fangda",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    }
+  ]
+}

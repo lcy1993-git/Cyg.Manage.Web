@@ -6,7 +6,7 @@ import CityList from './CityList'
 
 const DrawGridToolbar = (props: any) => {
   const [visible, setVisible] = useState(false)
-  const { setdrawToolbarVisible, setImportModalVisible } = useMyContext()
+  const { setdrawToolbarVisible, setImportModalVisible, setzIndex } = useMyContext()
   const menu = (
     <Menu>
       <Menu.Item key="projectDetail" onClick={() => setImportModalVisible(true)}>
@@ -15,6 +15,7 @@ const DrawGridToolbar = (props: any) => {
       <Menu.Item
         key="handDrawn"
         onClick={() => {
+          setzIndex('create')
           setdrawToolbarVisible(true)
         }}
       >

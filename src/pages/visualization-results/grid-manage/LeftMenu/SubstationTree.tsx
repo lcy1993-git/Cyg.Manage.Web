@@ -10,8 +10,8 @@ import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
 const SubstationTree = () => {
-  const { data } = useRequest(() => getTransformerSubstationMenu())
-  const { mapRef } = useMyContext()
+  const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu(), { manual: true })
+  const { mapRef, isRefresh } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
 
   const treeData = [
@@ -57,6 +57,9 @@ const SubstationTree = () => {
       },
     }
   )
+  useEffect(() => {
+    isRefresh && getTree()
+  }, [getTree, isRefresh])
 
   useEffect(() => {
     checkedKeys.length && getTreeData()

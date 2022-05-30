@@ -8,43 +8,78 @@ import View from 'ol/View'
 import DrawTool from './draw'
 import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
-
+import { getCurrrentSelectFeature, initSelect, setSelectActive } from './select'
+import { pointStyle } from './style'
+interface pointType {
+  featureType: string
+  name?: string
+  kvLevel?: string
+  designScaleMainTransformer?: string
+  builtScaleMainTransformer?: string
+  mainWiringMode?: string
+  powerType?: string
+  installedCapacity?: string
+  schedulingMode?: string
+  lineId?: string
+  capacity?: string
+  model?: string
+  properties?: string
+  lng?: string
+  geom: string
+  id: string
+}
 interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
+  isActiveFeature: (data: pointType) => void
 }
 var drawTool: any
 var pointLayer: any
 var lineLayer: any
 
-export const initMap = ({ mapRef, ref }: InitOps) => {
+export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   mapRef.map = new Map({
     target: 'map',
     layers: [
       new TileLayer({
         source: new XYZ({
-          url:
-            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
     view: new View({
-      center: transform([98.21940745, 39.89627774], 'EPSG:4326', 'EPSG:3857'),
-      zoom: 10,
+      center: transform([104.08537388, 30.58850819], 'EPSG:4326', 'EPSG:3857'),
+      zoom: 5,
     }),
   })
 
   mapRef.map.on('moveend', (e: Event) => {
     mapMoveend(e, mapRef.map)
+    pointLayer = getLayer(mapRef.map, 'pointLayer')
+    const level = mapRef.map.getView().getZoom()
+    const isShowText = parseFloat(level + '') > 16 ? true : false
+    const currrentSelectFeature = getCurrrentSelectFeature()
+    pointLayer
+      .getSource()
+      .getFeatures()
+      .forEach((feature: any) => {
+        if (currrentSelectFeature && currrentSelectFeature === feature) {
+          feature.setStyle(pointStyle(feature.get('data'), true, isShowText))
+        } else {
+          feature.setStyle(pointStyle(feature.get('data'), false, isShowText))
+        }
+      })
   })
 
+  initSelect(mapRef.map, isActiveFeature)
   // drawPoint(mapRef.map, {})
   // drawLine(mapRef.map, { featureType: 'Line' })
 }
-
+export const location = (map: any, lon: number, lat: number) => {
+  map.getView().setCenter(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'))
+}
 export const drawPoint = (map: any, options: any) => {
   pointLayer = getLayer(map, 'pointLayer', 3)
-
   options.type_ = 'Point'
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(pointLayer.getSource())
@@ -59,14 +94,24 @@ export const drawLine = (map: any, options: any) => {
   drawTool.drawGeometry(options)
 }
 
+export const getDrawPoints = () => {
+  if (drawTool) return drawTool.getAllDrawPoints()
+  else return null
+}
+
+export const getDrawLines = () => {
+  if (drawTool) return drawTool.getAllDrawLines()
+  else return null
+}
+
 export const loadMapLayers = (data: any, map: any) => {
   loadAllLayer(data, map)
 }
 
 export const clear = () => {
-  drawTool.snap && drawTool.snap.setActive(false)
-  drawTool.draw && drawTool.draw.setActive(false)
-  drawTool.modify && drawTool.modify.setActive(false)
+  drawTool && drawTool.snap && drawTool.snap.setActive(false)
+  drawTool && drawTool.draw && drawTool.draw.setActive(false)
+  setSelectActive(true)
 }
 
 // 获取比例尺

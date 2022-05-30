@@ -5,6 +5,18 @@ import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
+interface lineListItemType {
+  belonging: string
+  color: string
+  conductorModel: string
+  id: string
+  isOverhead: boolean
+  kvLevel: number
+  lineProperties: string
+  name: string
+  totalCapacity: number
+  totalLength: number
+}
 interface PowerSupplyListType {
   companyId: string // 公司编号
   createdBy: string // 创建人
@@ -15,12 +27,14 @@ interface PowerSupplyListType {
   name: string // 厂站名称
   powerType: string // 电源类型
   schedulingMode: string // 调度方式
+  lines: Array<lineListItemType>
 }
 
 const PowerSupplyTree = () => {
-  const { data } = useRequest(() => fetchGridManageMenu())
-  const { mapRef } = useMyContext()
+  const { data, run: getTree } = useRequest(() => fetchGridManageMenu(), { manual: true })
+  const { mapRef, isRefresh } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
+  // console.log(data, '数据')
   const treeData = [
     {
       title: '电源',
@@ -29,11 +43,18 @@ const PowerSupplyTree = () => {
         return {
           title: item.type,
           key: `0-0-${index}`,
-          children: item.powerSupplyList.map((child: PowerSupplyListType) => {
+          children: item.powerSupplySubList.map((child: PowerSupplyListType) => {
             return {
               ...child,
               title: child.name,
               key: child.id,
+              children: child.lines.map((childrenItem: lineListItemType) => {
+                return {
+                  ...childrenItem,
+                  title: childrenItem.name,
+                  key: childrenItem.id,
+                }
+              }),
             }
           }),
         }
@@ -50,6 +71,9 @@ const PowerSupplyTree = () => {
       },
     }
   )
+  useEffect(() => {
+    isRefresh && getTree()
+  }, [getTree, isRefresh])
 
   useEffect(() => {
     checkedKeys.length && getTreeData()

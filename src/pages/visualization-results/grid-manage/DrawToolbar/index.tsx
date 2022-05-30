@@ -1,3 +1,5 @@
+import { getAllBelongingLineItem } from '@/services/grid-manage/treeMenu'
+import { useRequest } from 'ahooks'
 import {
   Button,
   Col,
@@ -11,7 +13,7 @@ import {
   Select,
   Tabs,
 } from 'antd'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import { drawLine, drawPoint } from '../GridMap/utils/initializeMap'
 import {
@@ -30,11 +32,31 @@ import {
 const { Option } = Select
 const { useForm } = Form
 const { TabPane } = Tabs
+
+interface BelongingLineType {
+  id: string
+  name: string
+  isOverhead: boolean
+  isPower: boolean
+}
+
 const DrawToolbar = () => {
-  const { drawToolbarVisible, setdrawToolbarVisible, mapRef } = useMyContext()
+  const {
+    drawToolbarVisible,
+    setdrawToolbarVisible,
+    mapRef,
+    setisRefresh,
+    isRefresh,
+    zIndex,
+    setzIndex,
+  } = useMyContext()
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   const [selectLineType, setselectLineType] = useState('')
   const [currentFeature, setcurrentFeature] = useState('feature')
+  /**所属线路数据**/
+  const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
+  /**所属厂站**/
+
   const [kelevelOptions, setkelevelOptions] = useState([
     ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
       item.belonging.find((type: string) => type.includes(currentFeatureType))
@@ -45,9 +67,14 @@ const DrawToolbar = () => {
     labelCol: { span: 5 },
     wrapperCol: { span: 18 },
   }
+  const lineformLayout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 17 },
+  }
 
   /** 关闭模态框 **/
   const onClose = () => {
+    setzIndex('edit')
     setdrawToolbarVisible(false)
   }
 
@@ -58,6 +85,10 @@ const DrawToolbar = () => {
       item.belonging.find((type: string) => type.includes(result.target.value))
     )
     setkelevelOptions(kelevelOptions)
+    form.resetFields()
+    form.setFieldsValue({
+      featureType: result.target.value,
+    })
   }
   /** 选择线路型号 */
   const onChangeLineType = (value: string) => {
@@ -78,7 +109,13 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
-      drawPoint(mapRef.map, formData)
+      if (formData.featureType === TRANSFORMERSUBSTATION || formData.featureType === POWERSUPPLY) {
+        // !!! 如果是变电站或者电源就需要刷新树形列表
+        setisRefresh(false)
+      }
+      drawPoint(mapRef.map, {
+        ...formData,
+      })
     } catch (err) {}
   }
 
@@ -94,12 +131,30 @@ const DrawToolbar = () => {
     } catch (err) {}
   }
 
+  // 获取所有所属线路
+  const { data, run } = useRequest(getAllBelongingLineItem, {
+    manual: true,
+    onSuccess: () => {
+      data && setbelongingLineData(data)
+    },
+  })
+
+  useEffect(() => {
+    run()
+  }, [isRefresh, run])
+
   return (
     <Drawer
-      title="绘制图元"
+      title="手动绘制"
       placement="right"
       getContainer={false}
-      style={{ position: 'absolute', width: '378px', height: '100%', overflow: 'hidden' }}
+      style={{
+        position: 'absolute',
+        width: '378px',
+        height: '100%',
+        overflow: 'hidden',
+        zIndex: zIndex === 'create' ? 1000 : 900,
+      }}
       mask={false}
       onClose={onClose}
       visible={drawToolbarVisible}
@@ -135,11 +190,19 @@ const DrawToolbar = () => {
                 属性栏
               </Divider>
 
-              <Form.Item name="name" label="名称">
+              <Form.Item
+                name="name"
+                label="名称"
+                rules={[{ required: true, message: '请输入名称' }]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item name="kvLevel" label="电压等级">
-                <Select>
+              <Form.Item
+                name="kvLevel"
+                label="电压等级"
+                rules={[{ required: true, message: '请输入名称' }]}
+              >
+                <Select dropdownStyle={{ zIndex: 3000 }}>
                   {kelevelOptions.map((item) => (
                     <Option key={item.kvLevel} value={item.kvLevel}>
                       {item.label}
@@ -164,8 +227,12 @@ const DrawToolbar = () => {
               {/* 电源 */}
               {currentFeatureType === POWERSUPPLY && (
                 <>
-                  <Form.Item name="powerType" label="电源类型">
-                    <Select>
+                  <Form.Item
+                    name="powerType"
+                    label="电源类型"
+                    rules={[{ required: true, message: '请输入名称' }]}
+                  >
+                    <Select dropdownStyle={{ zIndex: 3000 }}>
                       <Option value="水电">水电</Option>
                       <Option value="火电">火电</Option>
                       <Option value="风电">风电</Option>
@@ -189,11 +256,12 @@ const DrawToolbar = () => {
                   label="所属线路"
                   rules={[{ required: true, message: '请选择所属线路' }]}
                 >
-                  <Select>
-                    <Option value="111">线路一</Option>
-                    <Option value="222">线路二</Option>
-                    <Option value="110KV">线路三</Option>
-                    <Option value="330KV">线路四</Option>
+                  <Select dropdownStyle={{ zIndex: 3000 }}>
+                    {belongingLineData.map((item) => (
+                      <Option value={item.id} key={item.id}>
+                        {item.name}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               )}
@@ -217,17 +285,17 @@ const DrawToolbar = () => {
 
               {BELONGINGPROPERITIES.includes(currentFeatureType) && (
                 <Form.Item name="properties" label="配变性质">
-                  <Select>
+                  <Select dropdownStyle={{ zIndex: 3000 }}>
                     <Option value="公变">公变</Option>
                     <Option value="专变">专变</Option>
                   </Select>
                 </Form.Item>
               )}
 
-              <Form.Item name="lat" label="经度">
+              <Form.Item name="lng" label="经度">
                 <Input />
               </Form.Item>
-              <Form.Item name="lng" label="纬度">
+              <Form.Item name="lat" label="纬度">
                 <Input />
               </Form.Item>
             </Form>
@@ -235,7 +303,20 @@ const DrawToolbar = () => {
         </TabPane>
         <TabPane tab="绘制线路" key="drawline">
           {currentFeature === 'drawline' && (
-            <Form {...formItemLayout} style={{ marginTop: '10px' }} form={form}>
+            <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
+              <Form.Item
+                name="lineId"
+                label="所属线路"
+                rules={[{ required: true, message: '请选择所属线路' }]}
+              >
+                <Select dropdownStyle={{ zIndex: 3000 }}>
+                  {belongingLineData.map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
               <Form.Item
                 name="lineType"
                 label="选择线路"
@@ -243,7 +324,7 @@ const DrawToolbar = () => {
               >
                 <Row gutter={3}>
                   <Col span={16}>
-                    <Select allowClear onChange={onChangeLineType}>
+                    <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
                       <Option value="CableCircuit">电缆线路</Option>
                       <Option value="Line">架空线路</Option>
                     </Select>
@@ -260,7 +341,7 @@ const DrawToolbar = () => {
                 label="线路型号"
                 rules={[{ required: true, message: '请选择线路型号' }]}
               >
-                <Select>
+                <Select dropdownStyle={{ zIndex: 3000 }}>
                   {selectLineType === 'Line' && selectLineType
                     ? LINEMODEL.map((item) => (
                         <Option key={item.value} value={item.value}>

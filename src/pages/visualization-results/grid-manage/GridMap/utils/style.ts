@@ -1,93 +1,167 @@
+import WKT from 'ol/format/WKT'
 import { Fill, Stroke, Style, Text } from 'ol/style'
+import proj4 from 'proj4'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
-  CABLECIRCUIT,
   CABLEWELL,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   ELECTRICITYDISTRIBUTIONROOM,
-  LINE,
   POWERSUPPLY,
   RINGNETWORKCABINET,
   SWITCHINGSTATION,
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
-export const pointStyle = (data: any, selected: boolean = false) => {
-  let text
-  let color = selected ? `rgba(8,210,42,1)` : `rgba(145, 145, 255, 1)`
+export const pointStyle = (data: any, selected: boolean = false, isShowText: boolean = false) => {
+  let text,
+    font = 'gridManageIconfont',
+    zIndex = 3
+  let color = `rgba(8,210,42,1)`
+  switch (data.kvLevel) {
+    case 7:
+      color = `rgba(8,210,42,1)`
+      break
+    case 6:
+      color = `rgba(64,56,31,1)`
+      break
+    case 5:
+    case 4:
+      color = `rgba(170,170,85,1)`
+      break
+    case 3:
+      color = data.color ? data.color : `rgba(212,212,0,1)`
+      break
+    default:
+      break
+  }
   // 根据点位的类型设置图符
   switch (data.featureType) {
-    case POWERSUPPLY:
-      text = '\ue86d'
+    case POWERSUPPLY: // 电源
+      if (data.powerType === '水电') text = '\ue614'
+      else if (data.powerType === '火电') text = '\ue609'
+      else if (data.powerType === '风电') text = '\ue61c'
+      else if (data.powerType === '光伏') text = '\ue60a'
+      else if (data.powerType === '生物质能') text = '\ue61b'
+      else text = '\ue614'
       break
-    case TRANSFORMERSUBSTATION:
-      text = '\ue86d'
+    case TRANSFORMERSUBSTATION: // 变电站
+      if (data.kvLevel === 7)
+        // 330KV
+        text = '\ue617'
+      else if (data.kvLevel === 6)
+        // 110KV
+        text = '\ue618'
+      else if (data.kvLevel === 5 || data.kvLevel === 4)
+        // 35KV/20KV
+        text = '\ue61a'
+      else text = '\ue617'
       break
-    case CABLEWELL:
-      text = '\ue869'
+
+    case CABLEWELL: /* 电缆井 */
+    case TOWER /* 杆塔 */:
+      text = '\ue608'
       break
-    case TOWER:
-      text = '\ue870'
+    case BOXTRANSFORMER /** 箱变 **/:
+      text = '\ue613'
       break
-    case BOXTRANSFORMER:
-      text = '\ue863'
+    case RINGNETWORKCABINET /* 环网柜 */:
+      text = '\ue611'
       break
-    case RINGNETWORKCABINET:
-      text = '\ue84f'
+    case ELECTRICITYDISTRIBUTIONROOM /* 配电室 */:
+      text = '\ue60f'
       break
-    case ELECTRICITYDISTRIBUTIONROOM:
-      text = '\ue85b'
+    case SWITCHINGSTATION /* 开闭所 */:
+      text = '\ue612'
       break
-    case SWITCHINGSTATION:
-      text = '\ue849'
+    case COLUMNCIRCUITBREAKER /* 柱上断路器 */:
+      text = '\ue616'
       break
-    case COLUMNCIRCUITBREAKER:
-      text = '\ue85a'
+    case COLUMNTRANSFORMER /* 柱上变压器 */:
+      text = '\ue615'
       break
-    case COLUMNTRANSFORMER:
-      text = '\ue84a'
-      break
-    case CABLEBRANCHBOX:
-      text = '\ue845'
+    case CABLEBRANCHBOX /* 电缆分支箱 */:
+      text = '\ue619'
       break
 
     default:
       break
   }
-  return new Style({
-    text: new Text({
-      font: 'Normal 22px webgisIconFont',
-      text,
-      fill: new Fill({
-        color: color,
+
+  color = selected ? `rgba(110, 74, 192, 1)` : color
+  zIndex = selected ? 99 : zIndex
+  let styles = [
+    new Style({
+      text: new Text({
+        font: 'Normal 28px ' + font,
+        text,
+        fill: new Fill({
+          color: color,
+        }),
+        stroke: new Stroke({
+          color: color,
+          width: 1,
+        }),
       }),
-      stroke: new Stroke({
-        color: color,
-        width: 1,
-      }),
+      zIndex: zIndex,
     }),
-    // zIndex: zIndex
-  })
+  ]
+  if (isShowText || selected)
+    styles.push(
+      new Style({
+        text: new Text({
+          // font: 'Normal 28px ' + font,
+          text: data.name ? data.name : '',
+          fill: new Fill({
+            //文字填充色
+            color: 'white',
+          }),
+          stroke: new Stroke({
+            //文字边界宽度与颜色
+            color: 'rgba(21, 32, 32, 1)',
+            width: 2,
+          }),
+          offsetX: 1,
+          offsetY: 20,
+        }),
+        zIndex: zIndex,
+      })
+    )
+  return styles
 }
 
 export const lineStyle = (data: any, selected: boolean = false) => {
-  let color,
-    width = 1
-  switch (data.featureType) {
-    case LINE:
-      color = 'blue'
-      width = 2
+  let color = `rgba(8,210,42,1)`,
+    width = 4,
+    zIndex = 2
+  switch (data.kvLevel) {
+    case 7:
+      color = `rgba(8,210,42,1)`
       break
-    case CABLECIRCUIT:
-      color = 'red'
-      width = 2
+    case 6:
+      color = `rgba(64,56,31,1)`
+      break
+    case 5:
+    case 4:
+      color = `rgba(170,170,85,1)`
+      break
+    case 3:
+      color = data.color ? data.color : `rgba(212,212,0,1)`
       break
     default:
       break
   }
-  let text = data.length ? data.length.toFixed(2) + 'm' : ''
+  color = selected ? `rgba(110, 74, 192, 1)` : color
+  zIndex = selected ? 99 : zIndex
+
+  var format = new WKT()
+  const geomtery: any = format.readGeometry(data.geom)
+  const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
+
+  data.conductorModel = data.conductorModel ? data.conductorModel : ''
+  let text = `${data.conductorModel}   `
+  text += length ? length.toFixed(2) + 'm' : ''
   let style = new Style({
     stroke: new Stroke({
       color,
@@ -112,7 +186,25 @@ export const lineStyle = (data: any, selected: boolean = false) => {
         width: 2,
       }),
     }),
-    zIndex: 2,
+    zIndex: zIndex,
   })
   return style
+}
+
+export const calculateDistance = (startLont: any, endLont: any) => {
+  // 获取UTM坐标系的epsg值
+  let zid = Math.round((startLont[0] + endLont[0]) / 2 / 6 + 31)
+  let start = 32601
+  let epsg = start + zid - 1
+  // 通过proj4将wgs84坐标转成UTM投影坐标
+  let code = 'EPSG:' + epsg
+  let info = '+proj=utm +zone=' + zid + ' +datum=WGS84 +units=m +no_defs'
+  proj4.defs([[code, info]])
+  let startLontUTM = proj4('EPSG:4326', code, startLont)
+  let endLonttUTM = proj4('EPSG:4326', code, endLont)
+  // 计算距离
+  let distance = Math.sqrt(
+    (startLontUTM[0] - endLonttUTM[0]) ** 2 + (startLontUTM[1] - endLonttUTM[1]) ** 2
+  )
+  return distance
 }

@@ -13,13 +13,20 @@ const LEFTMENUWIDTH = 260
 
 const GradManage: React.FC = () => {
   /** 网架绘制 手动绘制工具栏状态 **/
-  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(true)
+  const [drawToolbarVisible, setdrawToolbarVisible] = useState<boolean>(false)
   /** 网架绘制 Excel数据导入模态框状态 **/
   const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
+  /** 是否刷新tree列表 */
+  const [isRefresh, setisRefresh] = useState(true)
   /** 当前选择的城市 **/
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
   )
+  /** 页面所有线路 */
+  const [lineAssemble, setlineAssemble] = useState<{ value: string; label: string }[]>([])
+
+  /**  **/
+  const [zIndex, setzIndex] = useState('create')
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
 
@@ -33,6 +40,12 @@ const GradManage: React.FC = () => {
         importModalVisible,
         setImportModalVisible,
         mapRef,
+        isRefresh,
+        setisRefresh,
+        lineAssemble,
+        setlineAssemble,
+        zIndex,
+        setzIndex,
       }}
     >
       <GradManageWrap />
@@ -53,7 +66,7 @@ const GradManageWrap: React.FC = () => {
       >
         {/* 左侧菜单 */}
         <div
-          className="absolute h-full z-10"
+          className={`absolute h-full z-10`}
           style={{
             width: `${LEFTMENUWIDTH}px`,
             transition: 'all 0.5s',
@@ -61,6 +74,10 @@ const GradManageWrap: React.FC = () => {
           }}
         >
           <LeftMenu />
+          {/* <Button className={styles.uploadData} type="primary" style={{
+            left: `${LEFTMENUWIDTH + 10}px`,
+            top: '10px'
+          }}>同步数据</Button> */}
         </div>
         {/* 控制左侧菜单是否显示按钮 */}
         <div
