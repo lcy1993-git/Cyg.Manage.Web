@@ -37,6 +37,10 @@ export const setSelectActive = (active: boolean) => {
   select && select.setActive(active)
 }
 
+export const getCurrrentSelectFeature = () => {
+  return currrentSelectFeature
+}
+
 export const deletCurrrentSelectFeature = (map: any) => {
   if (!currrentSelectFeature) return
   let geomType = currrentSelectFeature.getGeometry().getType()

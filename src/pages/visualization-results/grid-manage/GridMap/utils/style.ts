@@ -14,9 +14,10 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
-export const pointStyle = (data: any, selected: boolean = false) => {
+export const pointStyle = (data: any, selected: boolean = false, isShowText: boolean = false) => {
   let text,
-    font = 'gridManageIconfont'
+    font = 'gridManageIconfont',
+    zIndex = 3
   let color = `rgba(8,210,42,1)`
   switch (data.kvLevel) {
     case 7:
@@ -89,25 +90,51 @@ export const pointStyle = (data: any, selected: boolean = false) => {
   }
 
   color = selected ? `rgba(110, 74, 192, 1)` : color
-  return new Style({
-    text: new Text({
-      font: 'Normal 28px ' + font,
-      text,
-      fill: new Fill({
-        color: color,
+  zIndex = selected ? 99 : zIndex
+  let styles = [
+    new Style({
+      text: new Text({
+        font: 'Normal 28px ' + font,
+        text,
+        fill: new Fill({
+          color: color,
+        }),
+        stroke: new Stroke({
+          color: color,
+          width: 1,
+        }),
       }),
-      stroke: new Stroke({
-        color: color,
-        width: 1,
-      }),
+      zIndex: zIndex,
     }),
-    // zIndex: zIndex
-  })
+  ]
+  if (isShowText || selected)
+    styles.push(
+      new Style({
+        text: new Text({
+          // font: 'Normal 28px ' + font,
+          text: data.name ? data.name : '',
+          fill: new Fill({
+            //文字填充色
+            color: 'white',
+          }),
+          stroke: new Stroke({
+            //文字边界宽度与颜色
+            color: 'rgba(21, 32, 32, 1)',
+            width: 2,
+          }),
+          offsetX: 6,
+          offsetY: 1,
+        }),
+        zIndex: zIndex,
+      })
+    )
+  return styles
 }
 
 export const lineStyle = (data: any, selected: boolean = false) => {
   let color = `rgba(8,210,42,1)`,
-    width = 2
+    width = 4,
+    zIndex = 2
   switch (data.kvLevel) {
     case 7:
       color = `rgba(8,210,42,1)`
@@ -126,6 +153,7 @@ export const lineStyle = (data: any, selected: boolean = false) => {
       break
   }
   color = selected ? `rgba(110, 74, 192, 1)` : color
+  zIndex = selected ? 99 : zIndex
 
   var format = new WKT()
   const geomtery: any = format.readGeometry(data.geom)
@@ -158,7 +186,7 @@ export const lineStyle = (data: any, selected: boolean = false) => {
         width: 2,
       }),
     }),
-    zIndex: 2,
+    zIndex: zIndex,
   })
   return style
 }
