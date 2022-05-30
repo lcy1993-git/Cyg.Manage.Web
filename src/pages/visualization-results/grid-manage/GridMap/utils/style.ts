@@ -38,50 +38,50 @@ export const pointStyle = (data: any, selected: boolean = false) => {
   // 根据点位的类型设置图符
   switch (data.featureType) {
     case POWERSUPPLY: // 电源
-      if (data.powerType === '水电') text = '\ue11a'
-      else if (data.powerType === '火电') text = '\ue124'
-      else if (data.powerType === '风电') text = '\ue11a'
-      else if (data.powerType === '光伏') text = '\ue119'
-      else if (data.powerType === '生物质能') text = '\ue119'
-      else text = '\ue11a'
+      if (data.powerType === '水电') text = '\ue614'
+      else if (data.powerType === '火电') text = '\ue609'
+      else if (data.powerType === '风电') text = '\ue61c'
+      else if (data.powerType === '光伏') text = '\ue60a'
+      else if (data.powerType === '生物质能') text = '\ue61b'
+      else text = '\ue614'
       break
     case TRANSFORMERSUBSTATION: // 变电站
       if (data.kvLevel === 7)
         // 330KV
-        text = '\ue12a'
+        text = '\ue617'
       else if (data.kvLevel === 6)
         // 110KV
-        text = '\ue127'
+        text = '\ue618'
       else if (data.kvLevel === 5 || data.kvLevel === 4)
         // 35KV/20KV
-        text = '\ue128'
-      else text = '\ue12a'
+        text = '\ue61a'
+      else text = '\ue617'
       break
 
     case CABLEWELL: /* 电缆井 */
     case TOWER /* 杆塔 */:
-      text = '\ue119'
+      text = '\ue608'
       break
     case BOXTRANSFORMER /** 箱变 **/:
-      text = '\ue11c'
+      text = '\ue613'
       break
     case RINGNETWORKCABINET /* 环网柜 */:
-      text = '\ue11d'
+      text = '\ue611'
       break
     case ELECTRICITYDISTRIBUTIONROOM /* 配电室 */:
-      text = '\ue11a'
+      text = '\ue60f'
       break
     case SWITCHINGSTATION /* 开闭所 */:
-      text = '\ue125'
+      text = '\ue612'
       break
     case COLUMNCIRCUITBREAKER /* 柱上断路器 */:
-      text = '\ue11a'
+      text = '\ue616'
       break
     case COLUMNTRANSFORMER /* 柱上变压器 */:
-      text = '\ue118'
+      text = '\ue615'
       break
     case CABLEBRANCHBOX /* 电缆分支箱 */:
-      text = '\ue123'
+      text = '\ue619'
       break
 
     default:
