@@ -21,6 +21,7 @@ interface pointType {
 }
 var select: any
 var currrentSelectFeature: any
+var deleFeatures: any = []
 export const initSelect = (map: any, isActiveFeature: (data: pointType) => void) => {
   let pointLayer = getLayer(map, 'pointLayer', 3)
   let lineLayer = getLayer(map, 'lineLayer', 2)
@@ -59,19 +60,25 @@ export const getCurrrentSelectFeature = () => {
   return currrentSelectFeature
 }
 
+export const getDeleFeatures = () => {
+  return deleFeatures
+}
+
 export const deletCurrrentSelectFeature = (map: any) => {
+  deleFeatures = []
   if (!currrentSelectFeature) return
   let geomType = currrentSelectFeature.getGeometry().getType()
   let pointLayer = getLayer(map, 'pointLayer'),
     lineLayer = getLayer(map, 'lineLayer')
   if (geomType === 'LineString') {
     lineLayer.getSource().removeFeature(currrentSelectFeature)
-
+    deleFeatures.push(currrentSelectFeature)
     //! 删除线路 ....currrentSelectFeature.get('data')
 
     currrentSelectFeature = null
   } else if (geomType === 'Point') {
     pointLayer.getSource().removeFeature(currrentSelectFeature)
+    deleFeatures.push(currrentSelectFeature)
     // !!  1. 删除点位 首先要删除当前点位 currrentSelectFeature.get('data')
     const pointId = currrentSelectFeature.get('data').id
     lineLayer
@@ -81,8 +88,10 @@ export const deletCurrrentSelectFeature = (map: any) => {
         if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
           // !  2... 然后删除线路  item.get('data')
           lineLayer.getSource().removeFeature(item)
+          deleFeatures.push(item)
         }
       })
-    currrentSelectFeature = null
   }
+
+  currrentSelectFeature = null
 }
