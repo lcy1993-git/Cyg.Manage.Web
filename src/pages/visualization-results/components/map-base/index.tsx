@@ -118,10 +118,13 @@ const BaseMap = observer((props: BaseMapProps) => {
     )
     initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap))
     initialMap.on('moveend', (e: Event) => {
-      // refreshMap(ops, null)
+      refreshMap(ops, null)
       mapMoveend(e, initialMap)
     })
-    initialMap.getView().on('change:resolution', (e: Event) => checkZoom(e, initialMap))
+
+    initialMap.getView().on('change:resolution', (e: Event) => {
+      checkZoom(e, initialMap)
+    })
 
     refreshMap(ops, projects!)
     setMap(initialMap)
@@ -137,10 +140,10 @@ const BaseMap = observer((props: BaseMapProps) => {
   }, [JSON.stringify(projects)])
 
   // 动态刷新图层
-  useEffect(() => {
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
-    map && refreshMap(ops, projects!, true, startDate, endDate)
-  }, [JSON.stringify(projects), startDate, endDate])
+  // useEffect(() => {
+  //   const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+  //   map && refreshMap(ops, projects!, true, startDate, endDate)
+  // }, [JSON.stringify(projects), startDate, endDate])
 
   useEffect(() => {
     // 加载勘察轨迹

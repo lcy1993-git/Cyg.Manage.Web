@@ -1,13 +1,13 @@
 export interface LayerParams {
-  layerName: string; // 下户线
-  zIndex: number;
-  declutter?: boolean;
-  type: 'line' | 'cable_channel' | 'mark' | 'point' | 'special_point' | 'zero_guy';
+  layerName: string // 下户线
+  zIndex: number
+  declutter?: boolean
+  type: 'line' | 'cable_channel' | 'mark' | 'point' | 'special_point' | 'pull_line' | 'zero_guy'
 }
 
 export interface LayerDatas {
-  projectID: string;
-  time: string;
+  projectID: string
+  time: string
   data: any
 }
 
@@ -40,9 +40,9 @@ export const layerParams: LayerParams[] = [
     layerName: 'line',
     zIndex: 2,
     declutter: false,
-    type: 'line'
+    type: 'line',
   },
- 
+
   {
     layerName: 'subline', // 辅助线
     zIndex: 2,
@@ -112,7 +112,13 @@ export const layerParams: LayerParams[] = [
     zIndex: 1,
     declutter: false,
     type: 'zero_guy',
-  }
-];
+  },
+  {
+    layerName: 'pull_line', // 水平拉线
+    zIndex: 1,
+    declutter: false,
+    type: 'pull_line',
+  },
+]
 
-export const layerDatas: LayerDatas[] = [];
+export const layerDatas: LayerDatas[] = []

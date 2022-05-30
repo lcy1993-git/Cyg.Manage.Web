@@ -1,7 +1,7 @@
-import { cyRequest } from './../common'
 import request from '@/utils/request'
 import JsonP from 'jsonp'
 import noTokenRequest from 'umi-request'
+import { cyRequest } from './../common'
 // import { webConfig } from '../../../public/config/request';
 import { baseUrl, geoServeUrl } from '../common'
 // const ip = window.location.hostname;
@@ -193,6 +193,14 @@ export const findHoleDetails = (params: { layerType: 1 | 2; holeId: string }) =>
 
 export const getDesignMaterialModifyList = (params: any = {}) => {
   return request(`${baseUrl.manage}/WebGis/GetDesignMaterialModifyList`, {
+    method: 'POST',
+    data: { ...params },
+  })
+}
+
+// 获取地图数据
+export const getData = (params: any = {}) => {
+  return request(`${baseUrl.project}/WebGis/GetData`, {
     method: 'POST',
     data: { ...params },
   })
