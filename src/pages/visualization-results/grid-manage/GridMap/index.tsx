@@ -5,7 +5,7 @@ import {
   deleteColumnCircuitBreaker,
   deleteColumnTransformer,
   deleteElectricityDistributionRoom,
-  deleteLine,
+  deleteLineRelations,
   deletePowerSupply,
   deleteRingNetworkCabinet,
   deleteSwitchingStation,
@@ -165,6 +165,7 @@ const GridMap = () => {
     const featureData = { ...data }
     setvisible(true)
     setzIndex('edit')
+    form.resetFields()
     setcurrentFeatureType(featureData.featureType)
     setcurrentfeatureData({
       id: featureData.id,
@@ -287,10 +288,10 @@ const GridMap = () => {
           PromiseAll.push(deleteCableBranchBox([deleteData[i].id]))
           break
         case CABLECIRCUIT: // 电缆线路
-          PromiseAll.push(deleteLine([deleteData[i].id]))
+          PromiseAll.push(deleteLineRelations([deleteData[i].id]))
           break
         case LINE: // 架空线路
-          PromiseAll.push(deleteLine([deleteData[i].id]))
+          PromiseAll.push(deleteLineRelations([deleteData[i].id]))
           break
       }
     }
