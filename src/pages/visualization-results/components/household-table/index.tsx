@@ -10,10 +10,11 @@ export interface HouseholdTableProps {
 }
 
 const stateMenu = {
-  1: '新建',
-  2: '利旧',
-  3: '原有',
-  4: '换装',
+  0: '无',
+  1: '原有',
+  2: '新建',
+  3: '利旧',
+  4: '拆除',
 }
 
 const kvEnum = {
