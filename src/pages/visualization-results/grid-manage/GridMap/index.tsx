@@ -392,6 +392,22 @@ const GridMap = () => {
               <Form.Item name="mainWiringMode" label="主接线方式">
                 <Input />
               </Form.Item>
+              {/* <Form.Item name="aa" label="测试List">
+              <Form.List name="aa">
+                {(fields) =>
+                  fields.map((field) => (
+                    <>
+                      <Form.Item {...field}>
+                        <Input />
+                      </Form.Item>
+                      <Form.Item {...field}>
+                        <Input />
+                      </Form.Item>
+                    </>
+                  ))
+                }
+              </Form.List>
+              </Form.Item> */}
             </>
           )}
           {/* 电源 */}
