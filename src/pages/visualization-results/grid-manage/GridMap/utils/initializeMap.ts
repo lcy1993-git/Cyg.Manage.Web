@@ -56,17 +56,16 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   mapRef.map.on('moveend', (e: Event) => {
     mapMoveend(e, mapRef.map)
     pointLayer = getLayer(mapRef.map, 'pointLayer')
-    const level = mapRef.map.getView().getZoom()
-    const isShowText = parseFloat(level + '') > 16 ? true : false
+    const level = parseFloat(mapRef.map.getView().getZoom() + '')
     const currrentSelectFeature = getCurrrentSelectFeature()
     pointLayer
       .getSource()
       .getFeatures()
       .forEach((feature: any) => {
         if (currrentSelectFeature && currrentSelectFeature === feature) {
-          feature.setStyle(pointStyle(feature.get('data'), true, isShowText))
+          feature.setStyle(pointStyle(feature.get('data'), true, level))
         } else {
-          feature.setStyle(pointStyle(feature.get('data'), false, isShowText))
+          feature.setStyle(pointStyle(feature.get('data'), false, level))
         }
       })
   })

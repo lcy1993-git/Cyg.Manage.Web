@@ -14,7 +14,8 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
-export const pointStyle = (data: any, selected: boolean = false, isShowText: boolean = false) => {
+import Configs from './config'
+export const pointStyle = (data: any, selected: boolean, level: number) => {
   let text,
     font = 'gridManageIconfont',
     zIndex = 3
@@ -91,10 +92,14 @@ export const pointStyle = (data: any, selected: boolean = false, isShowText: boo
 
   color = selected ? `rgba(110, 74, 192, 1)` : color
   zIndex = selected ? 99 : zIndex
+
+  const config = Configs.find((item: any) => item.name === data.featureType)
+  const size = config && config.size ? config.size : 22
+  color = config && config.zoom && level < config.zoom ? 'rgba(110, 74, 192, 0)' : color
   let styles = [
     new Style({
       text: new Text({
-        font: 'Normal 28px ' + font,
+        font: `Normal ${size}px ${font}`,
         text,
         fill: new Fill({
           color: color,
@@ -107,7 +112,7 @@ export const pointStyle = (data: any, selected: boolean = false, isShowText: boo
       zIndex: zIndex,
     }),
   ]
-  if (isShowText || selected)
+  if ((config && config.textZoom && level > config.textZoom) || (config && !config.textZoom))
     styles.push(
       new Style({
         text: new Text({
