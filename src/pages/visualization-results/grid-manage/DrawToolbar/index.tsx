@@ -36,6 +36,7 @@ const { TabPane } = Tabs
 interface BelongingLineType {
   id: string
   name: string
+  kvLevel: number
   isOverhead: boolean
   isPower: boolean
 }
@@ -52,6 +53,7 @@ const DrawToolbar = () => {
   } = useMyContext()
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   const [selectLineType, setselectLineType] = useState('')
+  const [currentKvleve, setcurrentKvleve] = useState<number>()
   const [currentFeature, setcurrentFeature] = useState('feature')
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
@@ -97,6 +99,18 @@ const DrawToolbar = () => {
       lineType: value,
       conductorModel: '',
     })
+  }
+
+  /* 绘制线路选择所属线路 **/
+  const seleceBelongingLine = (value: string) => {
+    const currentLineData = belongingLineData.find((item) => item.id === value)
+    if (currentLineData) {
+      form.setFieldsValue({
+        lineId: currentLineData?.id,
+        kvLevel: currentLineData?.kvLevel,
+      })
+      setcurrentKvleve(currentLineData?.kvLevel)
+    }
   }
 
   /* 切换tab **/
@@ -309,7 +323,7 @@ const DrawToolbar = () => {
                 label="所属线路"
                 rules={[{ required: true, message: '请选择所属线路' }]}
               >
-                <Select dropdownStyle={{ zIndex: 3000 }}>
+                <Select dropdownStyle={{ zIndex: 3000 }} onChange={seleceBelongingLine}>
                   {belongingLineData.map((item) => (
                     <Option value={item.id} key={item.id}>
                       {item.name}
@@ -355,6 +369,35 @@ const DrawToolbar = () => {
                       ))}
                 </Select>
               </Form.Item>
+              <Form.Item
+                name="kvLevel"
+                label="电压等级"
+                rules={[{ required: true, message: '请输入名称' }]}
+              >
+                <Select
+                  dropdownStyle={{ zIndex: 3000 }}
+                  onChange={(value: number) => {
+                    setcurrentKvleve(value)
+                  }}
+                >
+                  {KVLEVELOPTIONS.map((item) => (
+                    <Option key={item.kvLevel} value={item.kvLevel}>
+                      {item.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              {currentKvleve === 3 && (
+                <Form.Item name="color" label="线路颜色">
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )}
             </Form>
           )}
         </TabPane>

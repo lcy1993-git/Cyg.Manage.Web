@@ -242,9 +242,15 @@ export const deleteCableBranchBox = (params: any) => {
     request(`${baseUrl.grid}/CableBranchBox/DeleteById`, { method: 'POST', data: params })
   )
 }
+/** 删除线路段信息 **/
+export const deleteLineRelations = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Line/DeleteLineRelationsById`, { method: 'POST', data: params })
+  )
+}
 /** 删除线路信息 **/
 export const deleteLine = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/Line/DeleteLineRelationsById`, { method: 'POST', data: params })
+    request(`${baseUrl.grid}/Line/DeleteById`, { method: 'POST', data: params })
   )
 }

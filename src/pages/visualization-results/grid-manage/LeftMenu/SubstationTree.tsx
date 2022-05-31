@@ -1,28 +1,45 @@
 import {
+  deleteLine,
   featchSubstationTreeData,
   getTransformerSubstationMenu,
 } from '@/services/grid-manage/treeMenu'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Tree } from 'antd'
-import { useEffect, useState } from 'react'
+import { Modal, Tree } from 'antd'
+import { message } from 'antd/es'
+import { EventDataNode } from 'antd/es/tree'
+import { Key, useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
+interface TreeSelectType {
+  event: 'select'
+  selected: boolean
+  node: EventDataNode
+  selectedNodes: {
+    title: string
+    key: string
+    name?: string
+    id?: string
+    children: any[] | undefined
+  }[]
+  nativeEvent: MouseEvent
+}
+
 const SubstationTree = () => {
   const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu(), { manual: true })
-  const { mapRef, isRefresh } = useMyContext()
+  const { mapRef, isRefresh, setisRefresh } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
-
   const treeData = [
     {
       title: '变电站',
-      key: '0-1',
+      key: '0=1',
       children: data?.map((item, index) => {
         return {
           ...item,
           title: item.name,
-          key: `0-1-${index}`,
+          key: `0=1=${index}`,
           children: item.lineKVLevelGroups.map(
             (
               child: { kvLevel: number; lines: { name: string; id: string }[] },
@@ -32,7 +49,7 @@ const SubstationTree = () => {
               return {
                 ...child,
                 title: childTitle ? childTitle.label : '未知电压',
-                key: `0-1-${index}-${childIndex}`,
+                key: `0=1=${index}=${childIndex}`,
                 children: child.lines.map((children: { name: string; id: string }) => {
                   return {
                     ...children,
@@ -57,6 +74,32 @@ const SubstationTree = () => {
       },
     }
   )
+
+  const onSelect = (selectedKeys: Key[], info: TreeSelectType) => {
+    const { selectedNodes } = info
+    if (selectedNodes.length && !selectedNodes[0].children) {
+      setisRefresh(false)
+      Modal.confirm({
+        title: '确认删除该条线路吗？',
+        icon: <ExclamationCircleOutlined />,
+        content: `${selectedNodes[0].name}`,
+        okText: '确认',
+        cancelText: '取消',
+        onOk: async () => {
+          try {
+            await deleteLine([selectedNodes[0].id])
+            setisRefresh(true)
+            message.info('删除成功')
+            const currentSelectLineIds = checkedKeys.filter((item) => item !== selectedNodes[0].id)
+            setCheckedKeys(currentSelectLineIds)
+          } catch (err) {
+            message.error('删除失败')
+          }
+        },
+      })
+    }
+  }
+
   useEffect(() => {
     isRefresh && getTree()
   }, [getTree, isRefresh])
@@ -66,7 +109,7 @@ const SubstationTree = () => {
   }, [checkedKeys, getTreeData])
 
   const getSubstationTreeData = (checkedKeys: any) => {
-    const checkedIds = checkedKeys.filter((item: string) => !item.includes('-'))
+    const checkedIds = checkedKeys.filter((item: string) => !item.includes('='))
     setCheckedKeys(checkedIds)
     if (!checkedIds.length) {
       loadMapLayers(
@@ -88,6 +131,14 @@ const SubstationTree = () => {
     }
   }
 
-  return <Tree checkable defaultExpandAll onCheck={getSubstationTreeData} treeData={treeData} />
+  return (
+    <Tree
+      checkable
+      defaultExpandAll
+      onCheck={getSubstationTreeData}
+      onSelect={onSelect}
+      treeData={treeData}
+    />
+  )
 }
 export default SubstationTree

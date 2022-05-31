@@ -32,7 +32,7 @@ interface pointType {
 interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
-  isActiveFeature: (data: pointType) => void
+  isActiveFeature: (data: pointType | null) => void
 }
 var drawTool: any
 var pointLayer: any
