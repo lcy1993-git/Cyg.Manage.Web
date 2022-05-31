@@ -542,7 +542,7 @@ const loadWFSData = (
         distance: 40, //聚合的距离参数，即当标注间距离小于此值时进行聚合，单位是像素
         source, //聚合的数据源，即矢量要素数据源对象
       })
-      obj.source = clusterSource
+      obj.source = source
       obj.style = (feature: any, resolution: any) => {
         // var size = feature.get('features').length; //获取该要素所在聚合群的要素数量
         // var style = styleCache[size];
@@ -550,13 +550,7 @@ const loadWFSData = (
         //   style = pointStyle(layerType + '_' + layerName, feature.get('features')[0], false);
         //   styleCache[size] = style;
         // }
-        var style = pointStyle(
-          layerType + '_' + layerName,
-          feature.get('features')[0],
-          false,
-          false,
-          resolution
-        )
+        var style = pointStyle(layerType + '_' + layerName, feature, false, false, resolution)
         return style
       }
     } else if (item.type === 'line' || item.type === 'cable_channel') {
