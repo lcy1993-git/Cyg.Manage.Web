@@ -15,7 +15,7 @@ export const loadAllPointLayer = (data: any, map: any) => {
 
   POINTS.forEach((item: any) => {
     const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
-    data[item_] && loadLayer(data[item_], item, pointLayer)
+    data[item_] && loadLayer(data[item_], item, pointLayer, map)
   })
 }
 
@@ -27,7 +27,7 @@ export const loadAllLineayer = (data: any, map: any) => {
   //   const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
   //   data[item_] && loadLayer(data[item_], item, lineLayer)
   // })
-  data.lineRelationList && loadLayer(data.lineRelationList, LINE, lineLayer)
+  data.lineRelationList && loadLayer(data.lineRelationList, LINE, lineLayer, map)
 }
 
 /**
@@ -36,7 +36,7 @@ export const loadAllLineayer = (data: any, map: any) => {
  * @param type 点位类型
  * @param layer
  */
-export const loadLayer = (data: any, type: string, layer: any) => {
+export const loadLayer = (data: any, type: string, layer: any, map: any) => {
   // 根据ids获取杆塔数据
   data.forEach((item: any) => {
     // 根据wkt数据格式加载feature
@@ -51,7 +51,7 @@ export const loadLayer = (data: any, type: string, layer: any) => {
       feature.set('data', item)
       // 设置样式
       if (layer.get('name') === 'pointLayer')
-        feature.setStyle(pointStyle(feature.get('data'), false))
+        feature.setStyle(pointStyle(feature.get('data'), false, map.getView().getZoom()))
       else feature.setStyle(lineStyle(feature.get('data'), false))
       // 加载数据到图层
       layer.getSource().addFeature(feature)

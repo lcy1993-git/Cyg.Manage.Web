@@ -36,7 +36,7 @@ class DrawTool {
       options.lat = parseFloat(options.lat)
       const point = new Point([options.lng, options.lat]).transform('EPSG:4326', 'EPSG:3857')
       const feature: any = new Feature(point)
-      feature.setStyle(pointStyle(options))
+      feature.setStyle(pointStyle(options, false, this.map.getView().getZoom()))
       var format = new WKT()
       options.geom = format.writeGeometry(
         feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
@@ -117,7 +117,7 @@ class DrawTool {
       if (e.feature.getGeometry().getType() === 'LineString') {
         this_.handleLine(this_.source, e.feature)
       } else {
-        e.feature.setStyle(pointStyle(this_.options))
+        e.feature.setStyle(pointStyle(this_.options, false, this_.map.getView().getZoom()))
         const coordinates = e.feature.getGeometry().getCoordinates()
         const lont = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
         const featureData = { ...this_.options }
@@ -223,11 +223,10 @@ class DrawTool {
 
       if (featureType === LINE) {
         data.featureType = TOWER
-        node.setStyle(pointStyle(data))
       } else if (featureType === CABLECIRCUIT) {
         data.featureType = CABLEWELL
-        node.setStyle(pointStyle(data))
       }
+      node.setStyle(pointStyle(data, false, this.map.getView().getZoom()))
       data.id = createFeatureId()
       data.type_ = 'Point'
       node.set('data', data)

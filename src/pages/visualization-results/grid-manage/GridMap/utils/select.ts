@@ -1,3 +1,5 @@
+import WKT from 'ol/format/WKT'
+import Point from 'ol/geom/Point'
 import { Select } from 'ol/interaction'
 import { getLayer } from './loadLayer'
 import { lineStyle, pointStyle } from './style'
@@ -33,7 +35,7 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType) => void)
       if (geomType === 'LineString') {
         return lineStyle(feature.get('data'), true)
       }
-      return pointStyle(feature.get('data'), true)
+      return pointStyle(feature.get('data'), true, map.getView().getZoom())
     },
     hitTolerance: 10,
   })
@@ -94,4 +96,17 @@ export const deletCurrrentSelectFeature = (map: any) => {
   }
 
   currrentSelectFeature = null
+}
+
+export const editFeature = (map: any, data: any) => {
+  if (!currrentSelectFeature) return
+
+  if (data.lng && data.lat) {
+    const point = new Point([data.lng, data.lat]).transform('EPSG:4326', 'EPSG:3857')
+    currrentSelectFeature.setGeometry(point)
+    var format = new WKT()
+    data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
+  }
+  currrentSelectFeature.set('data', data)
+  currrentSelectFeature.setStyle(data, true, map.getView().getZoom())
 }
