@@ -113,7 +113,9 @@ const LeftMenu = (props: any) => {
           >
             <Select allowClear>
               {stationItemsData.map((item) => (
-                <Option value={item.id}>{item.name}</Option>
+                <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
               ))}
             </Select>
           </Form.Item>

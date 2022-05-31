@@ -3,6 +3,7 @@ import { areaDataTransformer } from '@/pages/visualization-results/history-grid/
 import { EnvironmentFilled } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../../Context'
+import { location } from '../../GridMap/utils/initializeMap'
 import LetterPicker from './LetterPicker'
 import { City, LetterWithProvinces, Province } from './type'
 
@@ -79,7 +80,7 @@ const CityList = (props: PropsType) => {
         }}
         letters={letters}
       />
-      <div className="w-full overflow-y-auto" style={{ height: 'calc(100% - 62px)' }}>
+      <div className="w-full overflow-y-auto" style={{ height: 'calc(100% - 62px)', zIndex: 1000 }}>
         <div className="overflow-y-auto pl-2 pt-2 scrollbar-base" style={{ height: '412px' }}>
           {cityData.data.map((item: any) => (
             <CorrespondingProvinces key={item.letter} {...item} />
@@ -112,7 +113,7 @@ const CorrespondingProvinces = ({ letter, provinces }: CorrespondingProvincesPro
  * */
 const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
   // const store = useContainer();
-  const { setselectCity } = useMyContext()
+  const { setselectCity, mapRef } = useMyContext()
   return (
     <div className="flex flex-wrap">
       {cities.map((c) => (
@@ -121,6 +122,7 @@ const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
           key={c.code}
           onClick={() => {
             setselectCity(c)
+            location(mapRef.map, parseFloat(c.lng), parseFloat(c.lat))
           }}
         >
           {c.name}

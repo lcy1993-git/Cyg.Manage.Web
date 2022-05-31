@@ -81,6 +81,8 @@ export const FEATUERTYPE = {
   [COLUMNCIRCUITBREAKER]: '柱上断路器',
   [COLUMNTRANSFORMER]: '柱上变压器',
   [CABLEBRANCHBOX]: '电缆分支箱',
+  [CABLECIRCUIT]: '电缆线路',
+  [LINE]: '架空线路',
 }
 
 /** 可以绘制的图元 */
