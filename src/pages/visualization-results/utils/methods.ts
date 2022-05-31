@@ -37,6 +37,7 @@ var mediaSignData: any
 var timer: any
 var mapMovetimer: any
 var mapMoveEnds: any[] = []
+var layerTypes: any[] = [1]
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -71,6 +72,8 @@ const refreshMap = async (
   // currentLevel = Math.round(map.getView().getZoom());
 
   if (projects.length === 0) {
+    clearGroups(groupLayers)
+    clearHighlightLayer(map)
     return false
   }
   lineClusters = []
@@ -94,7 +97,7 @@ const refreshMap = async (
       [extent[0], extent[1]],
     ],
     zoomLevel: Math.round(map.getView().getZoom()),
-    layerTypes: [1, 2, 4, 8],
+    layerTypes: layerTypes,
     projects: ids,
   }
 
@@ -961,6 +964,17 @@ const clearHighlightLayer = (map: any) => {
     .forEach((layer: any) => {
       if (layer.get('name') === 'highlightLayer') layer.getSource().clear()
     })
+}
+
+/**
+ * 改变图层类型
+ */
+const changeLayerType = (type: number, visible: boolean) => {
+  if (visible) {
+    layerTypes.push(type)
+  } else {
+    layerTypes.forEach((layerType: number) => {})
+  }
 }
 
 // 获取比例尺
