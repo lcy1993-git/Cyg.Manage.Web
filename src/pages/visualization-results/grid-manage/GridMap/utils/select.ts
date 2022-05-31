@@ -24,7 +24,7 @@ interface pointType {
 var select: any
 var currrentSelectFeature: any
 var deleFeatures: any = []
-export const initSelect = (map: any, isActiveFeature: (data: pointType) => void) => {
+export const initSelect = (map: any, isActiveFeature: (data: pointType | null) => void) => {
   let pointLayer = getLayer(map, 'pointLayer', 3)
   let lineLayer = getLayer(map, 'lineLayer', 2)
   let layers = [pointLayer, lineLayer]
@@ -49,6 +49,7 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType) => void)
       isActiveFeature(currrentSelectFeature.get('data'))
     } else {
       currrentSelectFeature = null
+      isActiveFeature(null)
     }
   })
   return select
@@ -102,11 +103,14 @@ export const editFeature = (map: any, data: any) => {
   if (!currrentSelectFeature) return
 
   if (data.lng && data.lat) {
-    const point = new Point([data.lng, data.lat]).transform('EPSG:4326', 'EPSG:3857')
+    const point = new Point([parseFloat(data.lng), parseFloat(data.lat)]).transform(
+      'EPSG:4326',
+      'EPSG:3857'
+    )
     currrentSelectFeature.setGeometry(point)
     var format = new WKT()
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
   }
   currrentSelectFeature.set('data', data)
-  currrentSelectFeature.setStyle(data, true, map.getView().getZoom())
+  currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
 }

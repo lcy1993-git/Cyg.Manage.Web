@@ -54,7 +54,7 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
-import { deletCurrrentSelectFeature, getDeleFeatures } from './utils/select'
+import { deletCurrrentSelectFeature, editFeature, getDeleFeatures } from './utils/select'
 interface BelongingLineType {
   id: string
   name: string
@@ -161,25 +161,30 @@ const GridMap = () => {
     }
   }
 
-  const isActiveFeature = (data: pointType) => {
-    const featureData = { ...data }
-    setvisible(true)
-    setzIndex('edit')
-    form.resetFields()
-    setcurrentFeatureType(featureData.featureType)
-    setcurrentfeatureData({
-      id: featureData.id,
-      geom: featureData.geom,
-    })
-    const geom = featureData.geom
-      .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
-      .split(' ')
+  const isActiveFeature = (data: pointType | null) => {
+    if (data) {
+      const featureData = { ...data }
+      setvisible(true)
+      setzIndex('edit')
+      form.resetFields()
+      setcurrentFeatureType(featureData.featureType)
+      setcurrentfeatureData({
+        id: featureData.id,
+        geom: featureData.geom,
+      })
+      const geom = featureData.geom
+        .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
+        .split(' ')
 
-    form.setFieldsValue({
-      ...featureData,
-      lat: geom[1],
-      lng: geom[0],
-    })
+      form.setFieldsValue({
+        ...featureData,
+        lat: geom[1],
+        lng: geom[0],
+      })
+    } else {
+      form.resetFields()
+      setvisible(false)
+    }
   }
 
   const onClose = () => {
@@ -242,6 +247,10 @@ const GridMap = () => {
           })
           break
       }
+      editFeature(mapRef.map, {
+        ...params,
+        featureType: currentFeatureType,
+      })
       message.info('上传成功')
     } catch (err) {
       message.error('上传失败')

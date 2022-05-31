@@ -36,7 +36,7 @@ const { TabPane } = Tabs
 interface BelongingLineType {
   id: string
   name: string
-  kvLevel: string | number
+  kvLevel: number
   isOverhead: boolean
   isPower: boolean
 }
@@ -53,6 +53,7 @@ const DrawToolbar = () => {
   } = useMyContext()
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   const [selectLineType, setselectLineType] = useState('')
+  const [currentKvleve, setcurrentKvleve] = useState<number>()
   const [currentFeature, setcurrentFeature] = useState('feature')
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
@@ -108,6 +109,7 @@ const DrawToolbar = () => {
         lineId: currentLineData?.id,
         kvLevel: currentLineData?.kvLevel,
       })
+      setcurrentKvleve(currentLineData?.kvLevel)
     }
   }
 
@@ -372,20 +374,21 @@ const DrawToolbar = () => {
                 label="电压等级"
                 rules={[{ required: true, message: '请输入名称' }]}
               >
-                <Select dropdownStyle={{ zIndex: 3000 }}>
-                  {kelevelOptions.map((item) => (
+                <Select
+                  dropdownStyle={{ zIndex: 3000 }}
+                  onChange={(value: number) => {
+                    setcurrentKvleve(value)
+                  }}
+                >
+                  {KVLEVELOPTIONS.map((item) => (
                     <Option key={item.kvLevel} value={item.kvLevel}>
                       {item.label}
                     </Option>
                   ))}
                 </Select>
               </Form.Item>
-              {form.getFieldValue('kvLevel') === 3 && (
-                <Form.Item
-                  name="color"
-                  label="线路颜色"
-                  rules={[{ required: true, message: '请选择线路颜色' }]}
-                >
+              {currentKvleve === 3 && (
+                <Form.Item name="color" label="线路颜色">
                   <Select allowClear>
                     <Option value="#00FFFF">青</Option>
                     <Option value="#1EB9FF">蓝</Option>
