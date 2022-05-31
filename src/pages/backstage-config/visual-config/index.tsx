@@ -228,6 +228,23 @@ const VisualConfig: React.FC = () => {
       },
     },
     {
+      dataIndex: 'projectQty',
+      index: 'projectQty',
+      title: '限制项目数量',
+      width: 120,
+      render: (text: any, record: any) => {
+        return (
+          <span>
+            {record.projectQty == -1
+              ? '不限制'
+              : record.projectQty == 0
+              ? '不查询'
+              : record.projectQty}
+          </span>
+        )
+      },
+    },
+    {
       dataIndex: 'projectLimitQty',
       index: 'projectLimitQty',
       title: '按项目限制数量',

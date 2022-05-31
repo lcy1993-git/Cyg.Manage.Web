@@ -123,6 +123,7 @@ const VisualConfigForm: React.FC<VisualConfigProps> = (props) => {
       <CyFormItem label="元素类别" labelWidth={133} name="elementTypes" required>
         <EnumSelect enumList={ElementTypes} placeholder="请选择元素类别" mode="multiple" />
       </CyFormItem>
+
       <CyFormItem
         labelSlot={() => titleSlot('限制总数量')}
         labelWidth={133}
@@ -131,6 +132,16 @@ const VisualConfigForm: React.FC<VisualConfigProps> = (props) => {
       >
         <Input type="number" placeholder="请输入总数量限制" />
       </CyFormItem>
+
+      <CyFormItem
+        labelSlot={() => titleSlot('限制项目数量')}
+        labelWidth={133}
+        name="projectQty"
+        required
+      >
+        <Input type="number" placeholder="请输入限制项目数量" />
+      </CyFormItem>
+
       <CyFormItem
         labelSlot={() => titleSlot('按项目限制数量')}
         labelWidth={133}
