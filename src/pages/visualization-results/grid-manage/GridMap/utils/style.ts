@@ -15,7 +15,12 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
 import Configs from './config'
-export const pointStyle = (data: any, selected: boolean, level: number) => {
+export const pointStyle = (
+  data: any,
+  selected: boolean,
+  level: number,
+  isDraw: boolean = false
+) => {
   let text,
     font = 'gridManageIconfont',
     zIndex = 3
@@ -95,7 +100,8 @@ export const pointStyle = (data: any, selected: boolean, level: number) => {
 
   const config = Configs.find((item: any) => item.name === data.featureType)
   const size = config && config.size ? config.size : 22
-  color = config && config.zoom && level < config.zoom ? 'rgba(110, 74, 192, 0)' : color
+
+  color = config && config.zoom && !isDraw && level < config.zoom ? 'rgba(110, 74, 192, 0)' : color
   let styles = [
     new Style({
       text: new Text({

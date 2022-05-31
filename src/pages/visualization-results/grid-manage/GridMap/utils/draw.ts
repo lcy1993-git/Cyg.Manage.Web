@@ -36,7 +36,7 @@ class DrawTool {
       options.lat = parseFloat(options.lat)
       const point = new Point([options.lng, options.lat]).transform('EPSG:4326', 'EPSG:3857')
       const feature: any = new Feature(point)
-      feature.setStyle(pointStyle(options, false, this.map.getView().getZoom()))
+      feature.setStyle(pointStyle(options, false, this.map.getView().getZoom(), true))
       var format = new WKT()
       options.geom = format.writeGeometry(
         feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
@@ -62,7 +62,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'Point') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = ''
+          feature.get('data').type_ = 'saveEnd'
         }
       })
     return featrues
@@ -77,7 +77,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'LineString') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = ''
+          feature.get('data').type_ = 'saveEnd'
         }
       })
     return featrues
@@ -117,7 +117,7 @@ class DrawTool {
       if (e.feature.getGeometry().getType() === 'LineString') {
         this_.handleLine(this_.source, e.feature)
       } else {
-        e.feature.setStyle(pointStyle(this_.options, false, this_.map.getView().getZoom()))
+        e.feature.setStyle(pointStyle(this_.options, false, this_.map.getView().getZoom(), true))
         const coordinates = e.feature.getGeometry().getCoordinates()
         const lont = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
         const featureData = { ...this_.options }
@@ -226,7 +226,7 @@ class DrawTool {
       } else if (featureType === CABLECIRCUIT) {
         data.featureType = CABLEWELL
       }
-      node.setStyle(pointStyle(data, false, this.map.getView().getZoom()))
+      node.setStyle(pointStyle(data, false, this.map.getView().getZoom(), true))
       data.id = createFeatureId()
       data.type_ = 'Point'
       node.set('data', data)

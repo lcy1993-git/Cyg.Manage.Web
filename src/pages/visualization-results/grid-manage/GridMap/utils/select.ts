@@ -48,6 +48,10 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
       // console.log(currrentSelectFeature.get('data'), '当前要素')
       isActiveFeature(currrentSelectFeature.get('data'))
     } else {
+      const isDraw = currrentSelectFeature.get('data').type_ ? true : false
+      currrentSelectFeature.setStyle(
+        pointStyle(currrentSelectFeature.get('data'), false, map.getView().getZoom(), isDraw)
+      )
       currrentSelectFeature = null
       isActiveFeature(null)
     }
@@ -110,7 +114,9 @@ export const editFeature = (map: any, data: any) => {
     currrentSelectFeature.setGeometry(point)
     var format = new WKT()
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
+    currrentSelectFeature.set('data', data)
+    currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
   }
-  currrentSelectFeature.set('data', data)
-  currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
+
+  // currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
 }

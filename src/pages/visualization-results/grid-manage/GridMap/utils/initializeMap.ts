@@ -1,6 +1,7 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
 import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
+// import Overlay from 'ol/Overlay'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
 import { XYZ } from 'ol/source'
@@ -43,7 +44,8 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
     layers: [
       new TileLayer({
         source: new XYZ({
-          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url:
+            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
@@ -65,10 +67,23 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
         if (currrentSelectFeature && currrentSelectFeature === feature) {
           feature.setStyle(pointStyle(feature.get('data'), true, level))
         } else {
-          feature.setStyle(pointStyle(feature.get('data'), false, level))
+          if (feature.get('data').type_)
+            feature.setStyle(pointStyle(feature.get('data'), false, level, true))
+          else feature.setStyle(pointStyle(feature.get('data'), false, level))
         }
       })
   })
+
+  // mapRef.map.on('pointermove', (e: Event) => {
+  //   var tag = new Overlay({
+  //     position: ol.proj.fromLonLat([120.41, 28.82]),
+  //     positioning: 'center-center',
+  //     element: document.getElementById('tag'),
+  //     stopEvent: false
+  //   })
+  //   map.addOverlay(tag)
+
+  // })
 
   initSelect(mapRef.map, isActiveFeature)
   // drawPoint(mapRef.map, {})
