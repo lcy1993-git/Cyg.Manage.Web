@@ -337,6 +337,7 @@ const GridMap = () => {
   return (
     <>
       <div ref={ref} id="map" className="w-full h-full"></div>
+      <div id="tag"></div>
       <Drawer
         title={`编辑${FEATUERTYPE[currentFeatureType]}属性`}
         visible={visible}

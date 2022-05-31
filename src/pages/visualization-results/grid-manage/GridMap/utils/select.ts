@@ -108,5 +108,6 @@ export const editFeature = (map: any, data: any) => {
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
   }
   currrentSelectFeature.set('data', data)
+  currrentSelectFeature.setStyle(data, false, map.getView().getZoom())
   currrentSelectFeature.setStyle(data, true, map.getView().getZoom())
 }
