@@ -154,7 +154,7 @@ class DrawTool {
         x = node1.getGeometry().getCoordinates()[0]
         y = node1.getGeometry().getCoordinates()[1]
         featureData.startId = node1.get('data').id
-        featureData.startType = TYPENUMS[node1.get('data').featureType.toLocaleUpperCase()]
+        featureData.startType = TYPENUMS[node1.get('data').featureType]
 
         let isAdd = false
         if (index === coordinates.length - 2) isAdd = true
