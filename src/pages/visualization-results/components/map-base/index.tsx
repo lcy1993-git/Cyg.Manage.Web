@@ -10,6 +10,7 @@ import { bd09Towgs84 } from '../../utils'
 import { BaseMapProps } from '../../utils/init'
 import { mapClick, mapMoveend, mapPointermove } from '../../utils/mapClick'
 import {
+  changeLayerType,
   checkZoom,
   clearHighlightLayer,
   clearTrackLayers,
@@ -205,22 +206,34 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 当勘察图层切换时
   useEffect(() => {
     highlight(1, layersState)
+    changeLayerType(1, surveyLayerVisible)
     getLayerGroupByName('surveyLayer', layerGroups).setVisible(surveyLayerVisible)
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    map && refreshMap(ops, projects!)
   }, [surveyLayerVisible])
   // 当方案图层点击时
   useEffect(() => {
     highlight(2, layersState)
+    changeLayerType(2, planLayerVisible)
     getLayerGroupByName('planLayer', layerGroups).setVisible(planLayerVisible)
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    map && refreshMap(ops, projects!)
   }, [planLayerVisible])
   // 当设计图层点击时
   useEffect(() => {
     highlight(3, layersState)
+    changeLayerType(4, designLayerVisible)
     getLayerGroupByName('designLayer', layerGroups).setVisible(designLayerVisible)
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    map && refreshMap(ops, projects!)
   }, [designLayerVisible])
   // 当拆除图层点击时
   useEffect(() => {
     highlight(4, layersState)
+    changeLayerType(8, dismantleLayerVisible)
     getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    map && refreshMap(ops, projects!)
   }, [dismantleLayerVisible])
 
   const [street, setStreet] = useState(0)
