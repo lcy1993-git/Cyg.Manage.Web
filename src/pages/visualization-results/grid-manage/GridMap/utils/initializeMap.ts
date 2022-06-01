@@ -120,7 +120,7 @@ export const getTotalLength = (data: any) => {
   let totalLength = 0
   data.forEach((item: any) => {
     var format = new WKT()
-    const geomtery: any = format.readGeometry(data.geom)
+    const geomtery: any = format.readGeometry(item.geom)
     const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
     totalLength += length
   })
