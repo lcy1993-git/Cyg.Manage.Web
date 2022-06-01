@@ -168,7 +168,7 @@ const DrawToolbar = () => {
       if (reg.test(value)) {
         return Promise.resolve()
       }
-      return Promise.reject(new Error('请输入0到100的正整数'))
+      return Promise.reject(new Error('请输入0或正整数'))
     },
   })
 

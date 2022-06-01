@@ -385,6 +385,17 @@ const GridMap = () => {
     },
   })
 
+  const FormRules = () => ({
+    validator(_: any, value: string) {
+      // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
+      const reg = /^([0]|[1-9][0-9]*)$/
+      if (reg.test(value)) {
+        return Promise.resolve()
+      }
+      return Promise.reject(new Error('请输入0或正整数'))
+    },
+  })
+
   const FormRuleslng = () => ({
     validator: (_: any, value: string, callback: any) => {
       const reg =
@@ -494,7 +505,7 @@ const GridMap = () => {
                   <Option value="生物质能">生物质能</Option>
                 </Select>
               </Form.Item>
-              <Form.Item name="installedCapacity" label="装机容量">
+              <Form.Item name="installedCapacity" label="装机容量" rules={[FormRules]}>
                 <Input />
               </Form.Item>
               <Form.Item name="schedulingMode" label="调度方式">
@@ -523,7 +534,7 @@ const GridMap = () => {
           {/* 箱变 柱上变压器*/}
           {BELONGINGCAPACITY.includes(currentFeatureType) && (
             <>
-              <Form.Item name="capacity" label="容量">
+              <Form.Item name="capacity" label="容量" rules={[FormRules]}>
                 <Input />
               </Form.Item>
             </>
