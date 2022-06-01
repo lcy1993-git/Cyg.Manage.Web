@@ -9,7 +9,7 @@ export const addOverlay = (map: any, coordinate: any) => {
     position: coordinate,
     positioning: 'center-center',
     stopEvent: false,
-    offset: [30, 30],
+    offset: [50, 30],
   })
   map.addOverlay(overlayLayer)
 }
