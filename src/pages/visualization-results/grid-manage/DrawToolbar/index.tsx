@@ -86,6 +86,7 @@ const DrawToolbar = () => {
 
   /** 图符型号 */
   const selectDrawFeature = (result: RadioChangeEvent) => {
+    setcurrentKvleve(1)
     setcurrentFeatureType(result.target.value)
     const kelevelOptions = KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
       item.belonging.find((type: string) => type.includes(result.target.value))
@@ -120,6 +121,7 @@ const DrawToolbar = () => {
   /* 切换tab **/
   const tabsOnChange = (value: string) => {
     setcurrentFeature(value)
+    form.resetFields()
   }
 
   /** 插入图元 */
@@ -164,6 +166,9 @@ const DrawToolbar = () => {
   const FormRules = () => ({
     validator(_: any, value: string) {
       // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
+      if (!value) {
+        return Promise.resolve()
+      }
       const reg = /^([0]|[1-9][0-9]*)$/
       if (reg.test(value)) {
         return Promise.resolve()
@@ -176,8 +181,8 @@ const DrawToolbar = () => {
     validator: (_: any, value: string, callback: any) => {
       const reg =
         /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
-      if (value === '') {
-        callback(new Error('请输入经度'))
+      if (value === '' || !value) {
+        callback()
       } else {
         if (!reg.test(value)) {
           callback(new Error('经度范围：-180~180（保留小数点后十五位）'))
@@ -189,8 +194,8 @@ const DrawToolbar = () => {
   const FormRuleslat = () => ({
     validator: (_: any, value: string, callback: any) => {
       const reg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
-      if (value === '') {
-        callback(new Error('请输入纬度'))
+      if (value === '' || !value) {
+        callback()
       } else {
         if (!reg.test(value)) {
           callback(new Error('纬度范围：-90~90（保留小数点后十五位）'))
@@ -258,7 +263,12 @@ const DrawToolbar = () => {
                 label="电压等级"
                 rules={[{ required: true, message: '请输入名称' }]}
               >
-                <Select dropdownStyle={{ zIndex: 3000 }}>
+                <Select
+                  dropdownStyle={{ zIndex: 3000 }}
+                  onChange={(value: number) => {
+                    setcurrentKvleve(value)
+                  }}
+                >
                   {kelevelOptions.map((item) => (
                     <Option key={item.kvLevel} value={item.kvLevel}>
                       {item.label}
@@ -296,7 +306,7 @@ const DrawToolbar = () => {
                       <Option value="生物质能">生物质能</Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item name="installedCapacity" label="装机容量" rules={[FormRules]}>
+                  <Form.Item name="installedCapacity" label="装机容量">
                     <Input />
                   </Form.Item>
                   <Form.Item name="schedulingMode" label="调度方式">
@@ -350,7 +360,17 @@ const DrawToolbar = () => {
                   </Select>
                 </Form.Item>
               )}
-
+              {currentKvleve === 3 && currentFeatureType !== POWERSUPPLY && (
+                <Form.Item name="color" label="颜色">
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )}
               <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
                 <Input />
               </Form.Item>

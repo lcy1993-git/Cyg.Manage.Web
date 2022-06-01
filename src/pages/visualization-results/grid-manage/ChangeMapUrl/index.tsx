@@ -1,9 +1,7 @@
 import { Tooltip } from 'antd'
 import Map from 'ol/Map'
 import { useCallback, useState } from 'react'
-import CheckSource from '../../components/check-source'
 import Iconfont from '../../history-grid/components/iconfont'
-import MapSwitcher from '../../history-grid/MapSwitcher'
 import { useHistoryGridContext } from '../../history-grid/store'
 import { useMyContext } from '../Context'
 import FlowLayer from './FlowLayer'
@@ -42,39 +40,39 @@ const ChangMapUrl = () => {
         <>
           <div className="text-right">
             <div>
-              <IconSwitcher
+              {/* <IconSwitcher
                 title="显示/关闭名称"
                 flag="showTitle"
                 onClick={onClick}
                 icon={false ? 'icon-xianshi' : 'icon-yincang'}
-              />
+              /> */}
             </div>
 
             <div>
-              <IconSwitcher
+              {/* <IconSwitcher
                 title="定位到当前位置"
                 flag="currentLocation"
                 onClick={() => {}}
                 icon="icon-a-dingweidaodangqianweizhi_n-fuben"
                 className="hover:text-theme-green"
-              />
+              /> */}
             </div>
 
             <div>
-              <IconSwitcher
+              {/* <IconSwitcher
                 title={'定位到现有网架'}
                 flag="currentProject"
                 onClick={() => {}}
                 // className={is Click able ? `hover:text-theme-green cursor-pointer` : 'cursor-not-allowed'}
                 className={`hover:text-theme-green cursor-pointer`}
                 icon="icon-a-dingweidaoxianyouwangjia_n-fuben"
-              />
+              /> */}
             </div>
           </div>
 
-          <div className="w-full h-30 flex justify-end">
+          {/* <div className="w-full h-30 flex justify-end">
             <MapSwitcher onChange={onMapTypeChange} />
-          </div>
+          </div> */}
         </>
       )}
       <GeographicLocation />

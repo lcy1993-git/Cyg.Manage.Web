@@ -273,13 +273,13 @@ const SubstationTree = () => {
       <Modal title="编辑线路属性" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <div className="editTransformerSubstation">
           <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
-            {/* <Form.Item
+            <Form.Item
               name="name"
               label="线路名称"
               rules={[{ required: true, message: '请输入线路名称' }]}
             >
               <Input />
-            </Form.Item> */}
+            </Form.Item>
             <Form.Item
               name="belonging"
               label="所属厂站"

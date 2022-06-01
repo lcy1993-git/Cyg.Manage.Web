@@ -205,7 +205,6 @@ const GridMap = () => {
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
 
-      //!!! console.log(featureData, '66666666')
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
@@ -400,8 +399,8 @@ const GridMap = () => {
     validator: (_: any, value: string, callback: any) => {
       const reg =
         /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
-      if (value === '') {
-        callback(new Error('请输入经度'))
+      if (value === '' || !value) {
+        callback()
       } else {
         if (!reg.test(value)) {
           callback(new Error('经度范围：-180~180（保留小数点后十五位）'))
@@ -413,8 +412,8 @@ const GridMap = () => {
   const FormRuleslat = () => ({
     validator: (_: any, value: string, callback: any) => {
       const reg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
-      if (value === '') {
-        callback(new Error('请输入纬度'))
+      if (value === '' || !value) {
+        callback()
       } else {
         if (!reg.test(value)) {
           callback(new Error('纬度范围：-90~90（保留小数点后十五位）'))
@@ -505,7 +504,7 @@ const GridMap = () => {
                   <Option value="生物质能">生物质能</Option>
                 </Select>
               </Form.Item>
-              <Form.Item name="installedCapacity" label="装机容量" rules={[FormRules]}>
+              <Form.Item name="installedCapacity" label="装机容量">
                 <Input />
               </Form.Item>
               <Form.Item name="schedulingMode" label="调度方式">
@@ -590,7 +589,7 @@ const GridMap = () => {
               {currentLineKvLevel === 3 && (
                 <Form.Item
                   name="color"
-                  label="线路颜色"
+                  label="颜色"
                   rules={[{ required: true, message: '请选择线路颜色' }]}
                 >
                   <Select allowClear>
@@ -605,6 +604,21 @@ const GridMap = () => {
             </>
           ) : (
             <>
+              {currentLineKvLevel === 3 && (
+                <Form.Item
+                  name="color"
+                  label="颜色"
+                  rules={[{ required: true, message: '请选择线路颜色' }]}
+                >
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )}
               <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
                 <Input />
               </Form.Item>
