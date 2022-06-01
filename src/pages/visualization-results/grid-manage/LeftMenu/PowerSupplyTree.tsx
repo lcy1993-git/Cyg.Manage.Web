@@ -1,18 +1,19 @@
 import {
   deleteLine,
-  featchPowerSupplyTreeData,
+  featchSubstationTreeData,
   fetchGridManageMenu,
   getLineData,
   GetStationItems,
+  getSubStations,
   modifyLine,
 } from '@/services/grid-manage/treeMenu'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Form, Input, message, Modal, Radio, Select, Tree } from 'antd'
+import { Form, Input, message, Modal, Select, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
-import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
+import { CABLECIRCUITMODEL, KVLEVELOPTIONS, LINEMODEL, POWERSUPPLY } from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
 interface lineListItemType {
@@ -80,6 +81,9 @@ const PowerSupplyTree = () => {
   const { data, run: getTree } = useRequest(() => fetchGridManageMenu(), { manual: true })
   const { mapRef, isRefresh, setisRefresh } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
+  const [PowerSupplyIds, setPowerSupplyIds] = useState<string[]>([])
+  const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
+  const [selectLineType, setselectLineType] = useState('')
   const [form] = useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
@@ -98,12 +102,14 @@ const PowerSupplyTree = () => {
             return {
               ...child,
               title: child.name,
-              key: child.id,
+              key: `${child.id}_&${POWERSUPPLY}`,
+              type: POWERSUPPLY,
               children: child.lines.map((childrenItem: lineListItemType) => {
                 return {
                   ...childrenItem,
+                  type: 'line',
                   title: childrenItem.name,
-                  key: childrenItem.id,
+                  key: `${childrenItem.id}_&Line`,
                 }
               }),
             }
@@ -112,13 +118,33 @@ const PowerSupplyTree = () => {
       }),
     },
   ]
-
-  const { data: TreeData, run: getTreeData } = useRequest(
-    () => featchPowerSupplyTreeData({ ids: checkedKeys }),
+  // 获取所有电源
+  const { data: subStationsData, run: GetSubStations } = useRequest(
+    () =>
+      getSubStations({
+        stationIds: [],
+        powerIds: PowerSupplyIds,
+      }),
     {
       manual: true,
       onSuccess: () => {
-        loadMapLayers(TreeData, mapRef.map)
+        getTreeData()
+      },
+    }
+  )
+
+  const { data: TreeData, run: getTreeData } = useRequest(
+    () => featchSubstationTreeData(checkedKeys),
+    {
+      manual: true,
+      onSuccess: () => {
+        loadMapLayers(
+          {
+            ...TreeData,
+            powerSupplyList: PowerSupplyIds.length ? subStationsData?.powerSupplyList : [],
+          },
+          mapRef.map
+        )
       },
     }
   )
@@ -127,16 +153,24 @@ const PowerSupplyTree = () => {
     try {
       setisRefresh(false)
       const formData = form.getFieldsValue()
-      await modifyLine(formData)
-      message.info('编辑成功')
+      const params = { ...formData, id: currentFeatureId }
+      await modifyLine(params)
       setIsModalVisible(false)
       setisRefresh(true)
+      message.info('编辑成功')
     } catch (err) {
       message.error('编辑失败')
       setIsModalVisible(false)
     }
   }
-
+  /** 选择线路型号 */
+  const onChangeLineType = (value: string) => {
+    setselectLineType(value)
+    form.setFieldsValue({
+      lineType: value,
+      conductorModel: '',
+    })
+  }
   const handleCancel = () => {
     setIsModalVisible(false)
   }
@@ -146,8 +180,12 @@ const PowerSupplyTree = () => {
   }, [getTree, isRefresh])
 
   useEffect(() => {
-    checkedKeys.length && getTreeData()
-  }, [checkedKeys, getTreeData])
+    PowerSupplyIds.length ? GetSubStations() : getTreeData()
+
+    if (!PowerSupplyIds.length && checkedKeys.length) {
+      getTreeData()
+    }
+  }, [GetSubStations, PowerSupplyIds, checkedKeys.length, getTreeData])
 
   // 点击右键，删除线路数据
   const onRightClick = (info: infoType) => {
@@ -178,8 +216,13 @@ const PowerSupplyTree = () => {
   // 点击左键，编辑线路数据
   const onSelect = async (selectedKeys: Key[], info: TreeSelectType) => {
     const { selectedNodes } = info
-    if (selectedNodes.length && !selectedNodes[0].children) {
+    if (selectedNodes.length && !selectedNodes[0].children && selectedNodes[0].id) {
+      setcurrentFeatureId(selectedNodes[0].id)
       const data = await getLineData(selectedNodes[0].id)
+      // const lines = await getLineCompoment([selectedNodes[0].id])
+      // // !! 线路总长度
+      // console.log(lines, '123456')
+      // const length = getTotalLength()
       setIsModalVisible(true)
       form.setFieldsValue({
         ...data,
@@ -188,26 +231,26 @@ const PowerSupplyTree = () => {
   }
 
   const getPowerSupplyTreeData = (checkedKeys: any) => {
-    const checkedIds = checkedKeys.filter((item: string) => !item.includes('-'))
-    setCheckedKeys(checkedIds)
-    if (!checkedIds.length) {
-      loadMapLayers(
-        {
-          boxTransformerList: [], // 箱变列表
-          cableBranchBoxList: [], // 电缆分支箱
-          cableWellList: [], // 电缆井
-          columnCircuitBreakerList: [], // 柱上断路器
-          columnTransformerList: [], // 柱上变压器
-          electricityDistributionRoomList: [], // 配电室
-          lineRelationList: [], // 线路连接关系表
-          ringNetworkCabinetList: [], // 环网柜
-          switchingStationList: [], // 开闭所
-          towerList: [], // 杆塔
-          lineList: [], // 线路表
-        },
-        mapRef.map
-      )
-    }
+    const PowerSupplyIds = checkedKeys
+      .map((item: string) => {
+        const isSubstation = item.includes(`_&${POWERSUPPLY}`)
+        if (isSubstation) {
+          return item.split('_&')[0]
+        }
+        return undefined
+      })
+      .filter((item: string) => item)
+    setPowerSupplyIds(PowerSupplyIds)
+    const lineIds = checkedKeys
+      .map((item: string) => {
+        const isSubstation = item.includes(`_&Line`)
+        if (isSubstation) {
+          return item.split('_&')[0]
+        }
+        return undefined
+      })
+      .filter((item: string) => item)
+    setCheckedKeys(lineIds)
   }
 
   // 获取所有厂站
@@ -279,6 +322,35 @@ const PowerSupplyTree = () => {
               </Select>
             </Form.Item>
             <Form.Item
+              name="lineType"
+              label="线路类型"
+              rules={[{ required: true, message: '请选择线路类型' }]}
+            >
+              <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
+                <Option value="CableCircuit">电缆线路</Option>
+                <Option value="Line">架空线路</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="conductorModel"
+              label="线路型号"
+              rules={[{ required: true, message: '请选择线路型号' }]}
+            >
+              <Select dropdownStyle={{ zIndex: 3000 }}>
+                {selectLineType === 'Line' && selectLineType
+                  ? LINEMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))
+                  : CABLECIRCUITMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
               name="lineProperties"
               label="线路性质"
               rules={[{ required: true, message: '请选择线路性质' }]}
@@ -288,13 +360,6 @@ const PowerSupplyTree = () => {
                 <Option value="专用">专用</Option>
               </Select>
             </Form.Item>
-
-            {/* <Form.Item name="totalLength" label="线路总长度">
-                <Input disabled />
-              </Form.Item>
-              <Form.Item name="totalCapacity" label="配变总容量">
-                <Input disabled />
-              </Form.Item> */}
             {currentLineKvLevel === 3 && (
               <Form.Item
                 name="color"
@@ -310,12 +375,12 @@ const PowerSupplyTree = () => {
                 </Select>
               </Form.Item>
             )}
-            <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
+            {/* <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
               <Radio.Group>
                 <Radio value={true}>是</Radio>
                 <Radio value={false}>否</Radio>
               </Radio.Group>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
       </Modal>

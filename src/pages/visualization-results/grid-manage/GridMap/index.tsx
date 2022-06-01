@@ -40,6 +40,7 @@ import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
   CABLECIRCUIT,
+  CABLECIRCUITMODEL,
   CABLEWELL,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
@@ -47,8 +48,8 @@ import {
   ELECTRICITYDISTRIBUTIONROOM,
   FEATUERTYPE,
   KVLEVELOPTIONS,
-  KVLEVELTYPES,
   LINE,
+  LINEMODEL,
   POWERSUPPLY,
   RINGNETWORKCABINET,
   SWITCHINGSTATION,
@@ -104,7 +105,8 @@ const GridMap = () => {
   const [editModel, seteditModel] = useState(false)
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
-
+  const [selectLineType, setselectLineType] = useState('')
+  const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   /** 上传本地数据 **/
   const uploadLocalData = async () => {
     const pointData = getDrawPoints()
@@ -149,6 +151,16 @@ const GridMap = () => {
           isOverhead: item.lineType === LINE,
         }
       })
+      const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
+        return {
+          id: createFeatureId(),
+          transformerSubstationId: item.id,
+          publicuse: 0,
+          spare: 0,
+          specialPurpose: 0,
+          total: 0,
+        }
+      })
       await stationItemsHandle({
         towerList,
         switchingStationList,
@@ -162,8 +174,18 @@ const GridMap = () => {
         powerSupplyList,
         transformerStationList,
         lineElementRelationList,
+        transformerIntervalList,
       })
     }
+  }
+
+  /** 选择线路型号 */
+  const onChangeLineType = (value: string) => {
+    setselectLineType(value)
+    form.setFieldsValue({
+      lineType: value,
+      conductorModel: '',
+    })
   }
 
   const isActiveFeature = (data: pointType | null) => {
@@ -172,6 +194,7 @@ const GridMap = () => {
       setvisible(true)
       setzIndex('edit')
       form.resetFields()
+      setcurrentLineKvLevel(Number(data.kvLevel))
       setcurrentFeatureType(featureData.featureType)
       setcurrentfeatureData({
         id: featureData.id,
@@ -203,7 +226,6 @@ const GridMap = () => {
       ...value,
       ...currentfeatureData,
     }
-
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -265,7 +287,7 @@ const GridMap = () => {
   // 删除地图要素
   const deleteFeature = async () => {
     const deleteData = getDeleFeatures()
-    if (deleteData.length) {
+    if (deleteData && deleteData.length) {
       const PromiseAll = []
       for (let i = 0; i < deleteData.length; i++) {
         switch (deleteData[i].featureType) {
@@ -394,10 +416,13 @@ const GridMap = () => {
             label="电压等级"
             rules={[{ required: true, message: '请输入名称' }]}
           >
-            <Select dropdownStyle={{ zIndex: 3000 }}>
-              {KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
-                item.belonging.find((type: string) => type.includes(currentFeatureType))
-              ).map((item) => (
+            <Select
+              dropdownStyle={{ zIndex: 3000 }}
+              onChange={(value: number) => {
+                setcurrentLineKvLevel(value)
+              }}
+            >
+              {KVLEVELOPTIONS.map((item) => (
                 <Option key={item.kvLevel} value={item.kvLevel}>
                   {item.label}
                 </Option>
@@ -486,7 +511,52 @@ const GridMap = () => {
           )}
 
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
-            <></>
+            <>
+              <Form.Item
+                name="lineType"
+                label="选择线路"
+                rules={[{ required: true, message: '请选择线路类型' }]}
+              >
+                <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
+                  <Option value="CableCircuit">电缆线路</Option>
+                  <Option value="Line">架空线路</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="conductorModel"
+                label="线路型号"
+                rules={[{ required: true, message: '请选择线路型号' }]}
+              >
+                <Select dropdownStyle={{ zIndex: 3000 }}>
+                  {selectLineType === 'Line' && selectLineType
+                    ? LINEMODEL.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))
+                    : CABLECIRCUITMODEL.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))}
+                </Select>
+              </Form.Item>
+              {currentLineKvLevel === 3 && (
+                <Form.Item
+                  name="color"
+                  label="线路颜色"
+                  rules={[{ required: true, message: '请选择线路颜色' }]}
+                >
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )}
+            </>
           ) : (
             <>
               <Form.Item name="lng" label="经度">

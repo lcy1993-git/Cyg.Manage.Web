@@ -58,7 +58,7 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
         translate.setActive(false)
       }
     } else {
-      if (currrentSelectFeature.getGeometry().getType() === 'Point') {
+      if (currrentSelectFeature && currrentSelectFeature.getGeometry().getType() === 'Point') {
         const isDraw = currrentSelectFeature.get('data').type_ ? true : false
         currrentSelectFeature.setStyle(
           pointStyle(currrentSelectFeature.get('data'), false, map.getView().getZoom(), isDraw)

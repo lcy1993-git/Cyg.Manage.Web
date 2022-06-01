@@ -36,6 +36,16 @@ export const getIntervalByTransformer = (params: { transformerId: string }) => {
   )
 }
 
+/** 获取所有变电站 **/
+export const getSubStations = (params: { powerIds: string[]; stationIds: string[] }) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/GridDesign/GetSubStations`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+
 export const featchPowerSupplyTreeData = (params: { ids: string[] }) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/GridDesign/GetLinesByPower`, { method: 'POST', data: params })
@@ -178,6 +188,12 @@ export const modifyCableBranchBox = (params: any) => {
 export const modifyLine = (params: any) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/Line/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新线路信息 **/
+export const getLineCompoment = (params: string[]) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
   )
 }
 

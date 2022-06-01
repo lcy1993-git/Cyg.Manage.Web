@@ -3,6 +3,7 @@ import {
   featchSubstationTreeData,
   getLineData,
   GetStationItems,
+  getSubStations,
   getTransformerSubstationMenu,
   modifyLine,
 } from '@/services/grid-manage/treeMenu'
@@ -12,7 +13,12 @@ import { Form, Input, message, Modal, Radio, Select, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
-import { KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
+import {
+  CABLECIRCUITMODEL,
+  KVLEVELOPTIONS,
+  LINEMODEL,
+  TRANSFORMERSUBSTATION,
+} from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
 interface infoType {
@@ -60,6 +66,9 @@ const SubstationTree = () => {
   const [form] = useForm()
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
+  const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
+  const [selectLineType, setselectLineType] = useState('')
+  const [allSubStations, setallSubStations] = useState<string[]>([])
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
@@ -71,7 +80,8 @@ const SubstationTree = () => {
         return {
           ...item,
           title: item.name,
-          key: `0=1=${index}`,
+          key: `${item.id}_&${TRANSFORMERSUBSTATION}`,
+          type: TRANSFORMERSUBSTATION,
           children: item.lineKVLevelGroups.map(
             (
               child: { kvLevel: number; lines: { name: string; id: string }[] },
@@ -86,7 +96,7 @@ const SubstationTree = () => {
                   return {
                     ...children,
                     title: children.name,
-                    key: children.id,
+                    key: `${children.id}_&Line`,
                   }
                 }),
               }
@@ -96,16 +106,6 @@ const SubstationTree = () => {
       }),
     },
   ]
-
-  const { data: TreeData, run: getTreeData } = useRequest(
-    () => featchSubstationTreeData(checkedKeys),
-    {
-      manual: true,
-      onSuccess: () => {
-        loadMapLayers(TreeData, mapRef.map)
-      },
-    }
-  )
 
   const onRightClick = (info: infoType) => {
     const { node } = info
@@ -140,7 +140,8 @@ const SubstationTree = () => {
     try {
       setisRefresh(false)
       const formData = form.getFieldsValue()
-      await modifyLine(formData)
+      const params = { ...formData, id: currentFeatureId }
+      await modifyLine(params)
       message.info('编辑成功')
       setIsModalVisible(false)
       setisRefresh(true)
@@ -158,6 +159,46 @@ const SubstationTree = () => {
     },
   })
 
+  // 获取所有厂站
+  const { data: subStationsData, run: GetSubStations } = useRequest(
+    () =>
+      getSubStations({
+        stationIds: allSubStations,
+        powerIds: [],
+      }),
+    {
+      manual: true,
+      onSuccess: () => {
+        getTreeData()
+      },
+    }
+  )
+  // 请求所有线路
+  const { data: TreeData, run: getTreeData } = useRequest(
+    () => featchSubstationTreeData(checkedKeys),
+    {
+      manual: true,
+      onSuccess: () => {
+        loadMapLayers(
+          {
+            ...TreeData,
+            transformerSubstationList: allSubStations.length
+              ? subStationsData?.transformerSubstationList
+              : [],
+          },
+          mapRef.map
+        )
+      },
+    }
+  )
+
+  useEffect(() => {
+    allSubStations.length ? GetSubStations() : getTreeData()
+    if (!allSubStations.length && checkedKeys.length) {
+      getTreeData()
+    }
+  }, [GetSubStations, allSubStations, checkedKeys.length, getTreeData])
+
   useEffect(() => {
     stationItemsHandle()
   }, [])
@@ -166,15 +207,16 @@ const SubstationTree = () => {
     isRefresh && getTree()
   }, [getTree, isRefresh])
 
-  useEffect(() => {
-    checkedKeys.length && getTreeData()
-  }, [checkedKeys, getTreeData])
-
   // 点击左键，编辑线路数据
-  const onSelect = async (selectedKeys: Key[], info: TreeSelectType) => {
+  const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {
     const { selectedNodes } = info
     if (selectedNodes.length && !selectedNodes[0].children) {
+      setcurrentFeatureId(selectedNodes[0].id)
       const data = await getLineData(selectedNodes[0].id)
+      // const lines = await getLineCompoment([selectedNodes[0].id])
+      // !! 线路总长度
+      // console.log(lines, '123456')
+      // const length = getTotalLength()
       setIsModalVisible(true)
       form.setFieldsValue({
         ...data,
@@ -182,27 +224,36 @@ const SubstationTree = () => {
     }
   }
 
-  const getSubstationTreeData = (checkedKeys: any) => {
-    const checkedIds = checkedKeys.filter((item: string) => !item.includes('='))
-    setCheckedKeys(checkedIds)
-    if (!checkedIds.length) {
-      loadMapLayers(
-        {
-          boxTransformerList: [], // 箱变列表
-          cableBranchBoxList: [], // 电缆分支箱
-          cableWellList: [], // 电缆井
-          columnCircuitBreakerList: [], // 柱上断路器
-          columnTransformerList: [], // 柱上变压器
-          electricityDistributionRoomList: [], // 配电室
-          lineRelationList: [], // 线路连接关系表
-          ringNetworkCabinetList: [], // 环网柜
-          switchingStationList: [], // 开闭所
-          towerList: [], // 杆塔
-          lineList: [], // 线路表
-        },
-        mapRef.map
-      )
-    }
+  const getSubstationTreeData = async (checkedKeys: any) => {
+    const SubstationIds = checkedKeys
+      .map((item: string) => {
+        const isSubstation = item.includes(`_&${TRANSFORMERSUBSTATION}`)
+        if (isSubstation) {
+          return item.split('_&')[0]
+        }
+        return undefined
+      })
+      .filter((item: string) => item)
+    setallSubStations(SubstationIds)
+    const lineIds = checkedKeys
+      .map((item: string) => {
+        const isSubstation = item.includes(`_&Line`)
+        if (isSubstation) {
+          return item.split('_&')[0]
+        }
+        return undefined
+      })
+      .filter((item: string) => item)
+    setCheckedKeys(lineIds)
+  }
+
+  /** 选择线路型号 */
+  const onChangeLineType = (value: string) => {
+    setselectLineType(value)
+    form.setFieldsValue({
+      lineType: value,
+      conductorModel: '',
+    })
   }
 
   return (
@@ -259,6 +310,35 @@ const SubstationTree = () => {
                     {item.label}
                   </Option>
                 ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="lineType"
+              label="选择线路"
+              rules={[{ required: true, message: '请选择线路类型' }]}
+            >
+              <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
+                <Option value="CableCircuit">电缆线路</Option>
+                <Option value="Line">架空线路</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="conductorModel"
+              label="线路型号"
+              rules={[{ required: true, message: '请选择线路型号' }]}
+            >
+              <Select dropdownStyle={{ zIndex: 3000 }}>
+                {selectLineType === 'Line' && selectLineType
+                  ? LINEMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))
+                  : CABLECIRCUITMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))}
               </Select>
             </Form.Item>
             <Form.Item
