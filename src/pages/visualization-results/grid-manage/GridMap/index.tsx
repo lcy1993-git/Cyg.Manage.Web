@@ -12,6 +12,7 @@ import {
   deleteTower,
   deleteTransformerSubstation,
   getAllBelongingLineItem,
+  getIntervalByTransformer,
   modifyBoxTransformer,
   modifyCableBranchBox,
   modifyCableWell,
@@ -27,7 +28,7 @@ import {
   uploadAllFeature,
 } from '@/services/grid-manage/treeMenu'
 import { useMount, useRequest } from 'ahooks'
-import { Button, Drawer, Form, Input, Select } from 'antd'
+import { Button, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
 import { useMyContext } from '../Context'
@@ -39,14 +40,16 @@ import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
   CABLECIRCUIT,
+  CABLECIRCUITMODEL,
   CABLEWELL,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
+  createFeatureId,
   ELECTRICITYDISTRIBUTIONROOM,
   FEATUERTYPE,
   KVLEVELOPTIONS,
-  KVLEVELTYPES,
   LINE,
+  LINEMODEL,
   POWERSUPPLY,
   RINGNETWORKCABINET,
   SWITCHINGSTATION,
@@ -87,19 +90,23 @@ const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 },
 }
+
 const GridMap = () => {
   const [form] = useForm()
   const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex } = useMyContext()
 
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
-  const [currentfeatureData, setcurrentfeatureData] = useState({})
+  const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '' })
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   const [visible, setvisible] = useState<boolean>(false)
+  // 变电站间隔模态框
+  const [editModel, seteditModel] = useState(false)
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
-
+  const [selectLineType, setselectLineType] = useState('')
+  const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   /** 上传本地数据 **/
   const uploadLocalData = async () => {
     const pointData = getDrawPoints()
@@ -144,6 +151,16 @@ const GridMap = () => {
           isOverhead: item.lineType === LINE,
         }
       })
+      const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
+        return {
+          id: createFeatureId(),
+          transformerSubstationId: item.id,
+          publicuse: 0,
+          spare: 0,
+          specialPurpose: 0,
+          total: 0,
+        }
+      })
       await stationItemsHandle({
         towerList,
         switchingStationList,
@@ -157,8 +174,18 @@ const GridMap = () => {
         powerSupplyList,
         transformerStationList,
         lineElementRelationList,
+        transformerIntervalList,
       })
     }
+  }
+
+  /** 选择线路型号 */
+  const onChangeLineType = (value: string) => {
+    setselectLineType(value)
+    form.setFieldsValue({
+      lineType: value,
+      conductorModel: '',
+    })
   }
 
   const isActiveFeature = (data: pointType | null) => {
@@ -167,6 +194,7 @@ const GridMap = () => {
       setvisible(true)
       setzIndex('edit')
       form.resetFields()
+      setcurrentLineKvLevel(Number(data.kvLevel))
       setcurrentFeatureType(featureData.featureType)
       setcurrentfeatureData({
         id: featureData.id,
@@ -198,7 +226,6 @@ const GridMap = () => {
       ...value,
       ...currentfeatureData,
     }
-
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -260,57 +287,72 @@ const GridMap = () => {
   // 删除地图要素
   const deleteFeature = async () => {
     const deleteData = getDeleFeatures()
-    const PromiseAll = []
-    for (let i = 0; i < deleteData.length; i++) {
-      switch (deleteData[i].featureType) {
-        case TOWER:
-          PromiseAll.push(deleteTower([deleteData[i].id]))
-          break
-        case BOXTRANSFORMER:
-          PromiseAll.push(deleteBoxTransformer([deleteData[i].id]))
-          break
-        case POWERSUPPLY:
-          PromiseAll.push(deletePowerSupply([deleteData[i].id]))
-          break
-        case TRANSFORMERSUBSTATION:
-          PromiseAll.push(deleteTransformerSubstation([deleteData[i].id]))
-          break
-        case CABLEWELL:
-          PromiseAll.push(deleteCableWell([deleteData[i].id]))
-          break
-        case RINGNETWORKCABINET:
-          PromiseAll.push(deleteRingNetworkCabinet([deleteData[i].id]))
-          break
-        case ELECTRICITYDISTRIBUTIONROOM:
-          PromiseAll.push(deleteElectricityDistributionRoom([deleteData[i].id]))
-          break
-        case SWITCHINGSTATION:
-          PromiseAll.push(deleteSwitchingStation([deleteData[i].id]))
-          break
-        case COLUMNCIRCUITBREAKER:
-          PromiseAll.push(deleteColumnCircuitBreaker([deleteData[i].id]))
-          break
-        case COLUMNTRANSFORMER:
-          PromiseAll.push(deleteColumnTransformer([deleteData[i].id]))
-          break
-        case CABLEBRANCHBOX:
-          PromiseAll.push(deleteCableBranchBox([deleteData[i].id]))
-          break
-        case CABLECIRCUIT: // 电缆线路
-          PromiseAll.push(deleteLineRelations([deleteData[i].id]))
-          break
-        case LINE: // 架空线路
-          PromiseAll.push(deleteLineRelations([deleteData[i].id]))
-          break
+    if (deleteData && deleteData.length) {
+      const PromiseAll = []
+      for (let i = 0; i < deleteData.length; i++) {
+        switch (deleteData[i].featureType) {
+          case TOWER:
+            PromiseAll.push(deleteTower([deleteData[i].id]))
+            break
+          case BOXTRANSFORMER:
+            PromiseAll.push(deleteBoxTransformer([deleteData[i].id]))
+            break
+          case POWERSUPPLY:
+            PromiseAll.push(deletePowerSupply([deleteData[i].id]))
+            break
+          case TRANSFORMERSUBSTATION:
+            PromiseAll.push(deleteTransformerSubstation([deleteData[i].id]))
+            break
+          case CABLEWELL:
+            PromiseAll.push(deleteCableWell([deleteData[i].id]))
+            break
+          case RINGNETWORKCABINET:
+            PromiseAll.push(deleteRingNetworkCabinet([deleteData[i].id]))
+            break
+          case ELECTRICITYDISTRIBUTIONROOM:
+            PromiseAll.push(deleteElectricityDistributionRoom([deleteData[i].id]))
+            break
+          case SWITCHINGSTATION:
+            PromiseAll.push(deleteSwitchingStation([deleteData[i].id]))
+            break
+          case COLUMNCIRCUITBREAKER:
+            PromiseAll.push(deleteColumnCircuitBreaker([deleteData[i].id]))
+            break
+          case COLUMNTRANSFORMER:
+            PromiseAll.push(deleteColumnTransformer([deleteData[i].id]))
+            break
+          case CABLEBRANCHBOX:
+            PromiseAll.push(deleteCableBranchBox([deleteData[i].id]))
+            break
+          case CABLECIRCUIT: // 电缆线路
+            PromiseAll.push(deleteLineRelations([deleteData[i].id]))
+            break
+          case LINE: // 架空线路
+            PromiseAll.push(deleteLineRelations([deleteData[i].id]))
+            break
+        }
       }
+      Promise.all(PromiseAll)
+        .then((res) => {
+          message.info('删除成功')
+        })
+        .catch((err) => {
+          message.info('删除失败')
+        })
     }
-    Promise.all(PromiseAll)
-      .then((res) => {
-        message.info('删除成功')
-      })
-      .catch((err) => {
-        message.info('删除失败')
-      })
+  }
+
+  const handleOk = async (modelForm: FormInstance) => {
+    // 上传间隔数据
+    try {
+      await stationItemsHandle({ transformerIntervalList: modelForm })
+      seteditModel(false)
+    } catch (err) {
+      seteditModel(false)
+    }
+  }
+  const handleCancel = () => {
+    seteditModel(false)
   }
 
   // 挂载地图
@@ -375,10 +417,13 @@ const GridMap = () => {
             label="电压等级"
             rules={[{ required: true, message: '请输入名称' }]}
           >
-            <Select dropdownStyle={{ zIndex: 3000 }}>
-              {KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
-                item.belonging.find((type: string) => type.includes(currentFeatureType))
-              ).map((item) => (
+            <Select
+              dropdownStyle={{ zIndex: 3000 }}
+              onChange={(value: number) => {
+                setcurrentLineKvLevel(value)
+              }}
+            >
+              {KVLEVELOPTIONS.map((item) => (
                 <Option key={item.kvLevel} value={item.kvLevel}>
                   {item.label}
                 </Option>
@@ -397,22 +442,6 @@ const GridMap = () => {
               <Form.Item name="mainWiringMode" label="主接线方式">
                 <Input />
               </Form.Item>
-              {/* <Form.Item name="aa" label="测试List">
-              <Form.List name="aa">
-                {(fields) =>
-                  fields.map((field) => (
-                    <>
-                      <Form.Item {...field}>
-                        <Input />
-                      </Form.Item>
-                      <Form.Item {...field}>
-                        <Input />
-                      </Form.Item>
-                    </>
-                  ))
-                }
-              </Form.List>
-              </Form.Item> */}
             </>
           )}
           {/* 电源 */}
@@ -483,7 +512,52 @@ const GridMap = () => {
           )}
 
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
-            <></>
+            <>
+              <Form.Item
+                name="lineType"
+                label="选择线路"
+                rules={[{ required: true, message: '请选择线路类型' }]}
+              >
+                <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
+                  <Option value="CableCircuit">电缆线路</Option>
+                  <Option value="Line">架空线路</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item
+                name="conductorModel"
+                label="线路型号"
+                rules={[{ required: true, message: '请选择线路型号' }]}
+              >
+                <Select dropdownStyle={{ zIndex: 3000 }}>
+                  {selectLineType === 'Line' && selectLineType
+                    ? LINEMODEL.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))
+                    : CABLECIRCUITMODEL.map((item) => (
+                        <Option key={item.value} value={item.value}>
+                          {item.label}
+                        </Option>
+                      ))}
+                </Select>
+              </Form.Item>
+              {currentLineKvLevel === 3 && (
+                <Form.Item
+                  name="color"
+                  label="线路颜色"
+                  rules={[{ required: true, message: '请选择线路颜色' }]}
+                >
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )}
+            </>
           ) : (
             <>
               <Form.Item name="lng" label="经度">
@@ -494,15 +568,187 @@ const GridMap = () => {
               </Form.Item>
             </>
           )}
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <Button type="primary" htmlType="submit">
-              确定
+          {currentFeatureType === TRANSFORMERSUBSTATION && (
+            <Form.Item label="出线间隔">
+              <Button
+                onClick={() => {
+                  seteditModel(true)
+                }}
+              >
+                编辑出线间隔
+              </Button>
+            </Form.Item>
+          )}
+          <Form.Item wrapperCol={{ offset: 5, span: 18 }}>
+            <Button type="primary" htmlType="submit" block>
+              保存
             </Button>
           </Form.Item>
         </Form>
       </Drawer>
+      {currentFeatureType === TRANSFORMERSUBSTATION && (
+        <EditTransformerSubstation
+          editModel={editModel}
+          id={currentfeatureData.id}
+          handleOk={handleOk}
+          handleCancel={handleCancel}
+        />
+      )}
     </>
   )
 }
 
 export default GridMap
+const formItemModelLayout = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 },
+}
+const EditTransformerSubstation = (props: any) => {
+  const { editModel, handleOk, handleCancel, id } = props
+
+  const FormRules = () => ({
+    validator(_: any, value: string) {
+      const reg = /^((?!0)\d{1,2}|100)$/
+      if (reg.test(value)) {
+        return Promise.resolve()
+      }
+      return Promise.reject(new Error('请输入0到100的正整数'))
+    },
+  })
+
+  // 获取所有所属线路
+  const { data, run } = useRequest(() => getIntervalByTransformer({ transformerId: id }), {
+    manual: true,
+    onSuccess: () => {
+      // 获取间隔数据，初始化表单
+      // console.log(data, '123456')
+    },
+  })
+
+  useEffect(() => {
+    id && editModel && run()
+  }, [run, id, editModel])
+
+  // getIntervalByTransformer
+
+  /** 转换数据 **/
+  const convertData = (data: any, id: string) => {
+    const Kv_110 = {
+      publicuse_110: '',
+      spare_110: '',
+      specialPurpose_110: '',
+      total_110: '',
+    }
+    const Kv_10 = {
+      publicuse_10: '',
+      spare_10: '',
+      specialPurpose_10: '',
+      total_10: '',
+    }
+    const Kv_35 = {
+      publicuse_35: '',
+      spare_35: '',
+      specialPurpose_35: '',
+      total_35: '',
+    }
+    for (let i = 0; i < Object.keys(data).length; i++) {
+      if (Object.keys(data)[i].includes('_10')) {
+        Kv_10[Object.keys(data)[i]] = data[Object.keys(data)[i]]
+      }
+      if (Object.keys(data)[i].includes('_110')) {
+        Kv_110[Object.keys(data)[i]] = data[Object.keys(data)[i]]
+      }
+      if (Object.keys(data)[i].includes('_35')) {
+        Kv_35[Object.keys(data)[i]] = data[Object.keys(data)[i]]
+      }
+    }
+    return [
+      {
+        publicuse: Kv_110.publicuse_110,
+        spare: Kv_110.spare_110,
+        specialPurpose: Kv_110.specialPurpose_110,
+        total: Kv_110.total_110,
+        type: 6,
+        transformerSubstationId: id,
+        id: createFeatureId(),
+      },
+      {
+        publicuse: Kv_10.publicuse_10,
+        spare: Kv_10.spare_10,
+        specialPurpose: Kv_10.specialPurpose_10,
+        total: Kv_10.total_10,
+        type: 3,
+        transformerSubstationId: id,
+        id: createFeatureId(),
+      },
+      {
+        publicuse: Kv_35.publicuse_35,
+        spare: Kv_35.spare_35,
+        specialPurpose: Kv_35.specialPurpose_35,
+        total: Kv_35.total_35,
+        type: 5,
+        transformerSubstationId: id,
+        id: createFeatureId(),
+      },
+    ]
+  }
+
+  const [form] = useForm()
+  return (
+    <Modal
+      title="编辑变压器出线间隔"
+      visible={editModel}
+      onOk={() => {
+        const formData = form.getFieldsValue()
+        const data = convertData(formData, id)
+        handleOk(data)
+      }}
+      onCancel={() => {
+        handleCancel()
+      }}
+    >
+      <div className="editTransformerSubstation">
+        <Form form={form} {...formItemModelLayout}>
+          <Form.Item label="110kV出线间隔公用" name="publicuse_110" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="110kV出线间隔专用" name="specialPurpose_110" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="110kV出线间隔备用" name="spare_110" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="110kV出线间隔总数" name="total_110" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="35kV出线间隔公用" name="publicuse_35" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="35kV出线间隔专用" name="specialPurpose_35" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="35kV出线间隔备用" name="spare_35" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="35kV出线间隔总数" name="total_35" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item label="10kV出线间隔公用" name="publicuse_10" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="10kV出线间隔专用" name="specialPurpose_10" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="10kV出线间隔备用" name="spare_10" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+          <Form.Item label="10kV出线间隔总数" name="total_10" rules={[FormRules]}>
+            <Input />
+          </Form.Item>
+        </Form>
+      </div>
+    </Modal>
+  )
+}

@@ -27,6 +27,7 @@ import {
   KVLEVELTYPES,
   LINEMODEL,
   POWERSUPPLY,
+  RINGNETWORKCABINET,
   TRANSFORMERSUBSTATION,
 } from './GridUtils'
 const { Option } = Select
@@ -55,6 +56,9 @@ const DrawToolbar = () => {
   const [selectLineType, setselectLineType] = useState('')
   const [currentKvleve, setcurrentKvleve] = useState<number>()
   const [currentFeature, setcurrentFeature] = useState('feature')
+  // const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '' })
+  // 变电站间隔模态框
+  // const [editModel, seteditModel] = useState(false)
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   /**所属厂站**/
@@ -127,6 +131,7 @@ const DrawToolbar = () => {
         // !!! 如果是变电站或者电源就需要刷新树形列表
         setisRefresh(false)
       }
+
       drawPoint(mapRef.map, {
         ...formData,
       })
@@ -156,6 +161,19 @@ const DrawToolbar = () => {
   useEffect(() => {
     run()
   }, [isRefresh, run])
+
+  // const handleOk = async (modelForm: FormInstance) => {
+  //   // // 上传间隔数据
+  //   // try {
+  //   //   await stationItemsHandle({ transformerIntervalList: modelForm })
+  //   //   seteditModel(false)
+  //   // } catch (err) {
+  //   //   seteditModel(false)
+  //   // }
+  // }
+  // const handleCancel = () => {
+  //   seteditModel(false)
+  // }
 
   return (
     <Drawer
@@ -298,7 +316,10 @@ const DrawToolbar = () => {
               )}
 
               {BELONGINGPROPERITIES.includes(currentFeatureType) && (
-                <Form.Item name="properties" label="性质">
+                <Form.Item
+                  name="properties"
+                  label={`${currentFeatureType === RINGNETWORKCABINET ? '' : '配变'}性质`}
+                >
                   <Select dropdownStyle={{ zIndex: 3000 }}>
                     <Option value="公变">公变</Option>
                     <Option value="专变">专变</Option>
@@ -312,6 +333,20 @@ const DrawToolbar = () => {
               <Form.Item name="lat" label="纬度">
                 <Input />
               </Form.Item>
+              {/* 变电站 */}
+              {/* {currentFeatureType === TRANSFORMERSUBSTATION && (
+                  <>
+                    <Form.Item label="出线间隔">
+                      <Button
+                        onClick={() => {
+                          seteditModel(true)
+                        }}
+                      >
+                        编辑出线间隔
+                      </Button>
+                    </Form.Item>
+                  </>
+                )} */}
             </Form>
           )}
         </TabPane>
@@ -407,3 +442,142 @@ const DrawToolbar = () => {
 }
 
 export default DrawToolbar
+
+// const formItemModelLayout = {
+//   labelCol: { span: 8 },
+//   wrapperCol: { span: 16 },
+// }
+// const EditTransformerSubstation = (props: any) => {
+//   const { editModel, handleOk, handleCancel, id } = props
+
+//   const FormRules = () => ({
+//     validator(_: any, value: string) {
+//       const reg = /^((?!0)\d{1,2}|100)$/
+//       if (reg.test(value)) {
+//         return Promise.resolve()
+//       }
+//       return Promise.reject(new Error('请输入0到100的正整数'))
+//     },
+//   })
+
+//   /** 转换数据 **/
+//   const convertData = (data: any, id: string) => {
+//     const Kv_110 = {
+//       publicuse_110: '',
+//       spare_110: '',
+//       specialPurpose_110: '',
+//       total_110: '',
+//     }
+//     const Kv_10 = {
+//       publicuse_10: '',
+//       spare_10: '',
+//       specialPurpose_10: '',
+//       total_10: '',
+//     }
+//     const Kv_35 = {
+//       publicuse_35: '',
+//       spare_35: '',
+//       specialPurpose_35: '',
+//       total_35: '',
+//     }
+//     for (let i = 0; i < Object.keys(data).length; i++) {
+//       if (Object.keys(data)[i].includes('_10')) {
+//         Kv_10[Object.keys(data)[i]] = data[Object.keys(data)[i]]
+//       }
+//       if (Object.keys(data)[i].includes('_110')) {
+//         Kv_110[Object.keys(data)[i]] = data[Object.keys(data)[i]]
+//       }
+//       if (Object.keys(data)[i].includes('_35')) {
+//         Kv_35[Object.keys(data)[i]] = data[Object.keys(data)[i]]
+//       }
+//     }
+//     return [
+//       {
+//         publicuse: Kv_110.publicuse_110,
+//         spare: Kv_110.spare_110,
+//         specialPurpose: Kv_110.specialPurpose_110,
+//         total: Kv_110.total_110,
+//         type: 6,
+//         transformerSubstationId: id,
+//         id: createFeatureId(),
+//       },
+//       {
+//         publicuse: Kv_10.publicuse_10,
+//         spare: Kv_10.spare_10,
+//         specialPurpose: Kv_10.specialPurpose_10,
+//         total: Kv_10.total_10,
+//         type: 3,
+//         transformerSubstationId: id,
+//         id: createFeatureId(),
+//       },
+//       {
+//         publicuse: Kv_35.publicuse_35,
+//         spare: Kv_35.spare_35,
+//         specialPurpose: Kv_35.specialPurpose_35,
+//         total: Kv_35.total_35,
+//         type: 5,
+//         transformerSubstationId: id,
+//         id: createFeatureId(),
+//       },
+//     ]
+//   }
+
+//   const [form] = useForm()
+//   return (
+//     <Modal
+//       title="编辑变压器出线间隔"
+//       visible={editModel}
+//       onOk={() => {
+//         const formData = form.getFieldsValue()
+//         const data = convertData(formData, id)
+//         handleOk(data)
+//       }}
+//       onCancel={() => {
+//         handleCancel()
+//       }}
+//     >
+//       <div className="editTransformerSubstation">
+//         <Form form={form} {...formItemModelLayout}>
+//           <Form.Item label="110kV出线间隔公用" name="publicuse_110" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="110kV出线间隔专用" name="specialPurpose_110" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="110kV出线间隔备用" name="spare_110" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="110kV出线间隔总数" name="total_110" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+
+//           <Form.Item label="35kV出线间隔公用" name="publicuse_35" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="35kV出线间隔专用" name="specialPurpose_35" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="35kV出线间隔备用" name="spare_35" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="35kV出线间隔总数" name="total_35" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+
+//           <Form.Item label="10kV出线间隔公用" name="publicuse_10" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="10kV出线间隔专用" name="specialPurpose_10" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="10kV出线间隔备用" name="spare_10" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//           <Form.Item label="10kV出线间隔总数" name="total_10" rules={[FormRules]}>
+//             <Input />
+//           </Form.Item>
+//         </Form>
+//       </div>
+//     </Modal>
+//   )
+// }
