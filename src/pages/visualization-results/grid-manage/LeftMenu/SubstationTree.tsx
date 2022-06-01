@@ -1,6 +1,7 @@
 import {
   deleteLine,
   featchSubstationTreeData,
+  getLineCompoment,
   getLineData,
   GetStationItems,
   getSubStations,
@@ -19,7 +20,7 @@ import {
   LINEMODEL,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { loadMapLayers } from '../GridMap/utils/initializeMap'
+import { getTotalLength, loadMapLayers } from '../GridMap/utils/initializeMap'
 
 interface infoType {
   event: React.MouseEvent<Element, MouseEvent>
@@ -44,6 +45,7 @@ interface TreeSelectType {
     title: string
     key: string
     name?: string
+    kvLevel?: number
     id?: string
     children: any[] | undefined
   }[]
@@ -210,16 +212,16 @@ const SubstationTree = () => {
   // 点击左键，编辑线路数据
   const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {
     const { selectedNodes } = info
-    if (selectedNodes.length && !selectedNodes[0].children) {
+    if (selectedNodes.length && !selectedNodes[0].children && selectedNodes[0].id) {
       setcurrentFeatureId(selectedNodes[0].id)
       const data = await getLineData(selectedNodes[0].id)
-      // const lines = await getLineCompoment([selectedNodes[0].id])
-      // !! 线路总长度
-      // console.log(lines, '123456')
-      // const length = getTotalLength()
+      const lines = await getLineCompoment([selectedNodes[0].id])
+      const length = getTotalLength(lines.lineRelationList)
+      selectedNodes[0].kvLevel && setcurrentLineKvLevel(selectedNodes[0].kvLevel)
       setIsModalVisible(true)
       form.setFieldsValue({
         ...data,
+        totalLength: length.toFixed(2),
       })
     }
   }

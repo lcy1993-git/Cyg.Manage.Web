@@ -30,8 +30,8 @@ export const featchSubstationTreeData = (params: string[]) => {
 export const getIntervalByTransformer = (params: { transformerId: string }) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/TransformerSubstation/GetIntervalByTransformer`, {
-      method: 'POST',
-      data: params,
+      method: 'GET',
+      params,
     })
   )
 }
