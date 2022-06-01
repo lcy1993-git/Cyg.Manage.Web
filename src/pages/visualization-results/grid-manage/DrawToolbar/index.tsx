@@ -1,4 +1,4 @@
-import { getAllBelongingLineItem } from '@/services/grid-manage/treeMenu'
+import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
 import {
   Button,
@@ -15,19 +15,35 @@ import {
 } from 'antd'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
-import { drawLine, drawPoint } from '../GridMap/utils/initializeMap'
+import {
+  clear,
+  drawLine,
+  drawPoint,
+  getDrawLines,
+  getDrawPoints,
+} from '../GridMap/utils/initializeMap'
 import {
   BELONGINGCAPACITY,
   BELONGINGLINE,
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
+  BOXTRANSFORMER,
+  CABLEBRANCHBOX,
   CABLECIRCUITMODEL,
+  CABLEWELL,
+  COLUMNCIRCUITBREAKER,
+  COLUMNTRANSFORMER,
+  createFeatureId,
+  ELECTRICITYDISTRIBUTIONROOM,
   FEATUREOPTIONS,
   KVLEVELOPTIONS,
   KVLEVELTYPES,
+  LINE,
   LINEMODEL,
   POWERSUPPLY,
   RINGNETWORKCABINET,
+  SWITCHINGSTATION,
+  TOWER,
   TRANSFORMERSUBSTATION,
 } from './GridUtils'
 const { Option } = Select
@@ -61,7 +77,8 @@ const DrawToolbar = () => {
   // const [editModel, seteditModel] = useState(false)
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
-  /**所属厂站**/
+  // 上传所有点位
+  const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
 
   const [kelevelOptions, setkelevelOptions] = useState([
     ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
@@ -118,10 +135,86 @@ const DrawToolbar = () => {
     }
   }
 
+  /** 上传本地数据 **/
+  const uploadLocalData = async () => {
+    const pointData = getDrawPoints()
+    const lineData = getDrawLines()
+    if ((pointData && pointData.length) || (lineData && lineData.length)) {
+      const powerSupplyList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === POWERSUPPLY
+      )
+      const transformerStationList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === TRANSFORMERSUBSTATION
+      )
+      const cableWellList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === CABLEWELL
+      )
+      const towerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === TOWER
+      )
+      const boxTransformerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === BOXTRANSFORMER
+      )
+      const ringNetworkCabinetList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === RINGNETWORKCABINET
+      )
+      const electricityDistributionRoomList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === ELECTRICITYDISTRIBUTIONROOM
+      )
+      const switchingStationList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === SWITCHINGSTATION
+      )
+      const columnCircuitBreakerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === COLUMNCIRCUITBREAKER
+      )
+      const columnTransformerList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === COLUMNTRANSFORMER
+      )
+      const cableBranchBoxList = pointData.filter(
+        (item: { featureType: string }) => item.featureType === CABLEBRANCHBOX
+      )
+      const lineElementRelationList = lineData.map((item: { lineType: string }) => {
+        return {
+          ...item,
+          isOverhead: item.lineType === LINE,
+        }
+      })
+      const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
+        return {
+          id: createFeatureId(),
+          transformerSubstationId: item.id,
+          publicuse: 0,
+          spare: 0,
+          specialPurpose: 0,
+          total: 0,
+        }
+      })
+      await stationItemsHandle({
+        towerList,
+        switchingStationList,
+        ringNetworkCabinetList,
+        electricityDistributionRoomList,
+        columnTransformerList,
+        columnCircuitBreakerList,
+        cableWellList,
+        cableBranchBoxList,
+        boxTransformerList,
+        powerSupplyList,
+        transformerStationList,
+        lineElementRelationList,
+        transformerIntervalList,
+      })
+    }
+  }
+
   /* 切换tab **/
   const tabsOnChange = (value: string) => {
     setcurrentFeature(value)
     form.resetFields()
+    // 上传本地绘制数据
+    uploadLocalData()
+    // 退出手动绘制
+    clear()
   }
 
   /** 插入图元 */
