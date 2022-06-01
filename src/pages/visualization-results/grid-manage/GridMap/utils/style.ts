@@ -45,6 +45,7 @@ export const pointStyle = (
   // 根据点位的类型设置图符
   switch (data.featureType) {
     case POWERSUPPLY: // 电源
+      color = 'rgba(64,56,31,1)'
       if (data.powerType === '水电') text = '\ue614'
       else if (data.powerType === '火电') text = '\ue609'
       else if (data.powerType === '风电') text = '\ue61c'
@@ -122,7 +123,7 @@ export const pointStyle = (
     styles.push(
       new Style({
         text: new Text({
-          // font: 'Normal 28px ' + font,
+          font: '14px Source Han Sans SC',
           text: data.name ? data.name : '',
           fill: new Fill({
             //文字填充色
@@ -183,7 +184,7 @@ export const lineStyle = (data: any, selected: boolean = false) => {
       color,
     }),
     text: new Text({
-      font: '12px Source Han Sans SC',
+      font: '16px Source Han Sans SC',
       text,
       placement: 'line',
       textAlign: 'center',
@@ -217,5 +218,6 @@ export const calculateDistance = (startLont: any, endLont: any) => {
   let distance = Math.sqrt(
     (startLontUTM[0] - endLonttUTM[0]) ** 2 + (startLontUTM[1] - endLonttUTM[1]) ** 2
   )
+  distance = parseFloat(distance.toFixed(2))
   return distance
 }

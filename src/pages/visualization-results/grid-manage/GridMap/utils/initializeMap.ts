@@ -1,7 +1,7 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
+import WKT from 'ol/format/WKT'
 import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
-// import Overlay from 'ol/Overlay'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
 import { XYZ } from 'ol/source'
@@ -9,8 +9,9 @@ import View from 'ol/View'
 import DrawTool from './draw'
 import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
+import { moveOverlay } from './overlay'
 import { getCurrrentSelectFeature, initSelect, setSelectActive } from './select'
-import { pointStyle } from './style'
+import { calculateDistance, pointStyle } from './style'
 interface pointType {
   featureType: string
   name?: string
@@ -64,26 +65,19 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
       .getSource()
       .getFeatures()
       .forEach((feature: any) => {
+        let isDraw = false
+        if (feature.get('data').type_) isDraw = true
         if (currrentSelectFeature && currrentSelectFeature === feature) {
-          feature.setStyle(pointStyle(feature.get('data'), true, level))
+          feature.setStyle(pointStyle(feature.get('data'), true, level, isDraw))
         } else {
-          if (feature.get('data').type_)
-            feature.setStyle(pointStyle(feature.get('data'), false, level, true))
-          else feature.setStyle(pointStyle(feature.get('data'), false, level))
+          feature.setStyle(pointStyle(feature.get('data'), false, level, isDraw))
         }
       })
   })
 
-  // mapRef.map.on('pointermove', (e: Event) => {
-  //   var tag = new Overlay({
-  //     position: ol.proj.fromLonLat([120.41, 28.82]),
-  //     positioning: 'center-center',
-  //     element: document.getElementById('tag'),
-  //     stopEvent: false
-  //   })
-  //   map.addOverlay(tag)
-
-  // })
+  mapRef.map.on('pointermove', (e: any) => {
+    moveOverlay(mapRef.map, e.coordinate)
+  })
 
   initSelect(mapRef.map, isActiveFeature)
   // drawPoint(mapRef.map, {})
@@ -120,6 +114,17 @@ export const getDrawLines = () => {
 
 export const loadMapLayers = (data: any, map: any) => {
   loadAllLayer(data, map)
+}
+
+export const getTotalLength = (data: any) => {
+  let totalLength = 0
+  data.forEach((item: any) => {
+    var format = new WKT()
+    const geomtery: any = format.readGeometry(data.geom)
+    const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
+    totalLength += length
+  })
+  return totalLength
 }
 
 export const clear = () => {

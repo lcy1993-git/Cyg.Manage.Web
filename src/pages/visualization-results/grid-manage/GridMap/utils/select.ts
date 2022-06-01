@@ -1,6 +1,6 @@
 import WKT from 'ol/format/WKT'
 import Point from 'ol/geom/Point'
-import { Select } from 'ol/interaction'
+import { Select, Translate } from 'ol/interaction'
 import { getLayer } from './loadLayer'
 import { lineStyle, pointStyle } from './style'
 interface pointType {
@@ -22,6 +22,7 @@ interface pointType {
   id: string
 }
 var select: any
+var translate: any
 var currrentSelectFeature: any
 var deleFeatures: any = []
 export const initSelect = (map: any, isActiveFeature: (data: pointType | null) => void) => {
@@ -43,20 +44,47 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
 
   select.on('select', (evt: any) => {
     if (evt.selected.length > 0) {
+      translate.setActive(true)
       currrentSelectFeature = evt.selected[0]
       /* 弹出属性显示框 **/
       // console.log(currrentSelectFeature.get('data'), '当前要素')
       isActiveFeature(currrentSelectFeature.get('data'))
+      if (currrentSelectFeature.getGeometry().getType() === 'Point') {
+        const isDraw = currrentSelectFeature.get('data').type_ ? true : false
+        currrentSelectFeature.setStyle(
+          pointStyle(currrentSelectFeature.get('data'), true, map.getView().getZoom(), isDraw)
+        )
+      } else {
+        translate.setActive(false)
+      }
     } else {
-      const isDraw = currrentSelectFeature.get('data').type_ ? true : false
-      currrentSelectFeature.setStyle(
-        pointStyle(currrentSelectFeature.get('data'), false, map.getView().getZoom(), isDraw)
-      )
+      if (currrentSelectFeature.getGeometry().getType() === 'Point') {
+        const isDraw = currrentSelectFeature.get('data').type_ ? true : false
+        currrentSelectFeature.setStyle(
+          pointStyle(currrentSelectFeature.get('data'), false, map.getView().getZoom(), isDraw)
+        )
+      }
       currrentSelectFeature = null
       isActiveFeature(null)
     }
   })
-  return select
+  initTranslate(map)
+}
+
+export const initTranslate = (map: any) => {
+  if (translate) map.removeInteraction(translate)
+  translate = new Translate({
+    features: select.getFeatures(),
+    hitTolerance: 10,
+  })
+  map.addInteraction(translate)
+
+  // translate.on('translatestart', (evt:any) => {
+  // })
+
+  translate.on('translating', (evt: any) => {})
+
+  translate.on('translateend', (evt: any) => {})
 }
 
 export const setSelectActive = (active: boolean) => {
