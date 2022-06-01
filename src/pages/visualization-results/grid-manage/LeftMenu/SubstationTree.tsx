@@ -203,7 +203,7 @@ const SubstationTree = () => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [])
+  }, [stationItemsHandle])
 
   useEffect(() => {
     isRefresh && getTree()
@@ -316,12 +316,12 @@ const SubstationTree = () => {
             </Form.Item>
             <Form.Item
               name="lineType"
-              label="选择线路"
+              label="线路类型"
               rules={[{ required: true, message: '请选择线路类型' }]}
             >
               <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
-                <Option value="CableCircuit">电缆线路</Option>
                 <Option value="Line">架空线路</Option>
+                <Option value="CableCircuit">电缆线路</Option>
               </Select>
             </Form.Item>
             <Form.Item

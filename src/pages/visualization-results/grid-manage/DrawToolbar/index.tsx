@@ -350,14 +350,14 @@ const DrawToolbar = () => {
               </Form.Item>
               <Form.Item
                 name="lineType"
-                label="选择线路"
+                label="线路类型"
                 rules={[{ required: true, message: '请选择线路类型' }]}
               >
                 <Row gutter={3}>
                   <Col span={16}>
                     <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
-                      <Option value="CableCircuit">电缆线路</Option>
                       <Option value="Line">架空线路</Option>
+                      <Option value="CableCircuit">电缆线路</Option>
                     </Select>
                   </Col>
                   <Col span={5} style={{ marginLeft: '10px' }}>
@@ -368,7 +368,7 @@ const DrawToolbar = () => {
                 </Row>
               </Form.Item>
               <Form.Item
-                name="conductorModel"
+                name="lineModel"
                 label="线路型号"
                 rules={[{ required: true, message: '请选择线路型号' }]}
               >

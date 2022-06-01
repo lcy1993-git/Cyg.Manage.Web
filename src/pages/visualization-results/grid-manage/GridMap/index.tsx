@@ -77,6 +77,7 @@ interface pointType {
   schedulingMode?: string
   lineId?: string
   capacity?: string
+  isOverhead?: boolean
   model?: string
   properties?: string
   lng?: string
@@ -203,11 +204,11 @@ const GridMap = () => {
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
-
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
         lng: geom[0],
+        lineType: featureData.isOverhead ? 'Line' : 'CableCircuit',
       })
     } else {
       form.resetFields()
@@ -515,16 +516,16 @@ const GridMap = () => {
             <>
               <Form.Item
                 name="lineType"
-                label="选择线路"
+                label="线路类型1"
                 rules={[{ required: true, message: '请选择线路类型' }]}
               >
                 <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
-                  <Option value="CableCircuit">电缆线路</Option>
                   <Option value="Line">架空线路</Option>
+                  <Option value="CableCircuit">电缆线路</Option>
                 </Select>
               </Form.Item>
               <Form.Item
-                name="conductorModel"
+                name="lineModel"
                 label="线路型号"
                 rules={[{ required: true, message: '请选择线路型号' }]}
               >

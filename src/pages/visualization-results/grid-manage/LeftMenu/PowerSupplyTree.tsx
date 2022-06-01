@@ -266,7 +266,7 @@ const PowerSupplyTree = () => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [])
+  }, [stationItemsHandle])
 
   return (
     <>
@@ -330,8 +330,8 @@ const PowerSupplyTree = () => {
               rules={[{ required: true, message: '请选择线路类型' }]}
             >
               <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
-                <Option value="CableCircuit">电缆线路</Option>
                 <Option value="Line">架空线路</Option>
+                <Option value="CableCircuit">电缆线路</Option>
               </Select>
             </Form.Item>
             <Form.Item
