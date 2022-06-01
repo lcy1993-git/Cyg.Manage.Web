@@ -55,14 +55,19 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
           pointStyle(currrentSelectFeature.get('data'), true, map.getView().getZoom(), isDraw)
         )
       } else {
+        currrentSelectFeature.setStyle(lineStyle(currrentSelectFeature.get('data'), true))
         translate.setActive(false)
       }
     } else {
-      if (currrentSelectFeature && currrentSelectFeature.getGeometry().getType() === 'Point') {
-        const isDraw = currrentSelectFeature.get('data').type_ ? true : false
-        currrentSelectFeature.setStyle(
-          pointStyle(currrentSelectFeature.get('data'), false, map.getView().getZoom(), isDraw)
-        )
+      if (currrentSelectFeature) {
+        if (currrentSelectFeature.getGeometry().getType() === 'Point') {
+          const isDraw = currrentSelectFeature.get('data').type_ ? true : false
+          currrentSelectFeature.setStyle(
+            pointStyle(currrentSelectFeature.get('data'), false, map.getView().getZoom(), isDraw)
+          )
+        } else {
+          currrentSelectFeature.setStyle(lineStyle(currrentSelectFeature.get('data'), false))
+        }
       }
       currrentSelectFeature = null
       isActiveFeature(null)
@@ -142,9 +147,9 @@ export const editFeature = (map: any, data: any) => {
     currrentSelectFeature.setGeometry(point)
     var format = new WKT()
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
-    currrentSelectFeature.set('data', data)
     currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
   }
+  currrentSelectFeature.set('data', data)
 
   // currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
 }
