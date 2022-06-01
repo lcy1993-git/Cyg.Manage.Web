@@ -218,6 +218,6 @@ export const calculateDistance = (startLont: any, endLont: any) => {
   let distance = Math.sqrt(
     (startLontUTM[0] - endLonttUTM[0]) ** 2 + (startLontUTM[1] - endLonttUTM[1]) ** 2
   )
-  distance = parseFloat(distance.toFixed(2))
+  distance = parseFloat(distance.toFixed(1))
   return distance
 }
