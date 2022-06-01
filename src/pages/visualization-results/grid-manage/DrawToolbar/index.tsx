@@ -164,7 +164,7 @@ const DrawToolbar = () => {
       getContainer={false}
       style={{
         position: 'absolute',
-        width: '378px',
+        width: drawToolbarVisible ? '378px' : 0,
         height: '100%',
         overflow: 'hidden',
         zIndex: zIndex === 'create' ? 1000 : 900,
@@ -298,7 +298,7 @@ const DrawToolbar = () => {
               )}
 
               {BELONGINGPROPERITIES.includes(currentFeatureType) && (
-                <Form.Item name="properties" label="配变性质">
+                <Form.Item name="properties" label="性质">
                   <Select dropdownStyle={{ zIndex: 3000 }}>
                     <Option value="公变">公变</Option>
                     <Option value="专变">专变</Option>
