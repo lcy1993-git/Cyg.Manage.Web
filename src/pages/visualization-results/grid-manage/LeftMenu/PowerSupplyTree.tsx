@@ -60,6 +60,7 @@ interface TreeSelectType {
     name?: string
     kvLevel?: number
     id?: string
+    isOverhead?: boolean
     children: any[] | undefined
   }[]
   nativeEvent: MouseEvent
@@ -229,6 +230,7 @@ const PowerSupplyTree = () => {
       form.setFieldsValue({
         ...data,
         totalLength: length.toFixed(2),
+        lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
       })
     }
   }

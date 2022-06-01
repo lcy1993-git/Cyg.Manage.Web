@@ -184,10 +184,16 @@ export const modifyCableBranchBox = (params: any) => {
     request(`${baseUrl.grid}/CableBranchBox/Modify`, { method: 'POST', data: params })
   )
 }
-/** 更新线路信息 **/
+/** 更新主线路信息 **/
 export const modifyLine = (params: any) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/Line/Modify`, { method: 'POST', data: params })
+  )
+}
+/** 更新线路端信息 **/
+export const modifyRelationLine = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Line/ModifyLineElementRelation`, { method: 'POST', data: params })
   )
 }
 /** 更新线路信息 **/

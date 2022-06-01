@@ -163,7 +163,8 @@ const DrawToolbar = () => {
 
   const FormRules = () => ({
     validator(_: any, value: string) {
-      const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
+      // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
+      const reg = /^([0]|[1-9][0-9]*)$/
       if (reg.test(value)) {
         return Promise.resolve()
       }
@@ -171,6 +172,33 @@ const DrawToolbar = () => {
     },
   })
 
+  const FormRuleslng = () => ({
+    validator: (_: any, value: string, callback: any) => {
+      const reg =
+        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      if (value === '') {
+        callback(new Error('请输入经度'))
+      } else {
+        if (!reg.test(value)) {
+          callback(new Error('经度范围：-180~180（保留小数点后十五位）'))
+        }
+        callback()
+      }
+    },
+  })
+  const FormRuleslat = () => ({
+    validator: (_: any, value: string, callback: any) => {
+      const reg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
+      if (value === '') {
+        callback(new Error('请输入纬度'))
+      } else {
+        if (!reg.test(value)) {
+          callback(new Error('纬度范围：-90~90（保留小数点后十五位）'))
+        }
+        callback()
+      }
+    },
+  })
   return (
     <Drawer
       title="手动绘制"
@@ -323,10 +351,10 @@ const DrawToolbar = () => {
                 </Form.Item>
               )}
 
-              <Form.Item name="lng" label="经度">
+              <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="lat" label="纬度">
+              <Form.Item name="lat" label="纬度" rules={[FormRuleslat]}>
                 <Input />
               </Form.Item>
             </Form>

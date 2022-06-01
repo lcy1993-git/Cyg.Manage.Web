@@ -10,7 +10,7 @@ import {
 } from '@/services/grid-manage/treeMenu'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Form, Input, message, Modal, Radio, Select, Tree } from 'antd'
+import { Form, Input, message, Modal, Select, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
@@ -46,6 +46,7 @@ interface TreeSelectType {
     key: string
     name?: string
     kvLevel?: number
+    isOverhead?: boolean
     id?: string
     children: any[] | undefined
   }[]
@@ -222,6 +223,7 @@ const SubstationTree = () => {
       form.setFieldsValue({
         ...data,
         totalLength: length.toFixed(2),
+        lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
       })
     }
   }
@@ -271,13 +273,13 @@ const SubstationTree = () => {
       <Modal title="编辑线路属性" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <div className="editTransformerSubstation">
           <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
-            <Form.Item
+            {/* <Form.Item
               name="name"
               label="线路名称"
               rules={[{ required: true, message: '请输入线路名称' }]}
             >
               <Input />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               name="belonging"
               label="所属厂站"
@@ -375,12 +377,12 @@ const SubstationTree = () => {
                 </Select>
               </Form.Item>
             )}
-            <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
+            {/* <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
               <Radio.Group>
                 <Radio value={true}>是</Radio>
                 <Radio value={false}>否</Radio>
               </Radio.Group>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </div>
       </Modal>

@@ -1,6 +1,6 @@
 import { createLine, GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
-import { Button, Form, Input, Modal, Radio, Select } from 'antd'
+import { Button, Form, Input, Modal, Select } from 'antd'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
@@ -211,12 +211,12 @@ const LeftMenu = (props: any) => {
               </Select>
             </Form.Item>
           )}
-          <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
+          {/* <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
             <Radio.Group>
               <Radio value={true}>是</Radio>
               <Radio value={false}>否</Radio>
             </Radio.Group>
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       </Modal>
     </div>

@@ -19,8 +19,8 @@ import {
   modifyColumnCircuitBreaker,
   modifyColumnTransformer,
   modifyElectricityDistributionRoom,
-  modifyLine,
   modifyPowerSupply,
+  modifyRelationLine,
   modifyRingNetworkCabinet,
   modifySwitchingStation,
   modifyTower,
@@ -204,6 +204,8 @@ const GridMap = () => {
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
+
+      //!!! console.log(featureData, '66666666')
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
@@ -263,13 +265,13 @@ const GridMap = () => {
           await modifyCableBranchBox(params)
           break
         case CABLECIRCUIT: // 电缆线路
-          await modifyLine({
+          await modifyRelationLine({
             ...params,
             isOverhead: false,
           })
           break
         case LINE: // 架空线路
-          await modifyLine({
+          await modifyRelationLine({
             ...params,
             isOverhead: true,
           })
@@ -383,6 +385,34 @@ const GridMap = () => {
     },
   })
 
+  const FormRuleslng = () => ({
+    validator: (_: any, value: string, callback: any) => {
+      const reg =
+        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      if (value === '') {
+        callback(new Error('请输入经度'))
+      } else {
+        if (!reg.test(value)) {
+          callback(new Error('经度范围：-180~180（保留小数点后十五位）'))
+        }
+        callback()
+      }
+    },
+  })
+  const FormRuleslat = () => ({
+    validator: (_: any, value: string, callback: any) => {
+      const reg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
+      if (value === '') {
+        callback(new Error('请输入纬度'))
+      } else {
+        if (!reg.test(value)) {
+          callback(new Error('纬度范围：-90~90（保留小数点后十五位）'))
+        }
+        callback()
+      }
+    },
+  })
+
   useEffect(() => {
     run()
   }, [isRefresh, run])
@@ -403,16 +433,19 @@ const GridMap = () => {
           width: zIndex === 'edit' ? '378px' : 0,
           height: '100%',
           overflow: 'hidden',
-          // display: zIndex === 'edit' ? 'block' : 'none',
+          display: zIndex === 'edit' ? 'block' : 'none',
           zIndex: zIndex === 'edit' ? 1000 : 900,
         }}
         mask={false}
         onClose={onClose}
       >
         <Form {...formItemLayout} style={{ marginTop: '10px' }} form={form} onFinish={onFinish}>
-          <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
-            <Input />
-          </Form.Item>
+          {currentFeatureType !== CABLECIRCUIT && currentFeatureType !== LINE && (
+            <Form.Item name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
+              <Input />
+            </Form.Item>
+          )}
+
           <Form.Item
             name="kvLevel"
             label="电压等级"
@@ -516,7 +549,7 @@ const GridMap = () => {
             <>
               <Form.Item
                 name="lineType"
-                label="线路类型1"
+                label="线路类型"
                 rules={[{ required: true, message: '请选择线路类型' }]}
               >
                 <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
@@ -561,10 +594,10 @@ const GridMap = () => {
             </>
           ) : (
             <>
-              <Form.Item name="lng" label="经度">
+              <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="lat" label="纬度">
+              <Form.Item name="lat" label="纬度" rules={[FormRuleslat]}>
                 <Input />
               </Form.Item>
             </>
@@ -576,7 +609,7 @@ const GridMap = () => {
                   seteditModel(true)
                 }}
               >
-                编辑出线间隔
+                出线间隔
               </Button>
             </Form.Item>
           )}
@@ -609,7 +642,8 @@ const EditTransformerSubstation = (props: any) => {
 
   const FormRules = () => ({
     validator(_: any, value: string) {
-      const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
+      // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
+      const reg = /^([0]|[1-9][0-9]*)$/
       if (reg.test(value)) {
         return Promise.resolve()
       }
