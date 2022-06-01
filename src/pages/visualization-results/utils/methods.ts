@@ -37,7 +37,7 @@ var mediaSignData: any
 var timer: any
 var mapMovetimer: any
 var mapMoveEnds: any[] = []
-var layerTypes: any[] = [1]
+var layerTypes: any[] = []
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -129,7 +129,7 @@ const refreshMap = async (
   // await loadPlanLayers(postData, groupLayers, map)
   // await loadDismantleLayers(postData, groupLayers, map)
   // await loadDesignLayers(postData, groupLayers, view, setView, map, location)
-  // await loadPreDesignLayers(groupLayers)
+  await loadPreDesignLayers(groupLayers)
   // for (let index = 0; index < lineClusters.length; index++) {
   //   const lineCluster = lineClusters[index]
   //   lineCluster.updateLabelControlValue(false)
@@ -967,13 +967,16 @@ const clearHighlightLayer = (map: any) => {
 }
 
 /**
+ *
  * 改变图层类型
  */
 const changeLayerType = (type: number, visible: boolean) => {
   if (visible) {
     layerTypes.push(type)
   } else {
-    layerTypes.forEach((layerType: number) => {})
+    layerTypes.forEach((layerType: number, index: number) => {
+      if (layerType === type) layerTypes.splice(index, index)
+    })
   }
 }
 
@@ -1085,4 +1088,5 @@ export {
   checkZoom,
   getLineClusters,
   getTrackRecordDateArray,
+  changeLayerType,
 }
