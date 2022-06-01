@@ -37,7 +37,12 @@ export const pointStyle = (
       color = `rgba(170,170,85,1)`
       break
     case 3:
-      color = data.color ? data.color : `rgba(212,212,0,1)`
+      color = data.color ? data.color : `#FF3E3E`
+      if (data.color === '青') color = '#00FFFF'
+      else if (data.color === '蓝') color = '#1EB9FF'
+      else if (data.color === '黄') color = '#F2DA00'
+      else if (data.color === '红') color = '#FF3E3E'
+      else if (data.color === '洋红') color = '#FF5ECF'
       break
     default:
       break
@@ -159,7 +164,12 @@ export const lineStyle = (data: any, selected: boolean = false) => {
       color = `rgba(170,170,85,1)`
       break
     case 3:
-      color = data.color ? data.color : `rgba(212,212,0,1)`
+      color = data.color ? data.color : `#FF3E3E`
+      if (data.color === '青') color = '#00FFFF'
+      else if (data.color === '蓝') color = '#1EB9FF'
+      else if (data.color === '黄') color = '#F2DA00'
+      else if (data.color === '红') color = '#FF3E3E'
+      else if (data.color === '洋红') color = '#FF5ECF'
       break
     default:
       break

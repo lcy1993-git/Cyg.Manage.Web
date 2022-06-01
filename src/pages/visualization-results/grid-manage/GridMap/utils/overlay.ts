@@ -19,6 +19,6 @@ export const moveOverlay = (map: any, coorC: any) => {
     addOverlay(map, coorC)
   }
   const lont = transform(coorC, 'EPSG:3857', 'EPSG:4326')
-  overlayLayer.getElement().innerHTML = `${lont[0].toFixed(2)}, ${lont[1].toFixed(2)}`
+  overlayLayer.getElement().innerHTML = `${lont[0].toFixed(4)}, ${lont[1].toFixed(4)}`
   overlayLayer.setPosition(coorC)
 }
