@@ -146,8 +146,10 @@ export const editFeature = (map: any, data: any) => {
     )
     currrentSelectFeature.setGeometry(point)
     var format = new WKT()
+    data.type_ = currrentSelectFeature.get('data').type_
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
-    currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
+    let isDraw = data.type_ ? true : false
+    currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom(), isDraw))
   }
   currrentSelectFeature.set('data', data)
 
