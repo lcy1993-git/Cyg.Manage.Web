@@ -37,7 +37,7 @@ const ProjectDetailInfo: React.FC<ProjectDetailInfoProps> = (props) => {
     return (
       <span>
         项目过程
-        {projectInfo?.sources.includes('被委托') &&
+        {projectInfo?.sources?.includes('被委托') &&
           projectInfo?.identitys.findIndex((item: any) => item.value === 4) > -1 &&
           projectInfo?.stateInfo.status === 14 &&
           judgmentMark?.showEntrustTip && <span className={styles.unread}></span>}

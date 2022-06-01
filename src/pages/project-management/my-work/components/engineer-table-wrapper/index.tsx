@@ -380,7 +380,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             onClick={() => checkProjectDetail(record.id, record.judgmentMark)}
           >
             {/* <span className={styles.unread}></span> */}
-            {record.sources.includes('被委托') &&
+            {record.sources?.includes('被委托') &&
               record.identitys.findIndex((item: any) => item.value === 4) > -1 &&
               record.stateInfo.status === 14 &&
               record.judgmentMark.showEntrustTip && (
@@ -443,7 +443,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       if (record.stateInfo.inheritStatus === 3) {
         return (
           <>
-            {record.sources.includes('被委托') &&
+            {record.sources?.includes('被委托') &&
               record.identitys.findIndex((item: any) => item.value === 4) > -1 &&
               record.stateInfo.status === 14 &&
               record.judgmentMark.showEntrustTip && (

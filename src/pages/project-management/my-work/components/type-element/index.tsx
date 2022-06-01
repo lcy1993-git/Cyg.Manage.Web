@@ -11,6 +11,7 @@ interface TypeElementProps {
 
 const TypeElement: React.FC<TypeElementProps> = (props) => {
   const { typeArray } = props
+
   return (
     <div className={styles.typeElement}>
       {typeArray && typeArray.length === 1 && (
