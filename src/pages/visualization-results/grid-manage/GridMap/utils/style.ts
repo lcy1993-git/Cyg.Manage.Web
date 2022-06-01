@@ -181,8 +181,8 @@ export const lineStyle = (data: any, selected: boolean = false) => {
   const geomtery: any = format.readGeometry(data.geom)
   const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
 
-  data.conductorModel = data.conductorModel ? data.conductorModel : ''
-  let text = `${data.conductorModel}   `
+  data.lineModel = data.lineModel ? data.lineModel : ''
+  let text = `${data.lineModel}   `
   text += length ? length.toFixed(2) + 'm' : ''
   let style = new Style({
     stroke: new Stroke({
