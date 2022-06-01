@@ -1,9 +1,14 @@
 import { createLine, GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
-import { Button, Form, Input, Modal, Radio, Select } from 'antd'
+import { Button, Form, Input, Modal, Select } from 'antd'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
-import { createFeatureId, KVLEVELOPTIONS } from '../DrawToolbar/GridUtils'
+import {
+  CABLECIRCUITMODEL,
+  createFeatureId,
+  KVLEVELOPTIONS,
+  LINEMODEL,
+} from '../DrawToolbar/GridUtils'
 import DrawGridToolbar from './DrawGridToolbar'
 import styles from './index.less'
 import PowerSupplyTree from './PowerSupplyTree'
@@ -28,7 +33,7 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const { setisRefresh } = useMyContext()
-
+  const [selectLineType, setselectLineType] = useState('')
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const showModal = () => {
@@ -65,9 +70,18 @@ const LeftMenu = (props: any) => {
     },
   })
 
+  /** 选择线路型号 */
+  const onChangeLineType = (value: string) => {
+    setselectLineType(value)
+    form.setFieldsValue({
+      lineType: value,
+      conductorModel: '',
+    })
+  }
+
   useEffect(() => {
     stationItemsHandle()
-  }, [])
+  }, [stationItemsHandle])
 
   return (
     <div className="w-full h-full bg-white flex flex-col">
@@ -137,6 +151,35 @@ const LeftMenu = (props: any) => {
             </Select>
           </Form.Item>
           <Form.Item
+            name="lineType"
+            label="线路类型"
+            rules={[{ required: true, message: '请选择线路类型' }]}
+          >
+            <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
+              <Option value="Line">架空线路</Option>
+              <Option value="CableCircuit">电缆线路</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="conductorModel"
+            label="线路型号"
+            rules={[{ required: true, message: '请选择线路型号' }]}
+          >
+            <Select dropdownStyle={{ zIndex: 3000 }}>
+              {selectLineType === 'Line' && selectLineType
+                ? LINEMODEL.map((item) => (
+                    <Option key={item.value} value={item.value}>
+                      {item.label}
+                    </Option>
+                  ))
+                : CABLECIRCUITMODEL.map((item) => (
+                    <Option key={item.value} value={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
             name="lineProperties"
             label="线路性质"
             rules={[{ required: true, message: '请选择线路性质' }]}
@@ -168,12 +211,12 @@ const LeftMenu = (props: any) => {
               </Select>
             </Form.Item>
           )}
-          <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
+          {/* <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
             <Radio.Group>
               <Radio value={true}>是</Radio>
               <Radio value={false}>否</Radio>
             </Radio.Group>
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       </Modal>
     </div>

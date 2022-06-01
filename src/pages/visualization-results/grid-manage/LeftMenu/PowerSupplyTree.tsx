@@ -60,6 +60,7 @@ interface TreeSelectType {
     name?: string
     kvLevel?: number
     id?: string
+    isOverhead?: boolean
     children: any[] | undefined
   }[]
   nativeEvent: MouseEvent
@@ -229,6 +230,7 @@ const PowerSupplyTree = () => {
       form.setFieldsValue({
         ...data,
         totalLength: length.toFixed(2),
+        lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
       })
     }
   }
@@ -266,7 +268,7 @@ const PowerSupplyTree = () => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [])
+  }, [stationItemsHandle])
 
   return (
     <>
@@ -330,8 +332,8 @@ const PowerSupplyTree = () => {
               rules={[{ required: true, message: '请选择线路类型' }]}
             >
               <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
-                <Option value="CableCircuit">电缆线路</Option>
                 <Option value="Line">架空线路</Option>
+                <Option value="CableCircuit">电缆线路</Option>
               </Select>
             </Form.Item>
             <Form.Item
