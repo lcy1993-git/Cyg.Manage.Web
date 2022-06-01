@@ -2,6 +2,7 @@ import {
   deleteLine,
   featchSubstationTreeData,
   fetchGridManageMenu,
+  getLineCompoment,
   getLineData,
   GetStationItems,
   getSubStations,
@@ -14,7 +15,7 @@ import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import { CABLECIRCUITMODEL, KVLEVELOPTIONS, LINEMODEL, POWERSUPPLY } from '../DrawToolbar/GridUtils'
-import { loadMapLayers } from '../GridMap/utils/initializeMap'
+import { getTotalLength, loadMapLayers } from '../GridMap/utils/initializeMap'
 
 interface lineListItemType {
   belonging: string
@@ -57,6 +58,7 @@ interface TreeSelectType {
     title: string
     key: string
     name?: string
+    kvLevel?: number
     id?: string
     children: any[] | undefined
   }[]
@@ -219,13 +221,14 @@ const PowerSupplyTree = () => {
     if (selectedNodes.length && !selectedNodes[0].children && selectedNodes[0].id) {
       setcurrentFeatureId(selectedNodes[0].id)
       const data = await getLineData(selectedNodes[0].id)
-      // const lines = await getLineCompoment([selectedNodes[0].id])
+      const lines = await getLineCompoment([selectedNodes[0].id])
       // // !! 线路总长度
-      // console.log(lines, '123456')
-      // const length = getTotalLength()
+      const length = getTotalLength(lines.lineRelationList)
+      selectedNodes[0].kvLevel && setcurrentLineKvLevel(selectedNodes[0].kvLevel)
       setIsModalVisible(true)
       form.setFieldsValue({
         ...data,
+        totalLength: length.toFixed(2),
       })
     }
   }

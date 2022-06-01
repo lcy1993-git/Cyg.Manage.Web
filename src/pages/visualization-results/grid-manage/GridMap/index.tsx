@@ -608,7 +608,7 @@ const EditTransformerSubstation = (props: any) => {
 
   const FormRules = () => ({
     validator(_: any, value: string) {
-      const reg = /^((?!0)\d{1,2}|100)$/
+      const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
       if (reg.test(value)) {
         return Promise.resolve()
       }
@@ -621,7 +621,32 @@ const EditTransformerSubstation = (props: any) => {
     manual: true,
     onSuccess: () => {
       // 获取间隔数据，初始化表单
-      // console.log(data, '123456')
+      if (data && data.length) {
+        const formData = {}
+        data.forEach((item) => {
+          if (item.type === 6) {
+            formData['publicuse_110'] = item.publicuse || 0
+            formData['spare_110'] = item.spare || 0
+            formData['specialPurpose_110'] = item.specialPurpose || 0
+            formData['total_110'] = item.total || 0
+          }
+          if (item.type === 5) {
+            formData['publicuse_35'] = item.publicuse || 0
+            formData['spare_35'] = item.spare || 0
+            formData['specialPurpose_35'] = item.specialPurpose || 0
+            formData['total_35'] = item.total || 0
+          }
+          if (item.type === 3) {
+            formData['publicuse_10'] = item.publicuse || 0
+            formData['spare_10'] = item.spare || 0
+            formData['specialPurpose_10'] = item.specialPurpose || 0
+            formData['total_10'] = item.total || 0
+          }
+        })
+        form.setFieldsValue({
+          ...formData,
+        })
+      }
     },
   })
 
@@ -701,9 +726,11 @@ const EditTransformerSubstation = (props: any) => {
       onOk={() => {
         const formData = form.getFieldsValue()
         const data = convertData(formData, id)
+        form.resetFields()
         handleOk(data)
       }}
       onCancel={() => {
+        form.resetFields()
         handleCancel()
       }}
     >

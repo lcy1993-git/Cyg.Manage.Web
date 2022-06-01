@@ -128,7 +128,6 @@ const DrawToolbar = () => {
       await form.validateFields()
       const formData = form.getFieldsValue()
       if (formData.featureType === TRANSFORMERSUBSTATION || formData.featureType === POWERSUPPLY) {
-        // !!! 如果是变电站或者电源就需要刷新树形列表
         setisRefresh(false)
       }
 

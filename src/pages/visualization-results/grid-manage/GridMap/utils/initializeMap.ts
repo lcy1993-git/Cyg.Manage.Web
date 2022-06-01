@@ -45,8 +45,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
     layers: [
       new TileLayer({
         source: new XYZ({
-          url:
-            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
@@ -120,7 +119,7 @@ export const getTotalLength = (data: any) => {
   let totalLength = 0
   data.forEach((item: any) => {
     var format = new WKT()
-    const geomtery: any = format.readGeometry(data.geom)
+    const geomtery: any = format.readGeometry(item.geom)
     const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
     totalLength += length
   })
