@@ -153,7 +153,7 @@ const LeftMenu = (props: any) => {
               <Form.Item name="totalCapacity" label="配变总容量">
                 <Input disabled />
               </Form.Item> */}
-          {!currentLineKvLevel && (
+          {currentLineKvLevel === 3 && (
             <Form.Item
               name="color"
               label="线路颜色"

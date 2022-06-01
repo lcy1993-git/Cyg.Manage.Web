@@ -5,7 +5,7 @@ import {
   deleteColumnCircuitBreaker,
   deleteColumnTransformer,
   deleteElectricityDistributionRoom,
-  deleteLine,
+  deleteLineRelations,
   deletePowerSupply,
   deleteRingNetworkCabinet,
   deleteSwitchingStation,
@@ -54,7 +54,7 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
-import { deletCurrrentSelectFeature, getDeleFeatures } from './utils/select'
+import { deletCurrrentSelectFeature, editFeature, getDeleFeatures } from './utils/select'
 interface BelongingLineType {
   id: string
   name: string
@@ -161,24 +161,30 @@ const GridMap = () => {
     }
   }
 
-  const isActiveFeature = (data: pointType) => {
-    const featureData = { ...data }
-    setvisible(true)
-    setzIndex('edit')
-    setcurrentFeatureType(featureData.featureType)
-    setcurrentfeatureData({
-      id: featureData.id,
-      geom: featureData.geom,
-    })
-    const geom = featureData.geom
-      .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
-      .split(' ')
+  const isActiveFeature = (data: pointType | null) => {
+    if (data) {
+      const featureData = { ...data }
+      setvisible(true)
+      setzIndex('edit')
+      form.resetFields()
+      setcurrentFeatureType(featureData.featureType)
+      setcurrentfeatureData({
+        id: featureData.id,
+        geom: featureData.geom,
+      })
+      const geom = featureData.geom
+        .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
+        .split(' ')
 
-    form.setFieldsValue({
-      ...featureData,
-      lat: geom[1],
-      lng: geom[0],
-    })
+      form.setFieldsValue({
+        ...featureData,
+        lat: geom[1],
+        lng: geom[0],
+      })
+    } else {
+      form.resetFields()
+      setvisible(false)
+    }
   }
 
   const onClose = () => {
@@ -241,6 +247,10 @@ const GridMap = () => {
           })
           break
       }
+      editFeature(mapRef.map, {
+        ...params,
+        featureType: currentFeatureType,
+      })
       message.info('上传成功')
     } catch (err) {
       message.error('上传失败')
@@ -287,10 +297,10 @@ const GridMap = () => {
           PromiseAll.push(deleteCableBranchBox([deleteData[i].id]))
           break
         case CABLECIRCUIT: // 电缆线路
-          PromiseAll.push(deleteLine([deleteData[i].id]))
+          PromiseAll.push(deleteLineRelations([deleteData[i].id]))
           break
         case LINE: // 架空线路
-          PromiseAll.push(deleteLine([deleteData[i].id]))
+          PromiseAll.push(deleteLineRelations([deleteData[i].id]))
           break
       }
     }
@@ -337,6 +347,10 @@ const GridMap = () => {
   return (
     <>
       <div ref={ref} id="map" className="w-full h-full"></div>
+      <div
+        id="tag"
+        style={{ border: '1px solid black', background: 'white', padding: '0 5px' }}
+      ></div>
       <Drawer
         title={`编辑${FEATUERTYPE[currentFeatureType]}属性`}
         visible={visible}
@@ -383,6 +397,22 @@ const GridMap = () => {
               <Form.Item name="mainWiringMode" label="主接线方式">
                 <Input />
               </Form.Item>
+              {/* <Form.Item name="aa" label="测试List">
+              <Form.List name="aa">
+                {(fields) =>
+                  fields.map((field) => (
+                    <>
+                      <Form.Item {...field}>
+                        <Input />
+                      </Form.Item>
+                      <Form.Item {...field}>
+                        <Input />
+                      </Form.Item>
+                    </>
+                  ))
+                }
+              </Form.List>
+              </Form.Item> */}
             </>
           )}
           {/* 电源 */}

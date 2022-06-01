@@ -15,7 +15,7 @@ class DrawTool {
   options: any
   draw: any
   snap: any
-  selset: any
+  translate: any
   source: any
   gridManageData: any[]
   constructor(map: any, options: any) {
@@ -36,7 +36,7 @@ class DrawTool {
       options.lat = parseFloat(options.lat)
       const point = new Point([options.lng, options.lat]).transform('EPSG:4326', 'EPSG:3857')
       const feature: any = new Feature(point)
-      feature.setStyle(pointStyle(options))
+      feature.setStyle(pointStyle(options, false, this.map.getView().getZoom(), true))
       var format = new WKT()
       options.geom = format.writeGeometry(
         feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
@@ -62,7 +62,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'Point') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = ''
+          feature.get('data').type_ = 'saveEnd'
         }
       })
     return featrues
@@ -77,7 +77,7 @@ class DrawTool {
       .forEach((feature: any) => {
         if (feature.get('data').type_ === 'LineString') {
           featrues.push(feature.get('data'))
-          feature.get('data').type_ = ''
+          feature.get('data').type_ = 'saveEnd'
         }
       })
     return featrues
@@ -117,7 +117,7 @@ class DrawTool {
       if (e.feature.getGeometry().getType() === 'LineString') {
         this_.handleLine(this_.source, e.feature)
       } else {
-        e.feature.setStyle(pointStyle(this_.options))
+        e.feature.setStyle(pointStyle(this_.options, false, this_.map.getView().getZoom(), true))
         const coordinates = e.feature.getGeometry().getCoordinates()
         const lont = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
         const featureData = { ...this_.options }
@@ -150,7 +150,7 @@ class DrawTool {
         let nextPonintY = origin[index + 1][1]
 
         const featureData = { ...feature.getProperties().data }
-        const node1: any = this.handleLine_node(x, y, feature.get('data').featureType, true)
+        const node1: any = this.handleLine_node(x, y, feature.get('data'), true)
         x = node1.getGeometry().getCoordinates()[0]
         y = node1.getGeometry().getCoordinates()[1]
         featureData.startId = node1.get('data').id
@@ -161,7 +161,7 @@ class DrawTool {
         const node2: any = this.handleLine_node(
           nextPonintX,
           nextPonintY,
-          feature.get('data').featureType,
+          feature.get('data'),
           isAdd
         )
 
@@ -202,17 +202,23 @@ class DrawTool {
     }, 0)
   }
 
-  handleLine_node = (lont: number, lat: number, featureType: string, isAdd: boolean) => {
+  handleLine_node = (lont: number, lat: number, lineData: any, isAdd: boolean) => {
     let node
     const pixel = this.map.getPixelFromCoordinate([lont, lat])
-    this.map.forEachFeatureAtPixel(pixel, function (feature: any, layer: any) {
-      if (layer.get('name') === 'pointLayer') node = feature
-    })
+    this.map.forEachFeatureAtPixel(
+      pixel,
+      function (feature: any, layer: any) {
+        if (layer && layer.get('name') === 'pointLayer') node = feature
+      },
+      {
+        hitTolerance: 5,
+      }
+    )
     if (!node && isAdd) {
       let pointLayer = getLayer(this.map, 'pointLayer', 3)
       let point = new Point([lont, lat])
       node = new Feature(point)
-      const data: any = {}
+      const data: any = { ...lineData }
       const coordinates = point.getCoordinates()
       const lont_ = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
       data.lineId = this.options.lineId
@@ -221,13 +227,12 @@ class DrawTool {
       var format = new WKT()
       data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
 
-      if (featureType === LINE) {
+      if (lineData.featureType === LINE) {
         data.featureType = TOWER
-        node.setStyle(pointStyle(data))
-      } else if (featureType === CABLECIRCUIT) {
+      } else if (lineData.featureType === CABLECIRCUIT) {
         data.featureType = CABLEWELL
-        node.setStyle(pointStyle(data))
       }
+      node.setStyle(pointStyle(data, false, this.map.getView().getZoom(), true))
       data.id = createFeatureId()
       data.type_ = 'Point'
       node.set('data', data)

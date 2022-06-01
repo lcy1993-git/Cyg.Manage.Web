@@ -1,4 +1,5 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
+import WKT from 'ol/format/WKT'
 import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
@@ -8,8 +9,9 @@ import View from 'ol/View'
 import DrawTool from './draw'
 import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
+import { moveOverlay } from './overlay'
 import { getCurrrentSelectFeature, initSelect, setSelectActive } from './select'
-import { pointStyle } from './style'
+import { calculateDistance, pointStyle } from './style'
 interface pointType {
   featureType: string
   name?: string
@@ -31,7 +33,7 @@ interface pointType {
 interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
-  isActiveFeature: (data: pointType) => void
+  isActiveFeature: (data: pointType | null) => void
 }
 var drawTool: any
 var pointLayer: any
@@ -43,7 +45,8 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
     layers: [
       new TileLayer({
         source: new XYZ({
-          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url:
+            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
@@ -56,19 +59,24 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   mapRef.map.on('moveend', (e: Event) => {
     mapMoveend(e, mapRef.map)
     pointLayer = getLayer(mapRef.map, 'pointLayer')
-    const level = mapRef.map.getView().getZoom()
-    const isShowText = parseFloat(level + '') > 16 ? true : false
+    const level = parseFloat(mapRef.map.getView().getZoom() + '')
     const currrentSelectFeature = getCurrrentSelectFeature()
     pointLayer
       .getSource()
       .getFeatures()
       .forEach((feature: any) => {
+        let isDraw = false
+        if (feature.get('data').type_) isDraw = true
         if (currrentSelectFeature && currrentSelectFeature === feature) {
-          feature.setStyle(pointStyle(feature.get('data'), true, isShowText))
+          feature.setStyle(pointStyle(feature.get('data'), true, level, isDraw))
         } else {
-          feature.setStyle(pointStyle(feature.get('data'), false, isShowText))
+          feature.setStyle(pointStyle(feature.get('data'), false, level, isDraw))
         }
       })
+  })
+
+  mapRef.map.on('pointermove', (e: any) => {
+    moveOverlay(mapRef.map, e.coordinate)
   })
 
   initSelect(mapRef.map, isActiveFeature)
@@ -106,6 +114,17 @@ export const getDrawLines = () => {
 
 export const loadMapLayers = (data: any, map: any) => {
   loadAllLayer(data, map)
+}
+
+export const getTotalLength = (data: any) => {
+  let totalLength = 0
+  data.forEach((item: any) => {
+    var format = new WKT()
+    const geomtery: any = format.readGeometry(data.geom)
+    const length = calculateDistance(geomtery.getCoordinates()[0], geomtery.getCoordinates()[1])
+    totalLength += length
+  })
+  return totalLength
 }
 
 export const clear = () => {

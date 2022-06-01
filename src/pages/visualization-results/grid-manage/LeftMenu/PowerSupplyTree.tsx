@@ -1,7 +1,13 @@
-import { featchPowerSupplyTreeData, fetchGridManageMenu } from '@/services/grid-manage/treeMenu'
+import {
+  deleteLine,
+  featchPowerSupplyTreeData,
+  fetchGridManageMenu,
+} from '@/services/grid-manage/treeMenu'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Tree } from 'antd'
-import { useEffect, useState } from 'react'
+import { message, Modal, Tree } from 'antd'
+import { EventDataNode } from 'antd/es/tree'
+import { Key, useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 
@@ -29,10 +35,22 @@ interface PowerSupplyListType {
   schedulingMode: string // 调度方式
   lines: Array<lineListItemType>
 }
-
+interface TreeSelectType {
+  event: 'select'
+  selected: boolean
+  node: EventDataNode
+  selectedNodes: {
+    title: string
+    key: string
+    name?: string
+    id?: string
+    children: any[] | undefined
+  }[]
+  nativeEvent: MouseEvent
+}
 const PowerSupplyTree = () => {
   const { data, run: getTree } = useRequest(() => fetchGridManageMenu(), { manual: true })
-  const { mapRef, isRefresh } = useMyContext()
+  const { mapRef, isRefresh, setisRefresh } = useMyContext()
   const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   // console.log(data, '数据')
   const treeData = [
@@ -79,6 +97,31 @@ const PowerSupplyTree = () => {
     checkedKeys.length && getTreeData()
   }, [checkedKeys, getTreeData])
 
+  const onSelect = (selectedKeys: Key[], info: TreeSelectType) => {
+    const { selectedNodes } = info
+    if (selectedNodes.length && !selectedNodes[0].children) {
+      setisRefresh(false)
+      Modal.confirm({
+        title: '确认删除该条线路吗？',
+        icon: <ExclamationCircleOutlined />,
+        content: `${selectedNodes[0].name}`,
+        okText: '确认',
+        cancelText: '取消',
+        onOk: async () => {
+          try {
+            await deleteLine([selectedNodes[0].id])
+            setisRefresh(true)
+            message.info('删除成功')
+            const currentSelectLineIds = checkedKeys.filter((item) => item !== selectedNodes[0].id)
+            setCheckedKeys(currentSelectLineIds)
+          } catch (err) {
+            message.error('删除失败')
+          }
+        },
+      })
+    }
+  }
+
   const getPowerSupplyTreeData = (checkedKeys: any) => {
     const checkedIds = checkedKeys.filter((item: string) => !item.includes('-'))
     setCheckedKeys(checkedIds)
@@ -102,6 +145,14 @@ const PowerSupplyTree = () => {
     }
   }
 
-  return <Tree checkable defaultExpandAll onCheck={getPowerSupplyTreeData} treeData={treeData} />
+  return (
+    <Tree
+      checkable
+      defaultExpandAll
+      onCheck={getPowerSupplyTreeData}
+      onSelect={onSelect}
+      treeData={treeData}
+    />
+  )
 }
 export default PowerSupplyTree

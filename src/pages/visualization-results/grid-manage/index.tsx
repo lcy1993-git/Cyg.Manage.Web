@@ -66,10 +66,11 @@ const GradManageWrap: React.FC = () => {
       >
         {/* 左侧菜单 */}
         <div
-          className={`absolute h-full z-10`}
+          className={`absolute h-full`}
           style={{
             width: `${LEFTMENUWIDTH}px`,
             transition: 'all 0.5s',
+            zIndex: 100,
             transform: leftMenuVisible ? `translateX(0px)` : `translateX(-${LEFTMENUWIDTH + 10}px)`,
           }}
         >
@@ -100,8 +101,9 @@ const GradManageWrap: React.FC = () => {
           <GridMap />
           {/* 工具栏 */}
           <DrawToolbar />
-
+          {/* 地图源切换 */}
           <ChangMapUrl />
+          {/* excel数据导入模板 */}
           <ExcelImportData />
         </div>
       </div>

@@ -14,7 +14,13 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
-export const pointStyle = (data: any, selected: boolean = false, isShowText: boolean = false) => {
+import Configs from './config'
+export const pointStyle = (
+  data: any,
+  selected: boolean,
+  level: number,
+  isDraw: boolean = false
+) => {
   let text,
     font = 'gridManageIconfont',
     zIndex = 3
@@ -39,6 +45,7 @@ export const pointStyle = (data: any, selected: boolean = false, isShowText: boo
   // 根据点位的类型设置图符
   switch (data.featureType) {
     case POWERSUPPLY: // 电源
+      color = 'rgba(64,56,31,1)'
       if (data.powerType === '水电') text = '\ue614'
       else if (data.powerType === '火电') text = '\ue609'
       else if (data.powerType === '风电') text = '\ue61c'
@@ -91,10 +98,15 @@ export const pointStyle = (data: any, selected: boolean = false, isShowText: boo
 
   color = selected ? `rgba(110, 74, 192, 1)` : color
   zIndex = selected ? 99 : zIndex
+
+  const config = Configs.find((item: any) => item.name === data.featureType)
+  const size = config && config.size ? config.size : 22
+
+  color = config && config.zoom && !isDraw && level < config.zoom ? 'rgba(110, 74, 192, 0)' : color
   let styles = [
     new Style({
       text: new Text({
-        font: 'Normal 28px ' + font,
+        font: `Normal ${size}px ${font}`,
         text,
         fill: new Fill({
           color: color,
@@ -107,11 +119,11 @@ export const pointStyle = (data: any, selected: boolean = false, isShowText: boo
       zIndex: zIndex,
     }),
   ]
-  if (isShowText || selected)
+  if ((config && config.textZoom && level > config.textZoom) || (config && !config.textZoom))
     styles.push(
       new Style({
         text: new Text({
-          // font: 'Normal 28px ' + font,
+          font: '14px Source Han Sans SC',
           text: data.name ? data.name : '',
           fill: new Fill({
             //文字填充色
@@ -172,7 +184,7 @@ export const lineStyle = (data: any, selected: boolean = false) => {
       color,
     }),
     text: new Text({
-      font: '12px Source Han Sans SC',
+      font: '16px Source Han Sans SC',
       text,
       placement: 'line',
       textAlign: 'center',
@@ -206,5 +218,6 @@ export const calculateDistance = (startLont: any, endLont: any) => {
   let distance = Math.sqrt(
     (startLontUTM[0] - endLonttUTM[0]) ** 2 + (startLontUTM[1] - endLonttUTM[1]) ** 2
   )
+  distance = parseFloat(distance.toFixed(2))
   return distance
 }
