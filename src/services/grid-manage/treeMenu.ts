@@ -26,6 +26,15 @@ export const featchSubstationTreeData = (params: string[]) => {
     request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
   )
 }
+/** 获取变电站下面的网架数据 **/
+export const getIntervalByTransformer = (params: { transformerId: string }) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/TransformerSubstation/GetIntervalByTransformer`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
 
 export const featchPowerSupplyTreeData = (params: { ids: string[] }) => {
   return cyRequest<any[]>(() =>
@@ -74,10 +83,9 @@ export const uploadAllFeature = (params: any) => {
   )
 }
 
-export const deleteCompany = (companyId: string) => {
-  return cyRequest(() =>
-    request(`${baseUrl.project}/CompanyTree/Delete`, { method: 'GET', params: { companyId } })
-  )
+/** 根据ID获取线路信息 **/
+export const getLineData = (id: string | undefined) => {
+  return cyRequest(() => request(`${baseUrl.grid}/Line/GetById`, { method: 'GET', params: { id } }))
 }
 
 /** 创建变电站 */
