@@ -5,6 +5,7 @@ import CheckSource from '../../components/check-source'
 import Iconfont from '../../history-grid/components/iconfont'
 import MapSwitcher from '../../history-grid/MapSwitcher'
 import { useHistoryGridContext } from '../../history-grid/store'
+import { useMyContext } from '../Context'
 import FlowLayer from './FlowLayer'
 const ChangMapUrl = () => {
   const { UIStatus, dispatch, historyDataSource, preDesignDataSource } = useHistoryGridContext()
@@ -15,6 +16,7 @@ const ChangMapUrl = () => {
   const [satellite, setSatellite] = useState(0)
 
   const prop = { street, setStreet, satellite, setSatellite }
+  const { drawToolbarVisible } = useMyContext()
 
   const onClick = useCallback(
     (key: string) => {
@@ -35,44 +37,46 @@ const ChangMapUrl = () => {
   )
 
   return (
-    <FlowLayer className="select-none z-50" bottom={0} right={15}>
-      <div className="text-right">
-        <div>
-          <IconSwitcher
-            title="显示/关闭名称"
-            flag="showTitle"
-            onClick={onClick}
-            icon={false ? 'icon-xianshi' : 'icon-yincang'}
-          />
-        </div>
+    <FlowLayer className="select-none" bottom={0} right={15}>
+      {!drawToolbarVisible && (
+        <>
+          <div className="text-right">
+            <div>
+              <IconSwitcher
+                title="显示/关闭名称"
+                flag="showTitle"
+                onClick={onClick}
+                icon={false ? 'icon-xianshi' : 'icon-yincang'}
+              />
+            </div>
 
-        <div>
-          <IconSwitcher
-            title="定位到当前位置"
-            flag="currentLocation"
-            onClick={() => {}}
-            icon="icon-a-dingweidaodangqianweizhi_n-fuben"
-            className="hover:text-theme-green"
-          />
-        </div>
+            <div>
+              <IconSwitcher
+                title="定位到当前位置"
+                flag="currentLocation"
+                onClick={() => {}}
+                icon="icon-a-dingweidaodangqianweizhi_n-fuben"
+                className="hover:text-theme-green"
+              />
+            </div>
 
-        <div>
-          <IconSwitcher
-            title={'定位到现有网架'}
-            flag="currentProject"
-            onClick={() => {}}
-            // className={is Click able ? `hover:text-theme-green cursor-pointer` : 'cursor-not-allowed'}
-            className={`hover:text-theme-green cursor-pointer`}
-            icon="icon-a-dingweidaoxianyouwangjia_n-fuben"
-          />
-        </div>
-      </div>
-      {/* <div className="w-full h-30 flex justify-end">
-        <CheckSource type={sourceType} map={map!} setSourceType={() => {}} {...prop} />
-      </div> */}
-      <div className="w-full h-30 flex justify-end">
-        <MapSwitcher onChange={onMapTypeChange} />
-      </div>
+            <div>
+              <IconSwitcher
+                title={'定位到现有网架'}
+                flag="currentProject"
+                onClick={() => {}}
+                // className={is Click able ? `hover:text-theme-green cursor-pointer` : 'cursor-not-allowed'}
+                className={`hover:text-theme-green cursor-pointer`}
+                icon="icon-a-dingweidaoxianyouwangjia_n-fuben"
+              />
+            </div>
+          </div>
+
+          <div className="w-full h-30 flex justify-end">
+            <MapSwitcher onChange={onMapTypeChange} />
+          </div>
+        </>
+      )}
       <GeographicLocation />
     </FlowLayer>
   )

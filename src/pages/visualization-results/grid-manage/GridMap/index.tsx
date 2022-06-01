@@ -343,9 +343,10 @@ const GridMap = () => {
         getContainer={false}
         style={{
           position: 'absolute',
-          width: '378px',
+          width: zIndex === 'edit' ? '378px' : 0,
           height: '100%',
           overflow: 'hidden',
+          // display: zIndex === 'edit' ? 'block' : 'none',
           zIndex: zIndex === 'edit' ? 1000 : 900,
         }}
         mask={false}
@@ -443,7 +444,7 @@ const GridMap = () => {
             </>
           )}
           {BELONGINGPROPERITIES.includes(currentFeatureType) && (
-            <Form.Item name="properties" label="配变性质">
+            <Form.Item name="properties" label="性质">
               <Select dropdownStyle={{ zIndex: 3000 }}>
                 <Option value="公变">公变</Option>
                 <Option value="专变">专变</Option>

@@ -110,7 +110,7 @@ export type KVLEVELTYPES = {
 export const KVLEVELOPTIONS = [
   {
     kvLevel: 3,
-    label: '10KV',
+    label: '10kV',
     belonging: [
       POWERSUPPLY,
       TOWER,
@@ -127,22 +127,22 @@ export const KVLEVELOPTIONS = [
   },
   {
     kvLevel: 4,
-    label: '20KV',
+    label: '20kV',
     belonging: [TRANSFORMERSUBSTATION, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 5,
-    label: '35KV',
+    label: '35kV',
     belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 6,
-    label: '110KV',
+    label: '110kV',
     belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 7,
-    label: '330KV',
+    label: '330kV',
     belonging: [TRANSFORMERSUBSTATION],
   },
 ]
