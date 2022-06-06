@@ -13,6 +13,7 @@ export const baseUrl = webConfig.requestUrl
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
   return new Promise(async (resolve, reject) => {
     const res = await func()
+
     const { code, content, isSuccess, data } = res
     if (isSuccess && code === 200) {
       if (content) {
@@ -50,7 +51,7 @@ export const cyCommonRequest = <T extends {}>(
 
     const { code, isSuccess } = res
     if (isSuccess && code === 200) {
-      resolve((res as unknown) as T)
+      resolve(res as unknown as T)
     } else {
       message.error(res.message)
       reject(res.message)

@@ -15,6 +15,15 @@ const HistoryGrid = Loadable({
 })
 
 /**
+ * 网架管理
+ */
+const GridManage = Loadable({
+  loader: () => import('@/pages/visualization-results/grid-manage'),
+  loading: Loading,
+  delay: 150,
+})
+
+/**
  * 注入projectId,接触新id生成时没有重新挂载的问题
  * @returns
  */
@@ -33,6 +42,11 @@ const routes = [
     title: '历史网架',
     path: '/visualization-results/history-grid',
     component: <HistoryGrid />,
+  },
+  {
+    title: '网架管理',
+    path: '/visualization-results/grid-manage',
+    component: <GridManage />,
   },
   {
     title: '网架规划',
