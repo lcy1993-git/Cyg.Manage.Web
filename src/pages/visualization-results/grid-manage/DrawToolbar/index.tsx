@@ -56,6 +56,7 @@ interface BelongingLineType {
   kvLevel: number
   isOverhead: boolean
   isPower: boolean
+  color?: string
 }
 
 const DrawToolbar = () => {
@@ -226,8 +227,19 @@ const DrawToolbar = () => {
         setisRefresh(false)
       }
 
+      let color
+
+      if (formData.featureType === POWERSUPPLY) {
+        color = '#4D3900'
+      }
+      if (formData.featureType === TRANSFORMERSUBSTATION) {
+        const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === currentKvleve)
+        color = kv?.color[0].value
+      }
+
       drawPoint(mapRef.map, {
         ...formData,
+        color: color ? color : '#0000FF',
       })
     } catch (err) {}
   }
@@ -237,8 +249,21 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
+
+      let color
+      if (formData.kvLevel === 3) {
+        const kv = KVLEVELOPTIONS.find(
+          (item: any) => formData.kvLevel === item.kvLevel
+        )?.color.find((item) => item.value === formData.color)
+        color = kv?.value
+      } else {
+        const kv = KVLEVELOPTIONS.find((item: any) => formData.kvLevel === item.kvLevel)
+        color = kv?.color[0].value
+      }
+
       drawLine(mapRef.map, {
         ...formData,
+        color: color ? color : '#0000FF',
         featureType: formData.lineType,
       })
     } catch (err) {}
@@ -453,7 +478,7 @@ const DrawToolbar = () => {
                   </Select>
                 </Form.Item>
               )}
-              {currentKvleve === 3 && currentFeatureType !== POWERSUPPLY && (
+              {/* {currentKvleve === 3 && currentFeatureType !== POWERSUPPLY && (
                 <Form.Item name="color" label="颜色">
                   <Select allowClear>
                     <Option value="#00FFFF">青</Option>
@@ -463,7 +488,7 @@ const DrawToolbar = () => {
                     <Option value="#FF5ECF">洋红</Option>
                   </Select>
                 </Form.Item>
-              )}
+              )} */}
               <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
                 <Input />
               </Form.Item>
@@ -545,7 +570,7 @@ const DrawToolbar = () => {
                   ))}
                 </Select>
               </Form.Item>
-              {currentKvleve === 3 && (
+              {/* {currentKvleve === 3 && (
                 <Form.Item name="color" label="线路颜色">
                   <Select allowClear>
                     <Option value="#00FFFF">青</Option>
@@ -555,7 +580,7 @@ const DrawToolbar = () => {
                     <Option value="#FF5ECF">洋红</Option>
                   </Select>
                 </Form.Item>
-              )}
+              )} */}
             </Form>
           )}
         </TabPane>

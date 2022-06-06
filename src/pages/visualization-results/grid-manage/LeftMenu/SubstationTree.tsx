@@ -1,10 +1,8 @@
 import {
   deleteLine,
-  featchSubstationTreeData,
   getLineCompoment,
   getLineData,
   GetStationItems,
-  getSubStations,
   getTransformerSubstationMenu,
   modifyLine,
 } from '@/services/grid-manage/treeMenu'
@@ -17,10 +15,12 @@ import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
   KVLEVELOPTIONS,
+  LINE,
   LINEMODEL,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { getTotalLength, loadMapLayers } from '../GridMap/utils/initializeMap'
+import { getTotalLength } from '../GridMap/utils/initializeMap'
+import { useTreeContext } from './TreeContext'
 
 interface infoType {
   event: React.MouseEvent<Element, MouseEvent>
@@ -49,7 +49,6 @@ interface TreeSelectType {
     isOverhead?: boolean
     id?: string
     children: any[] | undefined
-    lineRelationList?: []
   }[]
   nativeEvent: MouseEvent
 }
@@ -66,19 +65,24 @@ const SubstationTree = () => {
   const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu(), {
     manual: true,
   })
-  const { mapRef, isRefresh, setisRefresh } = useMyContext()
+  const { isRefresh, setisRefresh } = useMyContext()
+  const { linesId, setlinesId, setsubStations } = useTreeContext()
   const [form] = useForm()
+  // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
+  // 当前选中线路的电压等级
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
+  // 当前选中的线路ID
   const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
+  // 当前线路类型
   const [selectLineType, setselectLineType] = useState('')
-  const [allSubStations, setallSubStations] = useState<string[]>([])
-  const [checkedKeys, setCheckedKeys] = useState<string[]>([])
+
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const treeData = [
     {
       title: '变电站',
+      type: 'Parent',
       key: '0=1',
       children: data?.map((item, index) => {
         return {
@@ -88,19 +92,21 @@ const SubstationTree = () => {
           type: TRANSFORMERSUBSTATION,
           children: item.lineKVLevelGroups.map(
             (
-              child: { kvLevel: number; lines: { name: string; id: string }[] },
+              child: { kvLevel: number; lines: { name: string; id: string }[]; id: string },
               childIndex: number
             ) => {
               const childTitle = KVLEVELOPTIONS.find((kv) => kv.kvLevel === child.kvLevel)
               return {
                 ...child,
                 title: childTitle ? childTitle.label : '未知电压',
+                type: 'KVLEVEL',
                 key: `0=1=${index}=${childIndex}`,
                 children: child.lines.map((children: { name: string; id: string }) => {
                   return {
                     ...children,
                     title: children.name,
-                    key: `${children.id}_&Line`,
+                    type: LINE,
+                    key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${index}=${childIndex}_&Parent0-1`,
                   }
                 }),
               }
@@ -110,7 +116,7 @@ const SubstationTree = () => {
       }),
     },
   ]
-
+  // 右键删除线路
   const onRightClick = (info: infoType) => {
     const { node } = info
     if (node && !node.children) {
@@ -126,8 +132,8 @@ const SubstationTree = () => {
             await deleteLine([node.id])
             setisRefresh(true)
             message.info('删除成功')
-            const currentSelectLineIds = checkedKeys.filter((item) => item !== node.id)
-            setCheckedKeys(currentSelectLineIds)
+            const currentSelectLineIds = linesId.filter((item) => item !== node.id)
+            setlinesId(currentSelectLineIds)
           } catch (err) {
             message.error('删除失败')
           }
@@ -140,11 +146,26 @@ const SubstationTree = () => {
     setIsModalVisible(false)
   }
 
+  // 编辑线路属性
   const handleOk = async () => {
     try {
       setisRefresh(false)
       const formData = form.getFieldsValue()
-      const params = { ...formData, id: currentFeatureId }
+      let color: string | undefined
+      if (formData.kvLevel === 3) {
+        if (formData.color) {
+          const kv = KVLEVELOPTIONS.find(
+            (item: any) => formData.kvLevel === item.kvLevel
+          )?.color.find((item) => item.value === formData.color)
+          color = kv?.label
+        } else {
+          color = '红'
+        }
+      } else {
+        const kv = KVLEVELOPTIONS.find((item: any) => formData.kvLevel === item.kvLevel)
+        color = kv?.color[0].label
+      }
+      const params = { ...formData, id: currentFeatureId, color }
       await modifyLine(params)
       message.info('编辑成功')
       setIsModalVisible(false)
@@ -163,46 +184,6 @@ const SubstationTree = () => {
     },
   })
 
-  // 获取所有厂站
-  const { data: subStationsData, run: GetSubStations } = useRequest(
-    () =>
-      getSubStations({
-        stationIds: allSubStations,
-        powerIds: [],
-      }),
-    {
-      manual: true,
-      onSuccess: () => {
-        getTreeData()
-      },
-    }
-  )
-  // 请求所有线路
-  const { data: TreeData, run: getTreeData } = useRequest(
-    () => featchSubstationTreeData(checkedKeys),
-    {
-      manual: true,
-      onSuccess: () => {
-        loadMapLayers(
-          {
-            ...TreeData,
-            transformerSubstationList: allSubStations.length
-              ? subStationsData?.transformerSubstationList
-              : [],
-          },
-          mapRef.map
-        )
-      },
-    }
-  )
-
-  useEffect(() => {
-    allSubStations.length ? GetSubStations() : getTreeData()
-    if (!allSubStations.length && checkedKeys.length) {
-      getTreeData()
-    }
-  }, [GetSubStations, allSubStations, checkedKeys.length, getTreeData])
-
   useEffect(() => {
     stationItemsHandle()
   }, [stationItemsHandle])
@@ -218,6 +199,7 @@ const SubstationTree = () => {
       setcurrentFeatureId(selectedNodes[0].id)
       const data = await getLineData(selectedNodes[0].id)
       const lines = await getLineCompoment([selectedNodes[0].id])
+      // @ts-ignore
       const length = getTotalLength(lines.lineRelationList)
       selectedNodes[0].kvLevel && setcurrentLineKvLevel(selectedNodes[0].kvLevel)
       setIsModalVisible(true)
@@ -229,7 +211,7 @@ const SubstationTree = () => {
     }
   }
 
-  const getSubstationTreeData = async (checkedKeys: any) => {
+  const getSubstationTreeData = async (checkedKeys: any, e: any) => {
     const SubstationIds = checkedKeys
       .map((item: string) => {
         const isSubstation = item.includes(`_&${TRANSFORMERSUBSTATION}`)
@@ -239,17 +221,40 @@ const SubstationTree = () => {
         return undefined
       })
       .filter((item: string) => item)
-    setallSubStations(SubstationIds)
-    const lineIds = checkedKeys
+    setsubStations(SubstationIds)
+
+    const currentLineId = checkedKeys
       .map((item: string) => {
         const isSubstation = item.includes(`_&Line`)
         if (isSubstation) {
-          return item.split('_&')[0]
+          return item
         }
         return undefined
       })
       .filter((item: string) => item)
-    setCheckedKeys(lineIds)
+
+    const currentLinesId = [...currentLineId, ...linesId]
+    setlinesId([...new Set(currentLinesId)])
+
+    if (!e.checked) {
+      switch (e.node.type) {
+        case TRANSFORMERSUBSTATION:
+          setlinesId(
+            currentLinesId.filter(
+              (item) => !item.includes(`${e.node.id}_&${TRANSFORMERSUBSTATION}`)
+            )
+          )
+          return
+        case 'KVLEVEL':
+          setlinesId(currentLinesId.filter((item) => !item.includes(`_KVLEVEL${e.node.key}`)))
+          return
+        case LINE:
+          setlinesId(currentLinesId.filter((item) => !item.includes(e.node.id)))
+          return
+        case 'Parent':
+          setlinesId(currentLinesId.filter((item) => !item.includes('_&Parent0-1')))
+      }
+    }
   }
 
   /** 选择线路型号 */
@@ -258,6 +263,7 @@ const SubstationTree = () => {
     form.setFieldsValue({
       lineType: value,
       conductorModel: '',
+      color: '',
     })
   }
 

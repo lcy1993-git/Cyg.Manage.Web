@@ -1,4 +1,9 @@
-import { createLine, GetStationItems } from '@/services/grid-manage/treeMenu'
+import {
+  createLine,
+  featchSubstationTreeData,
+  GetStationItems,
+  getSubStations,
+} from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, Modal, Select } from 'antd'
 import { useEffect, useState } from 'react'
@@ -10,10 +15,12 @@ import {
   LINE,
   LINEMODEL,
 } from '../DrawToolbar/GridUtils'
+import { loadMapLayers } from '../GridMap/utils/initializeMap'
 import DrawGridToolbar from './DrawGridToolbar'
 import styles from './index.less'
 import PowerSupplyTree from './PowerSupplyTree'
 import SubstationTree from './SubstationTree'
+import { TreeProvider } from './TreeContext'
 interface BelongingLineType {
   id: string
   name: string
@@ -33,8 +40,15 @@ const LeftMenu = (props: any) => {
   const [visible, setVisible] = useState(false)
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
-  const { setisRefresh } = useMyContext()
+  const { setisRefresh, mapRef } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
+
+  // 线路ID集合
+  const [linesId, setlinesId] = useState<string[]>([])
+  // 电源集合
+  const [powerSupplyIds, setpowerSupplyIds] = useState<string[]>([])
+  // 变电站 id集合
+  const [subStations, setsubStations] = useState<string[]>([])
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const showModal = () => {
@@ -45,10 +59,26 @@ const LeftMenu = (props: any) => {
   const handleOk = () => {
     setConfirmLoading(true)
     const formData = form.getFieldsValue()
+    let color: string | undefined
+    if (formData.kvLevel === 3) {
+      if (formData.color) {
+        const kv = KVLEVELOPTIONS.find(
+          (item: any) => formData.kvLevel === item.kvLevel
+        )?.color.find((item) => item.value === formData.color)
+        color = kv?.label
+      } else {
+        color = '红'
+      }
+    } else {
+      const kv = KVLEVELOPTIONS.find((item: any) => formData.kvLevel === item.kvLevel)
+      color = kv?.color[0].label
+    }
+
     const params = {
       ...formData,
       isOverhead: formData.lineType === LINE,
       id: createFeatureId(),
+      color,
     }
     createLineItem(params)
   }
@@ -81,6 +111,72 @@ const LeftMenu = (props: any) => {
     })
   }
 
+  const { data: subStationsData, run: GetSubStations } = useRequest(
+    () =>
+      getSubStations({
+        stationIds: subStations,
+        powerIds: powerSupplyIds,
+      }),
+    {
+      manual: true,
+      onSuccess: () => {
+        getTreeData()
+      },
+    }
+  )
+
+  const { data: TreeData, run: getTreeData } = useRequest(
+    () => {
+      const ids = [...new Set(linesId)]
+      const linesIDs: string[] = ids
+        .map((item: string) => {
+          const exist = item.includes('_&Line')
+          if (exist) {
+            return item.split('_&Line')[0]
+          }
+          return ''
+        })
+        .filter((item: string) => item)
+      return featchSubstationTreeData(linesIDs)
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        loadMapLayers(
+          {
+            ...TreeData,
+            // @ts-ignore
+            powerSupplyList: powerSupplyIds.length ? subStationsData?.powerSupplyList : [],
+            transformerSubstationList: subStations.length
+              ? // @ts-ignore
+                subStationsData?.transformerSubstationList
+              : [],
+          },
+          mapRef.map
+        )
+      },
+    }
+  )
+
+  useEffect(() => {
+    powerSupplyIds.length || subStations.length ? GetSubStations() : getTreeData()
+
+    if ((!subStations.length || !powerSupplyIds.length) && linesId.length) {
+      getTreeData()
+    }
+  }, [
+    GetSubStations,
+    getTreeData,
+    linesId,
+    linesId.length,
+    powerSupplyIds.length,
+    subStations.length,
+  ])
+
+  useEffect(() => {
+    linesId && linesId.length && getTreeData()
+  }, [getTreeData, linesId])
+
   useEffect(() => {
     stationItemsHandle()
   }, [stationItemsHandle])
@@ -91,12 +187,23 @@ const LeftMenu = (props: any) => {
         <DrawGridToolbar />
       </div>
       <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
-        <div className={`w-full flex-none`}>
-          <SubstationTree />
-        </div>
-        <div className={`w-full flex-1`}>
-          <PowerSupplyTree />
-        </div>
+        <TreeProvider
+          value={{
+            linesId,
+            setlinesId,
+            powerSupplyIds,
+            setpowerSupplyIds,
+            subStations,
+            setsubStations,
+          }}
+        >
+          <div className={`w-full flex-none`}>
+            <SubstationTree />
+          </div>
+          <div className={`w-full flex-1`}>
+            <PowerSupplyTree />
+          </div>
+        </TreeProvider>
       </div>
       <div
         className="w-full flex-none flex items-center"

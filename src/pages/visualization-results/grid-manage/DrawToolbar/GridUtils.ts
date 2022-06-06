@@ -124,24 +124,70 @@ export const KVLEVELOPTIONS = [
       CABLEBRANCHBOX,
       LINE,
     ],
+    color: [
+      {
+        label: '青',
+        value: '#00FFFF',
+      },
+      {
+        label: '蓝',
+        value: '#1EB9FF',
+      },
+      {
+        label: '黄',
+        value: '#F2DA00',
+      },
+      {
+        label: '红',
+        value: '#FF3E3E',
+      },
+      {
+        label: '洋红',
+        value: '#FF5ECF',
+      },
+    ],
   },
   {
     kvLevel: 4,
     label: '20kV',
+    color: [
+      {
+        label: '浅黄',
+        value: '#FFFFE0',
+      },
+    ],
     belonging: [TRANSFORMERSUBSTATION, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 5,
     label: '35kV',
+    color: [
+      {
+        label: '浅黄',
+        value: '#FFFFE0',
+      },
+    ],
     belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 6,
+    color: [
+      {
+        label: '咖啡',
+        value: '#4D3900',
+      },
+    ],
     label: '110kV',
     belonging: [TRANSFORMERSUBSTATION, POWERSUPPLY, TOWER, CABLEWELL, LINE],
   },
   {
     kvLevel: 7,
+    color: [
+      {
+        label: '绿',
+        value: '#00FF00',
+      },
+    ],
     label: '330kV',
     belonging: [TRANSFORMERSUBSTATION],
   },

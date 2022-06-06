@@ -587,7 +587,7 @@ const GridMap = () => {
                       ))}
                 </Select>
               </Form.Item>
-              {currentLineKvLevel === 3 && (
+              {/* {currentLineKvLevel === 3 && (
                 <Form.Item
                   name="color"
                   label="颜色"
@@ -601,11 +601,11 @@ const GridMap = () => {
                     <Option value="#FF5ECF">洋红</Option>
                   </Select>
                 </Form.Item>
-              )}
+              )} */}
             </>
           ) : (
             <>
-              {currentLineKvLevel === 3 && (
+              {/* {currentLineKvLevel === 3 && (
                 <Form.Item
                   name="color"
                   label="颜色"
@@ -619,7 +619,7 @@ const GridMap = () => {
                     <Option value="#FF5ECF">洋红</Option>
                   </Select>
                 </Form.Item>
-              )}
+              )} */}
               <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
                 <Input />
               </Form.Item>
