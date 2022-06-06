@@ -5,7 +5,7 @@ import {
   getSubStations,
 } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
-import { Button, Form, Input, Modal, Select } from 'antd'
+import { Button, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
@@ -50,6 +50,8 @@ const LeftMenu = (props: any) => {
   const [powerSupplyIds, setpowerSupplyIds] = useState<string[]>([])
   // 变电站 id集合
   const [subStations, setsubStations] = useState<string[]>([])
+  // tree loading
+  const [treeLoading, settreeLoading] = useState<boolean>(false)
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const showModal = () => {
@@ -127,6 +129,9 @@ const LeftMenu = (props: any) => {
   )
 
   const newData = (arr: any[]) => {
+    if (!arr || !arr.length) {
+      return []
+    }
     return arr.map((item: { color: any; kvLevel: any }) => {
       if (item.color) {
         // if (item.kvLevel === 3) {
@@ -186,14 +191,23 @@ const LeftMenu = (props: any) => {
       manual: true,
       onSuccess: () => {
         const treeDatas = dataHandle(TreeData)
+        let powerSupplyList = []
+        if (powerSupplyIds.length) {
+          // @ts-ignore
+          powerSupplyList = subStationsData?.powerSupplyList.map((item) => {
+            return {
+              ...item,
+              color: '#4D3900',
+            }
+          })
+        }
         loadMapLayers(
           {
             ...treeDatas,
-            // @ts-ignore
-            powerSupplyList: powerSupplyIds.length ? subStationsData?.powerSupplyList : [],
+            powerSupplyList,
             transformerSubstationList: subStations.length
               ? // @ts-ignore
-                subStationsData?.transformerSubstationList
+                newData(subStationsData?.transformerSubstationList)
               : [],
           },
           mapRef.map
@@ -231,23 +245,27 @@ const LeftMenu = (props: any) => {
         <DrawGridToolbar />
       </div>
       <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
-        <TreeProvider
-          value={{
-            linesId,
-            setlinesId,
-            powerSupplyIds,
-            setpowerSupplyIds,
-            subStations,
-            setsubStations,
-          }}
-        >
-          <div className={`w-full flex-none`}>
-            <SubstationTree />
-          </div>
-          <div className={`w-full flex-1`}>
-            <PowerSupplyTree />
-          </div>
-        </TreeProvider>
+        <Spin spinning={!treeLoading}>
+          <TreeProvider
+            value={{
+              linesId,
+              setlinesId,
+              powerSupplyIds,
+              setpowerSupplyIds,
+              subStations,
+              setsubStations,
+              settreeLoading,
+              treeLoading,
+            }}
+          >
+            <div className={`w-full flex-none`}>
+              <SubstationTree />
+            </div>
+            <div className={`w-full flex-1`}>
+              <PowerSupplyTree />
+            </div>
+          </TreeProvider>
+        </Spin>
       </div>
       <div
         className="w-full flex-none flex items-center"

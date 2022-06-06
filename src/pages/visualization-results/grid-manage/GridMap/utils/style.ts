@@ -24,33 +24,10 @@ export const pointStyle = (
   let text,
     font = 'gridManageIconfont',
     zIndex = 3
-  let color = `rgba(8,210,42,1)`
-  switch (data.kvLevel) {
-    case 7:
-      color = `rgba(8,210,42,1)`
-      break
-    case 6:
-      color = `rgba(64,56,31,1)`
-      break
-    case 5:
-    case 4:
-      color = `rgba(170,170,85,1)`
-      break
-    case 3:
-      color = data.color ? data.color : `#FF3E3E`
-      if (data.color === '青') color = '#00FFFF'
-      else if (data.color === '蓝') color = '#1EB9FF'
-      else if (data.color === '黄') color = '#F2DA00'
-      else if (data.color === '红') color = '#FF3E3E'
-      else if (data.color === '洋红') color = '#FF5ECF'
-      break
-    default:
-      break
-  }
+
   // 根据点位的类型设置图符
   switch (data.featureType) {
     case POWERSUPPLY: // 电源
-      color = 'rgba(64,56,31,1)'
       if (data.powerType === '水电') text = '\ue614'
       else if (data.powerType === '火电') text = '\ue609'
       else if (data.powerType === '风电') text = '\ue61c'
@@ -100,7 +77,7 @@ export const pointStyle = (
     default:
       break
   }
-
+  let color = data.color
   color = selected ? `rgba(110, 74, 192, 1)` : color
   zIndex = selected ? 99 : zIndex
 
@@ -108,6 +85,7 @@ export const pointStyle = (
   const size = config && config.size ? config.size : 22
 
   color = config && config.zoom && !isDraw && level < config.zoom ? 'rgba(110, 74, 192, 0)' : color
+
   let styles = [
     new Style({
       text: new Text({
@@ -149,31 +127,10 @@ export const pointStyle = (
 }
 
 export const lineStyle = (data: any, selected: boolean = false) => {
-  let color = `rgba(8,210,42,1)`,
-    width = 4,
+  let width = 4,
     zIndex = 2
-  switch (data.kvLevel) {
-    case 7:
-      color = `rgba(8,210,42,1)`
-      break
-    case 6:
-      color = `rgba(64,56,31,1)`
-      break
-    case 5:
-    case 4:
-      color = `rgba(170,170,85,1)`
-      break
-    case 3:
-      color = data.color ? data.color : `#FF3E3E`
-      if (data.color === '青') color = '#00FFFF'
-      else if (data.color === '蓝') color = '#1EB9FF'
-      else if (data.color === '黄') color = '#F2DA00'
-      else if (data.color === '红') color = '#FF3E3E'
-      else if (data.color === '洋红') color = '#FF5ECF'
-      break
-    default:
-      break
-  }
+
+  let color = data.color
   color = selected ? `rgba(110, 74, 192, 1)` : color
   zIndex = selected ? 99 : zIndex
 

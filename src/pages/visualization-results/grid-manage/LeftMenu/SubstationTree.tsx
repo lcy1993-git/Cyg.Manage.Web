@@ -19,7 +19,7 @@ import {
   LINEMODEL,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { getTotalLength } from '../GridMap/utils/initializeMap'
+import { getTotalLength, upateLineByMainLine } from '../GridMap/utils/initializeMap'
 import { useTreeContext } from './TreeContext'
 
 interface infoType {
@@ -64,9 +64,15 @@ const { Option } = Select
 const SubstationTree = () => {
   const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu(), {
     manual: true,
+    onSuccess: () => {
+      settreeLoading(true)
+    },
+    onError: () => {
+      settreeLoading(true)
+    },
   })
-  const { isRefresh, setisRefresh } = useMyContext()
-  const { linesId, setlinesId, setsubStations } = useTreeContext()
+  const { isRefresh, setisRefresh, mapRef } = useMyContext()
+  const { linesId, setlinesId, setsubStations, settreeLoading } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -152,21 +158,34 @@ const SubstationTree = () => {
       setisRefresh(false)
       const formData = form.getFieldsValue()
       let color: string | undefined
+      let styleColor: string | undefined
       if (formData.kvLevel === 3) {
         if (formData.color) {
           const kv = KVLEVELOPTIONS.find(
             (item: any) => formData.kvLevel === item.kvLevel
           )?.color.find((item) => item.value === formData.color)
           color = kv?.label
+          styleColor = kv?.value
         } else {
           color = '红'
+          styleColor = '#FF3E3E'
         }
       } else {
         const kv = KVLEVELOPTIONS.find((item: any) => formData.kvLevel === item.kvLevel)
         color = kv?.color[0].label
+        styleColor = kv?.color[0].value
       }
-      const params = { ...formData, id: currentFeatureId, color }
-      await modifyLine(params)
+      const upLoadparams = { ...formData, id: currentFeatureId, color }
+
+      const drawParams = {
+        ...formData,
+        id: currentFeatureId,
+        styleColor,
+        lineModel: formData.conductorModel,
+      }
+
+      await modifyLine(upLoadparams)
+      upateLineByMainLine(mapRef.map, drawParams)
       message.info('编辑成功')
       setIsModalVisible(false)
       setisRefresh(true)

@@ -74,6 +74,8 @@ const DrawToolbar = () => {
   const [selectLineType, setselectLineType] = useState('')
   const [currentKvleve, setcurrentKvleve] = useState<number>()
   const [currentFeature, setcurrentFeature] = useState('feature')
+  const [currentColor, setcurrentColor] = useState<string | undefined>('')
+  const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number | undefined>()
   // const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '' })
   // 变电站间隔模态框
   // const [editModel, seteditModel] = useState(false)
@@ -133,7 +135,9 @@ const DrawToolbar = () => {
         lineId: currentLineData?.id,
         kvLevel: currentLineData?.kvLevel,
       })
-      setcurrentKvleve(currentLineData?.kvLevel)
+      setcurrentColor(currentLineData.color)
+      // setcurrentKvleve(currentLineData?.kvLevel)
+      setcurrentLineKvLevel(currentLineData?.kvLevel)
     }
   }
 
@@ -232,10 +236,15 @@ const DrawToolbar = () => {
 
       if (formData.featureType === POWERSUPPLY) {
         color = '#4D3900'
-      }
-      if (formData.featureType === TRANSFORMERSUBSTATION) {
+      } else if (formData.featureType === TRANSFORMERSUBSTATION) {
         const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === currentKvleve)
         color = kv?.color[0].value
+      } else {
+        const lineKv = KVLEVELOPTIONS.find((item) => item.kvLevel === currentLineKvLevel)
+        if (lineKv) {
+          const exist = lineKv.color.find((co) => co.label === currentColor)
+          color = exist ? exist.value : ''
+        }
       }
 
       drawPoint(mapRef.map, {
@@ -252,13 +261,13 @@ const DrawToolbar = () => {
       const formData = form.getFieldsValue()
 
       let color
-      if (formData.kvLevel === 3) {
+      if (currentLineKvLevel === 3) {
         const kv = KVLEVELOPTIONS.find(
-          (item: any) => formData.kvLevel === item.kvLevel
-        )?.color.find((item) => item.value === formData.color)
+          (item: any) => currentLineKvLevel === item.kvLevel
+        )?.color.find((item) => item.label === currentColor)
         color = kv?.value
       } else {
-        const kv = KVLEVELOPTIONS.find((item: any) => formData.kvLevel === item.kvLevel)
+        const kv = KVLEVELOPTIONS.find((item: any) => currentLineKvLevel === item.kvLevel)
         color = kv?.color[0].value
       }
 
@@ -441,7 +450,7 @@ const DrawToolbar = () => {
                   label="所属线路"
                   rules={[{ required: true, message: '请选择所属线路' }]}
                 >
-                  <Select dropdownStyle={{ zIndex: 3000 }}>
+                  <Select dropdownStyle={{ zIndex: 3000 }} onChange={seleceBelongingLine}>
                     {belongingLineData.map((item) => (
                       <Option value={item.id} key={item.id}>
                         {item.name}

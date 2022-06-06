@@ -7,6 +7,8 @@ interface ContextType {
   setpowerSupplyIds: Dispatch<SetStateAction<string[]>>
   setsubStations: Dispatch<SetStateAction<string[]>>
   subStations: string[]
+  settreeLoading: Dispatch<SetStateAction<boolean>>
+  treeLoading: boolean
 }
 
 // 全局状态管理

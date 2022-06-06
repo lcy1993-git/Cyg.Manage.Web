@@ -11,7 +11,7 @@ import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 import { moveOverlay } from './overlay'
 import { getCurrrentSelectFeature, initSelect, setSelectActive } from './select'
-import { calculateDistance, pointStyle } from './style'
+import { calculateDistance, lineStyle, pointStyle } from './style'
 interface pointType {
   featureType: string
   name?: string
@@ -54,7 +54,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
       zoom: 5,
     }),
   })
-
+  // @ts-ignore
   mapRef.map.on('moveend', (e: Event) => {
     mapMoveend(e, mapRef.map)
     pointLayer = getLayer(mapRef.map, 'pointLayer')
@@ -124,6 +124,21 @@ export const getTotalLength = (data: any) => {
     totalLength += length
   })
   return totalLength
+}
+
+export const upateLineByMainLine = (map: any, data: any) => {
+  lineLayer = getLayer(map, 'lineLayer')
+  for (let i = 0; i < lineLayer.getSource().getFeatures().length; i++) {
+    if (lineLayer.getSource().getFeatures()[i].get('data').lineId === data.id) {
+      lineLayer.getSource().getFeatures()[i].get('data').color = data.color
+      lineLayer.getSource().getFeatures()[i].get('data').kvLevel = data.kvLevel
+      lineLayer.getSource().getFeatures()[i].get('data').lineModel = data.lineModel
+      lineLayer
+        .getSource()
+        .getFeatures()
+        [i].setStyle(lineStyle(lineLayer.getSource().getFeatures()[i].get('data')))
+    }
+  }
 }
 
 export const clear = () => {
