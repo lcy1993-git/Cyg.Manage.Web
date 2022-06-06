@@ -7,6 +7,7 @@ import {
   CABLECIRCUITMODEL,
   createFeatureId,
   KVLEVELOPTIONS,
+  LINE,
   LINEMODEL,
 } from '../DrawToolbar/GridUtils'
 import DrawGridToolbar from './DrawGridToolbar'
@@ -46,6 +47,7 @@ const LeftMenu = (props: any) => {
     const formData = form.getFieldsValue()
     const params = {
       ...formData,
+      isOverhead: formData.lineType === LINE,
       id: createFeatureId(),
     }
     createLineItem(params)
@@ -190,12 +192,6 @@ const LeftMenu = (props: any) => {
             </Select>
           </Form.Item>
 
-          {/* <Form.Item name="totalLength" label="线路总长度">
-                <Input disabled />
-              </Form.Item>
-              <Form.Item name="totalCapacity" label="配变总容量">
-                <Input disabled />
-              </Form.Item> */}
           {currentLineKvLevel === 3 && (
             <Form.Item
               name="color"

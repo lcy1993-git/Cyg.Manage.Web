@@ -196,6 +196,7 @@ export const modifyRelationLine = (params: any) => {
     request(`${baseUrl.grid}/Line/ModifyLineElementRelation`, { method: 'POST', data: params })
   )
 }
+
 /** 更新线路信息 **/
 export const getLineCompoment = (params: string[]) => {
   return cyRequest<any[]>(() =>

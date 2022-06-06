@@ -49,6 +49,7 @@ interface TreeSelectType {
     isOverhead?: boolean
     id?: string
     children: any[] | undefined
+    lineRelationList?: []
   }[]
   nativeEvent: MouseEvent
 }
@@ -355,13 +356,6 @@ const SubstationTree = () => {
                 <Option value="专用">专用</Option>
               </Select>
             </Form.Item>
-
-            {/* <Form.Item name="totalLength" label="线路总长度">
-                <Input disabled />
-              </Form.Item>
-              <Form.Item name="totalCapacity" label="配变总容量">
-                <Input disabled />
-              </Form.Item> */}
             {currentLineKvLevel === 3 && (
               <Form.Item
                 name="color"
@@ -377,12 +371,6 @@ const SubstationTree = () => {
                 </Select>
               </Form.Item>
             )}
-            {/* <Form.Item name="isOverhead" label="是否为架空" initialValue={true}>
-              <Radio.Group>
-                <Radio value={true}>是</Radio>
-                <Radio value={false}>否</Radio>
-              </Radio.Group>
-            </Form.Item> */}
           </Form>
         </div>
       </Modal>

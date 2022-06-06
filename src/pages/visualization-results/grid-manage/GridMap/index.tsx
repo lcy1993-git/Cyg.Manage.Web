@@ -91,11 +91,9 @@ const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 },
 }
-
 const GridMap = () => {
   const [form] = useForm()
   const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex } = useMyContext()
-
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '' })
@@ -387,6 +385,9 @@ const GridMap = () => {
   const FormRules = () => ({
     validator(_: any, value: string) {
       // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
+      if (!value) {
+        return Promise.resolve()
+      }
       const reg = /^([0]|[1-9][0-9]*)$/
       if (reg.test(value)) {
         return Promise.resolve()
@@ -667,7 +668,9 @@ const EditTransformerSubstation = (props: any) => {
 
   const FormRules = () => ({
     validator(_: any, value: string) {
-      // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
+      if (!value) {
+        return Promise.resolve()
+      }
       const reg = /^([0]|[1-9][0-9]*)$/
       if (reg.test(value)) {
         return Promise.resolve()
