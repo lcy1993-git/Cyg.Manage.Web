@@ -106,10 +106,35 @@ const GridMap = () => {
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
   const [selectLineType, setselectLineType] = useState('')
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
+
+  const dataHandle = (data: any) => {
+    return data.map((item: { kvLevel: number; color: any }) => {
+      let color
+      if (item.kvLevel === 3) {
+        const colors = KVLEVELOPTIONS.find((kv) => kv.kvLevel === 3)
+        if (colors) {
+          const colorData = colors?.color.find((co: { value: any }) => co.value === item.color)
+          color = colorData?.label
+        }
+      } else {
+        const colors = KVLEVELOPTIONS.find((kv) => kv.kvLevel === item.kvLevel)
+        color = colors?.color[0].label
+      }
+      return {
+        ...item,
+        color: color ? color : '',
+      }
+    })
+  }
+
   /** 上传本地数据 **/
   const uploadLocalData = async () => {
-    const pointData = getDrawPoints()
-    const lineData = getDrawLines()
+    const pointDatas = getDrawPoints()
+    const lineDatas = getDrawLines()
+    // 点位数据处理
+    const pointData = dataHandle(pointDatas)
+    // 线路数据处理
+    const lineData = dataHandle(lineDatas)
     if ((pointData && pointData.length) || (lineData && lineData.length)) {
       const powerSupplyList = pointData.filter(
         (item: { featureType: string }) => item.featureType === POWERSUPPLY

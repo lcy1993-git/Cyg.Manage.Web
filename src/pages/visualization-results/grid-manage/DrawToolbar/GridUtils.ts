@@ -106,6 +106,8 @@ export type KVLEVELTYPES = {
   belonging: string[]
 }
 
+export const COLORDEFAULT = '#0000FF'
+
 /** 电压等级 */
 export const KVLEVELOPTIONS = [
   {

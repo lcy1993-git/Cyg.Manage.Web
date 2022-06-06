@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
+  COLORDEFAULT,
   createFeatureId,
   KVLEVELOPTIONS,
   LINE,
@@ -125,6 +126,48 @@ const LeftMenu = (props: any) => {
     }
   )
 
+  const newData = (arr: any[]) => {
+    return arr.map((item: { color: any; kvLevel: any }) => {
+      if (item.color) {
+        // if (item.kvLevel === 3) {
+        const kvs = KVLEVELOPTIONS.find((kv) => kv.kvLevel === item.kvLevel)
+        const exist = kvs?.color.find((kv) => kv.label === item.color)
+        if (exist) {
+          return {
+            ...item,
+            color: exist.value,
+          }
+        }
+        return {
+          ...item,
+          color: COLORDEFAULT,
+        }
+      }
+      return {
+        ...item,
+        color: COLORDEFAULT,
+      }
+    })
+  }
+
+  const dataHandle = (dataValue: any) => {
+    return {
+      boxTransformerList: newData(dataValue.boxTransformerList),
+      cableBranchBoxList: newData(dataValue.cableBranchBoxList),
+      cableWellList: newData(dataValue.cableWellList),
+      columnCircuitBreakerList: newData(dataValue.columnCircuitBreakerList),
+      columnTransformerList: newData(dataValue.columnTransformerList),
+      electricityDistributionRoomList: newData(dataValue.electricityDistributionRoomList),
+      lineList: newData(dataValue.lineList),
+      lineRelationList: newData(dataValue.lineRelationList),
+      powerSupplyList: newData(dataValue.powerSupplyList),
+      ringNetworkCabinetList: newData(dataValue.ringNetworkCabinetList),
+      switchingStationList: newData(dataValue.switchingStationList),
+      towerList: newData(dataValue.towerList),
+      transformerSubstationList: newData(dataValue.transformerSubstationList),
+    }
+  }
+
   const { data: TreeData, run: getTreeData } = useRequest(
     () => {
       const ids = [...new Set(linesId)]
@@ -142,9 +185,10 @@ const LeftMenu = (props: any) => {
     {
       manual: true,
       onSuccess: () => {
+        const treeDatas = dataHandle(TreeData)
         loadMapLayers(
           {
-            ...TreeData,
+            ...treeDatas,
             // @ts-ignore
             powerSupplyList: powerSupplyIds.length ? subStationsData?.powerSupplyList : [],
             transformerSubstationList: subStations.length

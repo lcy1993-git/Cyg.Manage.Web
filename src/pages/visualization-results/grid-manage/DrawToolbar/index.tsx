@@ -31,6 +31,7 @@ import {
   CABLEBRANCHBOX,
   CABLECIRCUITMODEL,
   CABLEWELL,
+  COLORDEFAULT,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   createFeatureId,
@@ -239,7 +240,7 @@ const DrawToolbar = () => {
 
       drawPoint(mapRef.map, {
         ...formData,
-        color: color ? color : '#0000FF',
+        color: color ? color : COLORDEFAULT,
       })
     } catch (err) {}
   }
@@ -263,7 +264,7 @@ const DrawToolbar = () => {
 
       drawLine(mapRef.map, {
         ...formData,
-        color: color ? color : '#0000FF',
+        color: color ? color : COLORDEFAULT,
         featureType: formData.lineType,
       })
     } catch (err) {}
