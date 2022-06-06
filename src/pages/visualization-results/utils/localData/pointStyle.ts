@@ -868,6 +868,26 @@ const pointStyle = function (
   } else {
     style_ ? (pointStyles = [style, style_]) : (pointStyles = [style])
   }
+
+  if (value == 'electric_meter') {
+    let boxCount = feature.getProperties().box_count ? feature.getProperties().box_count : 1
+    pointStyles.push(
+      new ClassStyle({
+        text: new Text({
+          font: 'normal bold  ' + 18 * scale + 'px  Arial,sans-serif',
+          text: boxCount + '✘',
+          fill: new Fill({
+            color: 'red',
+          }),
+          stroke: new Stroke({
+            color: 'red',
+            width: 1,
+          }),
+          offsetX: -40 * scale,
+        }),
+      })
+    )
+  }
   return pointStyles
 }
 // 线样式
