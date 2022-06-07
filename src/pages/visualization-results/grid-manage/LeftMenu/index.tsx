@@ -59,31 +59,34 @@ const LeftMenu = (props: any) => {
     setVisible(true)
   }
 
-  const handleOk = () => {
-    setConfirmLoading(true)
-    const formData = form.getFieldsValue()
-    let color: string | undefined
-    if (formData.kvLevel === 3) {
-      if (formData.color) {
-        const kv = KVLEVELOPTIONS.find(
-          (item: any) => formData.kvLevel === item.kvLevel
-        )?.color.find((item) => item.value === formData.color)
-        color = kv?.label
+  const handleOk = async () => {
+    try {
+      await form.validateFields()
+      setConfirmLoading(true)
+      const formData = form.getFieldsValue()
+      let color: string | undefined
+      if (formData.kvLevel === 3) {
+        if (formData.color) {
+          const kv = KVLEVELOPTIONS.find(
+            (item: any) => formData.kvLevel === item.kvLevel
+          )?.color.find((item) => item.value === formData.color)
+          color = kv?.label
+        } else {
+          color = '红'
+        }
       } else {
-        color = '红'
+        const kv = KVLEVELOPTIONS.find((item: any) => formData.kvLevel === item.kvLevel)
+        color = kv?.color[0].label
       }
-    } else {
-      const kv = KVLEVELOPTIONS.find((item: any) => formData.kvLevel === item.kvLevel)
-      color = kv?.color[0].label
-    }
 
-    const params = {
-      ...formData,
-      isOverhead: formData.lineType === LINE,
-      id: createFeatureId(),
-      color,
-    }
-    createLineItem(params)
+      const params = {
+        ...formData,
+        isOverhead: formData.lineType === LINE,
+        id: createFeatureId(),
+        color,
+      }
+      createLineItem(params)
+    } catch (err) {}
   }
 
   // 创建线路

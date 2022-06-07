@@ -227,7 +227,6 @@ const GridMap = () => {
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
-
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
@@ -560,7 +559,7 @@ const GridMap = () => {
           {BELONGINGCAPACITY.includes(currentFeatureType) && (
             <>
               <Form.Item name="capacity" label="容量" rules={[FormRules]}>
-                <Input />
+                <Input addonAfter="(kAV)" />
               </Form.Item>
             </>
           )}
@@ -580,24 +579,28 @@ const GridMap = () => {
               </Select>
             </Form.Item>
           )}
-
+          {currentFeatureType === RINGNETWORKCABINET && (
+            <Form.Item name="properties" label={`性质`}>
+              <Select dropdownStyle={{ zIndex: 3000 }}>
+                <Option value="公用">公用</Option>
+                <Option value="专用">专用</Option>
+              </Select>
+            </Form.Item>
+          )}
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
             <>
-              <Form.Item
-                name="lineType"
-                label="线路类型"
-                rules={[{ required: true, message: '请选择线路类型' }]}
-              >
-                <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
+              <Form.Item name="lineType" label="线路类型">
+                <Select
+                  allowClear
+                  onChange={onChangeLineType}
+                  dropdownStyle={{ zIndex: 3000 }}
+                  disabled
+                >
                   <Option value="Line">架空线路</Option>
                   <Option value="CableCircuit">电缆线路</Option>
                 </Select>
               </Form.Item>
-              <Form.Item
-                name="lineModel"
-                label="线路型号"
-                rules={[{ required: true, message: '请选择线路型号' }]}
-              >
+              <Form.Item name="lineModel" label="线路型号">
                 <Select dropdownStyle={{ zIndex: 3000 }}>
                   {selectLineType === 'Line' && selectLineType
                     ? LINEMODEL.map((item) => (
@@ -696,11 +699,12 @@ const EditTransformerSubstation = (props: any) => {
       if (!value) {
         return Promise.resolve()
       }
-      const reg = /^([0]|[1-9][0-9]*)$/
+      // const reg = /^([0]|[1-9][0-9]*)$/
+      const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
       if (reg.test(value)) {
         return Promise.resolve()
       }
-      return Promise.reject(new Error('请输入0到100的正整数'))
+      return Promise.reject(new Error('请输入0到100的自然数'))
     },
   })
 

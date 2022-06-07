@@ -140,7 +140,7 @@ export const lineStyle = (data: any, selected: boolean = false) => {
 
   data.lineModel = data.lineModel ? data.lineModel : ''
   let text = `${data.lineModel}   `
-  text += length ? length.toFixed(2) + 'm' : ''
+  text += length ? length.toFixed(1) + 'm' : ''
   let style = new Style({
     stroke: new Stroke({
       color,

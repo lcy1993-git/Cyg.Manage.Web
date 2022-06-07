@@ -139,6 +139,7 @@ const PowerSupplyTree = () => {
 
   const handleOk = async () => {
     try {
+      await form.validateFields()
       setisRefresh(false)
       const formData = form.getFieldsValue()
       let color: string | undefined
@@ -234,7 +235,7 @@ const PowerSupplyTree = () => {
       setIsModalVisible(true)
       form.setFieldsValue({
         ...data,
-        totalLength: length.toFixed(2),
+        totalLength: length.toFixed(1),
         lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
       })
     }
@@ -330,10 +331,10 @@ const PowerSupplyTree = () => {
               </Select>
             </Form.Item>
             <Form.Item name="totalCapacity" label="配变总容量">
-              <Input disabled />
+              <Input disabled addonAfter="(kAV)" />
             </Form.Item>
             <Form.Item name="totalLength" label="线路总长度">
-              <Input disabled />
+              <Input disabled addonAfter="(km)" />
             </Form.Item>
             <Form.Item
               name="kvLevel"

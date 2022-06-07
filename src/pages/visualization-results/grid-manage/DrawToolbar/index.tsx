@@ -2,7 +2,6 @@ import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manag
 import { useRequest } from 'ahooks'
 import {
   Button,
-  Col,
   Divider,
   Drawer,
   Form,
@@ -58,6 +57,7 @@ interface BelongingLineType {
   isOverhead: boolean
   isPower: boolean
   color?: string
+  lineModel?: string
 }
 
 const DrawToolbar = () => {
@@ -70,15 +70,18 @@ const DrawToolbar = () => {
     zIndex,
     setzIndex,
   } = useMyContext()
+  // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
+  // 当前选中的是架空还是电缆线路
   const [selectLineType, setselectLineType] = useState('')
+  // 当前的电压等级
   const [currentKvleve, setcurrentKvleve] = useState<number>()
+  // Tab切换控制
   const [currentFeature, setcurrentFeature] = useState('feature')
+  // 当前主线路的颜色
   const [currentColor, setcurrentColor] = useState<string | undefined>('')
+  // 当前主线路的电压等级
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number | undefined>()
-  // const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '' })
-  // 变电站间隔模态框
-  // const [editModel, seteditModel] = useState(false)
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   // 上传所有点位
@@ -131,13 +134,15 @@ const DrawToolbar = () => {
   const seleceBelongingLine = (value: string) => {
     const currentLineData = belongingLineData.find((item) => item.id === value)
     if (currentLineData) {
+      setcurrentColor(currentLineData.color)
+      setcurrentLineKvLevel(currentLineData?.kvLevel)
+      setselectLineType(currentLineData.isOverhead ? 'Line' : 'CableCircuit')
       form.setFieldsValue({
         lineId: currentLineData?.id,
         kvLevel: currentLineData?.kvLevel,
+        lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
+        lineModel: currentLineData.lineModel ? '111' : '',
       })
-      setcurrentColor(currentLineData.color)
-      // setcurrentKvleve(currentLineData?.kvLevel)
-      setcurrentLineKvLevel(currentLineData?.kvLevel)
     }
   }
 
@@ -270,7 +275,6 @@ const DrawToolbar = () => {
         const kv = KVLEVELOPTIONS.find((item: any) => currentLineKvLevel === item.kvLevel)
         color = kv?.color[0].value
       }
-
       drawLine(mapRef.map, {
         ...formData,
         color: color ? color : COLORDEFAULT,
@@ -464,7 +468,7 @@ const DrawToolbar = () => {
               {BELONGINGCAPACITY.includes(currentFeatureType) && (
                 <>
                   <Form.Item name="capacity" label="容量" rules={[FormRules]}>
-                    <Input />
+                    <Input addonAfter="(kAV)" />
                   </Form.Item>
                 </>
               )}
@@ -478,13 +482,18 @@ const DrawToolbar = () => {
               )}
 
               {BELONGINGPROPERITIES.includes(currentFeatureType) && (
-                <Form.Item
-                  name="properties"
-                  label={`${currentFeatureType === RINGNETWORKCABINET ? '' : '配变'}性质`}
-                >
+                <Form.Item name="properties" label={`配变性质`}>
                   <Select dropdownStyle={{ zIndex: 3000 }}>
                     <Option value="公变">公变</Option>
                     <Option value="专变">专变</Option>
+                  </Select>
+                </Form.Item>
+              )}
+              {currentFeatureType === RINGNETWORKCABINET && (
+                <Form.Item name="properties" label={`性质`}>
+                  <Select dropdownStyle={{ zIndex: 3000 }}>
+                    <Option value="公用">公用</Option>
+                    <Option value="专用">专用</Option>
                   </Select>
                 </Form.Item>
               )}
@@ -508,7 +517,7 @@ const DrawToolbar = () => {
             </Form>
           )}
         </TabPane>
-        <TabPane tab="绘制线路" key="drawline">
+        <TabPane tab="绘制线段" key="drawline">
           {currentFeature === 'drawline' && (
             <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
               <Form.Item
@@ -524,30 +533,24 @@ const DrawToolbar = () => {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item
-                name="lineType"
-                label="线路类型"
-                rules={[{ required: true, message: '请选择线路类型' }]}
-              >
-                <Row gutter={3}>
-                  <Col span={16}>
-                    <Select allowClear onChange={onChangeLineType} dropdownStyle={{ zIndex: 3000 }}>
-                      <Option value="Line">架空线路</Option>
-                      <Option value="CableCircuit">电缆线路</Option>
-                    </Select>
-                  </Col>
-                  <Col span={5} style={{ marginLeft: '10px' }}>
-                    <Button type="primary" onClick={createLine}>
-                      绘制线路
-                    </Button>
-                  </Col>
-                </Row>
+              <Form.Item name="lineType" label="线路类型">
+                <Select
+                  allowClear
+                  onChange={onChangeLineType}
+                  dropdownStyle={{ zIndex: 3000 }}
+                  disabled
+                >
+                  {[
+                    { label: '架空线路', value: 'Line' },
+                    { label: '电缆线路', value: 'CableCircuit' },
+                  ].map((item) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
+                </Select>
               </Form.Item>
-              <Form.Item
-                name="lineModel"
-                label="线路型号"
-                rules={[{ required: true, message: '请选择线路型号' }]}
-              >
+              <Form.Item name="lineModel" label="线路型号">
                 <Select dropdownStyle={{ zIndex: 3000 }}>
                   {selectLineType === 'Line' && selectLineType
                     ? LINEMODEL.map((item) => (
@@ -580,17 +583,11 @@ const DrawToolbar = () => {
                   ))}
                 </Select>
               </Form.Item>
-              {/* {currentKvleve === 3 && (
-                <Form.Item name="color" label="线路颜色">
-                  <Select allowClear>
-                    <Option value="#00FFFF">青</Option>
-                    <Option value="#1EB9FF">蓝</Option>
-                    <Option value="#F2DA00">黄</Option>
-                    <Option value="#FF3E3E">红</Option>
-                    <Option value="#FF5ECF">洋红</Option>
-                  </Select>
-                </Form.Item>
-              )} */}
+              <Form.Item wrapperCol={{ offset: 6, span: 17 }}>
+                <Button type="primary" onClick={createLine}>
+                  绘制线路
+                </Button>
+              </Form.Item>
             </Form>
           )}
         </TabPane>
