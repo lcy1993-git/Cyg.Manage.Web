@@ -22,8 +22,9 @@ const GradManage: React.FC = () => {
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
   )
+
   /** 页面所有线路 */
-  const [lineAssemble, setlineAssemble] = useState<{ value: string; label: string }[]>([])
+  const [lineAssemble, setlineAssemble] = useState<boolean>(false)
 
   /**  **/
   const [zIndex, setzIndex] = useState('create')

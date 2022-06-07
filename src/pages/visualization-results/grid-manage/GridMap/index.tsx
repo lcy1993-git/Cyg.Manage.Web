@@ -108,6 +108,9 @@ const GridMap = () => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
 
   const dataHandle = (data: any) => {
+    if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
+      return []
+    }
     return data.map((item: { kvLevel: number; color: any }) => {
       let color
       if (item.kvLevel === 3) {

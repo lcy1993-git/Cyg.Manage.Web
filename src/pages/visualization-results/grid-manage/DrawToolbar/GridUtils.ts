@@ -1,40 +1,40 @@
 /** 箱变 **/
 export const BOXTRANSFORMER = 'BoxTransformer'
 
-/* 电缆分支箱 */
+/** 电缆分支箱 */
 export const CABLEBRANCHBOX = 'CableBranchBox'
 
-/* 电缆井 */
+/** 电缆井 */
 export const CABLEWELL = 'CableWell'
 
-/* 柱上断路器 */
+/** 柱上断路器 */
 export const COLUMNCIRCUITBREAKER = 'ColumnCircuitBreaker'
 
-/* 柱上变压器 */
+/** 柱上变压器 */
 export const COLUMNTRANSFORMER = 'ColumnTransformer'
 
-/* 配电室 */
+/** 配电室 */
 export const ELECTRICITYDISTRIBUTIONROOM = 'ElectricityDistributionRoom'
 
-/* 电源 */
+/** 电源 */
 export const POWERSUPPLY = 'PowerSupply'
 
-/* 环网柜 */
+/** 环网柜 */
 export const RINGNETWORKCABINET = 'RingNetworkCabinet'
 
-/* 开闭所 */
+/** 开闭所 */
 export const SWITCHINGSTATION = 'SwitchingStation'
 
-/* 杆塔 */
+/** 杆塔 */
 export const TOWER = 'Tower'
 
-/* 变电站 */
+/** 变电站 */
 export const TRANSFORMERSUBSTATION = 'TransformerSubstation'
 
-/* 电缆线路路 */
+/** 电缆线路路 */
 export const CABLECIRCUIT = 'CableCircuit'
 
-/* 架空线路 */
+/** 架空线路 */
 export const LINE = 'Line'
 
 export const POINTS = [

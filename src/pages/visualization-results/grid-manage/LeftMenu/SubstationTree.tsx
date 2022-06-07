@@ -71,7 +71,7 @@ const SubstationTree = () => {
       settreeLoading(true)
     },
   })
-  const { isRefresh, setisRefresh, mapRef } = useMyContext()
+  const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
   const { linesId, setlinesId, setsubStations, settreeLoading } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
@@ -206,7 +206,7 @@ const SubstationTree = () => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [stationItemsHandle])
+  }, [stationItemsHandle, lineAssemble])
 
   useEffect(() => {
     isRefresh && getTree()

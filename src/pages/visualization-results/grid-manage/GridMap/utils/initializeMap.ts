@@ -128,6 +128,22 @@ export const getTotalLength = (data: any) => {
 
 export const upateLineByMainLine = (map: any, data: any) => {
   lineLayer = getLayer(map, 'lineLayer')
+  pointLayer = getLayer(map, 'pointLayer')
+  for (let i = 0; i < pointLayer.getSource().getFeatures().length; i++) {
+    if (pointLayer.getSource().getFeatures()[i].get('data').lineId === data.id) {
+      const level = parseFloat(map.getView().getZoom() + '')
+      pointLayer.getSource().getFeatures()[i].get('data').color = data.color
+      pointLayer.getSource().getFeatures()[i].get('data').kvLevel = data.kvLevel
+      pointLayer.getSource().getFeatures()[i].get('data').lineModel = data.lineModel
+      pointLayer
+        .getSource()
+        .getFeatures()
+        [i].setStyle(
+          pointStyle(pointLayer.getSource().getFeatures()[i].get('data'), false, level, false)
+        )
+    }
+  }
+
   for (let i = 0; i < lineLayer.getSource().getFeatures().length; i++) {
     if (lineLayer.getSource().getFeatures()[i].get('data').lineId === data.id) {
       lineLayer.getSource().getFeatures()[i].get('data').color = data.color

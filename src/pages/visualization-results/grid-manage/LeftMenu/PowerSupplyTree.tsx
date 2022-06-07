@@ -86,7 +86,7 @@ const lineformLayout = {
 }
 
 const PowerSupplyTree = () => {
-  const { isRefresh, setisRefresh, mapRef } = useMyContext()
+  const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
   // const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   const { linesId, setlinesId, setpowerSupplyIds, settreeLoading } = useTreeContext()
   // const [PowerSupplyIds, setPowerSupplyIds] = useState<string[]>([])
@@ -295,7 +295,7 @@ const PowerSupplyTree = () => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [stationItemsHandle])
+  }, [stationItemsHandle, lineAssemble])
 
   return (
     <>

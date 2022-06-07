@@ -137,9 +137,19 @@ const DrawToolbar = () => {
       setcurrentColor(currentLineData.color)
       setcurrentLineKvLevel(currentLineData?.kvLevel)
       setselectLineType(currentLineData.isOverhead ? 'Line' : 'CableCircuit')
+      // 下面的图元无论主线路的电压等级是多少，都显示10KV
+      const exist = [
+        BOXTRANSFORMER,
+        CABLEBRANCHBOX,
+        COLUMNCIRCUITBREAKER,
+        COLUMNTRANSFORMER,
+        ELECTRICITYDISTRIBUTIONROOM,
+        RINGNETWORKCABINET,
+        SWITCHINGSTATION,
+      ].includes(currentFeatureType)
       form.setFieldsValue({
         lineId: currentLineData?.id,
-        kvLevel: currentLineData?.kvLevel,
+        kvLevel: exist ? 3 : currentLineData?.kvLevel,
         lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
         lineModel: currentLineData.lineModel ? '111' : '',
       })
@@ -390,6 +400,22 @@ const DrawToolbar = () => {
               >
                 <Input />
               </Form.Item>
+              {/* 杆塔 柱上断路器 柱上变压器*/}
+              {BELONGINGLINE.includes(currentFeatureType) && (
+                <Form.Item
+                  name="lineId"
+                  label="所属线路"
+                  rules={[{ required: true, message: '请选择所属线路' }]}
+                >
+                  <Select dropdownStyle={{ zIndex: 3000 }} onChange={seleceBelongingLine}>
+                    {belongingLineData.map((item) => (
+                      <Option value={item.id} key={item.id}>
+                        {item.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              )}
               <Form.Item
                 name="kvLevel"
                 label="电压等级"
@@ -445,23 +471,6 @@ const DrawToolbar = () => {
                     <Input />
                   </Form.Item>
                 </>
-              )}
-
-              {/* 杆塔 柱上断路器 柱上变压器*/}
-              {BELONGINGLINE.includes(currentFeatureType) && (
-                <Form.Item
-                  name="lineId"
-                  label="所属线路"
-                  rules={[{ required: true, message: '请选择所属线路' }]}
-                >
-                  <Select dropdownStyle={{ zIndex: 3000 }} onChange={seleceBelongingLine}>
-                    {belongingLineData.map((item) => (
-                      <Option value={item.id} key={item.id}>
-                        {item.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
               )}
 
               {/* 箱变 柱上变压器*/}

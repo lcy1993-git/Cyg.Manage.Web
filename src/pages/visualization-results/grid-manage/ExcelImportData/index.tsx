@@ -7,7 +7,8 @@ import { useMyContext } from '../Context'
 const { Dragger } = Upload
 const { useForm } = Form
 const ExcelImportData = () => {
-  const { importModalVisible, setImportModalVisible, setisRefresh } = useMyContext()
+  const { importModalVisible, setImportModalVisible, setisRefresh, setlineAssemble } =
+    useMyContext()
   const [form] = useForm()
   const [confirmLoading, setConfirmLoading] = useState(false)
 
@@ -23,11 +24,13 @@ const ExcelImportData = () => {
     try {
       setisRefresh(false)
       setConfirmLoading(true)
+      setlineAssemble(false)
       const res = await importGridManageData(data)
       if (res.isSuccess) {
         message.success('上传成功')
         setConfirmLoading(false)
         setisRefresh(true)
+        setlineAssemble(true)
         closeModal()
       } else {
         setConfirmLoading(false)
