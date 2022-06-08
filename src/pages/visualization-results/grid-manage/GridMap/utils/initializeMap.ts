@@ -45,7 +45,8 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
     layers: [
       new TileLayer({
         source: new XYZ({
-          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url:
+            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
@@ -84,6 +85,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
 }
 export const location = (map: any, lon: number, lat: number) => {
   map.getView().setCenter(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'))
+  map.getView().setZoom(12)
 }
 export const drawPoint = (map: any, options: any) => {
   pointLayer = getLayer(map, 'pointLayer', 3)
