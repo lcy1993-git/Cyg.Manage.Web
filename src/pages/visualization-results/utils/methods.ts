@@ -365,6 +365,7 @@ const loadWFSData = (
       let format = new WKT()
       let feature = format.readFeature(data[i].geom)
       feature.setGeometry(feature.getGeometry()?.transform('EPSG:4326', 'EPSG:3857'))
+      feature.set('id_', `${layerType}_${layerName}.${new Date().getTime()}`)
       feature.setProperties(data[i])
       if (item.type !== 'point') {
         let style

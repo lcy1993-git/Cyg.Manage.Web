@@ -1,3 +1,14 @@
+import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
+import { Input, message, Modal, Table } from 'antd'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+
+import { useContainer } from '../../result-page/mobx-store'
+import CommentList from './components/comment-list'
+
+import { useRequest } from 'ahooks'
+import { observer } from 'mobx-react-lite'
+import moment from 'moment'
+
 import {
   addComment,
   CommentRequestType,
@@ -11,20 +22,12 @@ import {
   getMedium,
 } from '@/services/visualization-results/visualization-results'
 import { translateMatDataToTree } from '@/utils/utils'
-import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
-import { useRequest } from 'ahooks'
-import { Input, message, Modal, Table } from 'antd'
 import classnames from 'classnames'
-import { observer } from 'mobx-react-lite'
-import moment from 'moment'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useContainer } from '../../result-page/mobx-store'
 import { findEnumKeyByCN } from '../../utils/loadEnum'
 import CableSection from '../cable-section'
 import { HouseholdTable } from '../household-table'
 import { MaterialTableNew } from '../material-table-new'
 import MediaModal from '../media-modal'
-import CommentList from './components/comment-list'
 import styles from './index.less'
 
 export interface TableDataType {
@@ -534,8 +537,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
      * 这里取出来的是英文，所以要根据中英文转换一下
      */
     if (feature) {
-      const { id_ } = feature
-      const { project_id: projectId } = feature.values_
+      const { id_, project_id: projectId } = feature.values_
       /**
        * "survey_tower.1386220338212147281" 切割该字符串获取图层type，设备类型，设备id
        * survey_device_type.1386220338212147281

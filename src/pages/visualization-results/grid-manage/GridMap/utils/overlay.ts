@@ -15,10 +15,12 @@ export const addOverlay = (map: any, coordinate: any) => {
 }
 
 export const moveOverlay = (map: any, coorC: any) => {
-  if (!overlayLayer) {
-    addOverlay(map, coorC)
-  }
+  // if (!overlayLayer) {
+  //   addOverlay(map, coorC)
+  // }
   const lont = transform(coorC, 'EPSG:3857', 'EPSG:4326')
-  overlayLayer.getElement().innerHTML = `${lont[0].toFixed(4)}, ${lont[1].toFixed(4)}`
-  overlayLayer.setPosition(coorC)
+  document.getElementById('grid_map_').innerHTML = `${lont[0].toFixed(4)}, ${lont[1].toFixed(4)}`
+
+  // overlayLayer.getElement().innerHTML = `${lont[0].toFixed(4)}, ${lont[1].toFixed(4)}`
+  // overlayLayer.setPosition(coorC)
 }
