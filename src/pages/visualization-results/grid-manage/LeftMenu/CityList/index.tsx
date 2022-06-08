@@ -80,7 +80,10 @@ const CityList = (props: PropsType) => {
         }}
         letters={letters}
       />
-      <div className="w-full overflow-y-auto" style={{ height: 'calc(100% - 62px)', zIndex: 1000 }}>
+      <div
+        className="w-full overflow-y-auto bg-white"
+        style={{ height: 'calc(100% - 62px)', zIndex: 1000 }}
+      >
         <div className="overflow-y-auto pl-2 pt-2 scrollbar-base" style={{ height: '412px' }}>
           {cityData.data.map((item: any) => (
             <CorrespondingProvinces key={item.letter} {...item} />

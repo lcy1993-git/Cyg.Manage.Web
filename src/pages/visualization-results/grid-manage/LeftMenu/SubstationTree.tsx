@@ -71,8 +71,8 @@ const SubstationTree = () => {
       settreeLoading(true)
     },
   })
-  const { isRefresh, setisRefresh, mapRef } = useMyContext()
-  const { linesId, setlinesId, setsubStations, settreeLoading } = useTreeContext()
+  const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
+  const { linesId, setlinesId, setsubStations, subStations, settreeLoading } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -155,6 +155,7 @@ const SubstationTree = () => {
   // 编辑线路属性
   const handleOk = async () => {
     try {
+      await form.validateFields()
       setisRefresh(false)
       const formData = form.getFieldsValue()
       let color: string | undefined
@@ -180,10 +181,9 @@ const SubstationTree = () => {
       const drawParams = {
         ...formData,
         id: currentFeatureId,
-        styleColor,
+        color: styleColor,
         lineModel: formData.conductorModel,
       }
-
       await modifyLine(upLoadparams)
       upateLineByMainLine(mapRef.map, drawParams)
       message.info('编辑成功')
@@ -205,7 +205,7 @@ const SubstationTree = () => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [stationItemsHandle])
+  }, [stationItemsHandle, lineAssemble])
 
   useEffect(() => {
     isRefresh && getTree()
@@ -224,23 +224,25 @@ const SubstationTree = () => {
       setIsModalVisible(true)
       form.setFieldsValue({
         ...data,
-        totalLength: length.toFixed(2),
+        totalLength: length.toFixed(1),
         lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
       })
     }
   }
 
+  // checkbox状态改变触发
   const getSubstationTreeData = async (checkedKeys: any, e: any) => {
-    const SubstationIds = checkedKeys
+    const SubstationIds: string[] = checkedKeys
       .map((item: string) => {
-        const isSubstation = item.includes(`_&${TRANSFORMERSUBSTATION}`)
-        if (isSubstation) {
-          return item.split('_&')[0]
+        const start = item.indexOf('_&Line')
+        const end = item.indexOf('_&TransformerSubstation')
+        if (start !== -1 && end !== -1) {
+          return item.substring(start + 6, end)
         }
         return undefined
       })
       .filter((item: string) => item)
-    setsubStations(SubstationIds)
+    setsubStations([...new Set(SubstationIds)])
 
     const currentLineId = checkedKeys
       .map((item: string) => {
@@ -320,10 +322,10 @@ const SubstationTree = () => {
               </Select>
             </Form.Item>
             <Form.Item name="totalCapacity" label="配变总容量">
-              <Input disabled />
+              <Input disabled addonAfter="(kAV)" />
             </Form.Item>
             <Form.Item name="totalLength" label="线路总长度">
-              <Input disabled />
+              <Input disabled addonAfter="(km)" />
             </Form.Item>
             <Form.Item
               name="kvLevel"

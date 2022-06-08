@@ -1,40 +1,40 @@
 /** 箱变 **/
 export const BOXTRANSFORMER = 'BoxTransformer'
 
-/* 电缆分支箱 */
+/** 电缆分支箱 */
 export const CABLEBRANCHBOX = 'CableBranchBox'
 
-/* 电缆井 */
+/** 电缆井 */
 export const CABLEWELL = 'CableWell'
 
-/* 柱上断路器 */
+/** 柱上断路器 */
 export const COLUMNCIRCUITBREAKER = 'ColumnCircuitBreaker'
 
-/* 柱上变压器 */
+/** 柱上变压器 */
 export const COLUMNTRANSFORMER = 'ColumnTransformer'
 
-/* 配电室 */
+/** 配电室 */
 export const ELECTRICITYDISTRIBUTIONROOM = 'ElectricityDistributionRoom'
 
-/* 电源 */
+/** 电源 */
 export const POWERSUPPLY = 'PowerSupply'
 
-/* 环网柜 */
+/** 环网柜 */
 export const RINGNETWORKCABINET = 'RingNetworkCabinet'
 
-/* 开闭所 */
+/** 开闭所 */
 export const SWITCHINGSTATION = 'SwitchingStation'
 
-/* 杆塔 */
+/** 杆塔 */
 export const TOWER = 'Tower'
 
-/* 变电站 */
+/** 变电站 */
 export const TRANSFORMERSUBSTATION = 'TransformerSubstation'
 
-/* 电缆线路路 */
+/** 电缆线路路 */
 export const CABLECIRCUIT = 'CableCircuit'
 
-/* 架空线路 */
+/** 架空线路 */
 export const LINE = 'Line'
 
 export const POINTS = [
@@ -81,8 +81,8 @@ export const FEATUERTYPE = {
   [COLUMNCIRCUITBREAKER]: '柱上断路器',
   [COLUMNTRANSFORMER]: '柱上变压器',
   [CABLEBRANCHBOX]: '电缆分支箱',
-  [CABLECIRCUIT]: '电缆线路',
-  [LINE]: '架空线路',
+  [CABLECIRCUIT]: '电缆线段',
+  [LINE]: '架空线段',
 }
 
 /** 可以绘制的图元 */
@@ -106,7 +106,7 @@ export type KVLEVELTYPES = {
   belonging: string[]
 }
 
-export const COLORDEFAULT = '#0000FF'
+export const COLORDEFAULT = '#000000'
 
 /** 电压等级 */
 export const KVLEVELOPTIONS = [
@@ -214,12 +214,7 @@ export const ALLFEATRUETYPE = [...BELONGINGLINE, POWERSUPPLY, TRANSFORMERSUBSTAT
 /** 要素属性是否在表单中展示型号 **/
 export const BELONGINGMODEL = [RINGNETWORKCABINET]
 /** 要素属性是否在表单中展示配变性值 **/
-export const BELONGINGPROPERITIES = [
-  COLUMNTRANSFORMER,
-  BOXTRANSFORMER,
-  RINGNETWORKCABINET,
-  ELECTRICITYDISTRIBUTIONROOM,
-]
+export const BELONGINGPROPERITIES = [COLUMNTRANSFORMER, BOXTRANSFORMER, ELECTRICITYDISTRIBUTIONROOM]
 /** 要素属性是否在表单中展示容量 **/
 export const BELONGINGCAPACITY = [COLUMNTRANSFORMER, BOXTRANSFORMER, ELECTRICITYDISTRIBUTIONROOM]
 

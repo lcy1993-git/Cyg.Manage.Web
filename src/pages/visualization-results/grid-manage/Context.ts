@@ -18,8 +18,9 @@ export interface MyContextType {
   setselectCity: Dispatch<SetStateAction<MyContextType['selectCity']>>
   importModalVisible: boolean
   setImportModalVisible: Dispatch<SetStateAction<boolean>>
-  lineAssemble: { value: string; label: string }[]
-  setlineAssemble: Dispatch<SetStateAction<{ value: string; label: string }[]>>
+  // 是否刷新所属厂站
+  lineAssemble: boolean
+  setlineAssemble: Dispatch<SetStateAction<boolean>>
   isRefresh: boolean
   setisRefresh: Dispatch<SetStateAction<boolean>>
   zIndex: string

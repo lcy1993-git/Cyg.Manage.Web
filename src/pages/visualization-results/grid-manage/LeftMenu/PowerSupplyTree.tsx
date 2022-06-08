@@ -86,7 +86,7 @@ const lineformLayout = {
 }
 
 const PowerSupplyTree = () => {
-  const { isRefresh, setisRefresh, mapRef } = useMyContext()
+  const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
   // const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   const { linesId, setlinesId, setpowerSupplyIds, settreeLoading } = useTreeContext()
   // const [PowerSupplyIds, setPowerSupplyIds] = useState<string[]>([])
@@ -139,6 +139,7 @@ const PowerSupplyTree = () => {
 
   const handleOk = async () => {
     try {
+      await form.validateFields()
       setisRefresh(false)
       const formData = form.getFieldsValue()
       let color: string | undefined
@@ -164,7 +165,7 @@ const PowerSupplyTree = () => {
       const drawParams = {
         ...formData,
         id: currentFeatureId,
-        styleColor,
+        color: styleColor,
         lineModel: formData.conductorModel,
       }
 
@@ -234,24 +235,24 @@ const PowerSupplyTree = () => {
       setIsModalVisible(true)
       form.setFieldsValue({
         ...data,
-        totalLength: length.toFixed(2),
+        totalLength: length.toFixed(1),
         lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
       })
     }
   }
-
+  // checkbox状态改变触发
   const getPowerSupplyTreeData = (checkedKeys: any, e: any) => {
-    const PowerSupplyIds = checkedKeys
+    const PowerSupplyIds: string[] = checkedKeys
       .map((item: string) => {
-        const isSubstation = item.includes(`_&${POWERSUPPLY}`)
-        if (isSubstation) {
-          return item.split('_&')[0]
+        const start = item.indexOf('_&Line')
+        const end = item.indexOf('_&PowerSupply')
+        if (start !== -1 && end !== -1) {
+          return item.substring(start + 6, end)
         }
         return undefined
       })
       .filter((item: string) => item)
-    setpowerSupplyIds(PowerSupplyIds)
-
+    setpowerSupplyIds([...new Set(PowerSupplyIds)])
     const currentLineId = checkedKeys
       .map((item: string) => {
         const isSubstation = item.includes(`_&Line`)
@@ -294,7 +295,7 @@ const PowerSupplyTree = () => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [stationItemsHandle])
+  }, [stationItemsHandle, lineAssemble])
 
   return (
     <>
@@ -330,10 +331,10 @@ const PowerSupplyTree = () => {
               </Select>
             </Form.Item>
             <Form.Item name="totalCapacity" label="配变总容量">
-              <Input disabled />
+              <Input disabled addonAfter="(kAV)" />
             </Form.Item>
             <Form.Item name="totalLength" label="线路总长度">
-              <Input disabled />
+              <Input disabled addonAfter="(km)" />
             </Form.Item>
             <Form.Item
               name="kvLevel"
