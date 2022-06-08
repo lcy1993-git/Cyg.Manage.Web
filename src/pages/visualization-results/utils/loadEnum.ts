@@ -34,4 +34,4 @@ export const findEnumKeyByType = (type: string): Map<number, string> => {
 export const findEnumKeyByCN = (chEnum: string, type: string): number =>
   (data || defautEnumData)
     .find((enumItem: EnumItem) => enumItem.key === type)
-    .value.find((value: EnumValue) => value.text === chEnum).value
+    ?.value.find((value: EnumValue) => value.text === chEnum)?.value

@@ -595,11 +595,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             .getFeatures()
             .find(
               (item: any) =>
-                item.getProperties().features[0].getProperties().id ===
+                item.getProperties().features?.[0].getProperties().id ===
                 feature.getProperties().main_id
             )
           // feature.getProperties().kv_level = ;
-          fs && feature.set('kv_level', fs.getProperties().features[0].getProperties().kv_level)
+          fs && feature.set('kv_level', fs.getProperties().features?.[0].getProperties().kv_level)
         }
 
         let voltagelevel = {

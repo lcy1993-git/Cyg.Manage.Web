@@ -1,35 +1,31 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Table, Modal, Input, message } from 'antd'
-import SidePopupMergeThreeHoc from './components/side-popup-hoc/index'
-import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
-
-import { useContainer } from '../../result-page/mobx-store'
-import CommentList from './components/comment-list'
-
-import moment from 'moment'
-import { useRequest } from 'ahooks'
-import { observer } from 'mobx-react-lite'
-
-import { findEnumKeyByCN } from '../../utils/loadEnum'
-import { formDataMateral, generateMaterialTreeList, translateMatDataToTree } from '@/utils/utils'
 import {
-  getlibId_new,
-  getMedium,
-  getMaterialItemData,
-  getHouseholdLineInfo,
-} from '@/services/visualization-results/visualization-results'
-import {
-  CommentRequestType,
   addComment,
+  CommentRequestType,
   fetchCommentList,
   porjectIsExecutor,
 } from '@/services/visualization-results/side-popup'
-import styles from './index.less'
-import CableSection from '../cable-section'
-import MediaModal from '../media-modal'
+import {
+  getHouseholdLineInfo,
+  getlibId_new,
+  getMaterialItemData,
+  getMedium,
+} from '@/services/visualization-results/visualization-results'
+import { translateMatDataToTree } from '@/utils/utils'
+import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Input, message, Modal, Table } from 'antd'
 import classnames from 'classnames'
-import { MaterialTableNew } from '../material-table-new'
+import { observer } from 'mobx-react-lite'
+import moment from 'moment'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useContainer } from '../../result-page/mobx-store'
+import { findEnumKeyByCN } from '../../utils/loadEnum'
+import CableSection from '../cable-section'
 import { HouseholdTable } from '../household-table'
+import { MaterialTableNew } from '../material-table-new'
+import MediaModal from '../media-modal'
+import CommentList from './components/comment-list'
+import styles from './index.less'
 
 export interface TableDataType {
   [propName: string]: any
@@ -544,12 +540,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
        * "survey_tower.1386220338212147281" 切割该字符串获取图层type，设备类型，设备id
        * survey_device_type.1386220338212147281
        */
-      const split = id_.split('.')
+      const split = id_?.split('.')
       // deviceId在审阅获取数据时拿不到id名称，这里的id有误故修改id获取方式
       // const deviceId = split[1];
       const deviceId = feature.values_?.id
 
-      const deviceAndLayer = split[0].split('_')
+      const deviceAndLayer = split && split[0].split('_')
 
       /**
        * 初始化请求body
@@ -559,9 +555,9 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
        */
 
       let body = {
-        layerType: findEnumKeyByCN(LAYER_TYPE[deviceAndLayer[0]], 'ProjectCommentLayer'),
+        layerType: findEnumKeyByCN(LAYER_TYPE[deviceAndLayer?.[0]], 'ProjectCommentLayer'),
         deviceType: findEnumKeyByCN(
-          DEVICE_TYPE[deviceAndLayer.slice(1).join('_')],
+          DEVICE_TYPE[deviceAndLayer?.slice(1).join('_')],
           'ProjectCommentDevice'
         ),
         deviceId,
