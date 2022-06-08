@@ -165,7 +165,7 @@ const PowerSupplyTree = () => {
       const drawParams = {
         ...formData,
         id: currentFeatureId,
-        styleColor,
+        color: styleColor,
         lineModel: formData.conductorModel,
       }
 

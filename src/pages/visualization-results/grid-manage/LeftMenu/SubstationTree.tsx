@@ -181,10 +181,9 @@ const SubstationTree = () => {
       const drawParams = {
         ...formData,
         id: currentFeatureId,
-        styleColor,
+        color: styleColor,
         lineModel: formData.conductorModel,
       }
-
       await modifyLine(upLoadparams)
       upateLineByMainLine(mapRef.map, drawParams)
       message.info('编辑成功')

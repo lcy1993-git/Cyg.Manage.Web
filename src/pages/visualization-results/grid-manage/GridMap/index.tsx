@@ -412,8 +412,8 @@ const GridMap = () => {
   const FormRules = () => ({
     validator(_: any, value: string) {
       // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
-      if (!value) {
-        return Promise.resolve()
+      if (!value && Number(value) !== 0) {
+        return Promise.reject(new Error('请输入0或正整数'))
       }
       const reg = /^([0]|[1-9][0-9]*)$/
       if (reg.test(value)) {
@@ -699,8 +699,8 @@ const EditTransformerSubstation = (props: any) => {
 
   const FormRules = () => ({
     validator(_: any, value: string) {
-      if (!value) {
-        return Promise.resolve()
+      if (!value && Number(value) !== 0) {
+        return Promise.reject(new Error('请输入0到100的自然数'))
       }
       // const reg = /^([0]|[1-9][0-9]*)$/
       const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
@@ -818,11 +818,14 @@ const EditTransformerSubstation = (props: any) => {
     <Modal
       title="编辑变压器出线间隔"
       visible={editModel}
-      onOk={() => {
-        const formData = form.getFieldsValue()
-        const data = convertData(formData, id)
-        form.resetFields()
-        handleOk(data)
+      onOk={async () => {
+        try {
+          await form.validateFields()
+          const formData = form.getFieldsValue()
+          const data = convertData(formData, id)
+          form.resetFields()
+          handleOk(data)
+        } catch (err) {}
       }}
       onCancel={() => {
         form.resetFields()
