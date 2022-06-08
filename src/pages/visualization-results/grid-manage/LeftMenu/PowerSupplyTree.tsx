@@ -240,19 +240,19 @@ const PowerSupplyTree = () => {
       })
     }
   }
-
+  // checkbox状态改变触发
   const getPowerSupplyTreeData = (checkedKeys: any, e: any) => {
-    const PowerSupplyIds = checkedKeys
+    const PowerSupplyIds: string[] = checkedKeys
       .map((item: string) => {
-        const isSubstation = item.includes(`_&${POWERSUPPLY}`)
-        if (isSubstation) {
-          return item.split('_&')[0]
+        const start = item.indexOf('_&Line')
+        const end = item.indexOf('_&PowerSupply')
+        if (start !== -1 && end !== -1) {
+          return item.substring(start + 6, end)
         }
         return undefined
       })
       .filter((item: string) => item)
-    setpowerSupplyIds(PowerSupplyIds)
-
+    setpowerSupplyIds([...new Set(PowerSupplyIds)])
     const currentLineId = checkedKeys
       .map((item: string) => {
         const isSubstation = item.includes(`_&Line`)
