@@ -57,7 +57,12 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
-import { deletCurrrentSelectFeature, editFeature, getDeleFeatures } from './utils/select'
+import {
+  deletCurrrentSelectFeature,
+  editFeature,
+  getCurrrentSelectFeature,
+  getDeleFeatures,
+} from './utils/select'
 interface BelongingLineType {
   id: string
   name: string
@@ -93,10 +98,17 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex } = useMyContext()
+  const {
+    mapRef,
+    setisRefresh,
+    isRefresh,
+    setzIndex,
+    zIndex,
+    setdrawToolbarVisible,
+  } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
-  const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '' })
+  const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   const [visible, setvisible] = useState<boolean>(false)
@@ -226,6 +238,7 @@ const GridMap = () => {
       setcurrentfeatureData({
         id: featureData.id,
         geom: featureData.geom,
+        color: featureData.color,
       })
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
@@ -425,8 +438,7 @@ const GridMap = () => {
 
   const FormRuleslng = () => ({
     validator: (_: any, value: string, callback: any) => {
-      const reg =
-        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
       if (value === '' || !value) {
         callback()
       } else {
@@ -468,10 +480,10 @@ const GridMap = () => {
         getContainer={false}
         style={{
           position: 'absolute',
-          width: zIndex === 'edit' ? '378px' : 0,
+          width: getCurrrentSelectFeature() ? '378px' : 0,
           height: '100%',
           overflow: 'hidden',
-          display: zIndex === 'edit' ? 'block' : 'none',
+          // display: zIndex === 'edit' ? 'block' : 'none',
           zIndex: zIndex === 'edit' ? 1000 : 900,
         }}
         mask={false}
@@ -483,7 +495,19 @@ const GridMap = () => {
               <Input />
             </Form.Item>
           )}
-
+          <Form.Item
+            name="lineId"
+            label="所属线路"
+            rules={[{ required: true, message: '请选择所属线路' }]}
+          >
+            <Select dropdownStyle={{ zIndex: 3000 }}>
+              {belongingLineData.map((item) => (
+                <Option value={item.id} key={item.id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
           <Form.Item
             name="kvLevel"
             label="电压等级"

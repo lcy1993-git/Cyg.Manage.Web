@@ -77,6 +77,7 @@ export const pointStyle = (
     default:
       break
   }
+
   let color = data.color
   color = selected ? `rgba(110, 74, 192, 1)` : color
   zIndex = selected ? 99 : zIndex
