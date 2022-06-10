@@ -244,14 +244,14 @@ const PowerSupplyTree = () => {
   const getPowerSupplyTreeData = (checkedKeys: any, e: any) => {
     const PowerSupplyIds: string[] = checkedKeys
       .map((item: string) => {
-        const start = item.indexOf('_&Line')
-        const end = item.indexOf('_&PowerSupply')
-        if (start !== -1 && end !== -1) {
-          return item.substring(start + 6, end)
+        // const start = item.indexOf('_&Line')
+        const idStr = item.indexOf('_&PowerSupply')
+        if (idStr !== -1) {
+          return item.split('_&')[0]
         }
-        return undefined
+        return
       })
-      .filter((item: string) => item)
+      .filter(Boolean)
     setpowerSupplyIds([...new Set(PowerSupplyIds)])
     const currentLineId = checkedKeys
       .map((item: string) => {

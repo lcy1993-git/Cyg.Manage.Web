@@ -92,7 +92,9 @@ const DrawToolbar = () => {
       item.belonging.find((type: string) => type.includes(currentFeatureType))
     ),
   ])
+
   const [form] = useForm()
+  const [lineForm] = useForm()
   const formItemLayout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 18 },
@@ -147,12 +149,19 @@ const DrawToolbar = () => {
         RINGNETWORKCABINET,
         SWITCHINGSTATION,
       ].includes(currentFeatureType)
-      form.setFieldsValue({
-        lineId: currentLineData?.id,
-        kvLevel: exist ? 3 : currentLineData?.kvLevel,
-        lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
-        lineModel: currentLineData.lineModel ? '111' : '',
-      })
+      currentFeature === 'feature'
+        ? form.setFieldsValue({
+            lineId: currentLineData?.id,
+            kvLevel: exist ? 3 : currentLineData?.kvLevel,
+            lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
+            lineModel: currentLineData.lineModel ? '111' : '',
+          })
+        : lineForm.setFieldsValue({
+            lineId: currentLineData?.id,
+            kvLevel: exist ? 3 : currentLineData?.kvLevel,
+            lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
+            lineModel: currentLineData.lineModel ? '111' : '',
+          })
     }
   }
 
@@ -231,7 +240,10 @@ const DrawToolbar = () => {
   /* 切换tab **/
   const tabsOnChange = (value: string) => {
     setcurrentFeature(value)
-    form.resetFields()
+    // form.setFieldsValue({
+    //   featureType: currentFeatureType,
+    // })
+    // form.resetFields()
     // 上传本地绘制数据
     uploadLocalData()
     // 退出手动绘制
@@ -370,13 +382,8 @@ const DrawToolbar = () => {
       >
         <TabPane tab="插入图符" key="feature">
           {currentFeature === 'feature' && (
-            <Form
-              {...formItemLayout}
-              style={{ marginTop: '10px' }}
-              form={form}
-              initialValues={{ featureType: 'PowerSupply' }}
-            >
-              <Form.Item name="featureType" label="绘制图符">
+            <Form {...formItemLayout} style={{ marginTop: '10px' }} form={form}>
+              <Form.Item name="featureType" label="绘制图符" initialValue="PowerSupply">
                 <Radio.Group
                   className="EditFeature"
                   options={FEATUREOPTIONS}
@@ -528,7 +535,7 @@ const DrawToolbar = () => {
         </TabPane>
         <TabPane tab="绘制线段" key="drawline">
           {currentFeature === 'drawline' && (
-            <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
+            <Form {...lineformLayout} style={{ marginTop: '10px' }} form={lineForm}>
               <Form.Item
                 name="lineId"
                 label="所属线路"

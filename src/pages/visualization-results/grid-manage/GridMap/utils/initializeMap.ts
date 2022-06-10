@@ -6,30 +6,31 @@ import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
 import { XYZ } from 'ol/source'
 import View from 'ol/View'
+import { pointType } from '..'
 import DrawTool from './draw'
 import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 import { moveOverlay } from './overlay'
 import { getCurrrentSelectFeature, initSelect, setSelectActive } from './select'
 import { calculateDistance, lineStyle, pointStyle } from './style'
-interface pointType {
-  featureType: string
-  name?: string
-  kvLevel?: string
-  designScaleMainTransformer?: string
-  builtScaleMainTransformer?: string
-  mainWiringMode?: string
-  powerType?: string
-  installedCapacity?: string
-  schedulingMode?: string
-  lineId?: string
-  capacity?: string
-  model?: string
-  properties?: string
-  lng?: string
-  geom: string
-  id: string
-}
+// interface pointType {
+//   featureType: string
+//   name?: string
+//   kvLevel?: string
+//   designScaleMainTransformer?: string
+//   builtScaleMainTransformer?: string
+//   mainWiringMode?: string
+//   powerType?: string
+//   installedCapacity?: string
+//   schedulingMode?: string
+//   lineId?: string
+//   capacity?: string
+//   model?: string
+//   properties?: string
+//   lng?: string
+//   geom: string
+//   id: string
+// }
 interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
