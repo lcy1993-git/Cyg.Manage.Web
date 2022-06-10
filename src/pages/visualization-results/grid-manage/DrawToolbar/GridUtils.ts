@@ -195,6 +195,41 @@ export const KVLEVELOPTIONS = [
   },
 ]
 
+export const COLORU = [
+  {
+    label: '青',
+    value: '#00FFFF',
+  },
+  {
+    label: '蓝',
+    value: '#1EB9FF',
+  },
+  {
+    label: '黄',
+    value: '#F2DA00',
+  },
+  {
+    label: '红',
+    value: '#FF3E3E',
+  },
+  {
+    label: '洋红',
+    value: '#FF5ECF',
+  },
+  {
+    label: '浅黄',
+    value: '#FFFFE0',
+  },
+  {
+    label: '咖啡',
+    value: '#4D3900',
+  },
+  {
+    label: '绿',
+    value: '#00FF00',
+  },
+]
+
 /** 要素属性是否在表单中展示所属线路 **/
 export const BELONGINGLINE = [
   TOWER,

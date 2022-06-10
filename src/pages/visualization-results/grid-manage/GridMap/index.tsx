@@ -42,6 +42,7 @@ import {
   CABLECIRCUIT,
   CABLECIRCUITMODEL,
   CABLEWELL,
+  COLORU,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   createFeatureId,
@@ -68,6 +69,7 @@ interface BelongingLineType {
   name: string
   isOverhead: boolean
   isPower: boolean
+  color: string
 }
 
 interface pointType {
@@ -87,6 +89,7 @@ interface pointType {
   properties?: string
   lng?: string
   geom: string
+  color?: string
   id: string
 }
 
@@ -98,14 +101,7 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const {
-    mapRef,
-    setisRefresh,
-    isRefresh,
-    setzIndex,
-    zIndex,
-    setdrawToolbarVisible,
-  } = useMyContext()
+  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
@@ -117,7 +113,7 @@ const GridMap = () => {
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
   const [selectLineType, setselectLineType] = useState('')
-  const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
+  // const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
 
   const dataHandle = (data: any) => {
     if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
@@ -233,12 +229,12 @@ const GridMap = () => {
       setvisible(true)
       setzIndex('edit')
       form.resetFields()
-      setcurrentLineKvLevel(Number(data.kvLevel))
+      // setcurrentLineKvLevel(Number(data.kvLevel))
       setcurrentFeatureType(featureData.featureType)
       setcurrentfeatureData({
         id: featureData.id,
         geom: featureData.geom,
-        color: featureData.color,
+        color: featureData.color || '',
       })
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
@@ -262,9 +258,11 @@ const GridMap = () => {
 
   /** 编辑 **/
   const onFinish = async (value: any) => {
+    const currentThread = belongingLineData.find((item) => item.id === value.lineId)
     const params = {
       ...value,
       ...currentfeatureData,
+      color: currentThread ? currentThread.color : '',
     }
     try {
       switch (currentFeatureType) {
@@ -314,9 +312,15 @@ const GridMap = () => {
           })
           break
       }
+      let drawColor
+      if (currentThread) {
+        const exist = COLORU.find((item) => item.label === currentThread.color)
+        drawColor = exist ? exist.value : ''
+      }
       editFeature(mapRef.map, {
         ...params,
         featureType: currentFeatureType,
+        color: drawColor,
       })
       message.info('上传成功')
     } catch (err) {
@@ -438,7 +442,8 @@ const GridMap = () => {
 
   const FormRuleslng = () => ({
     validator: (_: any, value: string, callback: any) => {
-      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      const reg =
+        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
       if (value === '' || !value) {
         callback()
       } else {
@@ -513,12 +518,7 @@ const GridMap = () => {
             label="电压等级"
             rules={[{ required: true, message: '请输入名称' }]}
           >
-            <Select
-              dropdownStyle={{ zIndex: 3000 }}
-              onChange={(value: number) => {
-                setcurrentLineKvLevel(value)
-              }}
-            >
+            <Select dropdownStyle={{ zIndex: 3000 }}>
               {KVLEVELOPTIONS.map((item) => (
                 <Option key={item.kvLevel} value={item.kvLevel}>
                   {item.label}
@@ -814,7 +814,6 @@ const EditTransformerSubstation = (props: any) => {
         total: Kv_110.total_110,
         type: 6,
         transformerSubstationId: id,
-        id: createFeatureId(),
       },
       {
         publicuse: Kv_10.publicuse_10,
@@ -823,7 +822,6 @@ const EditTransformerSubstation = (props: any) => {
         total: Kv_10.total_10,
         type: 3,
         transformerSubstationId: id,
-        id: createFeatureId(),
       },
       {
         publicuse: Kv_35.publicuse_35,
@@ -832,7 +830,6 @@ const EditTransformerSubstation = (props: any) => {
         total: Kv_35.total_35,
         type: 5,
         transformerSubstationId: id,
-        id: createFeatureId(),
       },
     ]
   }
