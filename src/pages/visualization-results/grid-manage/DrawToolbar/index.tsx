@@ -255,12 +255,7 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
-      if (formData.featureType === TRANSFORMERSUBSTATION || formData.featureType === POWERSUPPLY) {
-        setisRefresh(false)
-      }
-
       let color
-
       if (formData.featureType === POWERSUPPLY) {
         color = '#4D3900'
       } else if (formData.featureType === TRANSFORMERSUBSTATION) {

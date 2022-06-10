@@ -160,7 +160,12 @@ const PowerSupplyTree = () => {
         color = kv?.color[0].label
         styleColor = kv?.color[0].value
       }
-      const upLoadparams = { ...formData, id: currentFeatureId, color }
+      const upLoadparams = {
+        ...formData,
+        id: currentFeatureId,
+        color,
+        isOverhead: formData.lineType === 'Line',
+      }
 
       const drawParams = {
         ...formData,

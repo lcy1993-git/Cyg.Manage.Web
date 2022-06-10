@@ -121,20 +121,10 @@ const GridMap = () => {
       return []
     }
     return data.map((item: { kvLevel: number; color: any }) => {
-      let color
-      if (item.kvLevel === 3) {
-        const colors = KVLEVELOPTIONS.find((kv) => kv.kvLevel === 3)
-        if (colors) {
-          const colorData = colors?.color.find((co: { value: any }) => co.value === item.color)
-          color = colorData?.label
-        }
-      } else {
-        const colors = KVLEVELOPTIONS.find((kv) => kv.kvLevel === item.kvLevel)
-        color = colors?.color[0].label
-      }
+      const exist = COLORU.find((co) => co.value === item.color)
       return {
         ...item,
-        color: color ? color : '',
+        color: exist ? exist.label : '',
       }
     })
   }
@@ -200,6 +190,7 @@ const GridMap = () => {
 
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(true)
+        setisRefresh(false)
       }
 
       await stationItemsHandle({
@@ -219,6 +210,7 @@ const GridMap = () => {
       })
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(false)
+        setisRefresh(true)
       }
     }
   }
@@ -249,12 +241,12 @@ const GridMap = () => {
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
-      setselectLineType(featureData.isOverhead ? 'LINE' : 'CABLECIRCUIT')
+      setselectLineType(featureData.isOverhead ? LINE : CABLECIRCUIT)
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.isOverhead ? 'LINE' : 'CABLECIRCUIT',
+        lineType: featureData.isOverhead ? LINE : CABLECIRCUIT,
       })
     } else {
       form.resetFields()
@@ -275,6 +267,8 @@ const GridMap = () => {
       // 如果是变电站就根据电压等级显示
       const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
       color = kv?.color[0].label
+    } else if (currentFeatureType === POWERSUPPLY) {
+      color = '咖啡'
     } else {
       // 否则就根据主线路的颜色显示
       color = currentThread ? currentThread.color : ''
@@ -334,6 +328,8 @@ const GridMap = () => {
       if (currentFeatureType === TRANSFORMERSUBSTATION) {
         const exist = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
         drawColor = exist ? exist.color[0].value : ''
+      } else if (currentFeatureType === POWERSUPPLY) {
+        drawColor = '#4D3900'
       } else {
         if (currentThread) {
           const exist = COLORU.find((item) => item.label === currentThread.color)
@@ -425,14 +421,12 @@ const GridMap = () => {
   // 挂载地图
   useMount(() => {
     initMap({ mapRef, ref, isActiveFeature })
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', async (e) => {
       if (e.keyCode === 27) {
         // 上传本地绘制数据
-        uploadLocalData()
+        await uploadLocalData()
         // 退出手动绘制
         clear()
-        // 刷新列表
-        setisRefresh(true)
       }
       if (e.keyCode === 46) {
         deletCurrrentSelectFeature(mapRef.map)
@@ -647,14 +641,15 @@ const GridMap = () => {
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
             <>
               <Form.Item name="lineType" label="线路类型">
-                <Select
-                  allowClear
-                  onChange={onChangeLineType}
-                  dropdownStyle={{ zIndex: 3000 }}
-                  disabled
-                >
-                  <Option value="LINE">架空线路</Option>
-                  <Option value="CABLECIRCUIT">电缆线路</Option>
+                <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
+                  {[
+                    { label: '架空线路', value: 'Line' },
+                    { label: '电缆线路', value: 'CableCircuit' },
+                  ].map((item) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item name="lineModel" label="线路型号">

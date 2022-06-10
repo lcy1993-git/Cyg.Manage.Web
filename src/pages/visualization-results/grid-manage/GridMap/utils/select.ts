@@ -104,16 +104,17 @@ export const deletCurrrentSelectFeature = (map: any) => {
     deleFeatures.push(currrentSelectFeature.get('data'))
     // !!  1. 删除点位 首先要删除当前点位 currrentSelectFeature.get('data')
     const pointId = currrentSelectFeature.get('data').id
-    lineLayer
-      .getSource()
-      .getFeatures()
-      .forEach((item: any) => {
+    const lines = lineLayer.getSource().getFeatures()
+
+    if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
+      lines.forEach((item: any) => {
         if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
           // !  2... 然后删除线路  item.get('data')
           lineLayer.getSource().removeFeature(item)
           deleFeatures.push(item.get('data'))
         }
       })
+    }
   }
 
   currrentSelectFeature = null
