@@ -269,13 +269,21 @@ const GridMap = () => {
 
   /** 编辑 **/
   const onFinish = async (value: any) => {
-    const currentThread = belongingLineData.find((item) => item.id === value.lineId)
+    let color
+    const currentThread = belongingLineData.find((item) => item.id === value.lineId) // 上传数据颜色处理
+    if (currentFeatureType === TRANSFORMERSUBSTATION) {
+      // 如果是变电站就根据电压等级显示
+      const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
+      color = kv?.color[0].label
+    } else {
+      // 否则就根据主线路的颜色显示
+      color = currentThread ? currentThread.color : ''
+    }
     const params = {
       ...value,
       ...currentfeatureData,
-      color: currentThread ? currentThread.color : '',
+      color,
     }
-
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -322,10 +330,15 @@ const GridMap = () => {
             isOverhead: false,
           })
 
-      let drawColor
-      if (currentThread) {
-        const exist = COLORU.find((item) => item.label === currentThread.color)
-        drawColor = exist ? exist.value : ''
+      let drawColor // 本地修改颜色处理
+      if (currentFeatureType === TRANSFORMERSUBSTATION) {
+        const exist = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
+        drawColor = exist ? exist.color[0].value : ''
+      } else {
+        if (currentThread) {
+          const exist = COLORU.find((item) => item.label === currentThread.color)
+          drawColor = exist ? exist.value : ''
+        }
       }
       editFeature(mapRef.map, {
         ...params,
@@ -510,7 +523,8 @@ const GridMap = () => {
               <Input />
             </Form.Item>
           )}
-          {currentFeatureType !== TRANSFORMERSUBSTATION && currentFeatureType !== POWERSUPPLY && (
+          {/* 杆塔 柱上断路器 柱上变压器*/}
+          {BELONGINGLINE.includes(currentFeatureType) && (
             <Form.Item
               name="lineId"
               label="所属线路"
@@ -525,17 +539,38 @@ const GridMap = () => {
               </Select>
             </Form.Item>
           )}
+          {/* {currentFeatureType !== TRANSFORMERSUBSTATION && currentFeatureType !== POWERSUPPLY && (
+            <Form.Item
+              name="lineId"
+              label="所属线路"
+              rules={[{ required: true, message: '请选择所属线路' }]}
+            >
+              <Select dropdownStyle={{ zIndex: 3000 }}>
+                {belongingLineData.map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )} */}
           <Form.Item
             name="kvLevel"
             label="电压等级"
             rules={[{ required: true, message: '请输入名称' }]}
           >
             <Select dropdownStyle={{ zIndex: 3000 }}>
-              {KVLEVELOPTIONS.map((item) => (
-                <Option key={item.kvLevel} value={item.kvLevel}>
-                  {item.label}
-                </Option>
-              ))}
+              {currentFeatureType === TRANSFORMERSUBSTATION
+                ? KVLEVELOPTIONS.filter((item) => item.kvLevel !== 3).map((item) => (
+                    <Option key={item.kvLevel} value={item.kvLevel}>
+                      {item.label}
+                    </Option>
+                  ))
+                : KVLEVELOPTIONS.map((item) => (
+                    <Option key={item.kvLevel} value={item.kvLevel}>
+                      {item.label}
+                    </Option>
+                  ))}
             </Select>
           </Form.Item>
           {/* 变电站 */}
@@ -575,23 +610,6 @@ const GridMap = () => {
                 <Input />
               </Form.Item>
             </>
-          )}
-
-          {/* 杆塔 柱上断路器 柱上变压器*/}
-          {BELONGINGLINE.includes(currentFeatureType) && (
-            <Form.Item
-              name="lineId"
-              label="所属线路"
-              rules={[{ required: true, message: '请选择所属线路' }]}
-            >
-              <Select dropdownStyle={{ zIndex: 3000 }}>
-                {belongingLineData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
           )}
 
           {/* 箱变 柱上变压器*/}
