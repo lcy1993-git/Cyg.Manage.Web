@@ -284,8 +284,8 @@ const DrawToolbar = () => {
   /** 绘制线路 **/
   const createLine = async () => {
     try {
-      await form.validateFields()
-      const formData = form.getFieldsValue()
+      await lineForm.validateFields()
+      const formData = lineForm.getFieldsValue()
 
       let color
       if (currentLineKvLevel === 3) {

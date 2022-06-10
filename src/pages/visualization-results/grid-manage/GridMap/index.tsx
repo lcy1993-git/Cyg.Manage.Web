@@ -101,7 +101,7 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex } = useMyContext()
+  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex, setlineAssemble } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
@@ -197,6 +197,11 @@ const GridMap = () => {
           total: 0,
         }
       })
+
+      if (powerSupplyList.length || transformerStationList.length) {
+        setlineAssemble(true)
+      }
+
       await stationItemsHandle({
         towerList,
         switchingStationList,
@@ -212,6 +217,9 @@ const GridMap = () => {
         lineElementRelationList,
         transformerIntervalList,
       })
+      if (powerSupplyList.length || transformerStationList.length) {
+        setlineAssemble(false)
+      }
     }
   }
 
