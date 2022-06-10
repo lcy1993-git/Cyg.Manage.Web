@@ -72,7 +72,7 @@ interface BelongingLineType {
   color: string
 }
 
-interface pointType {
+export interface pointType {
   featureType: string
   name?: string
   kvLevel?: string
@@ -105,6 +105,7 @@ const GridMap = () => {
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
+  // const [saveEditData, setSaveEditData] = useState({ id: '', geom: '', color: '' })
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   const [visible, setvisible] = useState<boolean>(false)
@@ -226,24 +227,26 @@ const GridMap = () => {
   const isActiveFeature = (data: pointType | null) => {
     if (data) {
       const featureData = { ...data }
-      setvisible(true)
-      setzIndex('edit')
-      form.resetFields()
-      // setcurrentLineKvLevel(Number(data.kvLevel))
-      setcurrentFeatureType(featureData.featureType)
       setcurrentfeatureData({
         id: featureData.id,
         geom: featureData.geom,
         color: featureData.color || '',
       })
+      setvisible(true)
+      setzIndex('edit')
+      form.resetFields()
+      // setcurrentLineKvLevel(Number(data.kvLevel))
+      setcurrentFeatureType(featureData.featureType)
+
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
+      setselectLineType(featureData.isOverhead ? 'LINE' : 'CABLECIRCUIT')
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.isOverhead ? 'Line' : 'CableCircuit',
+        lineType: featureData.isOverhead ? 'LINE' : 'CABLECIRCUIT',
       })
     } else {
       form.resetFields()
@@ -264,6 +267,7 @@ const GridMap = () => {
       ...currentfeatureData,
       color: currentThread ? currentThread.color : '',
     }
+
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -299,19 +303,17 @@ const GridMap = () => {
         case CABLEBRANCHBOX:
           await modifyCableBranchBox(params)
           break
-        case CABLECIRCUIT: // 电缆线路
-          await modifyRelationLine({
-            ...params,
-            isOverhead: false,
-          })
-          break
-        case LINE: // 架空线路
-          await modifyRelationLine({
+      }
+      selectLineType === 'LINE'
+        ? await modifyRelationLine({
             ...params,
             isOverhead: true,
           })
-          break
-      }
+        : await modifyRelationLine({
+            ...params,
+            isOverhead: false,
+          })
+
       let drawColor
       if (currentThread) {
         const exist = COLORU.find((item) => item.label === currentThread.color)
@@ -500,19 +502,21 @@ const GridMap = () => {
               <Input />
             </Form.Item>
           )}
-          <Form.Item
-            name="lineId"
-            label="所属线路"
-            rules={[{ required: true, message: '请选择所属线路' }]}
-          >
-            <Select dropdownStyle={{ zIndex: 3000 }}>
-              {belongingLineData.map((item) => (
-                <Option value={item.id} key={item.id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+          {currentFeatureType !== TRANSFORMERSUBSTATION && currentFeatureType !== POWERSUPPLY && (
+            <Form.Item
+              name="lineId"
+              label="所属线路"
+              rules={[{ required: true, message: '请选择所属线路' }]}
+            >
+              <Select dropdownStyle={{ zIndex: 3000 }}>
+                {belongingLineData.map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
           <Form.Item
             name="kvLevel"
             label="电压等级"
@@ -623,13 +627,13 @@ const GridMap = () => {
                   dropdownStyle={{ zIndex: 3000 }}
                   disabled
                 >
-                  <Option value="Line">架空线路</Option>
-                  <Option value="CableCircuit">电缆线路</Option>
+                  <Option value="LINE">架空线路</Option>
+                  <Option value="CABLECIRCUIT">电缆线路</Option>
                 </Select>
               </Form.Item>
               <Form.Item name="lineModel" label="线路型号">
                 <Select dropdownStyle={{ zIndex: 3000 }}>
-                  {selectLineType === 'Line' && selectLineType
+                  {selectLineType === 'LINE' && selectLineType
                     ? LINEMODEL.map((item) => (
                         <Option key={item.value} value={item.value}>
                           {item.label}

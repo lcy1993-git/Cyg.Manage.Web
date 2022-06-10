@@ -1,26 +1,10 @@
 import WKT from 'ol/format/WKT'
 import Point from 'ol/geom/Point'
 import { Select, Translate } from 'ol/interaction'
+import { pointType } from '..'
 import { getLayer } from './loadLayer'
 import { lineStyle, pointStyle } from './style'
-interface pointType {
-  featureType: string
-  name?: string
-  kvLevel?: string
-  designScaleMainTransformer?: string
-  builtScaleMainTransformer?: string
-  mainWiringMode?: string
-  powerType?: string
-  installedCapacity?: string
-  schedulingMode?: string
-  lineId?: string
-  capacity?: string
-  model?: string
-  properties?: string
-  lng?: string
-  geom: string
-  id: string
-}
+
 var select: any
 var translate: any
 var currrentSelectFeature: any
@@ -47,7 +31,6 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
       translate.setActive(true)
       currrentSelectFeature = evt.selected[0]
       /* 弹出属性显示框 **/
-      // console.log(currrentSelectFeature.get('data'), '当前要素')
       isActiveFeature(currrentSelectFeature.get('data'))
       if (currrentSelectFeature.getGeometry().getType() === 'Point') {
         const isDraw = currrentSelectFeature.get('data').type_ ? true : false

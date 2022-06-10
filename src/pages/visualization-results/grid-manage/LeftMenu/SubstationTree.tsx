@@ -234,14 +234,15 @@ const SubstationTree = () => {
   const getSubstationTreeData = async (checkedKeys: any, e: any) => {
     const SubstationIds: string[] = checkedKeys
       .map((item: string) => {
-        const start = item.indexOf('_&Line')
-        const end = item.indexOf('_&TransformerSubstation')
-        if (start !== -1 && end !== -1) {
-          return item.substring(start + 6, end)
+        // const start = item.indexOf('_&Line')
+        const idStr = item.indexOf('_&TransformerSubstation')
+        if (idStr !== -1) {
+          return item.split('_&')[0]
         }
-        return undefined
+        return
       })
-      .filter((item: string) => item)
+      .filter(Boolean)
+
     setsubStations([...new Set(SubstationIds)])
 
     const currentLineId = checkedKeys
