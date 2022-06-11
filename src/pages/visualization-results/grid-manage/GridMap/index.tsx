@@ -654,7 +654,7 @@ const GridMap = () => {
               </Form.Item>
               <Form.Item name="lineModel" label="线路型号">
                 <Select dropdownStyle={{ zIndex: 3000 }}>
-                  {selectLineType === 'LINE' && selectLineType
+                  {selectLineType === LINE && selectLineType
                     ? LINEMODEL.map((item) => (
                         <Option key={item.value} value={item.value}>
                           {item.label}
