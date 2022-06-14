@@ -172,8 +172,8 @@ const PowerSupplyTree = () => {
         id: currentFeatureId,
         color: styleColor,
         lineModel: formData.conductorModel,
+        isOverhead: formData.lineType === 'Line',
       }
-
       await modifyLine(upLoadparams)
       upateLineByMainLine(mapRef.map, drawParams)
       setIsModalVisible(false)

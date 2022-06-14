@@ -137,6 +137,8 @@ export const upateLineByMainLine = (map: any, data: any) => {
       pointLayer.getSource().getFeatures()[i].get('data').color = data.color
       pointLayer.getSource().getFeatures()[i].get('data').kvLevel = data.kvLevel
       pointLayer.getSource().getFeatures()[i].get('data').lineModel = data.lineModel
+      pointLayer.getSource().getFeatures()[i].get('data').lineType = data.lineType
+      pointLayer.getSource().getFeatures()[i].get('data').isOverhead = data.isOverhead
       pointLayer
         .getSource()
         .getFeatures()
@@ -151,6 +153,8 @@ export const upateLineByMainLine = (map: any, data: any) => {
       lineLayer.getSource().getFeatures()[i].get('data').color = data.color
       lineLayer.getSource().getFeatures()[i].get('data').kvLevel = data.kvLevel
       lineLayer.getSource().getFeatures()[i].get('data').lineModel = data.lineModel
+      lineLayer.getSource().getFeatures()[i].get('data').lineType = data.lineType
+      lineLayer.getSource().getFeatures()[i].get('data').isOverhead = data.isOverhead
       lineLayer
         .getSource()
         .getFeatures()

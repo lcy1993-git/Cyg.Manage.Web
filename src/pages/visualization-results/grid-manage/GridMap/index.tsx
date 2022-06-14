@@ -215,15 +215,7 @@ const GridMap = () => {
     }
   }
 
-  /** 选择线路型号 */
-  const onChangeLineType = (value: string) => {
-    setselectLineType(value)
-    form.setFieldsValue({
-      lineType: value,
-      conductorModel: '',
-    })
-  }
-
+  /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
     if (data) {
       const featureData = { ...data }
@@ -273,6 +265,7 @@ const GridMap = () => {
       // 否则就根据主线路的颜色显示
       color = currentThread ? currentThread.color : ''
     }
+
     const params = {
       ...value,
       ...currentfeatureData,
@@ -281,48 +274,77 @@ const GridMap = () => {
     try {
       switch (currentFeatureType) {
         case TOWER:
-          await modifyTower(params)
+          await modifyTower({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case BOXTRANSFORMER:
-          await modifyBoxTransformer(params)
+          await modifyBoxTransformer({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case POWERSUPPLY:
-          await modifyPowerSupply(params)
+          await modifyPowerSupply({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case TRANSFORMERSUBSTATION:
-          await modifyTransformerSubstation(params)
+          await modifyTransformerSubstation({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case CABLEWELL:
-          await modifyCableWell(params)
+          await modifyCableWell({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case RINGNETWORKCABINET:
-          await modifyRingNetworkCabinet(params)
+          await modifyRingNetworkCabinet({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case ELECTRICITYDISTRIBUTIONROOM:
-          await modifyElectricityDistributionRoom(params)
+          await modifyElectricityDistributionRoom({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case SWITCHINGSTATION:
-          await modifySwitchingStation(params)
+          await modifySwitchingStation({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case COLUMNCIRCUITBREAKER:
-          await modifyColumnCircuitBreaker(params)
+          await modifyColumnCircuitBreaker({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case COLUMNTRANSFORMER:
-          await modifyColumnTransformer(params)
+          await modifyColumnTransformer({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case CABLEBRANCHBOX:
-          await modifyCableBranchBox(params)
+          await modifyCableBranchBox({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
       }
-      selectLineType === 'LINE'
-        ? await modifyRelationLine({
-            ...params,
-            isOverhead: true,
-          })
-        : await modifyRelationLine({
-            ...params,
-            isOverhead: false,
-          })
+
+      await modifyRelationLine({
+        ...params,
+        isOverhead: selectLineType === LINE,
+      })
 
       let drawColor // 本地修改颜色处理
       if (currentFeatureType === TRANSFORMERSUBSTATION) {
