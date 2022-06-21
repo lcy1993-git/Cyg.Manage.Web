@@ -14,6 +14,7 @@ import { Key, useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
+  COLORU,
   KVLEVELOPTIONS,
   LINE,
   LINEMODEL,
@@ -162,11 +163,18 @@ const SubstationTree = () => {
       let styleColor: string | undefined
       if (formData.kvLevel === 3) {
         if (formData.color) {
-          const kv = KVLEVELOPTIONS.find(
-            (item: any) => formData.kvLevel === item.kvLevel
-          )?.color.find((item) => item.value === formData.color)
-          color = kv?.label
-          styleColor = kv?.value
+          const reg = /[^\u4E00-\u9FA5]/
+          if (!reg.test(formData.color)) {
+            const currColor = COLORU.find((item) => item.label === formData.color)
+            color = currColor?.label
+            styleColor = currColor?.value
+          } else {
+            const kv = KVLEVELOPTIONS.find(
+              (item: any) => formData.kvLevel === item.kvLevel
+            )?.color.find((item) => item.value === formData.color)
+            color = kv?.label
+            styleColor = kv?.value
+          }
         } else {
           color = '红'
           styleColor = '#FF3E3E'
@@ -176,8 +184,12 @@ const SubstationTree = () => {
         color = kv?.color[0].label
         styleColor = kv?.color[0].value
       }
-      const upLoadparams = { ...formData, id: currentFeatureId, color }
-
+      const upLoadparams = {
+        ...formData,
+        id: currentFeatureId,
+        color,
+        isOverhead: formData.lineType === 'Line',
+      }
       const drawParams = {
         ...formData,
         id: currentFeatureId,
@@ -189,10 +201,7 @@ const SubstationTree = () => {
       message.info('编辑成功')
       setIsModalVisible(false)
       setisRefresh(true)
-    } catch (err) {
-      message.error('编辑失败')
-      setIsModalVisible(false)
-    }
+    } catch (err) {}
   }
 
   // 获取所有厂站
@@ -227,6 +236,7 @@ const SubstationTree = () => {
         totalLength: length.toFixed(1),
         lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
       })
+      setselectLineType(selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit')
     }
   }
 
@@ -234,15 +244,18 @@ const SubstationTree = () => {
   const getSubstationTreeData = async (checkedKeys: any, e: any) => {
     const SubstationIds: string[] = checkedKeys
       .map((item: string) => {
-        // const start = item.indexOf('_&Line')
+        const start = item.indexOf('_&Line')
+        const end = item.indexOf('_&TransformerSubstation')
+        if (start !== -1 && end !== -1) {
+          return item.substring(start + 6, end)
+        }
         const idStr = item.indexOf('_&TransformerSubstation')
         if (idStr !== -1) {
           return item.split('_&')[0]
         }
-        return
+        return undefined
       })
       .filter(Boolean)
-
     setsubStations([...new Set(SubstationIds)])
 
     const currentLineId = checkedKeys

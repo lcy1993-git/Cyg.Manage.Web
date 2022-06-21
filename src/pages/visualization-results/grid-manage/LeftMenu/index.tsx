@@ -11,6 +11,7 @@ import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
   COLORDEFAULT,
+  COLORU,
   createFeatureId,
   KVLEVELOPTIONS,
   LINE,
@@ -137,9 +138,7 @@ const LeftMenu = (props: any) => {
     }
     return arr.map((item: { color: any; kvLevel: any }) => {
       if (item.color) {
-        // if (item.kvLevel === 3) {
-        const kvs = KVLEVELOPTIONS.find((kv) => kv.kvLevel === item.kvLevel)
-        const exist = kvs?.color.find((kv) => kv.label === item.color)
+        const exist = COLORU.find((co) => co.label === item.color)
         if (exist) {
           return {
             ...item,

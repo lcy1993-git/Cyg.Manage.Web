@@ -1,4 +1,5 @@
 import WKT from 'ol/format/WKT'
+import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { Select, Translate } from 'ol/interaction'
 import { pointType } from '..'
@@ -70,9 +71,46 @@ export const initTranslate = (map: any) => {
   // translate.on('translatestart', (evt:any) => {
   // })
 
-  translate.on('translating', (evt: any) => {})
+  translate.on('translating', (evt: any) => {
+    const feature = evt.features.getArray()[0]
+    updateLine(map, feature)
+  })
 
-  translate.on('translateend', (evt: any) => {})
+  translate.on('translateend', (evt: any) => {
+    const feature = evt.features.getArray()[0]
+    updateLine(map, feature)
+
+    const point = feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
+    const format = new WKT()
+    feature.get('data').geom = format.writeGeometry(point)
+    feature.get('data').lng = point.getCoordinates()[0]
+    feature.get('data').lat = point.getCoordinates()[1]
+  })
+}
+
+const updateLine = (map: any, feature: any) => {
+  const featureCoords = feature.getGeometry().getCoordinates()
+  const lineLayer = getLayer(map, 'lineLayer')
+  const data = feature.get('data')
+  const features = lineLayer
+    .getSource()
+    .getFeatures()
+    .filter(
+      (item: any) => item.get('data').endId === data.id || item.get('data').startId === data.id
+    )
+
+  features.forEach((f: any) => {
+    const lineCoords = f.getGeometry().getCoordinates()
+    let lineGeom
+    if (f.get('data').endId === data.id) {
+      lineGeom = new LineString([lineCoords[0], featureCoords])
+    } else {
+      lineGeom = new LineString([featureCoords, lineCoords[1]])
+    }
+    const format = new WKT()
+    f.get('data').geom = format.writeGeometry(lineGeom.clone().transform('EPSG:3857', 'EPSG:4326'))
+    f.setGeometry(lineGeom)
+  })
 }
 
 export const setSelectActive = (active: boolean) => {
@@ -104,16 +142,17 @@ export const deletCurrrentSelectFeature = (map: any) => {
     deleFeatures.push(currrentSelectFeature.get('data'))
     // !!  1. 删除点位 首先要删除当前点位 currrentSelectFeature.get('data')
     const pointId = currrentSelectFeature.get('data').id
-    lineLayer
-      .getSource()
-      .getFeatures()
-      .forEach((item: any) => {
+    const lines = lineLayer.getSource().getFeatures()
+
+    if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
+      lines.forEach((item: any) => {
         if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
           // !  2... 然后删除线路  item.get('data')
           lineLayer.getSource().removeFeature(item)
           deleFeatures.push(item.get('data'))
         }
       })
+    }
   }
 
   currrentSelectFeature = null

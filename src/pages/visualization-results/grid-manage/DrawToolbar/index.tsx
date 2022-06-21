@@ -255,12 +255,7 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
-      if (formData.featureType === TRANSFORMERSUBSTATION || formData.featureType === POWERSUPPLY) {
-        setisRefresh(false)
-      }
-
       let color
-
       if (formData.featureType === POWERSUPPLY) {
         color = '#4D3900'
       } else if (formData.featureType === TRANSFORMERSUBSTATION) {
@@ -284,8 +279,8 @@ const DrawToolbar = () => {
   /** 绘制线路 **/
   const createLine = async () => {
     try {
-      await form.validateFields()
-      const formData = form.getFieldsValue()
+      await lineForm.validateFields()
+      const formData = lineForm.getFieldsValue()
 
       let color
       if (currentLineKvLevel === 3) {
@@ -333,7 +328,8 @@ const DrawToolbar = () => {
 
   const FormRuleslng = () => ({
     validator: (_: any, value: string, callback: any) => {
-      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      const reg =
+        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
       if (value === '' || !value) {
         callback()
       } else {

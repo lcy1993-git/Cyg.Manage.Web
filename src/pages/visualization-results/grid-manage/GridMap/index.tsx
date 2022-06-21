@@ -42,6 +42,7 @@ import {
   CABLECIRCUIT,
   CABLECIRCUITMODEL,
   CABLEWELL,
+  COLORU,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   createFeatureId,
@@ -68,10 +69,10 @@ interface BelongingLineType {
   name: string
   isOverhead: boolean
   isPower: boolean
+  color: string
 }
 
 export interface pointType {
-  color: string
   featureType: string
   name?: string
   kvLevel?: string
@@ -88,6 +89,7 @@ export interface pointType {
   properties?: string
   lng?: string
   geom: string
+  color?: string
   id: string
 }
 
@@ -99,7 +101,7 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex } = useMyContext()
+  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex, setlineAssemble } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
@@ -111,28 +113,18 @@ const GridMap = () => {
   const [editModel, seteditModel] = useState(false)
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
-  const [selectLineType, setselectLineType] = useState(form.getFieldValue('lineType'))
-  const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
+  const [selectLineType, setselectLineType] = useState('')
+  // const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
 
   const dataHandle = (data: any) => {
     if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
       return []
     }
     return data.map((item: { kvLevel: number; color: any }) => {
-      let color
-      if (item.kvLevel === 3) {
-        const colors = KVLEVELOPTIONS.find((kv) => kv.kvLevel === 3)
-        if (colors) {
-          const colorData = colors?.color.find((co: { value: any }) => co.value === item.color)
-          color = colorData?.label
-        }
-      } else {
-        const colors = KVLEVELOPTIONS.find((kv) => kv.kvLevel === item.kvLevel)
-        color = colors?.color[0].label
-      }
+      const exist = COLORU.find((co) => co.value === item.color)
       return {
         ...item,
-        color: color ? color : '',
+        color: exist ? exist.label : '',
       }
     })
   }
@@ -195,6 +187,12 @@ const GridMap = () => {
           total: 0,
         }
       })
+
+      if (powerSupplyList.length || transformerStationList.length) {
+        setlineAssemble(true)
+        setisRefresh(false)
+      }
+
       await stationItemsHandle({
         towerList,
         switchingStationList,
@@ -210,42 +208,37 @@ const GridMap = () => {
         lineElementRelationList,
         transformerIntervalList,
       })
+      if (powerSupplyList.length || transformerStationList.length) {
+        setlineAssemble(false)
+        setisRefresh(true)
+      }
     }
   }
 
-  /** 选择线路型号 */
-  const onChangeLineType = (value: string) => {
-    setselectLineType(value)
-    form.setFieldsValue({
-      lineType: value,
-      conductorModel: '',
-    })
-  }
-
+  /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
     if (data) {
       const featureData = { ...data }
-
       setcurrentfeatureData({
         id: featureData.id,
         geom: featureData.geom,
-        color: featureData.color,
+        color: featureData.color || '',
       })
       setvisible(true)
       setzIndex('edit')
       form.resetFields()
-      setcurrentLineKvLevel(Number(data.kvLevel))
+      // setcurrentLineKvLevel(Number(data.kvLevel))
       setcurrentFeatureType(featureData.featureType)
 
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
-      setselectLineType(featureData.isOverhead ? 'LINE' : 'CABLECIRCUIT')
+      setselectLineType(featureData.isOverhead ? LINE : CABLECIRCUIT)
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.isOverhead ? 'LINE' : 'CABLECIRCUIT',
+        lineType: featureData.isOverhead ? LINE : CABLECIRCUIT,
       })
     } else {
       form.resetFields()
@@ -260,80 +253,115 @@ const GridMap = () => {
 
   /** 编辑 **/
   const onFinish = async (value: any) => {
-    const copyData = { ...currentfeatureData }
-    switch (copyData.color) {
-      case '#00FFFF':
-        copyData.color = '青'
-        break
-      case '#1EB9FF':
-        copyData.color = '蓝'
-        break
-      case '#F2DA00':
-        copyData.color = '黄'
-        break
-      case '#FF3E3E':
-        copyData.color = '红'
-        break
-      case '#FF5ECF':
-        copyData.color = '洋红'
-        break
-      default:
-        break
-    }
-    const params = {
-      ...value,
-      ...copyData,
+    let color
+    const currentThread = belongingLineData.find((item) => item.id === value.lineId) // 上传数据颜色处理
+    if (currentFeatureType === TRANSFORMERSUBSTATION) {
+      // 如果是变电站就根据电压等级显示
+      const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
+      color = kv?.color[0].label
+    } else if (currentFeatureType === POWERSUPPLY) {
+      color = '咖啡'
+    } else {
+      // 否则就根据主线路的颜色显示
+      color = currentThread ? currentThread.color : ''
     }
 
+    const params = {
+      ...value,
+      ...currentfeatureData,
+      color,
+    }
     try {
       switch (currentFeatureType) {
         case TOWER:
-          await modifyTower(params)
+          await modifyTower({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case BOXTRANSFORMER:
-          await modifyBoxTransformer(params)
+          await modifyBoxTransformer({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case POWERSUPPLY:
-          await modifyPowerSupply(params)
+          await modifyPowerSupply({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case TRANSFORMERSUBSTATION:
-          await modifyTransformerSubstation(params)
+          await modifyTransformerSubstation({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case CABLEWELL:
-          await modifyCableWell(params)
+          await modifyCableWell({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case RINGNETWORKCABINET:
-          await modifyRingNetworkCabinet(params)
+          await modifyRingNetworkCabinet({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case ELECTRICITYDISTRIBUTIONROOM:
-          await modifyElectricityDistributionRoom(params)
+          await modifyElectricityDistributionRoom({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case SWITCHINGSTATION:
-          await modifySwitchingStation(params)
+          await modifySwitchingStation({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case COLUMNCIRCUITBREAKER:
-          await modifyColumnCircuitBreaker(params)
+          await modifyColumnCircuitBreaker({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case COLUMNTRANSFORMER:
-          await modifyColumnTransformer(params)
+          await modifyColumnTransformer({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
         case CABLEBRANCHBOX:
-          await modifyCableBranchBox(params)
+          await modifyCableBranchBox({
+            ...params,
+            geom: `POINT (${value.lng} ${value.lat})`,
+          })
           break
       }
-      selectLineType === 'LINE'
-        ? await modifyRelationLine({
-            ...params,
-            isOverhead: true,
-          })
-        : await modifyRelationLine({
-            ...params,
-            isOverhead: false,
-          })
 
+      await modifyRelationLine({
+        ...params,
+        isOverhead: selectLineType === LINE,
+      })
+
+      let drawColor // 本地修改颜色处理
+      if (currentFeatureType === TRANSFORMERSUBSTATION) {
+        const exist = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
+        drawColor = exist ? exist.color[0].value : ''
+      } else if (currentFeatureType === POWERSUPPLY) {
+        drawColor = '#4D3900'
+      } else {
+        if (currentThread) {
+          const exist = COLORU.find((item) => item.label === currentThread.color)
+          drawColor = exist ? exist.value : ''
+        }
+      }
       editFeature(mapRef.map, {
         ...params,
         featureType: currentFeatureType,
+        color: drawColor,
       })
       message.info('上传成功')
     } catch (err) {
@@ -415,14 +443,12 @@ const GridMap = () => {
   // 挂载地图
   useMount(() => {
     initMap({ mapRef, ref, isActiveFeature })
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', async (e) => {
       if (e.keyCode === 27) {
         // 上传本地绘制数据
-        uploadLocalData()
+        await uploadLocalData()
         // 退出手动绘制
         clear()
-        // 刷新列表
-        setisRefresh(true)
       }
       if (e.keyCode === 46) {
         deletCurrrentSelectFeature(mapRef.map)
@@ -455,7 +481,8 @@ const GridMap = () => {
 
   const FormRuleslng = () => ({
     validator: (_: any, value: string, callback: any) => {
-      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      const reg =
+        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
       if (value === '' || !value) {
         callback()
       } else {
@@ -512,7 +539,8 @@ const GridMap = () => {
               <Input />
             </Form.Item>
           )}
-          {currentFeatureType !== TRANSFORMERSUBSTATION && currentFeatureType !== POWERSUPPLY && (
+          {/* 杆塔 柱上断路器 柱上变压器*/}
+          {BELONGINGLINE.includes(currentFeatureType) && (
             <Form.Item
               name="lineId"
               label="所属线路"
@@ -527,22 +555,38 @@ const GridMap = () => {
               </Select>
             </Form.Item>
           )}
+          {/* {currentFeatureType !== TRANSFORMERSUBSTATION && currentFeatureType !== POWERSUPPLY && (
+            <Form.Item
+              name="lineId"
+              label="所属线路"
+              rules={[{ required: true, message: '请选择所属线路' }]}
+            >
+              <Select dropdownStyle={{ zIndex: 3000 }}>
+                {belongingLineData.map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )} */}
           <Form.Item
             name="kvLevel"
             label="电压等级"
             rules={[{ required: true, message: '请输入名称' }]}
           >
-            <Select
-              dropdownStyle={{ zIndex: 3000 }}
-              onChange={(value: number) => {
-                setcurrentLineKvLevel(value)
-              }}
-            >
-              {KVLEVELOPTIONS.map((item) => (
-                <Option key={item.kvLevel} value={item.kvLevel}>
-                  {item.label}
-                </Option>
-              ))}
+            <Select dropdownStyle={{ zIndex: 3000 }}>
+              {currentFeatureType === TRANSFORMERSUBSTATION
+                ? KVLEVELOPTIONS.filter((item) => item.kvLevel !== 3).map((item) => (
+                    <Option key={item.kvLevel} value={item.kvLevel}>
+                      {item.label}
+                    </Option>
+                  ))
+                : KVLEVELOPTIONS.map((item) => (
+                    <Option key={item.kvLevel} value={item.kvLevel}>
+                      {item.label}
+                    </Option>
+                  ))}
             </Select>
           </Form.Item>
           {/* 变电站 */}
@@ -584,23 +628,6 @@ const GridMap = () => {
             </>
           )}
 
-          {/* 杆塔 柱上断路器 柱上变压器*/}
-          {BELONGINGLINE.includes(currentFeatureType) && (
-            <Form.Item
-              name="lineId"
-              label="所属线路"
-              rules={[{ required: true, message: '请选择所属线路' }]}
-            >
-              <Select dropdownStyle={{ zIndex: 3000 }}>
-                {belongingLineData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )}
-
           {/* 箱变 柱上变压器*/}
           {BELONGINGCAPACITY.includes(currentFeatureType) && (
             <>
@@ -636,19 +663,20 @@ const GridMap = () => {
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
             <>
               <Form.Item name="lineType" label="线路类型">
-                <Select
-                  allowClear
-                  onChange={onChangeLineType}
-                  dropdownStyle={{ zIndex: 3000 }}
-                  disabled
-                >
-                  <Option value="LINE">架空线路</Option>
-                  <Option value="CABLECIRCUIT">电缆线路</Option>
+                <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
+                  {[
+                    { label: '架空线路', value: 'Line' },
+                    { label: '电缆线路', value: 'CableCircuit' },
+                  ].map((item) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item name="lineModel" label="线路型号">
                 <Select dropdownStyle={{ zIndex: 3000 }}>
-                  {selectLineType === 'LINE' && selectLineType
+                  {selectLineType === LINE && selectLineType
                     ? LINEMODEL.map((item) => (
                         <Option key={item.value} value={item.value}>
                           {item.label}
@@ -833,7 +861,6 @@ const EditTransformerSubstation = (props: any) => {
         total: Kv_110.total_110,
         type: 6,
         transformerSubstationId: id,
-        id: createFeatureId(),
       },
       {
         publicuse: Kv_10.publicuse_10,
@@ -842,7 +869,6 @@ const EditTransformerSubstation = (props: any) => {
         total: Kv_10.total_10,
         type: 3,
         transformerSubstationId: id,
-        id: createFeatureId(),
       },
       {
         publicuse: Kv_35.publicuse_35,
@@ -851,7 +877,6 @@ const EditTransformerSubstation = (props: any) => {
         total: Kv_35.total_35,
         type: 5,
         transformerSubstationId: id,
-        id: createFeatureId(),
       },
     ]
   }
