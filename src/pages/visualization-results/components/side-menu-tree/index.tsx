@@ -478,7 +478,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
     manual: true,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      if (data.type === 'application/json') {
+        message.error('导出坐标失败，请联系运维人员！')
+        setexportMapPositionModalVisible(false)
+        setexportMapPositionLoading(false)
+        return
+      }
       const a = document.createElement('a')
       a.download = '项目坐标.zip'
       const blob = new Blob([mapPosition], { type: 'application/zip;charset=utf-8' })
@@ -488,6 +494,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       document.body.appendChild(a)
       a.click()
       a.remove()
+      message.success('导出成功')
       setexportMapPositionModalVisible(false)
       setexportMapPositionLoading(false)
     },
