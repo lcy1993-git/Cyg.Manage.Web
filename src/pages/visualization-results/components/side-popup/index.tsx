@@ -16,6 +16,7 @@ import {
   porjectIsExecutor,
 } from '@/services/visualization-results/side-popup'
 import {
+  getAdditionalMaterials,
   getHouseholdLineInfo,
   getlibId_new,
   getMaterialItemData,
@@ -29,6 +30,7 @@ import { HouseholdTable } from '../household-table'
 import { MaterialTableNew } from '../material-table-new'
 import MediaModal from '../media-modal'
 import styles from './index.less'
+import { AdditionMaterialTable } from '../addition-material-table'
 
 export interface TableDataType {
   [propName: string]: any
@@ -147,6 +149,7 @@ const modalTitle = {
   material: '查看材料表',
   annotation: '创建审阅',
   household: '查看入户线',
+  additionMaterial: '查看附加材料表',
 }
 
 const DEVICE_TYPE: { [propertyName: string]: string } = {
@@ -182,7 +185,7 @@ export interface CommentListItemDataType {
 const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>()
-
+  const [resourceLibId, setResourceLibId] = useState<string>('')
   const [activeType, setActiveType] = useState<string | undefined>(undefined)
   const [threeModal, setThtreeModal] = useState<boolean>(false)
   const [dataSource, setDataSource] = useState(dataResource)
@@ -264,11 +267,34 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     }
   )
 
+  //附加材料表数据
+  const {
+    data: additionMaterialData,
+    run: additionMaterialRun,
+    // loading: additionMaterialLoading,
+  } = useRequest(getAdditionalMaterials, {
+    manual: true,
+    onSuccess(data) {
+      if (data?.content?.length > 0) {
+        data.content.forEach((item: any) => {
+          if (item.unit === 'km') {
+            item.itemNumber = item.itemNumber / 1000
+          }
+        })
+        additionMaterialRef.current!.innerHTML = '查看'
+        additionMaterialRef.current!.className = 'mapSideBarlinkBtn'
+      } else {
+        additionMaterialRef.current!.innerHTML = '暂无数据'
+        additionMaterialRef.current!.className = ''
+      }
+    },
+  })
+
   const returnlibId = async (materialParams: any) => {
     await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data) => {
       if (data.isSuccess) {
         const resourceLibID = data?.content
-
+        setResourceLibId(resourceLibID)
         materialDataRun({
           resourceLibID,
           ...materialParams.rest,
@@ -312,6 +338,26 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         })
       }
 
+      //附加材料表id
+      const additionMaterialParams =
+        dataResource?.find((item: any) => item.propertyName === '附加材料表')?.data?.params ?? {}
+      if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
+        if (additionMaterialParams.getProperties.id_.includes('cable_head')) {
+          getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
+            if (data.isSuccess) {
+              const resourceLibID = data?.content
+              setResourceLibId(resourceLibID)
+            }
+          })
+        }
+
+        additionMaterialRun({
+          deviceId: additionMaterialParams?.deviceId,
+          projectId: additionMaterialParams?.projectId,
+          scope: additionMaterialParams?.type,
+        })
+      }
+
       // 审阅数据
       const reviewData = dataResource?.find((item: any) => item.propertyName === '审阅')?.data ?? {}
       if (reviewData?.id) {
@@ -323,6 +369,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   const mediaRef = useRef<HTMLSpanElement>(null)
   const householdRef = useRef<HTMLSpanElement>(null)
   const materialRef = useRef<HTMLSpanElement>(null)
+  const additionMaterialRef = useRef<HTMLSpanElement>(null)
   const reviewRef = useRef<HTMLSpanElement>(null)
 
   const [Comment, setComment] = useState('')
@@ -352,6 +399,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   const handlerHouseHoldClick = () => {
     if (householdRef.current?.innerHTML === '查看') {
       setActiveType('household')
+    }
+  }
+
+  const handlerAdditionMaterialClick = () => {
+    if (additionMaterialRef.current?.innerHTML === '查看') {
+      setActiveType('additionMaterial')
     }
   }
 
@@ -406,6 +459,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           return (
             <span onClick={handlerHouseHoldClick} ref={householdRef}>
               {householdRef ? '暂无数据' : '数据请求中'}
+            </span>
+          )
+        } else if (record.propertyName === '附加材料表') {
+          return (
+            <span onClick={handlerAdditionMaterialClick} ref={additionMaterialRef}>
+              {additionMaterialRef ? '暂无数据' : '数据请求中'}
             </span>
           )
         } else if (record.propertyName === '审阅') {
@@ -659,6 +718,9 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
         {activeType === 'household' && (
           <HouseholdTable data={householdData?.content} loading={houseHoldLoading} />
+        )}
+        {activeType === 'additionMaterial' && (
+          <AdditionMaterialTable data={additionMaterialData?.content} libId={resourceLibId} />
         )}
 
         {activeType?.split('&')[0] === 'annotation' && (
