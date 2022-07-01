@@ -481,8 +481,7 @@ const GridMap = () => {
 
   const FormRuleslng = () => ({
     validator: (_: any, value: string, callback: any) => {
-      const reg =
-        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
       if (value === '' || !value) {
         callback()
       } else {
