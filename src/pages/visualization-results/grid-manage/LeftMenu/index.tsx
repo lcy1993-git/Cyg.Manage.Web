@@ -7,6 +7,7 @@ import {
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
+import StandingBook from '../../components/standing-book'
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
@@ -42,6 +43,7 @@ const LeftMenu = (props: any) => {
   const [visible, setVisible] = useState(false)
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
+  const [standingBookVisible, setStandingBookVisible] = useState(false)
   const { setisRefresh, mapRef, lineAssemble } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
 
@@ -58,6 +60,11 @@ const LeftMenu = (props: any) => {
   const showModal = () => {
     setisRefresh(false)
     setVisible(true)
+  }
+
+  //打开网架台账信息
+  const showStandingBook = () => {
+    setStandingBookVisible(true)
   }
 
   const handleOk = async () => {
@@ -273,6 +280,9 @@ const LeftMenu = (props: any) => {
         className="w-full flex-none flex items-center"
         style={{ height: '50px', paddingRight: '10px' }}
       >
+        <Button type="primary" block onClick={showStandingBook} className="mr7">
+          台账信息
+        </Button>
         <Button type="primary" block onClick={showModal}>
           新增线路
         </Button>
@@ -386,6 +396,7 @@ const LeftMenu = (props: any) => {
           </Form.Item> */}
         </Form>
       </Modal>
+      <StandingBook visible={standingBookVisible} onChange={setStandingBookVisible} />
     </div>
   )
 }

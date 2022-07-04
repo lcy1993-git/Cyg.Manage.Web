@@ -110,6 +110,23 @@ const DrawToolbar = () => {
     setdrawToolbarVisible(false)
   }
 
+  // const checkBrowser = () => {
+  //   console.log(zIndex)
+
+  //   if (zIndex === 'create') {
+  //     window.onbeforeunload = function (e) {
+  //       var message = '1111111111'
+  //       e = e || window.event
+
+  //       if (e) {
+  //         e.returnValue = message
+  //       }
+  //       console.log(1111)
+  //       return message
+  //     }
+  //   }
+  // }
+
   /** 图符型号 */
   const selectDrawFeature = (result: RadioChangeEvent) => {
     setcurrentKvleve(1)
@@ -312,6 +329,10 @@ const DrawToolbar = () => {
     run()
   }, [isRefresh, run])
 
+  // useEffect(() => {
+  //   checkBrowser()
+  // }, [zIndex])
+
   const FormRules = () => ({
     validator(_: any, value: string) {
       // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
@@ -328,8 +349,7 @@ const DrawToolbar = () => {
 
   const FormRuleslng = () => ({
     validator: (_: any, value: string, callback: any) => {
-      const reg =
-        /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
       if (value === '' || !value) {
         callback()
       } else {

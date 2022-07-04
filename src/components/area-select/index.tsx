@@ -298,7 +298,7 @@ const AreaSelect = (props: AreaSelectProps, ref: Ref<any>) => {
               getPopupContainer={(triggerNode) => triggerNode.parentElement}
               options={provinceData}
               placeholder="请选择省级"
-              style={{ width: '100%' }}
+              style={{ width: '100%', zIndex: 9999 }}
             />
           </div>
         </div>

@@ -48,7 +48,7 @@ export const getSubStations = (params: { powerIds: string[]; stationIds: string[
 
 export const featchPowerSupplyTreeData = (params: { ids: string[] }) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/GridDesign/GetLinesByPower`, { method: 'POST', data: params })
+    request(`${baseUrl.grid}/Line/GetLinesByPower`, { method: 'POST', data: params })
   )
 }
 
@@ -65,9 +65,7 @@ export const getTransformerSubstationMenu = () => {
 
 // 获取所属线路
 export const getAllBelongingLineItem = () => {
-  return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/GridDesign/GetLineItems`, { method: 'GET' })
-  )
+  return cyRequest<any[]>(() => request(`${baseUrl.grid}/Line/GetLineItems`, { method: 'GET' }))
 }
 // 获取所有厂站
 export const GetStationItems = () => {
@@ -193,7 +191,10 @@ export const modifyLine = (params: any) => {
 /** 更新线路端信息 **/
 export const modifyRelationLine = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/Line/ModifyLineElementRelation`, { method: 'POST', data: params })
+    request(`${baseUrl.grid}/LineElementRelation/ModifyLineElementRelation`, {
+      method: 'POST',
+      data: params,
+    })
   )
 }
 
@@ -276,7 +277,10 @@ export const deleteCableBranchBox = (params: any) => {
 /** 删除线路段信息 **/
 export const deleteLineRelations = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/Line/DeleteLineRelationsById`, { method: 'POST', data: params })
+    request(`${baseUrl.grid}/LineElementRelation/DeleteLineRelationsById`, {
+      method: 'POST',
+      data: params,
+    })
   )
 }
 /** 删除线路信息 **/
