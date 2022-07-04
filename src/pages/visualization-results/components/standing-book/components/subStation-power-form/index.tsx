@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Input, Spin } from 'antd'
+import { Button, Form, Input, Spin } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import UrlSelect from '@/components/url-select'
 
@@ -11,7 +11,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const { currentEditTab } = props
 
   return (
-    <Form>
+    <>
       <CyFormItem name="name" label="名称" rules={[{ required: true, message: '请输入名称' }]}>
         <Input placeholder="请输入名称" />
       </CyFormItem>
@@ -40,7 +40,16 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
       <CyFormItem label="纬度" name="lat">
         <Input placeholder="请输入纬度" />
       </CyFormItem>
-    </Form>
+      <CyFormItem label="出线间隔" name="lat">
+        <Button
+        // onClick={() => {
+        //   seteditModel(true)
+        // }}
+        >
+          出线间隔
+        </Button>
+      </CyFormItem>
+    </>
   )
 }
 

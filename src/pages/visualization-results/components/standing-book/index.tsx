@@ -1,5 +1,5 @@
 import { useControllableValue } from 'ahooks'
-import { Button, Input, message, Modal, Popconfirm, RadioChangeEvent } from 'antd'
+import { Button, Form, Input, message, Modal, Popconfirm, RadioChangeEvent } from 'antd'
 import { Radio, Space, Tabs } from 'antd'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import GeneralTable from '@/components/general-table'
@@ -39,6 +39,9 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
   const [currentTab, setCurrentTab] = useState<string>('subStations')
 
   const [formVisible, setFormVisible] = useState<boolean>(false)
+
+  const [subForm] = Form.useForm()
+  const [powerForm] = Form.useForm()
 
   const subStationColumns = [
     {
@@ -153,6 +156,17 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       message.warning('请选择一条数据进行编辑')
       return
     }
+    const editData = tableSelectRows[0]
+    const geom = editData.geom
+      .substring(editData.geom.indexOf('(') + 1, editData.geom.indexOf(')'))
+      .split(' ')
+
+    subForm.setFieldsValue({
+      ...editData,
+      kvLevel: kvOptions[editData.kvLevel],
+      lng: geom[0],
+      lat: geom[1],
+    })
     setFormVisible(true)
 
     // tableSearchEvent()
@@ -262,7 +276,9 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         onCancel={() => setFormVisible(false)}
         // onOk={() => setFormVisible(false)}
       >
-        <SubStationPowerForm currentEditTab={currentTab} />
+        <Form form={currentTab === 'subStations' ? subForm : powerForm}>
+          <SubStationPowerForm currentEditTab={currentTab} />
+        </Form>
       </Modal>
     </>
   )
