@@ -53,6 +53,7 @@ const materiaLayers = [
   'fault_indicator',
 ]
 const householdLayers = ['electric_meter']
+const AdditionMaterialLayer = ['tower', 'cable_head']
 
 const commentLayers = ['tower', 'cable', 'cable_equipment', 'mark', 'transformer']
 const layerTypeEnum = {
@@ -637,6 +638,25 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       pJSON['审阅'] = { id: feature.getProperties().project_id, feature }
     }
     // }
+
+    //杆塔和电缆中间头显示附加材料表
+    if (
+      layerType == 'survey' ||
+      layerType === 'plan' ||
+      layerType === 'design' ||
+      layerType === 'dismantle'
+    ) {
+      if (AdditionMaterialLayer.indexOf(layerName) >= 0) {
+        let params = {
+          type: layerType,
+          projectId: feature.getProperties().project_id,
+          deviceId: featureId,
+          getProperties: feature.getProperties(),
+        }
+
+        pJSON['附加材料表'] = { params }
+      }
+    }
 
     let threeMode = getMode(layerName, feature.getProperties())
     if (threeMode && threeMode !== '') {

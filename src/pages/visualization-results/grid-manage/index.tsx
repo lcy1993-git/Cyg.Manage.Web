@@ -27,7 +27,7 @@ const GradManage: React.FC = () => {
   const [lineAssemble, setlineAssemble] = useState<boolean>(false)
 
   /**  **/
-  const [zIndex, setzIndex] = useState('create')
+  const [zIndex, setzIndex] = useState('')
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
 

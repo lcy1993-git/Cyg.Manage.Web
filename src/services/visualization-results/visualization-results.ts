@@ -66,9 +66,25 @@ export const publishMessage = (params: any) => {
 
 //获取单个户表入户线信息
 export const getHouseholdLineInfo = (params: any) => {
-  return request(`${baseUrl.manage}//WebGis/GetHomeLines`, {
+  return request(`${baseUrl.manage}/WebGis/GetHomeLines`, {
     method: 'GET',
     params,
+  })
+}
+
+//获取附加材料表信息
+export const getAdditionalMaterials = (params: any) => {
+  return request(`${baseUrl.manage}/WebGis/GetAdditionalMaterials`, {
+    method: 'GET',
+    params,
+  })
+}
+
+//附加材料表获取物料信息
+export const getAdditionalDetails = (params: any) => {
+  return request(`${baseUrl.resourceV1}/LibraryMaterial/GetMaterialById`, {
+    method: 'POST',
+    data: params,
   })
 }
 
