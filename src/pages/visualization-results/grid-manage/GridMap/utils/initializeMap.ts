@@ -1,5 +1,8 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
+import { getMapRegisterData } from '@/services/index'
+import { platformModifierKeyOnly } from 'ol/events/condition'
 import WKT from 'ol/format/WKT'
+import { DragBox } from 'ol/interaction'
 import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
@@ -39,6 +42,7 @@ interface InitOps {
 var drawTool: any
 var pointLayer: any
 var lineLayer: any
+var boxSelectFeatures: any = []
 
 export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   mapRef.map = new Map({
@@ -46,7 +50,8 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
     layers: [
       new TileLayer({
         source: new XYZ({
-          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url:
+            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
@@ -67,6 +72,16 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
       .forEach((feature: any) => {
         let isDraw = false
         if (feature.get('data').type_) isDraw = true
+        // 框选元素判断
+        const boxfeature = boxSelectFeatures.find((item: any) => item === feature)
+
+        // 单个元素判断
+        // if ((currrentSelectFeature && currrentSelectFeature === feature) || boxfeature) {
+        //   feature.setStyle(pointStyle(feature.get('data'), true, level, isDraw))
+        // } else {
+        //   feature.setStyle(pointStyle(feature.get('data'), false, level, isDraw))
+        // }
+
         if (currrentSelectFeature && currrentSelectFeature === feature) {
           feature.setStyle(pointStyle(feature.get('data'), true, level, isDraw))
         } else {
@@ -82,6 +97,17 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   initSelect(mapRef.map, isActiveFeature)
   // drawPoint(mapRef.map, {})
   // drawLine(mapRef.map, { featureType: 'Line' })
+  // loadTest();
+  drawBox(mapRef.map)
+}
+const loadTest = () => {
+  getMapRegisterData('100000').then((data: any) => {
+    var format = new WKT()
+    const feature = format.readFeature(data, {
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857',
+    })
+  })
 }
 export const location = (map: any, lon: number, lat: number) => {
   map.getView().setCenter(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'))
@@ -101,6 +127,27 @@ export const drawLine = (map: any, options: any) => {
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(lineLayer.getSource())
   drawTool.drawGeometry(options)
+}
+
+export const drawBox = (map: any) => {
+  const dragBox = new DragBox({
+    condition: platformModifierKeyOnly,
+  })
+  map.addInteraction(dragBox)
+
+  // dragBox.on('boxstart', function () {
+  //   boxSelectFeatures = []
+  //   getSelectFeatures().clear()
+  // });
+
+  // dragBox.on('boxend', function () {
+  //   const extent = dragBox.getGeometry().getExtent();
+  //   pointLayer = getLayer(map, 'pointLayer')
+  //   boxSelectFeatures = pointLayer.getSource()
+  //     .getFeaturesInExtent(extent)
+  //     .filter((feature:any) => feature.getGeometry().intersectsExtent(extent))
+  //   getSelectFeatures().extend(boxSelectFeatures)
+  // });
 }
 
 export const getDrawPoints = () => {

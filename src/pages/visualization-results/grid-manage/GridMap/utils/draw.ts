@@ -116,7 +116,7 @@ class DrawTool {
       e.feature.set('data', this_.options)
       if (e.feature.getGeometry().getType() === 'LineString') {
         this_.handleLine(this_.source, e.feature)
-      } else {
+      } else if (e.feature.getGeometry().getType() === 'Point') {
         e.feature.setStyle(pointStyle(this_.options, false, this_.map.getView().getZoom(), true))
         const coordinates = e.feature.getGeometry().getCoordinates()
         const lont = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
@@ -129,8 +129,6 @@ class DrawTool {
           e.feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
         )
         e.feature.set('data', featureData)
-        // storeLocalFeatureData(featureData)
-        // 添加点位到数据库 this_.options
       }
     })
   }
@@ -188,8 +186,9 @@ class DrawTool {
         let datas: any = pre.concat(feature_)
         if (datas.length > 1) {
           datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
-          datas[datas.length - 2].get('data').endType =
-            datas[datas.length - 1].get('data').startType
+          datas[datas.length - 2].get('data').endType = datas[datas.length - 1].get(
+            'data'
+          ).startType
         }
         return datas
       }, [])

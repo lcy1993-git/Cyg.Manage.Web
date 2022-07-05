@@ -177,3 +177,7 @@ export const editFeature = (map: any, data: any) => {
 
   // currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
 }
+
+export const getSelectFeatures = () => {
+  return select.getFeatures()
+}
