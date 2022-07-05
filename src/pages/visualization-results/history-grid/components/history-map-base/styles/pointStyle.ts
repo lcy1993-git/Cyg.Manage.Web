@@ -68,7 +68,7 @@ export const getPointStyle: GetPointStyle = (
   const fillColor = isHight ? 'rgba(249, 149, 52, 1)' : SourceType[sourceType]
 
   const textObjet = {
-    无类型: '\ue823',
+    无类型: '\ue90a',
     开闭所: '\ue851',
     环网柜: '\ue852',
     分支箱: '\ue905',

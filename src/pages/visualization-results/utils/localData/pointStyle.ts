@@ -1,4 +1,3 @@
-import '@/assets/icon/webgisIconFont.css'
 import arrowSrc from '@/assets/image/webgis/arrow.png'
 import markImageSrc8 from '@/assets/image/webgis/img_地物_其他.png'
 import {
@@ -33,6 +32,7 @@ export interface Options {
   miterLimit?: number
   width?: number
 }
+const iconFont = 'gridManageIconfont'
 
 // 点样式
 const pointStyle = function (
@@ -42,7 +42,6 @@ const pointStyle = function (
   media?: boolean,
   resolution?: number
 ) {
-  let iconFont = 'webgisIconFont'
   let iconFontText
 
   let size, fillSize, strokeSize, color, fillColor, strokeColor
@@ -55,7 +54,7 @@ const pointStyle = function (
     return [
       new ClassStyle({
         text: new Text({
-          font: 'Normal 22px webgisIconFont',
+          font: 'Normal 22px ' + iconFont,
           text: '\ue8f7',
           offsetX: 15,
           offsetY: -15,
@@ -70,7 +69,7 @@ const pointStyle = function (
       }),
       new ClassStyle({
         text: new Text({
-          font: 'Normal 12px webgisIconFont',
+          font: 'Normal 12px ' + iconFont,
           text: '\ue620',
           offsetX: 16,
           offsetY: -15,
@@ -139,8 +138,21 @@ const pointStyle = function (
   if (type.indexOf('cable_head') >= 0) {
     let text, size, color
     if (feature.getProperties().type == '电缆终端') {
-      text = '\ue88b'
-      size = '18'
+      text = '\ue61f'
+      size = '25'
+      if (feature.getProperties().state == 1)
+        // 原有
+        text = '\ue61f'
+      else if (feature.getProperties().state == 2)
+        // 新建
+        text = '\ue620'
+      else if (feature.getProperties().state == 3)
+        // 利旧
+        text = '\ue61e'
+      else if (feature.getProperties().state == 4) {
+        // 拆除
+        text = '\ue61d'
+      }
     } else {
       text = '\ue889'
       size = '25'
@@ -153,7 +165,7 @@ const pointStyle = function (
     else color = 'red'
     style = new ClassStyle({
       text: new Text({
-        font: 'Normal ' + size + 'px webgisIconFont',
+        font: 'Normal ' + size + 'px ' + iconFont,
         text,
         fill: new Fill({
           color,
@@ -195,7 +207,7 @@ const pointStyle = function (
     // 杆塔样式
     switch (feature.getProperties().symbol_id.toString()) {
       case '0':
-        iconFontText = '\ue823'
+        iconFontText = '\ue90a'
         size = Styles[value].empty.size
         fillSize = Styles[value].empty.fillSize
         strokeSize = Styles[value].empty.strokeSize
@@ -272,7 +284,7 @@ const pointStyle = function (
         isDismantle = true
         break
       default:
-        iconFontText = '\ue823'
+        iconFontText = '\ue90a'
         size = Styles[value].empty.size
         fillSize = Styles[value].empty.fillSize
         strokeSize = Styles[value].empty.strokeSize
@@ -975,7 +987,7 @@ const line_style = function (feature: Feature, select: boolean = false) {
   if (feature.getProperties().state === 4) {
     let dismantleStyle = new ClassStyle({
       text: new Text({
-        font: 'Normal 22px webgisIconFont',
+        font: 'Normal 22px ' + iconFont,
         text: '\ue82c',
         fill: new Fill({
           color: 'red',
@@ -996,7 +1008,7 @@ const line_style = function (feature: Feature, select: boolean = false) {
       new ClassStyle({
         text: new Text({
           placement: 'line',
-          font: 'Normal 30px webgisIconFont',
+          font: 'Normal 30px ' + iconFont,
           text,
           fill: new Fill({
             color: selectColor,
@@ -1090,7 +1102,7 @@ const zero_guy_style = function (feature: Feature, select: boolean = false) {
   if (feature.getProperties().state === 4) {
     let dismantleStyle = new ClassStyle({
       text: new Text({
-        font: 'Normal 22px webgisIconFont',
+        font: 'Normal 22px ' + iconFont,
         text: '\ue82c',
         fill: new Fill({
           color: 'red',
@@ -1109,7 +1121,7 @@ const zero_guy_style = function (feature: Feature, select: boolean = false) {
       new ClassStyle({
         text: new Text({
           placement: 'line',
-          font: 'Normal 33px webgisIconFont',
+          font: 'Normal 33px ' + iconFont,
           text,
           fill: new Fill({
             color: select ? selectColor : 'rgba(148, 40, 144, 1)',
@@ -1201,7 +1213,7 @@ const cable_channel_styles = function (feature: Feature, select: boolean = false
   if (feature.getProperties().state === 4) {
     let dismantleStyle = new ClassStyle({
       text: new Text({
-        font: 'Normal 22px webgisIconFont',
+        font: 'Normal 22px ' + iconFont,
         text: '\ue82c',
         fill: new Fill({
           color: 'red',
