@@ -9,7 +9,8 @@ import GridMap from './GridMap'
 import { MapRef, useCurrentRef } from './hooks'
 import styles from './index.less'
 import LeftMenu from './LeftMenu'
-const LEFTMENUWIDTH = 260
+import Toolbar from './toolbar'
+import { LEFTMENUWIDTH } from './tools'
 
 const GradManage: React.FC = () => {
   /** 网架绘制 手动绘制工具栏状态 **/
@@ -22,6 +23,9 @@ const GradManage: React.FC = () => {
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
   )
+
+  /** 编辑要是、手动绘制状态是否显示 **/
+  const [pageDrawState, setpageDrawState] = useState(false)
 
   /** 页面所有线路 */
   const [lineAssemble, setlineAssemble] = useState<boolean>(false)
@@ -47,6 +51,8 @@ const GradManage: React.FC = () => {
         setlineAssemble,
         zIndex,
         setzIndex,
+        pageDrawState,
+        setpageDrawState,
       }}
     >
       <GradManageWrap />
@@ -76,10 +82,6 @@ const GradManageWrap: React.FC = () => {
           }}
         >
           <LeftMenu />
-          {/* <Button className={styles.uploadData} type="primary" style={{
-            left: `${LEFTMENUWIDTH + 10}px`,
-            top: '10px'
-          }}>同步数据</Button> */}
         </div>
         {/* 控制左侧菜单是否显示按钮 */}
         <div
@@ -97,6 +99,10 @@ const GradManageWrap: React.FC = () => {
             <RightOutlined style={{ fontSize: 10 }} />
           )}
         </div>
+
+        {/* 工具条 */}
+        <Toolbar leftMenuVisible={leftMenuVisible} />
+
         <div className="w-full h-full relative">
           {/* 地图组件 */}
           <GridMap />

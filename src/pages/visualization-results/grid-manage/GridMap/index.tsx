@@ -57,6 +57,12 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
+import {
+  verificationLat,
+  verificationLng,
+  verificationNaturalNumber,
+  verificationNaturalNumber0to100,
+} from '../tools'
 import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
 import {
   deletCurrrentSelectFeature,
@@ -101,11 +107,11 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex, setlineAssemble } = useMyContext()
+  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex, setlineAssemble, setpageDrawState } =
+    useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
-  // const [saveEditData, setSaveEditData] = useState({ id: '', geom: '', color: '' })
   /**所属线路数据**/
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   const [visible, setvisible] = useState<boolean>(false)
@@ -114,7 +120,6 @@ const GridMap = () => {
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
   const [selectLineType, setselectLineType] = useState('')
-  // const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
 
   const dataHandle = (data: any) => {
     if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
@@ -225,11 +230,10 @@ const GridMap = () => {
         color: featureData.color || '',
       })
       setvisible(true)
+      setpageDrawState(true)
       setzIndex('edit')
       form.resetFields()
-      // setcurrentLineKvLevel(Number(data.kvLevel))
       setcurrentFeatureType(featureData.featureType)
-
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
@@ -243,12 +247,14 @@ const GridMap = () => {
     } else {
       form.resetFields()
       setvisible(false)
+      setpageDrawState(false)
     }
   }
 
   const onClose = () => {
     setzIndex('create')
     setvisible(false)
+    setpageDrawState(false)
   }
 
   /** 编辑 **/
@@ -465,47 +471,6 @@ const GridMap = () => {
     },
   })
 
-  const FormRules = () => ({
-    validator(_: any, value: string) {
-      // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
-      if (!value && Number(value) !== 0) {
-        return Promise.reject(new Error('请输入0或正整数'))
-      }
-      const reg = /^([0]|[1-9][0-9]*)$/
-      if (reg.test(value)) {
-        return Promise.resolve()
-      }
-      return Promise.reject(new Error('请输入0或正整数'))
-    },
-  })
-
-  const FormRuleslng = () => ({
-    validator: (_: any, value: string, callback: any) => {
-      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
-      if (value === '' || !value) {
-        callback()
-      } else {
-        if (!reg.test(value)) {
-          callback(new Error('经度范围：-180~180（保留小数点后十五位）'))
-        }
-        callback()
-      }
-    },
-  })
-  const FormRuleslat = () => ({
-    validator: (_: any, value: string, callback: any) => {
-      const reg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
-      if (value === '' || !value) {
-        callback()
-      } else {
-        if (!reg.test(value)) {
-          callback(new Error('纬度范围：-90~90（保留小数点后十五位）'))
-        }
-        callback()
-      }
-    },
-  })
-
   useEffect(() => {
     run()
   }, [isRefresh, run])
@@ -526,7 +491,6 @@ const GridMap = () => {
           width: getCurrrentSelectFeature() ? '378px' : 0,
           height: '100%',
           overflow: 'hidden',
-          // display: zIndex === 'edit' ? 'block' : 'none',
           zIndex: zIndex === 'edit' ? 1000 : 900,
         }}
         mask={false}
@@ -554,21 +518,6 @@ const GridMap = () => {
               </Select>
             </Form.Item>
           )}
-          {/* {currentFeatureType !== TRANSFORMERSUBSTATION && currentFeatureType !== POWERSUPPLY && (
-            <Form.Item
-              name="lineId"
-              label="所属线路"
-              rules={[{ required: true, message: '请选择所属线路' }]}
-            >
-              <Select dropdownStyle={{ zIndex: 3000 }}>
-                {belongingLineData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-          )} */}
           <Form.Item
             name="kvLevel"
             label="电压等级"
@@ -630,7 +579,7 @@ const GridMap = () => {
           {/* 箱变 柱上变压器*/}
           {BELONGINGCAPACITY.includes(currentFeatureType) && (
             <>
-              <Form.Item name="capacity" label="容量" rules={[FormRules]}>
+              <Form.Item name="capacity" label="容量" rules={[verificationNaturalNumber]}>
                 <Input addonAfter="(kAV)" />
               </Form.Item>
             </>
@@ -688,43 +637,13 @@ const GridMap = () => {
                       ))}
                 </Select>
               </Form.Item>
-              {/* {currentLineKvLevel === 3 && (
-                <Form.Item
-                  name="color"
-                  label="颜色"
-                  rules={[{ required: true, message: '请选择线路颜色' }]}
-                >
-                  <Select allowClear>
-                    <Option value="#00FFFF">青</Option>
-                    <Option value="#1EB9FF">蓝</Option>
-                    <Option value="#F2DA00">黄</Option>
-                    <Option value="#FF3E3E">红</Option>
-                    <Option value="#FF5ECF">洋红</Option>
-                  </Select>
-                </Form.Item>
-              )} */}
             </>
           ) : (
             <>
-              {/* {currentLineKvLevel === 3 && (
-                <Form.Item
-                  name="color"
-                  label="颜色"
-                  rules={[{ required: true, message: '请选择线路颜色' }]}
-                >
-                  <Select allowClear>
-                    <Option value="#00FFFF">青</Option>
-                    <Option value="#1EB9FF">蓝</Option>
-                    <Option value="#F2DA00">黄</Option>
-                    <Option value="#FF3E3E">红</Option>
-                    <Option value="#FF5ECF">洋红</Option>
-                  </Select>
-                </Form.Item>
-              )} */}
-              <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
+              <Form.Item name="lng" label="经度" rules={[verificationLng]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="lat" label="纬度" rules={[FormRuleslat]}>
+              <Form.Item name="lat" label="纬度" rules={[verificationLat]}>
                 <Input />
               </Form.Item>
             </>
@@ -760,27 +679,16 @@ const GridMap = () => {
 }
 
 export default GridMap
-const formItemModelLayout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-}
+
+/** 编辑变电站出线间隔 */
 const EditTransformerSubstation = (props: any) => {
   const { editModel, handleOk, handleCancel, id } = props
-
-  const FormRules = () => ({
-    validator(_: any, value: string) {
-      if (!value && Number(value) !== 0) {
-        return Promise.reject(new Error('请输入0到100的自然数'))
-      }
-      // const reg = /^([0]|[1-9][0-9]*)$/
-      const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/
-      if (reg.test(value)) {
-        return Promise.resolve()
-      }
-      return Promise.reject(new Error('请输入0到100的自然数'))
-    },
-  })
-
+  const [form] = useForm()
+  // 表单布局
+  const formItemModelLayout = {
+    labelCol: { span: 8 },
+    wrapperCol: { span: 16 },
+  }
   // 获取所有所属线路
   const { data, run } = useRequest(() => getIntervalByTransformer({ transformerId: id }), {
     manual: true,
@@ -818,8 +726,6 @@ const EditTransformerSubstation = (props: any) => {
   useEffect(() => {
     id && editModel && run()
   }, [run, id, editModel])
-
-  // getIntervalByTransformer
 
   /** 转换数据 **/
   const convertData = (data: any, id: string) => {
@@ -880,7 +786,6 @@ const EditTransformerSubstation = (props: any) => {
     ]
   }
 
-  const [form] = useForm()
   return (
     <Modal
       title="编辑变压器出线间隔"
@@ -901,42 +806,90 @@ const EditTransformerSubstation = (props: any) => {
     >
       <div className="editTransformerSubstation">
         <Form form={form} {...formItemModelLayout}>
-          <Form.Item label="110kV出线间隔公用" name="publicuse_110" rules={[FormRules]}>
+          <Form.Item
+            label="110kV出线间隔公用"
+            name="publicuse_110"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="110kV出线间隔专用" name="specialPurpose_110" rules={[FormRules]}>
+          <Form.Item
+            label="110kV出线间隔专用"
+            name="specialPurpose_110"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="110kV出线间隔备用" name="spare_110" rules={[FormRules]}>
+          <Form.Item
+            label="110kV出线间隔备用"
+            name="spare_110"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="110kV出线间隔总数" name="total_110" rules={[FormRules]}>
+          <Form.Item
+            label="110kV出线间隔总数"
+            name="total_110"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="35kV出线间隔公用" name="publicuse_35" rules={[FormRules]}>
+          <Form.Item
+            label="35kV出线间隔公用"
+            name="publicuse_35"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="35kV出线间隔专用" name="specialPurpose_35" rules={[FormRules]}>
+          <Form.Item
+            label="35kV出线间隔专用"
+            name="specialPurpose_35"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="35kV出线间隔备用" name="spare_35" rules={[FormRules]}>
+          <Form.Item
+            label="35kV出线间隔备用"
+            name="spare_35"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="35kV出线间隔总数" name="total_35" rules={[FormRules]}>
+          <Form.Item
+            label="35kV出线间隔总数"
+            name="total_35"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
 
-          <Form.Item label="10kV出线间隔公用" name="publicuse_10" rules={[FormRules]}>
+          <Form.Item
+            label="10kV出线间隔公用"
+            name="publicuse_10"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="10kV出线间隔专用" name="specialPurpose_10" rules={[FormRules]}>
+          <Form.Item
+            label="10kV出线间隔专用"
+            name="specialPurpose_10"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="10kV出线间隔备用" name="spare_10" rules={[FormRules]}>
+          <Form.Item
+            label="10kV出线间隔备用"
+            name="spare_10"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="10kV出线间隔总数" name="total_10" rules={[FormRules]}>
+          <Form.Item
+            label="10kV出线间隔总数"
+            name="total_10"
+            rules={[verificationNaturalNumber0to100]}
+          >
             <Input />
           </Form.Item>
         </Form>

@@ -25,6 +25,8 @@ export interface MyContextType {
   setisRefresh: Dispatch<SetStateAction<boolean>>
   zIndex: string
   setzIndex: Dispatch<SetStateAction<string>>
+  setpageDrawState: Dispatch<SetStateAction<boolean>>
+  pageDrawState: boolean
 }
 
 // 全局状态管理

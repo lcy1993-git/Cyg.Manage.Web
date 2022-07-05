@@ -21,6 +21,7 @@ import {
   getDrawLines,
   getDrawPoints,
 } from '../GridMap/utils/initializeMap'
+import { verificationLat, verificationLng, verificationNaturalNumber } from '../tools'
 import {
   BELONGINGCAPACITY,
   BELONGINGLINE,
@@ -61,15 +62,8 @@ interface BelongingLineType {
 }
 
 const DrawToolbar = () => {
-  const {
-    drawToolbarVisible,
-    setdrawToolbarVisible,
-    mapRef,
-    setisRefresh,
-    isRefresh,
-    zIndex,
-    setzIndex,
-  } = useMyContext()
+  const { drawToolbarVisible, setdrawToolbarVisible, mapRef, isRefresh, zIndex, setzIndex } =
+    useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   // 当前选中的是架空还是电缆线路
@@ -109,24 +103,6 @@ const DrawToolbar = () => {
     setzIndex('edit')
     setdrawToolbarVisible(false)
   }
-
-  // const checkBrowser = () => {
-  //   console.log(zIndex)
-
-  //   if (zIndex === 'create') {
-  //     window.onbeforeunload = function (e) {
-  //       var message = '1111111111'
-  //       e = e || window.event
-
-  //       if (e) {
-  //         e.returnValue = message
-  //       }
-  //       console.log(1111)
-  //       return message
-  //     }
-  //   }
-  // }
-
   /** 图符型号 */
   const selectDrawFeature = (result: RadioChangeEvent) => {
     setcurrentKvleve(1)
@@ -257,10 +233,6 @@ const DrawToolbar = () => {
   /* 切换tab **/
   const tabsOnChange = (value: string) => {
     setcurrentFeature(value)
-    // form.setFieldsValue({
-    //   featureType: currentFeatureType,
-    // })
-    // form.resetFields()
     // 上传本地绘制数据
     uploadLocalData()
     // 退出手动绘制
@@ -328,51 +300,6 @@ const DrawToolbar = () => {
   useEffect(() => {
     run()
   }, [isRefresh, run])
-
-  // useEffect(() => {
-  //   checkBrowser()
-  // }, [zIndex])
-
-  const FormRules = () => ({
-    validator(_: any, value: string) {
-      // const reg = /^((\d|[123456789]\d)(\.\d+)?|100)$/ 0到100的正整数 包含0 和100
-      if (!value) {
-        return Promise.resolve()
-      }
-      const reg = /^([0]|[1-9][0-9]*)$/
-      if (reg.test(value)) {
-        return Promise.resolve()
-      }
-      return Promise.reject(new Error('请输入0或正整数'))
-    },
-  })
-
-  const FormRuleslng = () => ({
-    validator: (_: any, value: string, callback: any) => {
-      const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
-      if (value === '' || !value) {
-        callback()
-      } else {
-        if (!reg.test(value)) {
-          callback(new Error('经度范围：-180~180（保留小数点后十五位）'))
-        }
-        callback()
-      }
-    },
-  })
-  const FormRuleslat = () => ({
-    validator: (_: any, value: string, callback: any) => {
-      const reg = /^(\-|\+)?([0-8]?\d{1}\.\d{0,15}|90\.0{0,15}|[0-8]?\d{1}|90)$/
-      if (value === '' || !value) {
-        callback()
-      } else {
-        if (!reg.test(value)) {
-          callback(new Error('纬度范围：-90~90（保留小数点后十五位）'))
-        }
-        callback()
-      }
-    },
-  })
 
   return (
     <Drawer
@@ -499,7 +426,7 @@ const DrawToolbar = () => {
               {/* 箱变 柱上变压器*/}
               {BELONGINGCAPACITY.includes(currentFeatureType) && (
                 <>
-                  <Form.Item name="capacity" label="容量" rules={[FormRules]}>
+                  <Form.Item name="capacity" label="容量" rules={[verificationNaturalNumber]}>
                     <Input addonAfter="(kAV)" />
                   </Form.Item>
                 </>
@@ -529,21 +456,10 @@ const DrawToolbar = () => {
                   </Select>
                 </Form.Item>
               )}
-              {/* {currentKvleve === 3 && currentFeatureType !== POWERSUPPLY && (
-                <Form.Item name="color" label="颜色">
-                  <Select allowClear>
-                    <Option value="#00FFFF">青</Option>
-                    <Option value="#1EB9FF">蓝</Option>
-                    <Option value="#F2DA00">黄</Option>
-                    <Option value="#FF3E3E">红</Option>
-                    <Option value="#FF5ECF">洋红</Option>
-                  </Select>
-                </Form.Item>
-              )} */}
-              <Form.Item name="lng" label="经度" rules={[FormRuleslng]}>
+              <Form.Item name="lng" label="经度" rules={[verificationLng]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="lat" label="纬度" rules={[FormRuleslat]}>
+              <Form.Item name="lat" label="纬度" rules={[verificationLat]}>
                 <Input />
               </Form.Item>
             </Form>

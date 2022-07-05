@@ -185,7 +185,7 @@ const LeftMenu = (props: any) => {
   const { data: TreeData, run: getTreeData } = useRequest(
     () => {
       const ids = [...new Set(linesId)]
-      const linesIDs: string[] = ids
+      const lineIds: string[] = ids
         .map((item: string) => {
           const exist = item.includes('_&Line')
           if (exist) {
@@ -194,7 +194,10 @@ const LeftMenu = (props: any) => {
           return ''
         })
         .filter((item: string) => item)
-      return featchSubstationTreeData(linesIDs)
+      return featchSubstationTreeData({
+        lineIds,
+        kvLevels: [],
+      })
     },
     {
       manual: true,

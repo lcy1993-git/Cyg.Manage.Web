@@ -1,8 +1,37 @@
+import {
+  modifyBoxTransformer,
+  modifyCableBranchBox,
+  modifyCableWell,
+  modifyColumnCircuitBreaker,
+  modifyColumnTransformer,
+  modifyElectricityDistributionRoom,
+  modifyPowerSupply,
+  modifyRelationLine,
+  modifyRingNetworkCabinet,
+  modifySwitchingStation,
+  modifyTower,
+  modifyTransformerSubstation,
+} from '@/services/grid-manage/treeMenu'
 import WKT from 'ol/format/WKT'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { Select, Translate } from 'ol/interaction'
 import { pointType } from '..'
+import {
+  BOXTRANSFORMER,
+  CABLEBRANCHBOX,
+  CABLEWELL,
+  COLORDEFAULT,
+  COLORU,
+  COLUMNCIRCUITBREAKER,
+  COLUMNTRANSFORMER,
+  ELECTRICITYDISTRIBUTIONROOM,
+  POWERSUPPLY,
+  RINGNETWORKCABINET,
+  SWITCHINGSTATION,
+  TOWER,
+  TRANSFORMERSUBSTATION,
+} from '../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
 import { lineStyle, pointStyle } from './style'
 
@@ -71,24 +100,25 @@ export const initTranslate = (map: any) => {
   // translate.on('translatestart', (evt:any) => {
   // })
 
-  translate.on('translating', (evt: any) => {
+  translate.on('translating', async (evt: any) => {
     const feature = evt.features.getArray()[0]
-    updateLine(map, feature)
+    await updateLine(map, feature, false)
   })
 
-  translate.on('translateend', (evt: any) => {
+  translate.on('translateend', async (evt: any) => {
     const feature = evt.features.getArray()[0]
-    updateLine(map, feature)
 
     const point = feature.getGeometry().clone().transform('EPSG:3857', 'EPSG:4326')
     const format = new WKT()
     feature.get('data').geom = format.writeGeometry(point)
     feature.get('data').lng = point.getCoordinates()[0]
     feature.get('data').lat = point.getCoordinates()[1]
+
+    await updateLine(map, feature, true)
   })
 }
 
-const updateLine = (map: any, feature: any) => {
+const updateLine = async (map: any, feature: any, isEnd: boolean) => {
   const featureCoords = feature.getGeometry().getCoordinates()
   const lineLayer = getLayer(map, 'lineLayer')
   const data = feature.get('data')
@@ -98,7 +128,6 @@ const updateLine = (map: any, feature: any) => {
     .filter(
       (item: any) => item.get('data').endId === data.id || item.get('data').startId === data.id
     )
-
   features.forEach((f: any) => {
     const lineCoords = f.getGeometry().getCoordinates()
     let lineGeom
@@ -107,10 +136,76 @@ const updateLine = (map: any, feature: any) => {
     } else {
       lineGeom = new LineString([featureCoords, lineCoords[1]])
     }
-    const format = new WKT()
-    f.get('data').geom = format.writeGeometry(lineGeom.clone().transform('EPSG:3857', 'EPSG:4326'))
     f.setGeometry(lineGeom)
+    if (isEnd) {
+      const format = new WKT()
+      f.get('data').geom = format.writeGeometry(
+        lineGeom.clone().transform('EPSG:3857', 'EPSG:4326')
+      )
+    }
   })
+
+  if (isEnd) {
+    const point = feature.values_.data
+    const lines = features.map((item: { values_: { data: any } }) => item.values_.data)
+    await upLoadPoint(point, lines)
+  }
+}
+
+// 点位数据上传
+export const upLoadPoint = async (data: { featureType: string; color: string }, lines: any[]) => {
+  const PromiseAll = []
+  let currentColor = ''
+  const color = COLORU.find((item) => item.value === data.color)
+  currentColor = color ? color.label : COLORDEFAULT
+  switch (data.featureType) {
+    case TOWER:
+      await PromiseAll.push(modifyTower({ ...data, color: currentColor }))
+      break
+    case BOXTRANSFORMER:
+      await PromiseAll.push(modifyBoxTransformer({ ...data, color: currentColor }))
+      break
+    case POWERSUPPLY:
+      await PromiseAll.push(modifyPowerSupply({ ...data, color: currentColor }))
+      break
+    case TRANSFORMERSUBSTATION:
+      await PromiseAll.push(modifyTransformerSubstation({ ...data, color: currentColor }))
+      break
+    case CABLEWELL:
+      await PromiseAll.push(modifyCableWell({ ...data, color: currentColor }))
+      break
+    case RINGNETWORKCABINET:
+      await PromiseAll.push(modifyRingNetworkCabinet({ ...data, color: currentColor }))
+      break
+    case ELECTRICITYDISTRIBUTIONROOM:
+      await PromiseAll.push(modifyElectricityDistributionRoom({ ...data, color: currentColor }))
+      break
+    case SWITCHINGSTATION:
+      await PromiseAll.push(modifySwitchingStation({ ...data, color: currentColor }))
+      break
+    case COLUMNCIRCUITBREAKER:
+      await PromiseAll.push(modifyColumnCircuitBreaker({ ...data, color: currentColor }))
+      break
+    case COLUMNTRANSFORMER:
+      await PromiseAll.push(modifyColumnTransformer({ ...data, color: currentColor }))
+      break
+    case CABLEBRANCHBOX:
+      await PromiseAll.push(modifyCableBranchBox({ ...data, color: currentColor }))
+      break
+  }
+  lines.forEach(async (item) => {
+    let lineColor = ''
+    const color = COLORU.find((color) => color.value === item.color)
+    lineColor = color ? color.label : COLORDEFAULT
+    await PromiseAll.push(modifyRelationLine({ ...item, color: lineColor }))
+  })
+  Promise.all(PromiseAll)
+    .then(() => {
+      // console.log('信息修改成功')
+    })
+    .catch((err) => {
+      // console.log(err, '信息修改失败')
+    })
 }
 
 export const setSelectActive = (active: boolean) => {
