@@ -1,28 +1,28 @@
-import { DownOutlined } from '@ant-design/icons'
-import { Button, Dropdown, Menu, Select, Space } from 'antd'
+import { SearchOutlined } from '@ant-design/icons'
+import { Button, Select, Space } from 'antd'
 import { useState } from 'react'
-import { useMyContext } from '../Context'
+// import { useMyContext } from '../Context'
 import CityList from './CityList'
 
 const DrawGridToolbar = (props: any) => {
   const [visible, setVisible] = useState(false)
-  const { setdrawToolbarVisible, setImportModalVisible, setzIndex } = useMyContext()
-  const menu = (
-    <Menu>
-      <Menu.Item key="projectDetail" onClick={() => setImportModalVisible(true)}>
-        数据导入
-      </Menu.Item>
-      <Menu.Item
-        key="handDrawn"
-        onClick={() => {
-          setzIndex('create')
-          setdrawToolbarVisible(true)
-        }}
-      >
-        手动绘制
-      </Menu.Item>
-    </Menu>
-  )
+  // const { setdrawToolbarVisible, setImportModalVisible, setzIndex } = useMyContext()
+  // const menu = (
+  //   <Menu>
+  //     <Menu.Item key="projectDetail" onClick={() => setImportModalVisible(true)}>
+  //       数据导入
+  //     </Menu.Item>
+  //     <Menu.Item
+  //       key="handDrawn"
+  //       onClick={() => {
+  //         setzIndex('create')
+  //         setdrawToolbarVisible(true)
+  //       }}
+  //     >
+  //       手动绘制
+  //     </Menu.Item>
+  //   </Menu>
+  // )
 
   return (
     <>
@@ -34,7 +34,14 @@ const DrawGridToolbar = (props: any) => {
           open={false}
           onClick={() => setVisible(!visible)}
         />
-        <Space wrap>
+
+        <Button type="primary">
+          <Space>
+            筛选
+            <SearchOutlined />
+          </Space>
+        </Button>
+        {/* <Space wrap>
           <Dropdown overlay={menu} trigger={['click']}>
             <Button type="primary">
               <Space>
@@ -43,7 +50,7 @@ const DrawGridToolbar = (props: any) => {
               </Space>
             </Button>
           </Dropdown>
-        </Space>
+        </Space> */}
       </div>
       <CityList visible={visible} />
     </>

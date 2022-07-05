@@ -210,7 +210,7 @@ class DrawTool {
         if (layer && layer.get('name') === 'pointLayer') node = feature
       },
       {
-        hitTolerance: 5,
+        hitTolerance: 10,
       }
     )
     if (!node && isAdd) {

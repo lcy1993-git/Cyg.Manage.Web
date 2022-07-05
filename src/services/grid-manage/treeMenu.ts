@@ -21,7 +21,7 @@ export const downloadExcelTemplate = () => {
 }
 
 /** 获取变电站下面的网架数据 **/
-export const featchSubstationTreeData = (params: string[]) => {
+export const featchSubstationTreeData = (params: { lineIds: string[]; kvLevels: string[] }) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
   )
@@ -52,14 +52,16 @@ export const featchPowerSupplyTreeData = (params: { ids: string[] }) => {
   )
 }
 
-export const fetchGridManageMenu = () => {
-  return cyRequest<any[]>(() => request(`${baseUrl.grid}/PowerSupply/Tree`, { method: 'GET' }))
+export const fetchGridManageMenu = (params: any) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/PowerSupply/Tree`, { method: 'POST', data: params })
+  )
 }
 
 //变电站树
-export const getTransformerSubstationMenu = () => {
+export const getTransformerSubstationMenu = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/TransformerSubstation/Tree`, { method: 'GET' })
+    request(`${baseUrl.grid}/TransformerSubstation/Tree`, { method: 'POST', data: params })
   )
 }
 

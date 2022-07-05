@@ -63,7 +63,7 @@ const { useForm } = Form
 const { Option } = Select
 
 const SubstationTree = () => {
-  const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu(), {
+  const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu({}), {
     manual: true,
     onSuccess: () => {
       settreeLoading(true)
@@ -73,7 +73,7 @@ const SubstationTree = () => {
     },
   })
   const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
-  const { linesId, setlinesId, setsubStations, subStations, settreeLoading } = useTreeContext()
+  const { linesId, setlinesId, setsubStations, settreeLoading } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -83,7 +83,6 @@ const SubstationTree = () => {
   const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
   // 当前线路类型
   const [selectLineType, setselectLineType] = useState('')
-
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const treeData = [

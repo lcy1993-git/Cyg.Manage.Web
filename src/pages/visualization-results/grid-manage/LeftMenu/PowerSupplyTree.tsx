@@ -87,9 +87,7 @@ const lineformLayout = {
 
 const PowerSupplyTree = () => {
   const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
-  // const [checkedKeys, setCheckedKeys] = useState<string[]>([])
   const { linesId, setlinesId, setpowerSupplyIds, settreeLoading } = useTreeContext()
-  // const [PowerSupplyIds, setPowerSupplyIds] = useState<string[]>([])
   const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
   const [selectLineType, setselectLineType] = useState('')
   const [form] = useForm()
@@ -97,7 +95,7 @@ const PowerSupplyTree = () => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
-  const { data, run: getTree } = useRequest(() => fetchGridManageMenu(), {
+  const { data, run: getTree } = useRequest(() => fetchGridManageMenu({}), {
     manual: true,
     onSuccess: () => {
       settreeLoading(true)
