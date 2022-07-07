@@ -27,6 +27,8 @@ export interface MyContextType {
   setzIndex: Dispatch<SetStateAction<string>>
   setpageDrawState: Dispatch<SetStateAction<boolean>>
   pageDrawState: boolean
+  checkLineIds: string[]
+  setcheckLineIds: Dispatch<SetStateAction<string[]>>
 }
 
 // 全局状态管理

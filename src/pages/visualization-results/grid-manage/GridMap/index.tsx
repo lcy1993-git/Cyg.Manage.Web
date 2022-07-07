@@ -107,15 +107,8 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const {
-    mapRef,
-    setisRefresh,
-    isRefresh,
-    setzIndex,
-    zIndex,
-    setlineAssemble,
-    setpageDrawState,
-  } = useMyContext()
+  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex, setlineAssemble, setpageDrawState } =
+    useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })

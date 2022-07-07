@@ -291,3 +291,10 @@ export const deleteLine = (params: any) => {
     request(`${baseUrl.grid}/Line/DeleteById`, { method: 'POST', data: params })
   )
 }
+
+/** 获取重复点位信息 **/
+export const getrepeatPointdata = (params: { lineIds: string[] }) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/GridDesign/CheckRepeatGeom`, { method: 'POST', data: params })
+  )
+}

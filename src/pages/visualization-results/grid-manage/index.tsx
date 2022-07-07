@@ -30,6 +30,8 @@ const GradManage: React.FC = () => {
   /** 页面所有线路 */
   const [lineAssemble, setlineAssemble] = useState<boolean>(false)
 
+  /** 选中线路ID **/
+  const [checkLineIds, setcheckLineIds] = useState<string[]>([])
   /**  **/
   const [zIndex, setzIndex] = useState('')
   // 地图实例
@@ -53,6 +55,8 @@ const GradManage: React.FC = () => {
         setzIndex,
         pageDrawState,
         setpageDrawState,
+        checkLineIds,
+        setcheckLineIds,
       }}
     >
       <GradManageWrap />
