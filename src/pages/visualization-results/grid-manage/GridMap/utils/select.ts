@@ -156,58 +156,60 @@ const updateLine = async (map: any, feature: any, isEnd: boolean) => {
 
 // 点位数据上传
 export const upLoadPoint = async (data: { featureType: string; color: string }, lines: any[]) => {
-  const PromiseAll = []
-  let currentColor = ''
-  const color = COLORU.find((item) => item.value === data.color)
-  currentColor = color ? color.label : COLORDEFAULT
-  switch (data.featureType) {
-    case TOWER:
-      await PromiseAll.push(modifyTower({ ...data, color: currentColor }))
-      break
-    case BOXTRANSFORMER:
-      await PromiseAll.push(modifyBoxTransformer({ ...data, color: currentColor }))
-      break
-    case POWERSUPPLY:
-      await PromiseAll.push(modifyPowerSupply({ ...data, color: currentColor }))
-      break
-    case TRANSFORMERSUBSTATION:
-      await PromiseAll.push(modifyTransformerSubstation({ ...data, color: currentColor }))
-      break
-    case CABLEWELL:
-      await PromiseAll.push(modifyCableWell({ ...data, color: currentColor }))
-      break
-    case RINGNETWORKCABINET:
-      await PromiseAll.push(modifyRingNetworkCabinet({ ...data, color: currentColor }))
-      break
-    case ELECTRICITYDISTRIBUTIONROOM:
-      await PromiseAll.push(modifyElectricityDistributionRoom({ ...data, color: currentColor }))
-      break
-    case SWITCHINGSTATION:
-      await PromiseAll.push(modifySwitchingStation({ ...data, color: currentColor }))
-      break
-    case COLUMNCIRCUITBREAKER:
-      await PromiseAll.push(modifyColumnCircuitBreaker({ ...data, color: currentColor }))
-      break
-    case COLUMNTRANSFORMER:
-      await PromiseAll.push(modifyColumnTransformer({ ...data, color: currentColor }))
-      break
-    case CABLEBRANCHBOX:
-      await PromiseAll.push(modifyCableBranchBox({ ...data, color: currentColor }))
-      break
-  }
-  lines.forEach(async (item) => {
-    let lineColor = ''
-    const color = COLORU.find((color) => color.value === item.color)
-    lineColor = color ? color.label : COLORDEFAULT
-    await PromiseAll.push(modifyRelationLine({ ...item, color: lineColor }))
-  })
-  Promise.all(PromiseAll)
-    .then(() => {
-      // console.log('信息修改成功')
+  try {
+    const PromiseAll = []
+    let currentColor = ''
+    const color = COLORU.find((item) => item.value === data.color)
+    currentColor = color ? color.label : COLORDEFAULT
+    switch (data.featureType) {
+      case TOWER:
+        await PromiseAll.push(modifyTower({ ...data, color: currentColor }))
+        break
+      case BOXTRANSFORMER:
+        await PromiseAll.push(modifyBoxTransformer({ ...data, color: currentColor }))
+        break
+      case POWERSUPPLY:
+        await PromiseAll.push(modifyPowerSupply({ ...data, color: currentColor }))
+        break
+      case TRANSFORMERSUBSTATION:
+        await PromiseAll.push(modifyTransformerSubstation({ ...data, color: currentColor }))
+        break
+      case CABLEWELL:
+        await PromiseAll.push(modifyCableWell({ ...data, color: currentColor }))
+        break
+      case RINGNETWORKCABINET:
+        await PromiseAll.push(modifyRingNetworkCabinet({ ...data, color: currentColor }))
+        break
+      case ELECTRICITYDISTRIBUTIONROOM:
+        await PromiseAll.push(modifyElectricityDistributionRoom({ ...data, color: currentColor }))
+        break
+      case SWITCHINGSTATION:
+        await PromiseAll.push(modifySwitchingStation({ ...data, color: currentColor }))
+        break
+      case COLUMNCIRCUITBREAKER:
+        await PromiseAll.push(modifyColumnCircuitBreaker({ ...data, color: currentColor }))
+        break
+      case COLUMNTRANSFORMER:
+        await PromiseAll.push(modifyColumnTransformer({ ...data, color: currentColor }))
+        break
+      case CABLEBRANCHBOX:
+        await PromiseAll.push(modifyCableBranchBox({ ...data, color: currentColor }))
+        break
+    }
+    lines.forEach((item) => {
+      let lineColor = ''
+      const color = COLORU.find((color) => color.value === item.color)
+      lineColor = color ? color.label : COLORDEFAULT
+      PromiseAll.push(modifyRelationLine({ ...item, color: lineColor }))
     })
-    .catch((err) => {
-      // console.log(err, '信息修改失败')
-    })
+    Promise.all(PromiseAll)
+      .then(() => {
+        // console.log('信息修改成功')
+      })
+      .catch((err) => {
+        // console.log(err, '信息修改失败')
+      })
+  } catch (err) {}
 }
 
 export const setSelectActive = (active: boolean) => {
@@ -247,7 +249,6 @@ export const deleFeature = (map: any, feature: any) => {
     // !!  1. 删除点位 首先要删除当前点位 feature.get('data')
     const pointId = feature.get('data').id
     const lines = lineLayer.getSource().getFeatures()
-
     if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
       lines.forEach((item: any) => {
         if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
