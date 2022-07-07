@@ -205,6 +205,7 @@ export const setDrawBox = (active: boolean) => {
 
 // 删除拉框范围中的要素
 export const deletBoxFeature = (map: any) => {
+  if (boxSelectFeatures.length === 0) return
   setDeleFeatures([])
   boxSelectFeatures.forEach((feature: any) => {
     deleFeature(map, feature)
