@@ -1,12 +1,12 @@
-import { SearchOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Form, Space } from 'antd'
+import { AimOutlined, SearchOutlined } from '@ant-design/icons'
+import { Button, Checkbox, Form, Space, Table } from 'antd'
 import { useState } from 'react'
 import { useMyContext } from '../Context'
 import { FEATUREOPTIONS, POWERSUPPLY, TRANSFORMERSUBSTATION } from '../DrawToolbar/GridUtils'
 import { LEFTMENUWIDTH } from '../tools'
 import styles from './index.less'
 
-const Toolbar = (props: any) => {
+const Toolbar = (props: { leftMenuVisible: boolean }) => {
   const { leftMenuVisible } = props
   const {
     setdrawToolbarVisible,
@@ -15,13 +15,77 @@ const Toolbar = (props: any) => {
     drawToolbarVisible,
     pageDrawState,
   } = useMyContext()
-  // const { , setdrawToolbarVisible, mapRef, isRefresh, zIndex, setzIndex } =
-  useMyContext()
+
   // 设备筛选列表是否显示
   const [toolbalHasShow, setToolbalHasShow] = useState(false)
+  // 查重列表是否显示
+  const [repeatPoint, setRepeatPoint] = useState(false)
+
   /** 搜索设备 **/
   const searchEquipmentType = () => {}
-
+  // 表格标题
+  const columns = [
+    {
+      title: '点位名称',
+      dataIndex: 'name',
+    },
+    {
+      title: '操作',
+      width: 62,
+      render: () => {
+        return <AimOutlined />
+      },
+    },
+  ]
+  const data = [
+    {
+      key: '1',
+      name: 'John Brown',
+      age: 32,
+    },
+    {
+      key: '2',
+      name: 'Jim Green',
+      age: 42,
+    },
+    {
+      key: '3',
+      name: 'Joe Black',
+      age: 32,
+    },
+    {
+      key: '4',
+      name: 'Jim Red',
+      age: 32,
+    },
+    {
+      key: '41',
+      name: 'Jim Red',
+      age: 32,
+    },
+    {
+      key: '42',
+      name: 'Jim Red',
+      age: 32,
+    },
+    {
+      key: '43',
+      name: 'Jim Red',
+      age: 32,
+    },
+    {
+      key: '44',
+      name: 'Jim Red',
+      age: 32,
+    },
+  ]
+  // 是否显示查重列表
+  const hasShowRepetPoint = () => {
+    if (!repeatPoint) {
+      return 'translateX(-400px)'
+    }
+    return leftMenuVisible ? `translateX(${LEFTMENUWIDTH + 10}px)` : `translateX(10px)`
+  }
   return (
     <>
       <div
@@ -43,7 +107,9 @@ const Toolbar = (props: any) => {
           >
             手动绘制
           </Button>
-          <Button type="primary">一键查重</Button>
+          <Button type="primary" onClick={() => setRepeatPoint(!repeatPoint)}>
+            一键查重
+          </Button>
         </Space>
       </div>
       <div
@@ -79,6 +145,22 @@ const Toolbar = (props: any) => {
         }}
         onClick={() => setToolbalHasShow(!toolbalHasShow)}
       />
+
+      <div
+        className={styles.repeatPointWrap}
+        style={{
+          transform: hasShowRepetPoint(),
+        }}
+      >
+        <Table
+          columns={columns}
+          bordered
+          pagination={false}
+          dataSource={data}
+          size="small"
+          scroll={{ y: 160 }}
+        />
+      </div>
     </>
   )
 }
