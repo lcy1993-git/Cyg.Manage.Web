@@ -386,58 +386,67 @@ const GridMap = () => {
   const deleteFeature = async () => {
     const deleteData = getDeleFeatures()
     if (deleteData && deleteData.length) {
-      const PromiseAll = []
-      for (let i = 0; i < deleteData.length; i++) {
-        switch (deleteData[i].featureType) {
-          case TOWER:
-            PromiseAll.push(deleteTower([deleteData[i].id]))
-            break
-          case BOXTRANSFORMER:
-            PromiseAll.push(deleteBoxTransformer([deleteData[i].id]))
-            break
-
-          case POWERSUPPLY:
-            PromiseAll.push(deletePowerSupply([deleteData[i].id]))
-            break
-          case TRANSFORMERSUBSTATION:
-            PromiseAll.push(deleteTransformerSubstation([deleteData[i].id]))
-            break
-          case CABLEWELL:
-            PromiseAll.push(deleteCableWell([deleteData[i].id]))
-            break
-          case RINGNETWORKCABINET:
-            PromiseAll.push(deleteRingNetworkCabinet([deleteData[i].id]))
-            break
-          case ELECTRICITYDISTRIBUTIONROOM:
-            PromiseAll.push(deleteElectricityDistributionRoom([deleteData[i].id]))
-            break
-          case SWITCHINGSTATION:
-            PromiseAll.push(deleteSwitchingStation([deleteData[i].id]))
-            break
-          case COLUMNCIRCUITBREAKER:
-            PromiseAll.push(deleteColumnCircuitBreaker([deleteData[i].id]))
-            break
-          case COLUMNTRANSFORMER:
-            PromiseAll.push(deleteColumnTransformer([deleteData[i].id]))
-            break
-          case CABLEBRANCHBOX:
-            PromiseAll.push(deleteCableBranchBox([deleteData[i].id]))
-            break
-          case CABLECIRCUIT: // 电缆线路
-            PromiseAll.push(deleteLineRelations([deleteData[i].id]))
-            break
-          case LINE: // 架空线路
-            PromiseAll.push(deleteLineRelations([deleteData[i].id]))
-            break
+      try {
+        const PromiseAll = []
+        for (let i = 0; i < deleteData.length; i++) {
+          switch (deleteData[i].featureType) {
+            case TOWER:
+              PromiseAll.push(deleteTower([deleteData[i].id]))
+              break
+            case BOXTRANSFORMER:
+              PromiseAll.push(deleteBoxTransformer([deleteData[i].id]))
+              break
+            case POWERSUPPLY:
+              PromiseAll.push(deletePowerSupply([deleteData[i].id]))
+              break
+            case TRANSFORMERSUBSTATION:
+              PromiseAll.push(deleteTransformerSubstation([deleteData[i].id]))
+              break
+            case CABLEWELL:
+              PromiseAll.push(deleteCableWell([deleteData[i].id]))
+              break
+            case RINGNETWORKCABINET:
+              PromiseAll.push(deleteRingNetworkCabinet([deleteData[i].id]))
+              break
+            case ELECTRICITYDISTRIBUTIONROOM:
+              PromiseAll.push(deleteElectricityDistributionRoom([deleteData[i].id]))
+              break
+            case SWITCHINGSTATION:
+              PromiseAll.push(deleteSwitchingStation([deleteData[i].id]))
+              break
+            case COLUMNCIRCUITBREAKER:
+              PromiseAll.push(deleteColumnCircuitBreaker([deleteData[i].id]))
+              break
+            case COLUMNTRANSFORMER:
+              PromiseAll.push(deleteColumnTransformer([deleteData[i].id]))
+              break
+            case CABLEBRANCHBOX:
+              PromiseAll.push(deleteCableBranchBox([deleteData[i].id]))
+              break
+            case CABLECIRCUIT: // 电缆线路
+              PromiseAll.push(deleteLineRelations([deleteData[i].id]))
+              break
+            case LINE: // 架空线路
+              PromiseAll.push(deleteLineRelations([deleteData[i].id]))
+              break
+          }
         }
-      }
-      Promise.all(PromiseAll)
-        .then((res) => {
-          message.info('删除成功')
-        })
-        .catch((err) => {
-          message.info('删除失败')
-        })
+        Promise.all(PromiseAll)
+          .then((res) => {
+            message.info('删除成功')
+            setisRefresh(false)
+            const rootData = deleteData.filter(
+              (item: { featureType: string }) =>
+                item.featureType === TRANSFORMERSUBSTATION || item.featureType === POWERSUPPLY
+            )
+            if (rootData.length) {
+              setisRefresh(true)
+            }
+          })
+          .catch((err) => {
+            message.info('删除失败')
+          })
+      } catch (err) {}
     }
   }
 

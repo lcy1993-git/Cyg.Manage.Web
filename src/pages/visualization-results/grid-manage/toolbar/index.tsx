@@ -5,6 +5,7 @@ import { Button, Checkbox, Form, message, Space, Spin, Table } from 'antd'
 import { useState } from 'react'
 import { useMyContext } from '../Context'
 import { FEATUREOPTIONS, POWERSUPPLY, TRANSFORMERSUBSTATION } from '../DrawToolbar/GridUtils'
+import { locationByGeom } from '../GridMap/utils/initializeMap'
 import { LEFTMENUWIDTH } from '../tools'
 import styles from './index.less'
 
@@ -23,6 +24,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     drawToolbarVisible,
     pageDrawState,
     checkLineIds,
+    mapRef,
   } = useMyContext()
 
   // 设备筛选列表是否显示
@@ -43,8 +45,14 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     {
       title: '操作',
       width: 62,
-      render: () => {
-        return <AimOutlined />
+      render: (_: any, record: RepeatPointType) => {
+        return (
+          <AimOutlined
+            onClick={() => {
+              locationByGeom(mapRef.map, record.geom)
+            }}
+          />
+        )
       },
     },
   ]
