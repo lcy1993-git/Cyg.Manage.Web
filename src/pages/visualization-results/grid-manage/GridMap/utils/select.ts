@@ -32,6 +32,7 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
+import { clearBoxData } from './initializeMap'
 import { getLayer } from './loadLayer'
 import { lineStyle, pointStyle } from './style'
 
@@ -84,6 +85,7 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
       }
       currrentSelectFeature = null
       isActiveFeature(null)
+      clearBoxData()
     }
   })
   initTranslate(map)
@@ -216,27 +218,34 @@ export const getCurrrentSelectFeature = () => {
   return currrentSelectFeature
 }
 
+export const setDeleFeatures = (data: any) => {
+  deleFeatures = data
+}
+
 export const getDeleFeatures = () => {
   return deleFeatures
 }
 
 export const deletCurrrentSelectFeature = (map: any) => {
   deleFeatures = []
-  if (!currrentSelectFeature) return
-  let geomType = currrentSelectFeature.getGeometry().getType()
+  deleFeature(map, currrentSelectFeature)
+  currrentSelectFeature = null
+}
+
+export const deleFeature = (map: any, feature: any) => {
+  if (!feature) return
+  let geomType = feature.getGeometry().getType()
   let pointLayer = getLayer(map, 'pointLayer'),
     lineLayer = getLayer(map, 'lineLayer')
   if (geomType === 'LineString') {
-    lineLayer.getSource().removeFeature(currrentSelectFeature)
-    deleFeatures.push(currrentSelectFeature.get('data'))
+    lineLayer.getSource().removeFeature(feature)
+    deleFeatures.push(feature.get('data'))
     //! 删除线路 ....currrentSelectFeature.get('data')
-
-    currrentSelectFeature = null
   } else if (geomType === 'Point') {
-    pointLayer.getSource().removeFeature(currrentSelectFeature)
-    deleFeatures.push(currrentSelectFeature.get('data'))
-    // !!  1. 删除点位 首先要删除当前点位 currrentSelectFeature.get('data')
-    const pointId = currrentSelectFeature.get('data').id
+    pointLayer.getSource().removeFeature(feature)
+    deleFeatures.push(feature.get('data'))
+    // !!  1. 删除点位 首先要删除当前点位 feature.get('data')
+    const pointId = feature.get('data').id
     const lines = lineLayer.getSource().getFeatures()
 
     if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
@@ -249,8 +258,6 @@ export const deletCurrrentSelectFeature = (map: any) => {
       })
     }
   }
-
-  currrentSelectFeature = null
 }
 
 export const editFeature = (map: any, data: any) => {

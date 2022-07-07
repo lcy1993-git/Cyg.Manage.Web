@@ -63,7 +63,7 @@ import {
   verificationNaturalNumber,
   verificationNaturalNumber0to100,
 } from '../tools'
-import { clear, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
+import { clear, deletBoxFeature, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
 import {
   deletCurrrentSelectFeature,
   editFeature,
@@ -107,8 +107,15 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex, setlineAssemble, setpageDrawState } =
-    useMyContext()
+  const {
+    mapRef,
+    setisRefresh,
+    isRefresh,
+    setzIndex,
+    zIndex,
+    setlineAssemble,
+    setpageDrawState,
+  } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
@@ -388,6 +395,7 @@ const GridMap = () => {
           case BOXTRANSFORMER:
             PromiseAll.push(deleteBoxTransformer([deleteData[i].id]))
             break
+
           case POWERSUPPLY:
             PromiseAll.push(deletePowerSupply([deleteData[i].id]))
             break
@@ -458,6 +466,7 @@ const GridMap = () => {
       }
       if (e.keyCode === 46) {
         deletCurrrentSelectFeature(mapRef.map)
+        deletBoxFeature(mapRef.map)
         deleteFeature()
       }
     })

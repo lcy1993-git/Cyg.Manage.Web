@@ -138,14 +138,14 @@ const pointStyle = function (
   if (type.indexOf('cable_head') >= 0) {
     let text, size, color
     if (feature.getProperties().type == '电缆终端') {
-      text = '\ue61f'
+      text = '\ue88c'
       size = '25'
       if (feature.getProperties().state == 1)
         // 原有
-        text = '\ue61f'
+        text = '\ue88c'
       else if (feature.getProperties().state == 2)
         // 新建
-        text = '\ue620'
+        text = '\ue61f'
       else if (feature.getProperties().state == 3)
         // 利旧
         text = '\ue61e'

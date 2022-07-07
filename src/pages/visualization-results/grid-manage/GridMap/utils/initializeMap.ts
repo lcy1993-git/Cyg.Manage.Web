@@ -2,19 +2,27 @@ import { MapRef } from '@/pages/visualization-results/history-grid/components/hi
 import { getMapRegisterData } from '@/services/index'
 import { platformModifierKeyOnly } from 'ol/events/condition'
 import WKT from 'ol/format/WKT'
-import { DragBox } from 'ol/interaction'
+import { Draw } from 'ol/interaction'
+import { createBox } from 'ol/interaction/Draw'
 import { Tile as TileLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
-import { XYZ } from 'ol/source'
+import { Vector as VectorSource, XYZ } from 'ol/source'
 import View from 'ol/View'
 import { pointType } from '..'
 import DrawTool from './draw'
 import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 import { moveOverlay } from './overlay'
-import { getCurrrentSelectFeature, initSelect, setSelectActive } from './select'
+import {
+  deleFeature,
+  getCurrrentSelectFeature,
+  getSelectFeatures,
+  initSelect,
+  setDeleFeatures,
+  setSelectActive,
+} from './select'
 import { calculateDistance, lineStyle, pointStyle } from './style'
 // interface pointType {
 //   featureType: string
@@ -76,13 +84,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
         const boxfeature = boxSelectFeatures.find((item: any) => item === feature)
 
         // 单个元素判断
-        // if ((currrentSelectFeature && currrentSelectFeature === feature) || boxfeature) {
-        //   feature.setStyle(pointStyle(feature.get('data'), true, level, isDraw))
-        // } else {
-        //   feature.setStyle(pointStyle(feature.get('data'), false, level, isDraw))
-        // }
-
-        if (currrentSelectFeature && currrentSelectFeature === feature) {
+        if ((currrentSelectFeature && currrentSelectFeature === feature) || boxfeature) {
           feature.setStyle(pointStyle(feature.get('data'), true, level, isDraw))
         } else {
           feature.setStyle(pointStyle(feature.get('data'), false, level, isDraw))
@@ -95,9 +97,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   })
 
   initSelect(mapRef.map, isActiveFeature)
-  // drawPoint(mapRef.map, {})
-  // drawLine(mapRef.map, { featureType: 'Line' })
-  // loadTest();
+
   drawBox(mapRef.map)
 }
 const loadTest = () => {
@@ -130,24 +130,41 @@ export const drawLine = (map: any, options: any) => {
 }
 
 export const drawBox = (map: any) => {
-  const dragBox = new DragBox({
+  // const dragBox = new DragBox({
+  //   condition: platformModifierKeyOnly,
+  // })
+  // map.addInteraction(dragBox)
+  const dragBox = new Draw({
+    source: new VectorSource(),
     condition: platformModifierKeyOnly,
+    type: 'Circle',
+    geometryFunction: createBox(),
   })
   map.addInteraction(dragBox)
 
-  // dragBox.on('boxstart', function () {
-  //   boxSelectFeatures = []
-  //   getSelectFeatures().clear()
-  // });
+  dragBox.on('drawstart', function () {
+    boxSelectFeatures = []
+    getSelectFeatures().clear()
+  })
 
-  // dragBox.on('boxend', function () {
-  //   const extent = dragBox.getGeometry().getExtent();
-  //   pointLayer = getLayer(map, 'pointLayer')
-  //   boxSelectFeatures = pointLayer.getSource()
-  //     .getFeaturesInExtent(extent)
-  //     .filter((feature:any) => feature.getGeometry().intersectsExtent(extent))
-  //   getSelectFeatures().extend(boxSelectFeatures)
-  // });
+  dragBox.on('drawend', function (e: any) {
+    const extent = e.feature.getGeometry().getExtent()
+    pointLayer = getLayer(map, 'pointLayer')
+    boxSelectFeatures = pointLayer
+      .getSource()
+      .getFeaturesInExtent(extent)
+      .filter((feature: any) => feature.getGeometry().intersectsExtent(extent))
+    getSelectFeatures().extend(boxSelectFeatures)
+    // dragBox.setActive(false)
+  })
+}
+
+export const deletBoxFeature = (map: any) => {
+  setDeleFeatures([])
+  boxSelectFeatures.forEach((feature: any) => {
+    deleFeature(map, feature)
+  })
+  boxSelectFeatures = []
 }
 
 export const getDrawPoints = () => {
@@ -214,6 +231,10 @@ export const clear = () => {
   drawTool && drawTool.snap && drawTool.snap.setActive(false)
   drawTool && drawTool.draw && drawTool.draw.setActive(false)
   setSelectActive(true)
+}
+
+export const clearBoxData = () => {
+  boxSelectFeatures = []
 }
 
 // 获取比例尺
