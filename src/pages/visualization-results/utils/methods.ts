@@ -1038,6 +1038,11 @@ const getScale = (map: any) => {
   return '1 : ' + text
 }
 
+//经纬度截取
+const getLngAndLat = (geom: any) => {
+  return geom.substring(geom.indexOf('(') + 1, geom.indexOf(')')).split(' ')
+}
+
 const CalcTowerAngle = (startLine: any, endLine: any, isLeft: boolean) => {
   startLine[0] = transform(startLine[0], 'EPSG:4326', 'EPSG:3857')
   startLine[1] = transform(startLine[1], 'EPSG:4326', 'EPSG:3857')
@@ -1073,6 +1078,10 @@ const ToDegrees = (val: any) => {
   return degree + '°' + min + '′' + sec + '″'
 }
 
+const handleGeom = (data: string) => {
+  return data.substring(data.indexOf('(') + 1, data.indexOf(')')).split(' ')
+}
+
 export {
   refreshMap,
   getLayerByName,
@@ -1090,4 +1099,6 @@ export {
   getLineClusters,
   getTrackRecordDateArray,
   changeLayerType,
+  getLngAndLat,
+  handleGeom,
 }
