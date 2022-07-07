@@ -1,6 +1,26 @@
 import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
 
+export enum kvOption {
+  '20kV' = 4,
+  '35kV' = 5,
+  '110kV' = 6,
+  '330kV' = 7,
+}
+
+export enum equipKvLevel {
+  '10kV' = 3,
+  '20kV' = 4,
+  '35kV' = 5,
+  '110kV' = 6,
+  '330kV' = 7,
+}
+
+export enum lineModel {
+  CableCircuit = '电缆线路',
+  Line = '架空线路',
+}
+
 const GridManageRequest = (url: string, options?: Parameters<typeof request>[1]) => {
   const _url = `${baseUrl.grid}/${url.startsWith('/') ? url.slice(1) : url}`
   return request(_url, options)
@@ -15,13 +35,23 @@ export const importGridManageData = (data: FormData) => {
   })
 }
 
+//获取变电站数据
+// export const getSubStationItem = (id: string) => {
+//   return cyRequest<any>(() =>
+//     request(`${baseUrl.grid}/TransformerSubstation/GetById`, {
+//       method: 'GET',
+//       params: { id },
+//     })
+//   )
+// }
+
 /** 下载网架数据模板 */
 export const downloadExcelTemplate = () => {
   return GridManageRequest('/Import/Template', { responseType: 'blob' })
 }
 
 /** 获取变电站下面的网架数据 **/
-export const featchSubstationTreeData = (params: string[]) => {
+export const featchSubstationTreeData = (params: any) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
   )
@@ -46,20 +76,22 @@ export const getSubStations = (params: { powerIds: string[]; stationIds: string[
   )
 }
 
-export const featchPowerSupplyTreeData = (params: { ids: string[] }) => {
+// export const featchPowerSupplyTreeData = (params: { ids: string[] }) => {
+//   return cyRequest<any[]>(() =>
+//     request(`${baseUrl.grid}/Line/GetLinesByPower`, { method: 'POST', data: params })
+//   )
+// }
+
+export const fetchGridManageMenu = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/Line/GetLinesByPower`, { method: 'POST', data: params })
+    request(`${baseUrl.grid}/PowerSupply/Tree`, { method: 'POST', data: params })
   )
 }
 
-export const fetchGridManageMenu = () => {
-  return cyRequest<any[]>(() => request(`${baseUrl.grid}/PowerSupply/Tree`, { method: 'GET' }))
-}
-
 //变电站树
-export const getTransformerSubstationMenu = () => {
+export const getTransformerSubstationMenu = (params: any) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/TransformerSubstation/Tree`, { method: 'GET' })
+    request(`${baseUrl.grid}/TransformerSubstation/Tree`, { method: 'POST', data: params })
   )
 }
 
@@ -199,11 +231,11 @@ export const modifyRelationLine = (params: any) => {
 }
 
 /** 更新线路信息 **/
-export const getLineCompoment = (params: string[]) => {
-  return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
-  )
-}
+// export const getLineCompoment = (params: any) => {
+//   return cyRequest<any[]>(() =>
+//     request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
+//   )
+// }
 
 /** //!! 删除杆塔信息 **/
 export const deleteTower = (params: any) => {

@@ -1,6 +1,6 @@
 import {
   deleteLine,
-  getLineCompoment,
+  // getLineCompoment,
   getLineData,
   GetStationItems,
   getTransformerSubstationMenu,
@@ -11,6 +11,7 @@ import { useRequest } from 'ahooks'
 import { Form, Input, message, Modal, Select, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
+import EquipLineList from '../../components/line-equip-list'
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
@@ -63,7 +64,7 @@ const { useForm } = Form
 const { Option } = Select
 
 const SubstationTree = () => {
-  const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu(), {
+  const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu({}), {
     manual: true,
     onSuccess: () => {
       settreeLoading(true)
@@ -84,6 +85,9 @@ const SubstationTree = () => {
   // 当前线路类型
   const [selectLineType, setselectLineType] = useState('')
 
+  const [currentLineId, setCurrentLineId] = useState<string>('')
+  //当前点击线路标题
+  const [lineTitle, setLineTitle] = useState<string>('')
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const treeData = [
@@ -223,20 +227,29 @@ const SubstationTree = () => {
   // 点击左键，编辑线路数据
   const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {
     const { selectedNodes } = info
+
     if (selectedNodes.length && !selectedNodes[0].children && selectedNodes[0].id) {
-      setcurrentFeatureId(selectedNodes[0].id)
-      const data = await getLineData(selectedNodes[0].id)
-      const lines = await getLineCompoment([selectedNodes[0].id])
-      // @ts-ignore
-      const length = getTotalLength(lines.lineRelationList)
-      selectedNodes[0].kvLevel && setcurrentLineKvLevel(selectedNodes[0].kvLevel)
+      //   setcurrentFeatureId(selectedNodes[0].id)
+      //   const data = await getLineData(selectedNodes[0].id)
+      //   const lines = await getLineCompoment([selectedNodes[0].id])
+      //   // @ts-ignore
+      //   const length = getTotalLength(lines.lineRelationList)
+      //   selectedNodes[0].kvLevel && setcurrentLineKvLevel(selectedNodes[0].kvLevel)
+      const lineIdStr = selectedNodes[0].key
+
+      const end = lineIdStr.indexOf('_&Line')
+      if (end !== -1) {
+        setCurrentLineId(lineIdStr.substring(0, end))
+      }
+      setLineTitle(selectedNodes[0].title)
       setIsModalVisible(true)
-      form.setFieldsValue({
-        ...data,
-        totalLength: length.toFixed(1),
-        lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
-      })
-      setselectLineType(selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit')
+
+      //   form.setFieldsValue({
+      //     ...data,
+      //     totalLength: length.toFixed(1),
+      //     lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
+      //   })
+      //   setselectLineType(selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit')
     }
   }
 
@@ -415,6 +428,12 @@ const SubstationTree = () => {
           </Form>
         </div>
       </Modal>
+      <EquipLineList
+        visible={isModalVisible}
+        onChange={setIsModalVisible}
+        lineTitle={lineTitle}
+        lineId={currentLineId}
+      />
     </>
   )
 }

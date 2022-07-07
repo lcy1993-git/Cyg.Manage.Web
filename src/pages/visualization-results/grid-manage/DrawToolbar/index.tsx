@@ -50,7 +50,7 @@ const { Option } = Select
 const { useForm } = Form
 const { TabPane } = Tabs
 
-interface BelongingLineType {
+export interface BelongingLineType {
   id: string
   name: string
   kvLevel: number
