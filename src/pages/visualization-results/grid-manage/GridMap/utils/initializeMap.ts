@@ -1,14 +1,15 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
 import { getMapRegisterData } from '@/services/index'
-import { platformModifierKeyOnly } from 'ol/events/condition'
+import GeoJSON from 'ol/format/GeoJSON'
 import WKT from 'ol/format/WKT'
 import { Draw } from 'ol/interaction'
 import { createBox } from 'ol/interaction/Draw'
-import { Tile as TileLayer } from 'ol/layer'
+import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer'
 import Map from 'ol/Map'
 import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
 import { Vector as VectorSource, XYZ } from 'ol/source'
+import { Fill, Stroke, Style, Text } from 'ol/style'
 import View from 'ol/View'
 import { pointType } from '..'
 import DrawTool from './draw'
@@ -51,6 +52,7 @@ var drawTool: any
 var pointLayer: any
 var lineLayer: any
 var boxSelectFeatures: any = []
+var dragBox: any
 
 export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   mapRef.map = new Map({
@@ -99,20 +101,59 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
   initSelect(mapRef.map, isActiveFeature)
 
   drawBox(mapRef.map)
+  loadGeoJson(mapRef.map)
 }
-const loadTest = () => {
+
+// 加载行政区域边界
+const loadGeoJson = (map: any) => {
   getMapRegisterData('100000').then((data: any) => {
-    var format = new WKT()
-    const feature = format.readFeature(data, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857',
+    const vectorSource = new VectorSource({
+      features: new GeoJSON({
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+      }).readFeatures(data),
     })
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: (feature: any) => {
+        return new Style({
+          stroke: new Stroke({
+            color: 'rgba(54,131,160,1)',
+            width: 2,
+          }),
+          text: new Text({
+            font: '16px Source Han Sans SC',
+            text: feature.getProperties().name,
+            fill: new Fill({
+              //文字填充色
+              color: 'white',
+            }),
+            stroke: new Stroke({
+              //文字边界宽度与颜色
+              color: 'rgba(21, 32, 32, 1)',
+              width: 2,
+            }),
+          }),
+        })
+      },
+    })
+    map.addLayer(vectorLayer)
   })
 }
-export const location = (map: any, lon: number, lat: number) => {
-  map.getView().setCenter(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'))
-  map.getView().setZoom(12)
+// 根据geom字段定位（去重功能）
+export const locationByGeom = (map: any, geom: String) => {
+  const point: any = new WKT().readGeometry(geom)
+  const lont = point.getCoordinates()
+  location(map, lont[0], lont[1], 15)
 }
+
+// 根据经纬度定位
+export const location = (map: any, lon: number, lat: number, zoom: number = 12) => {
+  map.getView().setCenter(transform([lon, lat], 'EPSG:4326', 'EPSG:3857'))
+  map.getView().setZoom(zoom)
+}
+
+// 绘制点位
 export const drawPoint = (map: any, options: any) => {
   pointLayer = getLayer(map, 'pointLayer', 3)
   options.type_ = 'Point'
@@ -121,6 +162,7 @@ export const drawPoint = (map: any, options: any) => {
   drawTool.drawGeometry(options)
 }
 
+// 绘制线路
 export const drawLine = (map: any, options: any) => {
   lineLayer = getLayer(map, 'lineLayer', 2)
   options.type_ = 'LineString'
@@ -129,14 +171,11 @@ export const drawLine = (map: any, options: any) => {
   drawTool.drawGeometry(options)
 }
 
+// 拉框删除
 export const drawBox = (map: any) => {
-  // const dragBox = new DragBox({
-  //   condition: platformModifierKeyOnly,
-  // })
-  // map.addInteraction(dragBox)
-  const dragBox = new Draw({
+  dragBox = new Draw({
     source: new VectorSource(),
-    condition: platformModifierKeyOnly,
+    // condition: platformModifierKeyOnly,
     type: 'Circle',
     geometryFunction: createBox(),
   })
@@ -157,8 +196,14 @@ export const drawBox = (map: any) => {
     getSelectFeatures().extend(boxSelectFeatures)
     // dragBox.setActive(false)
   })
+  dragBox.setActive(false)
 }
 
+export const setDrawBox = (active: boolean) => {
+  dragBox.setActive(active)
+}
+
+// 删除拉框范围中的要素
 export const deletBoxFeature = (map: any) => {
   setDeleFeatures([])
   boxSelectFeatures.forEach((feature: any) => {
@@ -167,20 +212,24 @@ export const deletBoxFeature = (map: any) => {
   boxSelectFeatures = []
 }
 
+// 获取所有绘制的点位要素
 export const getDrawPoints = () => {
   if (drawTool) return drawTool.getAllDrawPoints()
   else return null
 }
 
+// 获取所有绘制的线路要素
 export const getDrawLines = () => {
   if (drawTool) return drawTool.getAllDrawLines()
   else return null
 }
 
+// 加载地图图层
 export const loadMapLayers = (data: any, map: any) => {
   loadAllLayer(data, map)
 }
 
+// 获取线路的总长度
 export const getTotalLength = (data: any) => {
   let totalLength = 0
   data.forEach((item: any) => {
@@ -192,6 +241,7 @@ export const getTotalLength = (data: any) => {
   return totalLength
 }
 
+// 根据线路更线段属性和样式
 export const upateLineByMainLine = (map: any, data: any) => {
   lineLayer = getLayer(map, 'lineLayer')
   pointLayer = getLayer(map, 'pointLayer')
@@ -227,12 +277,14 @@ export const upateLineByMainLine = (map: any, data: any) => {
   }
 }
 
+// 清除绘制
 export const clear = () => {
   drawTool && drawTool.snap && drawTool.snap.setActive(false)
   drawTool && drawTool.draw && drawTool.draw.setActive(false)
   setSelectActive(true)
 }
 
+// 清除拉框数据
 export const clearBoxData = () => {
   boxSelectFeatures = []
 }

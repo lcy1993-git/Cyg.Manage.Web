@@ -63,7 +63,14 @@ import {
   verificationNaturalNumber,
   verificationNaturalNumber0to100,
 } from '../tools'
-import { clear, deletBoxFeature, getDrawLines, getDrawPoints, initMap } from './utils/initializeMap'
+import {
+  clear,
+  deletBoxFeature,
+  getDrawLines,
+  getDrawPoints,
+  initMap,
+  setDrawBox,
+} from './utils/initializeMap'
 import {
   deletCurrrentSelectFeature,
   editFeature,
@@ -465,11 +472,23 @@ const GridMap = () => {
         clear()
       }
       if (e.keyCode === 46) {
+        // Delete键删除
         deletCurrrentSelectFeature(mapRef.map)
         deletBoxFeature(mapRef.map)
         deleteFeature()
       }
+      if (e.keyCode === 16) {
+        // Shift开启拉框删除
+        setDrawBox(true)
+      }
     })
+  })
+
+  document.addEventListener('keyup', async (e) => {
+    if (e.keyCode === 16) {
+      // Shift关闭拉框删除
+      setDrawBox(false)
+    }
   })
 
   // 获取所有所属线路
