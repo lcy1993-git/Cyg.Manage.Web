@@ -6,24 +6,6 @@ import CityList from './CityList'
 
 const DrawGridToolbar = (props: any) => {
   const [visible, setVisible] = useState(false)
-  // const { setdrawToolbarVisible, setImportModalVisible, setzIndex } = useMyContext()
-  // const menu = (
-  //   <Menu>
-  //     <Menu.Item key="projectDetail" onClick={() => setImportModalVisible(true)}>
-  //       数据导入
-  //     </Menu.Item>
-  //     <Menu.Item
-  //       key="handDrawn"
-  //       onClick={() => {
-  //         setzIndex('create')
-  //         setdrawToolbarVisible(true)
-  //       }}
-  //     >
-  //       手动绘制
-  //     </Menu.Item>
-  //   </Menu>
-  // )
-
   return (
     <>
       <div className="flex h-full w-full justify-start items-center pl-2 space-x-2.5 ">
@@ -41,16 +23,6 @@ const DrawGridToolbar = (props: any) => {
             <SearchOutlined />
           </Space>
         </Button>
-        {/* <Space wrap>
-          <Dropdown overlay={menu} trigger={['click']}>
-            <Button type="primary">
-              <Space>
-                网架绘制
-                <DownOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-        </Space> */}
       </div>
       <CityList visible={visible} />
     </>

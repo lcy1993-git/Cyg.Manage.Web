@@ -44,7 +44,7 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [standingBookVisible, setStandingBookVisible] = useState(false)
-  const { setisRefresh, mapRef, lineAssemble } = useMyContext()
+  const { setisRefresh, mapRef, lineAssemble, setcheckLineIds } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
 
   // 线路ID集合
@@ -250,6 +250,10 @@ const LeftMenu = (props: any) => {
   useEffect(() => {
     stationItemsHandle()
   }, [stationItemsHandle, lineAssemble])
+
+  useEffect(() => {
+    setcheckLineIds(linesId)
+  }, [linesId, setcheckLineIds])
 
   return (
     <div className="w-full h-full bg-white flex flex-col">
