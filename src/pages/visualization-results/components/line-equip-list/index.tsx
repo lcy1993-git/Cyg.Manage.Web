@@ -843,6 +843,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               ref={lineRef}
               style={{ height: '400px' }}
               buttonRightContentSlot={tableButton}
+              buttonLeftContentSlot={searchComponent}
               columns={lineColumns}
               url="/LineElementRelation/GetPagedList"
               tableTitle="线路段"

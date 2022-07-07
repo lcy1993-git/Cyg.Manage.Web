@@ -18,6 +18,14 @@ export interface MaterialDataType {
   key?: string
 }
 
+export interface TransIntervalType {
+  publicuse?: number
+  spare?: number
+  specialPurpose?: number
+  total?: number
+  type?: number
+}
+
 export interface HouseholdDataType {
   length?: number
   state?: number
