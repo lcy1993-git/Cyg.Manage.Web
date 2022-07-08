@@ -1,12 +1,11 @@
 import {
   deleteLine,
   // getLineCompoment,
-  getLineData,
   GetStationItems,
   getTransformerSubstationMenu,
   modifyLine,
 } from '@/services/grid-manage/treeMenu'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Form, Input, message, Modal, Select, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
@@ -21,7 +20,7 @@ import {
   LINEMODEL,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { getTotalLength, upateLineByMainLine } from '../GridMap/utils/initializeMap'
+import { upateLineByMainLine } from '../GridMap/utils/initializeMap'
 import { useTreeContext } from './TreeContext'
 
 interface infoType {
@@ -64,17 +63,20 @@ const { useForm } = Form
 const { Option } = Select
 
 const SubstationTree = () => {
-  const { data, run: getTree } = useRequest(() => getTransformerSubstationMenu({}), {
-    manual: true,
-    onSuccess: () => {
-      settreeLoading(true)
-    },
-    onError: () => {
-      settreeLoading(true)
-    },
-  })
-  const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
-  const { linesId, setlinesId, setsubStations, settreeLoading } = useTreeContext()
+  const { data, run: getTree } = useRequest(
+    () => getTransformerSubstationMenu({ kvLevels: kvLevels }),
+    {
+      manual: true,
+      onSuccess: () => {
+        settreeLoading(true)
+      },
+      onError: () => {
+        settreeLoading(true)
+      },
+    }
+  )
+  const { isRefresh, setisRefresh, mapRef, lineAssemble, companyId } = useMyContext()
+  const { linesId, setlinesId, setsubStations, settreeLoading, kvLevels } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -98,7 +100,15 @@ const SubstationTree = () => {
       children: data?.map((item, index) => {
         return {
           ...item,
-          title: item.name,
+          title:
+            companyId !== item.companyId ? (
+              <>
+                <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+                <span style={{ paddingLeft: '3px' }}> {item.name}</span>
+              </>
+            ) : (
+              item.name
+            ),
           key: `${item.id}_&${TRANSFORMERSUBSTATION}`,
           type: TRANSFORMERSUBSTATION,
           children: item.lineKVLevelGroups.map(
@@ -222,7 +232,7 @@ const SubstationTree = () => {
 
   useEffect(() => {
     isRefresh && getTree()
-  }, [getTree, isRefresh])
+  }, [getTree, isRefresh, kvLevels])
 
   // 点击左键，编辑线路数据
   const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {

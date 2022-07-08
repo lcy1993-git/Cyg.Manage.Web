@@ -17,6 +17,7 @@ import {
   modifyTransformerSubstation,
 } from '@/services/grid-manage/treeMenu'
 import { handleGeom } from '../../utils/methods'
+import { useMyContext } from '../../grid-manage/Context'
 
 const { TabPane } = Tabs
 
@@ -36,7 +37,9 @@ const { Search } = Input
 const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
 const StandingBook: React.FC<StandingBookProps> = (props) => {
+  const { companyId } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
   const [powerKeyWord, setPowerKeyWord] = useState<string>('')
   const [lineKeyWord, setLineKeyWord] = useState<string>('')
@@ -276,7 +279,12 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         message.warning('请选择一条数据进行编辑')
         return
       }
+
       const editData = tableSelectRows[0]
+      if (editData.companyId !== companyId) {
+        message.error('无法操作子公司项目')
+        return
+      }
       setSelectTransId(editData.id)
       const geom = handleGeom(editData.geom)
 
@@ -295,6 +303,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         return
       }
       const editData = powerSelectRows[0]
+
       const geom = handleGeom(editData.geom)
 
       powerForm.setFieldsValue({
@@ -374,19 +383,45 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
     })
   }
 
+  //操作权限判断
+  const canEdit = () => {
+    if (
+      (tableSelectRows[0] && tableSelectRows[0].companyId !== companyId) ||
+      (powerSelectRows[0] && powerSelectRows[0].companyId !== companyId) ||
+      (mainLineRows[0] && mainLineRows[0].companyId !== companyId)
+    ) {
+      return true
+    }
+    return false
+  }
+
+  const getCurrentRow = (currentTab: string) => {
+    switch (currentTab) {
+      case 'subStations':
+        return tableSelectRows
+      case 'power':
+        return powerSelectRows
+      case 'mainLine  ':
+        return mainLineRows
+      default:
+        return
+    }
+  }
+
   const tableButton = () => {
     return (
       <div>
         {/* {buttonJurisdictionArray?.includes('edit-structure-company') && ( */}
-        <Button className="mr7" onClick={() => editEvent()}>
+        <Button className="mr7" onClick={() => editEvent()} disabled={canEdit()}>
           <EditOutlined />
           编辑
         </Button>
         {/* )} */}
         {/* {buttonJurisdictionArray?.includes('delete-structure-company') && ( */}
         <ModalConfirm
+          disabled={canEdit()}
           changeEvent={deleteEvent}
-          // selectData={[checkRadioValue].filter(Boolean)}
+          selectData={getCurrentRow(currentTab)}
           // contentSlot={deleteContent}
         />
         {/* )} */}

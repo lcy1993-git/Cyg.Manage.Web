@@ -25,6 +25,8 @@ const GradManage: React.FC = () => {
   )
   /** 编辑要是、手动绘制状态是否显示 **/
   const [pageDrawState, setpageDrawState] = useState(false)
+  //@ts-ignore获取companyId
+  const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
 
   /** 页面所有线路 */
   const [lineAssemble, setlineAssemble] = useState<boolean>(false)
@@ -59,6 +61,7 @@ const GradManage: React.FC = () => {
         setpageDrawState,
         checkLineIds,
         setcheckLineIds,
+        companyId,
         isDragPoint,
         setisDragPoint,
       }}
@@ -71,7 +74,6 @@ const GradManage: React.FC = () => {
 const GradManageWrap: React.FC = () => {
   // 左侧菜单 显示、隐藏
   const [leftMenuVisible, setLeftMenuVisible] = useState<boolean>(true)
-
   return (
     <div className="h-full w-full gridManageWrap">
       {/* 内容区 */}

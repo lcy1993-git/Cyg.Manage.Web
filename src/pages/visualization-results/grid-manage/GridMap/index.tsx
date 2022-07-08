@@ -27,7 +27,7 @@ import {
   modifyTransformerSubstation,
   uploadAllFeature,
 } from '@/services/grid-manage/treeMenu'
-import { useMount, useRequest } from 'ahooks'
+import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
@@ -103,6 +103,7 @@ export interface pointType {
   lng?: string
   geom: string
   color?: string
+  companyId: string
   id: string
 }
 
@@ -123,6 +124,7 @@ const GridMap = () => {
     setlineAssemble,
     setpageDrawState,
     setisDragPoint,
+    companyId,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
@@ -135,6 +137,11 @@ const GridMap = () => {
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
   const [selectLineType, setselectLineType] = useState('')
+
+  //当前点击点位公司id
+  const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
+  //是否显示保存按钮
+  const [isSaveVisible, setIsSaveVisible] = useState<boolean>(false)
 
   const dataHandle = (data: any) => {
     if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
@@ -237,6 +244,9 @@ const GridMap = () => {
 
   /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
+    // setIsSaveVisible(false)
+    setClickCompanyId(data?.companyId)
+
     if (data) {
       const featureData = { ...data }
       setcurrentfeatureData({
@@ -265,6 +275,10 @@ const GridMap = () => {
       setpageDrawState(false)
     }
   }
+
+  useUpdateEffect(() => {
+    clickCompanyId !== companyId ? setIsSaveVisible(true) : setIsSaveVisible(false)
+  }, [clickCompanyId])
 
   const onClose = () => {
     setzIndex('create')
@@ -703,7 +717,7 @@ const GridMap = () => {
             </Form.Item>
           )}
           <Form.Item wrapperCol={{ offset: 5, span: 18 }}>
-            <Button type="primary" htmlType="submit" block>
+            <Button type="primary" htmlType="submit" block disabled={isSaveVisible}>
               保存
             </Button>
           </Form.Item>
