@@ -39,6 +39,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     pageDrawState,
     checkLineIds,
     mapRef,
+    isDragPoint,
   } = useMyContext()
 
   // 地图设备类型显示
@@ -179,6 +180,21 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     setRepeatPointState(!repeatPointState)
     !repeatPointState && (await getrepeatPoint({ lineIds }))
   }
+
+  useEffect(() => {
+    if (repeatPointState) {
+      const lineIds = currentChecklineIds()
+      if (!lineIds.length) {
+        return
+      }
+      const currentDragPointId = localStorage.getItem('dragPointId')
+      const exist = repeatPointData?.some((item) => item.id === currentDragPointId)
+      if (exist) {
+        getrepeatPoint({ lineIds })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDragPoint])
 
   useEffect(() => {
     if (checkLineIds.length) {

@@ -23,12 +23,14 @@ const GradManage: React.FC = () => {
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
   )
-
   /** 编辑要是、手动绘制状态是否显示 **/
   const [pageDrawState, setpageDrawState] = useState(false)
 
   /** 页面所有线路 */
   const [lineAssemble, setlineAssemble] = useState<boolean>(false)
+
+  /** 点位是否拖动，拖动后需要刷新查重列表 **/
+  const [isDragPoint, setisDragPoint] = useState<boolean>(false)
 
   /** 选中线路ID **/
   const [checkLineIds, setcheckLineIds] = useState<string[]>([])
@@ -57,6 +59,8 @@ const GradManage: React.FC = () => {
         setpageDrawState,
         checkLineIds,
         setcheckLineIds,
+        isDragPoint,
+        setisDragPoint,
       }}
     >
       <GradManageWrap />

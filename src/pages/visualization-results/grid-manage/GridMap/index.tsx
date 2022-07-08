@@ -114,8 +114,17 @@ const formItemLayout = {
 }
 const GridMap = () => {
   const [form] = useForm()
-  const { mapRef, setisRefresh, isRefresh, setzIndex, zIndex, setlineAssemble, setpageDrawState } =
-    useMyContext()
+  const {
+    mapRef,
+    setisRefresh,
+    isRefresh,
+    setzIndex,
+    zIndex,
+    setlineAssemble,
+    setpageDrawState,
+    setisDragPoint,
+    isDragPoint,
+  } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
@@ -463,9 +472,14 @@ const GridMap = () => {
     seteditModel(false)
   }
 
+  // 是否拖动结束
+  const isDragPointend = (isDrag: boolean) => {
+    setisDragPoint(isDrag)
+  }
+
   // 挂载地图
   useMount(() => {
-    initMap({ mapRef, ref, isActiveFeature })
+    initMap({ mapRef, ref, isActiveFeature, isDragPointend })
     document.addEventListener('keydown', async (e) => {
       if (e.keyCode === 27) {
         // 上传本地绘制数据

@@ -29,6 +29,8 @@ export interface MyContextType {
   pageDrawState: boolean
   checkLineIds: string[]
   setcheckLineIds: Dispatch<SetStateAction<string[]>>
+  setisDragPoint: Dispatch<SetStateAction<boolean>>
+  isDragPoint: boolean
 }
 
 // 全局状态管理
