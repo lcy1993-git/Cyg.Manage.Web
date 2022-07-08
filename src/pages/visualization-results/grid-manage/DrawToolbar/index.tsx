@@ -155,7 +155,6 @@ const DrawToolbar = () => {
             kvLevel: exist ? 3 : currentLineData?.kvLevel,
             lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
             lineModel: currentLineData.lineModel ? '111' : '',
-            lineNumber: currentLineData.lineNumber,
           })
     }
   }
@@ -428,7 +427,11 @@ const DrawToolbar = () => {
               {/* 箱变 柱上变压器*/}
               {BELONGINGCAPACITY.includes(currentFeatureType) && (
                 <>
-                  <Form.Item name="capacity" label="容量" rules={[verificationNaturalNumber]}>
+                  <Form.Item
+                    name="capacity"
+                    label="容量"
+                    rules={[{ required: true }, verificationNaturalNumber]}
+                  >
                     <Input addonAfter="(kAV)" />
                   </Form.Item>
                 </>
@@ -520,7 +523,7 @@ const DrawToolbar = () => {
                       ))}
                 </Select>
               </Form.Item>
-              <Form.Item name="lineNumber" label="线路数量">
+              <Form.Item name="lineNumber" label="线路回数">
                 <Select allowClear dropdownStyle={{ zIndex: 3000 }}>
                   {[
                     { label: '1', value: '1' },

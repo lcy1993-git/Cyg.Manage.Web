@@ -123,7 +123,6 @@ const GridMap = () => {
     setlineAssemble,
     setpageDrawState,
     setisDragPoint,
-    isDragPoint,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')

@@ -11,6 +11,7 @@ import {
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   ELECTRICITYDISTRIBUTIONROOM,
+  FEATUERTYPE,
   FEATUREOPTIONS,
   POWERSUPPLY,
   RINGNETWORKCABINET,
@@ -26,6 +27,7 @@ interface RepeatPointType {
   geom: string
   id: string
   name: string
+  type: string
 }
 const { useForm } = Form
 
@@ -165,7 +167,14 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   } = useRequest(getrepeatPointdata, {
     manual: true,
     onSuccess: () => {
-      setrepeatPointTableData(repeatPointData as RepeatPointType[])
+      const data = repeatPointData?.map((item, index) => {
+        const name = FEATUERTYPE[item.type] + '-' + (item.name ? item.name : `未命名-${index}`)
+        return {
+          ...item,
+          name,
+        }
+      })
+      setrepeatPointTableData(data as RepeatPointType[])
     },
     onError: () => {},
   })
