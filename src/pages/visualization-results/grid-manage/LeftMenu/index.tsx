@@ -1,6 +1,6 @@
 import {
   createLine,
-  featchSubstationTreeData,
+  getlinesComponment,
   GetStationItems,
   getSubStations,
 } from '@/services/grid-manage/treeMenu'
@@ -11,14 +11,13 @@ import StandingBook from '../../components/standing-book'
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
-  COLORDEFAULT,
-  COLORU,
   createFeatureId,
   KVLEVELOPTIONS,
   LINE,
   LINEMODEL,
 } from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
+import { dataHandle, newData } from '../tools'
 import DrawGridToolbar from './DrawGridToolbar'
 import styles from './index.less'
 import PowerSupplyTree from './PowerSupplyTree'
@@ -139,49 +138,6 @@ const LeftMenu = (props: any) => {
     }
   )
 
-  const newData = (arr: any[]) => {
-    if (!arr || !arr.length) {
-      return []
-    }
-    return arr.map((item: { color: any; kvLevel: any }) => {
-      if (item.color) {
-        const exist = COLORU.find((co) => co.label === item.color)
-        if (exist) {
-          return {
-            ...item,
-            color: exist.value,
-          }
-        }
-        return {
-          ...item,
-          color: COLORDEFAULT,
-        }
-      }
-      return {
-        ...item,
-        color: COLORDEFAULT,
-      }
-    })
-  }
-
-  const dataHandle = (dataValue: any) => {
-    return {
-      boxTransformerList: newData(dataValue.boxTransformerList),
-      cableBranchBoxList: newData(dataValue.cableBranchBoxList),
-      cableWellList: newData(dataValue.cableWellList),
-      columnCircuitBreakerList: newData(dataValue.columnCircuitBreakerList),
-      columnTransformerList: newData(dataValue.columnTransformerList),
-      electricityDistributionRoomList: newData(dataValue.electricityDistributionRoomList),
-      lineList: newData(dataValue.lineList),
-      lineRelationList: newData(dataValue.lineRelationList),
-      powerSupplyList: newData(dataValue.powerSupplyList),
-      ringNetworkCabinetList: newData(dataValue.ringNetworkCabinetList),
-      switchingStationList: newData(dataValue.switchingStationList),
-      towerList: newData(dataValue.towerList),
-      transformerSubstationList: newData(dataValue.transformerSubstationList),
-    }
-  }
-
   const { data: TreeData, run: getTreeData } = useRequest(
     () => {
       const ids = [...new Set(linesId)]
@@ -194,7 +150,7 @@ const LeftMenu = (props: any) => {
           return ''
         })
         .filter((item: string) => item)
-      return featchSubstationTreeData({
+      return getlinesComponment({
         lineIds,
         kvLevels: [],
       })

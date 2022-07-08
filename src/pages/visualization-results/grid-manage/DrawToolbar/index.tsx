@@ -59,6 +59,7 @@ export interface BelongingLineType {
   isPower: boolean
   color?: string
   lineModel?: string
+  lineNumber?: string
 }
 
 const DrawToolbar = () => {
@@ -154,6 +155,7 @@ const DrawToolbar = () => {
             kvLevel: exist ? 3 : currentLineData?.kvLevel,
             lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
             lineModel: currentLineData.lineModel ? '111' : '',
+            lineNumber: currentLineData.lineNumber,
           })
     }
   }
@@ -467,7 +469,12 @@ const DrawToolbar = () => {
         </TabPane>
         <TabPane tab="绘制线段" key="drawline">
           {currentFeature === 'drawline' && (
-            <Form {...lineformLayout} style={{ marginTop: '10px' }} form={lineForm}>
+            <Form
+              {...lineformLayout}
+              style={{ marginTop: '10px' }}
+              form={lineForm}
+              initialValues={{ lineNumber: '1' }}
+            >
               <Form.Item
                 name="lineId"
                 label="所属线路"

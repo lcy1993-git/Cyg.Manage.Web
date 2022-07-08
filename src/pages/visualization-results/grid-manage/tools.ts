@@ -1,5 +1,7 @@
 /** 工具文件 **/
 
+import { COLORDEFAULT, COLORU } from './DrawToolbar/GridUtils'
+
 /** 左侧菜单宽度 **/
 export const LEFTMENUWIDTH = 260
 
@@ -63,3 +65,46 @@ export const verificationNaturalNumber0to100 = () => ({
     return Promise.reject(new Error('请输入0到100的自然数'))
   },
 })
+
+/** 根据线路下载数据后，将数据的颜色进行处理 **/
+export const dataHandle = (dataValue: any) => {
+  return {
+    boxTransformerList: newData(dataValue.boxTransformerList),
+    cableBranchBoxList: newData(dataValue.cableBranchBoxList),
+    cableWellList: newData(dataValue.cableWellList),
+    columnCircuitBreakerList: newData(dataValue.columnCircuitBreakerList),
+    columnTransformerList: newData(dataValue.columnTransformerList),
+    electricityDistributionRoomList: newData(dataValue.electricityDistributionRoomList),
+    lineList: newData(dataValue.lineList),
+    lineRelationList: newData(dataValue.lineRelationList),
+    powerSupplyList: newData(dataValue.powerSupplyList),
+    ringNetworkCabinetList: newData(dataValue.ringNetworkCabinetList),
+    switchingStationList: newData(dataValue.switchingStationList),
+    towerList: newData(dataValue.towerList),
+    transformerSubstationList: newData(dataValue.transformerSubstationList),
+  }
+}
+export const newData = (arr: any[]) => {
+  if (!arr || !arr.length) {
+    return []
+  }
+  return arr.map((item: { color: any; kvLevel: any }) => {
+    if (item.color) {
+      const exist = COLORU.find((co) => co.label === item.color)
+      if (exist) {
+        return {
+          ...item,
+          color: exist.value,
+        }
+      }
+      return {
+        ...item,
+        color: COLORDEFAULT,
+      }
+    }
+    return {
+      ...item,
+      color: COLORDEFAULT,
+    }
+  })
+}
