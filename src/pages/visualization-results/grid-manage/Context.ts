@@ -30,6 +30,8 @@ export interface MyContextType {
   checkLineIds: string[]
   setcheckLineIds: Dispatch<SetStateAction<string[]>>
   companyId: string
+  setisDragPoint: Dispatch<SetStateAction<boolean>>
+  isDragPoint: boolean
 }
 
 // 全局状态管理

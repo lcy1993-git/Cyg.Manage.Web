@@ -47,6 +47,7 @@ interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
   isActiveFeature: (data: pointType | null) => void
+  isDragPointend: (isDrag: boolean) => void
 }
 var drawTool: any
 var pointLayer: any
@@ -54,7 +55,7 @@ var lineLayer: any
 var boxSelectFeatures: any = []
 var dragBox: any
 
-export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
+export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOps) => {
   mapRef.map = new Map({
     target: 'map',
     layers: [
@@ -98,7 +99,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
     moveOverlay(mapRef.map, e.coordinate)
   })
 
-  initSelect(mapRef.map, isActiveFeature)
+  initSelect(mapRef.map, isActiveFeature, isDragPointend)
 
   drawBox(mapRef.map)
   loadGeoJson(mapRef.map)
@@ -144,7 +145,7 @@ const loadGeoJson = (map: any) => {
 export const locationByGeom = (map: any, geom: String) => {
   const point: any = new WKT().readGeometry(geom)
   const lont = point.getCoordinates()
-  location(map, lont[0], lont[1], 15)
+  location(map, lont[0], lont[1], 20)
 }
 
 // 根据经纬度定位

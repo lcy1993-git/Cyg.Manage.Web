@@ -59,6 +59,7 @@ export interface BelongingLineType {
   isPower: boolean
   color?: string
   lineModel?: string
+  lineNumber?: string
 }
 
 const DrawToolbar = () => {
@@ -160,6 +161,7 @@ const DrawToolbar = () => {
             kvLevel: exist ? 3 : currentLineData?.kvLevel,
             lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
             lineModel: currentLineData.lineModel ? '111' : '',
+            lineNumber: currentLineData.lineNumber,
           })
     }
   }
@@ -473,7 +475,12 @@ const DrawToolbar = () => {
         </TabPane>
         <TabPane tab="绘制线段" key="drawline">
           {currentFeature === 'drawline' && (
-            <Form {...lineformLayout} style={{ marginTop: '10px' }} form={lineForm}>
+            <Form
+              {...lineformLayout}
+              style={{ marginTop: '10px' }}
+              form={lineForm}
+              initialValues={{ lineNumber: '1' }}
+            >
               <Form.Item
                 name="lineId"
                 label="所属线路"
@@ -517,6 +524,20 @@ const DrawToolbar = () => {
                           {item.label}
                         </Option>
                       ))}
+                </Select>
+              </Form.Item>
+              <Form.Item name="lineNumber" label="线路数量">
+                <Select allowClear dropdownStyle={{ zIndex: 3000 }}>
+                  {[
+                    { label: '1', value: '1' },
+                    { label: '2', value: '2' },
+                    { label: '3', value: '3' },
+                    { label: '4', value: '4' },
+                  ].map((item) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item

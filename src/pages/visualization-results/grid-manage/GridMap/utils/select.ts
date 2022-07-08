@@ -43,7 +43,11 @@ var currrentSelectFeature: any
 var deleFeatures: any = []
 //@ts-ignore
 var { companyId } = JSON.parse(localStorage.getItem('userInfo'))
-export const initSelect = (map: any, isActiveFeature: (data: pointType | null) => void) => {
+export const initSelect = (
+  map: any,
+  isActiveFeature: (data: pointType | null) => void,
+  isDragPointend: (isDrag: boolean) => void
+) => {
   let pointLayer = getLayer(map, 'pointLayer', 3)
   let lineLayer = getLayer(map, 'lineLayer', 2)
   let layers = [pointLayer, lineLayer]
@@ -59,7 +63,6 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
     hitTolerance: 10,
   })
   map.addInteraction(select)
-
   select.on('select', (evt: any) => {
     if (evt.selected.length > 0) {
       translate.setActive(true)
@@ -91,10 +94,10 @@ export const initSelect = (map: any, isActiveFeature: (data: pointType | null) =
       clearBoxData()
     }
   })
-  initTranslate(map)
+  initTranslate(map, isDragPointend)
 }
 
-export const initTranslate = (map: any) => {
+export const initTranslate = (map: any, isDragPointend: (isDrag: boolean) => void) => {
   if (translate) map.removeInteraction(translate)
   translate = new Translate({
     features: select.getFeatures(),
@@ -107,7 +110,7 @@ export const initTranslate = (map: any) => {
 
   translate.on('translating', async (evt: any) => {
     const feature = evt.features.getArray()[0]
-    await updateLine(map, feature, false)
+    await updateLine(map, feature, false, isDragPointend)
   })
 
   translate.on('translateend', async (evt: any) => {
@@ -119,11 +122,16 @@ export const initTranslate = (map: any) => {
     feature.get('data').lng = point.getCoordinates()[0]
     feature.get('data').lat = point.getCoordinates()[1]
 
-    await updateLine(map, feature, true)
+    await updateLine(map, feature, true, isDragPointend)
   })
 }
 
-const updateLine = async (map: any, feature: any, isEnd: boolean) => {
+const updateLine = async (
+  map: any,
+  feature: any,
+  isEnd: boolean,
+  isDragPointend: (isDrag: boolean) => void
+) => {
   const featureCoords = feature.getGeometry().getCoordinates()
   const lineLayer = getLayer(map, 'lineLayer')
   const data = feature.get('data')
@@ -153,14 +161,16 @@ const updateLine = async (map: any, feature: any, isEnd: boolean) => {
   if (isEnd) {
     const point = feature.values_.data
     const lines = features.map((item: { values_: { data: any } }) => item.values_.data)
-    await upLoadPoint(point, lines)
+    isDragPointend(true)
+    await upLoadPoint(point, lines, isDragPointend)
   }
 }
 
 // 点位数据上传
 export const upLoadPoint = async (
-  data: { featureType: string; color: string; companyId: string },
-  lines: any[]
+  data: { featureType: string; color: string; companyId: string; id: string },
+  lines: any[],
+  isDragPointend: (isDrag: boolean) => void
 ) => {
   if (companyId !== data.companyId) {
     return
@@ -213,7 +223,8 @@ export const upLoadPoint = async (
     })
     Promise.all(PromiseAll)
       .then(() => {
-        // console.log('信息修改成功')
+        localStorage.setItem('dragPointId', data.id)
+        isDragPointend(false)
       })
       .catch((err) => {
         // console.log(err, '信息修改失败')

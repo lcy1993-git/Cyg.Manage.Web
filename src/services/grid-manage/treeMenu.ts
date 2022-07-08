@@ -51,7 +51,7 @@ export const downloadExcelTemplate = () => {
 }
 
 /** 获取变电站下面的网架数据 **/
-export const featchSubstationTreeData = (params: { lineIds: string[]; kvLevels: string[] }) => {
+export const getlinesComponment = (params: { lineIds: string[]; kvLevels: string[] }) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
   )
