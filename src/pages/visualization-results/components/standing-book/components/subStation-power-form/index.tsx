@@ -9,16 +9,18 @@ import {
   CABLECIRCUITMODEL,
   LINEMODEL,
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
+import TransIntervalTable from '../trans-interval-table'
 
 interface SubStationPowerParams {
   currentEditTab: string
   form: any
+  transId: string
 }
 
 const { Option } = Select
 
 const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
-  const { currentEditTab, form } = props
+  const { currentEditTab, form, transId } = props
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const [selectLineType, setselectLineType] = useState('')
   const [currentKv, setCurrentKv] = useState<number>(Number(form.getFieldValue('kvLevel')))
@@ -27,6 +29,8 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
       stationItems && setstationItemsData(stationItems)
     },
   })
+
+  const [transTableVisible, setTransTableVisible] = useState<boolean>(false)
 
   const onChangeLineType = (value: string) => {
     setselectLineType(value)
@@ -173,11 +177,11 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           <CyFormItem label="主接线方式" name="mainWiringMode">
             <Input placeholder="请输入主接线方式" />
           </CyFormItem>
-          <CyFormItem label="出线间隔" name="lat">
+          <CyFormItem label="出线间隔" name="transformerInterval">
             <Button
-            // onClick={() => {
-            //   seteditModel(true)
-            // }}
+              onClick={() => {
+                setTransTableVisible(true)
+              }}
             >
               出线间隔
             </Button>
@@ -195,6 +199,11 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           </CyFormItem>
         </>
       )}
+      <TransIntervalTable
+        transId={transId}
+        onChange={setTransTableVisible}
+        visible={transTableVisible}
+      />
     </>
   )
 }

@@ -66,11 +66,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }
 
   // 请求查重数据
-  const {
-    data: repeatPointData,
-    loading,
-    run: getrepeatPoint,
-  } = useRequest(getrepeatPointdata, {
+  const { data: repeatPointData, loading, run: getrepeatPoint } = useRequest(getrepeatPointdata, {
     manual: true,
     onSuccess: () => {
       setrepeatPointTableData(repeatPointData as RepeatPointType[])
@@ -130,7 +126,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
           right: toolbalHasShow ? `${drawToolbarVisible || pageDrawState ? 398 : 20}px` : -200,
         }}
       >
-        <Form>
+        <Form style={{ zIndex: 999 }}>
           <Form.Item name="featureType">
             <Checkbox.Group
               className="EditFeature"
@@ -154,6 +150,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
         className={styles.toolbarBtn}
         style={{
           right: drawToolbarVisible || pageDrawState ? '398px' : '20px',
+          zIndex: 999,
         }}
         onClick={() => setToolbalHasShow(!toolbalHasShow)}
       />

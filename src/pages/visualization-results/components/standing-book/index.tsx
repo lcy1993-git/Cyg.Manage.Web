@@ -58,6 +58,9 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
   const [powerForm] = Form.useForm()
   const [lineForm] = Form.useForm()
 
+  //变电站Id
+  const [selectTransId, setSelectTransId] = useState<string>('0')
+
   // const { data, run } = useRequest(getAuthorizationDetail, {
   //   manual: true,
   // })
@@ -274,7 +277,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         return
       }
       const editData = tableSelectRows[0]
-
+      setSelectTransId(editData.id)
       const geom = handleGeom(editData.geom)
 
       subForm.setFieldsValue({
@@ -286,7 +289,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       setFormVisible(true)
       return
     }
-    if (currentTab === 'subStations') {
+    if (currentTab === 'power') {
       if (powerSelectRows && isArray(powerSelectRows) && powerSelectRows.length === 0) {
         message.warning('请选择一条数据进行编辑')
         return
@@ -534,7 +537,11 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           }
         >
           {/* 只有主线路表单需要做特殊处理所以只传lineForm */}
-          <SubStationPowerForm currentEditTab={currentTab} form={lineForm} />
+          <SubStationPowerForm
+            currentEditTab={currentTab}
+            form={lineForm}
+            transId={selectTransId}
+          />
         </Form>
       </Modal>
     </>
