@@ -46,6 +46,7 @@ const LeftMenu = (props: any) => {
   const [standingBookVisible, setStandingBookVisible] = useState(false)
   const { setisRefresh, mapRef, lineAssemble, setcheckLineIds } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
+  const [kvLevels, setKvLevels] = useState<number[]>([])
 
   // 线路ID集合
   const [linesId, setlinesId] = useState<string[]>([])
@@ -257,32 +258,34 @@ const LeftMenu = (props: any) => {
 
   return (
     <div className="w-full h-full bg-white flex flex-col">
-      <div className="w-full flex-none" style={{ height: '50px' }}>
-        <DrawGridToolbar />
-      </div>
-      <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
-        <Spin spinning={!treeLoading}>
-          <TreeProvider
-            value={{
-              linesId,
-              setlinesId,
-              powerSupplyIds,
-              setpowerSupplyIds,
-              subStations,
-              setsubStations,
-              settreeLoading,
-              treeLoading,
-            }}
-          >
+      <TreeProvider
+        value={{
+          linesId,
+          setlinesId,
+          powerSupplyIds,
+          setpowerSupplyIds,
+          subStations,
+          setsubStations,
+          settreeLoading,
+          treeLoading,
+          kvLevels,
+          setKvLevels,
+        }}
+      >
+        <div className="w-full flex-none" style={{ height: '50px' }}>
+          <DrawGridToolbar />
+        </div>
+        <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
+          <Spin spinning={!treeLoading}>
             <div className={`w-full flex-none`}>
               <SubstationTree />
             </div>
             <div className={`w-full flex-1`}>
               <PowerSupplyTree />
             </div>
-          </TreeProvider>
-        </Spin>
-      </div>
+          </Spin>
+        </div>
+      </TreeProvider>
       <div
         className="w-full flex-none flex items-center"
         style={{ height: '50px', paddingRight: '10px' }}

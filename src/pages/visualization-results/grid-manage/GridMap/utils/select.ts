@@ -17,6 +17,7 @@ import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { Select, Translate } from 'ol/interaction'
 import { pointType } from '..'
+import { useMyContext } from '../../Context'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
@@ -40,6 +41,8 @@ var select: any
 var translate: any
 var currrentSelectFeature: any
 var deleFeatures: any = []
+//@ts-ignore
+var { companyId } = JSON.parse(localStorage.getItem('userInfo'))
 export const initSelect = (map: any, isActiveFeature: (data: pointType | null) => void) => {
   let pointLayer = getLayer(map, 'pointLayer', 3)
   let lineLayer = getLayer(map, 'lineLayer', 2)
@@ -155,7 +158,13 @@ const updateLine = async (map: any, feature: any, isEnd: boolean) => {
 }
 
 // 点位数据上传
-export const upLoadPoint = async (data: { featureType: string; color: string }, lines: any[]) => {
+export const upLoadPoint = async (
+  data: { featureType: string; color: string; companyId: string },
+  lines: any[]
+) => {
+  if (companyId !== data.companyId) {
+    return
+  }
   try {
     const PromiseAll = []
     let currentColor = ''

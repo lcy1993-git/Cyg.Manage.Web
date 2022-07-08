@@ -28,13 +28,13 @@ export const TransIntervalTable: FC<TransIntervalTableProps> = (props) => {
 
     {
       title: '公用',
-      width: 200,
+      width: 150,
       dataIndex: 'publicuse',
       key: 'publicuse',
     },
     {
       title: '备用',
-      width: 500,
+      width: 150,
       dataIndex: 'spare',
       key: 'spare',
     },
@@ -56,7 +56,7 @@ export const TransIntervalTable: FC<TransIntervalTableProps> = (props) => {
       maskClosable={false}
       bodyStyle={{ padding: '24px 24px 0' }}
       title="出线间隔"
-      width="450px"
+      width="60%"
       visible={state as boolean}
       destroyOnClose
       okText="确定"

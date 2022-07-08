@@ -9,6 +9,8 @@ interface ContextType {
   subStations: string[]
   settreeLoading: Dispatch<SetStateAction<boolean>>
   treeLoading: boolean
+  kvLevels: number[]
+  setKvLevels: Dispatch<SetStateAction<number[]>>
 }
 
 // 全局状态管理

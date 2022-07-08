@@ -3,9 +3,11 @@ import { Button, Select, Space } from 'antd'
 import { useState } from 'react'
 // import { useMyContext } from '../Context'
 import CityList from './CityList'
+import GridFilterModal from './grid-filter-modal'
 
 const DrawGridToolbar = (props: any) => {
   const [visible, setVisible] = useState(false)
+  const [filterVisible, setFilterVisible] = useState(false)
   return (
     <>
       <div className="flex h-full w-full justify-start items-center pl-2 space-x-2.5 ">
@@ -17,7 +19,7 @@ const DrawGridToolbar = (props: any) => {
           onClick={() => setVisible(!visible)}
         />
 
-        <Button type="primary">
+        <Button type="primary" onClick={() => setFilterVisible(true)}>
           <Space>
             筛选
             <SearchOutlined />
@@ -25,6 +27,7 @@ const DrawGridToolbar = (props: any) => {
         </Button>
       </div>
       <CityList visible={visible} />
+      <GridFilterModal onChange={setFilterVisible} visible={filterVisible} />
     </>
   )
 }

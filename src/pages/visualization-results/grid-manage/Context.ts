@@ -29,6 +29,7 @@ export interface MyContextType {
   pageDrawState: boolean
   checkLineIds: string[]
   setcheckLineIds: Dispatch<SetStateAction<string[]>>
+  companyId: string
 }
 
 // 全局状态管理
