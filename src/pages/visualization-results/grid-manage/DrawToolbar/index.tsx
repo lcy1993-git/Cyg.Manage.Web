@@ -62,14 +62,8 @@ export interface BelongingLineType {
 }
 
 const DrawToolbar = () => {
-  const {
-    drawToolbarVisible,
-    setdrawToolbarVisible,
-    mapRef,
-    isRefresh,
-    zIndex,
-    setzIndex,
-  } = useMyContext()
+  const { drawToolbarVisible, setdrawToolbarVisible, mapRef, isRefresh, zIndex, setzIndex } =
+    useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   // 当前选中的是架空还是电缆线路
@@ -517,6 +511,20 @@ const DrawToolbar = () => {
                           {item.label}
                         </Option>
                       ))}
+                </Select>
+              </Form.Item>
+              <Form.Item name="lineNumber" label="线路数量">
+                <Select allowClear dropdownStyle={{ zIndex: 3000 }}>
+                  {[
+                    { label: '1', value: '1' },
+                    { label: '2', value: '2' },
+                    { label: '3', value: '3' },
+                    { label: '4', value: '4' },
+                  ].map((item) => (
+                    <Option value={item.value} key={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item
