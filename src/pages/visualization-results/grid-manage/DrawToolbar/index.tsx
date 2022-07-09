@@ -63,14 +63,8 @@ export interface BelongingLineType {
 }
 
 const DrawToolbar = () => {
-  const {
-    drawToolbarVisible,
-    setdrawToolbarVisible,
-    mapRef,
-    isRefresh,
-    zIndex,
-    setzIndex,
-  } = useMyContext()
+  const { drawToolbarVisible, setdrawToolbarVisible, mapRef, isRefresh, zIndex, setzIndex } =
+    useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   // 当前选中的是架空还是电缆线路
@@ -161,7 +155,6 @@ const DrawToolbar = () => {
             kvLevel: exist ? 3 : currentLineData?.kvLevel,
             lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
             lineModel: currentLineData.lineModel ? '111' : '',
-            lineNumber: currentLineData.lineNumber,
           })
     }
   }
@@ -434,7 +427,11 @@ const DrawToolbar = () => {
               {/* 箱变 柱上变压器*/}
               {BELONGINGCAPACITY.includes(currentFeatureType) && (
                 <>
-                  <Form.Item name="capacity" label="容量" rules={[verificationNaturalNumber]}>
+                  <Form.Item
+                    name="capacity"
+                    label="容量"
+                    rules={[{ required: true }, verificationNaturalNumber]}
+                  >
                     <Input addonAfter="(kAV)" />
                   </Form.Item>
                 </>
@@ -526,7 +523,7 @@ const DrawToolbar = () => {
                       ))}
                 </Select>
               </Form.Item>
-              <Form.Item name="lineNumber" label="线路数量">
+              <Form.Item name="lineNumber" label="线路回数">
                 <Select allowClear dropdownStyle={{ zIndex: 3000 }}>
                   {[
                     { label: '1', value: '1' },

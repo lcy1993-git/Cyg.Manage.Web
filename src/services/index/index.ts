@@ -193,7 +193,7 @@ export const getProjectGanttData = ({
 
 // 获取地图组件的area组件
 export const getMapRegisterData = (areaId: string) => {
-  return request(`/json/${areaId}.json`, { method: 'GET' })
+  return request(`/districtData/${areaId}.json`, { method: 'GET' })
 }
 
 // 获取项目操作log

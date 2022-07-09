@@ -124,7 +124,6 @@ const GridMap = () => {
     setlineAssemble,
     setpageDrawState,
     setisDragPoint,
-    isDragPoint,
     companyId,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)

@@ -17,7 +17,6 @@ import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
 import { Select, Translate } from 'ol/interaction'
 import { pointType } from '..'
-import { useMyContext } from '../../Context'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
