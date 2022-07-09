@@ -61,9 +61,11 @@ const refreshMap = async (
   startDate?: string,
   endDate?: string
 ) => {
-  if (projects_) projects = projects_
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops
-
+  if (projects_) {
+    projects = projects_
+    clearHighlightLayer(map)
+  }
   // if(currentLevel && currentLevel === Math.round(map.getView().getZoom())){
   //   if(projects_ === null){
   //     return false;
@@ -73,7 +75,6 @@ const refreshMap = async (
 
   if (projects.length === 0) {
     clearGroups(groupLayers)
-    clearHighlightLayer(map)
     return false
   }
   lineClusters = []
@@ -109,7 +110,6 @@ const refreshMap = async (
       const promise = getData(params)
       promise.then(async (data: any) => {
         clearGroups(groupLayers)
-        clearHighlightLayer(map)
 
         data.content.survey && (await loadSurveyLayers(data.content.survey, groupLayers, map))
         data.content.plan && (await loadPlanLayers(data.content.plan, groupLayers, map))
@@ -804,40 +804,30 @@ const loadMediaSign = (
                 .getSource()
                 .getFeatures()
                 .forEach((item: any) => {
-                  if (item.getProperties().features) {
-                    for (let i = 0; i < item.getProperties().features.length; i++) {
-                      let feature = item.getProperties().features[i]
-                      data.content.forEach((d: any) => {
-                        if (feature.getProperties().id === d.main_ID) {
-                          // layerName =  layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
-                          if (!layerGroups[layerType + '_mediaSign']) {
-                            var source = new VectorSource()
-                            layerGroups[layerType + '_mediaSign'] = new Vector({
-                              source,
-                              // declutter: true,
-                              zIndex: 100,
-                            })
-                            layerGroups[layerType + '_mediaSign'].set(
-                              'name',
-                              layerType + '_mediaSign'
-                            )
-                          }
-                          let itemClone = item.clone()
-                          let style = pointStyle(layer.get('name'), feature, false, mediaSign)
-                          itemClone.setStyle(style)
-                          itemClone.set('data', feature.getProperties())
-                          layerGroups[layerType + '_mediaSign'].getSource().addFeature(itemClone)
-                          if (
-                            !getLayerByName(
-                              layerType + '_mediaSign',
-                              layerGroup.getLayers().getArray()
-                            )
-                          )
-                            layerGroup.getLayers().push(layerGroups[layerType + '_mediaSign'])
-                        }
-                      })
+                  let feature = item
+                  data.content.forEach((d: any) => {
+                    if (feature.getProperties().id === d.main_ID) {
+                      // layerName =  layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
+                      if (!layerGroups[layerType + '_mediaSign']) {
+                        var source = new VectorSource()
+                        layerGroups[layerType + '_mediaSign'] = new Vector({
+                          source,
+                          // declutter: true,
+                          zIndex: 100,
+                        })
+                        layerGroups[layerType + '_mediaSign'].set('name', layerType + '_mediaSign')
+                      }
+                      let itemClone = item.clone()
+                      let style = pointStyle(layer.get('name'), feature, false, mediaSign)
+                      itemClone.setStyle(style)
+                      itemClone.set('data', feature.getProperties())
+                      layerGroups[layerType + '_mediaSign'].getSource().addFeature(itemClone)
+                      if (
+                        !getLayerByName(layerType + '_mediaSign', layerGroup.getLayers().getArray())
+                      )
+                        layerGroup.getLayers().push(layerGroups[layerType + '_mediaSign'])
                     }
-                  }
+                  })
                 })
             }
           })
