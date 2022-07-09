@@ -1,9 +1,9 @@
-import { useControllableValue } from 'ahooks'
+import { useControllableValue, useUpdateEffect } from 'ahooks'
 import { Button, Form, Input, message, Modal } from 'antd'
 import { Tabs } from 'antd'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import GeneralTable from '@/components/general-table'
-import { EditOutlined } from '@ant-design/icons'
+import { EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
 import SubStationPowerForm from './components/subStation-power-form'
@@ -17,6 +17,7 @@ import {
   modifyTransformerSubstation,
 } from '@/services/grid-manage/treeMenu'
 import { handleGeom } from '../../utils/methods'
+import { useMyContext } from '../../grid-manage/Context'
 
 const { TabPane } = Tabs
 
@@ -36,10 +37,14 @@ const { Search } = Input
 const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
 const StandingBook: React.FC<StandingBookProps> = (props) => {
+  const { companyId, setIsRefresh, isRefresh } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
   const [powerKeyWord, setPowerKeyWord] = useState<string>('')
   const [lineKeyWord, setLineKeyWord] = useState<string>('')
+
+  //出线间隔数据
+  const [intervalData, setIntervalData] = useState<any[]>([])
 
   const subStationRef = useRef<HTMLDivElement>(null)
   const powerRef = useRef<HTMLDivElement>(null)
@@ -71,6 +76,16 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       dataIndex: 'name',
       index: 'name',
       width: 200,
+      render: (text: any, record: any) => {
+        return companyId !== record.companyId ? (
+          <>
+            <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+            <span style={{ paddingLeft: '3px' }}> {record.name}</span>
+          </>
+        ) : (
+          record.name
+        )
+      },
     },
     {
       title: '电压等级',
@@ -116,6 +131,16 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       dataIndex: 'name',
       index: 'name',
       width: 200,
+      render: (text: any, record: any) => {
+        return companyId !== record.companyId ? (
+          <>
+            <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+            <span style={{ paddingLeft: '3px' }}> {record.name}</span>
+          </>
+        ) : (
+          record.name
+        )
+      },
     },
     {
       title: '电压等级',
@@ -161,6 +186,16 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       dataIndex: 'name',
       index: 'name',
       width: 200,
+      render: (text: any, record: any) => {
+        return companyId !== record.companyId ? (
+          <>
+            <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+            <span style={{ paddingLeft: '3px' }}> {record.name}</span>
+          </>
+        ) : (
+          record.name
+        )
+      },
     },
     {
       title: '电压等级',
@@ -276,8 +311,14 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         message.warning('请选择一条数据进行编辑')
         return
       }
+
       const editData = tableSelectRows[0]
+      if (editData.companyId !== companyId) {
+        message.error('无法操作子公司项目')
+        return
+      }
       setSelectTransId(editData.id)
+      setIntervalData(editData.transformerInterval)
       const geom = handleGeom(editData.geom)
 
       subForm.setFieldsValue({
@@ -295,6 +336,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         return
       }
       const editData = powerSelectRows[0]
+
       const geom = handleGeom(editData.geom)
 
       powerForm.setFieldsValue({
@@ -336,6 +378,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         await modifyTransformerSubstation(submitInfo)
         subForm.resetFields()
         refresh()
+        setIsRefresh(!isRefresh)
         message.success('更新成功')
         setFormVisible(false)
       })
@@ -353,9 +396,11 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         await modifyPowerSupply(submitInfo)
         powerForm.resetFields()
         refresh()
+        setIsRefresh(!isRefresh)
         message.success('更新成功')
         setFormVisible(false)
       })
+      return
     }
 
     //主线路
@@ -369,24 +414,51 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       await modifyLine(submitInfo)
       lineForm.resetFields()
       refresh()
+      setIsRefresh(!isRefresh)
       message.success('更新成功')
       setFormVisible(false)
     })
+  }
+
+  //操作权限判断
+  const canEdit = () => {
+    if (
+      (tableSelectRows[0] && tableSelectRows[0].companyId !== companyId) ||
+      (powerSelectRows[0] && powerSelectRows[0].companyId !== companyId) ||
+      (mainLineRows[0] && mainLineRows[0].companyId !== companyId)
+    ) {
+      return true
+    }
+    return false
+  }
+
+  const getCurrentRow = (currentTab: string) => {
+    switch (currentTab) {
+      case 'subStations':
+        return tableSelectRows
+      case 'power':
+        return powerSelectRows
+      case 'mainLine  ':
+        return mainLineRows
+      default:
+        return
+    }
   }
 
   const tableButton = () => {
     return (
       <div>
         {/* {buttonJurisdictionArray?.includes('edit-structure-company') && ( */}
-        <Button className="mr7" onClick={() => editEvent()}>
+        <Button className="mr7" onClick={() => editEvent()} disabled={canEdit()}>
           <EditOutlined />
           编辑
         </Button>
         {/* )} */}
         {/* {buttonJurisdictionArray?.includes('delete-structure-company') && ( */}
         <ModalConfirm
+          disabled={canEdit()}
           changeEvent={deleteEvent}
-          // selectData={[checkRadioValue].filter(Boolean)}
+          selectData={getCurrentRow(currentTab)}
           // contentSlot={deleteContent}
         />
         {/* )} */}
@@ -454,6 +526,15 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
     )
   }
 
+  useUpdateEffect(() => {
+    if (!state) {
+      setTableSelectRows([])
+      setPowerSelectRows([])
+      setMainLineRows([])
+      setCurrentTab('subStations')
+    }
+  }, [state])
+
   return (
     <>
       <Modal
@@ -466,7 +547,9 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         okText="确定"
         footer=""
         cancelText="取消"
-        onCancel={() => setState(false)}
+        onCancel={() => {
+          setState(false)
+        }}
       >
         <Tabs tabPosition="bottom" onChange={(value: string) => setCurrentTab(value)}>
           <TabPane tab="变电站" key="subStations">
@@ -541,6 +624,8 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
             currentEditTab={currentTab}
             form={lineForm}
             transId={selectTransId}
+            intervalData={intervalData}
+            dataOnchange={setIntervalData}
           />
         </Form>
       </Modal>

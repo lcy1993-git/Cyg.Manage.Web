@@ -1,3 +1,4 @@
+import { getMapRegisterData } from '@/services/index'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
@@ -183,4 +184,28 @@ export const storeLocalFeatureData = (featureData: any) => {
     //   endId: featureData.endId,
     // })
   }
+}
+
+/** 加载行政区域数据 **/
+export const getDistrictdata = () => {
+  let loadPromiseAll: any[] = []
+  const district = [
+    '650000',
+    // '540000',
+    // '150000',
+    '510000',
+    // '530000',
+    '620000',
+    // '630000',
+    // '640000',
+    '620300',
+    '620600',
+    '620700',
+    '620900',
+    '100000',
+  ]
+  district.forEach((item: string) => {
+    loadPromiseAll.push(getMapRegisterData(item))
+  })
+  return Promise.all(loadPromiseAll)
 }

@@ -59,11 +59,18 @@ export interface BelongingLineType {
   isPower: boolean
   color?: string
   lineModel?: string
+  lineNumber?: string
 }
 
 const DrawToolbar = () => {
-  const { drawToolbarVisible, setdrawToolbarVisible, mapRef, isRefresh, zIndex, setzIndex } =
-    useMyContext()
+  const {
+    drawToolbarVisible,
+    setdrawToolbarVisible,
+    mapRef,
+    isRefresh,
+    zIndex,
+    setzIndex,
+  } = useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   // 当前选中的是架空还是电缆线路
@@ -426,7 +433,11 @@ const DrawToolbar = () => {
               {/* 箱变 柱上变压器*/}
               {BELONGINGCAPACITY.includes(currentFeatureType) && (
                 <>
-                  <Form.Item name="capacity" label="容量" rules={[verificationNaturalNumber]}>
+                  <Form.Item
+                    name="capacity"
+                    label="容量"
+                    rules={[{ required: true }, verificationNaturalNumber]}
+                  >
                     <Input addonAfter="(kAV)" />
                   </Form.Item>
                 </>
@@ -467,7 +478,12 @@ const DrawToolbar = () => {
         </TabPane>
         <TabPane tab="绘制线段" key="drawline">
           {currentFeature === 'drawline' && (
-            <Form {...lineformLayout} style={{ marginTop: '10px' }} form={lineForm}>
+            <Form
+              {...lineformLayout}
+              style={{ marginTop: '10px' }}
+              form={lineForm}
+              // initialValues={{ lineNumber: '1' }}
+            >
               <Form.Item
                 name="lineId"
                 label="所属线路"
@@ -513,7 +529,7 @@ const DrawToolbar = () => {
                       ))}
                 </Select>
               </Form.Item>
-              <Form.Item name="lineNumber" label="线路数量">
+              {/* <Form.Item name="lineNumber" label="线路回数">
                 <Select allowClear dropdownStyle={{ zIndex: 3000 }}>
                   {[
                     { label: '1', value: '1' },
@@ -526,7 +542,7 @@ const DrawToolbar = () => {
                     </Option>
                   ))}
                 </Select>
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 name="kvLevel"
                 label="电压等级"

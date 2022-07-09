@@ -22,13 +22,16 @@ export interface MyContextType {
   lineAssemble: boolean
   setlineAssemble: Dispatch<SetStateAction<boolean>>
   isRefresh: boolean
-  setisRefresh: Dispatch<SetStateAction<boolean>>
+  setIsRefresh: Dispatch<SetStateAction<boolean>>
   zIndex: string
   setzIndex: Dispatch<SetStateAction<string>>
   setpageDrawState: Dispatch<SetStateAction<boolean>>
   pageDrawState: boolean
   checkLineIds: string[]
   setcheckLineIds: Dispatch<SetStateAction<string[]>>
+  companyId: string
+  setisDragPoint: Dispatch<SetStateAction<boolean>>
+  isDragPoint: boolean
 }
 
 // 全局状态管理

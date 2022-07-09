@@ -1,5 +1,4 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
-import { getMapRegisterData } from '@/services/index'
 import GeoJSON from 'ol/format/GeoJSON'
 import WKT from 'ol/format/WKT'
 import { Draw } from 'ol/interaction'
@@ -25,6 +24,7 @@ import {
   setSelectActive,
 } from './select'
 import { calculateDistance, lineStyle, pointStyle } from './style'
+import { getDistrictdata } from './utils'
 // interface pointType {
 //   featureType: string
 //   name?: string
@@ -47,6 +47,7 @@ interface InitOps {
   mapRef: MapRef
   ref: React.ReactNode
   isActiveFeature: (data: pointType | null) => void
+  isDragPointend: (isDrag: boolean) => void
 }
 var drawTool: any
 var pointLayer: any
@@ -54,13 +55,14 @@ var lineLayer: any
 var boxSelectFeatures: any = []
 var dragBox: any
 
-export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
+export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOps) => {
   mapRef.map = new Map({
     target: 'map',
     layers: [
       new TileLayer({
         source: new XYZ({
-          url: 'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url:
+            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
@@ -97,7 +99,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
     moveOverlay(mapRef.map, e.coordinate)
   })
 
-  initSelect(mapRef.map, isActiveFeature)
+  initSelect(mapRef.map, isActiveFeature, isDragPointend)
 
   drawBox(mapRef.map)
   loadGeoJson(mapRef.map)
@@ -105,7 +107,15 @@ export const initMap = ({ mapRef, ref, isActiveFeature }: InitOps) => {
 
 // 加载行政区域边界
 const loadGeoJson = (map: any) => {
-  getMapRegisterData('100000').then((data: any) => {
+  getDistrictdata().then((result: any) => {
+    let features: any[] = []
+    result.forEach((item: any) => {
+      features.push(...item.features)
+    })
+    const data = {
+      type: 'FeatureCollection',
+      features,
+    }
     const vectorSource = new VectorSource({
       features: new GeoJSON({
         dataProjection: 'EPSG:4326',

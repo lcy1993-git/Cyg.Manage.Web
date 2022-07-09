@@ -1,0 +1,17 @@
+.buttonArea {
+  display: flex;
+  justify-content: end;
+  padding-bottom: 10px;
+}
+
+.intervalTable {
+  :global {
+    .ant-table-content {
+      .ant-table-row-selected {
+        td {
+          background-color: @table-select-color !important;
+        }
+      }
+    }
+  }
+}

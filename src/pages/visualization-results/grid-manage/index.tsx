@@ -18,17 +18,21 @@ const GradManage: React.FC = () => {
   /** 网架绘制 Excel数据导入模态框状态 **/
   const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
   /** 是否刷新tree列表 */
-  const [isRefresh, setisRefresh] = useState(true)
+  const [isRefresh, setIsRefresh] = useState(true)
   /** 当前选择的城市 **/
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
   )
-
   /** 编辑要是、手动绘制状态是否显示 **/
   const [pageDrawState, setpageDrawState] = useState(false)
+  //@ts-ignore获取companyId
+  const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
 
   /** 页面所有线路 */
   const [lineAssemble, setlineAssemble] = useState<boolean>(false)
+
+  /** 点位是否拖动，拖动后需要刷新查重列表 **/
+  const [isDragPoint, setisDragPoint] = useState<boolean>(false)
 
   /** 选中线路ID **/
   const [checkLineIds, setcheckLineIds] = useState<string[]>([])
@@ -48,7 +52,7 @@ const GradManage: React.FC = () => {
         setImportModalVisible,
         mapRef,
         isRefresh,
-        setisRefresh,
+        setIsRefresh,
         lineAssemble,
         setlineAssemble,
         zIndex,
@@ -57,6 +61,9 @@ const GradManage: React.FC = () => {
         setpageDrawState,
         checkLineIds,
         setcheckLineIds,
+        companyId,
+        isDragPoint,
+        setisDragPoint,
       }}
     >
       <GradManageWrap />
@@ -67,7 +74,6 @@ const GradManage: React.FC = () => {
 const GradManageWrap: React.FC = () => {
   // 左侧菜单 显示、隐藏
   const [leftMenuVisible, setLeftMenuVisible] = useState<boolean>(true)
-
   return (
     <div className="h-full w-full gridManageWrap">
       {/* 内容区 */}

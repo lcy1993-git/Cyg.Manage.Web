@@ -1,4 +1,4 @@
-import { useControllableValue } from 'ahooks'
+import { useControllableValue, useUpdateEffect } from 'ahooks'
 import { Button, Form, Input, message, Modal } from 'antd'
 import { Tabs } from 'antd'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
@@ -44,6 +44,7 @@ import {
   switchColumns,
   towerColumns,
 } from './components/equip-columns'
+import { useMyContext } from '../../grid-manage/Context'
 
 const { TabPane } = Tabs
 
@@ -70,6 +71,7 @@ const tabTitle = {
 const { Search } = Input
 
 const EquipLineList: React.FC<StandingBookProps> = (props) => {
+  const { companyId } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { lineTitle, lineId } = props
 
@@ -259,7 +261,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
   }
 
   //坐标处理
-
   const editEvent = async () => {
     if (currentTab === 'line') {
       if (lineRows && isArray(lineRows) && lineRows.length === 0) {
@@ -605,11 +606,57 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
     }
   }
 
+  //操作权限判断
+  const canEdit = () => {
+    if (
+      (lineRows[0] && lineRows[0].companyId !== companyId) ||
+      (cableWellRows[0] && cableWellRows[0].companyId !== companyId) ||
+      (towerRows[0] && towerRows[0].companyId !== companyId) ||
+      (boxTransRows[0] && boxTransRows[0].companyId !== companyId) ||
+      (cabinetRows[0] && cabinetRows[0].companyId !== companyId) ||
+      (elecRoomRows[0] && elecRoomRows[0].companyId !== companyId) ||
+      (switchRows[0] && switchRows[0].companyId !== companyId) ||
+      (breakerRows[0] && breakerRows[0].companyId !== companyId) ||
+      (columnTransRows[0] && columnTransRows[0].companyId !== companyId) ||
+      (cableBoxRows[0] && cableBoxRows[0].companyId !== companyId)
+    ) {
+      return true
+    }
+    return false
+  }
+
+  const getCurrentRow = (currentTab: string) => {
+    switch (currentTab) {
+      case 'line':
+        return lineRows
+      case 'cableWell':
+        return cableWellRows
+      case 'boxTrans':
+        return boxTransRows
+      case 'cabinet':
+        return cabinetRows
+      case 'elecRoom':
+        return elecRoomRows
+      case 'switchStation':
+        return switchRows
+      case 'breaker':
+        return breakerRows
+      case 'columnTrans':
+        return columnTransRows
+      case 'cableBox':
+        return cableBoxRows
+      case 'tower':
+        return towerRows
+      default:
+        return
+    }
+  }
+
   const tableButton = () => {
     return (
       <div>
         {/* {buttonJurisdictionArray?.includes('edit-structure-company') && ( */}
-        <Button className="mr7" onClick={() => editEvent()}>
+        <Button className="mr7" onClick={() => editEvent()} disabled={canEdit()}>
           <EditOutlined />
           编辑
         </Button>
@@ -617,7 +664,8 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
         {/* {buttonJurisdictionArray?.includes('delete-structure-company') && ( */}
         <ModalConfirm
           changeEvent={() => deleteEvent(currentTab)}
-          // selectData={[checkRadioValue].filter(Boolean)}
+          disabled={canEdit()}
+          selectData={getCurrentRow(currentTab)}
           // contentSlot={deleteContent}
         />
         {/* )} */}
@@ -822,6 +870,22 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
         return
     }
   }
+
+  useUpdateEffect(() => {
+    if (!state) {
+      setLineRows([])
+      setCableWellRows([])
+      setSwitchRows([])
+      setBoxTransRows([])
+      setCabinetRows([])
+      setElecRoomRows([])
+      setBreakerRows([])
+      setColumnTransRows([])
+      setTowerRows([])
+      setCableBoxRows([])
+      setCurrentTab('line')
+    }
+  }, [state])
 
   return (
     <>

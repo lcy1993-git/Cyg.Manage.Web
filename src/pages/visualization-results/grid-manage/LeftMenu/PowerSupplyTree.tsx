@@ -5,7 +5,7 @@ import {
   GetStationItems,
   modifyLine,
 } from '@/services/grid-manage/treeMenu'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Form, Input, message, Modal, Select, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
@@ -86,8 +86,8 @@ const lineformLayout = {
 }
 
 const PowerSupplyTree = () => {
-  const { isRefresh, setisRefresh, mapRef, lineAssemble } = useMyContext()
-  const { linesId, setlinesId, setpowerSupplyIds, settreeLoading } = useTreeContext()
+  const { isRefresh, setIsRefresh, mapRef, lineAssemble, companyId } = useMyContext()
+  const { linesId, setlinesId, setpowerSupplyIds, settreeLoading, kvLevels } = useTreeContext()
   const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
   const [selectLineType, setselectLineType] = useState('')
   const [form] = useForm()
@@ -100,7 +100,7 @@ const PowerSupplyTree = () => {
 
   //当前点击线路标题
   const [lineTitle, setLineTitle] = useState<string>('')
-  const { data, run: getTree } = useRequest(() => fetchGridManageMenu({}), {
+  const { data, run: getTree } = useRequest(() => fetchGridManageMenu({ kvLevels: kvLevels }), {
     manual: true,
     onSuccess: () => {
       settreeLoading(true)
@@ -122,7 +122,15 @@ const PowerSupplyTree = () => {
           children: item.powerSupplySubList.map((child: PowerSupplyListType) => {
             return {
               ...child,
-              title: child.name,
+              title:
+                companyId !== child.companyId ? (
+                  <>
+                    <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+                    <span style={{ paddingLeft: '3px' }}> {child.name}</span>
+                  </>
+                ) : (
+                  child.name
+                ),
               key: `${child.id}_&${POWERSUPPLY}`,
               type: POWERSUPPLY,
               children: child.lines.map((childrenItem: lineListItemType) => {
@@ -143,7 +151,6 @@ const PowerSupplyTree = () => {
   const handleOk = async () => {
     try {
       await form.validateFields()
-      setisRefresh(false)
       const formData = form.getFieldsValue()
       let color: string | undefined
       let styleColor: string | undefined
@@ -180,7 +187,7 @@ const PowerSupplyTree = () => {
       await modifyLine(upLoadparams)
       upateLineByMainLine(mapRef.map, drawParams)
       setIsModalVisible(false)
-      setisRefresh(true)
+      setIsRefresh(!isRefresh)
       message.info('编辑成功')
     } catch (err) {
       message.error('编辑失败')
@@ -201,14 +208,13 @@ const PowerSupplyTree = () => {
   }
 
   useEffect(() => {
-    isRefresh && getTree()
-  }, [getTree, isRefresh])
+    getTree()
+  }, [getTree, isRefresh, kvLevels])
 
   // 点击右键，删除线路数据
   const onRightClick = (info: infoType) => {
     const { node } = info
     if (node && !node.children) {
-      setisRefresh(false)
       Modal.confirm({
         title: '确认删除该条线路吗？',
         icon: <ExclamationCircleOutlined />,
@@ -218,7 +224,7 @@ const PowerSupplyTree = () => {
         onOk: async () => {
           try {
             await deleteLine([node.id])
-            setisRefresh(true)
+            setIsRefresh(!isRefresh)
             message.info('删除成功')
             const currentSelectLineIds = linesId.filter((item) => item !== node.id)
             setlinesId(currentSelectLineIds)

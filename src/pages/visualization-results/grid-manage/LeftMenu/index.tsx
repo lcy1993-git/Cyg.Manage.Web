@@ -1,6 +1,6 @@
 import {
   createLine,
-  featchSubstationTreeData,
+  getlinesComponment,
   GetStationItems,
   getSubStations,
 } from '@/services/grid-manage/treeMenu'
@@ -11,14 +11,13 @@ import StandingBook from '../../components/standing-book'
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
-  COLORDEFAULT,
-  COLORU,
   createFeatureId,
   KVLEVELOPTIONS,
   LINE,
   LINEMODEL,
 } from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
+import { dataHandle, newData } from '../tools'
 import DrawGridToolbar from './DrawGridToolbar'
 import styles from './index.less'
 import PowerSupplyTree from './PowerSupplyTree'
@@ -44,8 +43,9 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [standingBookVisible, setStandingBookVisible] = useState(false)
-  const { setisRefresh, mapRef, lineAssemble, setcheckLineIds } = useMyContext()
+  const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
+  const [kvLevels, setKvLevels] = useState<number[]>([])
 
   // 线路ID集合
   const [linesId, setlinesId] = useState<string[]>([])
@@ -58,7 +58,7 @@ const LeftMenu = (props: any) => {
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const showModal = () => {
-    setisRefresh(false)
+    setIsRefresh(!isRefresh)
     setVisible(true)
   }
 
@@ -103,7 +103,7 @@ const LeftMenu = (props: any) => {
     onSuccess: () => {
       setVisible(false)
       setConfirmLoading(false)
-      setisRefresh(true)
+      setIsRefresh(!isRefresh)
       form.resetFields()
     },
   })
@@ -139,49 +139,6 @@ const LeftMenu = (props: any) => {
     }
   )
 
-  const newData = (arr: any[]) => {
-    if (!arr || !arr.length) {
-      return []
-    }
-    return arr.map((item: { color: any; kvLevel: any }) => {
-      if (item.color) {
-        const exist = COLORU.find((co) => co.label === item.color)
-        if (exist) {
-          return {
-            ...item,
-            color: exist.value,
-          }
-        }
-        return {
-          ...item,
-          color: COLORDEFAULT,
-        }
-      }
-      return {
-        ...item,
-        color: COLORDEFAULT,
-      }
-    })
-  }
-
-  const dataHandle = (dataValue: any) => {
-    return {
-      boxTransformerList: newData(dataValue.boxTransformerList),
-      cableBranchBoxList: newData(dataValue.cableBranchBoxList),
-      cableWellList: newData(dataValue.cableWellList),
-      columnCircuitBreakerList: newData(dataValue.columnCircuitBreakerList),
-      columnTransformerList: newData(dataValue.columnTransformerList),
-      electricityDistributionRoomList: newData(dataValue.electricityDistributionRoomList),
-      lineList: newData(dataValue.lineList),
-      lineRelationList: newData(dataValue.lineRelationList),
-      powerSupplyList: newData(dataValue.powerSupplyList),
-      ringNetworkCabinetList: newData(dataValue.ringNetworkCabinetList),
-      switchingStationList: newData(dataValue.switchingStationList),
-      towerList: newData(dataValue.towerList),
-      transformerSubstationList: newData(dataValue.transformerSubstationList),
-    }
-  }
-
   const { data: TreeData, run: getTreeData } = useRequest(
     () => {
       const ids = [...new Set(linesId)]
@@ -194,7 +151,7 @@ const LeftMenu = (props: any) => {
           return ''
         })
         .filter((item: string) => item)
-      return featchSubstationTreeData({
+      return getlinesComponment({
         lineIds,
         kvLevels: [],
       })
@@ -257,32 +214,34 @@ const LeftMenu = (props: any) => {
 
   return (
     <div className="w-full h-full bg-white flex flex-col">
-      <div className="w-full flex-none" style={{ height: '50px' }}>
-        <DrawGridToolbar />
-      </div>
-      <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
-        <Spin spinning={!treeLoading}>
-          <TreeProvider
-            value={{
-              linesId,
-              setlinesId,
-              powerSupplyIds,
-              setpowerSupplyIds,
-              subStations,
-              setsubStations,
-              settreeLoading,
-              treeLoading,
-            }}
-          >
+      <TreeProvider
+        value={{
+          linesId,
+          setlinesId,
+          powerSupplyIds,
+          setpowerSupplyIds,
+          subStations,
+          setsubStations,
+          settreeLoading,
+          treeLoading,
+          kvLevels,
+          setKvLevels,
+        }}
+      >
+        <div className="w-full flex-none" style={{ height: '50px' }}>
+          <DrawGridToolbar />
+        </div>
+        <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
+          <Spin spinning={!treeLoading}>
             <div className={`w-full flex-none`}>
               <SubstationTree />
             </div>
             <div className={`w-full flex-1`}>
               <PowerSupplyTree />
             </div>
-          </TreeProvider>
-        </Spin>
-      </div>
+          </Spin>
+        </div>
+      </TreeProvider>
       <div
         className="w-full flex-none flex items-center"
         style={{ height: '50px', paddingRight: '10px' }}

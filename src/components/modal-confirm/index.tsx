@@ -9,6 +9,7 @@ interface ModalConfirmProps {
   changeEvent: () => void
   selectData?: any[] | object
   contentSlot?: () => React.ReactNode
+  disabled?: boolean
 }
 
 const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
@@ -18,6 +19,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
     changeEvent,
     selectData,
     contentSlot,
+    disabled = false,
   } = props
 
   const confirmEvent = () => {
@@ -37,7 +39,7 @@ const ModalConfirm: React.FC<ModalConfirmProps> = (props) => {
 
   return (
     <>
-      <Button className="mr7" onClick={() => confirmEvent()}>
+      <Button className="mr7" onClick={() => confirmEvent()} disabled={disabled}>
         <DeleteOutlined />
         {title}
       </Button>
