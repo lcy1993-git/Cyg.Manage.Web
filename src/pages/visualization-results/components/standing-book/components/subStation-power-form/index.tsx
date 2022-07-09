@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Input, Select } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
@@ -15,12 +15,14 @@ interface SubStationPowerParams {
   currentEditTab: string
   form: any
   transId: string
+  dataOnchange: Dispatch<SetStateAction<any[]>>
+  intervalData: any[]
 }
 
 const { Option } = Select
 
 const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
-  const { currentEditTab, form, transId } = props
+  const { currentEditTab, form, transId, dataOnchange, intervalData } = props
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const [selectLineType, setselectLineType] = useState('')
   const [currentKv, setCurrentKv] = useState<number>(Number(form.getFieldValue('kvLevel')))
@@ -186,6 +188,13 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
               出线间隔
             </Button>
           </CyFormItem>
+          <TransIntervalTable
+            dataOnchange={dataOnchange}
+            intervalData={intervalData}
+            transId={transId}
+            onChange={setTransTableVisible}
+            visible={transTableVisible}
+          />
         </>
       )}
 
@@ -199,11 +208,6 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           </CyFormItem>
         </>
       )}
-      <TransIntervalTable
-        transId={transId}
-        onChange={setTransTableVisible}
-        visible={transTableVisible}
-      />
     </>
   )
 }

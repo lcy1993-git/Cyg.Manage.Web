@@ -18,7 +18,7 @@ const GradManage: React.FC = () => {
   /** 网架绘制 Excel数据导入模态框状态 **/
   const [importModalVisible, setImportModalVisible] = useState<boolean>(false)
   /** 是否刷新tree列表 */
-  const [isRefresh, setisRefresh] = useState(true)
+  const [isRefresh, setIsRefresh] = useState(true)
   /** 当前选择的城市 **/
   const [selectCity, setselectCity] = useState<MyContextType['selectCity']>(
     {} as MyContextType['selectCity']
@@ -52,7 +52,7 @@ const GradManage: React.FC = () => {
         setImportModalVisible,
         mapRef,
         isRefresh,
-        setisRefresh,
+        setIsRefresh,
         lineAssemble,
         setlineAssemble,
         zIndex,

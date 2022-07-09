@@ -43,7 +43,7 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [standingBookVisible, setStandingBookVisible] = useState(false)
-  const { setisRefresh, mapRef, lineAssemble, setcheckLineIds } = useMyContext()
+  const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
 
@@ -58,7 +58,7 @@ const LeftMenu = (props: any) => {
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const showModal = () => {
-    setisRefresh(false)
+    setIsRefresh(!isRefresh)
     setVisible(true)
   }
 
@@ -103,7 +103,7 @@ const LeftMenu = (props: any) => {
     onSuccess: () => {
       setVisible(false)
       setConfirmLoading(false)
-      setisRefresh(true)
+      setIsRefresh(!isRefresh)
       form.resetFields()
     },
   })

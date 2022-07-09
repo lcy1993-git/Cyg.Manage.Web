@@ -75,7 +75,7 @@ const SubstationTree = () => {
       },
     }
   )
-  const { isRefresh, setisRefresh, mapRef, lineAssemble, companyId } = useMyContext()
+  const { isRefresh, setIsRefresh, mapRef, lineAssemble, companyId } = useMyContext()
   const { linesId, setlinesId, setsubStations, settreeLoading, kvLevels } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
@@ -141,7 +141,6 @@ const SubstationTree = () => {
   const onRightClick = (info: infoType) => {
     const { node } = info
     if (node && !node.children) {
-      setisRefresh(false)
       Modal.confirm({
         title: '确认删除该条线路吗？',
         icon: <ExclamationCircleOutlined />,
@@ -151,7 +150,7 @@ const SubstationTree = () => {
         onOk: async () => {
           try {
             await deleteLine([node.id])
-            setisRefresh(true)
+            setIsRefresh(!isRefresh)
             message.info('删除成功')
             const currentSelectLineIds = linesId.filter((item) => item !== node.id)
             setlinesId(currentSelectLineIds)
@@ -171,7 +170,6 @@ const SubstationTree = () => {
   const handleOk = async () => {
     try {
       await form.validateFields()
-      setisRefresh(false)
       const formData = form.getFieldsValue()
       let color: string | undefined
       let styleColor: string | undefined
@@ -214,7 +212,7 @@ const SubstationTree = () => {
       upateLineByMainLine(mapRef.map, drawParams)
       message.info('编辑成功')
       setIsModalVisible(false)
-      setisRefresh(true)
+      setIsRefresh(!isRefresh)
     } catch (err) {}
   }
 
@@ -231,7 +229,7 @@ const SubstationTree = () => {
   }, [stationItemsHandle, lineAssemble])
 
   useEffect(() => {
-    isRefresh && getTree()
+    getTree()
   }, [getTree, isRefresh, kvLevels])
 
   // 点击左键，编辑线路数据

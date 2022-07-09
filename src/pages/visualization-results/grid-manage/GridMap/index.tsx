@@ -117,7 +117,7 @@ const GridMap = () => {
   const [form] = useForm()
   const {
     mapRef,
-    setisRefresh,
+    setIsRefresh,
     isRefresh,
     setzIndex,
     zIndex,
@@ -218,7 +218,7 @@ const GridMap = () => {
 
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(true)
-        setisRefresh(false)
+        setIsRefresh(!isRefresh)
       }
 
       await stationItemsHandle({
@@ -238,7 +238,7 @@ const GridMap = () => {
       })
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(false)
-        setisRefresh(true)
+        setIsRefresh(!isRefresh)
       }
     }
   }
@@ -457,13 +457,12 @@ const GridMap = () => {
         Promise.all(PromiseAll)
           .then((res) => {
             message.info('删除成功')
-            setisRefresh(false)
             const rootData = deleteData.filter(
               (item: { featureType: string }) =>
                 item.featureType === TRANSFORMERSUBSTATION || item.featureType === POWERSUPPLY
             )
             if (rootData.length) {
-              setisRefresh(true)
+              setIsRefresh(!isRefresh)
             }
           })
           .catch((err) => {

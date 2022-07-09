@@ -1,4 +1,4 @@
-import { useControllableValue } from 'ahooks'
+import { useControllableValue, useUpdateEffect } from 'ahooks'
 import { Button, Form, Input, message, Modal } from 'antd'
 import { Tabs } from 'antd'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
@@ -870,6 +870,22 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
         return
     }
   }
+
+  useUpdateEffect(() => {
+    if (!state) {
+      setLineRows([])
+      setCableWellRows([])
+      setSwitchRows([])
+      setBoxTransRows([])
+      setCabinetRows([])
+      setElecRoomRows([])
+      setBreakerRows([])
+      setColumnTransRows([])
+      setTowerRows([])
+      setCableBoxRows([])
+      setCurrentTab('line')
+    }
+  }, [state])
 
   return (
     <>

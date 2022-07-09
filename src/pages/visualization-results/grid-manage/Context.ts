@@ -22,7 +22,7 @@ export interface MyContextType {
   lineAssemble: boolean
   setlineAssemble: Dispatch<SetStateAction<boolean>>
   isRefresh: boolean
-  setisRefresh: Dispatch<SetStateAction<boolean>>
+  setIsRefresh: Dispatch<SetStateAction<boolean>>
   zIndex: string
   setzIndex: Dispatch<SetStateAction<string>>
   setpageDrawState: Dispatch<SetStateAction<boolean>>

@@ -86,7 +86,7 @@ const lineformLayout = {
 }
 
 const PowerSupplyTree = () => {
-  const { isRefresh, setisRefresh, mapRef, lineAssemble, companyId } = useMyContext()
+  const { isRefresh, setIsRefresh, mapRef, lineAssemble, companyId } = useMyContext()
   const { linesId, setlinesId, setpowerSupplyIds, settreeLoading, kvLevels } = useTreeContext()
   const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
   const [selectLineType, setselectLineType] = useState('')
@@ -151,7 +151,6 @@ const PowerSupplyTree = () => {
   const handleOk = async () => {
     try {
       await form.validateFields()
-      setisRefresh(false)
       const formData = form.getFieldsValue()
       let color: string | undefined
       let styleColor: string | undefined
@@ -188,7 +187,7 @@ const PowerSupplyTree = () => {
       await modifyLine(upLoadparams)
       upateLineByMainLine(mapRef.map, drawParams)
       setIsModalVisible(false)
-      setisRefresh(true)
+      setIsRefresh(!isRefresh)
       message.info('编辑成功')
     } catch (err) {
       message.error('编辑失败')
@@ -209,14 +208,13 @@ const PowerSupplyTree = () => {
   }
 
   useEffect(() => {
-    isRefresh && getTree()
+    getTree()
   }, [getTree, isRefresh, kvLevels])
 
   // 点击右键，删除线路数据
   const onRightClick = (info: infoType) => {
     const { node } = info
     if (node && !node.children) {
-      setisRefresh(false)
       Modal.confirm({
         title: '确认删除该条线路吗？',
         icon: <ExclamationCircleOutlined />,
@@ -226,7 +224,7 @@ const PowerSupplyTree = () => {
         onOk: async () => {
           try {
             await deleteLine([node.id])
-            setisRefresh(true)
+            setIsRefresh(!isRefresh)
             message.info('删除成功')
             const currentSelectLineIds = linesId.filter((item) => item !== node.id)
             setlinesId(currentSelectLineIds)
