@@ -476,7 +476,7 @@ const DrawToolbar = () => {
               {...lineformLayout}
               style={{ marginTop: '10px' }}
               form={lineForm}
-              initialValues={{ lineNumber: '1' }}
+              // initialValues={{ lineNumber: '1' }}
             >
               <Form.Item
                 name="lineId"
@@ -523,7 +523,7 @@ const DrawToolbar = () => {
                       ))}
                 </Select>
               </Form.Item>
-              <Form.Item name="lineNumber" label="线路回数">
+              {/* <Form.Item name="lineNumber" label="线路回数">
                 <Select allowClear dropdownStyle={{ zIndex: 3000 }}>
                   {[
                     { label: '1', value: '1' },
@@ -536,7 +536,7 @@ const DrawToolbar = () => {
                     </Option>
                   ))}
                 </Select>
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 name="kvLevel"
                 label="电压等级"
