@@ -1,5 +1,4 @@
 import { MapRef } from '@/pages/visualization-results/history-grid/components/history-map-base/typings'
-import { getMapRegisterData } from '@/services/index'
 import GeoJSON from 'ol/format/GeoJSON'
 import WKT from 'ol/format/WKT'
 import { Draw } from 'ol/interaction'
@@ -25,6 +24,7 @@ import {
   setSelectActive,
 } from './select'
 import { calculateDistance, lineStyle, pointStyle } from './style'
+import { getDistrictdata } from './utils'
 // interface pointType {
 //   featureType: string
 //   name?: string
@@ -106,7 +106,15 @@ export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOp
 
 // 加载行政区域边界
 const loadGeoJson = (map: any) => {
-  getMapRegisterData('100000').then((data: any) => {
+  getDistrictdata().then((result: any) => {
+    let features: any[] = []
+    result.forEach((item: any) => {
+      features.push(...item.features)
+    })
+    const data = {
+      type: 'FeatureCollection',
+      features,
+    }
     const vectorSource = new VectorSource({
       features: new GeoJSON({
         dataProjection: 'EPSG:4326',
