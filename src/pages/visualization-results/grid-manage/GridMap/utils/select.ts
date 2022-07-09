@@ -115,10 +115,12 @@ export const initTranslate = (map: any) => {
     feature.get('data').geom = format.writeGeometry(point)
     feature.get('data').lng = point.getCoordinates()[0]
     feature.get('data').lat = point.getCoordinates()[1]
-
     await updateLine(map, feature, true)
   })
 }
+
+// 获取主回路
+const getLoops = (feature: any) => {}
 
 const updateLine = async (map: any, feature: any, isEnd: boolean) => {
   const featureCoords = feature.getGeometry().getCoordinates()
@@ -152,6 +154,16 @@ const updateLine = async (map: any, feature: any, isEnd: boolean) => {
     const lines = features.map((item: { values_: { data: any } }) => item.values_.data)
     await upLoadPoint(point, lines)
   }
+}
+
+// 多回路拖动更新
+const updateLoops = (feature: any) => {
+  //
+}
+
+const getLoopPreFeatures = (map: any, feature: any) => {
+  const lineLayer = getLayer(map, 'lineLayer')
+  lineLayer.getSource().getFeatures().find()
 }
 
 // 点位数据上传

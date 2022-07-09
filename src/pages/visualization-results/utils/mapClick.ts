@@ -51,6 +51,7 @@ const materiaLayers = [
   'user_line',
   'cable_channel',
   'fault_indicator',
+  'zero_guy',
 ]
 const householdLayers = ['electric_meter']
 const AdditionMaterialLayer = ['tower', 'cable_head']
@@ -857,30 +858,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
 // 当前经纬度映射到HTML节点
 export const mapPointermove = (evt: any, map: any) => {
-  let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
-  if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
-    let type = highlightLayer
-      .getSource()
-      .getFeatures()[0]
-      .getGeometry()
-      .getType()
-      .toLocaleLowerCase()
-
-    if (type.indexOf('point') >= 0) {
-      highlightLayer
-        .getSource()
-        .getFeatures()[0]
-        .setStyle(
-          pointStyle(
-            highlightLayer.getSource().getFeatures()[0].get('feature_name'),
-            highlightLayer.getSource().getFeatures()[0],
-            true,
-            false,
-            map.getView().getResolution()
-          )
-        )
-    }
-  }
   let coordinate = evt.coordinate
   let lont = transform(coordinate, 'EPSG:3857', 'EPSG:4326')
   const x = document.getElementById('currentPositionX')
@@ -979,6 +956,27 @@ export const mapPointermove = (evt: any, map: any) => {
 export const mapMoveend = (evt: any, map: any) => {
   const scaleSize: HTMLSpanElement = document.getElementById('currentScaleSize') as HTMLSpanElement
   if (scaleSize !== null) scaleSize.innerHTML = getScale(map) || ''
+
+  let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
+  if (highlightLayer && highlightLayer.getSource().getFeatures().length > 0) {
+    let type = highlightLayer
+      .getSource()
+      .getFeatures()[0]
+      .getGeometry()
+      .getType()
+      .toLocaleLowerCase()
+
+    if (type.indexOf('point') >= 0) {
+      const style = pointStyle(
+        highlightLayer.getSource().getFeatures()[0].get('feature_name'),
+        highlightLayer.getSource().getFeatures()[0],
+        true,
+        false,
+        map.getView().getResolution()
+      )
+      highlightLayer.getSource().getFeatures()[0].setStyle(style)
+    }
+  }
 }
 
 /**
