@@ -291,17 +291,20 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       await deleteTransformerSubstation([tableSelectRows[0].id])
       message.success('删除成功')
       refresh()
+      setIsRefresh(!isRefresh)
       return
     }
     if (currentTab === 'power') {
       await deletePowerSupply([powerSelectRows[0].id])
       message.success('删除成功')
       refresh()
+      setIsRefresh(!isRefresh)
       return
     }
     await deleteLine([mainLineRows[0].id])
     message.success('删除成功')
     refresh()
+    setIsRefresh(!isRefresh)
     return
   }
 

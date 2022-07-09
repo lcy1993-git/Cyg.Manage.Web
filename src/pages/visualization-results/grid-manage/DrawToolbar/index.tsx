@@ -63,8 +63,15 @@ export interface BelongingLineType {
 }
 
 const DrawToolbar = () => {
-  const { drawToolbarVisible, setdrawToolbarVisible, mapRef, isRefresh, zIndex, setzIndex } =
-    useMyContext()
+  const {
+    drawToolbarVisible,
+    setdrawToolbarVisible,
+    mapRef,
+    isRefresh,
+    zIndex,
+    setzIndex,
+    setIsRefresh,
+  } = useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   // 当前选中的是架空还是电缆线路
