@@ -26,6 +26,7 @@ import {
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   ELECTRICITYDISTRIBUTIONROOM,
+  POINTS,
   POWERSUPPLY,
   RINGNETWORKCABINET,
   SWITCHINGSTATION,
@@ -263,6 +264,26 @@ export const deletCurrrentSelectFeature = (map: any) => {
   currrentSelectFeature = null
 }
 
+// 通过台账删除要素
+export const deletFeatureByTable = (map: any, data: any) => {
+  if (!data) return
+  let lineLayer = getLayer(map, 'lineLayer')
+  if (POINTS.indexOf(data.featureType) > -1) {
+    // 属于点要素
+    if (data.featureType === POWERSUPPLY || data.featureType === TRANSFORMERSUBSTATION)
+      deleAllChildFeatureByTable(map, data, true)
+    else deleAllChildFeatureByTable(map, data, false)
+  } else {
+    // 属于线要素
+    lineLayer
+      .getSource()
+      .getFeatures()
+      .forEach((line: any) => {
+        if ((line.get('data').id = data.id)) lineLayer.getSource().removeFeature(line)
+      })
+  }
+}
+
 export const deleFeature = (map: any, feature: any) => {
   if (!feature) return
   let geomType = feature.getGeometry().getType()
@@ -296,6 +317,38 @@ const deleAllChildFeature = (map: any, feature: any, isDeleAll: boolean = false)
         // !  2... 然后删除线路  item.get('data')
         lineLayer.getSource().removeFeature(item)
         deleFeatures.push(item.get('data'))
+        if (isDeleAll) {
+          if (item.get('data').startId === pointId) {
+            const childFeature = pointLayer
+              .getSource()
+              .getFeatures()
+              .find((point: any) => point.get('data').id === item.get('data').endId)
+            childFeature && deleAllChildFeature(map, childFeature, isDeleAll)
+          }
+        }
+      }
+    })
+  }
+}
+
+const deleAllChildFeatureByTable = (map: any, data: any, isDeleAll: boolean = false) => {
+  const pointLayer = getLayer(map, 'pointLayer')
+  const lineLayer = getLayer(map, 'lineLayer')
+
+  pointLayer
+    .getSource()
+    .getFeatures()
+    .forEach((point: any) => {
+      if ((point.get('data').id = data.id)) pointLayer.getSource().removeFeature(point)
+    })
+
+  const lines = lineLayer.getSource().getFeatures()
+  const pointId = data.id
+  if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
+    lines.forEach((item: any) => {
+      if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
+        // !  2... 然后删除线路  item.get('data')
+        lineLayer.getSource().removeFeature(item)
         if (isDeleAll) {
           if (item.get('data').startId === pointId) {
             const childFeature = pointLayer
