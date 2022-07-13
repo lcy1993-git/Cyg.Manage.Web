@@ -1,5 +1,6 @@
 import {
   getData,
+  getExtent,
   getMediaSign,
   loadLayer,
   ProjectList,
@@ -38,6 +39,7 @@ var timer: any
 var mapMovetimer: any
 var mapMoveEnds: any[] = []
 var layerTypes: any[] = []
+var extent_: any[] = []
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -62,7 +64,9 @@ const refreshMap = async (
   endDate?: string
 ) => {
   const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops
+  let isLoad = false
   if (projects_) {
+    isLoad = true
     projects = projects_
     clearHighlightLayer(map)
   }
@@ -74,28 +78,51 @@ const refreshMap = async (
   // currentLevel = Math.round(map.getView().getZoom());
 
   if (projects.length === 0) {
+    extent_ = []
     clearGroups(groupLayers)
     return false
   }
   lineClusters = []
+  if (isLoad) {
+    await getExtent({ layerTypes, projects }).then((data: any) => {
+      if (data.content) {
+        const minX = data.content.minX
+        const minY = data.content.minY
+        const maxX = data.content.maxX
+        const maxY = data.content.maxY
+        const min = transform([minX, minY], 'EPSG:4326', 'EPSG:3857')
+        const max = transform([maxX, maxY], 'EPSG:4326', 'EPSG:3857')
+        extent_ = [min[0], min[1], max[0], max[1]]
+        let dx = extent_[2] - extent_[0]
+        let dy = extent_[3] - extent_[1]
+        extent_ = [
+          extent_[0] * (1 - dx / extent_[0] / 5),
+          extent_[1] * (1 - dy / extent_[1] / 5),
+          extent_[2] * (1 + dx / extent_[2] / 5),
+          extent_[3] * (1 + dy / extent_[3] / 5),
+        ]
+        map.getView().fit(extent_, map.getSize())
+      }
+    })
+  }
 
   let extent = map.getView().calculateExtent(map.getSize())
   let minExtent = transform([extent[0], extent[1]], 'EPSG:3857', 'EPSG:4326')
   let maxExtent = transform([extent[2], extent[3]], 'EPSG:3857', 'EPSG:4326')
-  extent = [minExtent[0], minExtent[1], maxExtent[0], maxExtent[1]]
-
+  const extent_4326 = [minExtent[0], minExtent[1], maxExtent[0], maxExtent[1]]
   let ids: any = []
+
   projects.forEach((item: any) => {
     ids.push({ id: item.id })
   })
 
   let params = {
     polygonCoordinates: [
-      [extent[0], extent[1]],
-      [extent[2], extent[1]],
-      [extent[2], extent[3]],
-      [extent[0], extent[3]],
-      [extent[0], extent[1]],
+      [extent_4326[0], extent_4326[1]],
+      [extent_4326[2], extent_4326[1]],
+      [extent_4326[2], extent_4326[3]],
+      [extent_4326[0], extent_4326[3]],
+      [extent_4326[0], extent_4326[1]],
     ],
     zoomLevel: Math.round(map.getView().getZoom()),
     layerTypes: layerTypes,
@@ -880,59 +907,9 @@ const getLayerGroupByName = (name: string, layerGroups: LayerGroup[]): any => {
   return layerGroups.find((item: LayerGroup) => item.get('name') === name)
 }
 
-var extent: any
 // 根据项目进行定位
-const relocateMap = (
-  projectId: string = '',
-  layerGroups: LayerGroup[],
-  view: any,
-  setView: any,
-  map: any,
-  refresh: boolean = true
-) => {
-  if (!refresh) return
-  // if (extent && !refresh) {
-  //   view.fit(extent, map!.getSize());
-  //   setView(view);
-  //   return;
-  // }
-  let features: any = []
-  let source = new VectorSource()
-  layerGroups.forEach((layerGroup: LayerGroup) => {
-    if (!layerGroup.getVisible()) {
-    } else {
-      layerGroup
-        .getLayers()
-        .getArray()
-        .forEach((layer: any) => {
-          let fs = layer.getSource().getFeatures()
-          if (fs.length > 0) {
-            if (!projectId) {
-              features = features.concat(fs)
-            } else {
-              fs.forEach((feature: any) => {
-                if (projectId === feature.getProperties().project_id) features.push(feature)
-              })
-            }
-          }
-        })
-    }
-  })
-
-  if (features.length > 0) {
-    source.addFeatures(features)
-    extent = source.getExtent()
-    let dx = extent[2] - extent[0]
-    let dy = extent[3] - extent[1]
-    extent = [
-      extent[0] * (1 - dx / extent[0] / 10),
-      extent[1] * (1 - dy / extent[1] / 10),
-      extent[2] * (1 + dx / extent[2] / 10),
-      extent[3] * (1 + dy / extent[3] / 10),
-    ]
-    view.fit(extent, map!.getSize())
-    setView(view)
-  }
+const relocateMap = (map: any) => {
+  if (extent_.length !== 0) map.getView().fit(extent_, map!.getSize())
 }
 
 // 清楚所有图层组中的数据

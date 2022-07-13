@@ -291,23 +291,32 @@ export const deleFeature = (map: any, feature: any) => {
 }
 
 export const editFeature = (map: any, data: any) => {
-  if (!currrentSelectFeature) return
-
+  let currrent
+  if (currrentSelectFeature) {
+    currrent = currrentSelectFeature
+  } else {
+    let pointLayer = getLayer(map, 'pointLayer')
+    const feature = pointLayer
+      .getSource()
+      .getFeatures()
+      .find((item: any) => item.get('data').id === data.id)
+    if (feature) currrent = feature
+    else return
+  }
   if (data.lng && data.lat) {
     const point = new Point([parseFloat(data.lng), parseFloat(data.lat)]).transform(
       'EPSG:4326',
       'EPSG:3857'
     )
-    currrentSelectFeature.setGeometry(point)
+    currrent.setGeometry(point)
     var format = new WKT()
-    data.type_ = currrentSelectFeature.get('data').type_
+    data.type_ = currrent.get('data').type_
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
-    let isDraw = data.type_ ? true : false
-    currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom(), isDraw))
   }
-  currrentSelectFeature.set('data', data)
-
-  // currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
+  let isDraw = data.type_ ? true : false
+  currrent.set('data', data)
+  currrent.setStyle(pointStyle(data, true, map.getView().getZoom(), isDraw))
+  // currrent.setStyle(pointStyle(data, true, map.getView().getZoom()))
 }
 
 export const getSelectFeatures = () => {
