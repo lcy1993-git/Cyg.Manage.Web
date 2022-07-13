@@ -1,13 +1,6 @@
-import { useControllableValue, useUpdateEffect } from 'ahooks'
-import { Button, Form, Input, message, Modal } from 'antd'
-import { Tabs } from 'antd'
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import GeneralTable from '@/components/general-table'
-import { EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import SubStationPowerForm from './components/subStation-power-form'
-import { isArray } from 'lodash'
 import {
   deleteLine,
   deletePowerSupply,
@@ -16,9 +9,22 @@ import {
   modifyPowerSupply,
   modifyTransformerSubstation,
 } from '@/services/grid-manage/treeMenu'
-import { handleGeom } from '../../utils/methods'
+import { EditOutlined, InfoCircleOutlined } from '@ant-design/icons'
+import { useControllableValue, useUpdateEffect } from 'ahooks'
+import { Button, Form, Input, message, Modal, Tabs } from 'antd'
+import { isArray } from 'lodash'
+import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { useMyContext } from '../../grid-manage/Context'
 import { editFeature } from '../../grid-manage/GridMap/utils/select'
+import {
+  COLORU,
+  KVLEVELOPTIONS,
+  POWERSUPPLY,
+  TRANSFORMERSUBSTATION,
+} from '../../grid-manage/DrawToolbar/GridUtils'
+import { upateLineByMainLine } from '../../grid-manage/GridMap/utils/initializeMap'
+import { handleGeom } from '../../utils/methods'
+import SubStationPowerForm from './components/subStation-power-form'
 
 const { TabPane } = Tabs
 
@@ -38,7 +44,7 @@ const { Search } = Input
 const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
 const StandingBook: React.FC<StandingBookProps> = (props) => {
-  const { companyId, setIsRefresh, isRefresh, mapRef } = useMyContext()
+  const { companyId, setIsRefresh, isRefresh, checkLineIds, mapRef } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
   const [powerKeyWord, setPowerKeyWord] = useState<string>('')
@@ -363,18 +369,40 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
     })
     setFormVisible(true)
   }
+  // 当前选中的主线线路
+  const currentChecklineIds = () => {
+    const ids = [...new Set(checkLineIds)]
+    const lineIds: string[] = ids
+      .map((item: string) => {
+        const exist = item.includes('_&Line')
+        if (exist) {
+          return item.split('_&Line')[0]
+        }
+        return ''
+      })
+      .filter((item: string) => item)
+    return lineIds
+  }
 
-  //
   const sureEditEvent = () => {
     if (currentTab === 'subStations') {
       const editData = tableSelectRows[0]
 
       subForm.validateFields().then(async (values) => {
+        // 判断当前的电压等级
+        let color = ''
+        if (values.kvLevel !== '3') {
+          // 不为10kV
+          const exist = KVLEVELOPTIONS.find((item) => item.kvLevel === Number(values.kvLevel))
+          color = exist?.color[0].label || ''
+        }
+
         const submitInfo = {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           transformerInterval: intervalData,
+          color,
         }
         await modifyTransformerSubstation(submitInfo)
         editFeature(mapRef.map, {
@@ -382,6 +410,15 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           featureType: currentTab,
           // color: drawColor,
         })
+        const currentLinesColor = COLORU.find((item) => item.label === submitInfo.color)
+        const drawParams = {
+          ...submitInfo,
+          color: currentLinesColor?.value,
+          featureType: TRANSFORMERSUBSTATION,
+        }
+
+        editFeature(mapRef.map, drawParams)
+
         subForm.resetFields()
         refresh()
         setIsRefresh(!isRefresh)
@@ -398,8 +435,17 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: '咖啡',
         }
         await modifyPowerSupply(submitInfo)
+        const drawParams = {
+          id: editData.id,
+          geom: `POINT (${values.lng} ${values.lat})`,
+          ...values,
+          color: '#4D3900',
+          featureType: POWERSUPPLY,
+        }
+        editFeature(mapRef.map, drawParams)
         powerForm.resetFields()
         refresh()
         setIsRefresh(!isRefresh)
@@ -412,19 +458,34 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
     //主线路
     const editData = mainLineRows[0]
     lineForm.validateFields().then(async (values) => {
+      // 判断当前的电压等级
+      let color = ''
+      if (values.kvLevel !== '3') {
+        // 不为10kV
+        const exist = KVLEVELOPTIONS.find((item) => item.kvLevel === Number(values.kvLevel))
+        color = exist?.color[0].label || ''
+      }
+      // 上传服务器参数
       const submitInfo = {
         id: editData.id,
         ...values,
         isOverhead: values.lineType === 'Line' ? true : false,
-        color:
-          values.kvLevel == 3
-            ? values.color
-            : values.kvLevel == 4 || values.kvLevel == 5
-            ? '浅黄'
-            : '咖啡',
+        color: values.color ? values.color : color,
       }
 
       await modifyLine(submitInfo)
+      // 更新地图数据参数
+      const lineIds = currentChecklineIds()
+      const exist = lineIds.some((item) => item === submitInfo.id)
+      if (exist) {
+        const currentLinesColor = COLORU.find((item) => item.label === submitInfo.color)
+        const drawParams = {
+          ...submitInfo,
+          color: currentLinesColor ? currentLinesColor.value : '',
+        }
+        upateLineByMainLine(mapRef.map, drawParams)
+      }
+
       lineForm.resetFields()
       refresh()
       setIsRefresh(!isRefresh)

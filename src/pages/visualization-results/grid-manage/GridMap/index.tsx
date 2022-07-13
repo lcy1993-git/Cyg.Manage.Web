@@ -246,7 +246,6 @@ const GridMap = () => {
   /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
     setClickCompanyId(data?.companyId)
-
     if (data) {
       const featureData = { ...data }
       setcurrentfeatureData({
@@ -414,7 +413,11 @@ const GridMap = () => {
     if (deleteData && deleteData.length) {
       try {
         const PromiseAll = []
+        const deleteDataIds: string[] = []
+        setIsRefresh(true)
+        setisDragPoint(true)
         for (let i = 0; i < deleteData.length; i++) {
+          deleteDataIds.push(deleteData[i].id)
           switch (deleteData[i].featureType) {
             case TOWER:
               PromiseAll.push(deleteTower([deleteData[i].id]))
@@ -460,12 +463,15 @@ const GridMap = () => {
         Promise.all(PromiseAll)
           .then((res) => {
             message.info('删除成功')
+            setisDragPoint(false)
+            // 删除点位后，需要刷新重复点位数据
+            localStorage.setItem('deletePointIds', JSON.stringify(deleteDataIds))
             const rootData = deleteData.filter(
               (item: { featureType: string }) =>
                 item.featureType === TRANSFORMERSUBSTATION || item.featureType === POWERSUPPLY
             )
             if (rootData.length) {
-              setIsRefresh(!isRefresh)
+              setIsRefresh(false)
             }
           })
           .catch((err) => {
