@@ -161,7 +161,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 地图定位
   useEffect(() => {
-    map && relocateMap('', [...layerGroups, ...trackLayers], view, setView, map, false)
+    map && relocateMap(map)
   }, [JSON.stringify(positionMap)])
 
   // 左侧菜单伸缩时刷新地图尺寸

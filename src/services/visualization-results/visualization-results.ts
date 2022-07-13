@@ -226,3 +226,11 @@ export const getData = (params: any = {}) => {
     data: { ...params },
   })
 }
+
+// 获取项目范围
+export const getExtent = (params: any = {}) => {
+  return request(`${baseUrl.project}/WebGis/GetMapRegion`, {
+    method: 'POST',
+    data: { ...params },
+  })
+}
