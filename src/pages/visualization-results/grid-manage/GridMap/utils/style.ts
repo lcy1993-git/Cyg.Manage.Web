@@ -36,13 +36,13 @@ export const pointStyle = (
       else text = '\ue614'
       break
     case TRANSFORMERSUBSTATION: // 变电站
-      if (data.kvLevel === 7)
+      if (Number(data.kvLevel) === 7)
         // 330KV
         text = '\ue617'
-      else if (data.kvLevel === 6)
+      else if (Number(data.kvLevel) === 6)
         // 110KV
         text = '\ue618'
-      else if (data.kvLevel === 5 || data.kvLevel === 4)
+      else if (Number(data.kvLevel) === 5 || Number(data.kvLevel) === 4)
         // 35KV/20KV
         text = '\ue61a'
       else text = '\ue617'

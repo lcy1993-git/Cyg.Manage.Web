@@ -183,6 +183,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   const repeatPointHand = async () => {
     const lineIds = currentChecklineIds()
     if (!lineIds.length) {
+      setRepeatPointState(false)
       message.info('请勾选线路')
       return
     }
@@ -199,6 +200,13 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       const currentDragPointId = localStorage.getItem('dragPointId')
       const exist = repeatPointData?.some((item) => item.id === currentDragPointId)
       if (exist) {
+        getrepeatPoint({ lineIds })
+      }
+      const deletePointIds = JSON.parse(localStorage.getItem('deletePointIds') || '[]')
+      const isRefresh = deletePointIds.some((pointId: string) =>
+        repeatPointData?.some((item) => item.id === pointId)
+      )
+      if (isRefresh) {
         getrepeatPoint({ lineIds })
       }
     }
@@ -286,7 +294,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
           <Table
             columns={columns}
             bordered
-            key="id"
+            rowKey="id"
             pagination={false}
             dataSource={repeatPointTableData}
             size="small"
