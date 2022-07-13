@@ -179,7 +179,7 @@ const getLoopPreFeatures = (map: any, feature: any) => {
 export const upLoadPoint = async (
   data: { featureType: string; color: string; companyId: string; id: string },
   lines: any[],
-  isDragPointend: (isDrag: boolean) => void
+  isDragPointend?: (isDrag: boolean) => void
 ) => {
   if (companyId !== data.companyId) {
     return
@@ -233,7 +233,7 @@ export const upLoadPoint = async (
     Promise.all(PromiseAll)
       .then(() => {
         localStorage.setItem('dragPointId', data.id)
-        isDragPointend(false)
+        isDragPointend && isDragPointend(false)
       })
       .catch((err) => {
         // console.log(err, '信息修改失败')
@@ -313,11 +313,31 @@ export const editFeature = (map: any, data: any) => {
     data.type_ = currrent.get('data').type_
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
   }
+
+  currrent.set('data', data) // currrent.setStyle(pointStyle(data, true, map.getView().getZoom()))
   let isDraw = data.type_ ? true : false
-  currrent.set('data', data)
-  currrent.setStyle(pointStyle(data, true, map.getView().getZoom(), isDraw))
-  // currrent.setStyle(pointStyle(data, true, map.getView().getZoom()))
+  const isSelect = currrentSelectFeature ? true : false
+  currrent.setStyle(pointStyle(data, isSelect, map.getView().getZoom(), isDraw))
 }
+// export const editFeature = (map: any, data: any) => {
+//   if (!currrentSelectFeature) return
+
+//   if (data.lng && data.lat) {
+//     const point = new Point([parseFloat(data.lng), parseFloat(data.lat)]).transform(
+//       'EPSG:4326',
+//       'EPSG:3857'
+//     )
+//     currrentSelectFeature.setGeometry(point)
+//     var format = new WKT()
+//     data.type_ = currrentSelectFeature.get('data').type_
+//     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
+//     let isDraw = data.type_ ? true : false
+//     currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom(), isDraw))
+//   }
+//   currrentSelectFeature.set('data', data)
+
+//   // currrentSelectFeature.setStyle(pointStyle(data, true, map.getView().getZoom()))
+// }
 
 export const getSelectFeatures = () => {
   return select.getFeatures()

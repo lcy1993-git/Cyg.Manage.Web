@@ -271,7 +271,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       lineForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lineId: editData.lineId,
         isOverhead: editData.isOverhead ? 'Line' : 'CableCircuit',
       })
@@ -289,7 +288,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
       const geom = handleGeom(editData.geom)
       cableWellForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -307,7 +305,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       towerForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -325,7 +322,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       boxTransForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -342,7 +338,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
       const geom = handleGeom(editData.geom)
       cabinetForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -359,7 +354,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       elecRoomForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -376,7 +370,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       switchForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -393,7 +386,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       breakerForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -410,7 +402,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       columnTransForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -428,7 +419,6 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       cableBoxForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -446,6 +436,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           ...values,
           isOverhead: editData.isOverhead,
+          color: editData.color,
         }
 
         await modifyRelationLine(submitInfo)
@@ -464,6 +455,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyCableWell(submitInfo)
         cableWellForm.resetFields()
@@ -481,6 +473,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyTower(submitInfo)
         towerForm.resetFields()
@@ -497,6 +490,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyBoxTransformer(submitInfo)
         boxTransForm.resetFields()
@@ -513,6 +507,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyRingNetworkCabinet(submitInfo)
         cabinetForm.resetFields()
@@ -529,6 +524,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyElectricityDistributionRoom(submitInfo)
         elecRoomForm.resetFields()
@@ -546,6 +542,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifySwitchingStation(submitInfo)
         switchForm.resetFields()
@@ -563,6 +560,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyColumnCircuitBreaker(submitInfo)
         refresh()
@@ -578,6 +576,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyColumnTransformer(submitInfo)
         columnTransForm.resetFields()
@@ -595,6 +594,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          color: editData.color,
         }
         await modifyCableBranchBox(submitInfo)
         cableBoxForm.resetFields()

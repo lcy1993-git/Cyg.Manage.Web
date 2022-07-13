@@ -295,3 +295,43 @@ export const createFeatureId = () => {
   var uuid = s.join('')
   return uuid
 }
+
+//获取对应设备项目的电压等级项
+export const getKeyword = (clickTab: string) => {
+  switch (clickTab) {
+    case 'mainLine':
+      return 'Line'
+    case 'subStations':
+      return 'TransformerSubstation'
+    case 'power':
+      return 'PowerSupply'
+    case 'cableWell':
+      return 'CableWell'
+    case 'boxTrans':
+      return 'BoxTransformer'
+    case 'cabinet':
+      return 'RingNetworkCabinet'
+    case 'elecRoom':
+      return 'ElectricityDistributionRoom'
+    case 'switchStation':
+      return 'SwitchingStation'
+    case 'breaker':
+      return 'ColumnCircuitBreaker'
+    case 'columnTrans':
+      return 'ColumnTransformer'
+    case 'cableBox':
+      return 'CableBranchBox'
+    case 'tower':
+      return 'Tower'
+    default:
+      return ''
+  }
+}
+
+export const handleKvOptions = (clickTab: string) => {
+  return [
+    ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
+      item.belonging.find((type: string) => type.includes(getKeyword(clickTab)))
+    ),
+  ]
+}
