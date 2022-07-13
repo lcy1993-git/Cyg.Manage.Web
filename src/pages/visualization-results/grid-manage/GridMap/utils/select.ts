@@ -266,27 +266,47 @@ export const deletCurrrentSelectFeature = (map: any) => {
 export const deleFeature = (map: any, feature: any) => {
   if (!feature) return
   let geomType = feature.getGeometry().getType()
-  let pointLayer = getLayer(map, 'pointLayer'),
-    lineLayer = getLayer(map, 'lineLayer')
+  let lineLayer = getLayer(map, 'lineLayer')
   if (geomType === 'LineString') {
     lineLayer.getSource().removeFeature(feature)
     deleFeatures.push(feature.get('data'))
     //! 删除线路 ....currrentSelectFeature.get('data')
   } else if (geomType === 'Point') {
-    pointLayer.getSource().removeFeature(feature)
-    deleFeatures.push(feature.get('data'))
-    // !!  1. 删除点位 首先要删除当前点位 feature.get('data')
-    const pointId = feature.get('data').id
-    const lines = lineLayer.getSource().getFeatures()
-    if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
-      lines.forEach((item: any) => {
-        if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
-          // !  2... 然后删除线路  item.get('data')
-          lineLayer.getSource().removeFeature(item)
-          deleFeatures.push(item.get('data'))
+    if (
+      feature.get('data').featureType === POWERSUPPLY ||
+      feature.get('data').featureType === TRANSFORMERSUBSTATION
+    )
+      deleAllChildFeature(map, feature, true)
+    else deleAllChildFeature(map, feature, false)
+  }
+}
+
+const deleAllChildFeature = (map: any, feature: any, isDeleAll: boolean = false) => {
+  const pointLayer = getLayer(map, 'pointLayer')
+  const lineLayer = getLayer(map, 'lineLayer')
+
+  pointLayer.getSource().removeFeature(feature)
+  deleFeatures.push(feature.get('data'))
+
+  const lines = lineLayer.getSource().getFeatures()
+  const pointId = feature.get('data').id
+  if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
+    lines.forEach((item: any) => {
+      if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
+        // !  2... 然后删除线路  item.get('data')
+        lineLayer.getSource().removeFeature(item)
+        deleFeatures.push(item.get('data'))
+        if (isDeleAll) {
+          if (item.get('data').startId === pointId) {
+            const childFeature = pointLayer
+              .getSource()
+              .getFeatures()
+              .find((point: any) => point.get('data').id === item.get('data').endId)
+            childFeature && deleAllChildFeature(map, childFeature, isDeleAll)
+          }
         }
-      })
-    }
+      }
+    })
   }
 }
 
