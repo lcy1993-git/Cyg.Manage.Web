@@ -204,16 +204,17 @@ const GridMap = () => {
           isOverhead: item.lineType === LINE,
         }
       })
-      const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
-        return {
-          id: createFeatureId(),
-          transformerSubstationId: item.id,
-          publicuse: 0,
-          spare: 0,
-          specialPurpose: 0,
-          total: 0,
-        }
-      })
+
+      // const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
+      //   return {
+      //     id: createFeatureId(),
+      //     transformerSubstationId: item.id,
+      //     publicuse: 0,
+      //     spare: 0,
+      //     specialPurpose: 0,
+      //     total: 0,
+      //   }
+      // })
 
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(true)
@@ -233,7 +234,7 @@ const GridMap = () => {
         powerSupplyList,
         transformerStationList,
         lineElementRelationList,
-        transformerIntervalList,
+        // transformerIntervalList,
       })
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(false)
@@ -244,7 +245,6 @@ const GridMap = () => {
 
   /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
-    // setIsSaveVisible(false)
     setClickCompanyId(data?.companyId)
 
     if (data) {
@@ -277,7 +277,11 @@ const GridMap = () => {
   }
 
   useUpdateEffect(() => {
-    clickCompanyId !== companyId ? setIsSaveVisible(true) : setIsSaveVisible(false)
+    if (!clickCompanyId || clickCompanyId === companyId) {
+      setIsSaveVisible(false)
+    } else {
+      setIsSaveVisible(true)
+    }
   }, [clickCompanyId])
 
   const onClose = () => {
@@ -754,24 +758,28 @@ const EditTransformerSubstation = (props: any) => {
         const formData = {}
         data.forEach((item) => {
           if (item.type === 6) {
+            formData['id_110'] = item.id
             formData['publicuse_110'] = item.publicuse || 0
             formData['spare_110'] = item.spare || 0
             formData['specialPurpose_110'] = item.specialPurpose || 0
             formData['total_110'] = item.total || 0
           }
           if (item.type === 5) {
+            formData['id_35'] = item.id
             formData['publicuse_35'] = item.publicuse || 0
             formData['spare_35'] = item.spare || 0
             formData['specialPurpose_35'] = item.specialPurpose || 0
             formData['total_35'] = item.total || 0
           }
           if (item.type === 3) {
+            formData['id_10'] = item.id
             formData['publicuse_10'] = item.publicuse || 0
             formData['spare_10'] = item.spare || 0
             formData['specialPurpose_10'] = item.specialPurpose || 0
             formData['total_10'] = item.total || 0
           }
         })
+
         form.setFieldsValue({
           ...formData,
         })
@@ -790,18 +798,21 @@ const EditTransformerSubstation = (props: any) => {
       spare_110: '',
       specialPurpose_110: '',
       total_110: '',
+      id_110: '',
     }
     const Kv_10 = {
       publicuse_10: '',
       spare_10: '',
       specialPurpose_10: '',
       total_10: '',
+      id_10: '',
     }
     const Kv_35 = {
       publicuse_35: '',
       spare_35: '',
       specialPurpose_35: '',
       total_35: '',
+      id_35: '',
     }
     for (let i = 0; i < Object.keys(data).length; i++) {
       if (Object.keys(data)[i].includes('_10')) {
@@ -820,6 +831,7 @@ const EditTransformerSubstation = (props: any) => {
         spare: Kv_110.spare_110,
         specialPurpose: Kv_110.specialPurpose_110,
         total: Kv_110.total_110,
+        id: Kv_110.id_110,
         type: 6,
         transformerSubstationId: id,
       },
@@ -828,6 +840,7 @@ const EditTransformerSubstation = (props: any) => {
         spare: Kv_10.spare_10,
         specialPurpose: Kv_10.specialPurpose_10,
         total: Kv_10.total_10,
+        id: Kv_10.id_10,
         type: 3,
         transformerSubstationId: id,
       },
@@ -836,6 +849,7 @@ const EditTransformerSubstation = (props: any) => {
         spare: Kv_35.spare_35,
         specialPurpose: Kv_35.specialPurpose_35,
         total: Kv_35.total_35,
+        id: Kv_35.id_35,
         type: 5,
         transformerSubstationId: id,
       },
@@ -850,6 +864,7 @@ const EditTransformerSubstation = (props: any) => {
         try {
           await form.validateFields()
           const formData = form.getFieldsValue()
+
           const data = convertData(formData, id)
           form.resetFields()
           handleOk(data)
@@ -862,6 +877,9 @@ const EditTransformerSubstation = (props: any) => {
     >
       <div className="editTransformerSubstation">
         <Form form={form} {...formItemModelLayout}>
+          <Form.Item name="id_110" hidden />
+          <Form.Item name="id_35" hidden />
+          <Form.Item name="id_10" hidden />
           <Form.Item
             label="110kV出线间隔公用"
             name="publicuse_110"

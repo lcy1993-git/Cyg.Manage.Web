@@ -209,6 +209,7 @@ const DrawToolbar = () => {
           isOverhead: item.lineType === LINE,
         }
       })
+
       const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
         return {
           id: createFeatureId(),

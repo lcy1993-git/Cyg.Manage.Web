@@ -1,13 +1,14 @@
-import { equipKvLevel, getIntervalByTransformer } from '@/services/grid-manage/treeMenu'
-import { TransIntervalType } from '@/services/visualization-results/list-menu'
-import { useControllableValue, useRequest } from 'ahooks'
-import { Button, Form, Input, message, Modal, Table } from 'antd'
-import { ColumnsType } from 'antd/es/table'
-import { Dispatch, FC, SetStateAction, useState } from 'react'
 import CyFormItem from '@/components/cy-form-item'
-import styles from './index.less'
+import EmptyTip from '@/components/empty-tip'
 import EnumSelect from '@/components/enum-select'
 import { verificationNaturalNumber0to100 } from '@/pages/visualization-results/grid-manage/tools'
+import { equipKvLevel } from '@/services/grid-manage/treeMenu'
+import { TransIntervalType } from '@/services/visualization-results/list-menu'
+import { useControllableValue } from 'ahooks'
+import { Button, Form, Input, message, Modal, Table } from 'antd'
+import { ColumnsType } from 'antd/es/table'
+import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import styles from './index.less'
 
 interface TransIntervalTableProps {
   transId: string
@@ -26,11 +27,15 @@ export const TransIntervalTable: FC<TransIntervalTableProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { transId, dataOnchange, intervalData } = props
   const [tableSelectArray, setTableSelectArray] = useState<any[]>([])
+  const [tableKeys, setTableKeys] = useState<any[]>([])
   const [addVisible, setAddVisible] = useState<boolean>(false)
+  const [isAdd, setIsAdd] = useState<boolean>(false)
+
+  //添加按钮是否生效判断
+  const [canAdd, setCanAdd] = useState<boolean>(false)
+  const [form] = Form.useForm()
 
   // const { data, loading } = useRequest(getIntervalByTransformer({ transformerId: transId }))
-
-  // console.log(data, '111')
 
   const columns: ColumnsType<TransIntervalType> = [
     {
@@ -72,22 +77,91 @@ export const TransIntervalTable: FC<TransIntervalTableProps> = (props) => {
 
   const tableSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
-      setTableSelectArray(selectedRows.map((item) => item['type']))
+      setTableKeys(selectedRows.map((item) => item['type']))
+      setTableSelectArray(selectedRows)
     },
   }
 
   //添加出线间隔数据
   const addIntervalData = () => {
-    if (intervalData && intervalData.length < 3) {
-      setAddVisible(true)
+    setAddVisible(true)
+    setIsAdd(true)
+  }
+
+  //编辑出线间隔
+  const editIntervalData = () => {
+    if (tableSelectArray && tableSelectArray.length === 0) {
+      message.warning('请先选择需要编辑的数据')
       return
     }
-    if (tableSelectArray.length === 0) {
-      message.warning('请先选择要编辑的数据')
-      return
-    }
+    const editData = tableSelectArray[0]
+    form.setFieldsValue({
+      type: String(editData.type),
+      publicuse: editData.publicuse,
+      spare: editData.spare,
+      specialPurpose: editData.specialPurpose,
+      total: editData.total,
+    })
     setAddVisible(true)
   }
+
+  //暂存新增或修改的数据
+  const saveEvent = () => {
+    //添加出线间隔
+    if (isAdd) {
+      form.validateFields().then(async (values) => {
+        const submitInfo = {
+          transformerSubstationId: transId,
+          ...values,
+        }
+        const copyData = [...intervalData]
+        const index = intervalData.findIndex((item: any) => item.type == submitInfo.type)
+        if (index > -1) {
+          message.warning('已存在该电压等级的出线间隔，请编辑')
+          return
+        }
+
+        copyData.splice(index, 0, submitInfo)
+        dataOnchange(copyData)
+
+        form.resetFields()
+        message.success('添加成功')
+        setIsAdd(false)
+        setTableKeys([])
+        setTableSelectArray([])
+        setAddVisible(false)
+      })
+      return
+    }
+
+    //编辑出线间隔
+    const editData = tableSelectArray[0]
+
+    form.validateFields().then(async (values) => {
+      const submitInfo = {
+        id: editData.id,
+        transformerSubstationId: editData.transformerSubstationId,
+        ...values,
+      }
+      const copyData = [...intervalData]
+      const index = intervalData.findIndex((item: any) => item.type == submitInfo.type)
+      copyData.splice(index, 1, submitInfo)
+      dataOnchange(copyData)
+      form.resetFields()
+      message.success('修改成功')
+      setAddVisible(false)
+      setTableKeys([])
+      setTableSelectArray([])
+    })
+  }
+
+  useEffect(() => {
+    if (intervalData && intervalData.length < 3) {
+      setCanAdd(false)
+      return
+    }
+    setCanAdd(true)
+  }, [intervalData])
 
   return (
     <>
@@ -98,18 +172,30 @@ export const TransIntervalTable: FC<TransIntervalTableProps> = (props) => {
         width="45%"
         visible={state as boolean}
         destroyOnClose
-        okText="确定"
-        footer=""
+        okText="保存"
         cancelText="取消"
-        onCancel={() => setState(false)}
+        onCancel={() => {
+          setTableKeys([])
+          setState(false)
+        }}
+        onOk={() => setState(false)}
       >
         <div className={styles.buttonArea}>
-          <Button type="primary" onClick={() => addIntervalData()}>
-            添加/编辑
+          <Button
+            type="primary"
+            className="mr7"
+            onClick={() => addIntervalData()}
+            disabled={canAdd}
+          >
+            添加
           </Button>
+          <Button onClick={() => editIntervalData()}>编辑</Button>
         </div>
         <div className={styles.intervalTable}>
           <Table
+            locale={{
+              emptyText: <EmptyTip className="pt20 pb20" description="暂无数据" />,
+            }}
             columns={columns}
             bordered
             size="middle"
@@ -120,28 +206,35 @@ export const TransIntervalTable: FC<TransIntervalTableProps> = (props) => {
             rowSelection={{
               type: 'radio',
               columnWidth: '15px',
-              selectedRowKeys: tableSelectArray,
+              selectedRowKeys: tableKeys,
               ...tableSelection,
             }}
           />
         </div>
       </Modal>
-      {/* <AddInervalForm /> */}
       <Modal
         maskClosable={false}
         // bodyStyle={{ padding: '24px 24px 0' }}
-        title="出线间隔"
+        title={isAdd ? '添加出线间隔' : '编辑出线间隔'}
         width="350px"
         visible={addVisible}
         destroyOnClose
-        okText="确定"
-        footer=""
+        okText="保存"
         cancelText="取消"
-        onCancel={() => setAddVisible(false)}
+        onCancel={() => {
+          setTableSelectArray([])
+          setIsAdd(false)
+          setAddVisible(false)
+        }}
+        onOk={() => saveEvent()}
       >
-        <Form>
+        <Form form={form}>
           <CyFormItem name="type" label="电压等级">
-            <EnumSelect placeholder="请输入名称" enumList={intervalKvLevel} />
+            <EnumSelect
+              placeholder="请输入名称"
+              enumList={intervalKvLevel}
+              disabled={isAdd ? false : true}
+            />
           </CyFormItem>
           <CyFormItem name="publicuse" label="公用" rules={[verificationNaturalNumber0to100]}>
             <Input placeholder="请输入" />

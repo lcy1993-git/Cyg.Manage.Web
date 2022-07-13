@@ -1,19 +1,16 @@
 import React, { useState } from 'react'
-import { Button, Input, Select } from 'antd'
+import { Input, Select } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
-import {
-  equipKvLevel,
-  getAllBelongingLineItem,
-  kvOption,
-  lineModel,
-} from '@/services/grid-manage/treeMenu'
+import { equipKvLevel, getAllBelongingLineItem } from '@/services/grid-manage/treeMenu'
 import {
   CABLECIRCUITMODEL,
+  handleKvOptions,
   LINEMODEL,
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
 import { useRequest } from 'ahooks'
 import { BelongingLineType } from '@/pages/visualization-results/grid-manage/DrawToolbar'
+import UrlSelect from '@/components/url-select'
 
 interface EquipFormParams {
   currentEditTab: string
@@ -51,7 +48,13 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         required
         rules={[{ required: true, message: '电压等级不能为空' }]}
       >
-        <EnumSelect placeholder="请选择电压等级" enumList={equipKvLevel} />
+        <UrlSelect
+          showSearch
+          titlekey="label"
+          defaultData={handleKvOptions(currentEditTab)}
+          valuekey="kvLevel"
+          placeholder="请选择电压等级"
+        />
       </CyFormItem>
 
       <CyFormItem

@@ -206,7 +206,7 @@ const LeftMenu = (props: any) => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [stationItemsHandle, lineAssemble])
+  }, [stationItemsHandle, lineAssemble, isRefresh])
 
   useEffect(() => {
     setcheckLineIds(linesId)
@@ -259,7 +259,10 @@ const LeftMenu = (props: any) => {
         visible={visible}
         onOk={handleOk}
         confirmLoading={confirmLoading}
-        onCancel={() => setVisible(false)}
+        onCancel={() => {
+          form.resetFields()
+          setVisible(false)
+        }}
       >
         <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
           <Form.Item

@@ -18,6 +18,7 @@ import {
 } from '@/services/grid-manage/treeMenu'
 import { handleGeom } from '../../utils/methods'
 import { useMyContext } from '../../grid-manage/Context'
+import { editFeature } from '../../grid-manage/GridMap/utils/select'
 
 const { TabPane } = Tabs
 
@@ -37,7 +38,7 @@ const { Search } = Input
 const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
 const StandingBook: React.FC<StandingBookProps> = (props) => {
-  const { companyId, setIsRefresh, isRefresh } = useMyContext()
+  const { companyId, setIsRefresh, isRefresh, mapRef } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
   const [powerKeyWord, setPowerKeyWord] = useState<string>('')
@@ -208,8 +209,8 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
     },
     {
       title: '所属厂站',
-      dataIndex: 'belonging',
-      index: 'belonging',
+      dataIndex: 'belongingName',
+      index: 'belongingName',
       width: 150,
     },
     {
@@ -326,7 +327,6 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
 
       subForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -344,7 +344,6 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
 
       powerForm.setFieldsValue({
         ...editData,
-        kvLevel: String(editData.kvLevel),
         lng: geom[0],
         lat: geom[1],
       })
@@ -361,7 +360,6 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
     lineForm.setFieldsValue({
       ...editData,
       lineType: editData.isOverhead ? 'Line' : 'CableCircuit',
-      kvLevel: String(editData.kvLevel),
     })
     setFormVisible(true)
   }
@@ -376,9 +374,14 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           id: editData.id,
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
+          transformerInterval: intervalData,
         }
-
         await modifyTransformerSubstation(submitInfo)
+        editFeature(mapRef.map, {
+          ...submitInfo,
+          featureType: currentTab,
+          // color: drawColor,
+        })
         subForm.resetFields()
         refresh()
         setIsRefresh(!isRefresh)
@@ -413,7 +416,14 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         id: editData.id,
         ...values,
         isOverhead: values.lineType === 'Line' ? true : false,
+        color:
+          values.kvLevel == 3
+            ? values.color
+            : values.kvLevel == 4 || values.kvLevel == 5
+            ? '浅黄'
+            : '咖啡',
       }
+
       await modifyLine(submitInfo)
       lineForm.resetFields()
       refresh()

@@ -1,15 +1,17 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Button, Input, Select } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import EnumSelect from '@/components/enum-select'
-import { equipKvLevel, GetStationItems } from '@/services/grid-manage/treeMenu'
+import { GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
 import { BelongingLineType } from '@/pages/visualization-results/grid-manage/DrawToolbar'
 import {
   CABLECIRCUITMODEL,
+  KVLEVELOPTIONS,
+  KVLEVELTYPES,
   LINEMODEL,
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
 import TransIntervalTable from '../trans-interval-table'
+import UrlSelect from '@/components/url-select'
 
 interface SubStationPowerParams {
   currentEditTab: string
@@ -33,6 +35,22 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   })
 
   const [transTableVisible, setTransTableVisible] = useState<boolean>(false)
+
+  const handleKvOptions = (clickTab: string) => {
+    return [
+      ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
+        item.belonging.find((type: string) =>
+          type.includes(
+            clickTab === 'subStations'
+              ? 'TransformerSubstation'
+              : clickTab === 'power'
+              ? 'PowerSupply'
+              : 'Line'
+          )
+        )
+      ),
+    ]
+  }
 
   const onChangeLineType = (value: string) => {
     setselectLineType(value)
@@ -60,10 +78,18 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
         required
         rules={[{ required: true, message: '电压等级不能为空' }]}
       >
-        <EnumSelect
+        <UrlSelect
+          showSearch
+          titlekey="label"
+          defaultData={handleKvOptions(currentEditTab)}
+          valuekey="kvLevel"
           placeholder="请选择电压等级"
-          enumList={equipKvLevel}
-          onChange={(value) => setCurrentKv(Number(value))}
+          onChange={(value) => {
+            setCurrentKv(Number(value))
+            form.setFieldsValue({
+              color: undefined,
+            })
+          }}
         />
       </CyFormItem>
 
@@ -72,6 +98,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           <CyFormItem
             name="belonging"
             label="所属厂站"
+            required
             rules={[{ required: true, message: '请选择所属厂站' }]}
           >
             <Select allowClear>
@@ -94,6 +121,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           <CyFormItem
             name="lineType"
             label="线路类型"
+            required
             rules={[{ required: true, message: '请选择线路类型' }]}
           >
             <Select allowClear dropdownStyle={{ zIndex: 3000 }} onChange={onChangeLineType}>
@@ -105,6 +133,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           <CyFormItem
             name="conductorModel"
             label="线路型号"
+            required
             rules={[{ required: true, message: '请选择线路型号' }]}
           >
             <Select dropdownStyle={{ zIndex: 3000 }}>
@@ -122,6 +151,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
             </Select>
           </CyFormItem>
           <CyFormItem
+            required
             name="lineProperties"
             label="线路性质"
             rules={[{ required: true, message: '请选择线路性质' }]}
@@ -138,6 +168,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
         <CyFormItem
           name="color"
           label="线路颜色"
+          required
           rules={[{ required: true, message: '请选择线路颜色' }]}
         >
           <Select allowClear>
