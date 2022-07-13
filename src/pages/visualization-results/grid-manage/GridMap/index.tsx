@@ -217,7 +217,7 @@ const GridMap = () => {
 
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(true)
-        setIsRefresh(!isRefresh)
+        setIsRefresh(true)
       }
 
       await stationItemsHandle({
@@ -237,7 +237,7 @@ const GridMap = () => {
       })
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(false)
-        setIsRefresh(!isRefresh)
+        setIsRefresh(false)
       }
     }
   }

@@ -165,6 +165,16 @@ const updateLine = async (
   }
 }
 
+// 多回路拖动更新
+const updateLoops = (feature: any) => {
+  //
+}
+
+const getLoopPreFeatures = (map: any, feature: any) => {
+  const lineLayer = getLayer(map, 'lineLayer')
+  lineLayer.getSource().getFeatures().find()
+}
+
 // 点位数据上传
 export const upLoadPoint = async (
   data: { featureType: string; color: string; companyId: string; id: string },

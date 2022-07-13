@@ -8,6 +8,7 @@ import { transform } from 'ol/proj'
 import { CABLECIRCUIT, CABLEWELL, LINE, TOWER, TYPENUMS } from '../../DrawToolbar/GridUtils'
 import { createFeatureId } from './../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
+import { calculationLine } from './multiloop'
 import { setSelectActive } from './select'
 import { lineStyle, pointStyle } from './style'
 class DrawTool {
@@ -195,9 +196,24 @@ class DrawTool {
 
       // 移除原有要素层
       source.removeFeature(feature)
-      // 将拆分生成的新要素层添加至图层
-      source.addFeatures(features)
+      if (!feature.get('data').lineNumber || parseInt(feature.get('data').lineNumber) === 1) {
+        // 将拆分生成的新要素层添加至图层
+        source.addFeatures(features)
+      } else {
+        const multiloops = calculationLine(features, feature.get('data').lineNumber)
+        multiloops.forEach((loopData: any) => {
+          const loopGeom: any = new WKT()
+            .readGeometry(loopData.geom)
+            .transform('EPSG:4326', 'EPSG:3857')
+          const loopFeature = new Feature(loopGeom)
+          loopData.id = createFeatureId()
+          loopFeature.set('data', loopData)
+          loopFeature.setStyle(lineStyle(loopData))
+          source.addFeature(loopFeature)
+        })
+      }
     }, 0)
+    // console.log(feature.getGeometry().getCoordinates(), 1112)
   }
 
   handleLine_node = (lont: number, lat: number, lineData: any, isAdd: boolean) => {

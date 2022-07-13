@@ -160,11 +160,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }
 
   // 请求查重数据
-  const {
-    data: repeatPointData,
-    loading,
-    run: getrepeatPoint,
-  } = useRequest(getrepeatPointdata, {
+  const { data: repeatPointData, loading, run: getrepeatPoint } = useRequest(getrepeatPointdata, {
     manual: true,
     onSuccess: () => {
       const data = repeatPointData?.map((item, index) => {
