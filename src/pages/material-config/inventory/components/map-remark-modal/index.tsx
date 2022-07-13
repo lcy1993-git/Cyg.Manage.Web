@@ -63,7 +63,7 @@ const MapRemarkModal: React.FC<MapRemarkParams> = (props) => {
       >
         <Spin spinning={requestLoading} tip="映射创建中...">
           <Form form={form}>
-            <CyFormItem name="remark" label="备注" labelWidth={45}>
+            <CyFormItem name="remark" label="备注" labelWidth={50}>
               <TextArea showCount maxLength={200} placeholder="备注说明" />
             </CyFormItem>
           </Form>

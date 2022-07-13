@@ -52,8 +52,11 @@ export const columns = [
   {
     title: '数量',
     width: 80,
-    dataIndex: 'itemNumber',
-    key: 'itemNumber',
+    dataIndex: 'number',
+    key: 'number',
+    render: (text: any, record: any) => {
+      return record.unit === 'km' ? record.number / 1000 : record.number
+    },
   },
   {
     title: '单重(kg)',
