@@ -45,6 +45,19 @@ import {
   towerColumns,
 } from './components/equip-columns'
 import { useMyContext } from '../../grid-manage/Context'
+import { editFeature } from '../../grid-manage/GridMap/utils/select'
+import {
+  BOXTRANSFORMER,
+  CABLEBRANCHBOX,
+  CABLEWELL,
+  COLORU,
+  COLUMNCIRCUITBREAKER,
+  COLUMNTRANSFORMER,
+  ELECTRICITYDISTRIBUTIONROOM,
+  RINGNETWORKCABINET,
+  SWITCHINGSTATION,
+  TOWER,
+} from '../../grid-manage/DrawToolbar/GridUtils'
 
 const { TabPane } = Tabs
 
@@ -71,7 +84,7 @@ const tabTitle = {
 const { Search } = Input
 
 const EquipLineList: React.FC<StandingBookProps> = (props) => {
-  const { companyId } = useMyContext()
+  const { companyId, checkLineIds, mapRef } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { lineTitle, lineId } = props
 
@@ -426,7 +439,16 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
     }
   }
 
-  //
+  //地图实时更新方法
+  const updateMapInfo = (data: any, type: string) => {
+    const currentLinesColor = COLORU.find((item) => item.label === data.color)
+    editFeature(mapRef.map, {
+      ...data,
+      color: currentLinesColor?.value,
+      featureType: type,
+    })
+  }
+
   const sureEditEvent = () => {
     if (currentTab === 'line') {
       const editData = lineRows[0]
@@ -458,6 +480,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyCableWell(submitInfo)
+        updateMapInfo(submitInfo, CABLEWELL)
         cableWellForm.resetFields()
         refresh()
         message.success('更新成功')
@@ -476,6 +499,8 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyTower(submitInfo)
+        updateMapInfo(submitInfo, TOWER)
+
         towerForm.resetFields()
         refresh()
         message.success('更新成功')
@@ -493,6 +518,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyBoxTransformer(submitInfo)
+        updateMapInfo(submitInfo, BOXTRANSFORMER)
         boxTransForm.resetFields()
         refresh()
         message.success('更新成功')
@@ -510,6 +536,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyRingNetworkCabinet(submitInfo)
+        updateMapInfo(submitInfo, RINGNETWORKCABINET)
         cabinetForm.resetFields()
         refresh()
         message.success('更新成功')
@@ -527,6 +554,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyElectricityDistributionRoom(submitInfo)
+        updateMapInfo(submitInfo, ELECTRICITYDISTRIBUTIONROOM)
         elecRoomForm.resetFields()
         refresh()
         message.success('更新成功')
@@ -545,6 +573,8 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifySwitchingStation(submitInfo)
+        updateMapInfo(submitInfo, SWITCHINGSTATION)
+
         switchForm.resetFields()
 
         refresh()
@@ -563,6 +593,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyColumnCircuitBreaker(submitInfo)
+        updateMapInfo(submitInfo, COLUMNCIRCUITBREAKER)
         refresh()
         message.success('更新成功')
         setFormVisible(false)
@@ -579,6 +610,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyColumnTransformer(submitInfo)
+        updateMapInfo(submitInfo, COLUMNTRANSFORMER)
         columnTransForm.resetFields()
 
         refresh()
@@ -597,6 +629,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           color: editData.color,
         }
         await modifyCableBranchBox(submitInfo)
+        updateMapInfo(submitInfo, CABLEBRANCHBOX)
         cableBoxForm.resetFields()
         refresh()
         message.success('更新成功')

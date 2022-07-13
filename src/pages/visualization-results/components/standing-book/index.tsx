@@ -405,11 +405,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           color,
         }
         await modifyTransformerSubstation(submitInfo)
-        editFeature(mapRef.map, {
-          ...submitInfo,
-          featureType: currentTab,
-          // color: drawColor,
-        })
+
         const currentLinesColor = COLORU.find((item) => item.label === submitInfo.color)
         const drawParams = {
           ...submitInfo,
