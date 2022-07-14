@@ -463,6 +463,7 @@ const GridMap = () => {
         }
         Promise.all(PromiseAll)
           .then((res) => {
+            // console.log(res, '123456')
             message.info('删除成功')
             setisDragPoint(false)
             // 删除点位后，需要刷新重复点位数据
@@ -504,10 +505,6 @@ const GridMap = () => {
     //每次路由变动都会走这里
     setpathName(location.pathname)
   })
-
-  // useEffect(() => {
-  //   console.log(mapRef.map.updateSize(), '123456')
-  // }, [pathName])
 
   // 挂载地图
   useMount(() => {

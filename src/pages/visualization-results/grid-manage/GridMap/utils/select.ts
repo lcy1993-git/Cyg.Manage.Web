@@ -257,8 +257,10 @@ export const deletCurrrentSelectFeature = (map: any) => {
 // 通过台账删除要素
 export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => {
   if (!data) {
-    if (lineIds) deleFeatureBylinesId(map, lineIds)
-    else return
+    if (lineIds && lineIds.length) {
+      deleFeatureBylinesId(map, lineIds)
+    }
+    return
   }
   const pointLayer = getLayer(map, 'pointLayer')
   let lineLayer = getLayer(map, 'lineLayer')
