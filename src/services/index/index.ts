@@ -191,9 +191,14 @@ export const getProjectGanttData = ({
   )
 }
 
+// 网架
+export const getGridMapRegisterData = (areaId: string) => {
+  return request(`/districtData/${areaId}.json`, { method: 'GET' })
+}
+
 // 获取地图组件的area组件
 export const getMapRegisterData = (areaId: string) => {
-  return request(`/districtData/${areaId}.json`, { method: 'GET' })
+  return request(`/json/${areaId}.json`, { method: 'GET' })
 }
 
 // 获取项目操作log
