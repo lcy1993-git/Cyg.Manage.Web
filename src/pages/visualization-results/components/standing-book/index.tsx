@@ -295,25 +295,30 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
 
   const deleteEvent = async () => {
     if (currentTab === 'subStations') {
-      const deleteIds = await deleteTransformerSubstation([tableSelectRows[0].id])
-
-      // console.log(tableSelectRows[0], deleteIds, '12111212212')
-
-      deletFeatureByTable(mapRef.map, {
-        ...tableSelectRows[0],
-        featureType: TRANSFORMERSUBSTATION,
-      })
+      const deleteIds: string[] = await deleteTransformerSubstation([tableSelectRows[0].id])
+      deletFeatureByTable(
+        mapRef.map,
+        {
+          ...tableSelectRows[0],
+          featureType: TRANSFORMERSUBSTATION,
+        },
+        deleteIds
+      )
       message.success('删除成功')
       refresh()
       setIsRefresh(!isRefresh)
       return
     }
     if (currentTab === 'power') {
-      await deletePowerSupply([powerSelectRows[0].id])
-      deletFeatureByTable(mapRef.map, {
-        ...powerSelectRows[0],
-        featureType: POWERSUPPLY,
-      })
+      const deleteIds: string[] = await deletePowerSupply([powerSelectRows[0].id])
+      deletFeatureByTable(
+        mapRef.map,
+        {
+          ...powerSelectRows[0],
+          featureType: POWERSUPPLY,
+        },
+        deleteIds
+      )
       message.success('删除成功')
       refresh()
       setIsRefresh(!isRefresh)
@@ -322,10 +327,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
     // 删除线路、刷新左侧树勾选的线路
 
     await deleteLine([mainLineRows[0].id])
-    deletFeatureByTable(mapRef.map, {
-      ...mainLineRows[0],
-      featureType: 'Line',
-    })
+    deletFeatureByTable(mapRef.map, null, [mainLineRows[0].id])
     message.success('删除成功')
     refresh()
     setIsRefresh(!isRefresh)

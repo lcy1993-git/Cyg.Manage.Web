@@ -255,14 +255,20 @@ export const deletCurrrentSelectFeature = (map: any) => {
 }
 
 // 通过台账删除要素
-export const deletFeatureByTable = (map: any, data: any) => {
+export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => {
   if (!data) return
+  const pointLayer = getLayer(map, 'pointLayer')
   let lineLayer = getLayer(map, 'lineLayer')
   if (POINTS.indexOf(data.featureType) > -1) {
     // 属于点要素
-    if (data.featureType === POWERSUPPLY || data.featureType === TRANSFORMERSUBSTATION)
-      deleAllChildFeatureByTable(map, data, true)
-    else deleAllChildFeatureByTable(map, data, false)
+    if (data.featureType === POWERSUPPLY || data.featureType === TRANSFORMERSUBSTATION) {
+      lineIds && deleFeatureBylinesId(map, lineIds)
+    }
+    const point = pointLayer
+      .getSource()
+      .getFeatures()
+      .find((point: any) => point.get('data').id === data.id)
+    pointLayer.getSource().removeFeature(point)
   } else {
     // 属于线要素
     lineLayer
@@ -274,7 +280,7 @@ export const deletFeatureByTable = (map: any, data: any) => {
   }
 }
 
-export const deleFeature = (map: any, feature: any) => {
+export const deleFeature = (map: any, feature: any, lineIds?: String[]) => {
   if (!feature) return
   let geomType = feature.getGeometry().getType()
   let lineLayer = getLayer(map, 'lineLayer')
@@ -284,11 +290,12 @@ export const deleFeature = (map: any, feature: any) => {
     //! 删除线路 ....currrentSelectFeature.get('data')
   } else if (geomType === 'Point') {
     if (
-      feature.get('data').featureType === POWERSUPPLY ||
+      feature.get('data').featureType !== POWERSUPPLY &&
       feature.get('data').featureType === TRANSFORMERSUBSTATION
-    )
-      deleAllChildFeature(map, feature, true)
-    else deleAllChildFeature(map, feature, false)
+    ) {
+      deleAllChildFeature(map, feature)
+    } else {
+    }
   }
 }
 
@@ -321,33 +328,30 @@ const deleAllChildFeature = (map: any, feature: any, isDeleAll: boolean = false)
   }
 }
 
-const deleAllChildFeatureByTable = (map: any, data: any, isDeleAll: boolean = false) => {
+// 通过lineid删除相关地图要素
+const deleFeatureBylinesId = (map: any, lineIds: String[]) => {
   const pointLayer = getLayer(map, 'pointLayer')
   const lineLayer = getLayer(map, 'lineLayer')
 
-  pointLayer
-    .getSource()
-    .getFeatures()
-    .forEach((point: any) => {
-      if ((point.get('data').id = data.id)) pointLayer.getSource().removeFeature(point)
-    })
-
-  const lines = lineLayer.getSource().getFeatures()
-  const pointId = data.id
-  if (Object.prototype.toString.call(lines) === '[object Array]' && lines.length) {
-    lines.forEach((item: any) => {
-      if (item.get('data').startId === pointId || item.get('data').endId === pointId) {
-        // !  2... 然后删除线路  item.get('data')
-        lineLayer.getSource().removeFeature(item)
-        if (isDeleAll) {
-          // if (item.get('data').startId === pointId) {
-          const childFeature = pointLayer
-            .getSource()
-            .getFeatures()
-            .find((point: any) => point.get('data').id === item.get('data').endId)
-          childFeature && deleAllChildFeatureByTable(map, childFeature, isDeleAll)
-          // }
-        }
+  if (lineIds && lineIds.length > 0) {
+    lineIds.forEach((lineId: String) => {
+      const points = pointLayer
+        .getSource()
+        .getFeatures()
+        .filter((point: any) => point.get('data').lineId === lineId)
+      const lines = lineLayer
+        .getSource()
+        .getFeatures()
+        .filter((line: any) => line.get('data').lineId === lineId)
+      if (points && points.length > 0) {
+        points.forEach((point: any) => {
+          pointLayer.getSource().removeFeature(point)
+        })
+      }
+      if (lines && lines.length > 0) {
+        lines.forEach((line: any) => {
+          lineLayer.getSource().removeFeature(line)
+        })
       }
     })
   }
@@ -358,11 +362,18 @@ export const editFeature = (map: any, data: any) => {
   if (currrentSelectFeature) {
     currrent = currrentSelectFeature
   } else {
-    let pointLayer = getLayer(map, 'pointLayer')
-    const feature = pointLayer
+    let feature, layer
+    if (POINTS.indexOf(data.featureType) > -1) {
+      // 点要素
+      layer = getLayer(map, 'pointLayer')
+    } else {
+      layer = getLayer(map, 'lineLayer')
+    }
+    feature = layer
       .getSource()
       .getFeatures()
       .find((item: any) => item.get('data').id === data.id)
+
     if (feature) currrent = feature
     else return
   }
@@ -373,14 +384,22 @@ export const editFeature = (map: any, data: any) => {
     )
     currrent.setGeometry(point)
     var format = new WKT()
-    data.type_ = currrent.get('data').type_
+    // data.type_ = currrent.get('data').type_
     data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
   }
 
-  currrent.set('data', data) // currrent.setStyle(pointStyle(data, true, map.getView().getZoom()))
-  let isDraw = data.type_ ? true : false
+  for (var prop in data) {
+    currrent.get('data')[prop] = data[prop]
+  }
+  // currrent.set('data', data)
+  let isDraw = currrent.get('data').type_ ? true : false
   const isSelect = currrentSelectFeature ? true : false
-  currrent.setStyle(pointStyle(data, isSelect, map.getView().getZoom(), isDraw))
+  if (POINTS.indexOf(data.featureType) > -1) {
+    // 点要素
+    currrent.setStyle(pointStyle(currrent.get('data'), isSelect, map.getView().getZoom(), isDraw))
+  } else {
+    currrent.setStyle(lineStyle(currrent.get('data'), isSelect))
+  }
 }
 // export const editFeature = (map: any, data: any) => {
 //   if (!currrentSelectFeature) return
