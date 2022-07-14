@@ -256,7 +256,10 @@ export const deletCurrrentSelectFeature = (map: any) => {
 
 // 通过台账删除要素
 export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => {
-  if (!data) return
+  if (!data) {
+    if (lineIds) deleFeatureBylinesId(map, lineIds)
+    else return
+  }
   const pointLayer = getLayer(map, 'pointLayer')
   let lineLayer = getLayer(map, 'lineLayer')
   if (POINTS.indexOf(data.featureType) > -1) {
@@ -291,10 +294,12 @@ export const deleFeature = (map: any, feature: any, lineIds?: String[]) => {
   } else if (geomType === 'Point') {
     if (
       feature.get('data').featureType !== POWERSUPPLY &&
-      feature.get('data').featureType === TRANSFORMERSUBSTATION
+      feature.get('data').featureType !== TRANSFORMERSUBSTATION
     ) {
       deleAllChildFeature(map, feature)
     } else {
+      const lineIds: String[] = [] // 获取线路id
+      deleFeatureBylinesId(map, lineIds, true)
     }
   }
 }
@@ -329,7 +334,7 @@ const deleAllChildFeature = (map: any, feature: any, isDeleAll: boolean = false)
 }
 
 // 通过lineid删除相关地图要素
-const deleFeatureBylinesId = (map: any, lineIds: String[]) => {
+const deleFeatureBylinesId = (map: any, lineIds: String[], isMap: boolean = false) => {
   const pointLayer = getLayer(map, 'pointLayer')
   const lineLayer = getLayer(map, 'lineLayer')
 
@@ -345,11 +350,13 @@ const deleFeatureBylinesId = (map: any, lineIds: String[]) => {
         .filter((line: any) => line.get('data').lineId === lineId)
       if (points && points.length > 0) {
         points.forEach((point: any) => {
+          isMap && deleFeatures.push(point.get('data'))
           pointLayer.getSource().removeFeature(point)
         })
       }
       if (lines && lines.length > 0) {
         lines.forEach((line: any) => {
+          isMap && deleFeatures.push(line.get('data'))
           lineLayer.getSource().removeFeature(line)
         })
       }
