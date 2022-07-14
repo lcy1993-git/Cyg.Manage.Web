@@ -15,7 +15,6 @@ import { Button, Form, Input, message, Modal, Tabs } from 'antd'
 import { isArray } from 'lodash'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { useMyContext } from '../../grid-manage/Context'
-import { editFeature } from '../../grid-manage/GridMap/utils/select'
 import {
   COLORU,
   KVLEVELOPTIONS,
@@ -23,6 +22,7 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../../grid-manage/DrawToolbar/GridUtils'
 import { upateLineByMainLine } from '../../grid-manage/GridMap/utils/initializeMap'
+import { deletFeatureByTable, editFeature } from '../../grid-manage/GridMap/utils/select'
 import { handleGeom } from '../../utils/methods'
 import SubStationPowerForm from './components/subStation-power-form'
 
@@ -295,20 +295,39 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
 
   const deleteEvent = async () => {
     if (currentTab === 'subStations') {
-      await deleteTransformerSubstation([tableSelectRows[0].id])
+      const deleteIds: string[] = await deleteTransformerSubstation([tableSelectRows[0].id])
+      deletFeatureByTable(
+        mapRef.map,
+        {
+          ...tableSelectRows[0],
+          featureType: TRANSFORMERSUBSTATION,
+        },
+        deleteIds
+      )
       message.success('删除成功')
       refresh()
       setIsRefresh(!isRefresh)
       return
     }
     if (currentTab === 'power') {
-      await deletePowerSupply([powerSelectRows[0].id])
+      const deleteIds: string[] = await deletePowerSupply([powerSelectRows[0].id])
+      deletFeatureByTable(
+        mapRef.map,
+        {
+          ...powerSelectRows[0],
+          featureType: POWERSUPPLY,
+        },
+        deleteIds
+      )
       message.success('删除成功')
       refresh()
       setIsRefresh(!isRefresh)
       return
     }
+    // 删除线路、刷新左侧树勾选的线路
+
     await deleteLine([mainLineRows[0].id])
+    deletFeatureByTable(mapRef.map, null, [mainLineRows[0].id])
     message.success('删除成功')
     refresh()
     setIsRefresh(!isRefresh)
