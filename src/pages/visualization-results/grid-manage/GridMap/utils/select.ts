@@ -296,7 +296,8 @@ export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => 
 export const deleFeature = (map: any, feature: any, lineIds?: String[]) => {
   if (!feature) return
   let geomType = feature.getGeometry().getType()
-  let lineLayer = getLayer(map, 'lineLayer')
+  const pointLayer = getLayer(map, 'pointLayer')
+  const lineLayer = getLayer(map, 'lineLayer')
   if (geomType === 'LineString') {
     lineLayer.getSource().removeFeature(feature)
     deleFeatures.push(feature.get('data'))
@@ -308,8 +309,9 @@ export const deleFeature = (map: any, feature: any, lineIds?: String[]) => {
     ) {
       deleAllChildFeature(map, feature)
     } else {
-      const lineIds: String[] = [] // 获取线路id
-      deleFeatureBylinesId(map, lineIds, true)
+      // const lineIds: String[] = [] // 获取线路id
+      // deleFeatureBylinesId(map, lineIds, true)
+      pointLayer.getSource().removeFeature(feature)
     }
   }
 }
