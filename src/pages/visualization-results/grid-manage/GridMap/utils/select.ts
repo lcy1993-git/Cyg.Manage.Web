@@ -303,6 +303,7 @@ export const deleFeature = (map: any, feature: any, lineIds?: String[]) => {
     } else {
       // const lineIds: String[] = [] // 获取线路id
       // deleFeatureBylinesId(map, lineIds, true)
+      deleFeatures.push(feature.get('data'))
       pointLayer.getSource().removeFeature(feature)
     }
   }

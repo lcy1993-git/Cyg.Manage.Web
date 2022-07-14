@@ -73,6 +73,7 @@ import {
 } from './utils/initializeMap'
 import {
   deletCurrrentSelectFeature,
+  deletFeatureByTable,
   editFeature,
   getCurrrentSelectFeature,
   getDeleFeatures,
@@ -427,10 +428,18 @@ const GridMap = () => {
               PromiseAll.push(deleteBoxTransformer([deleteData[i].id]))
               break
             case POWERSUPPLY:
-              PromiseAll.push(deletePowerSupply([deleteData[i].id]))
+              const PowerSupplyP = new Promise(async (resolve) => {
+                const lines = await deletePowerSupply([deleteData[i].id])
+                resolve(lines)
+              })
+              PromiseAll.push(PowerSupplyP)
               break
             case TRANSFORMERSUBSTATION:
-              PromiseAll.push(deleteTransformerSubstation([deleteData[i].id]))
+              const TransformeP = new Promise(async (resolve) => {
+                const lines = deleteTransformerSubstation([deleteData[i].id])
+                resolve(lines)
+              })
+              PromiseAll.push(TransformeP)
               break
             case CABLEWELL:
               PromiseAll.push(deleteCableWell([deleteData[i].id]))
@@ -463,7 +472,6 @@ const GridMap = () => {
         }
         Promise.all(PromiseAll)
           .then((res) => {
-            // console.log(res, '123456')
             message.info('删除成功')
             setisDragPoint(false)
             // 删除点位后，需要刷新重复点位数据
@@ -474,6 +482,10 @@ const GridMap = () => {
             )
             if (rootData.length) {
               setIsRefresh(false)
+            }
+            if (res && res.length) {
+              const linesId = res.flat(Infinity).filter((item) => item)
+              deletFeatureByTable(mapRef.map, null, linesId as string[])
             }
           })
           .catch((err) => {
