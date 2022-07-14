@@ -252,6 +252,7 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
+
       let color
       if (formData.featureType === POWERSUPPLY) {
         color = '#4D3900'
