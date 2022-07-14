@@ -31,6 +31,7 @@ import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
+import { history } from 'umi'
 import { useMyContext } from '../Context'
 import {
   BELONGINGCAPACITY,
@@ -45,7 +46,6 @@ import {
   COLORU,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
-  createFeatureId,
   ELECTRICITYDISTRIBUTIONROOM,
   FEATUERTYPE,
   KVLEVELOPTIONS,
@@ -84,7 +84,6 @@ interface BelongingLineType {
   isPower: boolean
   color: string
 }
-
 export interface pointType {
   featureType: string
   name?: string
@@ -113,6 +112,7 @@ const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 },
 }
+
 const GridMap = () => {
   const [form] = useForm()
   const {
@@ -137,6 +137,7 @@ const GridMap = () => {
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
   const [selectLineType, setselectLineType] = useState('')
+  const [pathName, setpathName] = useState('')
 
   //当前点击点位公司id
   const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
@@ -499,6 +500,15 @@ const GridMap = () => {
     setisDragPoint(isDrag)
   }
 
+  history.block((location, action) => {
+    //每次路由变动都会走这里
+    setpathName(location.pathname)
+  })
+
+  // useEffect(() => {
+  //   console.log(mapRef.map.updateSize(), '123456')
+  // }, [pathName])
+
   // 挂载地图
   useMount(() => {
     initMap({ mapRef, ref, isActiveFeature, isDragPointend })
@@ -536,6 +546,20 @@ const GridMap = () => {
       data && setbelongingLineData(data)
     },
   })
+
+  /**  电压等级处理 */
+  const EditKvLevel = () => {
+    const currentKv = KVLEVELOPTIONS.filter((item) =>
+      item.belonging.some((kv) => kv === currentFeatureType)
+    )
+    return currentKv.map((item) => {
+      return (
+        <Option key={item.kvLevel} value={item.kvLevel}>
+          {item.label}
+        </Option>
+      )
+    })
+  }
 
   useEffect(() => {
     run()
@@ -589,19 +613,7 @@ const GridMap = () => {
             label="电压等级"
             rules={[{ required: true, message: '请输入名称' }]}
           >
-            <Select dropdownStyle={{ zIndex: 3000 }}>
-              {currentFeatureType === TRANSFORMERSUBSTATION
-                ? KVLEVELOPTIONS.filter((item) => item.kvLevel !== 3).map((item) => (
-                    <Option key={item.kvLevel} value={item.kvLevel}>
-                      {item.label}
-                    </Option>
-                  ))
-                : KVLEVELOPTIONS.map((item) => (
-                    <Option key={item.kvLevel} value={item.kvLevel}>
-                      {item.label}
-                    </Option>
-                  ))}
-            </Select>
+            <Select dropdownStyle={{ zIndex: 3000 }}>{EditKvLevel()}</Select>
           </Form.Item>
           {/* 变电站 */}
           {currentFeatureType === TRANSFORMERSUBSTATION && (
