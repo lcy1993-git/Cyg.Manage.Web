@@ -1,5 +1,5 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import {
   Button,
   Divider,
@@ -87,6 +87,8 @@ const DrawToolbar = () => {
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
+
+  const [clickState, setClickState] = useState<boolean>(false)
 
   const [kelevelOptions, setkelevelOptions] = useState([
     ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
@@ -267,12 +269,21 @@ const DrawToolbar = () => {
         }
       }
 
-      drawPoint(mapRef.map, {
-        ...formData,
-        color: color ? color : COLORDEFAULT,
-      })
+      drawPoint(
+        mapRef.map,
+        {
+          ...formData,
+          color: color ? color : COLORDEFAULT,
+        },
+        setClickState
+      )
     } catch (err) {}
   }
+
+  useUpdateEffect(() => {
+    clickState && createFeature()
+    setClickState(false)
+  }, [clickState])
 
   /** 绘制线路 **/
   const createLine = async () => {

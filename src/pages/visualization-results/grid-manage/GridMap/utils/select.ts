@@ -12,6 +12,7 @@ import {
   modifyTower,
   modifyTransformerSubstation,
 } from '@/services/grid-manage/treeMenu'
+import { message } from 'antd'
 import WKT from 'ol/format/WKT'
 import LineString from 'ol/geom/LineString'
 import Point from 'ol/geom/Point'
@@ -250,7 +251,11 @@ export const getDeleFeatures = () => {
 
 export const deletCurrrentSelectFeature = (map: any) => {
   deleFeatures = []
-  deleFeature(map, currrentSelectFeature)
+  if (currrentSelectFeature && currrentSelectFeature.get('data').companyId !== companyId) {
+    message.error('无法删除，删除元素包含子公司项目')
+    return
+  }
+  currrentSelectFeature && deleFeature(map, currrentSelectFeature)
   currrentSelectFeature = null
 }
 

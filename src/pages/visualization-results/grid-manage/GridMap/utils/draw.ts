@@ -31,7 +31,7 @@ class DrawTool {
     this.source = source
   }
 
-  drawGeometry(options: any) {
+  drawGeometry(options: any, clickEvent: any) {
     if (options.lng && options.lat) {
       options.lng = parseFloat(options.lng)
       options.lat = parseFloat(options.lat)
@@ -50,7 +50,7 @@ class DrawTool {
     this.options = options
     this.draw && this.map.removeInteraction(this.draw)
     this.snap && this.map.removeInteraction(this.snap)
-    this.addDraw(this.options.type_)
+    this.addDraw(this.options.type_, clickEvent)
     this.addSnap()
   }
 
@@ -102,7 +102,7 @@ class DrawTool {
       })
   }
 
-  addDraw = (type: string) => {
+  addDraw = (type: string, clickEvent: any) => {
     this.draw = new Draw({
       source: this.source,
       type,
@@ -131,6 +131,7 @@ class DrawTool {
         )
         e.feature.set('data', featureData)
       }
+      clickEvent(true)
     })
   }
 
