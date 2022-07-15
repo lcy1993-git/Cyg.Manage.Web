@@ -251,8 +251,9 @@ export const getDeleFeatures = () => {
 
 export const deletCurrrentSelectFeature = (map: any) => {
   deleFeatures = []
+
   if (currrentSelectFeature && currrentSelectFeature.get('data').companyId !== companyId) {
-    message.error('无法删除，删除元素包含子公司项目')
+    message.error('无法删除子公司元素')
     return
   }
   currrentSelectFeature && deleFeature(map, currrentSelectFeature)

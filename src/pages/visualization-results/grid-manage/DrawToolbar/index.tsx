@@ -6,6 +6,7 @@ import {
   Drawer,
   Form,
   Input,
+  message,
   Radio,
   RadioChangeEvent,
   Row,
@@ -18,9 +19,11 @@ import {
   clear,
   drawLine,
   drawPoint,
+  exitDraw,
   getDrawLines,
   getDrawPoints,
 } from '../GridMap/utils/initializeMap'
+import { companyId } from '../GridMap/utils/utils'
 import { verificationLat, verificationLng, verificationNaturalNumber } from '../tools'
 import {
   BELONGINGCAPACITY,
@@ -70,6 +73,7 @@ const DrawToolbar = () => {
     isRefresh,
     zIndex,
     setzIndex,
+    setIsRefresh,
   } = useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
@@ -273,6 +277,7 @@ const DrawToolbar = () => {
         mapRef.map,
         {
           ...formData,
+          companyId: companyId,
           color: color ? color : COLORDEFAULT,
         },
         setClickState
@@ -280,10 +285,9 @@ const DrawToolbar = () => {
     } catch (err) {}
   }
 
-  useUpdateEffect(() => {
-    clickState && createFeature()
-    setClickState(false)
-  }, [clickState])
+  // useUpdateEffect(() => {
+  //   setClickState(false)
+  // }, [clickState])
 
   /** 绘制线路 **/
   const createLine = async () => {
@@ -303,6 +307,7 @@ const DrawToolbar = () => {
       }
       drawLine(mapRef.map, {
         ...formData,
+        companyId: companyId,
         color: color ? color : COLORDEFAULT,
         featureType: formData.lineType,
       })
@@ -320,6 +325,19 @@ const DrawToolbar = () => {
   useEffect(() => {
     run()
   }, [isRefresh, run])
+
+  const formChange = async (changeValues: any, allvalues: any) => {
+    if (changeValues['featureType']) {
+      return
+    }
+    if (clickState) {
+      await uploadLocalData()
+      clear()
+      setIsRefresh(!isRefresh)
+      message.info('数据已上传，请重新插入图符')
+      setClickState(false)
+    }
+  }
 
   return (
     <Drawer
@@ -345,7 +363,12 @@ const DrawToolbar = () => {
       >
         <TabPane tab="插入图符" key="feature">
           {currentFeature === 'feature' && (
-            <Form {...formItemLayout} style={{ marginTop: '10px' }} form={form}>
+            <Form
+              {...formItemLayout}
+              style={{ marginTop: '10px' }}
+              form={form}
+              onValuesChange={formChange}
+            >
               <Form.Item name="featureType" label="绘制图符" initialValue="PowerSupply">
                 <Radio.Group
                   className="EditFeature"

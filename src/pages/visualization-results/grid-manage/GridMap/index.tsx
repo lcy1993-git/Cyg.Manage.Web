@@ -268,7 +268,7 @@ const GridMap = () => {
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.isOverhead ? LINE : CABLECIRCUIT,
+        lineType: featureData.featureType,
       })
     } else {
       form.resetFields()
