@@ -31,7 +31,6 @@ import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
-import { history } from 'umi'
 import { useMyContext } from '../Context'
 import {
   BELONGINGCAPACITY,
@@ -138,7 +137,6 @@ const GridMap = () => {
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
   const [selectLineType, setselectLineType] = useState('')
-  const [pathName, setpathName] = useState('')
 
   //当前点击点位公司id
   const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
@@ -238,6 +236,8 @@ const GridMap = () => {
         lineElementRelationList,
         // transformerIntervalList,
       })
+      message.info('数据已上传，请重新插入图符')
+
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(false)
         setIsRefresh(false)
@@ -512,11 +512,6 @@ const GridMap = () => {
   const isDragPointend = (isDrag: boolean) => {
     setisDragPoint(isDrag)
   }
-
-  history.block((location, action) => {
-    //每次路由变动都会走这里
-    setpathName(location.pathname)
-  })
 
   // 挂载地图
   useMount(() => {
