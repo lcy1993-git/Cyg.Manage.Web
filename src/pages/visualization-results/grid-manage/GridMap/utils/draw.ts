@@ -131,7 +131,7 @@ class DrawTool {
         )
         e.feature.set('data', featureData)
       }
-      clickEvent(true)
+      clickEvent && clickEvent(true)
     })
   }
 
@@ -188,9 +188,8 @@ class DrawTool {
         let datas: any = pre.concat(feature_)
         if (datas.length > 1) {
           datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
-          datas[datas.length - 2].get('data').endType = datas[datas.length - 1].get(
-            'data'
-          ).startType
+          datas[datas.length - 2].get('data').endType =
+            datas[datas.length - 1].get('data').startType
         }
         return datas
       }, [])

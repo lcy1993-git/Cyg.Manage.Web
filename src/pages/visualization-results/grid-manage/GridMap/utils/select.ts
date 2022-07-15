@@ -269,6 +269,7 @@ export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => 
   }
   const pointLayer = getLayer(map, 'pointLayer')
   let lineLayer = getLayer(map, 'lineLayer')
+
   if (POINTS.indexOf(data.featureType) > -1) {
     // 属于点要素
     if (data.featureType === POWERSUPPLY || data.featureType === TRANSFORMERSUBSTATION) {
@@ -278,7 +279,9 @@ export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => 
       .getSource()
       .getFeatures()
       .find((point: any) => point.get('data').id === data.id)
-    pointLayer.getSource().removeFeature(point)
+    if (point) {
+      pointLayer.getSource().removeFeature(point)
+    }
   } else {
     // 属于线要素
     lineLayer

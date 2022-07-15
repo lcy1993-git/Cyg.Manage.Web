@@ -186,23 +186,14 @@ const LeftMenu = (props: any) => {
   )
 
   useEffect(() => {
-    powerSupplyIds.length || subStations.length ? GetSubStations() : getTreeData()
+    GetSubStations()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [powerSupplyIds, subStations, linesId])
 
-    if ((!subStations.length || !powerSupplyIds.length) && linesId.length) {
-      getTreeData()
-    }
-  }, [
-    GetSubStations,
-    getTreeData,
-    linesId,
-    linesId.length,
-    powerSupplyIds.length,
-    subStations.length,
-  ])
+  // useEffect(() => {
+  //   linesId && linesId.length && getTreeData()
 
-  useEffect(() => {
-    linesId && linesId.length && getTreeData()
-  }, [getTreeData, linesId])
+  // }, [getTreeData, linesId])
 
   useEffect(() => {
     stationItemsHandle()
