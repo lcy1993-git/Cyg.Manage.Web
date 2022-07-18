@@ -27,7 +27,7 @@ import {
   modifyTransformerSubstation,
   uploadAllFeature,
 } from '@/services/grid-manage/treeMenu'
-import { useMount, useRequest, useUpdateEffect } from 'ahooks'
+import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
 import { Button, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
@@ -155,6 +155,12 @@ const GridMap = () => {
       }
     })
   }
+
+  const size = useSize(ref)
+
+  useUpdateEffect(() => {
+    mapRef.map.updateSize()
+  }, [size])
 
   /** 上传本地数据 **/
   const uploadLocalData = async () => {

@@ -1,5 +1,5 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
-import { useRequest, useUpdateEffect } from 'ahooks'
+import { useRequest } from 'ahooks'
 import {
   Button,
   Divider,
@@ -19,7 +19,6 @@ import {
   clear,
   drawLine,
   drawPoint,
-  exitDraw,
   getDrawLines,
   getDrawPoints,
 } from '../GridMap/utils/initializeMap'
@@ -37,7 +36,6 @@ import {
   COLORDEFAULT,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
-  createFeatureId,
   ELECTRICITYDISTRIBUTIONROOM,
   FEATUREOPTIONS,
   KVLEVELOPTIONS,
@@ -216,16 +214,16 @@ const DrawToolbar = () => {
         }
       })
 
-      const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
-        return {
-          id: createFeatureId(),
-          transformerSubstationId: item.id,
-          publicuse: 0,
-          spare: 0,
-          specialPurpose: 0,
-          total: 0,
-        }
-      })
+      // const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
+      //   return {
+      //     id: createFeatureId(),
+      //     transformerSubstationId: item.id,
+      //     publicuse: 0,
+      //     spare: 0,
+      //     specialPurpose: 0,
+      //     total: 0,
+      //   }
+      // })
       await stationItemsHandle({
         towerList,
         switchingStationList,
@@ -239,7 +237,7 @@ const DrawToolbar = () => {
         powerSupplyList,
         transformerStationList,
         lineElementRelationList,
-        transformerIntervalList,
+        // transformerIntervalList,
       })
     }
   }
