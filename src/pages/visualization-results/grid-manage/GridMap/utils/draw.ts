@@ -131,7 +131,7 @@ class DrawTool {
         )
         e.feature.set('data', featureData)
       }
-      clickEvent(true)
+      clickEvent && clickEvent(true)
     })
   }
 
