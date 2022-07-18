@@ -209,3 +209,6 @@ export const getDistrictdata = () => {
   })
   return Promise.all(loadPromiseAll)
 }
+
+//@ts-ignore
+export const { companyId } = JSON.parse(localStorage.getItem('userInfo'))

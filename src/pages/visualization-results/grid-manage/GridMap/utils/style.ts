@@ -24,7 +24,6 @@ export const pointStyle = (
   let text,
     font = 'gridManageIconfont',
     zIndex = 3
-
   // 根据点位的类型设置图符
   switch (data.featureType) {
     case POWERSUPPLY: // 电源

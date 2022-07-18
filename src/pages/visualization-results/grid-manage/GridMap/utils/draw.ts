@@ -37,6 +37,7 @@ class DrawTool {
       options.lat = parseFloat(options.lat)
       const point = new Point([options.lng, options.lat]).transform('EPSG:4326', 'EPSG:3857')
       const feature: any = new Feature(point)
+
       feature.setStyle(pointStyle(options, false, this.map.getView().getZoom(), true))
       var format = new WKT()
       options.geom = format.writeGeometry(
@@ -133,6 +134,7 @@ class DrawTool {
       }
       clickEvent && clickEvent(true)
     })
+    clickEvent(true)
   }
 
   addSnap = () => {

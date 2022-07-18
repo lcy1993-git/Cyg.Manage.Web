@@ -25,7 +25,7 @@ import {
   setSelectActive,
 } from './select'
 import { calculateDistance, lineStyle, pointStyle } from './style'
-import { getDistrictdata } from './utils'
+import { companyId, getDistrictdata } from './utils'
 // interface pointType {
 //   featureType: string
 //   name?: string
@@ -55,8 +55,7 @@ var pointLayer: any
 var lineLayer: any
 var boxSelectFeatures: any = []
 var dragBox: any
-//@ts-ignore
-var { companyId } = JSON.parse(localStorage.getItem('userInfo'))
+
 export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOps) => {
   mapRef.map = new Map({
     target: 'map',
@@ -218,11 +217,13 @@ export const setDrawBox = (active: boolean) => {
 export const deletBoxFeature = (map: any) => {
   if (boxSelectFeatures.length === 0) return
   setDeleFeatures([])
+
   const isCorrect = boxSelectFeatures.find((item: any) => item.get('data').companyId !== companyId)
   if (isCorrect) {
     message.error('无法删除，删除元素包含子公司项目')
     return
   }
+
   boxSelectFeatures.forEach((feature: any) => {
     deleFeature(map, feature)
   })
@@ -299,6 +300,12 @@ export const clear = () => {
   drawTool && drawTool.snap && drawTool.snap.setActive(false)
   drawTool && drawTool.draw && drawTool.draw.setActive(false)
   setSelectActive(true)
+}
+
+// 表单更新退出绘制并保存
+export const exitDraw = () => {
+  drawTool && drawTool.snap && drawTool.snap.setActive(false)
+  drawTool && drawTool.draw && drawTool.draw.setActive(false)
 }
 
 // 清除拉框数据
