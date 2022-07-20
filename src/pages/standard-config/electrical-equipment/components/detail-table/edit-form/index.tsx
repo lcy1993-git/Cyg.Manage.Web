@@ -135,6 +135,17 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
                   pattern: /^([\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
                   message: '最多保留三位小数',
                 },
+                () => ({
+                  validator(_, value) {
+                    if (value <= 1000 && value > 0) {
+                      return Promise.resolve()
+                    }
+                    if (value > 1000) {
+                      return Promise.reject('请输入0~1000以内的数字')
+                    }
+                    return Promise.resolve()
+                  },
+                }),
               ]}
             >
               <Input type="number" min={1} placeholder="请输入数量" />
