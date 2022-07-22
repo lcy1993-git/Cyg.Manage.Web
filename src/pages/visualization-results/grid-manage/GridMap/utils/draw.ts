@@ -134,7 +134,6 @@ class DrawTool {
       }
       clickEvent && clickEvent(true)
     })
-    clickEvent(true)
   }
 
   addSnap = () => {

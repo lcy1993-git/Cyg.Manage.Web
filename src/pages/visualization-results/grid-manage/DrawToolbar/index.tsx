@@ -306,6 +306,7 @@ const DrawToolbar = () => {
       drawLine(mapRef.map, {
         ...formData,
         companyId: companyId,
+        name: '',
         color: color ? color : COLORDEFAULT,
         featureType: formData.lineType,
       })
