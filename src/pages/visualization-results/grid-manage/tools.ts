@@ -23,8 +23,7 @@ export const verificationLat = () => ({
 /** 校验经度 */
 export const verificationLng = () => ({
   validator: (_: any, value: string, callback: any) => {
-    const reg =
-      /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+    const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
     if (value === '' || !value) {
       callback()
     } else {
@@ -107,4 +106,33 @@ export const newData = (arr: any[]) => {
       color: COLORDEFAULT,
     }
   })
+}
+/** 转换绘制线路多个回数数据 **/
+export const transformLines = (formData: any) => {
+  // const lineIds = []
+  // for(const key in formData) {
+  //   if(key.match(/line_[0-9]+/)) {
+  //     lineIds.push(formData[key])
+  //     delete formData[key]
+  //   }
+  // }
+  // formData.lineIds = lineIds
+  const data: any = {}
+  const arr = []
+  const lineNumber = Number(formData.lineNumber)
+  for (let i = 0; i < lineNumber; i++) {
+    const item: any = {}
+    const kvLevel = `kvLevel_${i + 1}`
+    const lineType = `lineType_${i + 1}`
+    const lineModel = `lineModel_${i + 1}`
+    const lineId = `lineId_${i + 1}`
+    item.kvLevel = formData[kvLevel]
+    item.lineType = formData[lineType]
+    item.lineModel = formData[lineModel]
+    item.lineId = formData[lineId]
+    arr.push(item)
+  }
+  data.lineNumber = lineNumber
+  data.data = arr
+  return data
 }
