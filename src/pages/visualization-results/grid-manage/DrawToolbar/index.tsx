@@ -115,6 +115,40 @@ const DrawToolbar = () => {
     labelCol: { span: 6 },
     wrapperCol: { span: 17 },
   }
+  /** 转换绘制线路多个回数数据 **/
+  const transformLines = (formData: any) => {
+    const data: any = {}
+    const arr = []
+    const lineNumber = Number(formData.lineNumber)
+    for (let i = 0; i < lineNumber; i++) {
+      const item: any = {}
+      const kvLevel = `kvLevel_${i + 1}`
+      const lineType = `lineType_${i + 1}`
+      const lineModel = `lineModel_${i + 1}`
+      const lineId = `lineId_${i + 1}`
+      item.kvLevel = formData[kvLevel]
+      item.lineType = formData[lineType]
+      item.lineModel = formData[lineModel]
+      item.lineId = formData[lineId]
+      let color
+      const currentLineData = belongingLineData.find((item) => item.id === formData[lineId])
+      const currentLineKvLevel = currentLineData?.kvLevel
+      if (currentLineKvLevel === 3) {
+        const kv = KVLEVELOPTIONS.find(
+          (item: any) => currentLineKvLevel === item.kvLevel
+        )?.color.find((item) => item.label === currentColor)
+        color = kv?.value
+      } else {
+        const kv = KVLEVELOPTIONS.find((item: any) => currentLineKvLevel === item.kvLevel)
+        color = kv?.color[0].value
+      }
+      item.color = color
+      arr.push(item)
+    }
+    data.lineNumber = lineNumber
+    data.data = arr
+    return data
+  }
   const selectLine = (value: string, option: any) => {
     // 设置key时添加当前select标识，在key中获取
     const selectNumber = option.key.split('__')[1]
@@ -130,13 +164,12 @@ const DrawToolbar = () => {
         RINGNETWORKCABINET,
         SWITCHINGSTATION,
       ].includes(currentFeatureType)
-      const data = {}
+      const data: any = {}
       data[`kvLevel_${selectNumber}`] = exist ? 3 : currentLineData?.kvLevel
       data[`lineType_${selectNumber}`] = currentLineData.isOverhead ? 'Line' : 'CableCircuit'
       data[`lineModel_${selectNumber}`] = currentLineData.lineModel ? '111' : ''
       lineForm.setFieldsValue(data)
     }
-    // console.log(value, selectNumber)
   }
   /** 线路回数个数改变渲染多个线路回路表单项 **/
   const renderLines = () => {
