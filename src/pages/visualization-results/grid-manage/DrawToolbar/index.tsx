@@ -444,7 +444,6 @@ const DrawToolbar = () => {
         companyId: companyId,
         name: '',
         color: color ? color : COLORDEFAULT,
-        featureType: formData.lineType,
       })
     } catch (err) {}
   }
