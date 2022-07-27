@@ -1,73 +1,74 @@
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
-import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useBoolean, useControllableValue } from 'ahooks';
-import { Button, Form, message, Modal } from 'antd';
-import React, { useState } from 'react';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
+import { uploadLineStressSag } from '@/services/resource-config/drawing'
+import { useBoolean, useControllableValue } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
+import React, { useState } from 'react'
+import { Dispatch } from 'react'
+import { SetStateAction } from 'react'
 
 interface ImportLineStreeSagProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  libId?: string;
-  securityKey?: string;
-  requestSource: 'project' | 'resource' | 'upload';
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  libId?: string
+  securityKey?: string
+  requestSource: 'project' | 'resource' | 'upload'
 }
 
 const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { libId = '', requestSource, changeFinishEvent } = props;
-  const [falseData, setFalseData] = useState<string>('');
-  const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false);
-  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { libId = '', requestSource, changeFinishEvent } = props
+  const [falseData, setFalseData] = useState<string>('')
+  const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false)
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
+  const [form] = Form.useForm()
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
+  ] = useBoolean(false)
   const saveLineStreesSagEvent = () => {
     return form
       .validateFields()
       .then((values) => {
-        const { file } = values;
-        return uploadLineStressSag(file, { libId }, requestSource, '/LineStressSag/SaveImport');
+        const { file } = values
+        return uploadLineStressSag(file, { libId }, requestSource, '/LineStressSag/SaveImport')
       })
       .then(
         (res) => {
           if (res && res.code === 6000) {
-            setFalseData(res.message);
-            setImportTipsVisible(true);
-            return Promise.resolve();
+            setFalseData(res.message)
+            setImportTipsVisible(true)
+            setIsImportFlag(true)
+            return Promise.resolve()
           } else if (res.code === 200) {
-            message.success('导入成功');
-            setIsImportFlag(true);
-            return Promise.resolve();
+            message.success('导入成功')
+            setIsImportFlag(true)
+            return Promise.resolve()
           }
-          message.error(res.message);
-          return Promise.reject();
+          message.error(res.message)
+          return Promise.reject()
         },
         (res) => {
-          message.error(res.message);
-          return Promise.reject();
-        },
+          message.error(res.message)
+          return Promise.reject()
+        }
       )
       .finally(() => {
-        changeFinishEvent?.();
-        setUploadFileFalse();
-      });
-  };
+        changeFinishEvent?.()
+        setUploadFileFalse()
+      })
+  }
 
   const onSave = () => {
     form.validateFields().then((value) => {
       if (isImportFlag) {
-        setState(false);
-        return;
+        setState(false)
+        return
       }
-      message.info('您还未上传文件，点击“开始上传”上传文件');
-    });
-  };
+      message.info('您还未上传文件，点击“开始上传”上传文件')
+    })
+  }
 
   return (
     <>
@@ -116,7 +117,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
         </div>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default ImportLineStressSag;
+export default ImportLineStressSag
