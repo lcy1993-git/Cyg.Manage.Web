@@ -44,7 +44,12 @@ export const calculationLine = (features: any, lineNumber: any) => {
       e = transform([e.x, e.y], 'EPSG:3857', 'EPSG:4326')
 
       let wkt = `LINESTRING (${s[0]} ${s[1]},${e[0]} ${e[1]})`
-      const loopData = { ...feature.get('data') }
+      const loopData = { ...feature.get('data').data[index] }
+      loopData.companyId = feature.get('data').companyId
+      loopData.lineNumber = lineNumber
+      loopData.name = feature.get('data').name
+      loopData.featureType = feature.get('data').featureType
+      loopData.type_ = feature.get('data').type_
       loopData.loop_serial = index + 1
       loopData.loop_seq = i + 1
       loopData.geom = wkt

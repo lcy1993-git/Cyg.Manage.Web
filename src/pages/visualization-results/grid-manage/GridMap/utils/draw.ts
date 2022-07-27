@@ -243,9 +243,9 @@ class DrawTool {
       var format = new WKT()
       data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
 
-      if (lineData.featureType === LINE) {
+      if (lineData.lineType === LINE) {
         data.featureType = TOWER
-      } else if (lineData.featureType === CABLECIRCUIT) {
+      } else if (lineData.lineType === CABLECIRCUIT) {
         data.featureType = CABLEWELL
       }
       node.setStyle(pointStyle(data, false, this.map.getView().getZoom(), true))
