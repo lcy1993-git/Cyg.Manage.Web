@@ -289,19 +289,12 @@ const DrawToolbar = () => {
         RINGNETWORKCABINET,
         SWITCHINGSTATION,
       ].includes(currentFeatureType)
-      currentFeature === 'feature'
-        ? form.setFieldsValue({
-            lineId: currentLineData?.id,
-            kvLevel: exist ? 3 : currentLineData?.kvLevel,
-            lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
-            lineModel: currentLineData.lineModel ? '111' : '',
-          })
-        : lineForm.setFieldsValue({
-            lineId: currentLineData?.id,
-            kvLevel: exist ? 3 : currentLineData?.kvLevel,
-            lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
-            lineModel: currentLineData.lineModel ? '111' : '',
-          })
+      form.setFieldsValue({
+        lineId: currentLineData?.id,
+        kvLevel: exist ? 3 : currentLineData?.kvLevel,
+        lineType: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
+        lineModel: currentLineData.lineModel ? '111' : '',
+      })
     }
   }
 
