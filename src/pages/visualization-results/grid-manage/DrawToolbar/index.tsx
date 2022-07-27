@@ -112,19 +112,13 @@ const DrawToolbar = () => {
   }
   /** 转换绘制线路多个回数数据 **/
   const transformLines = (formData: any) => {
-    const data: any = {}
     const arr = []
     const lineNumber = Number(formData.lineNumber)
     for (let i = 0; i < lineNumber; i++) {
-      const item: any = {}
       const kvLevel = `kvLevel_${i + 1}`
       const lineType = `lineType_${i + 1}`
       const lineModel = `lineModel_${i + 1}`
       const lineId = `lineId_${i + 1}`
-      item.kvLevel = formData[kvLevel]
-      item.lineType = formData[lineType]
-      item.lineModel = formData[lineModel]
-      item.lineId = formData[lineId]
       let color
       const currentLineData = belongingLineData.find((item) => item.id === formData[lineId])
       const currentLineKvLevel = currentLineData?.kvLevel
@@ -137,12 +131,19 @@ const DrawToolbar = () => {
         const kv = KVLEVELOPTIONS.find((item: any) => currentLineKvLevel === item.kvLevel)
         color = kv?.color[0].value
       }
-      item.color = color
+      const item = {
+        kvLevel: formData[kvLevel],
+        lineType: formData[lineType],
+        lineModel: formData[lineModel],
+        lineId: formData[lineId],
+        color,
+      }
       arr.push(item)
     }
-    data.lineNumber = lineNumber
-    data.data = arr
-    return data
+    return {
+      lineNumber,
+      data: arr,
+    }
   }
   const selectLine = (value: string, option: any) => {
     // 设置key时添加当前select标识，在key中获取
@@ -159,10 +160,11 @@ const DrawToolbar = () => {
         RINGNETWORKCABINET,
         SWITCHINGSTATION,
       ].includes(currentFeatureType)
-      const data: any = {}
-      data[`kvLevel_${selectNumber}`] = exist ? 3 : currentLineData?.kvLevel
-      data[`lineType_${selectNumber}`] = currentLineData.isOverhead ? 'Line' : 'CableCircuit'
-      data[`lineModel_${selectNumber}`] = currentLineData.lineModel ? '111' : ''
+      const data = {
+        [`kvLevel_${selectNumber}`]: exist ? 3 : currentLineData?.kvLevel,
+        [`lineType_${selectNumber}`]: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
+        [`lineModel_${selectNumber}`]: currentLineData.lineModel ? '111' : '',
+      }
       lineForm.setFieldsValue(data)
     }
   }
@@ -657,8 +659,8 @@ const DrawToolbar = () => {
                 <Select
                   allowClear
                   dropdownStyle={{ zIndex: 3000 }}
-                  onChange={(val) => {
-                    setLineNumber(val as string)
+                  onChange={(val: string) => {
+                    setLineNumber(val)
                   }}
                 >
                   {[
