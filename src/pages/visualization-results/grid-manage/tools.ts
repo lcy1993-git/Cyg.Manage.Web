@@ -107,32 +107,3 @@ export const newData = (arr: any[]) => {
     }
   })
 }
-/** 转换绘制线路多个回数数据 **/
-export const transformLines = (formData: any) => {
-  // const lineIds = []
-  // for(const key in formData) {
-  //   if(key.match(/line_[0-9]+/)) {
-  //     lineIds.push(formData[key])
-  //     delete formData[key]
-  //   }
-  // }
-  // formData.lineIds = lineIds
-  const data: any = {}
-  const arr = []
-  const lineNumber = Number(formData.lineNumber)
-  for (let i = 0; i < lineNumber; i++) {
-    const item: any = {}
-    const kvLevel = `kvLevel_${i + 1}`
-    const lineType = `lineType_${i + 1}`
-    const lineModel = `lineModel_${i + 1}`
-    const lineId = `lineId_${i + 1}`
-    item.kvLevel = formData[kvLevel]
-    item.lineType = formData[lineType]
-    item.lineModel = formData[lineModel]
-    item.lineId = formData[lineId]
-    arr.push(item)
-  }
-  data.lineNumber = lineNumber
-  data.data = arr
-  return data
-}
