@@ -23,12 +23,7 @@ import {
   getDrawPoints,
 } from '../GridMap/utils/initializeMap'
 import { companyId } from '../GridMap/utils/utils'
-import {
-  verificationLat,
-  verificationLng,
-  verificationNaturalNumber,
-  transformLines,
-} from '../tools'
+import { verificationLat, verificationLng, verificationNaturalNumber } from '../tools'
 import {
   BELONGINGCAPACITY,
   BELONGINGLINE,
@@ -658,51 +653,6 @@ const DrawToolbar = () => {
               form={lineForm}
               initialValues={{ lineNumber: '1' }}
             >
-              {/* <Form.Item
-                name="lineId"
-                label="所属线路"
-                rules={[{ required: true, message: '请选择所属线路' }]}
-              >
-                <Select dropdownStyle={{ zIndex: 3000 }} onChange={seleceBelongingLine}>
-                  {belongingLineData.map((item) => (
-                    <Option value={item.id} key={item.id}>
-                      {item.name}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item> */}
-              {/* <Form.Item name="lineType" label="线路类型">
-                <Select
-                  allowClear
-                  onChange={onChangeLineType}
-                  dropdownStyle={{ zIndex: 3000 }}
-                  disabled
-                >
-                  {[
-                    { label: '架空线路', value: 'Line' },
-                    { label: '电缆线路', value: 'CableCircuit' },
-                  ].map((item) => (
-                    <Option value={item.value} key={item.value}>
-                      {item.label}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-              <Form.Item name="lineModel" label="线路型号">
-                <Select dropdownStyle={{ zIndex: 3000 }}>
-                  {selectLineType === 'Line' && selectLineType
-                    ? LINEMODEL.map((item) => (
-                        <Option key={item.value} value={item.value}>
-                          {item.label}
-                        </Option>
-                      ))
-                    : CABLECIRCUITMODEL.map((item) => (
-                        <Option key={item.value} value={item.value}>
-                          {item.label}
-                        </Option>
-                      ))}
-                </Select>
-              </Form.Item> */}
               <Form.Item name="lineNumber" label="线路回数">
                 <Select
                   allowClear
@@ -724,24 +674,6 @@ const DrawToolbar = () => {
                 </Select>
               </Form.Item>
               {renderLines()}
-              {/* <Form.Item
-                name="kvLevel"
-                label="电压等级"
-                rules={[{ required: true, message: '请输入名称' }]}
-              >
-                <Select
-                  dropdownStyle={{ zIndex: 3000 }}
-                  onChange={(value: number) => {
-                    setcurrentKvleve(value)
-                  }}
-                >
-                  {KVLEVELOPTIONS.map((item) => (
-                    <Option key={item.kvLevel} value={item.kvLevel}>
-                      {item.label}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item> */}
               <Form.Item wrapperCol={{ offset: 6, span: 17 }}>
                 <Button type="primary" onClick={createLine}>
                   绘制线路
