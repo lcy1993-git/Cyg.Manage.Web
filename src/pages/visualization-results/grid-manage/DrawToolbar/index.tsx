@@ -120,14 +120,15 @@ const DrawToolbar = () => {
       const lineId = `lineId_${i + 1}`
       let color
       const lineData = belongingLineData.find((item) => item.id === formData[lineId])
-      const currentLineKvLevel = lineData?.kvLevel
-      if (currentLineKvLevel === 3) {
-        const kv = KVLEVELOPTIONS.find(
-          (item: any) => currentLineKvLevel === item.kvLevel
-        )?.color.find((item) => item.label === lineData?.color)
+      const lineKvLevel = lineData?.kvLevel
+      const lineColor = lineData?.color
+      if (lineKvLevel === 3) {
+        const kv = KVLEVELOPTIONS.find((item: any) => lineKvLevel === item.kvLevel)?.color.find(
+          (item) => item.label === lineColor
+        )
         color = kv?.value
       } else {
-        const kv = KVLEVELOPTIONS.find((item: any) => currentLineKvLevel === item.kvLevel)
+        const kv = KVLEVELOPTIONS.find((item: any) => lineKvLevel === item.kvLevel)
         color = kv?.color[0].value
       }
       const item = {
