@@ -99,7 +99,6 @@ const DrawToolbar = () => {
       item.belonging.find((type: string) => type.includes(currentFeatureType))
     ),
   ])
-
   const [form] = useForm()
   const [lineForm] = useForm()
   const formItemLayout = {
@@ -120,12 +119,12 @@ const DrawToolbar = () => {
       const lineModel = `lineModel_${i + 1}`
       const lineId = `lineId_${i + 1}`
       let color
-      const currentLineData = belongingLineData.find((item) => item.id === formData[lineId])
-      const currentLineKvLevel = currentLineData?.kvLevel
+      const lineData = belongingLineData.find((item) => item.id === formData[lineId])
+      const currentLineKvLevel = lineData?.kvLevel
       if (currentLineKvLevel === 3) {
         const kv = KVLEVELOPTIONS.find(
           (item: any) => currentLineKvLevel === item.kvLevel
-        )?.color.find((item) => item.label === currentColor)
+        )?.color.find((item) => item.label === lineData?.color)
         color = kv?.value
       } else {
         const kv = KVLEVELOPTIONS.find((item: any) => currentLineKvLevel === item.kvLevel)
@@ -422,6 +421,7 @@ const DrawToolbar = () => {
       await lineForm.validateFields()
       let formData = lineForm.getFieldsValue()
       formData = transformLines(formData)
+      // todo 多回路开发数据结构改变。这里的color可能应该去掉
       let color
       if (currentLineKvLevel === 3) {
         const kv = KVLEVELOPTIONS.find(
