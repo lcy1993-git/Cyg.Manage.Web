@@ -93,9 +93,7 @@ const SubstationTree = () => {
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
 
-  let flag = 1
   const transformTreeData = (tree: any) => {
-    flag++
     return tree?.map((item: any, index: any) => {
       return {
         ...item,
@@ -108,7 +106,7 @@ const SubstationTree = () => {
           ) : (
             item.name
           ),
-        key: `${item.id}_&${TRANSFORMERSUBSTATION}${flag}`,
+        key: `${item.id}_&${TRANSFORMERSUBSTATION}`,
         type: TRANSFORMERSUBSTATION,
         children: item.lineKVLevelGroups.map(
           (
@@ -120,13 +118,13 @@ const SubstationTree = () => {
               ...child,
               title: childTitle ? childTitle.label : '未知电压',
               type: 'KVLEVEL',
-              key: `0=1=${index}=${childIndex}${flag}`,
+              key: `0=1=${index}=${childIndex}`,
               children: child.lines.map((children: { name: string; id: string }) => {
                 return {
                   ...children,
                   title: children.name,
                   type: LINE,
-                  key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${index}=${childIndex}_&Parent0-1${flag}`,
+                  key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${index}=${childIndex}_&Parent0-1`,
                 }
               }),
             }
@@ -136,7 +134,7 @@ const SubstationTree = () => {
     })
   }
   const transformTreeStructure = (tree: any) => {
-    return tree?.map((item: any, index: any) => {
+    return tree?.map((item: any) => {
       return {
         key: item.key,
         type: item.type,
@@ -147,19 +145,19 @@ const SubstationTree = () => {
             : item.children.map((item: any) => {
                 if (item.data && item.data.length > 0) {
                   return {
-                    key: `${item.key}_other`,
-                    title: '其他',
+                    key: item.key,
+                    title: item.title,
                     type: 'city',
                     children: transformTreeData(item.data),
                   }
                 }
                 return {
-                  key: item.key ? item.key : flag++,
+                  key: item.key,
                   type: item.type,
                   title: item.title,
                   children: item.children.map((item: any) => {
                     return {
-                      key: item.key ? item.key : flag++,
+                      key: item.key,
                       type: item.type,
                       title: item.title,
                       children: transformTreeData(item.data),
@@ -175,8 +173,6 @@ const SubstationTree = () => {
       title: '变电站',
       type: 'Parent',
       key: '0=1',
-      // children: mockData,
-      // children:transformTreeData(data),
       children: transformTreeStructure(data),
     },
   ]
