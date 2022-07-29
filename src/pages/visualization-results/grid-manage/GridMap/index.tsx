@@ -28,7 +28,8 @@ import {
   uploadAllFeature,
 } from '@/services/grid-manage/treeMenu'
 import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
-import { Button, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
+import { useAreaData } from '../hooks'
+import { Button, Drawer, Form, FormInstance, Input, Modal, Select, Cascader } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
 import { useMyContext } from '../Context'
@@ -37,6 +38,7 @@ import {
   BELONGINGLINE,
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
+  BELONGINGCAREA,
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
   CABLECIRCUIT,
@@ -142,6 +144,8 @@ const GridMap = () => {
   const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
   //是否显示保存按钮
   const [isSaveVisible, setIsSaveVisible] = useState<boolean>(false)
+  // 选择区域hooks
+  const { areaData, transformArrtToAreaData, transformAreaDataToArr } = useAreaData()
 
   const dataHandle = (data: any) => {
     if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
@@ -275,6 +279,7 @@ const GridMap = () => {
         lat: geom[1],
         lng: geom[0],
         lineType: featureData.featureType,
+        areas: transformAreaDataToArr(featureData),
       })
     } else {
       form.resetFields()
@@ -311,11 +316,17 @@ const GridMap = () => {
       // 否则就根据主线路的颜色显示
       color = currentThread ? currentThread.color : ''
     }
+    let areaData = {}
+    if (BELONGINGCAREA.includes(currentFeatureType)) {
+      // 变电站和电源
+      areaData = transformArrtToAreaData(value.areas)
+    }
 
     const params = {
       ...value,
       ...currentfeatureData,
       color,
+      ...areaData,
     }
     try {
       switch (currentFeatureType) {
@@ -745,6 +756,11 @@ const GridMap = () => {
               >
                 出线间隔
               </Button>
+            </Form.Item>
+          )}
+          {BELONGINGCAREA.includes(currentFeatureType) && (
+            <Form.Item name="areas" label={`区域`}>
+              <Cascader options={areaData} />
             </Form.Item>
           )}
           <Form.Item wrapperCol={{ offset: 5, span: 18 }}>
