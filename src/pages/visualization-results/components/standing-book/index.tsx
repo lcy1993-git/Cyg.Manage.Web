@@ -79,7 +79,11 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
   // })
 
   // 转换区域选择的数据
-  const { transformArrtToAreaData, transformAreaDataToArr } = useAreaData()
+  const {
+    transformArrtToAreaData,
+    transformAreaDataToArr,
+    transformAreaDataToString,
+  } = useAreaData()
 
   const subStationColumns = [
     {
@@ -132,6 +136,15 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       width: 240,
       render: (text: any, record: any) => {
         return record.geom.slice(6).replace(' ', ' ，')
+      },
+    },
+    {
+      title: '区域',
+      dataIndex: 'area',
+      index: 'area',
+      width: 150,
+      render: (text: any, record: any) => {
+        return transformAreaDataToString(record)
       },
     },
   ]
@@ -187,6 +200,15 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       width: 240,
       render: (text: any, record: any) => {
         return record.geom.slice(6).replace(' ', ' ，')
+      },
+    },
+    {
+      title: '区域',
+      dataIndex: 'area',
+      index: 'area',
+      width: 150,
+      render: (text: any, record: any) => {
+        return transformAreaDataToString(record)
       },
     },
   ]

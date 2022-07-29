@@ -40,6 +40,14 @@ export const useAreaData = () => {
     !!area && areas.push(area)
     return areas
   }
+  const transformAreaDataToString = (areaData: any) => {
+    const { provinceName, cityName, areaName } = areaData
+    const arr = []
+    !!provinceName && arr.push(provinceName)
+    !!cityName && arr.push(cityName)
+    !!areaName && arr.push(areaName)
+    return arr.join('/')
+  }
   const mapHandleCityData = (data: any) => {
     areaMap[data.id] = data.text
     return {
@@ -60,5 +68,6 @@ export const useAreaData = () => {
     areaData,
     transformArrtToAreaData,
     transformAreaDataToArr,
+    transformAreaDataToString,
   }
 }
