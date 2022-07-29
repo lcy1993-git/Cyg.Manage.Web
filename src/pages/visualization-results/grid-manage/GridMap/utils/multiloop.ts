@@ -1,5 +1,6 @@
 import { transform } from 'ol/proj'
 
+// 计算主线路计算平行线
 export const calculationLine = (features: any, lineNumber: any) => {
   let multiloops = []
   for (let i = 0; i < features.length; i++) {
@@ -45,6 +46,10 @@ export const calculationLine = (features: any, lineNumber: any) => {
 
       let wkt = `LINESTRING (${s[0]} ${s[1]},${e[0]} ${e[1]})`
       const loopData = { ...feature.get('data').data[index] }
+      loopData.startId = feature.get('data').startId
+      loopData.startType = feature.get('data').startType
+      loopData.endId = feature.get('data').endId
+      loopData.endType = feature.get('data').endType
       loopData.companyId = feature.get('data').companyId
       loopData.lineNumber = lineNumber
       loopData.name = feature.get('data').name
@@ -56,6 +61,49 @@ export const calculationLine = (features: any, lineNumber: any) => {
     }
   }
   return multiloops
+}
+
+// 根据两点计算平行线
+export const calculationLineByPoints = (
+  startCoord: any,
+  endCoord: any,
+  lineNumber: number,
+  isStart: boolean,
+  isEnd: boolean
+) => {
+  const cropLength_s = isStart ? 0 : 0.5
+  const cropLength_e = isEnd ? 0 : 0.5
+  var datas: any = []
+  for (let index = 0; index < lineNumber; index++) {
+    let interval = getLineInterval(true, lineNumber)
+    var s: any = computeParallelCoord(
+      startCoord,
+      endCoord,
+      lineNumber,
+      interval,
+      index,
+      true,
+      cropLength_s
+    )
+    var e: any = computeParallelCoord(
+      startCoord,
+      endCoord,
+      lineNumber,
+      interval,
+      index,
+      false,
+      cropLength_e
+    )
+    // s = transform([s.x, s.y], 'EPSG:3857', 'EPSG:4326')
+    // e = transform([e.x, e.y], 'EPSG:3857', 'EPSG:4326')
+    s = transform([s.x, s.y], 'EPSG:3857', 'EPSG:3857')
+    e = transform([e.x, e.y], 'EPSG:3857', 'EPSG:3857')
+
+    let wkt = `LINESTRING (${s[0]} ${s[1]},${e[0]} ${e[1]})`
+    let loop_serial = index + 1
+    datas.push({ wkt, loop_serial })
+  }
+  return datas
 }
 
 const getLineInterval = (isCable: any, shapeCount: any) => {
