@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Input, Select } from 'antd'
+import { Button, Input, Select, Cascader } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
@@ -12,6 +12,7 @@ import {
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
 import TransIntervalTable from '../trans-interval-table'
 import UrlSelect from '@/components/url-select'
+import { useAreaData } from '../../../../grid-manage/hooks'
 
 interface SubStationPowerParams {
   currentEditTab: string
@@ -35,7 +36,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   })
 
   const [transTableVisible, setTransTableVisible] = useState<boolean>(false)
-
+  const { areaData } = useAreaData()
   const handleKvOptions = (clickTab: string) => {
     return [
       ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
@@ -184,7 +185,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
       {currentEditTab === 'power' && (
         <>
           <CyFormItem
-            label="电源类型"
+            label="电源类型1"
             required
             name="powerType"
             rules={[{ required: true, message: '未选择电源类型' }]}
@@ -236,6 +237,9 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           </CyFormItem>
           <CyFormItem label="纬度" name="lat">
             <Input placeholder="请输入纬度" />
+          </CyFormItem>
+          <CyFormItem label="区域" name="areas">
+            <Cascader options={areaData} />
           </CyFormItem>
         </>
       )}

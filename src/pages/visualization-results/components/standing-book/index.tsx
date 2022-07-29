@@ -25,6 +25,7 @@ import { upateLineByMainLine } from '../../grid-manage/GridMap/utils/initializeM
 import { deletFeatureByTable, editFeature } from '../../grid-manage/GridMap/utils/select'
 import { handleGeom } from '../../utils/methods'
 import SubStationPowerForm from './components/subStation-power-form'
+import { useAreaData } from '../../grid-manage/hooks'
 
 const { TabPane } = Tabs
 
@@ -76,6 +77,9 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
   // const { data, run } = useRequest(getAuthorizationDetail, {
   //   manual: true,
   // })
+
+  // 转换区域选择的数据
+  const { transformArrtToAreaData, transformAreaDataToArr } = useAreaData()
 
   const subStationColumns = [
     {
@@ -349,11 +353,17 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       setSelectTransId(editData.id)
       setIntervalData(editData.transformerInterval)
       const geom = handleGeom(editData.geom)
+      const { province, city, area } = editData
+      const areas = []
+      !!province && areas.push(province)
+      !!city && areas.push(city)
+      !!area && areas.push(area)
 
       subForm.setFieldsValue({
         ...editData,
         lng: geom[0],
         lat: geom[1],
+        areas,
       })
       setFormVisible(true)
       return
@@ -366,11 +376,11 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       const editData = powerSelectRows[0]
 
       const geom = handleGeom(editData.geom)
-
       powerForm.setFieldsValue({
         ...editData,
         lng: geom[0],
         lat: geom[1],
+        areas: transformAreaDataToArr(editData),
       })
       setFormVisible(true)
       return
@@ -422,6 +432,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           ...values,
           transformerInterval: intervalData,
           color,
+          ...transformArrtToAreaData(values.areas),
         }
         await modifyTransformerSubstation(submitInfo)
 
@@ -451,6 +462,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: '咖啡',
+          ...transformArrtToAreaData(values.areas),
         }
         await modifyPowerSupply(submitInfo)
         const drawParams = {

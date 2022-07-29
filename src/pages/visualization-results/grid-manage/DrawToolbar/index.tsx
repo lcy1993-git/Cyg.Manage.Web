@@ -1,5 +1,6 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
+import { useAreaData } from '../hooks'
 import {
   Button,
   Divider,
@@ -12,6 +13,7 @@ import {
   Row,
   Select,
   Tabs,
+  Cascader,
 } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
@@ -29,6 +31,7 @@ import {
   BELONGINGLINE,
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
+  BELONGINGCAREA,
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
   CABLECIRCUITMODEL,
@@ -99,6 +102,7 @@ const DrawToolbar = () => {
       item.belonging.find((type: string) => type.includes(currentFeatureType))
     ),
   ])
+  const { areaData, transformArrtToAreaData } = useAreaData()
   const [form] = useForm()
   const [lineForm] = useForm()
   const formItemLayout = {
@@ -141,7 +145,7 @@ const DrawToolbar = () => {
       arr.push(item)
     }
     return {
-      lineNumber,
+      LoopNumber: lineNumber,
       data: arr,
     }
   }
@@ -385,7 +389,6 @@ const DrawToolbar = () => {
     try {
       await form.validateFields()
       const formData = form.getFieldsValue()
-
       let color
       if (formData.featureType === POWERSUPPLY) {
         color = '#4D3900'
@@ -399,16 +402,30 @@ const DrawToolbar = () => {
           color = exist ? exist.value : ''
         }
       }
-
-      drawPoint(
-        mapRef.map,
-        {
-          ...formData,
-          companyId: companyId,
-          color: color ? color : COLORDEFAULT,
-        },
-        setClickState
-      )
+      if (BELONGINGCAREA.includes(formData.featureType)) {
+        // 电源和变电站需传递区域信息
+        const { areas } = formData
+        drawPoint(
+          mapRef.map,
+          {
+            ...formData,
+            companyId: companyId,
+            color: color ? color : COLORDEFAULT,
+            ...transformArrtToAreaData(areas),
+          },
+          setClickState
+        )
+      } else {
+        drawPoint(
+          mapRef.map,
+          {
+            ...formData,
+            companyId: companyId,
+            color: color ? color : COLORDEFAULT,
+          },
+          setClickState
+        )
+      }
     } catch (err) {}
   }
 
@@ -449,7 +466,6 @@ const DrawToolbar = () => {
       data && setbelongingLineData(data)
     },
   })
-
   useEffect(() => {
     run()
   }, [isRefresh, run])
@@ -496,6 +512,7 @@ const DrawToolbar = () => {
               style={{ marginTop: '10px' }}
               form={form}
               onValuesChange={formChange}
+              initialValues={{ areas: [] }}
             >
               <Form.Item name="featureType" label="绘制图符" initialValue="PowerSupply">
                 <Radio.Group
@@ -637,6 +654,11 @@ const DrawToolbar = () => {
               <Form.Item name="lat" label="纬度" rules={[verificationLat]}>
                 <Input />
               </Form.Item>
+              {BELONGINGCAREA.includes(currentFeatureType) && (
+                <Form.Item name="areas" label={`区域`}>
+                  <Cascader options={areaData} />
+                </Form.Item>
+              )}
             </Form>
           )}
         </TabPane>
