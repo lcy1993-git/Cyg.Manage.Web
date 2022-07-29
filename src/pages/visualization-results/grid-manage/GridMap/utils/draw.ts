@@ -198,7 +198,7 @@ class DrawTool {
 
       // 移除原有要素层
       source.removeFeature(feature)
-      if (parseInt(feature.get('data').lineNumber) === 1) {
+      if (parseInt(feature.get('data').LoopNumber) === 1) {
         // 将拆分生成的新要素层添加至图层
 
         features.forEach((f: any) => {
@@ -209,7 +209,7 @@ class DrawTool {
           source.addFeature(f)
         })
       } else {
-        const multiloops = calculationLine(features, feature.get('data').lineNumber)
+        const multiloops = calculationLine(features, feature.get('data').LoopNumber)
         multiloops.forEach((loopData: any) => {
           const loopGeom: any = new WKT()
             .readGeometry(loopData.geom)
@@ -222,7 +222,6 @@ class DrawTool {
         })
       }
     }, 0)
-    // console.log(feature.getGeometry().getCoordinates(), 1112)
   }
 
   handleLine_node = (lont: number, lat: number, lineData: any, isAdd: boolean) => {
@@ -277,10 +276,6 @@ class DrawTool {
       data.type_ = 'Point'
       node.set('data', data)
       pointLayer.getSource().addFeature(node)
-
-      // !! 生成线路带出的点位信息添加点位到数据库 data
-      // console.log(data, '123456555')
-      // storeLocalFeatureData(data)
     }
     return node
   }

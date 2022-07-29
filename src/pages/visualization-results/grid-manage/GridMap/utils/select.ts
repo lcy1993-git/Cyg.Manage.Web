@@ -69,7 +69,6 @@ export const initSelect = (
     if (evt.selected.length > 0) {
       translate.setActive(true)
       currrentSelectFeature = evt.selected[0]
-      // console.log(currrentSelectFeature.get('data'));
       /* 弹出属性显示框 **/
       isActiveFeature(currrentSelectFeature.get('data'))
       if (currrentSelectFeature.getGeometry().getType() === 'Point') {
@@ -136,6 +135,7 @@ const updateLine = async (
   isDragPointend: (isDrag: boolean) => void
 ) => {
   const featureCoords = feature.getGeometry().getCoordinates()
+  const pointLayer = getLayer(map, 'pointLayer')
   const lineLayer = getLayer(map, 'lineLayer')
   const data = feature.get('data')
   const features = lineLayer
@@ -147,7 +147,7 @@ const updateLine = async (
 
   // 非回路线路
   const singleFeatures = features.filter(
-    (item: any) => !item.get('data').lineNumber || item.get('data').lineNumber === 1
+    (item: any) => !item.get('data').LoopNumber || item.get('data').LoopNumber === 1
   )
   singleFeatures.forEach((f: any) => {
     const lineCoords = f.getGeometry().getCoordinates()
@@ -169,20 +169,26 @@ const updateLine = async (
   if (isEnd) {
     // 多回路线路
     const multiFeatures = features.filter(
-      (item: any) => item.get('data').lineNumber && item.get('data').lineNumber > 1
+      (item: any) => item.get('data').LoopNumber && item.get('data').LoopNumber > 1
     )
     var multiDatas: any = []
     multiFeatures.forEach((line: any) => {
-      const lineCoords = line.getGeometry().getCoordinates()
       const startId = line.get('data').startId
       const endId = line.get('data').endId
-      const startCoord = startId === data.id ? featureCoords : lineCoords[0]
-      const endCoord = endId === data.id ? featureCoords : lineCoords[1]
-      const lineNumber = line.get('data').lineNumber
 
-      // console.log(startCoord);
-      // console.log(endCoord);
-      // console.log('==================================');
+      const startPoint = pointLayer
+        .getSource()
+        .getFeatures()
+        .find((item: any) => item.get('data').id === startId)
+      const endPoint = pointLayer
+        .getSource()
+        .getFeatures()
+        .find((item: any) => item.get('data').id === endId)
+
+      const startCoord =
+        startId === data.id ? featureCoords : startPoint.getGeometry().getCoordinates()
+      const endCoord = endId === data.id ? featureCoords : endPoint.getGeometry().getCoordinates()
+      const LoopNumber = line.get('data').LoopNumber
 
       // 判断是否为起始点
       let isStart = lineLayer
@@ -202,7 +208,7 @@ const updateLine = async (
         endId,
         startCoord,
         endCoord,
-        lineNumber,
+        LoopNumber,
         isStart,
         isEnd,
       }
@@ -217,12 +223,10 @@ const updateLine = async (
     multiDatas.forEach((multiData: any) => {
       const startCoord = { x: multiData.startCoord[0], y: multiData.startCoord[1] }
       const endCoord = { x: multiData.endCoord[0], y: multiData.endCoord[1] }
-      const lineNumber = multiData.lineNumber
+      const LoopNumber = multiData.LoopNumber
       const isStart = multiData.isStart
       const isEnd = multiData.isEnd
-      // console.log(transform(multiData.startCoord, 'EPSG:3857', 'EPSG:4326'));
-      // console.log(transform(multiData.endCoord, 'EPSG:3857', 'EPSG:4326'));
-      const datas = calculationLineByPoints(startCoord, endCoord, lineNumber, isStart, isEnd)
+      const datas = calculationLineByPoints(startCoord, endCoord, LoopNumber, isStart, isEnd)
 
       datas.forEach((data: any) => {
         const multiFeature = multiFeatures.find(
