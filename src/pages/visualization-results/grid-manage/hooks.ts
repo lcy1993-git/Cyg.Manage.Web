@@ -35,9 +35,9 @@ export const useAreaData = () => {
   const transformAreaDataToArr = (areaData: any) => {
     const { province, city, area } = areaData
     const areas = []
-    !!province.trim() && areas.push(province)
-    !!city.trim() && areas.push(city)
-    !!area.trim() && areas.push(area)
+    !!province && areas.push(province)
+    !!city && areas.push(city)
+    !!area && areas.push(area)
     return areas
   }
   const mapHandleCityData = (data: any) => {
