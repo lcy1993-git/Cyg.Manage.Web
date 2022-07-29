@@ -92,49 +92,92 @@ const SubstationTree = () => {
   const [lineTitle, setLineTitle] = useState<string>('')
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
+
+  let flag = 1
+  const transformTreeData = (tree: any) => {
+    flag++
+    return tree?.map((item: any, index: any) => {
+      return {
+        ...item,
+        title:
+          companyId !== item.companyId ? (
+            <>
+              <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+              <span style={{ paddingLeft: '3px' }}> {item.name}</span>
+            </>
+          ) : (
+            item.name
+          ),
+        key: `${item.id}_&${TRANSFORMERSUBSTATION}${flag}`,
+        type: TRANSFORMERSUBSTATION,
+        children: item.lineKVLevelGroups.map(
+          (
+            child: { kvLevel: number; lines: { name: string; id: string }[]; id: string },
+            childIndex: number
+          ) => {
+            const childTitle = KVLEVELOPTIONS.find((kv) => kv.kvLevel === child.kvLevel)
+            return {
+              ...child,
+              title: childTitle ? childTitle.label : '未知电压',
+              type: 'KVLEVEL',
+              key: `0=1=${index}=${childIndex}${flag}`,
+              children: child.lines.map((children: { name: string; id: string }) => {
+                return {
+                  ...children,
+                  title: children.name,
+                  type: LINE,
+                  key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${index}=${childIndex}_&Parent0-1${flag}`,
+                }
+              }),
+            }
+          }
+        ),
+      }
+    })
+  }
+  const transformTreeStructure = (tree: any) => {
+    return tree?.map((item: any, index: any) => {
+      return {
+        key: item.key,
+        type: item.type,
+        title: item.title,
+        children:
+          item.key === 'Province_Other'
+            ? transformTreeData(item.data)
+            : item.children.map((item: any) => {
+                if (item.data && item.data.length > 0) {
+                  return {
+                    key: `${item.key}_other`,
+                    title: '其他',
+                    type: 'city',
+                    children: transformTreeData(item.data),
+                  }
+                }
+                return {
+                  key: item.key ? item.key : flag++,
+                  type: item.type,
+                  title: item.title,
+                  children: item.children.map((item: any) => {
+                    return {
+                      key: item.key ? item.key : flag++,
+                      type: item.type,
+                      title: item.title,
+                      children: transformTreeData(item.data),
+                    }
+                  }),
+                }
+              }),
+      }
+    })
+  }
   const treeData = [
     {
       title: '变电站',
       type: 'Parent',
       key: '0=1',
-      children: data?.map((item, index) => {
-        return {
-          ...item,
-          title:
-            companyId !== item.companyId ? (
-              <>
-                <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
-                <span style={{ paddingLeft: '3px' }}> {item.name}</span>
-              </>
-            ) : (
-              item.name
-            ),
-          key: `${item.id}_&${TRANSFORMERSUBSTATION}`,
-          type: TRANSFORMERSUBSTATION,
-          children: item.lineKVLevelGroups.map(
-            (
-              child: { kvLevel: number; lines: { name: string; id: string }[]; id: string },
-              childIndex: number
-            ) => {
-              const childTitle = KVLEVELOPTIONS.find((kv) => kv.kvLevel === child.kvLevel)
-              return {
-                ...child,
-                title: childTitle ? childTitle.label : '未知电压',
-                type: 'KVLEVEL',
-                key: `0=1=${index}=${childIndex}`,
-                children: child.lines.map((children: { name: string; id: string }) => {
-                  return {
-                    ...children,
-                    title: children.name,
-                    type: LINE,
-                    key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${index}=${childIndex}_&Parent0-1`,
-                  }
-                }),
-              }
-            }
-          ),
-        }
-      }),
+      // children: mockData,
+      // children:transformTreeData(data),
+      children: transformTreeStructure(data),
     },
   ]
   // 右键删除线路
