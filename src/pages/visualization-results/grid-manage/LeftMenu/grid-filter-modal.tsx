@@ -1,8 +1,9 @@
 import { ReloadOutlined } from '@ant-design/icons'
-import { Button, Form, Modal } from 'antd'
+import { Button, Form, Modal, Cascader } from 'antd'
 import { useTreeContext } from './TreeContext'
 import UrlSelect from '@/components/url-select'
 import CyFormItem from '@/components/cy-form-item'
+import { useAreaData } from '../hooks'
 
 interface Props {
   visible: boolean
@@ -12,7 +13,8 @@ interface Props {
 }
 
 const GridFilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel }) => {
-  const { setKvLevels } = useTreeContext()
+  const { setKvLevels, setAreasId, isFilterTree, setIsFilterTree } = useTreeContext()
+  const { areaData } = useAreaData()
   const kvOps = [
     { label: '10kV', value: 3 },
     { label: '20kV', value: 4 },
@@ -24,6 +26,8 @@ const GridFilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel 
   const sureEvent = () => {
     form.validateFields().then((values) => {
       setKvLevels(values.kvLevels)
+      setAreasId(values.areas)
+      setIsFilterTree(!isFilterTree)
     })
     onChange(false)
   }
@@ -31,17 +35,20 @@ const GridFilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel 
   const onReset = () => {
     form.setFieldsValue({
       kvLevels: [],
+      areas: [],
     })
     setKvLevels(form.getFieldValue('kvLevels'))
+    setAreasId(form.getFieldValue('areas'))
+    setIsFilterTree(!isFilterTree)
     onChange(false)
   }
 
   const footer = [
-    <Button style={{ width: 68 }} onClick={onReset}>
+    <Button style={{ width: 68 }} onClick={onReset} key="reset">
       <ReloadOutlined />
       重置
     </Button>,
-    <Button style={{ width: 68 }} onClick={sureEvent} type="primary">
+    <Button style={{ width: 68 }} onClick={sureEvent} type="primary" key="sure">
       确定
     </Button>,
   ]
@@ -75,6 +82,9 @@ const GridFilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel 
             placeholder="选择电压等级"
             style={{ width: 200 }}
           />
+        </CyFormItem>
+        <CyFormItem name="areas" label="区域">
+          <Cascader options={areaData} style={{ width: 200 }} />
         </CyFormItem>
       </Form>
     </Modal>

@@ -46,6 +46,8 @@ const LeftMenu = (props: any) => {
   const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
+  const [areasId, setAreasId] = useState<string[]>([])
+  const [isFilterTree, setIsFilterTree] = useState(true)
 
   // 线路ID集合
   const [linesId, setlinesId] = useState<string[]>([])
@@ -217,6 +219,10 @@ const LeftMenu = (props: any) => {
           treeLoading,
           kvLevels,
           setKvLevels,
+          areasId,
+          setAreasId,
+          isFilterTree,
+          setIsFilterTree,
         }}
       >
         <div className="w-full flex-none" style={{ height: '50px' }}>

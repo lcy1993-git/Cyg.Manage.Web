@@ -64,7 +64,7 @@ const { Option } = Select
 
 const SubstationTree = () => {
   const { data, run: getTree } = useRequest(
-    () => getTransformerSubstationMenu({ kvLevels: kvLevels }),
+    () => getTransformerSubstationMenu({ kvLevels: kvLevels, ...transformAreaId(areasId) }),
     {
       manual: true,
       onSuccess: () => {
@@ -76,7 +76,15 @@ const SubstationTree = () => {
     }
   )
   const { isRefresh, setIsRefresh, mapRef, lineAssemble, companyId } = useMyContext()
-  const { linesId, setlinesId, setsubStations, settreeLoading, kvLevels } = useTreeContext()
+  const {
+    linesId,
+    setlinesId,
+    setsubStations,
+    settreeLoading,
+    kvLevels,
+    areasId,
+    isFilterTree,
+  } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -92,6 +100,14 @@ const SubstationTree = () => {
   const [lineTitle, setLineTitle] = useState<string>('')
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
+  const transformAreaId = (areasId: any) => {
+    const [province, city, county] = areasId
+    return {
+      province: !isNaN(province) ? province : '',
+      city: !isNaN(city) ? city : '',
+      area: !isNaN(county) ? county : '',
+    }
+  }
 
   const transformTreeData = (tree: any) => {
     return tree?.map((item: any, index: any) => {
@@ -269,7 +285,7 @@ const SubstationTree = () => {
 
   useEffect(() => {
     getTree()
-  }, [getTree, isRefresh, kvLevels])
+  }, [getTree, isRefresh, isFilterTree])
 
   // 点击左键，编辑线路数据
   const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {
