@@ -109,13 +109,11 @@ const PowerSupplyTree = () => {
       settreeLoading(true)
     },
   })
-  let flag = 1
-  const transformTreeData = (tree: any) => {
-    flag++
+  const transformTreeData = (tree: any, key: any) => {
     return tree?.map((item: any, index: any) => {
       return {
         title: item.type,
-        key: `0-0-${index}${flag}`,
+        key: `0-0-${index}${key}`,
         type: 'PowerType',
         children: item.powerSupplySubList.map((child: PowerSupplyListType) => {
           return {
@@ -129,14 +127,14 @@ const PowerSupplyTree = () => {
               ) : (
                 child.name
               ),
-            key: `${child.id}_&${POWERSUPPLY}${flag}`,
+            key: `${child.id}_&${POWERSUPPLY}`,
             type: POWERSUPPLY,
             children: child.lines.map((childrenItem: lineListItemType) => {
               return {
                 ...childrenItem,
                 type: LINE,
                 title: childrenItem.name,
-                key: `${childrenItem.id}_&Line${child.id}_&${POWERSUPPLY}_&PowerType0-0-${index}_&Parent0-0${flag}`,
+                key: `${childrenItem.id}_&Line${child.id}_&${POWERSUPPLY}_&PowerType0-0-${index}${key}_&Parent0-0`,
               }
             }),
           }
@@ -144,130 +142,34 @@ const PowerSupplyTree = () => {
       }
     })
   }
-  // const mockData = [
-  //   {
-  //     title: '其他省',
-  //     key:'111111_null',
-  //     type:'province',
-  //     children: transformTreeData(data),
-  //   },
-  //   {
-  //     title: '四川',
-  //     children: [
-  //       {
-  //         title:'其他市',
-  //         type:'province',
-  //         key: '222222_null',
-  //         children: transformTreeData(data),
-  //       },
-  //       {
-  //         title: '乐山',
-  //         key:'333333',
-  //         type:'city',
-  //         children: [
-  //           {
-  //             title:'其他县',
-  //             type:'province',
-  //             key: '444444_null',
-  //             children: transformTreeData(data),
-  //           },
-  //           {
-  //             title: '峨眉山',
-  //             key:'555555',
-  //             type:'area',
-  //             children: transformTreeData(data),
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ]
-  // const mockData = [
-  //   {
-  //     key: 'random',
-  //     title: '其它',
-  //     type: 'Province',
-  //     data: data,
-  //     children: [],
-  //   },
-  //   {
-  //     key: '510000',
-  //     title: '四川',
-  //     type: 'Province',
-  //     data: data,
-  //     children: [
-  //       {
-  //         key: '511181',
-  //         title: '乐山',
-  //         type: 'City',
-  //         data: data,
-  //         children: [
-  //           {
-  //             key: '511100',
-  //             title: '峨眉山',
-  //             type: 'Area',
-  //             data: [],
-  //             children: data,
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ]
   const transformTreeStructure = (tree: any) => {
-    return tree?.map((item: any, index: any) => {
+    return tree?.map((item: any) => {
       return {
         key: item.key,
         type: item.type,
         title: item.title,
         children:
           item.key === 'Province_Other'
-            ? transformTreeData(item.data)
+            ? transformTreeData(item.data, item.key)
             : item.children.map((item: any) => {
-                // let children = item.children
-                // if (item.data && item.data.length > 0) {
-                //   children.push({
-                //     key: `${item.key}_other`,
-                //     title: '其他',
-                //     type: 'city',
-                //     children: transformTreeData(item.data),
-                //   })
-                // }
                 if (item.data && item.data.length > 0) {
                   return {
-                    key: `${item.key}_other`,
-                    title: '其他',
+                    key: item.key,
+                    title: item.title,
                     type: 'city',
-                    children: transformTreeData(item.data),
+                    children: transformTreeData(item.data, item.key),
                   }
                 }
                 return {
-                  key: item.key ? item.key : flag++,
+                  key: item.key,
                   type: item.type,
                   title: item.title,
                   children: item.children.map((item: any) => {
-                    // let children = item.children
-                    // if (item.data && item.data.length > 0) {
-                    //   children.push({
-                    //     key: `${item.key}_other`,
-                    //     title: '其他',
-                    //     type: 'area',
-                    //     children: transformTreeData(item.data),
-                    //   })
-                    // }
-                    // if (item.data && item.data.length > 0) {
-                    //   return {
-                    //     key: `${item.key}_other`,
-                    //     title: '其他',
-                    //     type: 'area',
-                    //     children: transformTreeData(item.data),
-                    //   }
-                    // }
                     return {
-                      key: item.key ? item.key : flag++,
+                      key: item.key,
                       type: item.type,
                       title: item.title,
-                      children: transformTreeData(item.data),
+                      children: transformTreeData(item.data, item.key),
                     }
                   }),
                 }
@@ -281,12 +183,9 @@ const PowerSupplyTree = () => {
       title: '电源',
       key: '0-0',
       type: 'Parent',
-      // children: transformTreeData(mockData),
-      // children: mockData,
       children: transformTreeStructure(data),
     },
   ]
-  // const treeData = mockData
 
   const handleOk = async () => {
     try {
