@@ -166,81 +166,81 @@ const updateLine = async (
     }
   })
 
+  // 多回路线路
+  const multiFeatures = features.filter(
+    (item: any) => item.get('data').LoopNumber && item.get('data').LoopNumber > 1
+  )
+  var multiDatas: any = []
+  multiFeatures.forEach((line: any) => {
+    const startId = line.get('data').startId
+    const endId = line.get('data').endId
+
+    const startPoint = pointLayer
+      .getSource()
+      .getFeatures()
+      .find((item: any) => item.get('data').id === startId)
+    const endPoint = pointLayer
+      .getSource()
+      .getFeatures()
+      .find((item: any) => item.get('data').id === endId)
+
+    const startCoord =
+      startId === data.id ? featureCoords : startPoint.getGeometry().getCoordinates()
+    const endCoord = endId === data.id ? featureCoords : endPoint.getGeometry().getCoordinates()
+    const LoopNumber = line.get('data').LoopNumber
+
+    // 判断是否为起始点
+    let isStart = lineLayer
+      .getSource()
+      .getFeatures()
+      .find((item: any) => item.get('data').endId === line.get('data').startId)
+    isStart = isStart ? false : true
+
+    // 判断是否为结束点
+    let isEnd = lineLayer
+      .getSource()
+      .getFeatures()
+      .find((item: any) => item.get('data').startId === line.get('data').endId)
+    isEnd = isEnd ? false : true
+    const multiData = {
+      startId,
+      endId,
+      startCoord,
+      endCoord,
+      LoopNumber,
+      isStart,
+      isEnd,
+    }
+    // 判断是否存在
+    let isExist
+    multiDatas.forEach((item: any) => {
+      if (item.startId === startId && item.endId === endId) isExist = true
+    })
+    !isExist && multiDatas.push(multiData)
+  })
+
+  multiDatas.forEach((multiData: any) => {
+    const startCoord = { x: multiData.startCoord[0], y: multiData.startCoord[1] }
+    const endCoord = { x: multiData.endCoord[0], y: multiData.endCoord[1] }
+    const LoopNumber = multiData.LoopNumber
+    const isStart = multiData.isStart
+    const isEnd = multiData.isEnd
+    const datas = calculationLineByPoints(startCoord, endCoord, LoopNumber, isStart, isEnd)
+
+    datas.forEach((data: any) => {
+      const multiFeature = multiFeatures.find(
+        (feature: any) =>
+          feature.get('data').startId === multiData.startId &&
+          feature.get('data').endId === multiData.endId &&
+          feature.get('data').loop_serial === data.loop_serial
+      )
+      // const geom = new WKT().readGeometry(data.wkt).transform('EPSG:4326', 'EPSG:3857')
+      const geom = new WKT().readGeometry(data.wkt)
+      multiFeature.setGeometry(geom)
+    })
+  })
+
   if (isEnd) {
-    // 多回路线路
-    const multiFeatures = features.filter(
-      (item: any) => item.get('data').LoopNumber && item.get('data').LoopNumber > 1
-    )
-    var multiDatas: any = []
-    multiFeatures.forEach((line: any) => {
-      const startId = line.get('data').startId
-      const endId = line.get('data').endId
-
-      const startPoint = pointLayer
-        .getSource()
-        .getFeatures()
-        .find((item: any) => item.get('data').id === startId)
-      const endPoint = pointLayer
-        .getSource()
-        .getFeatures()
-        .find((item: any) => item.get('data').id === endId)
-
-      const startCoord =
-        startId === data.id ? featureCoords : startPoint.getGeometry().getCoordinates()
-      const endCoord = endId === data.id ? featureCoords : endPoint.getGeometry().getCoordinates()
-      const LoopNumber = line.get('data').LoopNumber
-
-      // 判断是否为起始点
-      let isStart = lineLayer
-        .getSource()
-        .getFeatures()
-        .find((item: any) => item.get('data').endId === line.get('data').startId)
-      isStart = isStart ? false : true
-
-      // 判断是否为结束点
-      let isEnd = lineLayer
-        .getSource()
-        .getFeatures()
-        .find((item: any) => item.get('data').startId === line.get('data').endId)
-      isEnd = isEnd ? false : true
-      const multiData = {
-        startId,
-        endId,
-        startCoord,
-        endCoord,
-        LoopNumber,
-        isStart,
-        isEnd,
-      }
-      // 判断是否存在
-      let isExist
-      multiDatas.forEach((item: any) => {
-        if (item.startId === startId && item.endId === endId) isExist = true
-      })
-      !isExist && multiDatas.push(multiData)
-    })
-
-    multiDatas.forEach((multiData: any) => {
-      const startCoord = { x: multiData.startCoord[0], y: multiData.startCoord[1] }
-      const endCoord = { x: multiData.endCoord[0], y: multiData.endCoord[1] }
-      const LoopNumber = multiData.LoopNumber
-      const isStart = multiData.isStart
-      const isEnd = multiData.isEnd
-      const datas = calculationLineByPoints(startCoord, endCoord, LoopNumber, isStart, isEnd)
-
-      datas.forEach((data: any) => {
-        const multiFeature = multiFeatures.find(
-          (feature: any) =>
-            feature.get('data').startId === multiData.startId &&
-            feature.get('data').endId === multiData.endId &&
-            feature.get('data').loop_serial === data.loop_serial
-        )
-        // const geom = new WKT().readGeometry(data.wkt).transform('EPSG:4326', 'EPSG:3857')
-        const geom = new WKT().readGeometry(data.wkt)
-        multiFeature.setGeometry(geom)
-      })
-    })
-
     const point = feature.values_.data
     const lines = singleFeatures.map((item: { values_: { data: any } }) => item.values_.data)
     isDragPointend(true)
