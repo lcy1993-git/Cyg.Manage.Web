@@ -37,6 +37,10 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
 
   const [transTableVisible, setTransTableVisible] = useState<boolean>(false)
   const { areaData } = useAreaData()
+  // 可以展示终点厂站的电压等级数组集合
+  const showEndBelongingKvLevels = KVLEVELOPTIONS.filter(
+    (level) => level.belonging.includes('Line') && level.kvLevel !== 3
+  ).map((item) => item.kvLevel)
   const handleKvOptions = (clickTab: string) => {
     return [
       ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
@@ -110,6 +114,22 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
               ))}
             </Select>
           </CyFormItem>
+          {showEndBelongingKvLevels.includes(currentKv) && (
+            <CyFormItem
+              name="endBelonging"
+              label="终点厂站"
+              required
+              rules={[{ required: true, message: '请选择终点厂站' }]}
+            >
+              <Select allowClear>
+                {stationItemsData.map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </CyFormItem>
+          )}
 
           <CyFormItem name="totalCapacity" label="配变总容量">
             <Input placeholder="请输入配变总容量" />

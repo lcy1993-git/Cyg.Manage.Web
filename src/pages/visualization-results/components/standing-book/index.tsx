@@ -413,7 +413,6 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       return
     }
     const editData = mainLineRows[0]
-
     lineForm.setFieldsValue({
       ...editData,
       lineType: editData.isOverhead ? 'Line' : 'CableCircuit',

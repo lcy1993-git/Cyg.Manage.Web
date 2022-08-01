@@ -61,9 +61,13 @@ const LeftMenu = (props: any) => {
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const showModal = () => {
     setIsRefresh(!isRefresh)
+    setcurrentLineKvLevel(1)
     setVisible(true)
   }
-
+  // 新增线路弹窗，可以展示终点厂站的电压等级数组集合
+  const showEndBelongingKvLevels = KVLEVELOPTIONS.filter(
+    (level) => level.belonging.includes('Line') && level.kvLevel !== 3
+  ).map((item) => item.kvLevel)
   //打开网架台账信息
   const showStandingBook = () => {
     setStandingBookVisible(true)
@@ -282,6 +286,21 @@ const LeftMenu = (props: any) => {
               ))}
             </Select>
           </Form.Item>
+          {showEndBelongingKvLevels.includes(currentLineKvLevel) && (
+            <Form.Item
+              name="EndBelonging"
+              label="终点厂站"
+              rules={[{ required: true, message: '请选择终点厂站' }]}
+            >
+              <Select allowClear>
+                {stationItemsData.map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
           <Form.Item
             name="kvLevel"
             label="电压等级"

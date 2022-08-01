@@ -17,7 +17,7 @@ interface ContextType {
   setAreasId: Dispatch<SetStateAction<string[]>>
   // 重新获取tree数据标识
   isFilterTree: boolean
-  setsFilterTree: Dispatch<SetStateAction<boolean>>
+  setIsFilterTree: Dispatch<SetStateAction<boolean>>
 }
 
 // 全局状态管理
