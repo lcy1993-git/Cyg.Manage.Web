@@ -12,7 +12,7 @@ import {
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
 import TransIntervalTable from '../trans-interval-table'
 import UrlSelect from '@/components/url-select'
-import { useAreaData } from '../../../../grid-manage/hooks'
+import { useMyContext } from '@/pages/visualization-results/grid-manage/Context'
 
 interface SubStationPowerParams {
   currentEditTab: string
@@ -26,6 +26,7 @@ const { Option } = Select
 
 const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const { currentEditTab, form, transId, dataOnchange, intervalData } = props
+  const { areaData } = useMyContext()
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const [selectLineType, setselectLineType] = useState('')
   const [currentKv, setCurrentKv] = useState<number>(Number(form.getFieldValue('kvLevel')))
@@ -36,7 +37,6 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   })
 
   const [transTableVisible, setTransTableVisible] = useState<boolean>(false)
-  const { areaData } = useAreaData()
   // 可以展示终点厂站的电压等级数组集合
   const showEndBelongingKvLevels = KVLEVELOPTIONS.filter(
     (level) => level.belonging.includes('Line') && level.kvLevel !== 3

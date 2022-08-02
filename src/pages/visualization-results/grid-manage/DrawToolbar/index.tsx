@@ -1,6 +1,5 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
-import { useAreaData } from '../hooks'
 import {
   Button,
   Divider,
@@ -25,7 +24,12 @@ import {
   getDrawPoints,
 } from '../GridMap/utils/initializeMap'
 import { companyId } from '../GridMap/utils/utils'
-import { verificationLat, verificationLng, verificationNaturalNumber } from '../tools'
+import {
+  verificationLat,
+  verificationLng,
+  verificationNaturalNumber,
+  transformArrtToAreaData,
+} from '../tools'
 import {
   BELONGINGCAPACITY,
   BELONGINGLINE,
@@ -75,6 +79,8 @@ const DrawToolbar = () => {
     zIndex,
     setzIndex,
     setIsRefresh,
+    areaData,
+    areaMap,
   } = useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
@@ -102,7 +108,6 @@ const DrawToolbar = () => {
       item.belonging.find((type: string) => type.includes(currentFeatureType))
     ),
   ])
-  const { areaData, transformArrtToAreaData } = useAreaData()
   const [form] = useForm()
   const [lineForm] = useForm()
   const formItemLayout = {
@@ -411,7 +416,7 @@ const DrawToolbar = () => {
             ...formData,
             companyId: companyId,
             color: color ? color : COLORDEFAULT,
-            ...transformArrtToAreaData(areas),
+            ...transformArrtToAreaData(areas, areaMap),
           },
           setClickState
         )

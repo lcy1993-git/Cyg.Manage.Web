@@ -3,7 +3,7 @@ import { Button, Form, Modal, Cascader } from 'antd'
 import { useTreeContext } from './TreeContext'
 import UrlSelect from '@/components/url-select'
 import CyFormItem from '@/components/cy-form-item'
-import { useAreaData } from '../hooks'
+import { useMyContext } from '../Context'
 
 interface Props {
   visible: boolean
@@ -14,7 +14,7 @@ interface Props {
 
 const GridFilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel }) => {
   const { setKvLevels, setAreasId, isFilterTree, setIsFilterTree } = useTreeContext()
-  const { areaData } = useAreaData()
+  const { areaData } = useMyContext()
   const kvOps = [
     { label: '10kV', value: 3 },
     { label: '20kV', value: 4 },

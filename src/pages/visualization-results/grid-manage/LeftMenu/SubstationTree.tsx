@@ -134,7 +134,7 @@ const SubstationTree = () => {
               ...child,
               title: childTitle ? childTitle.label : '未知电压',
               type: 'KVLEVEL',
-              key: `0=1=${index}=${childIndex}`,
+              key: `0=1=${item.id}=${childIndex}`,
               children: child.lines.map((children: { name: string; id: string }) => {
                 return {
                   ...children,

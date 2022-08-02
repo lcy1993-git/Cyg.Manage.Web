@@ -28,7 +28,6 @@ import {
   uploadAllFeature,
 } from '@/services/grid-manage/treeMenu'
 import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
-import { useAreaData } from '../hooks'
 import { Button, Drawer, Form, FormInstance, Input, Modal, Select, Cascader } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
@@ -63,6 +62,8 @@ import {
   verificationLng,
   verificationNaturalNumber,
   verificationNaturalNumber0to100,
+  transformArrtToAreaData,
+  transformAreaDataToArr,
 } from '../tools'
 import {
   clear,
@@ -127,6 +128,8 @@ const GridMap = () => {
     setpageDrawState,
     setisDragPoint,
     companyId,
+    areaData,
+    areaMap,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
@@ -144,8 +147,6 @@ const GridMap = () => {
   const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
   //是否显示保存按钮
   const [isSaveVisible, setIsSaveVisible] = useState<boolean>(false)
-  // 选择区域hooks
-  const { areaData, transformArrtToAreaData, transformAreaDataToArr } = useAreaData()
 
   const dataHandle = (data: any) => {
     if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
@@ -319,7 +320,7 @@ const GridMap = () => {
     let areaData = {}
     if (BELONGINGCAREA.includes(currentFeatureType)) {
       // 变电站和电源
-      areaData = transformArrtToAreaData(value.areas)
+      areaData = transformArrtToAreaData(value.areas, areaMap)
     }
 
     const params = {
