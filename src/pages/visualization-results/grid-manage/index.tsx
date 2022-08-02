@@ -1,5 +1,5 @@
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ChangMapUrl from './ChangeMapUrl'
 import { MyContextType, MyWorkProvider } from './Context'
 import DrawToolbar from './DrawToolbar'
@@ -11,6 +11,9 @@ import styles from './index.less'
 import LeftMenu from './LeftMenu'
 import Toolbar from './toolbar'
 import { LEFTMENUWIDTH } from './tools'
+
+import { getCityAreas } from '@/services/project-management/all-project'
+import { useRequest } from 'ahooks'
 
 const GradManage: React.FC = () => {
   /** 网架绘制 手动绘制工具栏状态 **/
@@ -40,6 +43,32 @@ const GradManage: React.FC = () => {
   const [zIndex, setzIndex] = useState('')
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
+  const [areaData, setAreaData] = useState<any[]>([])
+  const [areaMap, setAreaMap] = useState<{ [key: string]: string }>({})
+
+  const areaMapData = {}
+  const { data: cityData } = useRequest(() => getCityAreas(), {
+    onSuccess: () => {
+      if (cityData) {
+        const city = cityData.data?.map(mapHandleCityData)
+        setAreaData(city)
+        setAreaMap(areaMapData)
+      }
+    },
+  })
+  const mapHandleCityData = (data: any) => {
+    areaMapData[data.id] = data.text
+    return {
+      label: data.shortName,
+      value: data.id,
+      children: data.children
+        ? [
+            { label: '无', value: `${data.id}_null`, children: undefined },
+            ...data.children.map(mapHandleCityData),
+          ]
+        : undefined,
+    }
+  }
 
   return (
     <MyWorkProvider
@@ -64,6 +93,10 @@ const GradManage: React.FC = () => {
         companyId,
         isDragPoint,
         setisDragPoint,
+        areaData,
+        setAreaData,
+        areaMap,
+        setAreaMap,
       }}
     >
       <GradManageWrap />

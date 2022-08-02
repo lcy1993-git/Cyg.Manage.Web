@@ -25,7 +25,11 @@ import { upateLineByMainLine } from '../../grid-manage/GridMap/utils/initializeM
 import { deletFeatureByTable, editFeature } from '../../grid-manage/GridMap/utils/select'
 import { handleGeom } from '../../utils/methods'
 import SubStationPowerForm from './components/subStation-power-form'
-import { useAreaData } from '../../grid-manage/hooks'
+import {
+  transformAreaDataToArr,
+  transformAreaDataToString,
+  transformArrtToAreaData,
+} from '../../grid-manage/tools'
 
 const { TabPane } = Tabs
 
@@ -45,7 +49,7 @@ const { Search } = Input
 const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
 const StandingBook: React.FC<StandingBookProps> = (props) => {
-  const { companyId, setIsRefresh, isRefresh, checkLineIds, mapRef } = useMyContext()
+  const { companyId, setIsRefresh, isRefresh, checkLineIds, mapRef, areaMap } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
   const [powerKeyWord, setPowerKeyWord] = useState<string>('')
@@ -77,13 +81,6 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
   // const { data, run } = useRequest(getAuthorizationDetail, {
   //   manual: true,
   // })
-
-  // 转换区域选择的数据
-  const {
-    transformArrtToAreaData,
-    transformAreaDataToArr,
-    transformAreaDataToString,
-  } = useAreaData()
 
   const subStationColumns = [
     {
@@ -413,7 +410,6 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       return
     }
     const editData = mainLineRows[0]
-
     lineForm.setFieldsValue({
       ...editData,
       lineType: editData.isOverhead ? 'Line' : 'CableCircuit',
@@ -454,7 +450,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           ...values,
           transformerInterval: intervalData,
           color,
-          ...transformArrtToAreaData(values.areas),
+          ...transformArrtToAreaData(values.areas, areaMap),
         }
         await modifyTransformerSubstation(submitInfo)
 
@@ -484,7 +480,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: '咖啡',
-          ...transformArrtToAreaData(values.areas),
+          ...transformArrtToAreaData(values.areas, areaMap),
         }
         await modifyPowerSupply(submitInfo)
         const drawParams = {

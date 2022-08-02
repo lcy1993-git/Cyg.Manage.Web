@@ -32,6 +32,11 @@ export interface MyContextType {
   companyId: string
   setisDragPoint: Dispatch<SetStateAction<boolean>>
   isDragPoint: boolean
+  // 行政区域信息
+  areaData: any[]
+  setAreaData: Dispatch<SetStateAction<any[]>>
+  areaMap: { [key: string]: string }
+  setAreaMap: Dispatch<SetStateAction<{ [key: string]: string }>>
 }
 
 // 全局状态管理

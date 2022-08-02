@@ -87,7 +87,15 @@ const lineformLayout = {
 
 const PowerSupplyTree = () => {
   const { isRefresh, setIsRefresh, mapRef, lineAssemble, companyId } = useMyContext()
-  const { linesId, setlinesId, setpowerSupplyIds, settreeLoading, kvLevels } = useTreeContext()
+  const {
+    linesId,
+    setlinesId,
+    setpowerSupplyIds,
+    settreeLoading,
+    kvLevels,
+    areasId,
+    isFilterTree,
+  } = useTreeContext()
   const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
   const [selectLineType, setselectLineType] = useState('')
   const [form] = useForm()
@@ -100,15 +108,26 @@ const PowerSupplyTree = () => {
 
   //当前点击线路标题
   const [lineTitle, setLineTitle] = useState<string>('')
-  const { data, run: getTree } = useRequest(() => fetchGridManageMenu({ kvLevels: kvLevels }), {
-    manual: true,
-    onSuccess: () => {
-      settreeLoading(true)
-    },
-    onError: () => {
-      settreeLoading(true)
-    },
-  })
+  const { data, run: getTree } = useRequest(
+    () => fetchGridManageMenu({ kvLevels: kvLevels, ...transformAreaId(areasId) }),
+    {
+      manual: true,
+      onSuccess: () => {
+        settreeLoading(true)
+      },
+      onError: () => {
+        settreeLoading(true)
+      },
+    }
+  )
+  const transformAreaId = (areasId: any) => {
+    const [province, city, county] = areasId
+    return {
+      province: !isNaN(province) ? province : '',
+      city: !isNaN(city) ? city : '',
+      area: !isNaN(county) ? county : '',
+    }
+  }
   const transformTreeData = (tree: any, key: any) => {
     return tree?.map((item: any, index: any) => {
       return {
@@ -248,7 +267,7 @@ const PowerSupplyTree = () => {
 
   useEffect(() => {
     getTree()
-  }, [getTree, isRefresh, kvLevels])
+  }, [getTree, isRefresh, isFilterTree])
 
   // 点击右键，删除线路数据
   const onRightClick = (info: infoType) => {

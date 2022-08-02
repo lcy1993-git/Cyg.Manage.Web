@@ -107,3 +107,31 @@ export const newData = (arr: any[]) => {
     }
   })
 }
+// 转换行政区域信息
+export const transformArrtToAreaData = (areas: any[], areaMap: any) => {
+  const [province, city, county] = areas
+  return {
+    province: !isNaN(province) ? province : '',
+    city: !isNaN(city) ? city : '',
+    area: !isNaN(county) ? county : '',
+    provinceName: !isNaN(province) ? areaMap[province] : '',
+    cityName: !isNaN(city) ? areaMap[city] : '',
+    areaName: !isNaN(county) ? areaMap[county] : '',
+  }
+}
+export const transformAreaDataToArr = (areaData: any) => {
+  const { province, city, area } = areaData
+  const areas = []
+  !!province && areas.push(province)
+  !!city && areas.push(city)
+  !!area && areas.push(area)
+  return areas
+}
+export const transformAreaDataToString = (areaData: any) => {
+  const { provinceName, cityName, areaName } = areaData
+  const arr = []
+  !!provinceName && arr.push(provinceName)
+  !!cityName && arr.push(cityName)
+  !!areaName && arr.push(areaName)
+  return arr.join('/')
+}
