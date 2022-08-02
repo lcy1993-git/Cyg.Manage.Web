@@ -43,9 +43,10 @@ const GradManage: React.FC = () => {
   const [zIndex, setzIndex] = useState('')
   // 地图实例
   const mapRef = useCurrentRef<MapRef>({ map: {} })
-  const [areaData, setAreaData] = useState<any[]>([])
+  // 行政区域数据
+  const [areaData, setAreaData] = useState<MyContextType['areaData']>([])
+  // 行政区域代码与名称映射
   const [areaMap, setAreaMap] = useState<{ [key: string]: string }>({})
-
   const areaMapData = {}
   const { data: cityData } = useRequest(() => getCityAreas(), {
     onSuccess: () => {
