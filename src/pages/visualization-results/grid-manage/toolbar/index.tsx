@@ -63,7 +63,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   const [searchState, setSearchState] = useState(false)
   // 搜索关键字
   const [keyWord, setKeyWord] = useState<string>('')
-  // 查重表格标题
+  // 表格标题
   const columns = [
     {
       title: '点位名称',
