@@ -242,17 +242,16 @@ class DrawTool {
         // 不是多回路情况
         data = { ...lineData, ...lineData.data[0] }
       } else {
-        let lineIds = ''
+        let lineIds: any = []
         lineData.data.forEach((element: any, index: number) => {
-          lineIds += element.lineId
-          if (index !== lineData.data.length - 1) lineIds += ','
+          if (lineIds.indexOf(element.lineId) > -1) lineIds.push(element.lineId)
         })
         data = {
           color: lineData.data[0].color,
           kvLevel: lineData.data[0].kvLevel,
           companyId: lineData.companyId,
           name: lineData.name,
-          lineId: lineIds,
+          lineId: lineIds.toString(),
           lineType: LINE,
         }
       }

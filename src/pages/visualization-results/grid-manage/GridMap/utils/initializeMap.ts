@@ -242,6 +242,18 @@ export const getDrawLines = () => {
   else return null
 }
 
+// 获取所有展示的点位要素
+export const getShowPoints = (map: any) => {
+  pointLayer = getLayer(map, 'pointLayer')
+  return pointLayer.getSource().getFeatures()
+}
+
+// 获取所有展示的点位要素
+export const getShowLines = (map: any) => {
+  lineLayer = getLayer(map, 'lineLayer')
+  return lineLayer.getSource().getFeatures()
+}
+
 // 加载地图图层
 export const loadMapLayers = (data: any, map: any) => {
   loadAllLayer(data, map)
