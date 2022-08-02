@@ -31,9 +31,11 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const [selectLineType, setselectLineType] = useState('')
   const [currentKv, setCurrentKv] = useState<number>(Number(form.getFieldValue('kvLevel')))
   // 所属厂站表单项select当前选中值
-  const [belonging, setBelonging] = useState<string | undefined>()
+  const [belonging, setBelonging] = useState<string | undefined>(form.getFieldValue('belonging'))
   // 终点厂站表单项select当前选中值
-  const [endBelonging, setEndBelonging] = useState<string | undefined>()
+  const [endBelonging, setEndBelonging] = useState<string | undefined>(
+    form.getFieldValue('endBelonging')
+  )
   const { data: stationItems } = useRequest(GetStationItems, {
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
