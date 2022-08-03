@@ -18,6 +18,7 @@ import {
   LINE,
   LINEMODEL,
   POWERSUPPLY,
+  TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { upateLineByMainLine } from '../GridMap/utils/initializeMap'
 import { useTreeContext } from './TreeContext'
@@ -175,7 +176,7 @@ const PowerSupplyTree = () => {
                   return {
                     key: item.key,
                     title: item.title,
-                    type: 'city',
+                    type: item.city,
                     children: transformTreeData(item.data, item.key),
                   }
                 }
@@ -348,26 +349,11 @@ const PowerSupplyTree = () => {
       })
       .filter((item: string) => item)
 
-    const currentLinesId = [...currentLineId, ...linesId]
+    const currentLinesId = [
+      ...currentLineId,
+      ...linesId.filter((item) => item.indexOf(TRANSFORMERSUBSTATION) !== -1),
+    ]
     setlinesId([...new Set(currentLinesId)])
-
-    if (!e.checked) {
-      switch (e.node.type) {
-        case 'Parent':
-          setlinesId(currentLinesId.filter((item) => !item.includes('_&Parent0-0')))
-          return
-        case POWERSUPPLY:
-          setlinesId(
-            currentLinesId.filter((item) => !item.includes(`_&Line${e.node.id}_&${POWERSUPPLY}`))
-          )
-          return
-        case 'PowerType':
-          setlinesId(currentLinesId.filter((item) => !item.includes(`_&PowerType${e.node.key}`)))
-          return
-        case LINE:
-          setlinesId(currentLinesId.filter((item) => !item.includes(e.node.id)))
-      }
-    }
   }
 
   // 获取所有厂站

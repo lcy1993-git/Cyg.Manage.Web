@@ -18,6 +18,7 @@ import {
   KVLEVELOPTIONS,
   LINE,
   LINEMODEL,
+  POWERSUPPLY,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { upateLineByMainLine } from '../GridMap/utils/initializeMap'
@@ -140,7 +141,7 @@ const SubstationTree = () => {
                   ...children,
                   title: children.name,
                   type: LINE,
-                  key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${index}=${childIndex}_&Parent0-1`,
+                  key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${item.id}=${childIndex}_&Parent0-1`,
                 }
               }),
             }
@@ -344,28 +345,11 @@ const SubstationTree = () => {
       })
       .filter((item: string) => item)
 
-    const currentLinesId = [...currentLineId, ...linesId]
+    const currentLinesId = [
+      ...currentLineId,
+      ...linesId.filter((item) => item.indexOf(POWERSUPPLY) !== -1),
+    ]
     setlinesId([...new Set(currentLinesId)])
-
-    if (!e.checked) {
-      switch (e.node.type) {
-        case TRANSFORMERSUBSTATION:
-          setlinesId(
-            currentLinesId.filter(
-              (item) => !item.includes(`${e.node.id}_&${TRANSFORMERSUBSTATION}`)
-            )
-          )
-          return
-        case 'KVLEVEL':
-          setlinesId(currentLinesId.filter((item) => !item.includes(`_KVLEVEL${e.node.key}`)))
-          return
-        case LINE:
-          setlinesId(currentLinesId.filter((item) => !item.includes(e.node.id)))
-          return
-        case 'Parent':
-          setlinesId(currentLinesId.filter((item) => !item.includes('_&Parent0-1')))
-      }
-    }
   }
 
   /** 选择线路型号 */

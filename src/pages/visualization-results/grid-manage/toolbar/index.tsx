@@ -213,7 +213,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   // 搜索
   const searchEvent = () => {
     if (keyWord.trim() === '') {
-      message.info('请输入关键字')
+      setTableData([])
       return
     }
     const linesAndPoints = getShowLines(mapRef.map).concat(getShowPoints(mapRef.map))
