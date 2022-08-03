@@ -163,7 +163,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     return lineIds
   }
 
-  // 是否显示查重列表
+  // 是否显示底部弹窗
   const isShowBottomModal = repeatPointState || searchState
   const hasShowBottomModal = () => {
     if (!isShowBottomModal) {
@@ -336,7 +336,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       />
 
       <div
-        className={styles.repeatPointWrap}
+        className={styles.bottomModalWrap}
         style={{
           transform: hasShowBottomModal(),
         }}
