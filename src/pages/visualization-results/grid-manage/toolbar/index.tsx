@@ -1,5 +1,5 @@
 import { getlinesComponment, getrepeatPointdata } from '@/services/grid-manage/treeMenu'
-import { AimOutlined, SearchOutlined } from '@ant-design/icons'
+import { AimOutlined, SearchOutlined, CloseOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Checkbox, Form, message, Space, Spin, Table, Input } from 'antd'
 import { useEffect, useState } from 'react'
@@ -59,6 +59,8 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   const [repeatPointState, setRepeatPointState] = useState(false)
   // 表格数据
   const [tableData, setTableData] = useState<RepeatPointType[]>([])
+  // copy一份查重数据
+  const [copyRepeateData, setCopyRepeateData] = useState<RepeatPointType[]>([])
   // 搜索列表是否显示
   const [searchState, setSearchState] = useState(false)
   // 搜索关键字
@@ -163,7 +165,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
 
   // 是否显示查重列表
   const isShowBottomModal = repeatPointState || searchState
-  const hasShowRepetPoint = () => {
+  const hasShowBottomModal = () => {
     if (!isShowBottomModal) {
       return 'translateX(-400px)'
     }
@@ -182,6 +184,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
         }
       })
       setTableData(data as RepeatPointType[])
+      setCopyRepeateData(data as RepeatPointType[])
     },
     onError: () => {},
   })
@@ -212,19 +215,29 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }
   // 搜索
   const searchEvent = () => {
-    if (keyWord.trim() === '') {
-      setTableData([])
-      return
+    if (searchState) {
+      // 当前弹窗为搜索
+      if (keyWord.trim() === '') {
+        setTableData([])
+        return
+      }
+      const linesAndPoints = getShowLines(mapRef.map).concat(getShowPoints(mapRef.map))
+      const filterData = linesAndPoints
+        .map((item: any) => {
+          return item.get('data')
+        })
+        .filter((item: any) => {
+          return !!item.name && item.name.indexOf(keyWord) !== -1
+        })
+      setTableData(filterData)
+    } else {
+      // 当前弹窗为查重
+      if (keyWord.trim() === '') {
+        setTableData(copyRepeateData)
+        return
+      }
+      setTableData(copyRepeateData.filter((item) => item.name.indexOf(keyWord) !== -1))
     }
-    const linesAndPoints = getShowLines(mapRef.map).concat(getShowPoints(mapRef.map))
-    const filterData = linesAndPoints
-      .map((item: any) => {
-        return item.get('data')
-      })
-      .filter((item: any) => {
-        return !!item.name && item.name.indexOf(keyWord) !== -1
-      })
-    setTableData(filterData)
   }
   useEffect(() => {
     if (repeatPointState) {
@@ -325,19 +338,27 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       <div
         className={styles.repeatPointWrap}
         style={{
-          transform: hasShowRepetPoint(),
+          transform: hasShowBottomModal(),
         }}
       >
         <Spin spinning={loading}>
-          {searchState && (
-            <Search
-              placeholder="请输入关键字进行搜索"
-              enterButton
-              value={keyWord}
-              onChange={(e) => setKeyWord(e.target.value)}
-              onSearch={() => searchEvent()}
+          <div className={styles.title}>
+            {searchState ? '搜索' : '查重'}
+            <CloseOutlined
+              className={styles.close}
+              onClick={() => {
+                setRepeatPointState(false)
+                setSearchState(false)
+              }}
             />
-          )}
+          </div>
+          <Search
+            placeholder="请输入关键字进行搜索"
+            value={keyWord}
+            onChange={(e) => setKeyWord(e.target.value)}
+            onSearch={() => searchEvent()}
+            style={{ width: '200px', marginBottom: '12px' }}
+          />
           <Table
             columns={columns}
             bordered
