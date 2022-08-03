@@ -271,6 +271,8 @@ const DrawToolbar = () => {
     form.setFieldsValue({
       featureType: result.target.value,
     })
+    clear()
+    setClickState(false)
   }
   /** 选择线路型号 */
   const onChangeLineType = (value: string) => {
