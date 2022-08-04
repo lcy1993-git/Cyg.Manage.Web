@@ -348,12 +348,14 @@ const GridMap = () => {
             ...params,
             geom: `POINT (${value.lng} ${value.lat})`,
           })
+          setIsRefresh(!isRefresh)
           break
         case TRANSFORMERSUBSTATION:
           await modifyTransformerSubstation({
             ...params,
             geom: `POINT (${value.lng} ${value.lat})`,
           })
+          setIsRefresh(!isRefresh)
           break
         case CABLEWELL:
           await modifyCableWell({
