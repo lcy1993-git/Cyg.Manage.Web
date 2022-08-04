@@ -271,8 +271,6 @@ const DrawToolbar = () => {
     form.setFieldsValue({
       featureType: result.target.value,
     })
-    clear()
-    setClickState(false)
   }
   /** 选择线路型号 */
   const onChangeLineType = (value: string) => {
@@ -478,9 +476,9 @@ const DrawToolbar = () => {
   }, [isRefresh, run])
 
   const formChange = async (changeValues: any, allvalues: any) => {
-    if (changeValues['featureType']) {
-      return
-    }
+    // if (changeValues['featureType']) {
+    //   return
+    // }
     if (clickState) {
       await uploadLocalData()
       clear()
