@@ -206,7 +206,6 @@ const PowerSupplyTree = () => {
       children: transformTreeStructure(data),
     },
   ]
-
   const handleOk = async () => {
     try {
       await form.validateFields()
