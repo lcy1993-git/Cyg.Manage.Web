@@ -7,6 +7,7 @@ import {
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
+import Underline from 'wangeditor/dist/menus/underline'
 import StandingBook from '../../components/standing-book'
 import { useMyContext } from '../Context'
 import {
@@ -66,6 +67,8 @@ const LeftMenu = (props: any) => {
   const showModal = () => {
     setIsRefresh(!isRefresh)
     setcurrentLineKvLevel(1)
+    setBelonging(undefined)
+    setEndBelonging(undefined)
     setVisible(true)
   }
   // 新增线路弹窗，可以展示终点厂站的电压等级数组集合
