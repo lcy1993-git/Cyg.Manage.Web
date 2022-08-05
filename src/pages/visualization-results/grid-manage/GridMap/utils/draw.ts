@@ -198,11 +198,18 @@ class DrawTool {
 
       // 移除原有要素层
       source.removeFeature(feature)
-      if (!feature.get('data').lineNumber || parseInt(feature.get('data').lineNumber) === 1) {
+      if (parseInt(feature.get('data').LoopNumber) === 1) {
         // 将拆分生成的新要素层添加至图层
-        source.addFeatures(features)
+
+        features.forEach((f: any) => {
+          var data = f.get('data')
+          data = { ...f.get('data'), ...f.get('data').data[0] }
+          f.set('data', data)
+          f.setStyle(lineStyle(data))
+          source.addFeature(f)
+        })
       } else {
-        const multiloops = calculationLine(features, feature.get('data').lineNumber)
+        const multiloops = calculationLine(features, feature.get('data').LoopNumber)
         multiloops.forEach((loopData: any) => {
           const loopGeom: any = new WKT()
             .readGeometry(loopData.geom)
@@ -215,7 +222,6 @@ class DrawTool {
         })
       }
     }, 0)
-    // console.log(feature.getGeometry().getCoordinates(), 1112)
   }
 
   handleLine_node = (lont: number, lat: number, lineData: any, isAdd: boolean) => {
@@ -231,21 +237,37 @@ class DrawTool {
       }
     )
     if (!node && isAdd) {
+      var data: any
+      if (lineData.data.length === 1) {
+        // 不是多回路情况
+        data = { ...lineData, ...lineData.data[0] }
+      } else {
+        let lineIds: any = []
+        lineData.data.forEach((element: any, index: number) => {
+          if (lineIds.indexOf(element.lineId) > -1) lineIds.push(element.lineId)
+        })
+        data = {
+          color: lineData.data[0].color,
+          kvLevel: lineData.data[0].kvLevel,
+          companyId: lineData.companyId,
+          name: lineData.name,
+          lineId: lineIds.toString(),
+          lineType: LINE,
+        }
+      }
       let pointLayer = getLayer(this.map, 'pointLayer', 3)
       let point = new Point([lont, lat])
       node = new Feature(point)
-      const data: any = { ...lineData }
       const coordinates = point.getCoordinates()
       const lont_ = transform(coordinates, 'EPSG:3857', 'EPSG:4326')
-      data.lineId = this.options.lineId
       data.lng = lont_[0]
       data.lat = lont_[1]
       var format = new WKT()
       data.geom = format.writeGeometry(point.clone().transform('EPSG:3857', 'EPSG:4326'))
 
-      if (lineData.featureType === LINE) {
+      if (data.lineType === LINE) {
         data.featureType = TOWER
-      } else if (lineData.featureType === CABLECIRCUIT) {
+      } else if (data.lineType === CABLECIRCUIT) {
         data.featureType = CABLEWELL
       }
       node.setStyle(pointStyle(data, false, this.map.getView().getZoom(), true))
@@ -253,10 +275,6 @@ class DrawTool {
       data.type_ = 'Point'
       node.set('data', data)
       pointLayer.getSource().addFeature(node)
-
-      // !! 生成线路带出的点位信息添加点位到数据库 data
-      // console.log(data, '123456555')
-      // storeLocalFeatureData(data)
     }
     return node
   }

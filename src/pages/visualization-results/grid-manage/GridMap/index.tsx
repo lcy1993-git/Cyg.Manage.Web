@@ -28,7 +28,7 @@ import {
   uploadAllFeature,
 } from '@/services/grid-manage/treeMenu'
 import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
-import { Button, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
+import { Button, Drawer, Form, FormInstance, Input, Modal, Select, Cascader } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
 import { useMyContext } from '../Context'
@@ -37,6 +37,7 @@ import {
   BELONGINGLINE,
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
+  BELONGINGCAREA,
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
   CABLECIRCUIT,
@@ -61,6 +62,8 @@ import {
   verificationLng,
   verificationNaturalNumber,
   verificationNaturalNumber0to100,
+  transformArrtToAreaData,
+  transformAreaDataToArr,
 } from '../tools'
 import {
   clear,
@@ -125,6 +128,8 @@ const GridMap = () => {
     setpageDrawState,
     setisDragPoint,
     companyId,
+    areaData,
+    areaMap,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
@@ -275,6 +280,7 @@ const GridMap = () => {
         lat: geom[1],
         lng: geom[0],
         lineType: featureData.featureType,
+        areas: transformAreaDataToArr(featureData),
       })
     } else {
       form.resetFields()
@@ -311,11 +317,17 @@ const GridMap = () => {
       // 否则就根据主线路的颜色显示
       color = currentThread ? currentThread.color : ''
     }
+    let areaData = {}
+    if (BELONGINGCAREA.includes(currentFeatureType)) {
+      // 变电站和电源
+      areaData = transformArrtToAreaData(value.areas, areaMap)
+    }
 
     const params = {
       ...value,
       ...currentfeatureData,
       color,
+      ...areaData,
     }
     try {
       switch (currentFeatureType) {
@@ -336,12 +348,14 @@ const GridMap = () => {
             ...params,
             geom: `POINT (${value.lng} ${value.lat})`,
           })
+          setIsRefresh(!isRefresh)
           break
         case TRANSFORMERSUBSTATION:
           await modifyTransformerSubstation({
             ...params,
             geom: `POINT (${value.lng} ${value.lat})`,
           })
+          setIsRefresh(!isRefresh)
           break
         case CABLEWELL:
           await modifyCableWell({
@@ -745,6 +759,11 @@ const GridMap = () => {
               >
                 出线间隔
               </Button>
+            </Form.Item>
+          )}
+          {BELONGINGCAREA.includes(currentFeatureType) && (
+            <Form.Item name="areas" label={`区域`}>
+              <Cascader options={areaData} />
             </Form.Item>
           )}
           <Form.Item wrapperCol={{ offset: 5, span: 18 }}>

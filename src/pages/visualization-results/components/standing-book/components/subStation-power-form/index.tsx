@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Input, Select } from 'antd'
+import { Button, Input, Select, Cascader } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
@@ -12,6 +12,7 @@ import {
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
 import TransIntervalTable from '../trans-interval-table'
 import UrlSelect from '@/components/url-select'
+import { useMyContext } from '@/pages/visualization-results/grid-manage/Context'
 
 interface SubStationPowerParams {
   currentEditTab: string
@@ -25,9 +26,16 @@ const { Option } = Select
 
 const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const { currentEditTab, form, transId, dataOnchange, intervalData } = props
+  const { areaData } = useMyContext()
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const [selectLineType, setselectLineType] = useState('')
   const [currentKv, setCurrentKv] = useState<number>(Number(form.getFieldValue('kvLevel')))
+  // 所属厂站表单项select当前选中值
+  const [belonging, setBelonging] = useState<string | undefined>(form.getFieldValue('belonging'))
+  // 终点厂站表单项select当前选中值
+  const [endBelonging, setEndBelonging] = useState<string | undefined>(
+    form.getFieldValue('endBelonging')
+  )
   const { data: stationItems } = useRequest(GetStationItems, {
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
@@ -35,7 +43,10 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   })
 
   const [transTableVisible, setTransTableVisible] = useState<boolean>(false)
-
+  // 可以展示终点厂站的电压等级数组集合
+  const showEndBelongingKvLevels = KVLEVELOPTIONS.filter(
+    (level) => level.belonging.includes('Line') && level.kvLevel !== 3
+  ).map((item) => item.kvLevel)
   const handleKvOptions = (clickTab: string) => {
     return [
       ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
@@ -101,14 +112,44 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
             required
             rules={[{ required: true, message: '请选择所属厂站' }]}
           >
-            <Select allowClear>
-              {stationItemsData.map((item) => (
-                <Option value={item.id} key={item.id}>
-                  {item.name}
-                </Option>
-              ))}
+            <Select
+              allowClear
+              onChange={(value: string | undefined) => {
+                setBelonging(value)
+              }}
+            >
+              {stationItemsData
+                .filter((item) => item.id !== endBelonging)
+                .map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
             </Select>
           </CyFormItem>
+          {showEndBelongingKvLevels.includes(currentKv) && (
+            <CyFormItem
+              name="endBelonging"
+              label="终点厂站"
+              required
+              rules={[{ required: true, message: '请选择终点厂站' }]}
+            >
+              <Select
+                allowClear
+                onChange={(value: string | undefined) => {
+                  setEndBelonging(value)
+                }}
+              >
+                {stationItemsData
+                  .filter((item) => item.id !== belonging)
+                  .map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+              </Select>
+            </CyFormItem>
+          )}
 
           <CyFormItem name="totalCapacity" label="配变总容量">
             <Input placeholder="请输入配变总容量" />
@@ -184,7 +225,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
       {currentEditTab === 'power' && (
         <>
           <CyFormItem
-            label="电源类型"
+            label="电源类型1"
             required
             name="powerType"
             rules={[{ required: true, message: '未选择电源类型' }]}
@@ -236,6 +277,9 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
           </CyFormItem>
           <CyFormItem label="纬度" name="lat">
             <Input placeholder="请输入纬度" />
+          </CyFormItem>
+          <CyFormItem label="区域" name="areas">
+            <Cascader options={areaData} />
           </CyFormItem>
         </>
       )}

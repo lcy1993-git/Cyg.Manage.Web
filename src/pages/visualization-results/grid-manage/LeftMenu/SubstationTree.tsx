@@ -18,6 +18,7 @@ import {
   KVLEVELOPTIONS,
   LINE,
   LINEMODEL,
+  POWERSUPPLY,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { upateLineByMainLine } from '../GridMap/utils/initializeMap'
@@ -64,7 +65,7 @@ const { Option } = Select
 
 const SubstationTree = () => {
   const { data, run: getTree } = useRequest(
-    () => getTransformerSubstationMenu({ kvLevels: kvLevels }),
+    () => getTransformerSubstationMenu({ kvLevels: kvLevels, ...transformAreaId(areasId) }),
     {
       manual: true,
       onSuccess: () => {
@@ -76,7 +77,15 @@ const SubstationTree = () => {
     }
   )
   const { isRefresh, setIsRefresh, mapRef, lineAssemble, companyId } = useMyContext()
-  const { linesId, setlinesId, setsubStations, settreeLoading, kvLevels } = useTreeContext()
+  const {
+    linesId,
+    setlinesId,
+    setsubStations,
+    settreeLoading,
+    kvLevels,
+    areasId,
+    isFilterTree,
+  } = useTreeContext()
   const [form] = useForm()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -92,49 +101,96 @@ const SubstationTree = () => {
   const [lineTitle, setLineTitle] = useState<string>('')
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
+  const transformAreaId = (areasId: any) => {
+    const [province, city, county] = areasId
+    return {
+      province: !isNaN(province) ? province : '',
+      city: !isNaN(city) ? city : '',
+      area: !isNaN(county) ? county : '',
+    }
+  }
+
+  const transformTreeData = (tree: any) => {
+    return tree?.map((item: any, index: any) => {
+      return {
+        ...item,
+        title:
+          companyId !== item.companyId ? (
+            <>
+              <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+              <span style={{ paddingLeft: '3px' }}> {item.name}</span>
+            </>
+          ) : (
+            item.name
+          ),
+        key: `${item.id}_&${TRANSFORMERSUBSTATION}`,
+        type: TRANSFORMERSUBSTATION,
+        children: item.lineKVLevelGroups.map(
+          (
+            child: { kvLevel: number; lines: { name: string; id: string }[]; id: string },
+            childIndex: number
+          ) => {
+            const childTitle = KVLEVELOPTIONS.find((kv) => kv.kvLevel === child.kvLevel)
+            return {
+              ...child,
+              title: childTitle ? childTitle.label : '未知电压',
+              type: 'KVLEVEL',
+              key: `0=1=${item.id}=${childIndex}`,
+              children: child.lines.map((children: { name: string; id: string }) => {
+                return {
+                  ...children,
+                  title: children.name,
+                  type: LINE,
+                  key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${item.id}=${childIndex}_&Parent0-1`,
+                }
+              }),
+            }
+          }
+        ),
+      }
+    })
+  }
+  const transformTreeStructure = (tree: any) => {
+    return tree?.map((item: any) => {
+      return {
+        key: item.key,
+        type: item.type,
+        title: item.title,
+        children:
+          item.key === 'Province_Other'
+            ? transformTreeData(item.data)
+            : item.children.map((item: any) => {
+                if (item.data && item.data.length > 0) {
+                  return {
+                    key: item.key,
+                    title: item.title,
+                    type: 'city',
+                    children: transformTreeData(item.data),
+                  }
+                }
+                return {
+                  key: item.key,
+                  type: item.type,
+                  title: item.title,
+                  children: item.children.map((item: any) => {
+                    return {
+                      key: item.key,
+                      type: item.type,
+                      title: item.title,
+                      children: transformTreeData(item.data),
+                    }
+                  }),
+                }
+              }),
+      }
+    })
+  }
   const treeData = [
     {
       title: '变电站',
       type: 'Parent',
       key: '0=1',
-      children: data?.map((item, index) => {
-        return {
-          ...item,
-          title:
-            companyId !== item.companyId ? (
-              <>
-                <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
-                <span style={{ paddingLeft: '3px' }}> {item.name}</span>
-              </>
-            ) : (
-              item.name
-            ),
-          key: `${item.id}_&${TRANSFORMERSUBSTATION}`,
-          type: TRANSFORMERSUBSTATION,
-          children: item.lineKVLevelGroups.map(
-            (
-              child: { kvLevel: number; lines: { name: string; id: string }[]; id: string },
-              childIndex: number
-            ) => {
-              const childTitle = KVLEVELOPTIONS.find((kv) => kv.kvLevel === child.kvLevel)
-              return {
-                ...child,
-                title: childTitle ? childTitle.label : '未知电压',
-                type: 'KVLEVEL',
-                key: `0=1=${index}=${childIndex}`,
-                children: child.lines.map((children: { name: string; id: string }) => {
-                  return {
-                    ...children,
-                    title: children.name,
-                    type: LINE,
-                    key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${index}=${childIndex}_&Parent0-1`,
-                  }
-                }),
-              }
-            }
-          ),
-        }
-      }),
+      children: transformTreeStructure(data),
     },
   ]
   // 右键删除线路
@@ -230,7 +286,7 @@ const SubstationTree = () => {
 
   useEffect(() => {
     getTree()
-  }, [getTree, isRefresh, kvLevels])
+  }, [getTree, isRefresh, isFilterTree])
 
   // 点击左键，编辑线路数据
   const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {
@@ -289,28 +345,11 @@ const SubstationTree = () => {
       })
       .filter((item: string) => item)
 
-    const currentLinesId = [...currentLineId, ...linesId]
+    const currentLinesId = [
+      ...currentLineId,
+      ...linesId.filter((item) => item.indexOf(POWERSUPPLY) !== -1),
+    ]
     setlinesId([...new Set(currentLinesId)])
-
-    if (!e.checked) {
-      switch (e.node.type) {
-        case TRANSFORMERSUBSTATION:
-          setlinesId(
-            currentLinesId.filter(
-              (item) => !item.includes(`${e.node.id}_&${TRANSFORMERSUBSTATION}`)
-            )
-          )
-          return
-        case 'KVLEVEL':
-          setlinesId(currentLinesId.filter((item) => !item.includes(`_KVLEVEL${e.node.key}`)))
-          return
-        case LINE:
-          setlinesId(currentLinesId.filter((item) => !item.includes(e.node.id)))
-          return
-        case 'Parent':
-          setlinesId(currentLinesId.filter((item) => !item.includes('_&Parent0-1')))
-      }
-    }
   }
 
   /** 选择线路型号 */

@@ -1,6 +1,7 @@
 import { transform } from 'ol/proj'
 
-export const calculationLine = (features: any, lineNumber: any) => {
+// 计算主线路计算平行线
+export const calculationLine = (features: any, LoopNumber: any) => {
   let multiloops = []
   for (let i = 0; i < features.length; i++) {
     const feature = features[i]
@@ -10,14 +11,14 @@ export const calculationLine = (features: any, lineNumber: any) => {
     startLont = lonts[0]
     endLont = lonts[1]
 
-    let shapeCount = lineNumber
+    let shapeCount = LoopNumber
     let startReferenceCoord = { x: startLont[0], y: startLont[1] }
     let endReferenceCoord = { x: endLont[0], y: endLont[1] }
 
     let cropLength_s, cropLength_e
     if (i === 0) cropLength_s = 0
     else cropLength_s = 0.5
-    if (i === lineNumber - 1) cropLength_e = 0
+    if (i === LoopNumber - 1) cropLength_e = 0
     else cropLength_e = 0.5
 
     for (let index = 0; index < shapeCount; index++) {
@@ -44,7 +45,15 @@ export const calculationLine = (features: any, lineNumber: any) => {
       e = transform([e.x, e.y], 'EPSG:3857', 'EPSG:4326')
 
       let wkt = `LINESTRING (${s[0]} ${s[1]},${e[0]} ${e[1]})`
-      const loopData = { ...feature.get('data') }
+      const loopData = { ...feature.get('data').data[index] }
+      loopData.startId = feature.get('data').startId
+      loopData.startType = feature.get('data').startType
+      loopData.endId = feature.get('data').endId
+      loopData.endType = feature.get('data').endType
+      loopData.companyId = feature.get('data').companyId
+      loopData.LoopNumber = LoopNumber
+      loopData.name = feature.get('data').name
+      loopData.type_ = feature.get('data').type_
       loopData.loop_serial = index + 1
       loopData.loop_seq = i + 1
       loopData.geom = wkt
@@ -52,6 +61,49 @@ export const calculationLine = (features: any, lineNumber: any) => {
     }
   }
   return multiloops
+}
+
+// 根据两点计算平行线
+export const calculationLineByPoints = (
+  startCoord: any,
+  endCoord: any,
+  LoopNumber: number,
+  isStart: boolean,
+  isEnd: boolean
+) => {
+  const cropLength_s = isStart ? 0 : 0.5
+  const cropLength_e = isEnd ? 0 : 0.5
+  var datas: any = []
+  for (let index = 0; index < LoopNumber; index++) {
+    let interval = getLineInterval(true, LoopNumber)
+    var s: any = computeParallelCoord(
+      startCoord,
+      endCoord,
+      LoopNumber,
+      interval,
+      index,
+      true,
+      cropLength_s
+    )
+    var e: any = computeParallelCoord(
+      startCoord,
+      endCoord,
+      LoopNumber,
+      interval,
+      index,
+      false,
+      cropLength_e
+    )
+    // s = transform([s.x, s.y], 'EPSG:3857', 'EPSG:4326')
+    // e = transform([e.x, e.y], 'EPSG:3857', 'EPSG:4326')
+    s = transform([s.x, s.y], 'EPSG:3857', 'EPSG:3857')
+    e = transform([e.x, e.y], 'EPSG:3857', 'EPSG:3857')
+
+    let wkt = `LINESTRING (${s[0]} ${s[1]},${e[0]} ${e[1]})`
+    let loop_serial = index + 1
+    datas.push({ wkt, loop_serial })
+  }
+  return datas
 }
 
 const getLineInterval = (isCable: any, shapeCount: any) => {

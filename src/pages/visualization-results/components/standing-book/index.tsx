@@ -25,6 +25,11 @@ import { upateLineByMainLine } from '../../grid-manage/GridMap/utils/initializeM
 import { deletFeatureByTable, editFeature } from '../../grid-manage/GridMap/utils/select'
 import { handleGeom } from '../../utils/methods'
 import SubStationPowerForm from './components/subStation-power-form'
+import {
+  transformAreaDataToArr,
+  transformAreaDataToString,
+  transformArrtToAreaData,
+} from '../../grid-manage/tools'
 
 const { TabPane } = Tabs
 
@@ -44,7 +49,7 @@ const { Search } = Input
 const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
 const StandingBook: React.FC<StandingBookProps> = (props) => {
-  const { companyId, setIsRefresh, isRefresh, checkLineIds, mapRef } = useMyContext()
+  const { companyId, setIsRefresh, isRefresh, checkLineIds, mapRef, areaMap } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
   const [powerKeyWord, setPowerKeyWord] = useState<string>('')
@@ -130,6 +135,15 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         return record.geom.slice(6).replace(' ', ' ，')
       },
     },
+    {
+      title: '区域',
+      dataIndex: 'area',
+      index: 'area',
+      width: 150,
+      render: (text: any, record: any) => {
+        return transformAreaDataToString(record)
+      },
+    },
   ]
 
   const powerColumns = [
@@ -183,6 +197,15 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       width: 240,
       render: (text: any, record: any) => {
         return record.geom.slice(6).replace(' ', ' ，')
+      },
+    },
+    {
+      title: '区域',
+      dataIndex: 'area',
+      index: 'area',
+      width: 150,
+      render: (text: any, record: any) => {
+        return transformAreaDataToString(record)
       },
     },
   ]
@@ -349,11 +372,17 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       setSelectTransId(editData.id)
       setIntervalData(editData.transformerInterval)
       const geom = handleGeom(editData.geom)
+      const { province, city, area } = editData
+      const areas = []
+      !!province && areas.push(province)
+      !!city && areas.push(city)
+      !!area && areas.push(area)
 
       subForm.setFieldsValue({
         ...editData,
         lng: geom[0],
         lat: geom[1],
+        areas,
       })
       setFormVisible(true)
       return
@@ -366,11 +395,11 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       const editData = powerSelectRows[0]
 
       const geom = handleGeom(editData.geom)
-
       powerForm.setFieldsValue({
         ...editData,
         lng: geom[0],
         lat: geom[1],
+        areas: transformAreaDataToArr(editData),
       })
       setFormVisible(true)
       return
@@ -381,7 +410,6 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       return
     }
     const editData = mainLineRows[0]
-
     lineForm.setFieldsValue({
       ...editData,
       lineType: editData.isOverhead ? 'Line' : 'CableCircuit',
@@ -422,6 +450,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           ...values,
           transformerInterval: intervalData,
           color,
+          ...transformArrtToAreaData(values.areas, areaMap),
         }
         await modifyTransformerSubstation(submitInfo)
 
@@ -451,6 +480,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: '咖啡',
+          ...transformArrtToAreaData(values.areas, areaMap),
         }
         await modifyPowerSupply(submitInfo)
         const drawParams = {

@@ -1,6 +1,11 @@
 import { createContext, Dispatch, SetStateAction, useContext } from 'react'
 import { MapRef } from './hooks'
 
+interface Area {
+  label: string
+  value: string
+  children?: Area[]
+}
 export interface MyContextType {
   mapRef: MapRef
   /** 手动绘制数据 工具栏状态 */
@@ -32,6 +37,11 @@ export interface MyContextType {
   companyId: string
   setisDragPoint: Dispatch<SetStateAction<boolean>>
   isDragPoint: boolean
+  // 行政区域信息
+  areaData: Area[]
+  setAreaData: Dispatch<SetStateAction<Area[]>>
+  areaMap: { [key: string]: string }
+  setAreaMap: Dispatch<SetStateAction<{ [key: string]: string }>>
 }
 
 // 全局状态管理

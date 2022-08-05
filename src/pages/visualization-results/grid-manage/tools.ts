@@ -23,8 +23,7 @@ export const verificationLat = () => ({
 /** 校验经度 */
 export const verificationLng = () => ({
   validator: (_: any, value: string, callback: any) => {
-    const reg =
-      /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
+    const reg = /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,15})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,15}|180)$/
     if (value === '' || !value) {
       callback()
     } else {
@@ -107,4 +106,32 @@ export const newData = (arr: any[]) => {
       color: COLORDEFAULT,
     }
   })
+}
+// 转换行政区域信息
+export const transformArrtToAreaData = (areas: any[], areaMap: any) => {
+  const [province, city, county] = areas
+  return {
+    province: !isNaN(province) ? province : '',
+    city: !isNaN(city) ? city : '',
+    area: !isNaN(county) ? county : '',
+    provinceName: !isNaN(province) ? areaMap[province] : '',
+    cityName: !isNaN(city) ? areaMap[city] : '',
+    areaName: !isNaN(county) ? areaMap[county] : '',
+  }
+}
+export const transformAreaDataToArr = (areaData: any) => {
+  const { province, city, area } = areaData
+  const areas = []
+  !!province && areas.push(province)
+  !!city && areas.push(city)
+  !!area && areas.push(area)
+  return areas
+}
+export const transformAreaDataToString = (areaData: any) => {
+  const { provinceName, cityName, areaName } = areaData
+  const arr = []
+  !!provinceName && arr.push(provinceName)
+  !!cityName && arr.push(cityName)
+  !!areaName && arr.push(areaName)
+  return arr.join('/')
 }

@@ -46,6 +46,8 @@ const LeftMenu = (props: any) => {
   const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
+  const [areasId, setAreasId] = useState<string[]>([])
+  const [isFilterTree, setIsFilterTree] = useState(true)
 
   // 线路ID集合
   const [linesId, setlinesId] = useState<string[]>([])
@@ -57,11 +59,19 @@ const LeftMenu = (props: any) => {
   const [treeLoading, settreeLoading] = useState<boolean>(false)
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
+  // 所属厂站表单项select当前选中值
+  const [belonging, setBelonging] = useState<string | undefined>()
+  // 终点厂站表单项select当前选中值
+  const [endBelonging, setEndBelonging] = useState<string | undefined>()
   const showModal = () => {
     setIsRefresh(!isRefresh)
+    setcurrentLineKvLevel(1)
     setVisible(true)
   }
-
+  // 新增线路弹窗，可以展示终点厂站的电压等级数组集合
+  const showEndBelongingKvLevels = KVLEVELOPTIONS.filter(
+    (level) => level.belonging.includes('Line') && level.kvLevel !== 3
+  ).map((item) => item.kvLevel)
   //打开网架台账信息
   const showStandingBook = () => {
     setStandingBookVisible(true)
@@ -202,7 +212,6 @@ const LeftMenu = (props: any) => {
   useEffect(() => {
     setcheckLineIds(linesId)
   }, [linesId, setcheckLineIds])
-
   return (
     <div className="w-full h-full bg-white flex flex-col">
       <TreeProvider
@@ -217,6 +226,10 @@ const LeftMenu = (props: any) => {
           treeLoading,
           kvLevels,
           setKvLevels,
+          areasId,
+          setAreasId,
+          isFilterTree,
+          setIsFilterTree,
         }}
       >
         <div className="w-full flex-none" style={{ height: '50px' }}>
@@ -268,14 +281,43 @@ const LeftMenu = (props: any) => {
             label="所属厂站"
             rules={[{ required: true, message: '请选择所属厂站' }]}
           >
-            <Select allowClear>
-              {stationItemsData.map((item) => (
-                <Option value={item.id} key={item.id}>
-                  {item.name}
-                </Option>
-              ))}
+            <Select
+              allowClear
+              onChange={(value: string | undefined) => {
+                setBelonging(value)
+              }}
+            >
+              {stationItemsData
+                .filter((item) => item.id !== endBelonging)
+                .map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
             </Select>
           </Form.Item>
+          {showEndBelongingKvLevels.includes(currentLineKvLevel) && (
+            <Form.Item
+              name="endBelonging"
+              label="终点厂站"
+              rules={[{ required: true, message: '请选择终点厂站' }]}
+            >
+              <Select
+                allowClear
+                onChange={(value: string | undefined) => {
+                  setEndBelonging(value)
+                }}
+              >
+                {stationItemsData
+                  .filter((item) => item.id !== belonging)
+                  .map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
+              </Select>
+            </Form.Item>
+          )}
           <Form.Item
             name="kvLevel"
             label="电压等级"

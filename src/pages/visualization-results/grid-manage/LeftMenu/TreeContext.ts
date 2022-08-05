@@ -9,8 +9,15 @@ interface ContextType {
   subStations: string[]
   settreeLoading: Dispatch<SetStateAction<boolean>>
   treeLoading: boolean
+  // 筛选弹窗电压表单项
   kvLevels: number[]
   setKvLevels: Dispatch<SetStateAction<number[]>>
+  // 筛选弹窗区域表单项
+  areasId: string[]
+  setAreasId: Dispatch<SetStateAction<string[]>>
+  // 重新获取tree数据标识
+  isFilterTree: boolean
+  setIsFilterTree: Dispatch<SetStateAction<boolean>>
 }
 
 // 全局状态管理

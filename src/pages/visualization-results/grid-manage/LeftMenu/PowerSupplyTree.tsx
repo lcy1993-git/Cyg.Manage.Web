@@ -18,6 +18,7 @@ import {
   LINE,
   LINEMODEL,
   POWERSUPPLY,
+  TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { upateLineByMainLine } from '../GridMap/utils/initializeMap'
 import { useTreeContext } from './TreeContext'
@@ -87,7 +88,15 @@ const lineformLayout = {
 
 const PowerSupplyTree = () => {
   const { isRefresh, setIsRefresh, mapRef, lineAssemble, companyId } = useMyContext()
-  const { linesId, setlinesId, setpowerSupplyIds, settreeLoading, kvLevels } = useTreeContext()
+  const {
+    linesId,
+    setlinesId,
+    setpowerSupplyIds,
+    settreeLoading,
+    kvLevels,
+    areasId,
+    isFilterTree,
+  } = useTreeContext()
   const [currentFeatureId, setcurrentFeatureId] = useState<string | undefined>('')
   const [selectLineType, setselectLineType] = useState('')
   const [form] = useForm()
@@ -100,54 +109,103 @@ const PowerSupplyTree = () => {
 
   //当前点击线路标题
   const [lineTitle, setLineTitle] = useState<string>('')
-  const { data, run: getTree } = useRequest(() => fetchGridManageMenu({ kvLevels: kvLevels }), {
-    manual: true,
-    onSuccess: () => {
-      settreeLoading(true)
-    },
-    onError: () => {
-      settreeLoading(true)
-    },
-  })
+  const { data, run: getTree } = useRequest(
+    () => fetchGridManageMenu({ kvLevels: kvLevels, ...transformAreaId(areasId) }),
+    {
+      manual: true,
+      onSuccess: () => {
+        settreeLoading(true)
+      },
+      onError: () => {
+        settreeLoading(true)
+      },
+    }
+  )
+  const transformAreaId = (areasId: any) => {
+    const [province, city, county] = areasId
+    return {
+      province: !isNaN(province) ? province : '',
+      city: !isNaN(city) ? city : '',
+      area: !isNaN(county) ? county : '',
+    }
+  }
+  const transformTreeData = (tree: any, key: any) => {
+    return tree?.map((item: any, index: any) => {
+      return {
+        title: item.type,
+        key: `0-0-${index}${key}`,
+        type: 'PowerType',
+        children: item.powerSupplySubList.map((child: PowerSupplyListType) => {
+          return {
+            ...child,
+            title:
+              companyId !== child.companyId ? (
+                <>
+                  <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+                  <span style={{ paddingLeft: '3px' }}> {child.name}</span>
+                </>
+              ) : (
+                child.name
+              ),
+            key: `${child.id}_&${POWERSUPPLY}`,
+            type: POWERSUPPLY,
+            children: child.lines.map((childrenItem: lineListItemType) => {
+              return {
+                ...childrenItem,
+                type: LINE,
+                title: childrenItem.name,
+                key: `${childrenItem.id}_&Line${child.id}_&${POWERSUPPLY}_&PowerType0-0-${index}${key}_&Parent0-0`,
+              }
+            }),
+          }
+        }),
+      }
+    })
+  }
+  const transformTreeStructure = (tree: any) => {
+    return tree?.map((item: any) => {
+      return {
+        key: item.key,
+        type: item.type,
+        title: item.title,
+        children:
+          item.key === 'Province_Other'
+            ? transformTreeData(item.data, item.key)
+            : item.children.map((item: any) => {
+                if (item.data && item.data.length > 0) {
+                  return {
+                    key: item.key,
+                    title: item.title,
+                    type: item.city,
+                    children: transformTreeData(item.data, item.key),
+                  }
+                }
+                return {
+                  key: item.key,
+                  type: item.type,
+                  title: item.title,
+                  children: item.children.map((item: any) => {
+                    return {
+                      key: item.key,
+                      type: item.type,
+                      title: item.title,
+                      children: transformTreeData(item.data, item.key),
+                    }
+                  }),
+                }
+              }),
+      }
+    })
+  }
+
   const treeData = [
     {
       title: '电源',
       key: '0-0',
       type: 'Parent',
-      children: data?.map((item, index) => {
-        return {
-          title: item.type,
-          key: `0-0-${index}`,
-          type: 'PowerType',
-          children: item.powerSupplySubList.map((child: PowerSupplyListType) => {
-            return {
-              ...child,
-              title:
-                companyId !== child.companyId ? (
-                  <>
-                    <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
-                    <span style={{ paddingLeft: '3px' }}> {child.name}</span>
-                  </>
-                ) : (
-                  child.name
-                ),
-              key: `${child.id}_&${POWERSUPPLY}`,
-              type: POWERSUPPLY,
-              children: child.lines.map((childrenItem: lineListItemType) => {
-                return {
-                  ...childrenItem,
-                  type: LINE,
-                  title: childrenItem.name,
-                  key: `${childrenItem.id}_&Line${child.id}_&${POWERSUPPLY}_&PowerType0-0-${index}_&Parent0-0`,
-                }
-              }),
-            }
-          }),
-        }
-      }),
+      children: transformTreeStructure(data),
     },
   ]
-
   const handleOk = async () => {
     try {
       await form.validateFields()
@@ -209,7 +267,7 @@ const PowerSupplyTree = () => {
 
   useEffect(() => {
     getTree()
-  }, [getTree, isRefresh, kvLevels])
+  }, [getTree, isRefresh, isFilterTree])
 
   // 点击右键，删除线路数据
   const onRightClick = (info: infoType) => {
@@ -290,26 +348,11 @@ const PowerSupplyTree = () => {
       })
       .filter((item: string) => item)
 
-    const currentLinesId = [...currentLineId, ...linesId]
+    const currentLinesId = [
+      ...currentLineId,
+      ...linesId.filter((item) => item.indexOf(TRANSFORMERSUBSTATION) !== -1),
+    ]
     setlinesId([...new Set(currentLinesId)])
-
-    if (!e.checked) {
-      switch (e.node.type) {
-        case 'Parent':
-          setlinesId(currentLinesId.filter((item) => !item.includes('_&Parent0-0')))
-          return
-        case POWERSUPPLY:
-          setlinesId(
-            currentLinesId.filter((item) => !item.includes(`_&Line${e.node.id}_&${POWERSUPPLY}`))
-          )
-          return
-        case 'PowerType':
-          setlinesId(currentLinesId.filter((item) => !item.includes(`_&PowerType${e.node.key}`)))
-          return
-        case LINE:
-          setlinesId(currentLinesId.filter((item) => !item.includes(e.node.id)))
-      }
-    }
   }
 
   // 获取所有厂站
