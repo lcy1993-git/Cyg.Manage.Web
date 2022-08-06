@@ -476,9 +476,9 @@ const DrawToolbar = () => {
   }, [isRefresh, run])
 
   const formChange = async (changeValues: any, allvalues: any) => {
-    if (changeValues['featureType']) {
-      return
-    }
+    // if (changeValues['featureType']) {
+    //   return
+    // }
     if (clickState) {
       await uploadLocalData()
       clear()

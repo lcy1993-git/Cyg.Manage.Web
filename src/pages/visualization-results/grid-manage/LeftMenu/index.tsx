@@ -7,6 +7,7 @@ import {
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
+import Underline from 'wangeditor/dist/menus/underline'
 import StandingBook from '../../components/standing-book'
 import { useMyContext } from '../Context'
 import {
@@ -59,9 +60,15 @@ const LeftMenu = (props: any) => {
   const [treeLoading, settreeLoading] = useState<boolean>(false)
   /**所属厂站**/
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
+  // 所属厂站表单项select当前选中值
+  const [belonging, setBelonging] = useState<string | undefined>()
+  // 终点厂站表单项select当前选中值
+  const [endBelonging, setEndBelonging] = useState<string | undefined>()
   const showModal = () => {
     setIsRefresh(!isRefresh)
     setcurrentLineKvLevel(1)
+    setBelonging(undefined)
+    setEndBelonging(undefined)
     setVisible(true)
   }
   // 新增线路弹窗，可以展示终点厂站的电压等级数组集合
@@ -208,7 +215,6 @@ const LeftMenu = (props: any) => {
   useEffect(() => {
     setcheckLineIds(linesId)
   }, [linesId, setcheckLineIds])
-
   return (
     <div className="w-full h-full bg-white flex flex-col">
       <TreeProvider
@@ -278,26 +284,40 @@ const LeftMenu = (props: any) => {
             label="所属厂站"
             rules={[{ required: true, message: '请选择所属厂站' }]}
           >
-            <Select allowClear>
-              {stationItemsData.map((item) => (
-                <Option value={item.id} key={item.id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          {showEndBelongingKvLevels.includes(currentLineKvLevel) && (
-            <Form.Item
-              name="EndBelonging"
-              label="终点厂站"
-              rules={[{ required: true, message: '请选择终点厂站' }]}
+            <Select
+              allowClear
+              onChange={(value: string | undefined) => {
+                setBelonging(value)
+              }}
             >
-              <Select allowClear>
-                {stationItemsData.map((item) => (
+              {stationItemsData
+                .filter((item) => item.id !== endBelonging)
+                .map((item) => (
                   <Option value={item.id} key={item.id}>
                     {item.name}
                   </Option>
                 ))}
+            </Select>
+          </Form.Item>
+          {showEndBelongingKvLevels.includes(currentLineKvLevel) && (
+            <Form.Item
+              name="endBelonging"
+              label="终点厂站"
+              rules={[{ required: true, message: '请选择终点厂站' }]}
+            >
+              <Select
+                allowClear
+                onChange={(value: string | undefined) => {
+                  setEndBelonging(value)
+                }}
+              >
+                {stationItemsData
+                  .filter((item) => item.id !== belonging)
+                  .map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
               </Select>
             </Form.Item>
           )}

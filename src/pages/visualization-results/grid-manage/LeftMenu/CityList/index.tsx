@@ -61,8 +61,8 @@ const CityList = (props: PropsType) => {
 
   return (
     <div
-      className="absolute w-80 h-3/5 bg-white shadow-lg"
-      style={{ display: visible ? 'inline-block' : 'none', zIndex: 20 }}
+      className="absolute w-80 bg-white shadow-lg"
+      style={{ display: visible ? 'inline-block' : 'none', zIndex: 20, height: '480px' }}
     >
       <div className="py-1 px-2 flex justify-between items-center">
         <div>
@@ -80,10 +80,7 @@ const CityList = (props: PropsType) => {
         }}
         letters={letters}
       />
-      <div
-        className="w-full overflow-y-auto bg-white"
-        style={{ height: 'calc(100% - 62px)', zIndex: 1000 }}
-      >
+      <div className="w-full overflow-y-auto bg-white" style={{ height: '412px', zIndex: 1000 }}>
         <div className="overflow-y-auto pl-2 pt-2 scrollbar-base" style={{ height: '412px' }}>
           {cityData.data.map((item: any) => (
             <CorrespondingProvinces key={item.letter} {...item} />

@@ -30,6 +30,12 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const [selectLineType, setselectLineType] = useState('')
   const [currentKv, setCurrentKv] = useState<number>(Number(form.getFieldValue('kvLevel')))
+  // 所属厂站表单项select当前选中值
+  const [belonging, setBelonging] = useState<string | undefined>(form.getFieldValue('belonging'))
+  // 终点厂站表单项select当前选中值
+  const [endBelonging, setEndBelonging] = useState<string | undefined>(
+    form.getFieldValue('endBelonging')
+  )
   const { data: stationItems } = useRequest(GetStationItems, {
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
@@ -106,12 +112,19 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
             required
             rules={[{ required: true, message: '请选择所属厂站' }]}
           >
-            <Select allowClear>
-              {stationItemsData.map((item) => (
-                <Option value={item.id} key={item.id}>
-                  {item.name}
-                </Option>
-              ))}
+            <Select
+              allowClear
+              onChange={(value: string | undefined) => {
+                setBelonging(value)
+              }}
+            >
+              {stationItemsData
+                .filter((item) => item.id !== endBelonging)
+                .map((item) => (
+                  <Option value={item.id} key={item.id}>
+                    {item.name}
+                  </Option>
+                ))}
             </Select>
           </CyFormItem>
           {showEndBelongingKvLevels.includes(currentKv) && (
@@ -121,12 +134,19 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
               required
               rules={[{ required: true, message: '请选择终点厂站' }]}
             >
-              <Select allowClear>
-                {stationItemsData.map((item) => (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                ))}
+              <Select
+                allowClear
+                onChange={(value: string | undefined) => {
+                  setEndBelonging(value)
+                }}
+              >
+                {stationItemsData
+                  .filter((item) => item.id !== belonging)
+                  .map((item) => (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  ))}
               </Select>
             </CyFormItem>
           )}

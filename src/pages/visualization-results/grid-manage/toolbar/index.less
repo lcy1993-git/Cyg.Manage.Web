@@ -21,11 +21,25 @@
   top: 50px;
   right: 20px;
   z-index: 999;
-  width: 130px;
+  width: 160px;
   height: 262px;
   padding: 10px;
   background: rgba(255, 255, 255, 0.6);
   translate: x(0);
+}
+.highlightBtnWrap {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 198px;
+}
+.highlightBtn {
+  width: 20px;
+  height: 22px;
+  text-align: right;
+  // color: rgba(194 ,205 ,20, 1);
+  cursor: pointer;
 }
 
 .toolbarBtn {
@@ -35,12 +49,43 @@
   z-index: 2000;
 }
 
-.repeatPointWrap {
+.bottomModalWrap {
   position: absolute;
   bottom: 10px;
   z-index: 90;
-  width: 300px;
-  height: 200px;
+  width: 320px;
+  height: 290px;
+  padding: 0 10px;
+  background-color: #ffffff;
   // top: 70px;
   translate: x(0);
+  :global {
+    .ant-table-body::-webkit-scrollbar {
+      width: 8px;
+      background-color: #e5e7eb;
+    }
+    .ant-table-body::-webkit-scrollbar-thumb {
+      background: #6b7280;
+      border-radius: 10px;
+      -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+  }
+}
+.title {
+  position: relative;
+  height: 46px;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 18px;
+  line-height: 46px;
+  text-indent: 6px;
+}
+.close {
+  position: absolute;
+  top: 13px;
+  right: 5px;
+  width: 20px;
+  height: 20px;
+  color: #cccccc;
+  cursor: pointer;
 }
