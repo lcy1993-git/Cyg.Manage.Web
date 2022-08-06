@@ -21,13 +21,10 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import {
-  loadMapLayers,
-  locationByGeom,
-  getShowLines,
-  getShowPoints,
-} from '../GridMap/utils/initializeMap'
-import { dataHandle, LEFTMENUWIDTH } from '../tools'
+import { locationByGeom, getShowLines, getShowPoints } from '../GridMap/utils/initializeMap'
+import { loadAllPointLayer } from '../GridMap/utils/loadLayer'
+import { twinkle } from '../GridMap/utils/style'
+import { LEFTMENUWIDTH } from '../tools'
 import styles from './index.less'
 
 interface RepeatPointType {
@@ -112,60 +109,22 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       CABLEBRANCHBOX,
     ],
   }
-
-  // 根据设备展示数据--- 请求数据
-  // const { data: TreeData, run: getSearchEquipmentTypeData } = useRequest(
-  //   () => {
-  //     const lineIds = currentChecklineIds()
-  //     return getlinesComponment({
-  //       lineIds,
-  //       kvLevels: [],
-  //     })
-  //   },
-  //   {
-  //     manual: true,
-  //     onSuccess: () => {
-  //       const features = form.getFieldValue('featureType').map((item: string) => {
-  //         const s = item.replace(item[0], item[0].toLowerCase())
-  //         return s + 'List'
-  //       })
-  //       const treeDatas = dataHandle(TreeData)
-  //       const data: {
-  //         powerSupplyList: any
-  //         transformerSubstationList: any
-  //         lineList: any
-  //         lineRelationList: any
-  //       } = {
-  //         powerSupplyList: [],
-  //         transformerSubstationList: [],
-  //         lineList: [],
-  //         lineRelationList: [],
-  //       }
-  //       features.forEach((item: string) => {
-  //         data[item] = treeDatas[item]
-  //       })
-  //       data.powerSupplyList = treeDatas.powerSupplyList
-  //       data.transformerSubstationList = treeDatas.transformerSubstationList
-  //       data.lineList = treeDatas.lineList
-  //       data.lineRelationList = treeDatas.lineRelationList
-  //       loadMapLayers({ ...data }, mapRef.map)
-  //     },
-  //   }
-  // )
   /** 根据设备展示数据 **/
   const searchEquipmentType = (value: any) => {
-    const lineIds = currentChecklineIds()
-    if (!lineIds.length) {
+    if (!checkLineIds.length) {
       message.info('请勾选线路')
       return
     }
     const featureTypes = form.getFieldValue('featureType')
     setSelectedFeatureType(featureTypes)
-    // console.log(featureTypes)
-    // getSearchEquipmentTypeData()
+    loadAllPointLayer(mapRef.map, [TRANSFORMERSUBSTATION, POWERSUPPLY, ...featureTypes])
   }
   /** 根据设备展示数据弹窗高亮按钮 **/
   const highlightHandle = (value: any) => {
+    if (!checkLineIds.length) {
+      message.info('请勾选线路')
+      return
+    }
     let types = [...highlightFeatureType]
     if (highlightFeatureType.includes(value)) {
       types = types.filter((item) => item !== value)
@@ -173,6 +132,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       types.push(value)
     }
     setHighlightFeatureType(types)
+    twinkle(mapRef.map, types)
     // console.log(types)
   }
 
@@ -230,8 +190,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }
   // 点击搜索按钮
   const search = () => {
-    const lineIds = currentChecklineIds()
-    if (!lineIds.length) {
+    if (!checkLineIds.length) {
       setRepeatPointState(false)
       message.info('请勾选线路')
       return
@@ -307,6 +266,8 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     if (checkLineIds.length) {
       form.resetFields()
       setSelectedFeatureType(initialFeatureType.map((item) => item.value))
+    } else {
+      setHighlightFeatureType([])
     }
   }, [checkLineIds, form])
 
