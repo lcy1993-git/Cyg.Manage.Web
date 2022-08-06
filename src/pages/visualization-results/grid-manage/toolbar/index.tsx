@@ -2,6 +2,8 @@ import { getlinesComponment, getrepeatPointdata } from '@/services/grid-manage/t
 import { AimOutlined, SearchOutlined, CloseOutlined, BulbOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Checkbox, Form, message, Space, Spin, Table, Input } from 'antd'
+import { type } from 'jquery'
+import { includes } from 'lodash'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
@@ -74,6 +76,8 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   const [selectedFeatureType, setSelectedFeatureType] = useState<string[]>(
     initialFeatureType.map((item) => item.value)
   )
+  // 当前高亮的设备
+  const [highlightFeatureType, setHighlightFeatureType] = useState<string[]>([])
   // 表格标题
   const columns = [
     {
@@ -110,44 +114,44 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }
 
   // 根据设备展示数据--- 请求数据
-  const { data: TreeData, run: getSearchEquipmentTypeData } = useRequest(
-    () => {
-      const lineIds = currentChecklineIds()
-      return getlinesComponment({
-        lineIds,
-        kvLevels: [],
-      })
-    },
-    {
-      manual: true,
-      onSuccess: () => {
-        const features = form.getFieldValue('featureType').map((item: string) => {
-          const s = item.replace(item[0], item[0].toLowerCase())
-          return s + 'List'
-        })
-        const treeDatas = dataHandle(TreeData)
-        const data: {
-          powerSupplyList: any
-          transformerSubstationList: any
-          lineList: any
-          lineRelationList: any
-        } = {
-          powerSupplyList: [],
-          transformerSubstationList: [],
-          lineList: [],
-          lineRelationList: [],
-        }
-        features.forEach((item: string) => {
-          data[item] = treeDatas[item]
-        })
-        data.powerSupplyList = treeDatas.powerSupplyList
-        data.transformerSubstationList = treeDatas.transformerSubstationList
-        data.lineList = treeDatas.lineList
-        data.lineRelationList = treeDatas.lineRelationList
-        loadMapLayers({ ...data }, mapRef.map)
-      },
-    }
-  )
+  // const { data: TreeData, run: getSearchEquipmentTypeData } = useRequest(
+  //   () => {
+  //     const lineIds = currentChecklineIds()
+  //     return getlinesComponment({
+  //       lineIds,
+  //       kvLevels: [],
+  //     })
+  //   },
+  //   {
+  //     manual: true,
+  //     onSuccess: () => {
+  //       const features = form.getFieldValue('featureType').map((item: string) => {
+  //         const s = item.replace(item[0], item[0].toLowerCase())
+  //         return s + 'List'
+  //       })
+  //       const treeDatas = dataHandle(TreeData)
+  //       const data: {
+  //         powerSupplyList: any
+  //         transformerSubstationList: any
+  //         lineList: any
+  //         lineRelationList: any
+  //       } = {
+  //         powerSupplyList: [],
+  //         transformerSubstationList: [],
+  //         lineList: [],
+  //         lineRelationList: [],
+  //       }
+  //       features.forEach((item: string) => {
+  //         data[item] = treeDatas[item]
+  //       })
+  //       data.powerSupplyList = treeDatas.powerSupplyList
+  //       data.transformerSubstationList = treeDatas.transformerSubstationList
+  //       data.lineList = treeDatas.lineList
+  //       data.lineRelationList = treeDatas.lineRelationList
+  //       loadMapLayers({ ...data }, mapRef.map)
+  //     },
+  //   }
+  // )
   /** 根据设备展示数据 **/
   const searchEquipmentType = (value: any) => {
     const lineIds = currentChecklineIds()
@@ -155,11 +159,22 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       message.info('请勾选线路')
       return
     }
-    setSelectedFeatureType(form.getFieldValue('featureType'))
-    getSearchEquipmentTypeData()
+    const featureTypes = form.getFieldValue('featureType')
+    setSelectedFeatureType(featureTypes)
+    // console.log(featureTypes)
+    // getSearchEquipmentTypeData()
   }
   /** 根据设备展示数据弹窗高亮按钮 **/
-  const highlightHandle = (value: any) => {}
+  const highlightHandle = (value: any) => {
+    let types = [...highlightFeatureType]
+    if (highlightFeatureType.includes(value)) {
+      types = types.filter((item) => item !== value)
+    } else {
+      types.push(value)
+    }
+    setHighlightFeatureType(types)
+    // console.log(types)
+  }
 
   // 当前选中的主线线路
   const currentChecklineIds = () => {
@@ -291,6 +306,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   useEffect(() => {
     if (checkLineIds.length) {
       form.resetFields()
+      setSelectedFeatureType(initialFeatureType.map((item) => item.value))
     }
   }, [checkLineIds, form])
 
@@ -347,20 +363,23 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
           </Form>
         </div>
         <div className={styles.highlightBtnWrap}>
-          {initialFeatureType.map((item) => {
+          {initialFeatureType.map((item, index) => {
             if (selectedFeatureType.includes(item.value)) {
               return (
                 <div
+                  key={item.value}
                   onClick={() => {
                     highlightHandle(item.value)
                   }}
-                  className={styles.highlightBtn}
+                  className={`${styles.highlightBtn} ${
+                    highlightFeatureType.includes(item.value) ? styles.red : styles.black
+                  }`}
                 >
                   <BulbOutlined />
                 </div>
               )
             }
-            return <div style={{ height: '22px' }}></div>
+            return <div key={index} style={{ height: '22px' }}></div>
           })}
         </div>
       </div>
