@@ -13,7 +13,7 @@ import { Fill, Stroke, Style, Text } from 'ol/style'
 import View from 'ol/View'
 import { pointType } from '..'
 import DrawTool from './draw'
-import { getLayer, loadAllLayer, loadAllPointLayer } from './loadLayer'
+import { getLayer, loadAllLayer } from './loadLayer'
 import mapMoveend from './mapMoveend'
 import { moveOverlay } from './overlay'
 import {
@@ -24,7 +24,7 @@ import {
   setDeleFeatures,
   setSelectActive,
 } from './select'
-import { calculateDistance, lineStyle, pointStyle, twinkle } from './style'
+import { calculateDistance, lineStyle, pointStyle } from './style'
 import { companyId, getDistrictdata } from './utils'
 // interface pointType {
 //   featureType: string
@@ -166,12 +166,12 @@ export const location = (map: any, lon: number, lat: number, zoom: number = 12) 
 // 绘制点位
 export const drawPoint = (map: any, options: any, clickEvent: any) => {
   pointLayer = getLayer(map, 'pointLayer', 3)
-  // options.type_ = 'Point'
-  // if (!drawTool) drawTool = new DrawTool(map, options)
-  // drawTool.setSource(pointLayer.getSource())
-  // drawTool.drawGeometry(options, clickEvent)
-  loadAllPointLayer(map, ['Tower', 'TransformerSubstation'])
-  twinkle(pointLayer, options.featureType)
+  options.type_ = 'Point'
+  if (!drawTool) drawTool = new DrawTool(map, options)
+  drawTool.setSource(pointLayer.getSource())
+  drawTool.drawGeometry(options, clickEvent)
+
+  // twinkle(pointLayer, options.featureType)
 }
 
 // 绘制线路
