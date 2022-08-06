@@ -1,5 +1,6 @@
 import WKT from 'ol/format/WKT'
-import { Fill, Stroke, Style, Text } from 'ol/style'
+import { getVectorContext } from 'ol/render'
+import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import proj4 from 'proj4'
 import {
   BOXTRANSFORMER,
@@ -15,6 +16,7 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
 import Configs from './config'
+var postrender: any = null
 export const pointStyle = (
   data: any,
   selected: boolean,
@@ -187,4 +189,41 @@ export const calculateDistance = (startLont: any, endLont: any) => {
   )
   distance = parseFloat(distance.toFixed(1))
   return distance
+}
+
+// 图层闪烁功能
+export const twinkle = (layer: any, type: String) => {
+  let radius = 0
+  const features = layer.getSource().getFeatures()
+  if (postrender) delete layer.listeners_.postrender
+  if (type === POWERSUPPLY) {
+    return
+  }
+
+  postrender = layer.on('postrender', (evt: any) => {
+    if (radius >= 20) radius = 0
+    let opacity = ((20 - radius) / 2) * 0.1
+    const ctx = getVectorContext(evt)
+    ctx.setStyle(
+      new Style({
+        image: new Circle({
+          radius,
+          stroke: new Stroke({
+            color: `rgba(255,0,0,${opacity})`,
+            width: 3,
+          }),
+        }),
+      })
+    )
+    features.forEach((element: any) => {
+      if (element.get('data').featureType === type) ctx.drawGeometry(element.getGeometry())
+    })
+    radius += 0.4
+    // map.render()
+    layer.changed()
+  })
+}
+
+export const stopTwinkle = (layer: any) => {
+  if (postrender) layer.un('postrender', postrender)
 }
