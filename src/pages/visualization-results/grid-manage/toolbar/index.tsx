@@ -1,9 +1,7 @@
-import { getlinesComponment, getrepeatPointdata } from '@/services/grid-manage/treeMenu'
+import { getrepeatPointdata } from '@/services/grid-manage/treeMenu'
 import { AimOutlined, SearchOutlined, CloseOutlined, BulbOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Checkbox, Form, message, Space, Spin, Table, Input } from 'antd'
-import { type } from 'jquery'
-import { includes } from 'lodash'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
