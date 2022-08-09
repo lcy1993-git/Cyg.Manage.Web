@@ -1,7 +1,7 @@
 import { getrepeatPointdata } from '@/services/grid-manage/treeMenu'
-import { AimOutlined, SearchOutlined, CloseOutlined, BulbOutlined } from '@ant-design/icons'
+import { AimOutlined, BulbOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons'
 import { useRequest, useUpdateEffect } from 'ahooks'
-import { Button, Checkbox, Form, message, Space, Spin, Table, Input } from 'antd'
+import { Button, Checkbox, Form, Input, message, Space, Spin, Table } from 'antd'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
@@ -19,7 +19,7 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { locationByGeom, getShowLines, getShowPoints } from '../GridMap/utils/initializeMap'
+import { getShowLines, getShowPoints, locationByGeom } from '../GridMap/utils/initializeMap'
 import { loadAllPointLayer } from '../GridMap/utils/loadLayer'
 import { twinkle } from '../GridMap/utils/style'
 import { LEFTMENUWIDTH } from '../tools'

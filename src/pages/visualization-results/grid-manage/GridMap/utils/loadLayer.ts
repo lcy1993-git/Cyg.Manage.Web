@@ -4,6 +4,7 @@ import { Vector as VectorSource } from 'ol/source'
 import { LINE, POINTS } from '../../DrawToolbar/GridUtils'
 import { lineStyle, pointStyle } from './style'
 var mapDatas: any
+var checkedValues: any
 export const loadAllLayer = (data: any, map: any) => {
   mapDatas = data
   loadAllPointLayer(map, POINTS)
@@ -13,12 +14,16 @@ export const loadAllLayer = (data: any, map: any) => {
 
 // 加载所有点图层
 export const loadAllPointLayer = (map: any, points: any) => {
+  checkedValues = points
   let pointLayer = getLayer(map, 'pointLayer', 3, true)
-
   points.forEach((item: any) => {
     const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
     mapDatas[item_] && loadLayer(mapDatas[item_], item, pointLayer, map)
   })
+}
+
+export const getCheckedValues = () => {
+  return checkedValues
 }
 
 // 加载所有线图层

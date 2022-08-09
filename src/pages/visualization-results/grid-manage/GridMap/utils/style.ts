@@ -16,7 +16,7 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
 import Configs from './config'
-import { getLayer } from './loadLayer'
+import { getCheckedValues, getLayer } from './loadLayer'
 var postrender: any = null
 export const pointStyle = (
   data: any,
@@ -216,7 +216,11 @@ export const twinkle = (map: any, types: any) => {
       })
     )
     features.forEach((element: any) => {
-      if (types.indexOf(element.get('data').featureType) > -1)
+      const checkedValues = getCheckedValues()
+      if (
+        types.indexOf(element.get('data').featureType) > -1 &&
+        checkedValues.indexOf(element.get('data').featureType) > -1
+      )
         ctx.drawGeometry(element.getGeometry())
     })
     radius += 0.4
