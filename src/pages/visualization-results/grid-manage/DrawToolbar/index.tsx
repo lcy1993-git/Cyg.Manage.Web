@@ -429,13 +429,15 @@ const DrawToolbar = () => {
       await lineForm.validateFields()
       let formData = lineForm.getFieldsValue()
       formData = transformLines(formData)
-      drawLine(mapRef.map, {
-        ...formData,
-        companyId: companyId,
-        name: '',
-        // todo
-        setClickState,
-      })
+      drawLine(
+        mapRef.map,
+        {
+          ...formData,
+          companyId: companyId,
+          name: '',
+        },
+        setClickState
+      )
     } catch (err) {}
   }
 
