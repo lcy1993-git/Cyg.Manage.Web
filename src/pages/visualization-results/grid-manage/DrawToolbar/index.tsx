@@ -84,8 +84,6 @@ const DrawToolbar = () => {
   } = useMyContext()
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
-  // 当前选中的是架空还是电缆线路
-  const [selectLineType, setselectLineType] = useState('')
   // 当前的电压等级
   const [currentKvleve, setcurrentKvleve] = useState<number>()
   // Tab切换控制
@@ -98,6 +96,8 @@ const DrawToolbar = () => {
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
   /**所属线路数据回数**/
   const [lineNumber, setLineNumber] = useState<string>('1')
+  // 绘制线段选择架空线路的回路数组
+  const [lineTypeArray, setLineTypeArray] = useState<string[]>([])
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
 
@@ -150,7 +150,7 @@ const DrawToolbar = () => {
       arr.push(item)
     }
     return {
-      LoopNumber: lineNumber,
+      loopNumber: lineNumber,
       data: arr,
     }
   }
@@ -159,22 +159,21 @@ const DrawToolbar = () => {
     const selectNumber = option.key.split('__')[1]
     const currentLineData = belongingLineData.find((item) => item.id === value)
     if (currentLineData) {
-      // 下面的图元无论主线路的电压等级是多少，都显示10KV
-      const exist = [
-        BOXTRANSFORMER,
-        CABLEBRANCHBOX,
-        COLUMNCIRCUITBREAKER,
-        COLUMNTRANSFORMER,
-        ELECTRICITYDISTRIBUTIONROOM,
-        RINGNETWORKCABINET,
-        SWITCHINGSTATION,
-      ].includes(currentFeatureType)
       const data = {
-        [`kvLevel_${selectNumber}`]: exist ? 3 : currentLineData?.kvLevel,
+        [`kvLevel_${selectNumber}`]: currentLineData?.kvLevel,
         [`lineType_${selectNumber}`]: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
         [`lineModel_${selectNumber}`]: currentLineData.lineModel ? '111' : '',
       }
       lineForm.setFieldsValue(data)
+      let arr = [...lineTypeArray]
+      if (currentLineData.isOverhead) {
+        // 架空线路
+        arr.push(selectNumber)
+      } else {
+        // 电缆线路
+        arr = arr.filter((item) => item !== selectNumber)
+      }
+      setLineTypeArray(arr)
     }
   }
   /** 线路回数个数改变渲染多个线路回路表单项 **/
@@ -200,12 +199,7 @@ const DrawToolbar = () => {
             </Select>
           </Form.Item>
           <Form.Item name={`lineType_${line.value}`} label={`线路类型${line.value}`}>
-            <Select
-              allowClear
-              onChange={onChangeLineType}
-              dropdownStyle={{ zIndex: 3000 }}
-              disabled
-            >
+            <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
               {[
                 { label: '架空线路', value: 'Line' },
                 { label: '电缆线路', value: 'CableCircuit' },
@@ -218,7 +212,7 @@ const DrawToolbar = () => {
           </Form.Item>
           <Form.Item name={`lineModel_${line.value}`} label={`线路型号${line.value}`}>
             <Select dropdownStyle={{ zIndex: 3000 }}>
-              {selectLineType === 'Line' && selectLineType
+              {lineTypeArray.includes(String(line.value))
                 ? LINEMODEL.map((item) => (
                     <Option key={item.value} value={item.value}>
                       {item.label}
@@ -272,14 +266,6 @@ const DrawToolbar = () => {
       featureType: result.target.value,
     })
   }
-  /** 选择线路型号 */
-  const onChangeLineType = (value: string) => {
-    setselectLineType(value)
-    form.setFieldsValue({
-      lineType: value,
-      conductorModel: '',
-    })
-  }
 
   /* 绘制线路选择所属线路 **/
   const seleceBelongingLine = (value: string) => {
@@ -287,7 +273,6 @@ const DrawToolbar = () => {
     if (currentLineData) {
       setcurrentColor(currentLineData.color)
       setcurrentLineKvLevel(currentLineData?.kvLevel)
-      setselectLineType(currentLineData.isOverhead ? 'Line' : 'CableCircuit')
       // 下面的图元无论主线路的电压等级是多少，都显示10KV
       const exist = [
         BOXTRANSFORMER,
@@ -444,22 +429,10 @@ const DrawToolbar = () => {
       await lineForm.validateFields()
       let formData = lineForm.getFieldsValue()
       formData = transformLines(formData)
-      // todo 多回路开发数据结构改变。这里的color可能应该去掉
-      let color
-      if (currentLineKvLevel === 3) {
-        const kv = KVLEVELOPTIONS.find(
-          (item: any) => currentLineKvLevel === item.kvLevel
-        )?.color.find((item) => item.label === currentColor)
-        color = kv?.value
-      } else {
-        const kv = KVLEVELOPTIONS.find((item: any) => currentLineKvLevel === item.kvLevel)
-        color = kv?.color[0].value
-      }
       drawLine(mapRef.map, {
         ...formData,
         companyId: companyId,
         name: '',
-        color: color ? color : COLORDEFAULT,
         // todo
         setClickState,
       })
