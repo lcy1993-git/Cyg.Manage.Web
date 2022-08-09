@@ -4,7 +4,7 @@ import {
   GetStationItems,
   getSubStations,
 } from '@/services/grid-manage/treeMenu'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import StandingBook from '../../components/standing-book'
@@ -43,7 +43,14 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [standingBookVisible, setStandingBookVisible] = useState(false)
-  const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh } = useMyContext()
+  const {
+    setIsRefresh,
+    mapRef,
+    lineAssemble,
+    setcheckLineIds,
+    isRefresh,
+    setMapLoading,
+  } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
   const [areasId, setAreasId] = useState<string[]>([])
@@ -66,6 +73,8 @@ const LeftMenu = (props: any) => {
   const showModal = () => {
     setIsRefresh(!isRefresh)
     setcurrentLineKvLevel(1)
+    setBelonging(undefined)
+    setEndBelonging(undefined)
     setVisible(true)
   }
   // 新增线路弹窗，可以展示终点厂站的电压等级数组集合
@@ -136,11 +145,13 @@ const LeftMenu = (props: any) => {
   }
 
   const { data: subStationsData, run: GetSubStations } = useRequest(
-    () =>
-      getSubStations({
+    () => {
+      setMapLoading(true)
+      return getSubStations({
         stationIds: subStations,
         powerIds: powerSupplyIds,
-      }),
+      })
+    },
     {
       manual: true,
       onSuccess: () => {
@@ -191,11 +202,12 @@ const LeftMenu = (props: any) => {
           },
           mapRef.map
         )
+        setMapLoading(false)
       },
     }
   )
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     GetSubStations()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [powerSupplyIds, subStations, linesId])

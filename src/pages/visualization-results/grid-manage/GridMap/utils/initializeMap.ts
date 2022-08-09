@@ -170,6 +170,8 @@ export const drawPoint = (map: any, options: any, clickEvent: any) => {
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(pointLayer.getSource())
   drawTool.drawGeometry(options, clickEvent)
+
+  // twinkle(pointLayer, options.featureType)
 }
 
 // 绘制线路

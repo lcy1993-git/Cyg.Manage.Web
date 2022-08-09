@@ -1,5 +1,6 @@
 import WKT from 'ol/format/WKT'
-import { Fill, Stroke, Style, Text } from 'ol/style'
+import { getVectorContext } from 'ol/render'
+import { Circle, Fill, Stroke, Style, Text } from 'ol/style'
 import proj4 from 'proj4'
 import {
   BOXTRANSFORMER,
@@ -15,6 +16,8 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
 import Configs from './config'
+import { getCheckedValues, getLayer } from './loadLayer'
+var postrender: any = null
 export const pointStyle = (
   data: any,
   selected: boolean,
@@ -187,4 +190,72 @@ export const calculateDistance = (startLont: any, endLont: any) => {
   )
   distance = parseFloat(distance.toFixed(1))
   return distance
+}
+
+// 图层闪烁功能
+export const twinkle = (map: any, types: any) => {
+  const layer = getLayer(map, 'pointLayer')
+  const features = layer.getSource().getFeatures()
+  let radius = 0
+  if (postrender) delete layer.listeners_.postrender
+  if (!types || types.length === 0) return
+
+  postrender = layer.on('postrender', (evt: any) => {
+    if (radius >= 20) radius = 0
+    let opacity = ((20 - radius) / 2) * 0.1
+    const ctx = getVectorContext(evt)
+    ctx.setStyle(
+      new Style({
+        image: new Circle({
+          radius,
+          stroke: new Stroke({
+            color: `rgba(255,0,0,${opacity})`,
+            width: 3,
+          }),
+        }),
+      })
+    )
+    features.forEach((element: any) => {
+      const checkedValues = getCheckedValues()
+      if (
+        types.indexOf(element.get('data').featureType) > -1 &&
+        checkedValues.indexOf(element.get('data').featureType) > -1
+      )
+        ctx.drawGeometry(element.getGeometry())
+    })
+    radius += 0.4
+    // map.render()
+    layer.changed()
+  })
+  layer.changed()
+}
+
+export const twinkle_ = (map: any, types: any) => {
+  let radius = 0
+  const twinkleLayer = getLayer(map, 'twinkleLayer', 99, true)
+  const pointLayer = getLayer(map, 'pointLayer')
+  const features = pointLayer
+    .getSource()
+    .getFeatures()
+    .filter((item: any) => types.indexOf(item.get('data').featureType) > -1)
+  if (radius >= 20) radius = 0
+  let opacity = ((20 - radius) / 2) * 0.1
+  let style = new Style({
+    image: new Circle({
+      radius,
+      stroke: new Stroke({
+        color: `rgba(255,0,0,${opacity})`,
+        width: 3,
+      }),
+    }),
+  })
+
+  features.forEach((element: any) => {
+    if (element.get('data').featureType === type) ctx.drawGeometry(element.getGeometry())
+  })
+  radius += 0.4
+}
+
+export const stopTwinkle = (layer: any) => {
+  if (postrender) layer.un('postrender', postrender)
 }

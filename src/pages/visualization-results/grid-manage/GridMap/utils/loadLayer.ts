@@ -3,32 +3,38 @@ import { Vector } from 'ol/layer'
 import { Vector as VectorSource } from 'ol/source'
 import { LINE, POINTS } from '../../DrawToolbar/GridUtils'
 import { lineStyle, pointStyle } from './style'
-
+var mapDatas: any
+var checkedValues: any
 export const loadAllLayer = (data: any, map: any) => {
-  loadAllPointLayer(data, map)
-  loadAllLineayer(data, map)
+  mapDatas = data
+  loadAllPointLayer(map, POINTS)
+  loadAllLineayer(map)
   locationLayer(map)
 }
 
 // 加载所有点图层
-export const loadAllPointLayer = (data: any, map: any) => {
+export const loadAllPointLayer = (map: any, points: any) => {
+  checkedValues = points
   let pointLayer = getLayer(map, 'pointLayer', 3, true)
-
-  POINTS.forEach((item: any) => {
+  points.forEach((item: any) => {
     const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
-    data[item_] && loadLayer(data[item_], item, pointLayer, map)
+    mapDatas[item_] && loadLayer(mapDatas[item_], item, pointLayer, map)
   })
 }
 
+export const getCheckedValues = () => {
+  return checkedValues
+}
+
 // 加载所有线图层
-export const loadAllLineayer = (data: any, map: any) => {
+export const loadAllLineayer = (map: any) => {
   let lineLayer = getLayer(map, 'lineLayer', 2, true)
 
   // LINES.forEach((item: any) => {
   //   const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
   //   data[item_] && loadLayer(data[item_], item, lineLayer)
   // })
-  data.lineRelationList && loadLayer(data.lineRelationList, LINE, lineLayer, map)
+  mapDatas.lineRelationList && loadLayer(mapDatas.lineRelationList, LINE, lineLayer, map)
 }
 
 /**
