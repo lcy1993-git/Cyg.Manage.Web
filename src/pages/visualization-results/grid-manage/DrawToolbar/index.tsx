@@ -2,6 +2,7 @@ import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manag
 import { useRequest } from 'ahooks'
 import {
   Button,
+  Cascader,
   Divider,
   Drawer,
   Form,
@@ -12,7 +13,6 @@ import {
   Row,
   Select,
   Tabs,
-  Cascader,
 } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
@@ -25,17 +25,17 @@ import {
 } from '../GridMap/utils/initializeMap'
 import { companyId } from '../GridMap/utils/utils'
 import {
+  transformArrtToAreaData,
   verificationLat,
   verificationLng,
   verificationNaturalNumber,
-  transformArrtToAreaData,
 } from '../tools'
 import {
   BELONGINGCAPACITY,
+  BELONGINGCAREA,
   BELONGINGLINE,
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
-  BELONGINGCAREA,
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
   CABLECIRCUITMODEL,

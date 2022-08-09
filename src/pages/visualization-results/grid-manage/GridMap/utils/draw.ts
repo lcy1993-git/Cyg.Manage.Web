@@ -198,7 +198,7 @@ class DrawTool {
 
       // 移除原有要素层
       source.removeFeature(feature)
-      if (parseInt(feature.get('data').LoopNumber) === 1) {
+      if (parseInt(feature.get('data').loopNumber) === 1) {
         // 将拆分生成的新要素层添加至图层
 
         features.forEach((f: any) => {
@@ -209,7 +209,7 @@ class DrawTool {
           source.addFeature(f)
         })
       } else {
-        const multiloops = calculationLine(features, feature.get('data').LoopNumber)
+        const multiloops = calculationLine(features, feature.get('data').loopNumber)
         multiloops.forEach((loopData: any) => {
           const loopGeom: any = new WKT()
             .readGeometry(loopData.geom)
@@ -243,8 +243,8 @@ class DrawTool {
         data = { ...lineData, ...lineData.data[0] }
       } else {
         let lineIds: any = []
-        lineData.data.forEach((element: any, index: number) => {
-          if (lineIds.indexOf(element.lineId) > -1) lineIds.push(element.lineId)
+        lineData.data.forEach((element: any) => {
+          if (lineIds.indexOf(element.lineId) === -1) lineIds.push(element.lineId)
         })
         data = {
           color: lineData.data[0].color,
