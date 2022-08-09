@@ -4,7 +4,7 @@ import {
   GetStationItems,
   getSubStations,
 } from '@/services/grid-manage/treeMenu'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import StandingBook from '../../components/standing-book'
@@ -145,11 +145,13 @@ const LeftMenu = (props: any) => {
   }
 
   const { data: subStationsData, run: GetSubStations } = useRequest(
-    () =>
-      getSubStations({
+    () => {
+      setMapLoading(true)
+      return getSubStations({
         stationIds: subStations,
         powerIds: powerSupplyIds,
-      }),
+      })
+    },
     {
       manual: true,
       onSuccess: () => {
@@ -170,7 +172,6 @@ const LeftMenu = (props: any) => {
           return ''
         })
         .filter((item: string) => item)
-      setMapLoading(true)
       return getlinesComponment({
         lineIds,
         kvLevels: [],
@@ -206,7 +207,7 @@ const LeftMenu = (props: any) => {
     }
   )
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     GetSubStations()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [powerSupplyIds, subStations, linesId])

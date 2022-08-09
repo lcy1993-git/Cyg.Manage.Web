@@ -184,11 +184,6 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       return
     }
     const linesAndPoints = getShowLines(mapRef.map).concat(getShowPoints(mapRef.map))
-    if (linesAndPoints && linesAndPoints.length === 0) {
-      // 地图未渲染 todo
-      message.info('请等待地图绘制完成后搜索')
-      return
-    }
     setSearchState(!searchState)
     repeatPointState && setRepeatPointState(false)
     !searchState && setTableData([])
