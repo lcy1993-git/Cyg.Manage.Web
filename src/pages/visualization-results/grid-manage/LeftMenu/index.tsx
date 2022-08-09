@@ -43,7 +43,14 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [standingBookVisible, setStandingBookVisible] = useState(false)
-  const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh } = useMyContext()
+  const {
+    setIsRefresh,
+    mapRef,
+    lineAssemble,
+    setcheckLineIds,
+    isRefresh,
+    setMapLoading,
+  } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
   const [areasId, setAreasId] = useState<string[]>([])
@@ -163,6 +170,7 @@ const LeftMenu = (props: any) => {
           return ''
         })
         .filter((item: string) => item)
+      setMapLoading(true)
       return getlinesComponment({
         lineIds,
         kvLevels: [],
@@ -193,6 +201,7 @@ const LeftMenu = (props: any) => {
           },
           mapRef.map
         )
+        setMapLoading(false)
       },
     }
   )

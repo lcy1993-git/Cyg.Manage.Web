@@ -1,7 +1,7 @@
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
 import ChangMapUrl from './ChangeMapUrl'
-import { MyContextType, MyWorkProvider } from './Context'
+import { MyContextType, MyWorkProvider, useMyContext } from './Context'
 import DrawToolbar from './DrawToolbar'
 import ExcelImportData from './ExcelImportData'
 import Footer from './Footer'
@@ -14,6 +14,9 @@ import { LEFTMENUWIDTH } from './tools'
 
 import { getCityAreas } from '@/services/project-management/all-project'
 import { useRequest } from 'ahooks'
+import { Spin } from 'antd'
+import { MyContext } from './Context'
+import { constant } from 'lodash'
 
 const GradManage: React.FC = () => {
   /** 网架绘制 手动绘制工具栏状态 **/
@@ -70,6 +73,8 @@ const GradManage: React.FC = () => {
         : undefined,
     }
   }
+  // 地图loading
+  const [mapLoading, setMapLoading] = useState<boolean>(false)
 
   return (
     <MyWorkProvider
@@ -98,6 +103,8 @@ const GradManage: React.FC = () => {
         setAreaData,
         areaMap,
         setAreaMap,
+        mapLoading,
+        setMapLoading,
       }}
     >
       <GradManageWrap />
@@ -108,6 +115,7 @@ const GradManage: React.FC = () => {
 const GradManageWrap: React.FC = () => {
   // 左侧菜单 显示、隐藏
   const [leftMenuVisible, setLeftMenuVisible] = useState<boolean>(true)
+  const { mapLoading } = useMyContext()
   return (
     <div className="h-full w-full gridManageWrap">
       {/* 内容区 */}
@@ -143,19 +151,22 @@ const GradManageWrap: React.FC = () => {
             <RightOutlined style={{ fontSize: 10 }} />
           )}
         </div>
+        <div className={styles.mapWrap}>
+          <Spin spinning={mapLoading} size="large">
+            {/* 工具条 */}
+            <Toolbar leftMenuVisible={leftMenuVisible} />
 
-        {/* 工具条 */}
-        <Toolbar leftMenuVisible={leftMenuVisible} />
-
-        <div className="w-full h-full relative">
-          {/* 地图组件 */}
-          <GridMap />
-          {/* 工具栏 */}
-          <DrawToolbar />
-          {/* 地图源切换 */}
-          <ChangMapUrl />
-          {/* excel数据导入模板 */}
-          <ExcelImportData />
+            <div className="w-full h-full relative">
+              {/* 地图组件 */}
+              <GridMap />
+              {/* 工具栏 */}
+              <DrawToolbar />
+              {/* 地图源切换 */}
+              <ChangMapUrl />
+              {/* excel数据导入模板 */}
+              <ExcelImportData />
+            </div>
+          </Spin>
         </div>
       </div>
       {/* 底部 */}

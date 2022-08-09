@@ -1,6 +1,6 @@
 import { getrepeatPointdata } from '@/services/grid-manage/treeMenu'
 import { AimOutlined, SearchOutlined, CloseOutlined, BulbOutlined } from '@ant-design/icons'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Checkbox, Form, message, Space, Spin, Table, Input } from 'antd'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
@@ -108,21 +108,12 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     ],
   }
   /** 根据设备展示数据 **/
-  const searchEquipmentType = (value: any) => {
-    if (!checkLineIds.length) {
-      message.info('请勾选线路')
-      return
-    }
-    const featureTypes = form.getFieldValue('featureType')
-    setSelectedFeatureType(featureTypes)
-    loadAllPointLayer(mapRef.map, [TRANSFORMERSUBSTATION, POWERSUPPLY, ...featureTypes])
+  const checkGroupChange = (checkedValue: any) => {
+    setSelectedFeatureType(checkedValue)
+    loadAllPointLayer(mapRef.map, [TRANSFORMERSUBSTATION, POWERSUPPLY, ...checkedValue])
   }
-  /** 根据设备展示数据弹窗高亮按钮 **/
+  /** 点击根据设备展示数据弹窗高亮按钮 **/
   const highlightHandle = (value: any) => {
-    if (!checkLineIds.length) {
-      message.info('请勾选线路')
-      return
-    }
     let types = [...highlightFeatureType]
     if (highlightFeatureType.includes(value)) {
       types = types.filter((item) => item !== value)
@@ -131,7 +122,6 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     }
     setHighlightFeatureType(types)
     twinkle(mapRef.map, types)
-    // console.log(types)
   }
 
   // 当前选中的主线线路
@@ -195,7 +185,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     }
     const linesAndPoints = getShowLines(mapRef.map).concat(getShowPoints(mapRef.map))
     if (linesAndPoints && linesAndPoints.length === 0) {
-      // 地图未渲染
+      // 地图未渲染 todo
       message.info('请等待地图绘制完成后搜索')
       return
     }
@@ -216,6 +206,15 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       })
     setTableData(filterData)
     setCopySearchData(filterData)
+  }
+  // 点击按设备筛选按钮
+  const filterByequipmentHand = () => {
+    if (!checkLineIds.length) {
+      setToolbalHasShow(false)
+      message.info('请勾选线路')
+      return
+    }
+    setToolbalHasShow(!toolbalHasShow)
   }
   // 搜索
   const searchEvent = () => {
@@ -259,15 +258,16 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragPoint])
-
-  useEffect(() => {
-    if (checkLineIds.length) {
-      form.resetFields()
-      setSelectedFeatureType(initialFeatureType.map((item) => item.value))
-    } else {
-      setHighlightFeatureType([])
-    }
-  }, [checkLineIds, form])
+  useUpdateEffect(() => {
+    setRepeatPointState(false)
+    setSearchState(false)
+    setToolbalHasShow(false)
+    // 重置按设备筛选弹窗内容
+    form.resetFields()
+    setSelectedFeatureType(initialFeatureType.map((item) => item.value))
+    setHighlightFeatureType([])
+    twinkle(mapRef.map, [])
+  }, [checkLineIds, form, mapRef])
 
   return (
     <>
@@ -305,19 +305,13 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
         }}
       >
         <div style={{ width: '130px' }}>
-          <Form
-            style={{ zIndex: 999 }}
-            form={form}
-            onFinish={searchEquipmentType}
-            initialValues={ininFromData}
-          >
+          <Form style={{ zIndex: 999 }} form={form} initialValues={ininFromData}>
             <Form.Item name="featureType">
-              <Checkbox.Group className="EditFeature" options={initialFeatureType} />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" block style={{ width: '140px' }}>
-                确定
-              </Button>
+              <Checkbox.Group
+                onChange={checkGroupChange}
+                className="EditFeature"
+                options={initialFeatureType}
+              />
             </Form.Item>
           </Form>
         </div>
@@ -351,7 +345,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
           right: drawToolbarVisible || pageDrawState ? '398px' : '20px',
           zIndex: 999,
         }}
-        onClick={() => setToolbalHasShow(!toolbalHasShow)}
+        onClick={filterByequipmentHand}
       />
 
       <div

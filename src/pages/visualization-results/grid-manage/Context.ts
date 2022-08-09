@@ -42,6 +42,8 @@ export interface MyContextType {
   setAreaData: Dispatch<SetStateAction<Area[]>>
   areaMap: { [key: string]: string }
   setAreaMap: Dispatch<SetStateAction<{ [key: string]: string }>>
+  mapLoading: boolean
+  setMapLoading: Dispatch<SetStateAction<boolean>>
 }
 
 // 全局状态管理

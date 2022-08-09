@@ -460,6 +460,8 @@ const DrawToolbar = () => {
         companyId: companyId,
         name: '',
         color: color ? color : COLORDEFAULT,
+        // todo
+        setClickState,
       })
     } catch (err) {}
   }
@@ -673,6 +675,7 @@ const DrawToolbar = () => {
               {...lineformLayout}
               style={{ marginTop: '10px' }}
               form={lineForm}
+              onValuesChange={formChange}
               initialValues={{ lineNumber: '1' }}
             >
               <Form.Item name="lineNumber" label="线路回数">
