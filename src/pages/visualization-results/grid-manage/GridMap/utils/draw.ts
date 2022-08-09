@@ -243,8 +243,8 @@ class DrawTool {
         data = { ...lineData, ...lineData.data[0] }
       } else {
         let lineIds: any = []
-        lineData.data.forEach((element: any, index: number) => {
-          if (lineIds.indexOf(element.lineId) > -1) lineIds.push(element.lineId)
+        lineData.data.forEach((element: any) => {
+          if (lineIds.indexOf(element.lineId) === -1) lineIds.push(element.lineId)
         })
         data = {
           color: lineData.data[0].color,
