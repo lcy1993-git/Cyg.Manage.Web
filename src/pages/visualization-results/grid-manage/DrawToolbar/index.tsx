@@ -457,11 +457,12 @@ const DrawToolbar = () => {
     //   return
     // }
     if (clickState) {
-      await uploadLocalData()
       clear()
+      setClickState(false)
+      // 没有渲染元素时不保存
+      if (getDrawLines().concat(getDrawPoints()).length === 0) return
       setIsRefresh(!isRefresh)
       message.info('数据已上传，请重新插入图符')
-      setClickState(false)
     }
   }
 
