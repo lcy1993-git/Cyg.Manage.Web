@@ -362,6 +362,10 @@ const DrawToolbar = () => {
         lineElementRelationList,
         // transformerIntervalList,
       })
+      // 退出手动绘制
+      clear()
+      setIsRefresh(!isRefresh)
+      message.info('数据已上传，请重新插入图符')
     }
   }
 
@@ -370,8 +374,6 @@ const DrawToolbar = () => {
     setcurrentFeature(value)
     // 上传本地绘制数据
     uploadLocalData()
-    // 退出手动绘制
-    clear()
   }
 
   /** 插入图元 */
@@ -457,12 +459,8 @@ const DrawToolbar = () => {
     //   return
     // }
     if (clickState) {
-      clear()
+      await uploadLocalData()
       setClickState(false)
-      // 没有渲染元素时不保存
-      if (getDrawLines().concat(getDrawPoints()).length === 0) return
-      setIsRefresh(!isRefresh)
-      message.info('数据已上传，请重新插入图符')
     }
   }
 
