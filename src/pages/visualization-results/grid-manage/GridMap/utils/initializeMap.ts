@@ -175,12 +175,12 @@ export const drawPoint = (map: any, options: any, clickEvent: any) => {
 }
 
 // 绘制线路
-export const drawLine = (map: any, options: any) => {
+export const drawLine = (map: any, options: any, clickEvent: any) => {
   lineLayer = getLayer(map, 'lineLayer', 2)
   options.type_ = 'LineString'
   if (!drawTool) drawTool = new DrawTool(map, options)
   drawTool.setSource(lineLayer.getSource())
-  drawTool.drawGeometry(options)
+  drawTool.drawGeometry(options, clickEvent)
 }
 
 // 拉框删除

@@ -28,7 +28,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const { currentEditTab, form, transId, dataOnchange, intervalData } = props
   const { areaData } = useMyContext()
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
-  const [selectLineType, setselectLineType] = useState('')
+  const [selectLineType, setselectLineType] = useState<string>(form.getFieldValue('lineType'))
   const [currentKv, setCurrentKv] = useState<number>(Number(form.getFieldValue('kvLevel')))
   // 所属厂站表单项select当前选中值
   const [belonging, setBelonging] = useState<string | undefined>(form.getFieldValue('belonging'))
