@@ -69,6 +69,7 @@ export const initSelect = (
     if (evt.selected.length > 0) {
       translate.setActive(true)
       currrentSelectFeature = evt.selected[0]
+      // console.log(currrentSelectFeature.get('data'));
 
       /* 弹出属性显示框 **/
       isActiveFeature(currrentSelectFeature.get('data'))
@@ -185,6 +186,10 @@ const updateLine = async (
       .getFeatures()
       .find((item: any) => item.get('data').id === endId)
 
+    if (!startPoint || !endPoint) {
+      translate.setActive(false)
+      return
+    }
     const startCoord =
       startId === data.id ? featureCoords : startPoint.getGeometry().getCoordinates()
     const endCoord = endId === data.id ? featureCoords : endPoint.getGeometry().getCoordinates()
@@ -231,8 +236,10 @@ const updateLine = async (
     datas.forEach((data: any) => {
       const multiFeature = multiFeatures.find(
         (item: any) =>
-          item.get('data').startId === multiData.startId &&
-          item.get('data').endId === multiData.endId &&
+          (item.get('data').startId === multiData.startId ||
+            item.get('data').startId === multiData.endId) &&
+          (item.get('data').endId === multiData.endId ||
+            item.get('data').endId === multiData.startId) &&
           item.get('data').loopSerial === data.loopSerial
       )
       // const geom = new WKT().readGeometry(data.wkt).transform('EPSG:4326', 'EPSG:3857')
