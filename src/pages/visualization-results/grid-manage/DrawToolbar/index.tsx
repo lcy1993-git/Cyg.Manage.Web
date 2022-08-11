@@ -146,6 +146,7 @@ const DrawToolbar = () => {
         lineModel: formData[lineModel],
         lineId: formData[lineId],
         color,
+        featureType: formData[lineType],
       }
       arr.push(item)
     }
