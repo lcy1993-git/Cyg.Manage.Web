@@ -3,8 +3,8 @@ import { Button, Form, Input, message, Modal } from 'antd'
 import { Tabs } from 'antd'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import GeneralTable from '@/components/general-table'
-import { EditOutlined } from '@ant-design/icons'
-import ModalConfirm from '@/components/modal-confirm'
+import { FileSearchOutlined } from '@ant-design/icons'
+// import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
 // import SubStationPowerForm from './components/subStation-power-form'
 import { isArray } from 'lodash'
@@ -274,10 +274,175 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
   }
 
   //坐标处理
-  const editEvent = async () => {
+  // const editEvent = async () => {
+  //   if (currentTab === 'line') {
+  //     if (lineRows && isArray(lineRows) && lineRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = lineRows[0]
+
+  //     lineForm.setFieldsValue({
+  //       ...editData,
+  //       lineId: editData.lineId,
+  //       isOverhead: editData.isOverhead ? 'Line' : 'CableCircuit',
+  //     })
+  //     setLineType(editData.isOverhead ? 'Line' : 'CableCircuit')
+  //     setFormVisible(true)
+  //     return
+  //   }
+
+  //   if (currentTab === 'cableWell') {
+  //     if (cableWellRows && isArray(cableWellRows) && cableWellRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = cableWellRows[0]
+  //     const geom = handleGeom(editData.geom)
+  //     cableWellForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+
+  //   if (currentTab === 'tower') {
+  //     if (towerRows && isArray(towerRows) && towerRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = towerRows[0]
+  //     const geom = handleGeom(editData.geom)
+
+  //     towerForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+
+  //   if (currentTab === 'boxTrans') {
+  //     if (boxTransRows && isArray(boxTransRows) && boxTransRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = boxTransRows[0]
+  //     const geom = handleGeom(editData.geom)
+
+  //     boxTransForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+
+  //   if (currentTab === 'cabinet') {
+  //     if (cabinetRows && isArray(cabinetRows) && cabinetRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = cabinetRows[0]
+  //     const geom = handleGeom(editData.geom)
+  //     cabinetForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+  //   if (currentTab === 'elecRoom') {
+  //     if (elecRoomRows && isArray(elecRoomRows) && elecRoomRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = elecRoomRows[0]
+  //     const geom = handleGeom(editData.geom)
+
+  //     elecRoomForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+  //   if (currentTab === 'switchStation') {
+  //     if (switchRows && isArray(switchRows) && switchRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = switchRows[0]
+  //     const geom = handleGeom(editData.geom)
+
+  //     switchForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+  //   if (currentTab === 'breaker') {
+  //     if (breakerRows && isArray(breakerRows) && breakerRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = breakerRows[0]
+  //     const geom = handleGeom(editData.geom)
+
+  //     breakerForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+  //   if (currentTab === 'columnTrans') {
+  //     if (columnTransRows && isArray(columnTransRows) && columnTransRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = columnTransRows[0]
+  //     const geom = handleGeom(editData.geom)
+
+  //     columnTransForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //     return
+  //   }
+
+  //   if (currentTab === 'cableBox') {
+  //     if (cableBoxRows && isArray(cableBoxRows) && cableBoxRows.length === 0) {
+  //       message.warning('请选择一条数据进行编辑')
+  //       return
+  //     }
+  //     const editData = cableBoxRows[0]
+  //     const geom = handleGeom(editData.geom)
+
+  //     cableBoxForm.setFieldsValue({
+  //       ...editData,
+  //       lng: geom[0],
+  //       lat: geom[1],
+  //     })
+  //     setFormVisible(true)
+  //   }
+  // }
+  //坐标处理
+  const viewEvent = async () => {
     if (currentTab === 'line') {
       if (lineRows && isArray(lineRows) && lineRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = lineRows[0]
@@ -294,7 +459,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
     if (currentTab === 'cableWell') {
       if (cableWellRows && isArray(cableWellRows) && cableWellRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = cableWellRows[0]
@@ -310,7 +475,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
     if (currentTab === 'tower') {
       if (towerRows && isArray(towerRows) && towerRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = towerRows[0]
@@ -327,7 +492,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
     if (currentTab === 'boxTrans') {
       if (boxTransRows && isArray(boxTransRows) && boxTransRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = boxTransRows[0]
@@ -344,7 +509,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
     if (currentTab === 'cabinet') {
       if (cabinetRows && isArray(cabinetRows) && cabinetRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = cabinetRows[0]
@@ -359,7 +524,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
     }
     if (currentTab === 'elecRoom') {
       if (elecRoomRows && isArray(elecRoomRows) && elecRoomRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = elecRoomRows[0]
@@ -375,7 +540,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
     }
     if (currentTab === 'switchStation') {
       if (switchRows && isArray(switchRows) && switchRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = switchRows[0]
@@ -391,7 +556,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
     }
     if (currentTab === 'breaker') {
       if (breakerRows && isArray(breakerRows) && breakerRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = breakerRows[0]
@@ -407,7 +572,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
     }
     if (currentTab === 'columnTrans') {
       if (columnTransRows && isArray(columnTransRows) && columnTransRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = columnTransRows[0]
@@ -424,7 +589,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
     if (currentTab === 'cableBox') {
       if (cableBoxRows && isArray(cableBoxRows) && cableBoxRows.length === 0) {
-        message.warning('请选择一条数据进行编辑')
+        message.warning('请选择一条数据进行查看')
         return
       }
       const editData = cableBoxRows[0]
@@ -687,21 +852,27 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
   const tableButton = () => {
     return (
+      // <div>
+      //   {/* {buttonJurisdictionArray?.includes('edit-structure-company') && ( */}
+      //   <Button className="mr7" onClick={() => editEvent()} disabled={canEdit()}>
+      //     <EditOutlined />
+      //     编辑
+      //   </Button>
+      //   {/* )} */}
+      //   {/* {buttonJurisdictionArray?.includes('delete-structure-company') && ( */}
+      //   <ModalConfirm
+      //     changeEvent={() => deleteEvent(currentTab)}
+      //     disabled={canEdit()}
+      //     selectData={getCurrentRow(currentTab)}
+      //     // contentSlot={deleteContent}
+      //   />
+      //   {/* )} */}
+      // </div>
       <div>
-        {/* {buttonJurisdictionArray?.includes('edit-structure-company') && ( */}
-        <Button className="mr7" onClick={() => editEvent()} disabled={canEdit()}>
-          <EditOutlined />
-          编辑
+        <Button className="mr7" onClick={() => viewEvent()} disabled={canEdit()}>
+          <FileSearchOutlined />
+          查看
         </Button>
-        {/* )} */}
-        {/* {buttonJurisdictionArray?.includes('delete-structure-company') && ( */}
-        <ModalConfirm
-          changeEvent={() => deleteEvent(currentTab)}
-          disabled={canEdit()}
-          selectData={getCurrentRow(currentTab)}
-          // contentSlot={deleteContent}
-        />
-        {/* )} */}
       </div>
     )
   }
@@ -1110,14 +1281,17 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
       <Modal
         maskClosable={false}
         bodyStyle={{ padding: '24px 24px 0' }}
-        title={`编辑${tabTitle[currentTab]}信息`}
+        // title={`编辑${tabTitle[currentTab]}信息`}
+        title={`查看${tabTitle[currentTab]}信息`}
         width="650px"
         visible={formVisible}
         destroyOnClose
-        okText="保存"
-        cancelText="取消"
+        // okText="保存"
+        // cancelText="取消"
+        // onCancel={() => setFormVisible(false)}
+        // onOk={() => sureEditEvent()}
         onCancel={() => setFormVisible(false)}
-        onOk={() => sureEditEvent()}
+        onOk={() => setFormVisible(false)}
       >
         <Form form={getCurrentForm(currentTab)}>
           <EquipForm currentEditTab={currentTab} selectLineType={lineType} />
