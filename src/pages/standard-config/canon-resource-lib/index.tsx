@@ -24,7 +24,6 @@ import ResourceLibForm from './components/add-edit-form'
 import UploadDrawing from './components/upload-drawing'
 import { getUploadUrl } from '@/services/resource-config/drawing'
 import SaveImportLib from './components/upload-lib'
-import SaveImportLineStressSag from './components/upload-lineStressSag'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import EnumSelect from '@/components/enum-select'
 import { BelongManageEnum } from '@/services/personnel-config/manage-user'
@@ -46,7 +45,6 @@ const ResourceLib: React.FC = () => {
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
   const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false)
-  const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const [status, setStatus] = useState<string>('0')
   const [libVisible, setLibVisible] = useState(false)
@@ -62,7 +60,7 @@ const ResourceLib: React.FC = () => {
     manual: true,
   })
 
-  const { setResourceManageFlag, resourceManageFlag } = useLayoutStore()
+  const { resourceManageFlag } = useLayoutStore()
 
   const searchComponent = () => {
     return (
@@ -436,22 +434,6 @@ const ResourceLib: React.FC = () => {
     setUploadDrawingVisible(true)
   }
 
-  const importLineStreeSagEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行')
-      return
-    }
-    const editDataId = tableSelectRows[0].id
-
-    //如果打开了当前资源库模块管理，则无法操作此项
-    if (editDataId === currentManageId) {
-      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
-      return
-    }
-    setLibId(tableSelectRows[0].id)
-    setUploadLineStressSagVisible(true)
-  }
-
   const importMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('lib-import-drawing') && (
@@ -459,9 +441,6 @@ const ResourceLib: React.FC = () => {
       )}
       {buttonJurisdictionArray?.includes('lib-import-lib') && (
         <Menu.Item onClick={() => importLibEvent()}>导入资源库</Menu.Item>
-      )}
-      {buttonJurisdictionArray?.includes('lib-import-linestresssag') && (
-        <Menu.Item onClick={() => importLineStreeSagEvent()}>导入应力弧垂表</Menu.Item>
       )}
     </Menu>
   )
@@ -594,14 +573,6 @@ const ResourceLib: React.FC = () => {
         visible={uploadAllVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setUploadAllVisible}
-      />
-
-      <SaveImportLineStressSag
-        libId={libId}
-        requestSource="resource"
-        visible={uploadLineStressSagVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setUploadLineStressSagVisible}
       />
       {libVisible && (
         <ResourceLibraryManageModal

@@ -2,12 +2,14 @@ import { createContext, SetStateAction, useContext } from 'react'
 
 interface LayoutContextValue {
   resourceManageFlag?: boolean
+  companyResourceManageFlag?: boolean
   workHandoverFlag?: boolean
   clearAgainLogin?: () => void
   mapSelectCity?: string
 
   allProjectSearchParams?: any
   setResourceManageFlag?: (value: boolean) => void
+  setCompanyResourceManageFlag?: (value: boolean) => void
   setMapSelectCity?: (value: string) => void
   setWorkHandoverFlag?: (value: boolean) => void
 

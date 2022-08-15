@@ -1,85 +1,85 @@
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
-import { newUploadLineStressSag } from '@/services/resource-config/drawing';
-import { useBoolean, useControllableValue } from 'ahooks';
-import { Button, Form, message, Modal } from 'antd';
-import React, { useState } from 'react';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
+import { newUploadLineStressSag } from '@/services/resource-config/drawing'
+import { useBoolean, useControllableValue } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
+import React, { useState } from 'react'
+import { Dispatch } from 'react'
+import { SetStateAction } from 'react'
 
 interface UploadAllProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  libId?: string;
-  securityKey?: string;
-  requestSource: 'project' | 'resource' | 'upload';
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  libId?: string
+  securityKey?: string
+  requestSource: 'project' | 'resource' | 'upload'
 }
 
 const UploadAll: React.FC<UploadAllProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { libId = '', requestSource, changeFinishEvent } = props;
-  const [requestLoading, setRequestLoading] = useState(false);
-  const [falseData, setFalseData] = useState<string>('');
-  const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false);
-  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { libId = '', requestSource, changeFinishEvent } = props
+  const [requestLoading, setRequestLoading] = useState(false)
+  const [falseData, setFalseData] = useState<string>('')
+  const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false)
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
+  const [form] = Form.useForm()
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
+  ] = useBoolean(false)
   const saveImportAllEvent = () => {
     return form
       .validateFields()
       .then((values) => {
-        const { file } = values;
+        const { file } = values
 
-        setRequestLoading(true);
+        setRequestLoading(true)
         return newUploadLineStressSag(
           file,
           { libId },
           requestSource,
-          '/ResourceLib/OneClickSaveImport',
-        );
+          '/ResourceLib/OneClickSaveImport'
+        )
       })
 
       .then(
         (res) => {
           if (res && res.code === 6000) {
-            setFalseData(res.message);
+            setFalseData(res.message)
 
-            setState(false);
-            setImportTipsVisible(true);
-            return Promise.resolve();
+            setState(false)
+            setImportTipsVisible(true)
+            return Promise.resolve()
           } else if (res.code === 200) {
-            setIsImportFlag(true);
-            message.success('导入成功');
-            return Promise.resolve();
+            setIsImportFlag(true)
+            message.success('导入成功')
+            return Promise.resolve()
           }
-          message.error(res.message);
-          return Promise.reject();
+          message.error(res.message)
+          return Promise.reject()
         },
         (res) => {
-          message.error(res.message);
-          return Promise.reject();
-        },
+          message.error(res.message)
+          return Promise.reject()
+        }
       )
       .finally(() => {
-        changeFinishEvent?.();
-        setUploadFileFalse();
-        setRequestLoading(false);
-      });
-  };
+        changeFinishEvent?.()
+        setUploadFileFalse()
+        setRequestLoading(false)
+      })
+  }
 
   const onSave = () => {
     form.validateFields().then((value) => {
       if (isImportFlag) {
-        setState(false);
-        return;
+        setState(false)
+        return
       }
-      message.info('您还未上传文件，点击“开始上传”上传文件');
-    });
-  };
+      message.info('您还未上传文件，点击“开始上传”上传文件')
+    })
+  }
 
   return (
     <>
@@ -128,7 +128,7 @@ const UploadAll: React.FC<UploadAllProps> = (props) => {
         </div>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default UploadAll;
+export default UploadAll

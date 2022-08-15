@@ -1,9 +1,9 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import rule from '../../resource-rule';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import rule from '../../resource-rule'
 
-const { TextArea } = Input;
+const { TextArea } = Input
 
 const ResourceLibForm: React.FC = () => {
   return (
@@ -19,7 +19,7 @@ const ResourceLibForm: React.FC = () => {
         <TextArea showCount maxLength={100} placeholder="备注说明" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default ResourceLibForm;
+export default ResourceLibForm

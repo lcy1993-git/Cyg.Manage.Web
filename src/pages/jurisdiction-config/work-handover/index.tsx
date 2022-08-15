@@ -1,62 +1,61 @@
-import React, { useState } from 'react';
-import qs from 'qs';
-import { Button, Tabs, Modal, message } from 'antd';
-import styles from './index.less';
-import PageCommonWrap from '@/components/page-common-wrap';
-import CommonTitle from '@/components/common-title';
+import React, { useState } from 'react'
+import qs from 'qs'
+import { Button, Tabs, Modal, message } from 'antd'
+import styles from './index.less'
+import PageCommonWrap from '@/components/page-common-wrap'
+import CommonTitle from '@/components/common-title'
 import {
   handoverCompanyGroup,
   handoverEngineer,
   handoverTask,
-} from '@/services/personnel-config/work-handover';
-import { useMount, useUnmount } from 'ahooks';
-import { useLayoutStore } from '@/layouts/context';
-import Description from './components/description';
-import GroupIdentity from './components/identity';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
-import ProjectManage from './components/manage';
-import MissionTab from './components/mission';
+} from '@/services/personnel-config/work-handover'
+import { useMount, useUnmount } from 'ahooks'
+import { useLayoutStore } from '@/layouts/context'
+import Description from './components/description'
+import GroupIdentity from './components/identity'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import ProjectManage from './components/manage'
+import MissionTab from './components/mission'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 const WorkHandover: React.FC = () => {
-  const userId = qs.parse(window.location.href.split('?')[1]).id as string;
-  const name = qs.parse(window.location.href.split('?')[1]).name as string;
-  const userName = qs.parse(window.location.href.split('?')[1]).userName as string;
-  const [clickTabKey, setClickTabKey] = useState<string>('manage');
+  const userId = qs.parse(window.location.href.split('?')[1]).id as string
+  const name = qs.parse(window.location.href.split('?')[1]).name as string
+  const userName = qs.parse(window.location.href.split('?')[1]).userName as string
+  const [clickTabKey, setClickTabKey] = useState<string>('manage')
   //部组交接
-  const [receiverId, setReceiverId] = useState<string | undefined>(undefined);
-  const [receiverName, setReceiverName] = useState<string>('');
-  const [groupIds, setGroupIds] = useState<string[]>([]);
-  const [isFresh, setIsFresh] = useState<boolean>(false);
-  const [engineerIds, setEngineerIds] = useState<string[]>([]);
+  const [receiverId, setReceiverId] = useState<string | undefined>(undefined)
+  const [receiverName, setReceiverName] = useState<string>('')
+  const [groupIds, setGroupIds] = useState<string[]>([])
+  const [isFresh, setIsFresh] = useState<boolean>(false)
+  const [engineerIds, setEngineerIds] = useState<string[]>([])
   //交接完成显示flag
-  const [doneFlag, setDoneFlag] = useState<boolean>(false);
+  const [doneFlag, setDoneFlag] = useState<boolean>(false)
 
-  const [projectIds, setProjectIds] = useState<string[]>([]);
-  const [currentMissionTabKey, setCurrentMissionTabKey] = useState<string>('prospect');
-  const { removeTab } = useLayoutStore();
+  const [projectIds, setProjectIds] = useState<string[]>([])
+  const [currentMissionTabKey, setCurrentMissionTabKey] = useState<string>('prospect')
+  const { removeTab } = useLayoutStore()
 
-  const [engineerData, setEngineerData] = useState<any[]>([]);
+  const [engineerData, setEngineerData] = useState<any[]>([])
 
-  const { setWorkHandoverFlag } = useLayoutStore();
+  const { setWorkHandoverFlag } = useLayoutStore()
 
   useMount(() => {
-    setWorkHandoverFlag?.(true);
-  });
+    setWorkHandoverFlag?.(true)
+  })
 
   useUnmount(() => {
-    setWorkHandoverFlag?.(false);
-    //   window.localStorage.setItem('manageId', '');
-  });
+    setWorkHandoverFlag?.(false)
+  })
 
   //获取项目数量
   const projectLen =
     engineerData
       ?.map((item) => {
-        return item.projects;
+        return item.projects
       })
-      .flat().length ?? 0;
+      .flat().length ?? 0
 
   //部组交接
   const identityConfirm = () => {
@@ -67,29 +66,29 @@ const WorkHandover: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk: handIdentityEvent,
-    });
-  };
+    })
+  }
 
   const handIdentityEvent = async () => {
     if (!receiverId) {
-      message.warning('您还未选择接收人员');
-      return;
+      message.warning('您还未选择接收人员')
+      return
     }
     if (groupIds.length === 0) {
-      message.warning('请选择需要交接的条目');
-      return;
+      message.warning('请选择需要交接的条目')
+      return
     }
 
     await handoverCompanyGroup({
       companyGroupIds: groupIds,
       userId: userId,
       receiveUserId: receiverId,
-    });
-    setIsFresh(true);
-    setDoneFlag(true);
-    setReceiverId(undefined);
-    message.success('操作成功');
-  };
+    })
+    setIsFresh(true)
+    setDoneFlag(true)
+    setReceiverId(undefined)
+    message.success('操作成功')
+  }
 
   //项目管理交接
   const manageConfirm = () => {
@@ -100,29 +99,29 @@ const WorkHandover: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk: handManageEvent,
-    });
-  };
+    })
+  }
 
   const handManageEvent = async () => {
     if (!receiverId) {
-      message.warning('您还未选择接收人员');
-      return;
+      message.warning('您还未选择接收人员')
+      return
     }
     if (engineerIds.length === 0) {
-      message.warning('请选择需要交接的条目');
-      return;
+      message.warning('请选择需要交接的条目')
+      return
     }
 
     await handoverEngineer({
       engineerIds: engineerIds,
       userId: userId,
       receiveUserId: receiverId,
-    });
-    setIsFresh(true);
-    setDoneFlag(true);
-    setReceiverId(undefined);
-    message.success('交接成功');
-  };
+    })
+    setIsFresh(true)
+    setDoneFlag(true)
+    setReceiverId(undefined)
+    message.success('交接成功')
+  }
 
   //勘察任务交接
   const prospectConfirm = () => {
@@ -133,17 +132,17 @@ const WorkHandover: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk: handProspectEvent,
-    });
-  };
+    })
+  }
 
   const handProspectEvent = async () => {
     if (!receiverId) {
-      message.warning('您还未选择接收人员');
-      return;
+      message.warning('您还未选择接收人员')
+      return
     }
     if (projectIds.length === 0) {
-      message.warning('请选择需要交接的条目');
-      return;
+      message.warning('请选择需要交接的条目')
+      return
     }
 
     await handoverTask({
@@ -151,12 +150,12 @@ const WorkHandover: React.FC = () => {
       userId: userId,
       receiveUserId: receiverId,
       taskCategory: 1,
-    });
-    setIsFresh(true);
-    setDoneFlag(true);
-    setReceiverId(undefined);
-    message.success('交接成功');
-  };
+    })
+    setIsFresh(true)
+    setDoneFlag(true)
+    setReceiverId(undefined)
+    message.success('交接成功')
+  }
   //设计任务交接
   const designConfirm = () => {
     Modal.confirm({
@@ -166,17 +165,17 @@ const WorkHandover: React.FC = () => {
       okText: '确认',
       cancelText: '取消',
       onOk: handDesginEvent,
-    });
-  };
+    })
+  }
 
   const handDesginEvent = async () => {
     if (!receiverId) {
-      message.warning('您还未选择接收人员');
-      return;
+      message.warning('您还未选择接收人员')
+      return
     }
     if (projectIds.length === 0) {
-      message.warning('请选择需要交接的条目');
-      return;
+      message.warning('请选择需要交接的条目')
+      return
     }
 
     await handoverTask({
@@ -184,18 +183,18 @@ const WorkHandover: React.FC = () => {
       userId: userId,
       receiveUserId: receiverId,
       taskCategory: 2,
-    });
-    setIsFresh(true);
-    setDoneFlag(true);
-    setReceiverId(undefined);
-    message.success('交接成功');
-  };
+    })
+    setIsFresh(true)
+    setDoneFlag(true)
+    setReceiverId(undefined)
+    message.success('交接成功')
+  }
 
   const finishEvent = () => {
     removeTab?.(
-      `/jurisdiction-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`,
-    );
-  };
+      `/jurisdiction-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`
+    )
+  }
 
   return (
     <PageCommonWrap noPadding={true}>
@@ -209,10 +208,10 @@ const WorkHandover: React.FC = () => {
             <Tabs
               type="card"
               onChange={(key) => {
-                setClickTabKey(key);
-                setDoneFlag(false);
-                setReceiverId(undefined);
-                setReceiverName('');
+                setClickTabKey(key)
+                setDoneFlag(false)
+                setReceiverId(undefined)
+                setReceiverName('')
               }}
             >
               <TabPane tab="项目管理" key={'manage'}>
@@ -278,14 +277,14 @@ const WorkHandover: React.FC = () => {
               type="primary"
               onClick={() => {
                 if (engineerIds && engineerIds.length === 0) {
-                  message.info('请选择需要交接的条目');
-                  return;
+                  message.info('请选择需要交接的条目')
+                  return
                 }
                 if (!receiverId) {
-                  message.info('请选择接收人员');
-                  return;
+                  message.info('请选择接收人员')
+                  return
                 }
-                manageConfirm();
+                manageConfirm()
               }}
             >
               <span>交接</span>
@@ -296,14 +295,14 @@ const WorkHandover: React.FC = () => {
                 type="primary"
                 onClick={() => {
                   if (projectIds && projectIds.length === 0) {
-                    message.info('请选择需要交接的条目');
-                    return;
+                    message.info('请选择需要交接的条目')
+                    return
                   }
                   if (!receiverId) {
-                    message.info('请选择接收人员');
-                    return;
+                    message.info('请选择接收人员')
+                    return
                   }
-                  prospectConfirm();
+                  prospectConfirm()
                 }}
               >
                 <span>交接</span>
@@ -313,14 +312,14 @@ const WorkHandover: React.FC = () => {
                 type="primary"
                 onClick={() => {
                   if (projectIds && projectIds.length === 0) {
-                    message.info('请选择需要交接的条目');
-                    return;
+                    message.info('请选择需要交接的条目')
+                    return
                   }
                   if (!receiverId) {
-                    message.info('请选择接收人员');
-                    return;
+                    message.info('请选择接收人员')
+                    return
                   }
-                  designConfirm();
+                  designConfirm()
                 }}
               >
                 <span>交接</span>
@@ -331,14 +330,14 @@ const WorkHandover: React.FC = () => {
               type="primary"
               onClick={() => {
                 if (groupIds && groupIds.length === 0) {
-                  message.info('请选择需要交接的条目');
-                  return;
+                  message.info('请选择需要交接的条目')
+                  return
                 }
                 if (!receiverId) {
-                  message.info('请选择接收人员');
-                  return;
+                  message.info('请选择接收人员')
+                  return
                 }
-                identityConfirm();
+                identityConfirm()
               }}
             >
               <span>交接</span>
@@ -351,7 +350,7 @@ const WorkHandover: React.FC = () => {
         </div>
       </div>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default WorkHandover;
+export default WorkHandover

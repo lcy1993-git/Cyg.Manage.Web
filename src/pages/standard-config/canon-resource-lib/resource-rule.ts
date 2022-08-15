@@ -11,4 +11,4 @@ export default {
     },
   ],
   version: [{ max: 12, message: '版本超出字符数限制，限制为12个字符' }],
-};
+}
