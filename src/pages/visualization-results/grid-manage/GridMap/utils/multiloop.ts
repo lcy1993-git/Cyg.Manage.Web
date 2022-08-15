@@ -1,7 +1,7 @@
 import { transform } from 'ol/proj'
 
 // 计算主线路计算平行线
-export const calculationLine = (features: any, LoopNumber: any) => {
+export const calculationLine = (features: any, loopNumber: any) => {
   let multiloops = []
   for (let i = 0; i < features.length; i++) {
     const feature = features[i]
@@ -11,14 +11,14 @@ export const calculationLine = (features: any, LoopNumber: any) => {
     startLont = lonts[0]
     endLont = lonts[1]
 
-    let shapeCount = LoopNumber
+    let shapeCount = loopNumber
     let startReferenceCoord = { x: startLont[0], y: startLont[1] }
     let endReferenceCoord = { x: endLont[0], y: endLont[1] }
 
     let cropLength_s, cropLength_e
     if (i === 0) cropLength_s = 0
     else cropLength_s = 0.5
-    if (i === LoopNumber - 1) cropLength_e = 0
+    if (i === loopNumber - 1) cropLength_e = 0
     else cropLength_e = 0.5
 
     for (let index = 0; index < shapeCount; index++) {
@@ -51,11 +51,11 @@ export const calculationLine = (features: any, LoopNumber: any) => {
       loopData.endId = feature.get('data').endId
       loopData.endType = feature.get('data').endType
       loopData.companyId = feature.get('data').companyId
-      loopData.LoopNumber = LoopNumber
+      loopData.loopNumber = loopNumber
       loopData.name = feature.get('data').name
       loopData.type_ = feature.get('data').type_
-      loopData.loop_serial = index + 1
-      loopData.loop_seq = i + 1
+      loopData.loopSerial = index + 1
+      loopData.loopSeq = i + 1
       loopData.geom = wkt
       multiloops.push(loopData)
     }
@@ -67,19 +67,19 @@ export const calculationLine = (features: any, LoopNumber: any) => {
 export const calculationLineByPoints = (
   startCoord: any,
   endCoord: any,
-  LoopNumber: number,
+  loopNumber: number,
   isStart: boolean,
   isEnd: boolean
 ) => {
   const cropLength_s = isStart ? 0 : 0.5
   const cropLength_e = isEnd ? 0 : 0.5
   var datas: any = []
-  for (let index = 0; index < LoopNumber; index++) {
-    let interval = getLineInterval(true, LoopNumber)
+  for (let index = 0; index < loopNumber; index++) {
+    let interval = getLineInterval(true, loopNumber)
     var s: any = computeParallelCoord(
       startCoord,
       endCoord,
-      LoopNumber,
+      loopNumber,
       interval,
       index,
       true,
@@ -88,7 +88,7 @@ export const calculationLineByPoints = (
     var e: any = computeParallelCoord(
       startCoord,
       endCoord,
-      LoopNumber,
+      loopNumber,
       interval,
       index,
       false,
@@ -100,8 +100,8 @@ export const calculationLineByPoints = (
     e = transform([e.x, e.y], 'EPSG:3857', 'EPSG:3857')
 
     let wkt = `LINESTRING (${s[0]} ${s[1]},${e[0]} ${e[1]})`
-    let loop_serial = index + 1
-    datas.push({ wkt, loop_serial })
+    let loopSerial = index + 1
+    datas.push({ wkt, loopSerial })
   }
   return datas
 }

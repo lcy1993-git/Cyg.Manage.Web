@@ -19,7 +19,7 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { getShowLines, getShowPoints, locationByGeom } from '../GridMap/utils/initializeMap'
+import { getShowPoints, locationByGeom } from '../GridMap/utils/initializeMap'
 import { loadAllPointLayer } from '../GridMap/utils/loadLayer'
 import { twinkle } from '../GridMap/utils/style'
 import { LEFTMENUWIDTH } from '../tools'
@@ -183,22 +183,19 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
       message.info('请勾选线路')
       return
     }
-    const linesAndPoints = getShowLines(mapRef.map).concat(getShowPoints(mapRef.map))
+    const linesAndPoints = getShowPoints(mapRef.map)
     setSearchState(!searchState)
     repeatPointState && setRepeatPointState(false)
     !searchState && setTableData([])
     !searchState && setKeyWord('')
-    const filterData = linesAndPoints
-      .map((item: any) => {
-        return item.get('data')
-      })
-      .sort((a: any, b: any) => {
-        // 没有名字的点排在数组尾部
-        if (!a.name) {
-          return 1
-        }
-        return -1
-      })
+    const filterData = linesAndPoints.map((item: any, index: any) => {
+      const data = item.get('data')
+      const name = FEATUERTYPE[data.featureType] + '-' + (item.name ? item.name : `未命名-${index}`)
+      return {
+        ...data,
+        name,
+      }
+    })
     setTableData(filterData)
     setCopySearchData(filterData)
   }

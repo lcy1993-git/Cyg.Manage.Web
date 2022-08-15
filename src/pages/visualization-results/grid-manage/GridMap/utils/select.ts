@@ -69,6 +69,7 @@ export const initSelect = (
     if (evt.selected.length > 0) {
       translate.setActive(true)
       currrentSelectFeature = evt.selected[0]
+      // console.log(currrentSelectFeature.get('data'));
 
       /* 弹出属性显示框 **/
       isActiveFeature(currrentSelectFeature.get('data'))
@@ -148,7 +149,7 @@ const updateLine = async (
 
   // 非回路线路
   const singleFeatures = features.filter(
-    (item: any) => !item.get('data').LoopNumber || item.get('data').LoopNumber === 1
+    (item: any) => !item.get('data').loopNumber || item.get('data').loopNumber === 1
   )
   singleFeatures.forEach((f: any) => {
     const lineCoords = f.getGeometry().getCoordinates()
@@ -169,7 +170,7 @@ const updateLine = async (
 
   // 多回路线路
   const multiFeatures = features.filter(
-    (item: any) => item.get('data').LoopNumber && item.get('data').LoopNumber > 1
+    (item: any) => item.get('data').loopNumber && item.get('data').loopNumber > 1
   )
   var multiDatas: any = []
   multiFeatures.forEach((line: any) => {
@@ -185,10 +186,14 @@ const updateLine = async (
       .getFeatures()
       .find((item: any) => item.get('data').id === endId)
 
+    if (!startPoint || !endPoint) {
+      translate.setActive(false)
+      return
+    }
     const startCoord =
       startId === data.id ? featureCoords : startPoint.getGeometry().getCoordinates()
     const endCoord = endId === data.id ? featureCoords : endPoint.getGeometry().getCoordinates()
-    const LoopNumber = line.get('data').LoopNumber
+    const loopNumber = line.get('data').loopNumber
 
     // 判断是否为起始点
     let isStart = lineLayer
@@ -208,7 +213,7 @@ const updateLine = async (
       endId,
       startCoord,
       endCoord,
-      LoopNumber,
+      loopNumber,
       isStart,
       isEnd,
     }
@@ -223,27 +228,33 @@ const updateLine = async (
   multiDatas.forEach((multiData: any) => {
     const startCoord = { x: multiData.startCoord[0], y: multiData.startCoord[1] }
     const endCoord = { x: multiData.endCoord[0], y: multiData.endCoord[1] }
-    const LoopNumber = multiData.LoopNumber
+    const loopNumber = multiData.loopNumber
     const isStart = multiData.isStart
     const isEnd = multiData.isEnd
-    const datas = calculationLineByPoints(startCoord, endCoord, LoopNumber, isStart, isEnd)
+    const datas = calculationLineByPoints(startCoord, endCoord, loopNumber, isStart, isEnd)
 
     datas.forEach((data: any) => {
       const multiFeature = multiFeatures.find(
-        (feature: any) =>
-          feature.get('data').startId === multiData.startId &&
-          feature.get('data').endId === multiData.endId &&
-          feature.get('data').loop_serial === data.loop_serial
+        (item: any) =>
+          (item.get('data').startId === multiData.startId ||
+            item.get('data').startId === multiData.endId) &&
+          (item.get('data').endId === multiData.endId ||
+            item.get('data').endId === multiData.startId) &&
+          item.get('data').loopSerial === data.loopSerial
       )
       // const geom = new WKT().readGeometry(data.wkt).transform('EPSG:4326', 'EPSG:3857')
       const geom = new WKT().readGeometry(data.wkt)
       multiFeature.setGeometry(geom)
+      multiFeature.get('data').geom = new WKT().writeGeometry(
+        geom.clone().transform('EPSG:3857', 'EPSG:4326')
+      )
     })
   })
 
   if (isEnd) {
     const point = feature.values_.data
-    const lines = singleFeatures.map((item: { values_: { data: any } }) => item.values_.data)
+    const updateFeatures = singleFeatures.length > 0 ? singleFeatures : multiFeatures
+    const lines = updateFeatures.map((item: { values_: { data: any } }) => item.values_.data)
     isDragPointend(true)
     await upLoadPoint(point, lines, isDragPointend)
   }

@@ -38,7 +38,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
           required
           rules={[{ required: true, message: '请输入名称' }]}
         >
-          <Input placeholder="请输入名称" />
+          <Input disabled placeholder="请输入名称" />
         </CyFormItem>
       )}
 
@@ -49,6 +49,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         rules={[{ required: true, message: '电压等级不能为空' }]}
       >
         <UrlSelect
+          disabled
           showSearch
           titlekey="label"
           defaultData={handleKvOptions(currentEditTab)}
@@ -63,7 +64,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         required
         rules={[{ required: true, message: '请选择所属线路' }]}
       >
-        <Select dropdownStyle={{ zIndex: 3000 }}>
+        <Select disabled dropdownStyle={{ zIndex: 3000 }}>
           {belongingLineData.map((item) => (
             <Option value={item.id} key={item.id}>
               {item.name}
@@ -95,7 +96,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
             label="线路型号"
             rules={[{ required: true, message: '请选择线路类型' }]}
           >
-            <Select dropdownStyle={{ zIndex: 3000 }}>
+            <Select disabled dropdownStyle={{ zIndex: 3000 }}>
               {selectLineType === 'Line' && selectLineType
                 ? LINEMODEL.map((item) => (
                     <Option key={item.value} value={item.value}>
@@ -115,7 +116,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
       {currentEditTab === 'cabinet' && (
         <>
           <CyFormItem label="型号" name="model">
-            <Input placeholder="请输入型号" />
+            <Input disabled placeholder="请输入型号" />
           </CyFormItem>
         </>
       )}
@@ -125,7 +126,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         currentEditTab === 'columnTrans') && (
         <>
           <CyFormItem label="容量" name="capacity">
-            <Input placeholder="请输入容量" />
+            <Input disabled placeholder="请输入容量" />
           </CyFormItem>
         </>
       )}
@@ -135,17 +136,17 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         currentEditTab === 'columnTrans' ||
         currentEditTab === 'cabinet') && (
         <CyFormItem label="性质" name="properties">
-          <Input placeholder="请输入性质" />
+          <Input disabled placeholder="请输入性质" />
         </CyFormItem>
       )}
 
       {currentEditTab !== 'line' && (
         <>
           <CyFormItem label="经度" name="lng">
-            <Input placeholder="请输入经度" />
+            <Input disabled placeholder="请输入经度" />
           </CyFormItem>
           <CyFormItem label="纬度" name="lat">
-            <Input placeholder="请输入纬度" />
+            <Input disabled placeholder="请输入纬度" />
           </CyFormItem>
         </>
       )}

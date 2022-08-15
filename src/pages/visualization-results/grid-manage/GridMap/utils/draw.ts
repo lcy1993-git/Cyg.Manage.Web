@@ -198,7 +198,7 @@ class DrawTool {
 
       // 移除原有要素层
       source.removeFeature(feature)
-      if (parseInt(feature.get('data').LoopNumber) === 1) {
+      if (parseInt(feature.get('data').loopNumber) === 1) {
         // 将拆分生成的新要素层添加至图层
 
         features.forEach((f: any) => {
@@ -209,7 +209,7 @@ class DrawTool {
           source.addFeature(f)
         })
       } else {
-        const multiloops = calculationLine(features, feature.get('data').LoopNumber)
+        const multiloops = calculationLine(features, feature.get('data').loopNumber)
         multiloops.forEach((loopData: any) => {
           const loopGeom: any = new WKT()
             .readGeometry(loopData.geom)
@@ -225,27 +225,36 @@ class DrawTool {
   }
 
   handleLine_node = (lont: number, lat: number, lineData: any, isAdd: boolean) => {
-    let node
+    let node: any
     const pixel = this.map.getPixelFromCoordinate([lont, lat])
     this.map.forEachFeatureAtPixel(
       pixel,
-      function (feature: any, layer: any) {
+      (feature: any, layer: any) => {
         if (layer && layer.get('name') === 'pointLayer') node = feature
       },
-      {
-        hitTolerance: 10,
-      }
+      { hitTolerance: 10 }
     )
+
+    let lineIds: any = []
+    lineData.data.forEach((element: any) => {
+      if (lineIds.indexOf(element.lineId) === -1) lineIds.push(element.lineId)
+    })
+
+    if (node) {
+      const nodeLineId = node.get('data').lineId
+      const nodeLineIds = nodeLineId.split(',')
+      nodeLineIds.forEach((item: any) => {
+        if (lineIds.indexOf(item) === -1) lineIds.push(item)
+      })
+      node.get('data').lineId = lineIds.toString()
+    }
+
     if (!node && isAdd) {
       var data: any
       if (lineData.data.length === 1) {
         // 不是多回路情况
         data = { ...lineData, ...lineData.data[0] }
       } else {
-        let lineIds: any = []
-        lineData.data.forEach((element: any, index: number) => {
-          if (lineIds.indexOf(element.lineId) > -1) lineIds.push(element.lineId)
-        })
         data = {
           color: lineData.data[0].color,
           kvLevel: lineData.data[0].kvLevel,
