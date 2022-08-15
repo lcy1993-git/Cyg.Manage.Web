@@ -104,7 +104,9 @@ const LoginForm: React.FC<Props> = (props) => {
   }
 
   const getStopInfo = () => {
-    setRequestLoading(true)
+    if (form.getFieldValue(['userName']) && form.getFieldValue(['pwd'])) {
+      setRequestLoading(true)
+    }
     form.validateFields().then((values) => {
       getStopServerList(loginButtonClick, values, stopLogin)
     })
