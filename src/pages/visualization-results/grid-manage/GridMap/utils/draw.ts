@@ -5,7 +5,15 @@ import { LineString, Point } from 'ol/geom'
 import Geometry from 'ol/geom/Geometry'
 import { Draw, Snap } from 'ol/interaction'
 import { transform } from 'ol/proj'
-import { CABLECIRCUIT, CABLEWELL, LINE, TOWER, TYPENUMS } from '../../DrawToolbar/GridUtils'
+import {
+  CABLECIRCUIT,
+  CABLEWELL,
+  LINE,
+  POWERSUPPLY,
+  TOWER,
+  TRANSFORMERSUBSTATION,
+  TYPENUMS,
+} from '../../DrawToolbar/GridUtils'
 import { createFeatureId } from './../../DrawToolbar/GridUtils'
 import { getLayer } from './loadLayer'
 import { calculationLine } from './multiloop'
@@ -241,6 +249,11 @@ class DrawTool {
     })
 
     if (node) {
+      if (
+        node.get('data').featureType === POWERSUPPLY ||
+        node.get('data').featureType === TRANSFORMERSUBSTATION
+      )
+        return node
       const nodeLineId = node.get('data').lineId
       const nodeLineIds = nodeLineId.split(',')
       nodeLineIds.forEach((item: any) => {
