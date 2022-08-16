@@ -201,7 +201,7 @@ const LeftMenu = (props: any) => {
               item.startTypeText === TRANSFORMERSUBSTATION
           )
 
-          line.filter((item: any) => {
+          line.forEach((item: any) => {
             const exist = powerSupplyList.find(
               (ndoe: any) => item.startId === ndoe.id || item.endId === ndoe.id
             )
@@ -223,6 +223,7 @@ const LeftMenu = (props: any) => {
               if (!exist) {
                 return item
               }
+              return undefined
             })
             .filter((item) => item)
         }
