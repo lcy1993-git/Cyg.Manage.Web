@@ -253,7 +253,10 @@ const updateLine = async (
 
   if (isEnd) {
     const point = feature.values_.data
-    const updateFeatures = singleFeatures.length > 0 ? singleFeatures : multiFeatures
+    var updateFeatures: any = []
+    if (singleFeatures.length > 0) updateFeatures = updateFeatures.concat(singleFeatures)
+    if (multiFeatures.length > 0) updateFeatures = updateFeatures.concat(multiFeatures)
+    // const updateFeatures =  ? singleFeatures : multiFeatures
     const lines = updateFeatures.map((item: { values_: { data: any } }) => item.values_.data)
     isDragPointend(true)
     await upLoadPoint(point, lines, isDragPointend)
