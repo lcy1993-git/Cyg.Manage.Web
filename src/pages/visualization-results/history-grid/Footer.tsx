@@ -1,3 +1,4 @@
+import styles from '../grid-manage/Footer/index.less'
 const Footer = () => {
   return (
     <div
@@ -15,6 +16,9 @@ const Footer = () => {
       >
         《工程智慧云平台管理端使用说明书》
       </span>
+      <a className={styles.linkToBeian} href="https://beian.miit.gov.cn/">
+        蜀ICP备2021026719号-1
+      </a>
     </div>
   )
 }

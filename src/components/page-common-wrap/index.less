@@ -4,6 +4,7 @@
   min-height: 100%;
   padding: 10px 10px 27px 10px;
   background-color: @bg-primary-color;
+
   .pageCommonWrapContent {
     width: 100%;
     height: 100%;
@@ -11,13 +12,16 @@
     overflow-x: hidden;
     overflow-y: auto;
     background-color: @white-color;
+
     &.noPadding {
       padding: 0;
     }
+
     &.noColor {
       background-color: #f7f7f7;
     }
   }
+
   .explainContent {
     position: fixed;
     bottom: 0;
@@ -28,15 +32,28 @@
     line-height: 30px;
     text-align: center;
     background-color: @bg-primary-color;
+
     .explainContentImportant {
       color: @black-color;
     }
+
     .explainContentCopyTip {
       color: @gray-color;
     }
+
     .explainHref {
       color: @primary-color;
       cursor: pointer;
+    }
+
+    .linkToBeian {
+      margin-left: 8px;
+      color: @gray-color;
+      font-size: 13px;
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

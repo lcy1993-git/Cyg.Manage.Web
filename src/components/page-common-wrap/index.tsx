@@ -29,6 +29,9 @@ const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
         >
           《工程智慧云管理端使用说明书》
         </span>
+        <a className={styles.linkToBeian} href="https://beian.miit.gov.cn/">
+          蜀ICP备2021026719号-1
+        </a>
         {/* <div className={styles.explainContentCopyTip}>
           ©2018- 四川长园工程勘察设计有限公司 版权所有 蜀ICP备18013772号
         </div> */}
