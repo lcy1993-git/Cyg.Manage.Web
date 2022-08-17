@@ -15,6 +15,8 @@ import {
   KVLEVELOPTIONS,
   LINE,
   LINEMODEL,
+  POWERSUPPLY,
+  TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import { loadMapLayers } from '../GridMap/utils/initializeMap'
 import { dataHandle, newData } from '../tools'
@@ -43,14 +45,8 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [standingBookVisible, setStandingBookVisible] = useState(false)
-  const {
-    setIsRefresh,
-    mapRef,
-    lineAssemble,
-    setcheckLineIds,
-    isRefresh,
-    setMapLoading,
-  } = useMyContext()
+  const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh, setMapLoading } =
+    useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
   const [areasId, setAreasId] = useState<string[]>([])
@@ -181,7 +177,9 @@ const LeftMenu = (props: any) => {
       manual: true,
       onSuccess: () => {
         const treeDatas = dataHandle(TreeData)
-        let powerSupplyList = []
+        let lineList: any[] = []
+        let powerSupplyList: any[] = []
+        // let lineRelationList = [];
         if (powerSupplyIds.length) {
           // @ts-ignore
           powerSupplyList = subStationsData?.powerSupplyList.map((item) => {
@@ -191,9 +189,48 @@ const LeftMenu = (props: any) => {
             }
           })
         }
+        const filterLineIds: any[] = []
+        // @ts-ignore
+        const subStationList = newData(subStationsData?.transformerSubstationList)
+        if (powerSupplyIds.length || subStations.length) {
+          const line = treeDatas.lineRelationList.filter(
+            (item: any) =>
+              item.endTypeText === POWERSUPPLY ||
+              item.endTypeText === TRANSFORMERSUBSTATION ||
+              item.startTypeText === POWERSUPPLY ||
+              item.startTypeText === TRANSFORMERSUBSTATION
+          )
+
+          line.forEach((item: any) => {
+            const exist = powerSupplyList.find(
+              (ndoe: any) => item.startId === ndoe.id || item.endId === ndoe.id
+            )
+            if (!exist) {
+              const sub = subStationList.find(
+                (ndoe: any) => item.startId === ndoe.id || item.endId === ndoe.id
+              )
+              if (!sub) {
+                filterLineIds.push(item.id)
+              }
+            }
+          })
+        }
+
+        if (filterLineIds.length) {
+          lineList = treeDatas.lineRelationList
+            .map((item: any) => {
+              const exist = filterLineIds.find((line) => line === item.id)
+              if (!exist) {
+                return item
+              }
+              return undefined
+            })
+            .filter((item) => item)
+        }
         loadMapLayers(
           {
             ...treeDatas,
+            lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
             powerSupplyList,
             transformerSubstationList: subStations.length
               ? // @ts-ignore
