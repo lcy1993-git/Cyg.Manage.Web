@@ -13,7 +13,7 @@ import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
-// import UrlSelect from '@/components/url-select';
+import UrlSelect from '@/components/url-select'
 import MaterialForm from './component/add-edit-form'
 import CableMapping from './component/cable-mapping'
 import SaveImportMaterial from './component/import-form'
@@ -41,6 +41,7 @@ const Material: React.FC<libParams> = (props) => {
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false)
   const [cableTerminalVisible, setCableTerminalVisible] = useState<boolean>(false)
+  const [materialCategory, setMaterialCategory] = useState<string>('')
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -61,6 +62,18 @@ const Material: React.FC<libParams> = (props) => {
             placeholder="请输入物料信息"
           />
         </TableSearch>
+        <TableSearch marginLeft="20px" label="组件" width="220px">
+          <UrlSelect
+            allowClear
+            showSearch
+            requestSource="resource"
+            url="/Component/GetDeviceCategory"
+            titlekey="key"
+            valuekey="value"
+            placeholder="请选择"
+            onChange={(value: any) => setMaterialCategory(value)}
+          />
+        </TableSearch>
       </div>
     )
   }
@@ -70,7 +83,9 @@ const Material: React.FC<libParams> = (props) => {
     setResourceLibId(value)
     search()
   }
-
+  useEffect(() => {
+    search()
+  }, [materialCategory])
   useEffect(() => {
     searchByLib(resourceLibId)
   }, [resourceLibId])
@@ -92,12 +107,6 @@ const Material: React.FC<libParams> = (props) => {
   }
 
   const columns = [
-    {
-      dataIndex: 'materialId',
-      index: 'materialId',
-      title: '物料编码',
-      width: 180,
-    },
     {
       dataIndex: 'code',
       index: 'code',
@@ -236,7 +245,6 @@ const Material: React.FC<libParams> = (props) => {
         },
         value
       )
-
       await addMaterialItem(submitInfo)
       refresh()
       setAddFormVisible(false)
@@ -417,8 +425,10 @@ const Material: React.FC<libParams> = (props) => {
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,
+          category: materialCategory,
         }}
       />
+
       <Modal
         maskClosable={false}
         title="添加-物料"

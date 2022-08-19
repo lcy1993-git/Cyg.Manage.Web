@@ -20,26 +20,15 @@ const ResourceManage: React.FC = () => {
   const libId = qs.parse(window.location.href.split('?')[1]).libId as string
   const libName = qs.parse(window.location.href.split('?')[1]).libName as string
 
-  const { setResourceManageFlag, setCompanyResourceManageFlag } = useLayoutStore()
-  const isCompanyResourceLib = window.location.href.indexOf('company-resource-manage') !== -1
+  const { setResourceManageFlag } = useLayoutStore()
 
   useMount(() => {
-    if (isCompanyResourceLib) {
-      setCompanyResourceManageFlag?.(true)
-    } else {
-      setResourceManageFlag?.(true)
-    }
+    setResourceManageFlag?.(true)
   })
 
   useUnmount(() => {
-    if (isCompanyResourceLib) {
-      setCompanyResourceManageFlag?.(false)
-      window.localStorage.setItem('companyManageId', '')
-    } else {
-      setResourceManageFlag?.(false)
-      window.localStorage.setItem('manageId', '')
-    }
-    // rxqtodo
+    setResourceManageFlag?.(false)
+    window.localStorage.setItem('manageId', '')
   })
 
   return (

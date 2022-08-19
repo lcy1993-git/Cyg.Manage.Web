@@ -367,7 +367,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         bodyStyle={{ height: '680px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
+        <Form form={addForm} preserve={false} initialValues={{ reservedWidth: 3 }}>
           <CableChannelForm resourceLibId={resourceLibId} type="add" />
         </Form>
       </Modal>

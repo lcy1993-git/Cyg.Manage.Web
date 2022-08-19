@@ -80,11 +80,6 @@ export default [
     component: <ResourceManage />,
   },
   {
-    title: '公司资源库模块管理',
-    path: '/standard-config/company-resource-manage',
-    component: <ResourceManage />,
-  },
-  {
     title: '签批文件',
     path: '/standard-config/sign-manage',
     component: <SignManage />,

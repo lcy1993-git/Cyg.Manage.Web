@@ -1,8 +1,6 @@
-import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
-import TableSearch from '@/components/table-search'
-import { EditOutlined, ImportOutlined, PlusOutlined, RedoOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin, Dropdown, Menu } from 'antd'
+import { EditOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, message, Spin, Dropdown, Menu, Table } from 'antd'
 import React, { useState } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
@@ -18,32 +16,25 @@ import UploadDrawing from '../canon-resource-lib/./components/upload-drawing'
 import { getUploadUrl } from '@/services/resource-config/drawing'
 import SaveImportLib from '../canon-resource-lib/./components/upload-lib'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import EnumSelect from '@/components/enum-select'
-import { BelongManageEnum } from '@/services/personnel-config/manage-user'
 import { history } from 'umi'
 import { useLayoutStore } from '@/layouts/context'
 import { useMemo } from 'react'
 import UploadAll from '../canon-resource-lib/./components/upload-all'
 import ResourceLibraryManageModal from '../canon-resource-lib/./components/resource-library-manage-modal'
-
-const { Search } = Input
+import EmptyTip from '@/components/empty-tip'
+import CommonTitle from '@/components/common-title'
 
 const ResourceLib: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null)
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
   const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-  const [status, setStatus] = useState<string>('0')
   const [libVisible, setLibVisible] = useState(false)
   const [libId, setLibId] = useState<string>('')
   const [currentCompanyManageId, setCurrentCompanyManageId] = useState<string>(
-    window.localStorage.companyManageId
+    window.localStorage.manageId
   ) //当前管理 模块的资源库Id
 
   const { data: keyData } = useRequest(() => getUploadUrl())
@@ -55,40 +46,7 @@ const ResourceLib: React.FC = () => {
     manual: true,
   })
 
-  const { companyResourceManageFlag } = useLayoutStore()
-
-  const searchComponent = () => {
-    return (
-      <div className={styles.searchArea}>
-        {/* <TableSearch width="230px">
-          <Search
-            value={searchKeyWord}
-            onChange={(e) => setSearchKeyWord(e.target.value)}
-            onSearch={() => search()}
-            enterButton
-            placeholder="请输入资源库"
-          />
-        </TableSearch>
-        <TableSearch marginLeft="20px" label="资源库状态" width="300px">
-          <EnumSelect
-            enumList={BelongManageEnum}
-            onChange={(value) => searchByStatus(value)}
-            placeholder="-全部-"
-          />
-        </TableSearch> */}
-      </div>
-    )
-  }
-
-  const searchByStatus = (value: any) => {
-    setStatus(value)
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams({
-        status: value,
-      })
-    }
-  }
+  const { resourceManageFlag } = useLayoutStore()
 
   // 列表刷新
   const refresh = () => {
@@ -98,16 +56,8 @@ const ResourceLib: React.FC = () => {
     }
   }
 
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search()
-    }
-  }
-
   const columns = useMemo(() => {
-    if (!companyResourceManageFlag) {
+    if (!resourceManageFlag) {
       setCurrentCompanyManageId('')
       return [
         {
@@ -138,9 +88,9 @@ const ResourceLib: React.FC = () => {
                 className="canClick"
                 onClick={() => {
                   setCurrentCompanyManageId(record.id)
-                  storage.setItem('companyManageId', record.id)
+                  storage.setItem('manageId', record.id)
                   history.push({
-                    pathname: `/standard-config/company-resource-manage?libId=${record.id}&&libName=${record.libName}`,
+                    pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
                   })
                 }}
               >
@@ -177,7 +127,7 @@ const ResourceLib: React.FC = () => {
           return (
             <span
               className="canClick"
-              onClick={() => message.error('已打开"公司资源库模块管理"界面，请关闭后重试')}
+              onClick={() => message.error('已打开"资源库模块管理"界面，请关闭后重试')}
             >
               <u>管理</u>
             </span>
@@ -185,37 +135,11 @@ const ResourceLib: React.FC = () => {
         },
       },
     ]
-  }, [companyResourceManageFlag])
-
-  //添加
-  const addEvent = () => {
-    setAddFormVisible(true)
-  }
-
-  const sureAddResourceLib = () => {
-    addForm.validateFields().then(async (value) => {
-      const submitInfo = Object.assign(
-        {
-          libName: '',
-          version: '',
-          remark: '',
-        },
-        value
-      )
-      await addResourceLibItem(submitInfo)
-      refresh()
-      setAddFormVisible(false)
-      addForm.resetFields()
-    })
-  }
+  }, [resourceManageFlag])
 
   //编辑
   const editEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
-    const editDataId = tableSelectRows[0].id
+    const editDataId = tableData[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
@@ -230,10 +154,6 @@ const ResourceLib: React.FC = () => {
   }
 
   const sureEditResourceLib = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
     const editData = data!
 
     editForm.validateFields().then(async (values) => {
@@ -261,50 +181,42 @@ const ResourceLib: React.FC = () => {
   }
 
   const uploadAllEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行')
-      return
-    }
-    const editDataId = tableSelectRows[0].id
+    const editDataId = tableData[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
       message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
       return
     }
-    setLibId(tableSelectRows[0].id)
+    setLibId(tableData[0].id)
     setUploadAllVisible(true)
   }
 
   const importLibEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择要操作的行')
-      return
-    }
-    const editDataId = tableSelectRows[0].id
+    const editDataId = tableData[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
       message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
       return
     }
-    setLibId(tableSelectRows[0].id)
+    setLibId(tableData[0].id)
     setUploadLibVisible(true)
   }
 
   const uploadDrawingEvent = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    if (tableData && isArray(tableData) && tableData.length === 0) {
       message.warning('请选择要操作的行')
       return
     }
-    const editDataId = tableSelectRows[0].id
+    const editDataId = tableData[0].id
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
       message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
       return
     }
-    setLibId(tableSelectRows[0].id)
+    setLibId(tableData[0].id)
     setUploadDrawingVisible(true)
   }
 
@@ -322,13 +234,6 @@ const ResourceLib: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {/* {buttonJurisdictionArray?.includes('lib-add') && (
-          <Button type="primary" className="mr7" onClick={() => addEvent()}>
-            <PlusOutlined />
-            创建
-          </Button>
-        )} */}
-
         {buttonJurisdictionArray?.includes('lib-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
@@ -370,39 +275,38 @@ const ResourceLib: React.FC = () => {
   const uploadFinishEvent = () => {
     refresh()
   }
+  const tableData = [
+    {
+      dbName: 'pdd_resource',
+      id: '1519857076424179712',
+      isDisabled: false,
+      libName: '甘肃临夏',
+      remark: null,
+      rootDirPath: '1519857076424179712',
+      version: '1.0',
+    },
+  ]
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
+      <div className={styles.cyGeneralTableTitleContnet}>
+        <div className={styles.cyGeneralTableTitleShowContent}>
+          {<CommonTitle>{'资源库管理'}</CommonTitle>}
+        </div>
+      </div>
+      <div className={styles.cyGeneralTableButtonContent}>
+        <div className={styles.cyGeneralTableButtonRightContent}>{tableElement?.()}</div>
+      </div>
+      <Table
         columns={columns}
-        requestSource="resource"
-        url="/ResourceLib/GetPageList"
-        tableTitle="资源库管理"
-        getSelectData={(data) => setTableSelectRows(data)}
-        type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-          status: status,
+        dataSource={tableData}
+        rowKey="id"
+        pagination={false}
+        bordered={true}
+        locale={{
+          emptyText: <EmptyTip className="pt20 pb20" />,
         }}
       />
-      <Modal
-        maskClosable={false}
-        title="创建资源库"
-        width="680px"
-        visible={addFormVisible}
-        okText="确认"
-        onOk={() => sureAddResourceLib()}
-        onCancel={() => setAddFormVisible(false)}
-        cancelText="取消"
-        destroyOnClose
-      >
-        <Form form={addForm} preserve={false}>
-          <ResourceLibForm />
-        </Form>
-      </Modal>
       <Modal
         maskClosable={false}
         title="编辑-资源库"

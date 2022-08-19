@@ -345,7 +345,7 @@ const ResourceLib: React.FC = () => {
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentManageId) {
-      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
+      message.error('已打开"资源库模块管理"界面，请关闭后重试')
       return
     }
 
