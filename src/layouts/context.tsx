@@ -18,6 +18,8 @@ interface LayoutContextValue {
   setPreDesignItem: React.Dispatch<SetStateAction<any>>
   favoriteFlag?: boolean
   setFavoriteFlag?: (value: boolean) => void
+  lineStressSagFlag?: boolean
+  setLineStressSagFlag: (value: boolean) => void
 }
 
 const LayoutContext = createContext({} as LayoutContextValue)

@@ -1,104 +1,64 @@
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { Input, Button } from 'antd'
-import React, { useEffect, useState } from 'react'
-// import ElectricCompanyForm from './components/add-edit-form';
+import { ImportOutlined, QuestionCircleOutlined, RedoOutlined } from '@ant-design/icons'
+import { Input, Button, message, Tooltip, Dropdown, Menu } from 'antd'
+import React, { useState, useMemo } from 'react'
 import styles from './index.less'
-import UrlSelect from '@/components/url-select'
-// import TableImportButton from '@/components/table-import-button';
-import { getUploadUrl } from '@/services/resource-config/drawing'
-import { useRequest } from 'ahooks'
-import UploadLineStressSag from './components/upload-lineStressSag'
-import ImportLineStressSag from './components/import-lineStressSag'
-import { message } from 'antd'
-// import FileUploadOnline from '@/components/file-upload-online';
-// import CygFormItem from '@/components/cy-form-item';
+import { restartResourceLib } from '@/services/resource-config/resource-lib'
+import { isArray } from 'lodash'
+import SaveImportLineStressSag from '../canon-resource-lib/components/upload-lineStressSag'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { ImportOutlined } from '@ant-design/icons'
+import EnumSelect from '@/components/enum-select'
+import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import { history } from 'umi'
+import { useLayoutStore } from '@/layouts/context'
 
 const { Search } = Input
 
-interface libParams {
-  libId: string
-}
-
-const LineStressSag: React.FC<libParams> = (props) => {
-  const { libId } = props
+const LineStressSag: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
-  const [resourceLibId, setResourceLibId] = useState<string | undefined>('')
-  const [uploadLineStressSagVisible, setUploadLineStreesSagVisible] = useState<boolean>(false)
-  const [importLineStressSagVisible, setImportLineStreesSagVisible] = useState<boolean>(false)
 
-  const { data: keyData } = useRequest(() => getUploadUrl())
+  const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [status, setStatus] = useState<string>('0')
+  const [libId, setLibId] = useState<string>('')
 
-  const LineStressChartApiSecurity = keyData?.uploadLineStressChartApiSecurity
+  const { lineStressSagFlag } = useLayoutStore()
 
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
-        <TableSearch width="298px">
+        <TableSearch width="230px">
           <Search
             value={searchKeyWord}
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入应力弧垂表信息"
+            placeholder="请输入资源库"
+          />
+        </TableSearch>
+        <TableSearch marginLeft="20px" label="资源库状态" width="300px">
+          <EnumSelect
+            enumList={BelongManageEnum}
+            onChange={(value) => searchByStatus(value)}
+            placeholder="-全部-"
           />
         </TableSearch>
       </div>
     )
   }
 
-  //选择资源库传libId
-  const searchByLib = (value: any) => {
-    setResourceLibId(value)
-    search()
-  }
-
-  useEffect(() => {
-    searchByLib(resourceLibId)
-  }, [resourceLibId])
-
-  // 列表搜索
-  const search = () => {
+  const searchByStatus = (value: any) => {
+    setStatus(value)
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search()
+      tableRef.current.searchByParams({
+        status: value,
+      })
     }
-  }
-
-  const columns = [
-    {
-      dataIndex: 'meteorologic',
-      index: 'meteorologic',
-      title: '气象区',
-      width: 140,
-    },
-    {
-      dataIndex: 'spec',
-      index: 'spec',
-      title: '导线型号',
-      width: 220,
-    },
-    {
-      dataIndex: 'chartName',
-      index: 'chartName',
-      title: '应力弧垂表图纸',
-    },
-
-    {
-      dataIndex: 'safetyFactor',
-      index: 'safetyFactor',
-      title: '安全系数',
-      width: 140,
-    },
-  ]
-
-  const uploadFinishEvent = () => {
-    refresh()
   }
 
   // 列表刷新
@@ -109,77 +69,166 @@ const LineStressSag: React.FC<libParams> = (props) => {
     }
   }
 
+  // 列表搜索
+  const search = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.search()
+    }
+  }
+  const columns = useMemo(() => {
+    if (!lineStressSagFlag) {
+      return [
+        {
+          dataIndex: 'libName',
+          index: 'libName',
+          title: '名称',
+          width: 280,
+        },
+        {
+          dataIndex: 'version',
+          index: 'version',
+          title: '版本',
+          width: 140,
+        },
+        {
+          dataIndex: 'remark',
+          index: 'remark',
+          title: '备注',
+        },
+        {
+          dataIndex: 'action',
+          title: '操作',
+          width: 100,
+          render: (text: any, record: any) => {
+            return (
+              <span
+                className="canClick"
+                onClick={() => {
+                  history.push({
+                    pathname: `/standard-config/line-stress-sag-manage?libId=${record.id}&&libName=${record.libName}`,
+                  })
+                }}
+              >
+                <u>管理</u>
+              </span>
+            )
+          },
+        },
+      ]
+    }
+    return [
+      {
+        dataIndex: 'libName',
+        index: 'libName',
+        title: '名称',
+        width: 280,
+      },
+      {
+        dataIndex: 'version',
+        index: 'version',
+        title: '版本',
+        width: 140,
+      },
+      {
+        dataIndex: 'remark',
+        index: 'remark',
+        title: '备注',
+      },
+      {
+        dataIndex: '',
+        title: '操作',
+        width: 100,
+        render: (text: any, record: any) => {
+          return (
+            <span
+              className="canClick"
+              onClick={() => message.error('已打开"应力弧垂表管理"界面，请关闭后重试')}
+            >
+              <u>管理</u>
+            </span>
+          )
+        },
+      },
+    ]
+  }, [lineStressSagFlag])
+
+  //重启资源服务
+  const restartLib = async () => {
+    await restartResourceLib()
+    message.success('操作成功')
+  }
+
+  const importLineStreeSagEvent = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择要操作的行')
+      return
+    }
+
+    setLibId(tableSelectRows[0].id)
+    setUploadLineStressSagVisible(true)
+  }
+
+  const importMenu = (
+    <Menu>
+      {buttonJurisdictionArray?.includes('lib-import-linestresssag') && (
+        <Menu.Item onClick={() => importLineStreeSagEvent()}>导入应力弧垂表</Menu.Item>
+      )}
+    </Menu>
+  )
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('line-stress-sag-import') && (
-          <Button className="mr7" onClick={() => importLineStressEvent()}>
-            导入应力弧垂表
-          </Button>
+        {buttonJurisdictionArray?.includes('lib-import') && (
+          <Dropdown overlay={importMenu}>
+            <Button className="mr7">
+              <ImportOutlined />
+              导入
+            </Button>
+          </Dropdown>
         )}
 
-        {buttonJurisdictionArray?.includes('line-stress-sag-upload-drawing') && (
-          <Button className="mr7" onClick={() => importLineStressDrawingEvent()}>
-            <ImportOutlined />
-            上传图纸
+        {buttonJurisdictionArray?.includes('lib-restart') && (
+          <Button className="mr7" onClick={() => restartLib()}>
+            <RedoOutlined />
+            重启资源服务
           </Button>
         )}
       </div>
     )
   }
 
-  const importLineStressEvent = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请选择资源库');
-    //   return;
-    // }
-    setImportLineStreesSagVisible(true)
-  }
-
-  const importLineStressDrawingEvent = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请选择资源库');
-    //   return;
-    // }
-    setUploadLineStreesSagVisible(true)
+  const uploadFinishEvent = () => {
+    refresh()
   }
 
   return (
-    // <PageCommonWrap>
-    <>
+    <PageCommonWrap>
       <GeneralTable
-        rowKey="id"
         ref={tableRef}
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         columns={columns}
         requestSource="resource"
-        url="/LineStressSag/GetPageList"
-        // tableTitle="应力弧垂表"
+        url="/ResourceLib/GetPageList"
+        tableTitle="应力弧垂表管理"
+        getSelectData={(data) => setTableSelectRows(data)}
         type="radio"
         extractParams={{
-          resourceLibId: libId,
           keyWord: searchKeyWord,
+          status: status,
         }}
       />
 
-      <UploadLineStressSag
-        libId={libId}
-        securityKey={LineStressChartApiSecurity}
-        visible={uploadLineStressSagVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setUploadLineStreesSagVisible}
-      />
-
-      <ImportLineStressSag
+      <SaveImportLineStressSag
         libId={libId}
         requestSource="resource"
-        visible={importLineStressSagVisible}
+        visible={uploadLineStressSagVisible}
         changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setImportLineStreesSagVisible}
+        onChange={setUploadLineStressSagVisible}
       />
-      {/* </PageCommonWrap> */}
-    </>
+    </PageCommonWrap>
   )
 }
 

@@ -10,7 +10,6 @@ import Component from '../component'
 import ElectricalEquipment from '../electrical-equipment'
 import CableDesign from '../cable-design'
 import OverheadDesign from '../overhead-design'
-import LineStressSag from '../line-stress-sag'
 import { useMount, useUnmount } from 'ahooks'
 import { useLayoutStore } from '@/layouts/context'
 
@@ -62,11 +61,6 @@ const ResourceManage: React.FC = () => {
             <TabPane tab="电气设备" key="electric">
               <div className={styles.pannelTable}>
                 <ElectricalEquipment libId={libId} />
-              </div>
-            </TabPane>
-            <TabPane tab="应力弧垂表" key="sag">
-              <div className={styles.pannelTable}>
-                <LineStressSag libId={libId} />
               </div>
             </TabPane>
             <TabPane tab="图纸" key="drawing">

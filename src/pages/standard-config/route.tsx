@@ -13,7 +13,12 @@ const CompanyResourceLib = Loadable({
 })
 
 const LineStressSag = Loadable({
-  loader: () => import('@/pages/standard-config/line-stress-sagg'),
+  loader: () => import('@/pages/standard-config/line-stress-sag'),
+  loading: Loading,
+  delay: 150,
+})
+const LineStressSagManage = Loadable({
+  loader: () => import('@/pages/standard-config/line-stress-sag-manage'),
   loading: Loading,
   delay: 150,
 })
@@ -61,8 +66,13 @@ export default [
   },
   {
     title: '应力弧垂表',
-    path: '/standard-config/line-stress-sagg',
+    path: '/standard-config/line-stress-sag',
     component: <LineStressSag />,
+  },
+  {
+    title: '应力弧垂表管理',
+    path: '/standard-config/line-stress-sag-manage',
+    component: <LineStressSagManage />,
   },
   {
     title: '版本对比',
