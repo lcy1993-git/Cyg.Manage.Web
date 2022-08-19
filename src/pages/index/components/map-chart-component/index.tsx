@@ -47,6 +47,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
       //@ts-ignore
       window.testClick = null
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const size = useSize(divRef)
 
@@ -74,10 +75,12 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
     const mapShowData = getMapStatisticData?.map((item) => {
       return {
         name: item.area,
+        areaCode: item.areaCode,
         value: item.projectQuantity,
         selected: false,
       }
     })
+
     return {
       tooltip: {
         trigger: 'item',
@@ -104,10 +107,8 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         },
         confine: true,
         formatter(params: any) {
-          const { name } = params
-
+          const { name, data } = params
           const nameIndex = getMapStatisticData?.findIndex((item) => item.area === name)
-
           if (nameIndex > -1) {
             return (
               borderStylesHTML +
@@ -117,7 +118,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                               getMapStatisticData[nameIndex!].projectQuantity
                             }</span>
                             <div style="color: #2AFE97">可视化成果: <span onclick=setSelectCity("${
-                              cityCodeObject[name] ?? name
+                              cityCodeObject[name] ?? data?.areaCode
                             }")  href='/visualization-results/result-page' style="display: inline-block;cursor: pointer; width: 48px;color: #fff;border-radius: 3px; text-align: center; height: 24px;line-height: 24px;background-color: #4DA944; margin-left: 8px;">跳转</span></div>
                             
                         `
@@ -217,6 +218,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           })
         } else {
           initChart(statisticData[0].areaCode, provinceStatisticData, '2')
+
           setCurrentAreaInfo({
             areaId: statisticData[0].areaCode,
             cityId: statisticData[0].areaCode,
@@ -231,6 +233,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         areaCode: currentAreaInfo.areaId,
         areaType: currentAreaInfo.areaLevel,
       })
+
       initChart(currentAreaInfo.areaId!, provinceStatisticData, currentAreaInfo.areaLevel!)
     }
   }
@@ -358,7 +361,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
       })
       let finalyFileName = `首页统计图表.xlsx`
       // for IE
+      //@ts-ignore
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        //@ts-ignore
         window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
       } else {
         // for Non-IE

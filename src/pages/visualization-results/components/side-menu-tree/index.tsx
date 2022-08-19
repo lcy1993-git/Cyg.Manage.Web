@@ -246,6 +246,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   useEffect(() => {
     clearState()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterCondition])
 
   const clearState = () => {
@@ -324,6 +325,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
     const dfsByName = (node: TreeNodeType, isSelect: boolean) => {
       const { children, key, title, levelCategory } = node
+
       expanded.push(key)
       if (title === selectCity) {
         children?.forEach((v) => {
