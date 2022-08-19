@@ -51,8 +51,15 @@ const SubstationTree = () => {
     }
   )
   const { isRefresh, setIsRefresh, companyId } = useMyContext()
-  const { linesId, setlinesId, setsubStations, settreeLoading, kvLevels, areasId, isFilterTree } =
-    useTreeContext()
+  const {
+    linesId,
+    setlinesId,
+    setsubStations,
+    settreeLoading,
+    kvLevels,
+    areasId,
+    isFilterTree,
+  } = useTreeContext()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
 

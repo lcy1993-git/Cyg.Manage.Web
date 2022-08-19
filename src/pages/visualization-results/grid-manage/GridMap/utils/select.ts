@@ -34,7 +34,7 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../../DrawToolbar/GridUtils'
-import { clearBoxData } from './initializeMap'
+import { clearBoxData, getCheckLineIds } from './initializeMap'
 import { getLayer } from './loadLayer'
 import { calculationLineByPoints } from './multiloop'
 import { lineStyle, pointStyle } from './style'
@@ -147,6 +147,28 @@ const updateLine = async (
       (item: any) => item.get('data').endId === data.id || item.get('data').startId === data.id
     )
 
+  if (data.lineId) {
+    try {
+      let ids = getCheckLineIds()
+      ids = ids.map((item: any) => {
+        return item.substring(0, item.indexOf('_&'))
+      })
+      const nodeLineIds = data.lineId.split(',')
+      nodeLineIds.forEach((lineId: String) => {
+        if (ids.indexOf(lineId) === -1) {
+          throw new Error('EndIterative')
+        }
+      })
+    } catch (error) {
+      const geom = new WKT()
+        .readGeometry(feature.get('data').geom)
+        .transform('EPSG:4326', 'EPSG:3857')
+      feature.setGeometry(geom)
+      translate.setActive(false)
+      return
+    }
+  }
+
   // 非回路线路
   const singleFeatures = features.filter(
     (item: any) => !item.get('data').loopNumber || item.get('data').loopNumber === 1
@@ -172,84 +194,115 @@ const updateLine = async (
   const multiFeatures = features.filter(
     (item: any) => item.get('data').loopNumber && item.get('data').loopNumber > 1
   )
-  var multiDatas: any = []
-  multiFeatures.forEach((line: any) => {
-    const startId = line.get('data').startId
-    const endId = line.get('data').endId
+  try {
+    var multiDatas: any = []
+    multiFeatures.forEach((line: any) => {
+      const startId = line.get('data').startId
+      const endId = line.get('data').endId
 
-    const startPoint = pointLayer
-      .getSource()
-      .getFeatures()
-      .find((item: any) => item.get('data').id === startId)
-    const endPoint = pointLayer
-      .getSource()
-      .getFeatures()
-      .find((item: any) => item.get('data').id === endId)
+      const startPoint = pointLayer
+        .getSource()
+        .getFeatures()
+        .find((item: any) => item.get('data').id === startId)
+      const endPoint = pointLayer
+        .getSource()
+        .getFeatures()
+        .find((item: any) => item.get('data').id === endId)
 
-    if (!startPoint || !endPoint) {
-      translate.setActive(false)
-      return
-    }
-    const startCoord =
-      startId === data.id ? featureCoords : startPoint.getGeometry().getCoordinates()
-    const endCoord = endId === data.id ? featureCoords : endPoint.getGeometry().getCoordinates()
-    const loopNumber = line.get('data').loopNumber
+      if (!startPoint || !endPoint) {
+        throw new Error('EndIterative')
+      }
+      const startCoord =
+        startId === data.id ? featureCoords : startPoint.getGeometry().getCoordinates()
+      const endCoord = endId === data.id ? featureCoords : endPoint.getGeometry().getCoordinates()
+      const loopNumber = line.get('data').loopNumber
 
-    // 判断是否为起始点
-    let isStart = lineLayer
-      .getSource()
-      .getFeatures()
-      .find((item: any) => item.get('data').endId === line.get('data').startId)
-    isStart = isStart ? false : true
+      // 判断是否为起始点
+      let isStart = lineLayer
+        .getSource()
+        .getFeatures()
+        .find((item: any) => item.get('data').endId === line.get('data').startId)
+      isStart = isStart ? false : true
 
-    // 判断是否为结束点
-    let isEnd = lineLayer
-      .getSource()
-      .getFeatures()
-      .find((item: any) => item.get('data').startId === line.get('data').endId)
-    isEnd = isEnd ? false : true
-    const multiData = {
-      startId,
-      endId,
-      startCoord,
-      endCoord,
-      loopNumber,
-      isStart,
-      isEnd,
-    }
-    // 判断是否存在
-    let isExist
-    multiDatas.forEach((item: any) => {
-      if (item.startId === startId && item.endId === endId) isExist = true
+      // 判断是否为结束点
+      let isEnd = lineLayer
+        .getSource()
+        .getFeatures()
+        .find((item: any) => item.get('data').startId === line.get('data').endId)
+      isEnd = isEnd ? false : true
+      const multiData = {
+        startId,
+        endId,
+        startCoord,
+        endCoord,
+        loopNumber,
+        isStart,
+        isEnd,
+      }
+      // 判断是否存在
+      let isExist
+      multiDatas.forEach((item: any) => {
+        if (item.startId === startId && item.endId === endId) isExist = true
+      })
+      !isExist && multiDatas.push(multiData)
     })
-    !isExist && multiDatas.push(multiData)
-  })
+  } catch (error) {
+    const geom = new WKT()
+      .readGeometry(feature.get('data').geom)
+      .transform('EPSG:4326', 'EPSG:3857')
+    feature.setGeometry(geom)
+    translate.setActive(false)
+    return
+  }
 
-  multiDatas.forEach((multiData: any) => {
-    const startCoord = { x: multiData.startCoord[0], y: multiData.startCoord[1] }
-    const endCoord = { x: multiData.endCoord[0], y: multiData.endCoord[1] }
-    const loopNumber = multiData.loopNumber
-    const isStart = multiData.isStart
-    const isEnd = multiData.isEnd
-    const datas = calculationLineByPoints(startCoord, endCoord, loopNumber, isStart, isEnd)
+  try {
+    multiDatas.forEach((multiData: any) => {
+      const startCoord = { x: multiData.startCoord[0], y: multiData.startCoord[1] }
+      const endCoord = { x: multiData.endCoord[0], y: multiData.endCoord[1] }
+      const loopNumber = multiData.loopNumber
+      const isStart = multiData.isStart
+      const isEnd = multiData.isEnd
+      const datas = calculationLineByPoints(startCoord, endCoord, loopNumber, isStart, isEnd)
 
-    datas.forEach((data: any) => {
-      const multiFeature = multiFeatures.find(
-        (item: any) =>
-          (item.get('data').startId === multiData.startId ||
-            item.get('data').startId === multiData.endId) &&
-          (item.get('data').endId === multiData.endId ||
-            item.get('data').endId === multiData.startId) &&
-          item.get('data').loopSerial === data.loopSerial
-      )
-      // const geom = new WKT().readGeometry(data.wkt).transform('EPSG:4326', 'EPSG:3857')
-      const geom = new WKT().readGeometry(data.wkt)
-      multiFeature.setGeometry(geom)
-      multiFeature.get('data').geom = new WKT().writeGeometry(
-        geom.clone().transform('EPSG:3857', 'EPSG:4326')
-      )
+      datas.forEach((data: any) => {
+        const multiFeature = multiFeatures.find(
+          (item: any) =>
+            (item.get('data').startId === multiData.startId ||
+              item.get('data').startId === multiData.endId) &&
+            (item.get('data').endId === multiData.endId ||
+              item.get('data').endId === multiData.startId) &&
+            item.get('data').loopSerial === data.loopSerial
+        )
+        if (!multiFeature) {
+          throw new Error('EndIterative')
+        }
+      })
+
+      datas.forEach((data: any) => {
+        const multiFeature = multiFeatures.find(
+          (item: any) =>
+            (item.get('data').startId === multiData.startId ||
+              item.get('data').startId === multiData.endId) &&
+            (item.get('data').endId === multiData.endId ||
+              item.get('data').endId === multiData.startId) &&
+            item.get('data').loopSerial === data.loopSerial
+        )
+        // const geom = new WKT().readGeometry(data.wkt).transform('EPSG:4326', 'EPSG:3857')
+        const geom = new WKT().readGeometry(data.wkt)
+        multiFeature.setGeometry(geom)
+        multiFeature.get('data').geom = new WKT().writeGeometry(
+          geom.clone().transform('EPSG:3857', 'EPSG:4326')
+        )
+      })
     })
-  })
+  } catch (error) {
+    const geom = new WKT()
+      .readGeometry(feature.get('data').geom)
+      .transform('EPSG:4326', 'EPSG:3857')
+    feature.setGeometry(geom)
+    translate.setActive(false)
+    return
+  }
 
   if (isEnd) {
     const point = feature.values_.data

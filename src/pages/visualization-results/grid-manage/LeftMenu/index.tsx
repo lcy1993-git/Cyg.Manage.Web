@@ -45,8 +45,15 @@ const LeftMenu = (props: any) => {
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [standingBookVisible, setStandingBookVisible] = useState(false)
-  const { setIsRefresh, mapRef, lineAssemble, setcheckLineIds, isRefresh, setMapLoading } =
-    useMyContext()
+  const {
+    setIsRefresh,
+    mapRef,
+    lineAssemble,
+    setcheckLineIds,
+    isRefresh,
+    setMapLoading,
+    checkLineIds,
+  } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
   const [areasId, setAreasId] = useState<string[]>([])
@@ -237,7 +244,8 @@ const LeftMenu = (props: any) => {
                 newData(subStationsData?.transformerSubstationList)
               : [],
           },
-          mapRef.map
+          mapRef.map,
+          checkLineIds
         )
         setMapLoading(false)
       },

@@ -55,6 +55,7 @@ var pointLayer: any
 var lineLayer: any
 var boxSelectFeatures: any = []
 var dragBox: any
+var checkLineIds: any
 
 export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOps) => {
   mapRef.map = new Map({
@@ -257,8 +258,13 @@ export const getShowLines = (map: any) => {
 }
 
 // 加载地图图层
-export const loadMapLayers = (data: any, map: any) => {
+export const loadMapLayers = (data: any, map: any, checkLineIds_: any) => {
+  checkLineIds = checkLineIds_
   loadAllLayer(data, map)
+}
+
+export const getCheckLineIds = () => {
+  return checkLineIds
 }
 
 // 获取线路的总长度
