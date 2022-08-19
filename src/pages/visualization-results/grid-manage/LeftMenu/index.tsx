@@ -50,6 +50,7 @@ const LeftMenu = (props: any) => {
     setcheckLineIds,
     isRefresh,
     setMapLoading,
+    checkLineIds,
   } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
@@ -200,7 +201,8 @@ const LeftMenu = (props: any) => {
                 newData(subStationsData?.transformerSubstationList)
               : [],
           },
-          mapRef.map
+          mapRef.map,
+          checkLineIds
         )
         setMapLoading(false)
       },

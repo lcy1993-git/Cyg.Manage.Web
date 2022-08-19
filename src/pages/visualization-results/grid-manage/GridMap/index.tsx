@@ -28,16 +28,16 @@ import {
   uploadAllFeature,
 } from '@/services/grid-manage/treeMenu'
 import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
-import { Button, Drawer, Form, FormInstance, Input, Modal, Select, Cascader } from 'antd'
+import { Button, Cascader, Drawer, Form, FormInstance, Input, Modal, Select } from 'antd'
 import { message } from 'antd/es'
 import { useEffect, useRef, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
   BELONGINGCAPACITY,
+  BELONGINGCAREA,
   BELONGINGLINE,
   BELONGINGMODEL,
   BELONGINGPROPERITIES,
-  BELONGINGCAREA,
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
   CABLECIRCUIT,
@@ -58,12 +58,12 @@ import {
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
 import {
+  transformAreaDataToArr,
+  transformArrtToAreaData,
   verificationLat,
   verificationLng,
   verificationNaturalNumber,
   verificationNaturalNumber0to100,
-  transformArrtToAreaData,
-  transformAreaDataToArr,
 } from '../tools'
 import {
   clear,
@@ -130,6 +130,7 @@ const GridMap = () => {
     companyId,
     areaData,
     areaMap,
+    checkLineIds,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
