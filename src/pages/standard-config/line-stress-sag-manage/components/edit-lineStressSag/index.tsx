@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Input, Form, Modal } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { updateLineStressSagItem } from '@/services/resource-config/line-strss-sag'
-import { useUpdateEffect } from 'ahooks'
+import { useUpdateEffect, useControllableValue } from 'ahooks'
 
 interface EditLineStressSagParams {
   visible: boolean
   onChange: (a: boolean) => void
   libId: string
   row: any
-  refreshTable: () => void
+  changeFinishEvent: () => void
 }
 
 const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
-  const { visible, onChange, libId, row, refreshTable } = props
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { onChange, libId, row, changeFinishEvent } = props
   const sureEdit = () => {
     form.validateFields().then(async (values) => {
       await updateLineStressSagItem({
@@ -24,23 +25,23 @@ const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
         kValue: values.kValue,
       })
       onChange(false)
-      refreshTable()
+      changeFinishEvent()
     })
   }
   const [form] = Form.useForm()
   useUpdateEffect(() => {
     form.setFieldsValue(row)
-  }, [visible])
+  }, [state])
   return (
     <>
       <Modal
         maskClosable={false}
         title="编辑-应力弧垂表"
         width="680px"
-        visible={visible}
+        visible={state}
         okText="确认"
         onOk={() => sureEdit()}
-        onCancel={() => onChange(false)}
+        onCancel={() => setState(false)}
         cancelText="取消"
         bodyStyle={{ height: '480px', overflowY: 'auto' }}
         destroyOnClose

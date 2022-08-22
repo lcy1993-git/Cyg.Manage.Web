@@ -217,10 +217,10 @@ const LineStressSag: React.FC<libParams> = (props) => {
 
         <EditLineStressSag
           visible={editLineStressSagVisible}
-          onChange={setEditLineStreesSagVisible}
           libId={libId}
           row={tableSelectRows[0]}
-          refreshTable={search}
+          changeFinishEvent={() => uploadFinishEvent()}
+          onChange={setEditLineStreesSagVisible}
         />
 
         <UploadLineStressSag
