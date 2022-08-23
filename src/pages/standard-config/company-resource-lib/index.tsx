@@ -1,21 +1,22 @@
 import PageCommonWrap from '@/components/page-common-wrap'
 import { EditOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin, Dropdown, Menu, Table } from 'antd'
-import React, { useState } from 'react'
+import { Button, Modal, Form, message, Spin, Dropdown, Menu, Table } from 'antd'
+import React, { useEffect, useState } from 'react'
 import styles from './index.less'
-import { useRequest } from 'ahooks'
+import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import {
   getResourceLibDetail,
-  addResourceLibItem,
   updateResourceLibItem,
   restartResourceLib,
+  getCampanyResourceLibLists,
+  creatCampanyResourceLib,
 } from '@/services/resource-config/resource-lib'
 import { isArray } from 'lodash'
 import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
 import UploadDrawing from '../canon-resource-lib/./components/upload-drawing'
 import { getUploadUrl } from '@/services/resource-config/drawing'
 import SaveImportLib from '../canon-resource-lib/./components/upload-lib'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { history } from 'umi'
 import { useLayoutStore } from '@/layouts/context'
 import { useMemo } from 'react'
@@ -33,17 +34,45 @@ const ResourceLib: React.FC = () => {
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const [libVisible, setLibVisible] = useState(false)
   const [libId, setLibId] = useState<string>('')
+  const [tableData, setTableData] = useState<any[]>([])
   const [currentCompanyManageId, setCurrentCompanyManageId] = useState<string>(
     window.localStorage.manageId
   ) //当前管理 模块的资源库Id
+  const userInfo = useGetUserInfo()
 
   const { data: keyData } = useRequest(() => getUploadUrl())
-
-  const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
+  })
+  // 默认创建公司库
+  const { run: createLib } = useRequest(
+    () => {
+      return creatCampanyResourceLib({
+        libType: 1,
+        libSource: userInfo.companyId,
+        libName: '公司库',
+        version: 'v1.0',
+        remark: '公司库',
+      })
+    },
+    {
+      manual: true,
+      onSuccess: (res) => {
+        setTableData([res])
+      },
+    }
+  )
+  // 获取公司资源库，没有则创建
+  useRequest(() => getCampanyResourceLibLists({ libType: 1, libSource: userInfo.companyId }), {
+    onSuccess: (res: any) => {
+      if (res?.items.length === 0) {
+        createLib()
+      } else {
+        setTableData(res?.items)
+      }
+    },
   })
 
   const { resourceManageFlag } = useLayoutStore()
@@ -275,17 +304,6 @@ const ResourceLib: React.FC = () => {
   const uploadFinishEvent = () => {
     refresh()
   }
-  const tableData = [
-    {
-      dbName: 'pdd_resource',
-      id: '1519857076424179712',
-      isDisabled: false,
-      libName: '甘肃临夏',
-      remark: null,
-      rootDirPath: '1519857076424179712',
-      version: '1.0',
-    },
-  ]
 
   return (
     <PageCommonWrap>

@@ -518,6 +518,7 @@ const ResourceLib: React.FC = () => {
         extractParams={{
           keyWord: searchKeyWord,
           status: status,
+          libType: 0,
         }}
       />
       <Modal

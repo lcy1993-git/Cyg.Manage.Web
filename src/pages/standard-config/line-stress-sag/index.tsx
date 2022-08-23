@@ -1,16 +1,14 @@
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { ImportOutlined, QuestionCircleOutlined, RedoOutlined } from '@ant-design/icons'
-import { Input, Button, message, Tooltip, Dropdown, Menu } from 'antd'
+import { ImportOutlined, RedoOutlined } from '@ant-design/icons'
+import { Input, Button, message, Dropdown, Menu } from 'antd'
 import React, { useState, useMemo } from 'react'
 import styles from './index.less'
 import { restartResourceLib } from '@/services/resource-config/resource-lib'
 import { isArray } from 'lodash'
 import SaveImportLineStressSag from '../canon-resource-lib/components/upload-lineStressSag'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import EnumSelect from '@/components/enum-select'
-import { BelongManageEnum } from '@/services/personnel-config/manage-user'
 import { history } from 'umi'
 import { useLayoutStore } from '@/layouts/context'
 
@@ -23,7 +21,6 @@ const LineStressSag: React.FC = () => {
 
   const [uploadLineStressSagVisible, setUploadLineStressSagVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-  const [status, setStatus] = useState<string>('0')
   const [libId, setLibId] = useState<string>('')
 
   const { lineStressSagFlag } = useLayoutStore()
@@ -40,25 +37,8 @@ const LineStressSag: React.FC = () => {
             placeholder="请输入资源库"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="资源库状态" width="300px">
-          <EnumSelect
-            enumList={BelongManageEnum}
-            onChange={(value) => searchByStatus(value)}
-            placeholder="-全部-"
-          />
-        </TableSearch>
       </div>
     )
-  }
-
-  const searchByStatus = (value: any) => {
-    setStatus(value)
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.searchByParams({
-        status: value,
-      })
-    }
   }
 
   // 列表刷新
@@ -217,7 +197,7 @@ const LineStressSag: React.FC = () => {
         type="radio"
         extractParams={{
           keyWord: searchKeyWord,
-          status: status,
+          libType: 0,
         }}
       />
 

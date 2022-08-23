@@ -3,6 +3,15 @@ import { Input, Form, Modal } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { updateLineStressSagItem } from '@/services/resource-config/line-strss-sag'
 import { useUpdateEffect, useControllableValue } from 'ahooks'
+import { divide } from 'lodash'
+
+interface DisplayItemParams {
+  value?: string
+}
+const DisplayItem: React.FC<DisplayItemParams> = (props) => {
+  const { value } = props
+  return <div>{value}</div>
+}
 
 interface EditLineStressSagParams {
   visible: boolean
@@ -32,6 +41,7 @@ const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
   useUpdateEffect(() => {
     form.setFieldsValue(row)
   }, [state])
+
   return (
     <>
       <Modal
@@ -47,31 +57,23 @@ const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
         destroyOnClose
       >
         <Form form={form} preserve={false}>
-          <CyFormItem
-            label="气象区"
-            name="meteorologic"
-            labelWidth={98}
-            align="left"
-            required
-            rules={[{ required: true, message: '气象区不能为空' }]}
-          >
-            <Input disabled />
+          <CyFormItem label="气象区" name="meteorologic" labelWidth={120} align="left">
+            <DisplayItem />
           </CyFormItem>
 
-          <CyFormItem
-            label="导线型号"
-            name="spec"
-            labelWidth={98}
-            align="left"
-            required
-            rules={[{ required: true, message: '导线型号不能为空' }]}
-          >
-            <Input disabled />
+          <CyFormItem label="导线型号" name="spec" labelWidth={120} align="left">
+            <DisplayItem />
+          </CyFormItem>
+          <CyFormItem label="应力弧垂表图纸" name="chartName" labelWidth={120} align="left">
+            <DisplayItem />
+          </CyFormItem>
+          <CyFormItem label="安全系数" name="safetyFactor" labelWidth={120} align="left">
+            <DisplayItem />
           </CyFormItem>
           <CyFormItem
             label="应力"
             name="stress"
-            labelWidth={98}
+            labelWidth={120}
             align="left"
             required
             rules={[{ required: true, message: '应力不能为空' }]}
@@ -81,7 +83,7 @@ const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
           <CyFormItem
             label="综合比值"
             name="comparativeLoad"
-            labelWidth={98}
+            labelWidth={120}
             align="left"
             required
             rules={[{ required: true, message: '综合比值不能为空' }]}
@@ -91,25 +93,12 @@ const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
           <CyFormItem
             label="K值"
             name="kValue"
-            labelWidth={98}
+            labelWidth={120}
             align="left"
             required
             rules={[{ required: true, message: 'K值不能为空' }]}
           >
             <Input placeholder="请输入K值" />
-          </CyFormItem>
-          <CyFormItem label="应力弧垂表图纸" name="chartName" labelWidth={98} align="left">
-            <Input disabled />
-          </CyFormItem>
-          <CyFormItem
-            label="安全系数"
-            name="safetyFactor"
-            labelWidth={98}
-            align="left"
-            required
-            rules={[{ required: true, message: '安全系数不能为空' }]}
-          >
-            <Input disabled />
           </CyFormItem>
         </Form>
       </Modal>
