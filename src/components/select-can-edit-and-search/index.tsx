@@ -38,7 +38,7 @@ const SelectCanEditAndSearch: React.FC<SelectCanEditAndSearchProps> = (props) =>
       getDataByUrl(url, { ...extraParams, keyWord: value }, requestSource, requestType, postType),
     {
       ready: !!url,
-      debounceInterval: 3000,
+      debounceInterval: 1500,
       manual: true,
       onSuccess: (res) => {
         const list = res?.items.map((item) => {
