@@ -24,6 +24,15 @@ const GridManage = Loadable({
 })
 
 /**
+ * 网架规划
+ */
+const PlanManage = Loadable({
+  loader: () => import('@/pages/visualization-results/plan-manage'),
+  loading: Loading,
+  delay: 150,
+})
+
+/**
  * 注入projectId,接触新id生成时没有重新挂载的问题
  * @returns
  */
@@ -50,8 +59,8 @@ const routes = [
   },
   {
     title: '网架规划',
-    path: '/visualization-results/grid-pre-design',
-    component: <HashHistoryGrid />,
+    path: '/visualization-results/plan-manage',
+    component: <PlanManage />,
   },
 ]
 
