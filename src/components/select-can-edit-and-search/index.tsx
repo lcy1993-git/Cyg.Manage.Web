@@ -25,7 +25,7 @@ const SelectCanEditAndSearch: React.FC<SelectCanEditAndSearchProps> = (props) =>
     url = '',
     extraParams = {},
     titlekey = 'text',
-    valuekey = 'value',
+    valuekey = 'values',
     requestSource = 'project',
     requestType = 'get',
     postType = 'body',
