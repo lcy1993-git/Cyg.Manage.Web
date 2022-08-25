@@ -1,12 +1,12 @@
 import { Select } from 'antd'
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
 import { getDataByUrl } from '@/services/common'
 
-// const { Option } = Select
+const { Option } = Select
 
-interface SelectCanEditProps {
+interface SelectCanEditAndSearchProps {
   onChange?: (a: string, b: string) => void
   placeholder?: string
   url?: string
@@ -18,7 +18,7 @@ interface SelectCanEditProps {
   postType?: 'query' | 'body'
 }
 
-const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
+const SelectCanEditAndSearch: React.FC<SelectCanEditAndSearchProps> = (props) => {
   const {
     onChange,
     placeholder,
@@ -31,22 +31,30 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
     postType = 'body',
   } = props
   const [selectValue, setSelectValue] = useState<string>()
-
-  const { data: resData } = useRequest(
-    () => getDataByUrl(url, extraParams, requestSource, requestType, postType),
+  const [list, setList] = useState<any[]>([])
+  // throttleSearch
+  const { run: throttleSearch } = useRequest(
+    (value) =>
+      getDataByUrl(url, { ...extraParams, keyWord: value }, requestSource, requestType, postType),
     {
       ready: !!url,
-      refreshDeps: [url, JSON.stringify(extraParams)],
+      debounceInterval: 3000,
+      manual: true,
+      onSuccess: (res) => {
+        const list = res?.items.map((item) => {
+          item['label'] = item['materialName']
+          item['value'] = item['id']
+          return { label: item['materialName'], value: item['id'] }
+        })
+        setList(list)
+      },
     }
   )
-  const afterHanldeData = useMemo(() => {
-    if (resData) {
-      return resData.items.map((item: any) => {
-        return { label: item[titlekey], value: item[valuekey] }
-      })
-    }
-    return []
-  }, [JSON.stringify(resData)])
+  const options = list.map((d) => (
+    <Option key={d.value} value={d.value}>
+      {d.label}
+    </Option>
+  ))
 
   const changeHandle = (value: string) => {
     setSelectValue(value)
@@ -54,27 +62,33 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
   const searchHandle = (value: string) => {
     if (value) {
       setSelectValue(value)
+      throttleSearch(value)
     }
   }
 
   return (
     <div className={styles.wrap}>
       <Select
-        allowClear
         showSearch
         value={selectValue}
+        allowClear
         onBlur={() => {
           onChange?.(selectValue || '', 'blur')
         }}
-        options={afterHanldeData}
-        onChange={(value) => changeHandle(value)}
-        onSearch={(value: any) => searchHandle(value)}
         onSelect={(value) => {
           onChange?.(value, 'select')
         }}
         placeholder={placeholder}
-      />
+        defaultActiveFirstOption={false}
+        showArrow={false}
+        filterOption={false}
+        onSearch={(value: any) => searchHandle(value)}
+        onChange={(value) => changeHandle(value)}
+        notFoundContent={null}
+      >
+        {options}
+      </Select>
     </div>
   )
 }
-export default SelectCanEdit
+export default SelectCanEditAndSearch

@@ -42,11 +42,12 @@ const Material: React.FC<libParams> = (props) => {
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false)
   const [cableTerminalVisible, setCableTerminalVisible] = useState<boolean>(false)
   const [materialCategory, setMaterialCategory] = useState<string>('')
+  const [chacheEditData, setChacheEditData] = useState<any>({})
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, run, loading } = useRequest(getMaterialDetail, {
+  const { run, loading } = useRequest(getMaterialDetail, {
     manual: true,
   })
 
@@ -62,16 +63,19 @@ const Material: React.FC<libParams> = (props) => {
             placeholder="请输入物料信息"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="组件" width="220px">
+        <TableSearch marginLeft="20px" label="类别" width="220px">
           <UrlSelect
             allowClear
             showSearch
             requestSource="resource"
-            url="/Component/GetDeviceCategory"
+            url="/Material/GetMaterialTypeList"
             titlekey="key"
             valuekey="value"
             placeholder="请选择"
             onChange={(value: any) => setMaterialCategory(value)}
+            extraParams={{ libId: libId }}
+            postType="query"
+            requestType="post"
           />
         </TableSearch>
       </div>
@@ -266,6 +270,7 @@ const Material: React.FC<libParams> = (props) => {
 
     setEditFormVisible(true)
     const ResourceLibData = await run(libId, editDataId)
+    setChacheEditData(ResourceLibData)
 
     editForm.setFieldsValue(ResourceLibData)
   }
@@ -282,7 +287,7 @@ const Material: React.FC<libParams> = (props) => {
       message.error('请选择一条数据进行编辑')
       return
     }
-    const editData = data!
+    const editData = chacheEditData!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -407,6 +412,11 @@ const Material: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
+  // fixrxq
+  const testId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     // <PageCommonWrap>
@@ -425,7 +435,7 @@ const Material: React.FC<libParams> = (props) => {
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,
-          category: materialCategory,
+          materialType: materialCategory,
         }}
       />
 
@@ -442,7 +452,7 @@ const Material: React.FC<libParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <MaterialForm resourceLibId={libId} />
+          <MaterialForm onSetDefaultForm={testId} resourceLibId={libId} />
         </Form>
       </Modal>
       <Modal

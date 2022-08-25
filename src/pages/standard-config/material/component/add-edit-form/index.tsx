@@ -13,17 +13,25 @@ import { Input, Tooltip, Radio } from 'antd'
 import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
 import React, { useState } from 'react'
 import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 interface ChartListFromLibParams {
   resourceLibId: string
+  onSetDefaultForm?: any
 }
 
 const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { resourceLibId } = props
+  const { resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const [type, setType] = useState<string>('')
 
-  const changeTypeHandle = (value: string) => {
+  const changeTypeHandle = (value: string, type: string) => {
     setType(value)
+  }
+  const changeNameHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 选中下拉列表则添加模板数据
+      onSetDefaultForm?.(value)
+    }
   }
   const isOverHead = type === '导线'
   const isCable = type === '电力电缆'
@@ -49,15 +57,40 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         <EnumSelect placeholder="请选择物料类型" enumList={materialType} valueString />
       </CyFormItem>
 
+      {/* <CyFormItem
+        label="物料名称"
+        name="materialName"
+        required
+        rules={[{ required: true, message: '物料名称不能为空' }]}
+      >
+        <SelectCanEdit
+          url="/ResourceLib/GetPageList"
+          requestSource="resource"
+          requestType="post"
+          titlekey="id"
+          valuekey="id"
+          postType="body"
+          extraParams={{ libType: 0, keyWord: '', status: '0' }}
+          placeholder="请输入名称"
+          onChange={changeNameHandle}
+        />
+      </CyFormItem> */}
       <CyFormItem
         label="物料名称"
         name="materialName"
         required
         rules={[{ required: true, message: '物料名称不能为空' }]}
       >
-        <Input placeholder="请输入物料名称"></Input>
+        <SelectCanEditAndSearch
+          url="/Material/GetPageList"
+          extraParams={{ resourceLibId: resourceLibId }}
+          requestType="post"
+          postType="body"
+          requestSource="resource"
+          placeholder="请输入名称"
+          onChange={changeNameHandle}
+        />
       </CyFormItem>
-
       <CyFormItem
         label="规格型号"
         name="spec"
@@ -73,7 +106,17 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '类别不能为空' }]}
       >
-        <SelectCanEdit placeholder="请输入类别" onChange={changeTypeHandle} />
+        <SelectCanEdit
+          url="/ResourceLib/GetPageList"
+          requestSource="resource"
+          requestType="post"
+          titlekey="id"
+          valuekey="id"
+          postType="body"
+          extraParams={{ libType: 0, keyWord: '', status: '0' }}
+          placeholder="请输入类别"
+          onChange={changeTypeHandle}
+        />
       </CyFormItem>
 
       <CyFormItem
