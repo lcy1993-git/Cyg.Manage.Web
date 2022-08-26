@@ -130,7 +130,6 @@ const PlanMap = () => {
     companyId,
     areaData,
     areaMap,
-    checkLineIds,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
@@ -592,7 +591,7 @@ const PlanMap = () => {
 
   return (
     <>
-      <div ref={ref} id="map" className="w-full h-full"></div>
+      <div ref={ref} id="planMap" className="w-full h-full"></div>
       <div
         id="tag"
         style={{ border: '1px solid black', background: 'white', padding: '0 5px' }}

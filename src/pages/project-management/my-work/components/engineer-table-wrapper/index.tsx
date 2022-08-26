@@ -80,7 +80,7 @@ interface EngineerTableWrapperProps {
 
   batchButtonSlot?: () => React.ReactNode
 }
-const initSearchParams = {
+export const initSearchParams = {
   category: [],
   stage: [],
   constructType: [],
@@ -182,6 +182,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     return myWorkInitData
       .find((item) => item.id === currentClickTabType)
       ?.children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
 
   const { data: columnsData } = useRequest(() => getColumnsConfig(), {
@@ -274,6 +275,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     engineerInfo: any,
     status: any
   ) => {
+    const { stateInfo } = tableItemData
+
     return (
       <Menu>
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
@@ -333,7 +336,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             项目继承
           </Menu.Item>
         )}
-        {
+        {stateInfo.status === 7 && (
           <Menu.Item
             onClick={() => {
               setPreDesignItem(tableItemData)
@@ -341,9 +344,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
               history.push('/visualization-results/grid-pre-design')
             }}
           >
-            网架规划
+            网架归档
           </Menu.Item>
-        }
+        )}
         {tableItemData.identitys.findIndex((item: any) => item.value === 4) > -1 &&
           status !== 30 &&
           status !== 31 &&
@@ -436,8 +439,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }
 
   const projectNameCompleteRender = (value: string, record: any) => {
-    const projects = record.engineerInfo.projects
-    const parentData = projects.filter((item: any) => item.id === record.inheritId)
+    // const projects = record.engineerInfo.projects
+    // const parentData = projects.filter((item: any) => item.id === record.inheritId)
 
     if (record.stateInfo.inheritStatus) {
       if (record.stateInfo.inheritStatus === 3) {
@@ -1151,6 +1154,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       setSearchParams(initSearchParams)
       initTableData(indexToPageSearchParams.requestUrl, { ...initSearchParams, keyWord: '' })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexToPageSearchParams])
 
   const columnsConfigSetting = () => {
@@ -1161,6 +1165,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     if (selectedFavId) {
       searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFavId])
 
   const finalyColumns = useMemo(() => {
@@ -1179,6 +1184,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       'designUser',
       'identitys',
     ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(chooseColumns)])
 
   const showColumns = useMemo(() => {
@@ -1187,6 +1193,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     } else {
       return completeConfig.filter((item) => typeColumns.includes(item.dataIndex))
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finalyColumns, typeColumns])
 
   const columnsIcon = (

@@ -29,6 +29,10 @@ const MyWork: React.FC = () => {
   const [selectedFavId, setSelectedFavId] = useState<string>('')
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
   const [favName, setFavName] = useState<string>('')
+  //保存工作台列表ref
+  const [myRef, setMyRef] = useState<any>()
+  const { setRef } = useLayoutStore()
+
   const [indexToPageSearchParams, setIndexToPageSearchParams] = useState({
     requestUrl: '/ProjectList/GetAlls',
   })
@@ -222,9 +226,11 @@ const MyWork: React.FC = () => {
         </div>
       )
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myWorkInitData, currentClickTabType])
 
   useEffect(() => {
+    setRef(myRef)
     if (
       allProjectSearchParams &&
       allProjectSearchParams.searchType &&
@@ -251,6 +257,7 @@ const MyWork: React.FC = () => {
 
       setAllProjectSearchParams?.(undefined)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allProjectSearchParams, myWorkInitData])
 
   useEffect(() => {
@@ -304,7 +311,7 @@ const MyWork: React.FC = () => {
                     <Spin spinning={loading} tip="数据加载中..."></Spin>
                   </div>
                 )}
-                {myWorkInitData.length > 0 && <MyProject />}
+                {myWorkInitData.length > 0 && <MyProject setMyRef={setMyRef} />}
               </div>
             </>
           ) : (

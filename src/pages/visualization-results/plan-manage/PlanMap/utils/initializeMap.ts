@@ -59,7 +59,7 @@ var checkLineIds: any
 
 export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOps) => {
   mapRef.map = new Map({
-    target: 'map',
+    target: 'planMap',
     layers: [
       new TileLayer({
         source: new XYZ({

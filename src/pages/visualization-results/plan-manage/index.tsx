@@ -3,7 +3,6 @@ import { useState } from 'react'
 import ChangMapUrl from './ChangeMapUrl'
 import { MyContextType, MyWorkProvider, useMyContext } from './Context'
 import DrawToolbar from './DrawToolbar'
-import ExcelImportData from './ExcelImportData'
 import Footer from './Footer'
 import { MapRef, useCurrentRef } from './hooks'
 import styles from './index.less'
@@ -157,8 +156,6 @@ const PlanManageWrap: React.FC = () => {
               <DrawToolbar />
               {/* 地图源切换 */}
               <ChangMapUrl />
-              {/* excel数据导入模板 */}
-              <ExcelImportData />
             </div>
           </Spin>
         </div>

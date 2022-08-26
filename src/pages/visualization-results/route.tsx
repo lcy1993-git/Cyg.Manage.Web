@@ -1,4 +1,3 @@
-import { useLayoutStore } from '@/layouts/context'
 import Loading from '@ant-design/pro-layout/es/PageLoading'
 import Loadable from 'react-loadable'
 
@@ -8,11 +7,11 @@ const ResultPage = Loadable({
   delay: 150,
 })
 
-const HistoryGrid = Loadable({
-  loader: () => import('@/pages/visualization-results/history-grid'),
-  loading: Loading,
-  delay: 150,
-})
+// const HistoryGrid = Loadable({
+//   loader: () => import('@/pages/visualization-results/history-grid'),
+//   loading: Loading,
+//   delay: 150,
+// })
 
 /**
  * 网架管理
@@ -36,10 +35,10 @@ const PlanManage = Loadable({
  * 注入projectId,接触新id生成时没有重新挂载的问题
  * @returns
  */
-const HashHistoryGrid = () => {
-  const { preDesignItem } = useLayoutStore()
-  return <HistoryGrid key={preDesignItem.id} />
-}
+// const HashHistoryGrid = () => {
+//   const { preDesignItem } = useLayoutStore()
+//   return <HistoryGrid key={preDesignItem.id} />
+// }
 
 const routes = [
   {
@@ -47,18 +46,18 @@ const routes = [
     path: '/visualization-results/result-page',
     component: <ResultPage />,
   },
+  // {
+  //   title: '历史网架',
+  //   path: '/visualization-results/history-grid',
+  //   component: <HistoryGrid />,
+  // },
   {
     title: '历史网架',
-    path: '/visualization-results/history-grid',
-    component: <HistoryGrid />,
-  },
-  {
-    title: '网架管理',
     path: '/visualization-results/grid-manage',
     component: <GridManage />,
   },
   {
-    title: '网架规划',
+    title: '规划网架',
     path: '/visualization-results/plan-manage',
     component: <PlanManage />,
   },

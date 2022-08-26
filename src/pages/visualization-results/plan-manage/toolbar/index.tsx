@@ -1,3 +1,4 @@
+import AddEngineerModal from '@/pages/project-management/all-project/components/add-engineer-modal'
 import { getrepeatPointdata } from '@/services/grid-manage/treeMenu'
 import { AimOutlined, BulbOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons'
 import { useRequest, useUpdateEffect } from 'ahooks'
@@ -72,6 +73,10 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   )
   // 当前高亮的设备
   const [highlightFeatureType, setHighlightFeatureType] = useState<string[]>([])
+
+  //规划立项
+  const [createProjectVisible, setCreateProjectVisible] = useState<boolean>(false)
+
   // 表格标题
   const columns = [
     {
@@ -249,6 +254,12 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDragPoint])
+
+  /**根据框选规划数据立项 */
+  const createProject = () => {
+    setCreateProjectVisible(true)
+  }
+
   useUpdateEffect(() => {
     setRepeatPointState(false)
     setSearchState(false)
@@ -269,7 +280,9 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
         }}
       >
         <Space>
-          <Button type="primary">立项</Button>
+          <Button type="primary" onClick={createProject}>
+            立项
+          </Button>
           <Button
             type="primary"
             onClick={() => {
@@ -372,6 +385,9 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
           />
         </Spin>
       </div>
+      {createProjectVisible && (
+        <AddEngineerModal visible={createProjectVisible} onChange={setCreateProjectVisible} />
+      )}
     </>
   )
 }

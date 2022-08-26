@@ -5,6 +5,8 @@ import { Form } from 'antd'
 import CreateEngineer from '../create-engineer'
 import { addEngineer } from '@/services/project-management/all-project'
 import { message } from 'antd'
+import { useMyWorkStore } from '@/pages/project-management/my-work/context'
+import { useLayoutStore } from '@/layouts/context'
 
 interface AddEngineerModalProps {
   visible: boolean
@@ -16,10 +18,19 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [saveLoading, setSaveLoading] = useState<boolean>(false)
   const [current, setCurrent] = useState<number>(0)
+  //此处ref是用于规划网架立项后刷新列表
+  const { ref } = useLayoutStore()
 
   const { finishEvent } = props
 
   const [form] = Form.useForm()
+
+  const refresh = () => {
+    if (ref && ref.current) {
+      // @ts-ignore
+      ref.current.delayRefresh()
+    }
+  }
 
   const sureAddEngineerEvent = () => {
     form.validateFields().then(async (values) => {
@@ -69,7 +80,7 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
 
         message.success('立项成功')
         setState(false)
-        finishEvent?.()
+        finishEvent ? finishEvent?.() : refresh()
       } catch (msg) {
         console.error(msg)
       } finally {

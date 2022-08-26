@@ -77,6 +77,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         Number(projectInfo?.dataSourceType) === 1 ? 0 : Number(projectInfo?.dataSourceType)
       )
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(projectInfo)])
 
   const {
@@ -696,7 +697,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             rules={Rule.required}
           >
-            {status == 1 || status == 14 || status == 30 || status == 31 || status == undefined ? (
+            {status === 1 ||
+            status === 14 ||
+            status === 30 ||
+            status === 31 ||
+            status === undefined ? (
               <UrlSelect
                 defaultData={
                   pointVisible || isInherit ? handleProjectDataSourceType : projectDataSourceType

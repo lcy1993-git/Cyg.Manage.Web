@@ -29,13 +29,17 @@ import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
 import { uniq } from 'lodash'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import { useMyWorkStore } from '../../context'
 import EngineerTableWrapper from '../engineer-table-wrapper'
 import TypeElement from '../type-element'
 import styles from './index.less'
 
-const MyProject: React.FC = () => {
+interface ProjectParams {
+  setMyRef?: Dispatch<SetStateAction<any>>
+}
+const MyProject: React.FC<ProjectParams> = (props) => {
+  const { setMyRef } = props
   const [searchParams, setSearchParams] = useState({})
   const [tableSelectKeys, setTableSelectKeys] = useState<string[]>([])
   const [tableSelectRowData, setTableSelectRowData] = useState<any[]>([])
@@ -76,6 +80,11 @@ const MyProject: React.FC = () => {
 
   const { userType = '' } = useGetUserInfo()
 
+  useEffect(() => {
+    setMyRef && setMyRef(tableRef)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const {
     currentClickTabType,
     myWorkInitData,
@@ -104,10 +113,12 @@ const MyProject: React.FC = () => {
       (item) =>
         item.stateInfo && (item.stateInfo.inheritStatus === 1 || item.stateInfo.inheritStatus === 3)
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(tableSelectRowData)])
 
   const titleTypeArray = useMemo(() => {
     return myWorkInitData.find((item) => item.id === currentClickTabType)?.children
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(myWorkInitData), currentClickTabType])
 
   const searchEvent = () => {
@@ -126,6 +137,7 @@ const MyProject: React.FC = () => {
 
   const engineerIds = useMemo(() => {
     return uniq(tableSelectRowData.map((item) => item.engineerId))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(tableSelectRowData)])
 
   const refresh = () => {
@@ -237,7 +249,7 @@ const MyProject: React.FC = () => {
     } else {
       //根据现场数据来源数组 判断点击安排进入后的提示信息
       const typeArray = tableSelectRowData.map((item) => item.dataSourceType)
-      if (typeArray?.length != 1 && !typeArray?.includes(0)) {
+      if (typeArray?.length !== 1 && !typeArray?.includes(0)) {
         setDataSourceType(-1)
       }
       if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {
@@ -278,10 +290,10 @@ const MyProject: React.FC = () => {
 
     setIfCanEdit(resData)
     const typeArray = tableSelectRowData.map((item) => item.dataSourceType)
-    if (typeArray?.length != 1 && typeArray?.includes(0)) {
+    if (typeArray?.length !== 1 && typeArray?.includes(0)) {
       setDataSourceType(0)
     }
-    if (typeArray?.length != 1 && !typeArray?.includes(0)) {
+    if (typeArray?.length !== 1 && !typeArray?.includes(0)) {
       setDataSourceType(-1)
     }
     if (typeArray?.every((item) => item === typeArray[0]) && typeArray?.includes(1)) {

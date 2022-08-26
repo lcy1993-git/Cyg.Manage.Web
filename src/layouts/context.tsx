@@ -18,6 +18,10 @@ interface LayoutContextValue {
   setPreDesignItem: React.Dispatch<SetStateAction<any>>
   favoriteFlag?: boolean
   setFavoriteFlag?: (value: boolean) => void
+
+  /**规划网架 */
+  ref: any //存储列表ref
+  setRef: any
 }
 
 const LayoutContext = createContext({} as LayoutContextValue)
