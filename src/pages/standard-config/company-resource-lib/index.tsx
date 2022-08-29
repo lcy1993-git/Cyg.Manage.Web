@@ -46,7 +46,7 @@ const ResourceLib: React.FC = () => {
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   })
-  // 默认创建公司库
+  // 默认创建公司库test
   const { run: createLib } = useRequest(
     () => {
       return creatCampanyResourceLib({
