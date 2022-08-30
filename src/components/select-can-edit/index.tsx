@@ -1,5 +1,5 @@
 import { Select } from 'antd'
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
 import { getDataByUrl } from '@/services/common'
@@ -8,6 +8,7 @@ import { getDataByUrl } from '@/services/common'
 
 interface SelectCanEditProps {
   onChange?: (a: string, b: string) => void
+  value?: string
   placeholder?: string
   url?: string
   extraParams?: object
@@ -16,11 +17,13 @@ interface SelectCanEditProps {
   requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component' | 'tecEco'
   requestType?: 'post' | 'get'
   postType?: 'query' | 'body'
+  update?: string
 }
 
 const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
   const {
     onChange,
+    value,
     placeholder,
     url = '',
     extraParams = {},
@@ -29,24 +32,29 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
     requestSource = 'project',
     requestType = 'get',
     postType = 'body',
+    update,
   } = props
-  const [selectValue, setSelectValue] = useState<string>()
+  const [selectValue, setSelectValue] = useState<string>('')
+  const [data, setData] = useState<any[]>([])
 
-  const { data: resData } = useRequest(
-    () => getDataByUrl(url, extraParams, requestSource, requestType, postType),
+  const { run } = useRequest(
+    () => getDataByUrl(url, { ...extraParams, name: update }, requestSource, requestType, postType),
     {
       ready: !!url,
       refreshDeps: [url, JSON.stringify(extraParams)],
+      manual: true,
+      onSuccess: (res) => {
+        setData(
+          res.map((item) => {
+            return {
+              label: item[titlekey],
+              value: item[valuekey],
+            }
+          })
+        )
+      },
     }
   )
-  const afterHanldeData = useMemo(() => {
-    if (resData) {
-      return resData.items.map((item: any) => {
-        return { label: item[titlekey], value: item[valuekey] }
-      })
-    }
-    return []
-  }, [JSON.stringify(resData)])
 
   const changeHandle = (value: string) => {
     setSelectValue(value)
@@ -56,6 +64,12 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
       setSelectValue(value)
     }
   }
+  useEffect(() => {
+    run()
+  }, [update])
+  useEffect(() => {
+    value && setSelectValue(value)
+  }, [value])
 
   return (
     <div className={styles.wrap}>
@@ -66,7 +80,7 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
         onBlur={() => {
           onChange?.(selectValue || '', 'blur')
         }}
-        options={afterHanldeData}
+        options={data}
         onChange={(value) => changeHandle(value)}
         onSearch={(value: any) => searchHandle(value)}
         onSelect={(value) => {

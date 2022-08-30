@@ -15,6 +15,7 @@ interface PoleTypeParams {
 }
 
 const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
+  const { resourceLibId } = props
   return (
     <>
       <CyFormItem
@@ -61,7 +62,16 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '杆型类型不能为空' }]}
       >
-        <SelectCanEdit placeholder="请输入杆型类型" />
+        <SelectCanEdit
+          url="/PoleType/GetTypeList"
+          requestSource="resource"
+          requestType="post"
+          titlekey="value"
+          valuekey="value"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请输入杆型类型"
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -70,7 +80,16 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '转角不能为空' }]}
       >
-        <SelectCanEdit placeholder="请输入转角类型" />
+        <SelectCanEdit
+          url="/PoleType/GetCornerList"
+          requestSource="resource"
+          requestType="post"
+          titlekey="value"
+          valuekey="value"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请输入转角类型"
+        />
       </CyFormItem>
 
       <CyFormItem

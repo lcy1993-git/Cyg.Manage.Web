@@ -23,11 +23,15 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
   const { resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const [type, setType] = useState<string>('')
+  const [updateName, setUpdateName] = useState<string>('水泥')
 
   const changeTypeHandle = (value: string, type: string) => {
     setType(value)
   }
   const changeNameHandle = (value: string, type: string) => {
+    setUpdateName(value)
+  }
+  const changeSpecHandle = (value: string, type: string) => {
     if (type === 'select') {
       // 选中下拉列表则添加模板数据
       onSetDefaultForm?.(value)
@@ -82,11 +86,13 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         rules={[{ required: true, message: '物料名称不能为空' }]}
       >
         <SelectCanEditAndSearch
-          url="/Material/GetPageList"
-          extraParams={{ resourceLibId: resourceLibId }}
+          url="/Material/GetMaterialByNameList"
+          extraParams={{ libId: resourceLibId }}
           requestType="post"
-          postType="body"
+          postType="query"
           requestSource="resource"
+          titlekey="value"
+          valuekey="value"
           placeholder="请输入名称"
           onChange={changeNameHandle}
         />
@@ -97,7 +103,19 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '规格型号不能为空' }]}
       >
-        <Input placeholder="请输入规格型号" />
+        {/* <Input placeholder="请输入规格型号" /> */}
+        <SelectCanEdit
+          url="/Material/GetListBySpec"
+          requestSource="resource"
+          requestType="post"
+          titlekey="spec"
+          valuekey="id"
+          postType="body"
+          extraParams={{ libId: resourceLibId, spec: '0' }}
+          placeholder="请输入规格型号"
+          onChange={changeSpecHandle}
+          update={updateName}
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -107,13 +125,13 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         rules={[{ required: true, message: '类别不能为空' }]}
       >
         <SelectCanEdit
-          url="/ResourceLib/GetPageList"
+          url="/Material/GetMaterialTypeList"
           requestSource="resource"
           requestType="post"
-          titlekey="id"
-          valuekey="id"
-          postType="body"
-          extraParams={{ libType: 0, keyWord: '', status: '0' }}
+          titlekey="value"
+          valuekey="value"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
           placeholder="请输入类别"
           onChange={changeTypeHandle}
         />
