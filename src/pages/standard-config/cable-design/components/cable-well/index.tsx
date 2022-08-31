@@ -352,6 +352,11 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
     }
     setDetailVisible(true)
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     <>
@@ -379,11 +384,11 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '680px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '680px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <CableWellForm resourceLibId={resourceLibId} type="add" />
+          <CableWellForm resourceLibId={resourceLibId} type="add" onSetDefaultForm={selctModelId} />
         </Form>
       </Modal>
       <Modal
@@ -395,12 +400,12 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
         onOk={() => sureEditCableWell()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '680px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '680px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CableWellForm resourceLibId={resourceLibId} />
+            <CableWellForm resourceLibId={resourceLibId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>

@@ -13,15 +13,18 @@ import {
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Select, Tooltip } from 'antd'
 import React, { useState } from 'react'
+import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 
 const { Option } = Select
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string
+  onSetDefaultForm?: any
 }
 
 const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
 
   const unitSlot = () => {
@@ -34,6 +37,12 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       </>
     )
   }
+  const changeNameHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 根据选择的id填充表单数据
+      onSetDefaultForm?.(value)
+    }
+  }
 
   return (
     <>
@@ -41,30 +50,40 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         label="模块名称"
         name="moduleName"
         required
-        labelWidth={108}
         rules={[{ required: true, message: '模块名称不能为空' }]}
+        labelWidth={108}
       >
-        <Input placeholder="请输入模块名称" />
+        <SelectCanEditAndSearch
+          url="/Modules/GetPageList"
+          extraParams={{ resourceLibId: resourceLibId }}
+          requestType="post"
+          postType="body"
+          requestSource="resource"
+          titlekey="moduleName"
+          valuekey="id"
+          placeholder="请输入模块名称"
+          onChange={changeNameHandle}
+          searchKey="keyWord"
+          dataStructure="items"
+        />
       </CyFormItem>
 
       <CyFormItem
         label="杆型简号"
         name="poleTypeCode"
         required
-        labelWidth={108}
         rules={[{ required: true, message: '杆型简号不能为空' }]}
+        labelWidth={108}
       >
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
+        <SelectCanEdit
+          url="/PoleType/GetTypeList"
           requestSource="resource"
-          url="/Chart/GetDesignChartList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择杆型简号"
+          requestType="get"
+          titlekey="value"
+          valuekey="value"
           postType="query"
           extraParams={{ libId: resourceLibId }}
+          placeholder="请选择杆型简号"
         />
       </CyFormItem>
 

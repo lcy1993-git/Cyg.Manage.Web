@@ -1,6 +1,7 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import UrlSelect from '@/components/url-select'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 import SelectCanEdit from '@/components/select-can-edit'
 import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
 import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
@@ -11,10 +12,11 @@ import React, { useState } from 'react'
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string
+  onSetDefaultForm?: any
 }
 
 const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const unitSlot = () => {
     return (
@@ -26,18 +28,36 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
       </>
     )
   }
+  const changeNameHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 根据选择的id填充表单数据
+      onSetDefaultForm?.(value)
+    }
+  }
 
   return (
     <>
       <CyFormItem
         label="模块名称"
         name="channelName"
-        labelWidth={130}
-        align="right"
         required
         rules={[{ required: true, message: '模块名称不能为空' }]}
+        labelWidth={130}
+        align="right"
       >
-        <Input placeholder="请输入模块名称" />
+        <SelectCanEditAndSearch
+          url="/CableChannel"
+          extraParams={{ libId: resourceLibId }}
+          requestType="post"
+          postType="body"
+          requestSource="resource"
+          titlekey="channelName"
+          valuekey="id"
+          placeholder="请输入模块名称"
+          onChange={changeNameHandle}
+          searchKey="keyWord"
+          dataStructure="items"
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -102,14 +122,12 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '敷设方式不能为空' }]}
       >
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
+        <SelectCanEdit
+          requestType="get"
           requestSource="resource"
-          url="/Chart/GetDesignChartList"
-          titlekey="chartName"
-          valuekey="chartId"
+          url="/CableChannel/GetLayingModeList"
+          titlekey="value"
+          valuekey="value"
           placeholder="请选择敷设方式"
           postType="query"
           extraParams={{ libId: resourceLibId }}
@@ -151,7 +169,16 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '排列方式不能为空' }]}
       >
-        <SelectCanEdit placeholder="请输入排列方式" />
+        <SelectCanEdit
+          requestType="get"
+          requestSource="resource"
+          url="/CableChannel/GetArrangementList"
+          titlekey="value"
+          valuekey="value"
+          placeholder="请选择排列方式"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+        />
       </CyFormItem>
       {isHidden && (
         <div

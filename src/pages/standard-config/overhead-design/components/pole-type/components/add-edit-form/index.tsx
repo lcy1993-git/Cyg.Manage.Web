@@ -65,7 +65,7 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         <SelectCanEdit
           url="/PoleType/GetTypeList"
           requestSource="resource"
-          requestType="post"
+          requestType="get"
           titlekey="value"
           valuekey="value"
           postType="query"
@@ -83,7 +83,7 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         <SelectCanEdit
           url="/PoleType/GetCornerList"
           requestSource="resource"
-          requestType="post"
+          requestType="get"
           titlekey="value"
           valuekey="value"
           postType="query"

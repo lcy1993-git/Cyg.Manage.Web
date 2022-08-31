@@ -6,6 +6,7 @@ import EnumSelect from '@/components/enum-select'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
 import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
+import SelectCanEdit from '@/components/select-can-edit'
 
 interface ChartListFromLibParams {
   resourceLibId: string
@@ -62,13 +63,31 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
         <Input disabled />
       </CyFormItem>
 
-      <CyFormItem
+      {/* <CyFormItem
         label="组件分类"
         name="componentType"
         required
         rules={[{ required: true, message: '组件分类不能为空' }]}
       >
         <Input placeholder="请输入组件分类" />
+      </CyFormItem> */}
+      <CyFormItem
+        label="组件分类"
+        name="componentType"
+        required
+        rules={[{ required: true, message: '组件分类不能为空' }]}
+      >
+        <SelectCanEdit
+          url="/ResourceLib/GetPageList"
+          requestSource="resource"
+          requestType="post"
+          titlekey="id"
+          valuekey="id"
+          postType="body"
+          extraParams={{ libType: 0, keyWord: '', status: '0' }}
+          placeholder="请输入组件分类"
+          // onChange={changeNameHandle}
+        />
       </CyFormItem>
 
       <CyFormItem

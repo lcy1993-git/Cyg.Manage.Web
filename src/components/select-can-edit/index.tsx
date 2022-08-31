@@ -34,7 +34,7 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
     postType = 'body',
     update,
   } = props
-  const [selectValue, setSelectValue] = useState<string>('')
+  const [selectValue, setSelectValue] = useState<string>()
   const [data, setData] = useState<any[]>([])
 
   const { run } = useRequest(
@@ -70,7 +70,6 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
   useEffect(() => {
     value && setSelectValue(value)
   }, [value])
-
   return (
     <div className={styles.wrap}>
       <Select

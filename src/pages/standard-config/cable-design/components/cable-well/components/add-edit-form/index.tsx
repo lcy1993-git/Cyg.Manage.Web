@@ -11,16 +11,18 @@ import {
   coverMode,
 } from '@/services/resource-config/resource-enum'
 import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string
+  onSetDefaultForm?: any
 }
 
 const { Option } = Select
 
 const CableWellForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const unitSlot = () => {
     return (
@@ -31,6 +33,12 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
         </Tooltip>
       </>
     )
+  }
+  const changeNameHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 根据选择的id填充表单数据
+      onSetDefaultForm?.(value)
+    }
   }
   return (
     <>
@@ -55,16 +63,27 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
       >
         <Input placeholder="请输入类型" />
       </CyFormItem>
-
       <CyFormItem
         label="模块名称"
         name="cableWellName"
-        labelWidth={98}
-        align="right"
         required
+        align="right"
         rules={[{ required: true, message: '模块名称不能为空' }]}
+        labelWidth={98}
       >
-        <Input placeholder="请输入模块名称" />
+        <SelectCanEditAndSearch
+          url="/CableWell/GetPageList"
+          extraParams={{ resourceLibId: resourceLibId }}
+          requestType="post"
+          postType="body"
+          requestSource="resource"
+          titlekey="cableWellName"
+          valuekey="id"
+          placeholder="请输入模块名称"
+          onChange={changeNameHandle}
+          searchKey="keyWord"
+          dataStructure="items"
+        />
       </CyFormItem>
 
       <CyFormItem

@@ -4,8 +4,6 @@ import styles from './index.less'
 import { useRequest } from 'ahooks'
 import { getDataByUrl } from '@/services/common'
 
-const { Option } = Select
-
 interface SelectCanEditAndSearchProps {
   onChange?: (a: string, b: string) => void
   value?: string
@@ -17,6 +15,8 @@ interface SelectCanEditAndSearchProps {
   requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component' | 'tecEco'
   requestType?: 'post' | 'get'
   postType?: 'query' | 'body'
+  searchKey?: string
+  dataStructure?: string
 }
 
 const SelectCanEditAndSearch: React.FC<SelectCanEditAndSearchProps> = (props) => {
@@ -31,34 +31,45 @@ const SelectCanEditAndSearch: React.FC<SelectCanEditAndSearchProps> = (props) =>
     requestSource = 'project',
     requestType = 'get',
     postType = 'body',
+    searchKey = 'name',
+    dataStructure,
   } = props
-  const [selectValue, setSelectValue] = useState<string>('')
+  const [selectValue, setSelectValue] = useState<string>()
   const [list, setList] = useState<any[]>([])
   // throttleSearch
   const { run: throttleSearch } = useRequest(
-    (value) =>
-      getDataByUrl(url, { ...extraParams, name: value }, requestSource, requestType, postType),
+    (value) => {
+      let params = { ...extraParams }
+      params[searchKey] = value
+      return getDataByUrl(url, params, requestSource, requestType, postType)
+    },
     {
       ready: !!url,
       debounceInterval: 1500,
       manual: true,
       onSuccess: (res) => {
-        setList(
-          res.map((item) => {
-            return {
-              label: item[titlekey],
-              value: item[valuekey],
-            }
-          })
-        )
+        if (dataStructure) {
+          setList(
+            res[dataStructure].map((item: any) => {
+              return {
+                label: item[titlekey],
+                value: item[valuekey],
+              }
+            })
+          )
+        } else {
+          setList(
+            res.map((item) => {
+              return {
+                label: item[titlekey],
+                value: item[valuekey],
+              }
+            })
+          )
+        }
       },
     }
   )
-  // const options = list.map((d) => (
-  //   <Option key={d.value} value={d.value}>
-  //     {d.label}
-  //   </Option>
-  // ))
 
   const changeHandle = (value: string) => {
     setSelectValue(value)

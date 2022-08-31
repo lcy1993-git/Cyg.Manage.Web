@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { Select } from 'antd'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import { getDataByUrl } from '@/services/common'
 
 export interface UrlSelectProps {
@@ -20,6 +20,7 @@ export interface UrlSelectProps {
   allValue?: string
   manual?: boolean //是否手动执行fetch数据
   trigger?: boolean //用来触发fetch方法
+  updateFlag?: boolean // 调用接口拉取新数据的标识
 }
 
 const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) => (
@@ -38,13 +39,14 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     postType = 'body',
     needAll = false,
     allValue = '',
+    updateFlag,
     ...rest
   } = props
 
   // URL 有数值
   // defaultData 没有数值
   // 必须传的参数不为空
-  const { data: resData } = useRequest(
+  const { data: resData, run } = useRequest(
     () => getDataByUrl(url, extraParams, requestSource, requestType, postType),
     {
       ready: !!(
@@ -79,7 +81,9 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     }
     return []
   }, [JSON.stringify(resData), JSON.stringify(defaultData)])
-
+  useUpdateEffect(() => {
+    run()
+  }, [updateFlag])
   return (
     <WrapperComponent
       showSearch={needFilter}

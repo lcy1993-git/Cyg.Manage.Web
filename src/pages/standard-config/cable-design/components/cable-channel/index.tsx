@@ -338,6 +338,11 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
     }
     setDetailVisible(true)
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     <>
@@ -368,7 +373,11 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false} initialValues={{ reservedWidth: 3 }}>
-          <CableChannelForm resourceLibId={resourceLibId} type="add" />
+          <CableChannelForm
+            resourceLibId={resourceLibId}
+            type="add"
+            onSetDefaultForm={selctModelId}
+          />
         </Form>
       </Modal>
       <Modal
@@ -385,7 +394,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CableChannelForm resourceLibId={resourceLibId} />
+            <CableChannelForm resourceLibId={resourceLibId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>

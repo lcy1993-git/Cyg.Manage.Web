@@ -61,7 +61,7 @@ const Component: React.FC<libParams> = (props) => {
             placeholder="请输入组件信息"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="组件" width="220px">
+        <TableSearch marginLeft="20px" label="设备分类" width="220px">
           <UrlSelect
             allowClear
             showSearch
@@ -433,7 +433,7 @@ const Component: React.FC<libParams> = (props) => {
         onCancel={() => setDetailVisible(false)}
         okText="确认"
         cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Spin spinning={loading}>

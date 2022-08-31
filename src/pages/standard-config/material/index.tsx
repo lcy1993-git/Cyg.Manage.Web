@@ -43,6 +43,7 @@ const Material: React.FC<libParams> = (props) => {
   const [cableTerminalVisible, setCableTerminalVisible] = useState<boolean>(false)
   const [materialCategory, setMaterialCategory] = useState<string>('')
   const [chacheEditData, setChacheEditData] = useState<any>({})
+  const [updateFlag, setUpdateFlag] = useState<boolean>(false)
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -76,6 +77,7 @@ const Material: React.FC<libParams> = (props) => {
             extraParams={{ libId: libId }}
             postType="query"
             requestType="post"
+            updateFlag={updateFlag}
           />
         </TableSearch>
       </div>
@@ -99,6 +101,7 @@ const Material: React.FC<libParams> = (props) => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh()
+      setUpdateFlag(!updateFlag)
     }
   }
 
@@ -412,10 +415,10 @@ const Material: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
-  // fixrxq
-  const testId = async (id: string) => {
+  const selctModelId = async (id: string) => {
     const ResourceLibData = await run(libId, id)
-    addForm.setFieldsValue(ResourceLibData)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
   }
 
   return (
@@ -448,11 +451,11 @@ const Material: React.FC<libParams> = (props) => {
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <MaterialForm onSetDefaultForm={testId} resourceLibId={libId} />
+          <MaterialForm onSetDefaultForm={selctModelId} resourceLibId={libId} />
         </Form>
       </Modal>
       <Modal
@@ -464,12 +467,12 @@ const Material: React.FC<libParams> = (props) => {
         onOk={() => sureEditMaterial()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <MaterialForm resourceLibId={libId} />
+            <MaterialForm resourceLibId={libId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>

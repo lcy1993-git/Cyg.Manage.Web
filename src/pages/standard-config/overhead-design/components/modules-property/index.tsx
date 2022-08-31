@@ -430,6 +430,11 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       setEditAttributeVisible(false)
     })
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     <>
@@ -454,14 +459,18 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         visible={addFormVisible}
         okText="确认"
         centered
-        bodyStyle={{ overflowY: 'auto', height: 750 }}
+        bodyStyle={{ overflowY: 'auto', maxHeight: 750 }}
         onOk={() => sureAddModuleProperty()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <ModulesPropertyForm resourceLibId={resourceLibId} type="add" />
+          <ModulesPropertyForm
+            resourceLibId={resourceLibId}
+            type="add"
+            onSetDefaultForm={selctModelId}
+          />
         </Form>
       </Modal>
       <Modal
@@ -470,7 +479,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         width="680px"
         visible={editFormVisible}
         okText="保存"
-        bodyStyle={{ overflowY: 'auto', height: 750 }}
+        bodyStyle={{ overflowY: 'auto', maxHeight: 750 }}
         centered
         onOk={() => sureEditModuleProperty()}
         onCancel={() => setEditFormVisible(false)}
@@ -479,7 +488,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <ModulesPropertyForm resourceLibId={resourceLibId} />
+            <ModulesPropertyForm resourceLibId={resourceLibId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>

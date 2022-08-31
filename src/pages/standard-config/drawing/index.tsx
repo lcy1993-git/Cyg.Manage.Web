@@ -1,16 +1,14 @@
 import GeneralTable from '@/components/general-table'
-import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { Input, Button, message } from 'antd'
+import { Input, Button } from 'antd'
 import React, { useEffect, useState } from 'react'
-// import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less'
-import UrlSelect from '@/components/url-select'
 import { getUploadUrl } from '@/services/resource-config/drawing'
 import { useRequest } from 'ahooks'
-import { ImportOutlined } from '@ant-design/icons'
+import { ImportOutlined, EditOutlined } from '@ant-design/icons'
 import ImportChartModal from './component/import-form'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
 
 interface libParams {
   libId: string
@@ -112,17 +110,41 @@ const Drawing: React.FC<libParams> = (props) => {
             导入图纸
           </Button>
         )}
+        {buttonJurisdictionArray?.includes('drawing-import') && (
+          <Button className="mr7" onClick={() => importBatchChartEvent()}>
+            <ImportOutlined />
+            批量导入图纸
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('drawing-import') && (
+          <Button className="mr7" onClick={() => editChartEvent()}>
+            <EditOutlined />
+            编辑
+          </Button>
+        )}
+        {/* {buttonJurisdictionArray?.includes('drawing-import') && (
+          <Button className="mr7" onClick={() => deleteBatchChartEvent()}>
+            <ImportOutlined />
+            删除
+          </Button>
+        )} */}
+        {buttonJurisdictionArray?.includes('drawing-import') && (
+          <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+        )}
       </div>
     )
   }
 
-  const importChartEvent = () => {
+  const importChartEvent = () => {}
+  const importBatchChartEvent = () => {
     // if (!resourceLibId) {
     //   message.error('请先选择资源库');
     //   return;
     // }
     setImportFormVisible(true)
   }
+  const editChartEvent = () => {}
+  const deleteBatchChartEvent = () => {}
 
   return (
     <>
