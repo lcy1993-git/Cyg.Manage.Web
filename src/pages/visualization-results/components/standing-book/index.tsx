@@ -684,6 +684,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: subStationKeyWord,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -700,6 +701,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: powerKeyWord,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -716,6 +718,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: lineKeyWord,
+                gridDataType: 1,
               }}
             />
           </TabPane>

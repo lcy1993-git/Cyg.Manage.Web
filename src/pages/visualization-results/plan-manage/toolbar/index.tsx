@@ -298,6 +298,15 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
           <Button type="primary" onClick={search}>
             搜索
           </Button>
+          <Checkbox.Group
+            style={{ display: 'flex', flexDirection: 'column' }}
+            defaultValue={['plan']}
+          >
+            <Checkbox style={{ marginLeft: '8px' }} value="plan">
+              规划图层
+            </Checkbox>
+            <Checkbox value="history">历史图层</Checkbox>
+          </Checkbox.Group>
         </Space>
       </div>
       <div

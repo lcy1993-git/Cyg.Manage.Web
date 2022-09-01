@@ -5,9 +5,11 @@ import {
   getSubStations,
 } from '@/services/grid-manage/treeMenu'
 import { useRequest, useUpdateEffect } from 'ahooks'
-import { Button, Form, Input, Modal, Select, Spin } from 'antd'
+import { Button, Divider, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import StandingBook from '../../components/standing-book'
+import PowerSupplyTree from '../../grid-manage/LeftMenu/PowerSupplyTree'
+import SubstationTree from '../../grid-manage/LeftMenu/SubstationTree'
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
@@ -21,9 +23,12 @@ import {
 import { loadMapLayers } from '../PlanMap/utils/initializeMap'
 import { dataHandle, newData } from '../tools'
 import DrawGridToolbar from './DrawGridToolbar'
+import GridPowerSupplyTree from './GridPowerSupplyTree'
+import GridSubstationTree from './GridSubstationTree'
 import styles from './index.less'
-import PowerSupplyTree from './PowerSupplyTree'
-import SubstationTree from './SubstationTree'
+import PlanPowerSupplyTree from './PlanPowerSupplyTree'
+import PlanSubstationTree from './PlanSubstationTree'
+
 import { TreeProvider } from './TreeContext'
 interface BelongingLineType {
   id: string
@@ -131,7 +136,7 @@ const LeftMenu = (props: any) => {
   })
 
   // 获取所有厂站
-  const { data: stationItems, run: stationItemsHandle } = useRequest(GetStationItems, {
+  const { data: stationItems, run: stationItemsHandle } = useRequest(GetStationItems(1), {
     manual: true,
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
@@ -294,12 +299,25 @@ const LeftMenu = (props: any) => {
         </div>
         <div className={`w-full flex-1 flex flex-col overflow-y-auto ${styles.customScroll}`}>
           <Spin spinning={!treeLoading}>
+            <Divider orientation="left" plain>
+              规划网架
+            </Divider>
             <div className={`w-full flex-none`}>
-              <SubstationTree />
+              <PlanSubstationTree />
             </div>
             <div className={`w-full flex-1`}>
-              <PowerSupplyTree />
+              <PlanPowerSupplyTree />
             </div>
+            <Divider orientation="left" plain>
+              历史网架
+            </Divider>
+            <div className={`w-full flex-1`}>
+              <GridSubstationTree />
+            </div>
+            <div className={`w-full flex-1`}>
+              <GridPowerSupplyTree />
+            </div>
+            <div className={`w-full flex-1`}></div>
           </Spin>
         </div>
       </TreeProvider>

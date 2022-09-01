@@ -96,13 +96,18 @@ export const getTransformerSubstationMenu = (params: any) => {
 }
 
 // 获取所属线路
-export const getAllBelongingLineItem = () => {
-  return cyRequest<any[]>(() => request(`${baseUrl.grid}/Line/GetLineItems`, { method: 'GET' }))
+export const getAllBelongingLineItem = (gridDataType?: number) => {
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.grid}/Line/GetLineItems`, { method: 'GET', params: { gridDataType } })
+  )
 }
 // 获取所有厂站
-export const GetStationItems = () => {
+export const GetStationItems = (gridDataType?: number) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/GridDesign/GetStationItems`, { method: 'GET' })
+    request(`${baseUrl.grid}/GridDesign/GetStationItems`, {
+      method: 'GET',
+      params: { gridDataType },
+    })
   )
 }
 

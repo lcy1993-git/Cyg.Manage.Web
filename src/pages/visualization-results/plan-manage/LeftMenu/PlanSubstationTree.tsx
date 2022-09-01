@@ -1,4 +1,8 @@
-import { deleteLine, fetchGridManageMenu } from '@/services/grid-manage/treeMenu'
+import {
+  deleteLine,
+  // getLineCompoment,
+  getTransformerSubstationMenu,
+} from '@/services/grid-manage/treeMenu'
 import { ExclamationCircleOutlined, InfoCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { message, Modal, Tree } from 'antd'
@@ -6,33 +10,8 @@ import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
 import EquipLineList from '../../components/line-equip-list'
 import { useMyContext } from '../Context'
-import { LINE, POWERSUPPLY, TRANSFORMERSUBSTATION } from '../DrawToolbar/GridUtils'
+import { KVLEVELOPTIONS, LINE, POWERSUPPLY, TRANSFORMERSUBSTATION } from '../DrawToolbar/GridUtils'
 import { useTreeContext } from './TreeContext'
-
-interface lineListItemType {
-  belonging: string
-  color: string
-  conductorModel: string
-  id: string
-  isOverhead: boolean
-  kvLevel: number
-  lineProperties: string
-  name: string
-  totalCapacity: number
-  totalLength: number
-}
-interface PowerSupplyListType {
-  companyId: string // 公司编号
-  createdBy: string // 创建人
-  geom: string // 经纬度坐标
-  id: string
-  installedCapacity: number // 装机容器
-  kvLevel: number // 电压等级
-  name: string // 厂站名称
-  powerType: string // 电源类型
-  schedulingMode: string // 调度方式
-  lines: Array<lineListItemType>
-}
 
 interface infoType {
   event: React.MouseEvent<Element, MouseEvent>
@@ -51,33 +30,21 @@ interface TreeSelectType {
     key: string
     name?: string
     kvLevel?: number
-    id?: string
     isOverhead?: boolean
+    id?: string
     children: any[] | undefined
   }[]
   nativeEvent: MouseEvent
 }
 
-const PowerSupplyTree = () => {
-  const { isRefresh, setIsRefresh, companyId } = useMyContext()
-  const {
-    linesId,
-    setlinesId,
-    setpowerSupplyIds,
-    settreeLoading,
-    kvLevels,
-    areasId,
-    isFilterTree,
-  } = useTreeContext()
-
-  const [isModalVisible, setIsModalVisible] = useState(false)
-
-  const [currentLineId, setCurrentLineId] = useState<string>('')
-
-  //当前点击线路标题
-  const [lineTitle, setLineTitle] = useState<string>('')
+const PlanSubstationTree = () => {
   const { data, run: getTree } = useRequest(
-    () => fetchGridManageMenu({ kvLevels: kvLevels, ...transformAreaId(areasId) }),
+    () =>
+      getTransformerSubstationMenu({
+        gridDataType: 1,
+        kvLevels: kvLevels,
+        ...transformAreaId(areasId),
+      }),
     {
       manual: true,
       onSuccess: () => {
@@ -88,6 +55,22 @@ const PowerSupplyTree = () => {
       },
     }
   )
+  const { isRefresh, setIsRefresh, companyId } = useMyContext()
+  const {
+    linesId,
+    setlinesId,
+    setsubStations,
+    settreeLoading,
+    kvLevels,
+    areasId,
+    isFilterTree,
+  } = useTreeContext()
+  // 编辑线路模态框状态
+  const [isModalVisible, setIsModalVisible] = useState(false)
+
+  const [currentLineId, setCurrentLineId] = useState<string>('')
+  //当前点击线路标题
+  const [lineTitle, setLineTitle] = useState<string>('')
   const transformAreaId = (areasId: any) => {
     const [province, city, county] = areasId
     return {
@@ -96,36 +79,44 @@ const PowerSupplyTree = () => {
       area: !isNaN(county) ? county : '',
     }
   }
-  const transformTreeData = (tree: any, key: any) => {
+
+  const transformTreeData = (tree: any) => {
     return tree?.map((item: any, index: any) => {
       return {
-        title: item.type,
-        key: `0-0-${index}${key}`,
-        type: 'PowerType',
-        children: item.powerSupplySubList.map((child: PowerSupplyListType) => {
-          return {
-            ...child,
-            title:
-              companyId !== child.companyId ? (
-                <>
-                  <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
-                  <span style={{ paddingLeft: '3px' }}> {child.name}</span>
-                </>
-              ) : (
-                child.name
-              ),
-            key: `${child.id}_&${POWERSUPPLY}`,
-            type: POWERSUPPLY,
-            children: child.lines.map((childrenItem: lineListItemType) => {
-              return {
-                ...childrenItem,
-                type: LINE,
-                title: childrenItem.name,
-                key: `${childrenItem.id}_&Line${child.id}_&${POWERSUPPLY}_&PowerType0-0-${index}${key}_&Parent0-0`,
-              }
-            }),
+        ...item,
+        title:
+          companyId !== item.companyId ? (
+            <>
+              <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
+              <span style={{ paddingLeft: '3px' }}> {item.name}</span>
+            </>
+          ) : (
+            item.name
+          ),
+        key: `${item.id}_&${TRANSFORMERSUBSTATION}`,
+        type: TRANSFORMERSUBSTATION,
+        children: item.lineKVLevelGroups.map(
+          (
+            child: { kvLevel: number; lines: { name: string; id: string }[]; id: string },
+            childIndex: number
+          ) => {
+            const childTitle = KVLEVELOPTIONS.find((kv) => kv.kvLevel === child.kvLevel)
+            return {
+              ...child,
+              title: childTitle ? childTitle.label : '未知电压',
+              type: 'KVLEVEL',
+              key: `0=1=${item.id}=${childIndex}`,
+              children: child.lines.map((children: { name: string; id: string }) => {
+                return {
+                  ...children,
+                  title: children.name,
+                  type: LINE,
+                  key: `${children.id}_&Line${item.id}_&${TRANSFORMERSUBSTATION}_KVLEVEL0=1=${item.id}=${childIndex}_&Parent0-1`,
+                }
+              }),
+            }
           }
-        }),
+        ),
       }
     })
   }
@@ -137,14 +128,14 @@ const PowerSupplyTree = () => {
         title: item.title,
         children:
           item.key === 'Province_Other'
-            ? transformTreeData(item.data, item.key)
+            ? transformTreeData(item.data)
             : item.children.map((item: any) => {
                 if (item.data && item.data.length > 0) {
                   return {
                     key: item.key,
                     title: item.title,
-                    type: item.city,
-                    children: transformTreeData(item.data, item.key),
+                    type: 'city',
+                    children: transformTreeData(item.data),
                   }
                 }
                 return {
@@ -156,7 +147,7 @@ const PowerSupplyTree = () => {
                       key: item.key,
                       type: item.type,
                       title: item.title,
-                      children: transformTreeData(item.data, item.key),
+                      children: transformTreeData(item.data),
                     }
                   }),
                 }
@@ -164,21 +155,15 @@ const PowerSupplyTree = () => {
       }
     })
   }
-
   const treeData = [
     {
-      title: '电源',
-      key: '0-0',
+      title: '变电站',
       type: 'Parent',
+      key: '0=1',
       children: transformTreeStructure(data),
     },
   ]
-
-  useEffect(() => {
-    getTree()
-  }, [getTree, isRefresh, isFilterTree])
-
-  // 点击右键，删除线路数据
+  // 右键删除线路
   const onRightClick = (info: infoType) => {
     const { node } = info
     if (node && !node.children) {
@@ -203,15 +188,19 @@ const PowerSupplyTree = () => {
     }
   }
 
+  useEffect(() => {
+    getTree()
+  }, [getTree, isRefresh, isFilterTree])
+
   // 点击左键，编辑线路数据
-  const onSelect = async (selectedKeys: Key[], info: TreeSelectType) => {
+  const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {
     const { selectedNodes } = info
 
     if (selectedNodes.length && !selectedNodes[0].children && selectedNodes[0].id) {
       //   setcurrentFeatureId(selectedNodes[0].id)
       //   const data = await getLineData(selectedNodes[0].id)
-      //   const lines = await getLineCompoment({ lineIds: selectedNodes[0].id, kvLevels: [] })
-      //   // @ts-ignore 计算线路总长度
+      //   const lines = await getLineCompoment([selectedNodes[0].id])
+      //   // @ts-ignore
       //   const length = getTotalLength(lines.lineRelationList)
       //   selectedNodes[0].kvLevel && setcurrentLineKvLevel(selectedNodes[0].kvLevel)
       const lineIdStr = selectedNodes[0].key
@@ -222,31 +211,34 @@ const PowerSupplyTree = () => {
       }
       setLineTitle(selectedNodes[0].title)
       setIsModalVisible(true)
-      // form.setFieldsValue({
-      //   ...data,
-      //   totalLength: length.toFixed(1),
-      //   lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
-      // })
-      // setselectLineType(selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit')
+
+      //   form.setFieldsValue({
+      //     ...data,
+      //     totalLength: length.toFixed(1),
+      //     lineType: selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit',
+      //   })
+      //   setselectLineType(selectedNodes[0].isOverhead ? 'Line' : 'CableCircuit')
     }
   }
+
   // checkbox状态改变触发
-  const getPowerSupplyTreeData = (checkedKeys: any, e: any) => {
-    const PowerSupplyIds: string[] = checkedKeys
+  const getSubstationTreeData = async (checkedKeys: any, e: any) => {
+    const SubstationIds: string[] = checkedKeys
       .map((item: string) => {
         const start = item.indexOf('_&Line')
-        const end = item.indexOf('_&PowerSupply')
+        const end = item.indexOf('_&TransformerSubstation')
         if (start !== -1 && end !== -1) {
           return item.substring(start + 6, end)
         }
-        const idStr = item.indexOf('_&PowerSupply')
+        const idStr = item.indexOf('_&TransformerSubstation')
         if (idStr !== -1) {
           return item.split('_&')[0]
         }
         return undefined
       })
       .filter(Boolean)
-    setpowerSupplyIds([...new Set(PowerSupplyIds)])
+    setsubStations([...new Set(SubstationIds)])
+
     const currentLineId = checkedKeys
       .map((item: string) => {
         const isSubstation = item.includes(`_&Line`)
@@ -259,7 +251,7 @@ const PowerSupplyTree = () => {
 
     const currentLinesId = [
       ...currentLineId,
-      ...linesId.filter((item) => item.indexOf(TRANSFORMERSUBSTATION) !== -1),
+      ...linesId.filter((item) => item.indexOf(POWERSUPPLY) !== -1),
     ]
     setlinesId([...new Set(currentLinesId)])
   }
@@ -269,11 +261,12 @@ const PowerSupplyTree = () => {
       <Tree
         checkable
         defaultExpandAll
-        onCheck={getPowerSupplyTreeData}
+        onCheck={getSubstationTreeData}
         onRightClick={onRightClick}
         onSelect={onSelect}
         treeData={treeData}
       />
+
       <EquipLineList
         visible={isModalVisible}
         onChange={setIsModalVisible}
@@ -283,4 +276,4 @@ const PowerSupplyTree = () => {
     </>
   )
 }
-export default PowerSupplyTree
+export default PlanSubstationTree
