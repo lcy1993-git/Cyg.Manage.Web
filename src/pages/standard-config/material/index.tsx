@@ -1,6 +1,7 @@
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import UrlSelect from '@/components/url-select'
 import {
   addMaterialItem,
   deleteMaterialItem,
@@ -13,7 +14,6 @@ import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import UrlSelect from '@/components/url-select'
 import MaterialForm from './component/add-edit-form'
 import CableMapping from './component/cable-mapping'
 import SaveImportMaterial from './component/import-form'

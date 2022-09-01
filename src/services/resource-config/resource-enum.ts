@@ -119,3 +119,25 @@ export enum grooveStructure {
   '砖彻' = '砖彻',
   '钢筋混凝土' = '钢筋混凝土',
 }
+// 资源库电气设备类型枚举
+export enum electricalEquipmentComponentType {
+  '开关站' = '开关站',
+  '环网室' = '环网室',
+  '配电室' = '配电室',
+  '箱式变电站' = '箱式变电站',
+  '高压分支箱' = '高压分支箱',
+  '低压分支箱' = '低压分支箱',
+  '变电站' = '变电站',
+  '其他' = '其他',
+}
+// 图纸类别
+export enum drawingCategory {
+  '物料' = '物料',
+  '组件' = '组件',
+  '模块' = '模块',
+}
+// 图纸类型
+export enum drawingType {
+  '加工图' = '加工图',
+  '设计图' = '设计图',
+}

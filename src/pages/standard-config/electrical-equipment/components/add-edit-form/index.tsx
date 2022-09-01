@@ -1,21 +1,27 @@
-import React, { useState } from 'react'
-import { Input, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
 import EnumSelect from '@/components/enum-select'
-import { QuestionCircleOutlined } from '@ant-design/icons'
-import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
-import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
 import SelectCanEdit from '@/components/select-can-edit'
+import UrlSelect from '@/components/url-select'
+import {
+  electricalEquipmentComponentType,
+  forDesignType,
+  forProjectType,
+} from '@/services/resource-config/resource-enum'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Tooltip } from 'antd'
+import React, { useState } from 'react'
 
 interface ChartListFromLibParams {
   resourceLibId: string
   type?: 'add' | 'edit'
+  onSetDefaultForm?: any
 }
 
 const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
+  const [updateName, setUpdateName] = useState<string>('水泥')
   const unitSlot = () => {
     return (
       <>
@@ -26,6 +32,16 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
       </>
     )
   }
+  const changeNameHandle = (value: string) => {
+    setUpdateName(value)
+  }
+  const changeTypeHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 选中下拉列表则添加模板数据
+      onSetDefaultForm?.(value)
+    }
+  }
+
   return (
     <>
       <CyFormItem
@@ -45,14 +61,6 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
         <Input placeholder="请输入编号"></Input>
       </CyFormItem>
 
-      <CyFormItem
-        label="组件型号"
-        name="componentSpec"
-        required
-        rules={[{ required: true, message: '组件型号不能为空' }]}
-      >
-        <Input placeholder="请输入组件型号" />
-      </CyFormItem>
       <CyFormItem
         initialValue="电气设备"
         label="设备分类"
@@ -77,6 +85,20 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件分类不能为空' }]}
       >
+        <EnumSelect
+          placeholder="请选择杆型材质"
+          enumList={electricalEquipmentComponentType}
+          valueString
+          onChange={changeNameHandle}
+        />
+      </CyFormItem>
+
+      <CyFormItem
+        label="组件型号"
+        name="componentSpec"
+        required
+        rules={[{ required: true, message: '组件型号不能为空' }]}
+      >
         <SelectCanEdit
           url="/ResourceLib/GetPageList"
           requestSource="resource"
@@ -86,7 +108,8 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
           postType="body"
           extraParams={{ libType: 0, keyWord: '', status: '0' }}
           placeholder="请输入组件分类"
-          // onChange={changeNameHandle}
+          update={updateName}
+          onChange={changeTypeHandle}
         />
       </CyFormItem>
 

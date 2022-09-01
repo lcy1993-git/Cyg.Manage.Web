@@ -339,7 +339,11 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
-
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
   return (
     // <PageCommonWrap>
     <div className={styles.electrical}>
@@ -371,7 +375,11 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <ElectricalEquipmentForm resourceLibId={libId} type="add" />
+          <ElectricalEquipmentForm
+            resourceLibId={libId}
+            type="add"
+            onSetDefaultForm={selctModelId}
+          />
         </Form>
       </Modal>
       <Modal
@@ -387,7 +395,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <ElectricalEquipmentForm resourceLibId={libId} />
+            <ElectricalEquipmentForm resourceLibId={libId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>

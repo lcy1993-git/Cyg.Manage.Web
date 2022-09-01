@@ -1,14 +1,16 @@
 import GeneralTable from '@/components/general-table'
-import TableSearch from '@/components/table-search'
-import { Input, Button } from 'antd'
-import React, { useEffect, useState } from 'react'
-import styles from './index.less'
-import { getUploadUrl } from '@/services/resource-config/drawing'
-import { useRequest } from 'ahooks'
-import { ImportOutlined, EditOutlined } from '@ant-design/icons'
-import ImportChartModal from './component/import-form'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import ModalConfirm from '@/components/modal-confirm'
+import TableSearch from '@/components/table-search'
+import { deleteDrawingItems, getUploadUrl } from '@/services/resource-config/drawing'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Input, message } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import ImportBatchChartModal from './component/import-batch-form'
+import ImportChartModal from './component/import-form'
+import styles from './index.less'
 
 interface libParams {
   libId: string
@@ -20,13 +22,14 @@ const Drawing: React.FC<libParams> = (props) => {
 
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [importBatchFormVisible, setImportBatchFormVisible] = useState<boolean>(false)
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false)
   const [resourceLibId, setResourceLibId] = useState<string | undefined>('')
   const { data: keyData } = useRequest(() => getUploadUrl())
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
 
   const chartSecurityKey = keyData?.uploadChartApiSecurity
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-
   const searchComponent = () => {
     return (
       <div className={styles.searchArea}>
@@ -100,6 +103,23 @@ const Drawing: React.FC<libParams> = (props) => {
       title: '图纸名称',
     },
   ]
+  const sureDeleteData = async () => {
+    // if (!resourceLibId) {
+    //   message.warning('请先选择资源库');
+    //   return;
+    // }
+
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择需要删除的行')
+      return
+    }
+    const deleteIds = tableSelectRows?.map((item) => item.id)
+
+    await deleteDrawingItems({ libId: libId, ids: deleteIds })
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   const tableElement = () => {
     return (
@@ -135,13 +155,15 @@ const Drawing: React.FC<libParams> = (props) => {
     )
   }
 
-  const importChartEvent = () => {}
+  const importChartEvent = () => {
+    setImportFormVisible(true)
+  }
   const importBatchChartEvent = () => {
     // if (!resourceLibId) {
     //   message.error('请先选择资源库');
     //   return;
     // }
-    setImportFormVisible(true)
+    setImportBatchFormVisible(true)
   }
   const editChartEvent = () => {}
   const deleteBatchChartEvent = () => {}
@@ -158,11 +180,20 @@ const Drawing: React.FC<libParams> = (props) => {
         requestSource="resource"
         url="/Chart/GetPageList"
         // tableTitle="图纸"
-        type="radio"
+        type="checkbox"
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
+        getSelectData={(data) => setTableSelectRows(data)}
+      />
+      <ImportBatchChartModal
+        libId={libId}
+        securityKey={chartSecurityKey}
+        requestSource="upload"
+        visible={importBatchFormVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setImportBatchFormVisible}
       />
       <ImportChartModal
         libId={libId}
