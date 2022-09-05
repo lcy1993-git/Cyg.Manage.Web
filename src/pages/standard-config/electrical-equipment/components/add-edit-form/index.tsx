@@ -86,7 +86,7 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
         rules={[{ required: true, message: '组件分类不能为空' }]}
       >
         <EnumSelect
-          placeholder="请选择杆型材质"
+          placeholder="请选择组件分类"
           enumList={electricalEquipmentComponentType}
           valueString
           onChange={changeNameHandle}
@@ -100,14 +100,14 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
         rules={[{ required: true, message: '组件型号不能为空' }]}
       >
         <SelectCanEdit
-          url="/ResourceLib/GetPageList"
+          url="/ElectricalEquipment/GetElectricalEquipmentByComponentTypeList"
           requestSource="resource"
-          requestType="post"
-          titlekey="id"
+          requestType="get"
+          titlekey="componentSpec"
           valuekey="id"
           postType="body"
-          extraParams={{ libType: 0, keyWord: '', status: '0' }}
-          placeholder="请输入组件分类"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请输入组件型号"
           update={updateName}
           onChange={changeTypeHandle}
         />

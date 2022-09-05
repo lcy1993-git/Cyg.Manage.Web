@@ -64,7 +64,7 @@ const ImportBatchChartModal: React.FC<ImportChartProps> = (props) => {
     <Modal
       maskClosable={false}
       destroyOnClose
-      title="导入图纸"
+      title="批量导入图纸"
       visible={state as boolean}
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>

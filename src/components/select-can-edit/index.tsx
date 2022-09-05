@@ -1,10 +1,8 @@
-import { Select } from 'antd'
-import React, { useState, useMemo, useEffect } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
 import { getDataByUrl } from '@/services/common'
-
-// const { Option } = Select
+import { useRequest } from 'ahooks'
+import { Select } from 'antd'
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
 
 interface SelectCanEditProps {
   onChange?: (a: string, b: string) => void
@@ -20,6 +18,11 @@ interface SelectCanEditProps {
   update?: string
 }
 
+// 选择选项时的开关，以及失去焦点时暂存组件的value值
+let isSelect = false
+let selectedValue = ''
+let blurVal = ''
+
 const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
   const {
     onChange,
@@ -34,8 +37,9 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
     postType = 'body',
     update,
   } = props
-  const [selectValue, setSelectValue] = useState<string>()
+  const [val, setVal] = useState<string>()
   const [data, setData] = useState<any[]>([])
+  const [searchValue, setSearchValue] = useState<string>()
 
   const { run } = useRequest(
     () => getDataByUrl(url, { ...extraParams, name: update }, requestSource, requestType, postType),
@@ -57,35 +61,57 @@ const SelectCanEdit: React.FC<SelectCanEditProps> = (props) => {
   )
 
   const changeHandle = (value: string) => {
-    setSelectValue(value)
+    setVal(value)
   }
   const searchHandle = (value: string) => {
     if (value) {
-      setSelectValue(value)
+      setVal(value)
+      setSearchValue(value)
+    } else {
+      if (isSelect) {
+        // 选中select选项时
+        setSearchValue(selectedValue)
+        isSelect = false
+      } else {
+        // 删除到空白字符串，或者blur时触发
+        setVal(value)
+        setSearchValue(value)
+        // blur时需要存下失去焦点的值，存100ms供onblur回调函数取值
+        blurVal = val || ''
+        setTimeout(() => {
+          blurVal = ''
+        }, 100)
+      }
     }
   }
   useEffect(() => {
     run()
   }, [update])
   useEffect(() => {
-    value && setSelectValue(value)
+    value && setVal(value)
   }, [value])
   return (
     <div className={styles.wrap}>
       <Select
         allowClear
         showSearch
-        value={selectValue}
+        value={val}
         onBlur={() => {
-          onChange?.(selectValue || '', 'blur')
+          const value = !!blurVal ? blurVal : val || ''
+          setSearchValue(value)
+          onChange?.(value, 'blur')
         }}
-        options={data}
         onChange={(value) => changeHandle(value)}
         onSearch={(value: any) => searchHandle(value)}
-        onSelect={(value) => {
+        onSelect={(value: any) => {
           onChange?.(value, 'select')
+          isSelect = true
+          selectedValue = value
         }}
+        options={data}
         placeholder={placeholder}
+        searchValue={val}
+        showArrow={false}
       />
     </div>
   )

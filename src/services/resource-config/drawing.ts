@@ -105,9 +105,16 @@ interface DeleteItemParams {
   libId: string
   ids: string[]
 }
-// 删除物料
+// 删除图纸
 export const deleteDrawingItems = (params: DeleteItemParams) => {
   return cyRequest(() =>
     request(`${baseUrl.resource}/Chart/Delete`, { method: 'POST', data: params })
+  )
+}
+
+// 新建图纸
+export const addDrawingItem = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.resource}/Chart/SaveCreate`, { method: 'POST', data: params })
   )
 }

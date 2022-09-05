@@ -7,7 +7,7 @@ import { EditOutlined, ImportOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Input, message } from 'antd'
 import { isArray } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ImportBatchChartModal from './component/import-batch-form'
 import ImportChartModal from './component/import-form'
 import styles from './index.less'
@@ -24,6 +24,7 @@ const Drawing: React.FC<libParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [importBatchFormVisible, setImportBatchFormVisible] = useState<boolean>(false)
   const [importFormVisible, setImportFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [resourceLibId, setResourceLibId] = useState<string | undefined>('')
   const { data: keyData } = useRequest(() => getUploadUrl())
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
@@ -165,8 +166,26 @@ const Drawing: React.FC<libParams> = (props) => {
     // }
     setImportBatchFormVisible(true)
   }
-  const editChartEvent = () => {}
-  const deleteBatchChartEvent = () => {}
+  const editChartEvent = () => {
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.error('请选择一条数据进行编辑')
+      return
+    }
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
+
+    setEditFormVisible(true)
+    // const ResourceLibData = await run(libId, editDataId)
+    // setChacheEditData(ResourceLibData)
+
+    // editForm.setFieldsValue(ResourceLibData)
+    // editFormModalRef.current?.setFormValues()
+    setEditFormVisible(true)
+  }
+  const editFormModalRef = useRef()
 
   return (
     <>
@@ -202,6 +221,17 @@ const Drawing: React.FC<libParams> = (props) => {
         visible={importFormVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportFormVisible}
+        title="导入图纸"
+      />
+      <ImportChartModal
+        libId={libId}
+        securityKey={chartSecurityKey}
+        requestSource="upload"
+        visible={editFormVisible}
+        changeFinishEvent={() => uploadFinishEvent()}
+        onChange={setEditFormVisible}
+        title="编辑图纸"
+        ref={editFormModalRef}
       />
       {/* </PageCommonWrap> */}
     </>

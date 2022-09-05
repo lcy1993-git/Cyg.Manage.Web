@@ -1,5 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
+import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 import UrlSelect from '@/components/url-select'
 import {
   forDesignType,
@@ -9,11 +12,8 @@ import {
   supplySideType,
 } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { Input, Tooltip, Radio } from 'antd'
-import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
+import { Input, Radio, Tooltip } from 'antd'
 import React, { useState } from 'react'
-import SelectCanEdit from '@/components/select-can-edit'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 interface ChartListFromLibParams {
   resourceLibId: string
   onSetDefaultForm?: any
@@ -61,24 +61,6 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         <EnumSelect placeholder="请选择物料类型" enumList={materialType} valueString />
       </CyFormItem>
 
-      {/* <CyFormItem
-        label="物料名称"
-        name="materialName"
-        required
-        rules={[{ required: true, message: '物料名称不能为空' }]}
-      >
-        <SelectCanEdit
-          url="/ResourceLib/GetPageList"
-          requestSource="resource"
-          requestType="post"
-          titlekey="id"
-          valuekey="id"
-          postType="body"
-          extraParams={{ libType: 0, keyWord: '', status: '0' }}
-          placeholder="请输入名称"
-          onChange={changeNameHandle}
-        />
-      </CyFormItem> */}
       <CyFormItem
         label="物料名称"
         name="materialName"

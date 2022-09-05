@@ -1,11 +1,11 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import FileUpload from '@/components/file-upload'
-import { uploadLineStressSag } from '@/services/resource-config/drawing'
+import { addDrawingItem } from '@/services/resource-config/drawing'
 import { drawingCategory, drawingType } from '@/services/resource-config/resource-enum'
-import { useBoolean, useControllableValue } from 'ahooks'
-import { Button, Form, Input, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, Input, Modal } from 'antd'
+import { Dispatch, forwardRef, Ref, SetStateAction, useImperativeHandle, useState } from 'react'
 
 interface ImportChartProps {
   visible: boolean
@@ -14,59 +14,63 @@ interface ImportChartProps {
   libId?: string
   securityKey?: string
   requestSource: 'project' | 'resource' | 'upload'
+  title: string
 }
 
-const ImportChartModal: React.FC<ImportChartProps> = (props) => {
+const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const { libId, securityKey, requestSource, changeFinishEvent } = props
+  const { libId, requestSource, changeFinishEvent, title } = props
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
-  const saveImportChartEvent = () => {
-    return form
-      .validateFields()
-      .then((values) => {
-        const { file } = values
-        return uploadLineStressSag(file, { libId, securityKey }, requestSource, '/Upload/Chart')
-      })
-      .then(
-        () => {
-          message.success('导入成功')
-          setIsImportFlag(true)
-          return Promise.resolve()
-        },
-        (res) => {
-          const { code, isSuccess, message: msg } = res
-          if (msg) {
-            message.warn(msg)
-          }
-          return Promise.reject('导入失败')
-        }
-      )
-      .finally(() => {
-        changeFinishEvent?.()
-        setUploadFileFalse()
-      })
-  }
+  const [fileList, setFileList] = useState<any[]>([])
+  const [uploading, setUploading] = useState(false)
+
+  const { run } = useRequest(
+    (val) => {
+      return addDrawingItem(val)
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        // console.log('suc')
+      },
+    }
+  )
+
+  useImperativeHandle(ref, () => ({
+    setFormValues: (value: any) => {
+      form.setFieldsValue(value)
+    },
+  }))
+  const saveImportChartEvent = () => {}
 
   const onSave = () => {
+    // form.validateFields().then((value) => {
+    //   if (isImportFlag) {
+    //     setState(false)
+    //     return
+    //   }
+    //   message.info('您还未上传文件，点击“开始上传”上传文件')
+    // })
     form.validateFields().then((value) => {
-      if (isImportFlag) {
-        setState(false)
-        return
-      }
-      message.info('您还未上传文件，点击“开始上传”上传文件')
+      const formData = new FormData()
+      fileList.forEach((file) => {
+        formData.append('file', file)
+      })
+      formData.append('category', value.category)
+      formData.append('type', value.type)
+      formData.append('chartName', value.chartName)
+      formData.append('fileName', value.chartName)
+      formData.append('resourceLibId', libId as string)
+
+      run(formData)
     })
   }
-
   return (
     <Modal
       maskClosable={false}
       destroyOnClose
-      title="导入图纸"
+      title={title}
       visible={state as boolean}
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>
@@ -82,7 +86,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
         <CyFormItem
           labelWidth={80}
           label="类别"
-          name="Category"
+          name="category"
           required
           rules={[{ required: true, message: '类别不能为空' }]}
         >
@@ -91,7 +95,7 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
         <CyFormItem
           labelWidth={80}
           label="类型"
-          name="Type"
+          name="type"
           required
           rules={[{ required: true, message: '类型不能为空' }]}
         >
@@ -105,11 +109,15 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
           rules={[{ required: true, message: '请上传图纸文件' }]}
         >
           <FileUpload
-            accept=".dmg"
-            trigger={triggerUploadFile}
+            fileList={fileList}
+            accept=".dwg"
             maxCount={1}
-            uploadFileBtn
-            uploadFileFn={saveImportChartEvent}
+            onChange={(file: any) => {
+              setFileList(file)
+              form.setFieldsValue({ chartName: file[0].name.split('.')[0] })
+
+              return false
+            }}
           />
         </CyFormItem>
         <CyFormItem
@@ -126,4 +134,4 @@ const ImportChartModal: React.FC<ImportChartProps> = (props) => {
   )
 }
 
-export default ImportChartModal
+export default forwardRef(ImportChartModal)
