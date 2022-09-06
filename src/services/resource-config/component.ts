@@ -69,6 +69,16 @@ interface ComponentDetailParams {
   unit: string
 }
 
+//获取明细数据列表
+export const getComponentDetaiList = (libId: string, componentIds: string[], keyWord: string) => {
+  return cyRequest<ComponentDetailParams>(() =>
+    request(`${baseUrl.resource}/ComponentDetail/GetPageList`, {
+      method: 'POST',
+      data: { libId, componentIds, keyWord },
+    })
+  )
+}
+
 //获取单条明细数据
 export const getComponentDetailItem = (libId: string, id: string) => {
   return cyRequest<ComponentDetailParams>(() =>

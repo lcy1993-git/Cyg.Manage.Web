@@ -17,7 +17,6 @@ import React, { useEffect, useState } from 'react'
 import ComponentForm from './components/add-edit-form'
 import ComponentDetail from './components/detail-table'
 import SaveImportComponent from './components/import-form'
-import ComponentProperty from './components/property-table'
 import styles from './index.less'
 
 const { Search } = Input
@@ -424,13 +423,13 @@ const Component: React.FC<libParams> = (props) => {
         </Form>
       </Modal>
 
-      <Modal
+      {/* <Modal
         maskClosable={false}
-        footer=""
         title="组件明细"
         width="92%"
         visible={detailVisible}
         onCancel={() => setDetailVisible(false)}
+        onOk={()=>{}}
         okText="确认"
         cancelText="取消"
         bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
@@ -447,7 +446,18 @@ const Component: React.FC<libParams> = (props) => {
             })}
           />
         </Spin>
-      </Modal>
+      </Modal> */}
+      <ComponentDetail
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.componentId
+        })}
+        detailVisible={detailVisible}
+        setDetailVisible={setDetailVisible}
+      />
 
       {/* <Modal
         maskClosable={false}

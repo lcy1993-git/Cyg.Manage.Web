@@ -1,82 +1,26 @@
-import GeneralTable from '@/components/general-table'
-import ModalConfirm from '@/components/modal-confirm'
-import TableSearch from '@/components/table-search'
-import {
-  deleteComponentDetailItem,
-  getComponentDetailItem,
-  updateComponentDetailItem,
-  addComponentDetailItem,
-} from '@/services/resource-config/component'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { getComponentDetaiList } from '@/services/resource-config/component'
 import { useRequest } from 'ahooks'
-import { Button, Form, Input, message, Modal } from 'antd'
+import { Button, Input, Modal, Spin, Tabs } from 'antd'
 // import styles from './index.less';
-import { isArray } from 'lodash'
-import React, { useState } from 'react'
-import AddComponentDetail from './add-form'
-import EditComponentDetail from './edit-form'
+import TableCanEditCell from '@/components/table-can-edit-cell'
+import TableCanSearch from '@/components/table-can-search'
+import React, { useEffect, useRef, useState } from 'react'
+import styles from './index.less'
+
 interface ModuleDetailParams {
   libId: string
   componentId: string[]
   selectId: string[]
+  detailVisible: boolean
+  setDetailVisible: (state: boolean) => void
 }
 
 const { Search } = Input
 const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, componentId, selectId } = props
+  const { libId, componentId, selectId, detailVisible, setDetailVisible } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const [formData, setFormData] = useState<any>()
-  const [addForm] = Form.useForm()
-  const [editForm] = Form.useForm()
-
-  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
-
-  const { data, run } = useRequest(getComponentDetailItem, {
-    manual: true,
-  })
-
-  // useEffect(() => {
-  //   search();
-  // }, [componentId]);
-
-  const searchComponent = () => {
-    return (
-      <div>
-        <TableSearch width="278px">
-          <Search
-            allowClear
-            value={searchKeyWord}
-            onChange={(e) => setSearchKeyWord(e.target.value)}
-            onSearch={() => search()}
-            enterButton
-            placeholder="请输入组件明细信息"
-          />
-        </TableSearch>
-      </div>
-    )
-  }
-
-  // 列表刷新
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh()
-    }
-  }
-
-  // 列表搜索
-  const search = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.search()
-    }
-  }
+  const [tabKey, setTabKey] = useState<string>('')
 
   const columns = [
     {
@@ -104,6 +48,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
       index: 'itemNumber',
       title: '数量',
       width: 150,
+      editable: true,
     },
     {
       dataIndex: 'isComponent',
@@ -116,161 +61,191 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
     },
   ]
 
-  //添加
-  const addEvent = () => {
-    setAddFormVisible(true)
-  }
-
-  const sureAddComponentDetail = () => {
-    addForm.validateFields().then(async (value) => {
-      const saveInfo = Object.assign(
-        {
-          libId: libId,
-          belongComponentId: componentId[0],
-        },
-        value
-      )
-
-      await addComponentDetailItem(saveInfo)
-      message.success('添加成功')
-      refresh()
-      setAddFormVisible(false)
-      addForm.resetFields()
-    })
-  }
-
-  //编辑
-  const editEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
-    const editData = tableSelectRows[0]
-    const editDataId = editData.id
-
-    setEditFormVisible(true)
-    const ComponentDetailData = await run(libId, editDataId)
-
-    const formData = {
-      componentId: ComponentDetailData.itemName,
-      itemId: ComponentDetailData.itemId,
-      itemNumber: ComponentDetailData.itemNumber,
-      // spec: ComponentDetailData.spec,
-      itemType: ComponentDetailData.isComponent === 1 ? '1' : '0',
-      unit: ComponentDetailData.unit,
-    }
-    setFormData(formData)
-    editForm.setFieldsValue(formData)
-  }
-
-  const sureEditcomponentDetail = () => {
-    const editData = data!
-
-    editForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          id: editData.id,
-          libId: libId,
-          itemId: editData.itemId,
-          itemNumber: editData.itemNumber,
-          itemType: editData.itemType,
-        },
-        values
-      )
-
-      await updateComponentDetailItem(submitInfo)
-      refresh()
-      message.success('更新成功')
-      editForm.resetFields()
-      setEditFormVisible(false)
-    })
-  }
-
-  const sureDeleteData = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条模块明细删除！')
-      return
-    }
-    const selectDataId = tableSelectRows[0].id
-    await deleteComponentDetailItem(libId, selectDataId)
-    refresh()
-    message.success('删除成功')
-    setTableSelectRows([])
-  }
-
-  const tableRightSlot = (
-    <>
-      {buttonJurisdictionArray?.includes('add-component-detail') && (
-        <Button type="primary" className="mr7" onClick={() => addEvent()}>
-          <PlusOutlined />
-          添加
-        </Button>
-      )}
-      {buttonJurisdictionArray?.includes('edit-component-detail') && (
-        <Button className="mr7" onClick={() => editEvent()}>
-          <EditOutlined />
-          编辑
-        </Button>
-      )}
-      {buttonJurisdictionArray?.includes('delete-component-detail') && (
-        <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
-      )}
-    </>
+  // 明细列表数据
+  const {
+    data: defaultResource,
+    loading,
+    run: getDetailList,
+  } = useRequest(
+    () => {
+      return getComponentDetaiList(libId, selectId, '')
+    },
+    { manual: true }
   )
+  useEffect(() => {
+    detailVisible && getDetailList()
+  }, [detailVisible])
+  // console.log(defaultResource?.items, 'sss')
+  const componentDetailRef = useRef<HTMLDivElement>(null)
+  const componentlRef = useRef<HTMLDivElement>(null)
+  const materialRef = useRef<HTMLDivElement>(null)
 
+  const okHandle = () => {
+    // console.log(componentDetailRef.current?.getSelectedData())
+  }
+  const addItemsHandle = () => {}
+  const removeItemsHandle = () => {}
+  const componentColumns = [
+    {
+      dataIndex: 'componentId',
+      index: 'componentId',
+      title: '组件编码',
+      width: 180,
+    },
+    {
+      dataIndex: 'componentName',
+      index: 'componentName',
+      title: '组件名称',
+      width: 380,
+    },
+    {
+      dataIndex: 'componentSpec',
+      index: 'componentName',
+      title: '组件型号',
+      width: 380,
+    },
+  ]
+  const materialColumns = [
+    {
+      dataIndex: 'code',
+      index: 'code',
+      title: '物资编号',
+      width: 220,
+    },
+    {
+      dataIndex: 'category',
+      index: 'category',
+      title: '物料类型',
+      width: 180,
+    },
+    {
+      dataIndex: 'materialName',
+      index: 'materialName',
+      title: '物料名称',
+      width: 320,
+    },
+    {
+      dataIndex: 'spec',
+      index: 'spec',
+      title: '规格型号',
+      width: 320,
+    },
+  ]
   return (
-    <div>
-      <GeneralTable
-        buttonLeftContentSlot={() => searchComponent()}
-        buttonRightContentSlot={() => tableRightSlot}
-        ref={tableRef}
-        url="/ComponentDetail/GetPageList"
-        columns={columns}
-        requestSource="resource"
-        getSelectData={(data) => setTableSelectRows(data)}
-        extractParams={{
-          libId: libId,
-          componentIds: selectId,
-          keyWord: searchKeyWord,
-        }}
-      />
-      <Modal
-        maskClosable={false}
-        title="添加-组件明细"
-        width="88%"
-        visible={addFormVisible}
-        okText="确认"
-        onOk={() => sureAddComponentDetail()}
-        onCancel={() => {
-          setAddFormVisible(false)
-          addForm.resetFields()
-        }}
-        cancelText="取消"
-        centered
-        destroyOnClose
-      >
-        <Form form={addForm}>
-          <AddComponentDetail addForm={addForm} resourceLibId={libId} />
-        </Form>
-      </Modal>
+    <Modal
+      maskClosable={false}
+      title="组件明细"
+      width="92%"
+      visible={detailVisible}
+      onCancel={() => setDetailVisible(false)}
+      onOk={() => {
+        okHandle()
+      }}
+      okText="确认"
+      cancelText="取消"
+      bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
+      destroyOnClose
+    >
+      <Spin spinning={loading}>
+        <div className={styles.wrap}>
+          <div className={styles.left}>
+            <TableCanEditCell
+              defaultColumns={columns}
+              defaultResource={!!defaultResource ? defaultResource?.items : []}
+              ref={componentDetailRef}
+            />
+          </div>
+          <div className={styles.middleWrap}>
+            <Button onClick={addItemsHandle}>左移</Button>
+            <Button onClick={removeItemsHandle}>右移</Button>
+          </div>
+          <div className={styles.right}>
+            <Tabs
+              defaultActiveKey="material"
+              onChange={(activeKey) => {
+                setTabKey(activeKey)
+              }}
+            >
+              <Tabs.TabPane tab="物料" key="material">
+                <TableCanSearch
+                  ref={componentlRef}
+                  url="/Material/GetPageList"
+                  columns={materialColumns}
+                  extractParams={{
+                    resourceLibId: libId,
+                  }}
+                  requestSource="resource"
+                />
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="组件" key="component">
+                <TableCanSearch
+                  ref={componentlRef}
+                  url="/Component/GetPageList"
+                  columns={componentColumns}
+                  requestSource="resource"
+                  extractParams={{
+                    resourceLibId: libId,
+                    isElectricalEquipment: false,
+                  }}
+                />
+              </Tabs.TabPane>
+            </Tabs>
+          </div>
+        </div>
+      </Spin>
+    </Modal>
+    // <div>
+    //   <GeneralTable
+    //     buttonLeftContentSlot={() => searchComponent()}
+    //     buttonRightContentSlot={() => tableRightSlot}
+    //     ref={tableRef}
+    //     url="/ComponentDetail/GetPageList"
+    //     columns={columns}
+    //     requestSource="resource"
+    //     getSelectData={(data) => setTableSelectRows(data)}
+    //     extractParams={{
+    //       libId: libId,
+    //       componentIds: selectId,
+    //       keyWord: searchKeyWord,
+    //     }}
+    //   />
+    //   <Modal
+    //     maskClosable={false}
+    //     title="添加-组件明细"
+    //     width="88%"
+    //     visible={addFormVisible}
+    //     okText="确认"
+    //     onOk={() => sureAddComponentDetail()}
+    //     onCancel={() => {
+    //       setAddFormVisible(false)
+    //       addForm.resetFields()
+    //     }}
+    //     cancelText="取消"
+    //     centered
+    //     destroyOnClose
+    //   >
+    //     <Form form={addForm}>
+    //       <AddComponentDetail addForm={addForm} resourceLibId={libId} />
+    //     </Form>
+    //   </Modal>
 
-      <Modal
-        maskClosable={false}
-        title="编辑-组件明细"
-        width="50%"
-        visible={editFormVisible}
-        okText="保存"
-        onOk={() => sureEditcomponentDetail()}
-        onCancel={() => setEditFormVisible(false)}
-        cancelText="取消"
-        centered
-        destroyOnClose
-      >
-        <Form form={editForm} preserve={false}>
-          <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
-        </Form>
-      </Modal>
-    </div>
+    //   <Modal
+    //     maskClosable={false}
+    //     title="编辑-组件明细"
+    //     width="50%"
+    //     visible={editFormVisible}
+    //     okText="保存"
+    //     onOk={() => sureEditcomponentDetail()}
+    //     onCancel={() => setEditFormVisible(false)}
+    //     cancelText="取消"
+    //     centered
+    //     destroyOnClose
+    //   >
+    //     <Form form={editForm} preserve={false}>
+    //       <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
+    //     </Form>
+    //   </Modal>
+    // </div>
   )
 }
 
