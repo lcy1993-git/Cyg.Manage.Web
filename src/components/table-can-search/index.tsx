@@ -1,12 +1,13 @@
+import TableSearch from '@/components/table-search'
+import UrlSelect from '@/components/url-select'
 import { tableCommonRequest } from '@/services/table'
 import { useRequest } from 'ahooks'
-import { Pagination, Table } from 'antd'
-
+import { Input, Pagination, Table } from 'antd'
 import type { Ref } from 'react'
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
-
 import EmptyTip from '../empty-tip'
 import styles from './index.less'
+const { Search } = Input
 
 interface GeneralTableProps {
   url: string
@@ -15,6 +16,9 @@ interface GeneralTableProps {
   rowKey?: string
   requestSource?: 'project' | 'common' | 'resource' | 'tecEco' | 'tecEco1' | 'grid'
   postType?: 'body' | 'query'
+  libId: string
+  categoryKey: string
+  name: string
 }
 
 const withSearchTable =
@@ -27,6 +31,9 @@ const withSearchTable =
       rowKey = 'id',
       requestSource = 'project',
       postType = 'body',
+      libId,
+      categoryKey,
+      name,
       ...rest
     } = props
 
@@ -36,6 +43,8 @@ const withSearchTable =
     const [finallyColumns, setFinalyColumns] = useState<any[]>([])
     const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([])
     const [selectedRow, setSelectedRow] = useState<any[]>([])
+    const [searchKeyWord, setSearchKeyWord] = useState<string>()
+    const [category, setCategory] = useState<string>()
     const tableRef = useRef<HTMLDivElement>(null)
 
     const { data, run, loading } = useRequest(tableCommonRequest, {
@@ -89,15 +98,22 @@ const withSearchTable =
 
     useEffect(() => {
       if (url === '') return
+      getList()
+    }, [pageSize, currentPage, category])
+
+    const getList = () => {
+      const params = { ...extractParams }
+      params[categoryKey] = category
+      params['keyWord'] = searchKeyWord
       run({
         url,
-        extraParams: extractParams,
+        extraParams: params,
         pageIndex: currentPage,
         pageSize,
         requestSource,
         postType,
       })
-    }, [pageSize, currentPage])
+    }
 
     useEffect(() => {
       const newColumns = columns.map((item) => ({ ...item, checked: true }))
@@ -106,6 +122,51 @@ const withSearchTable =
 
     return (
       <div className={styles.cyGeneralTable} ref={tableRef}>
+        <div className={styles.cyGeneralTableButtonContent}>
+          <div className={styles.cyGeneralTableButtonLeftContent}>
+            <TableSearch width="230px">
+              <Search
+                value={searchKeyWord}
+                onChange={(e) => setSearchKeyWord(e.target.value)}
+                onSearch={() => getList()}
+                enterButton
+                placeholder={`请输入${name}信息`}
+              />
+            </TableSearch>
+            {name === '组件' ? (
+              <TableSearch marginLeft="20px" label="设备分类" width="220px">
+                <UrlSelect
+                  allowClear
+                  showSearch
+                  requestSource="resource"
+                  url="/Component/GetDeviceCategory"
+                  titlekey="key"
+                  valuekey="value"
+                  placeholder="请选择"
+                  onChange={(value: any) => setCategory(value)}
+                />
+              </TableSearch>
+            ) : (
+              <TableSearch marginLeft="20px" label="类别" width="220px">
+                <UrlSelect
+                  allowClear
+                  showSearch
+                  requestSource="resource"
+                  url="/Material/GetMaterialTypeList"
+                  titlekey="key"
+                  valuekey="value"
+                  placeholder="请选择"
+                  onChange={(value: any) => {
+                    setCategory(value)
+                  }}
+                  extraParams={{ libId: libId }}
+                  postType="query"
+                  requestType="post"
+                />
+              </TableSearch>
+            )}
+          </div>
+        </div>
         <div className={styles.cyGeneralTableConetnt}>
           <WrapperComponent
             bordered={true}

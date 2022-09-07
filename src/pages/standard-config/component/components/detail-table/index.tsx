@@ -1,7 +1,8 @@
 import { getComponentDetaiList } from '@/services/resource-config/component'
+import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Button, Input, Modal, Spin, Tabs } from 'antd'
-// import styles from './index.less';
+import { message, Modal, Spin, Tabs } from 'antd'
+
 import TableCanEditCell from '@/components/table-can-edit-cell'
 import TableCanSearch from '@/components/table-can-search'
 import React, { useEffect, useRef, useState } from 'react'
@@ -15,12 +16,14 @@ interface ModuleDetailParams {
   setDetailVisible: (state: boolean) => void
 }
 
-const { Search } = Input
+const MATERIAL = 'material'
+const COMPONENT = 'component'
+
 const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
   const { libId, componentId, selectId, detailVisible, setDetailVisible } = props
 
-  const tableRef = React.useRef<HTMLDivElement>(null)
-  const [tabKey, setTabKey] = useState<string>('')
+  const [tabKey, setTabKey] = useState<string>(MATERIAL)
+  const [resource, setResource] = useState<any[]>([])
 
   const columns = [
     {
@@ -62,29 +65,82 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
   ]
 
   // 明细列表数据
-  const {
-    data: defaultResource,
-    loading,
-    run: getDetailList,
-  } = useRequest(
+  const { loading, run: getDetailList } = useRequest(
     () => {
       return getComponentDetaiList(libId, selectId, '')
     },
-    { manual: true }
+    {
+      manual: true,
+      onSuccess: (res) => {
+        setResource(res.items)
+      },
+    }
   )
   useEffect(() => {
     detailVisible && getDetailList()
   }, [detailVisible])
-  // console.log(defaultResource?.items, 'sss')
   const componentDetailRef = useRef<HTMLDivElement>(null)
-  const componentlRef = useRef<HTMLDivElement>(null)
+  const componentRef = useRef<HTMLDivElement>(null)
   const materialRef = useRef<HTMLDivElement>(null)
 
   const okHandle = () => {
-    // console.log(componentDetailRef.current?.getSelectedData())
+    // console.log(resource, 're')
   }
-  const addItemsHandle = () => {}
-  const removeItemsHandle = () => {}
+  const addItemsHandle = () => {
+    //@ts-ignore
+    const selectData =
+      tabKey === MATERIAL
+        ? materialRef.current?.getCheckedList()
+        : componentRef.current?.getCheckedList()
+    for (let i = 0; i < selectData.length; i++) {
+      for (let j = 0; j < resource.length; j++) {
+        if (resource[j].id === selectData[i].id) {
+          message.error(
+            `明细列表中包含${
+              tabKey === MATERIAL ? selectData[i].materialName : selectData[i].componentName
+            }请勿重复添加`
+          )
+          return
+        }
+      }
+    }
+    const addItems = selectData.map((item: any) => {
+      if (tabKey === MATERIAL) {
+        return {
+          itemId: item.materialId,
+          componentName: item.materialName,
+          spec: item.spec,
+          itemNumber: 1,
+          isComponent: 0,
+          // unit:item.unit
+        }
+      } else {
+        return {
+          itemId: item.componentId,
+          componentName: item.componentName,
+          spec: item.componentSpec,
+          itemNumber: 1,
+          isComponent: 1,
+          // unit:item.unit
+        }
+      }
+    })
+    setResource([...resource, ...addItems])
+  }
+  const removeItemsHandle = () => {
+    //@ts-ignore
+    const selectData = componentDetailRef.current?.getSelectedData()
+    const copyData = [...resource]
+    for (let i = 0; i < selectData.length; i++) {
+      for (let j = 0; j < copyData.length; j++) {
+        if (selectData[i].id === copyData[j].id) {
+          copyData.splice(j, 1)
+          break
+        }
+      }
+    }
+    setResource([...copyData])
+  }
   const componentColumns = [
     {
       dataIndex: 'componentId',
@@ -148,38 +204,49 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
     >
       <Spin spinning={loading}>
         <div className={styles.wrap}>
-          <div className={styles.left}>
+          <div className={styles.leftWrap}>
             <TableCanEditCell
               defaultColumns={columns}
-              defaultResource={!!defaultResource ? defaultResource?.items : []}
+              defaultResource={resource}
               ref={componentDetailRef}
             />
           </div>
           <div className={styles.middleWrap}>
-            <Button onClick={addItemsHandle}>左移</Button>
-            <Button onClick={removeItemsHandle}>右移</Button>
+            <div className={styles.btns}>
+              <DoubleLeftOutlined
+                onClick={addItemsHandle}
+                style={{ fontSize: '24px', display: 'block', color: '#999' }}
+              />
+              <DoubleRightOutlined
+                onClick={removeItemsHandle}
+                style={{ fontSize: '24px', display: 'block', marginTop: '10px', color: '#999' }}
+              />
+            </div>
           </div>
-          <div className={styles.right}>
+          <div className={styles.leftWrap}>
             <Tabs
-              defaultActiveKey="material"
+              defaultActiveKey={MATERIAL}
               onChange={(activeKey) => {
                 setTabKey(activeKey)
               }}
             >
-              <Tabs.TabPane tab="物料" key="material">
+              <Tabs.TabPane tab="物料" key={MATERIAL}>
                 <TableCanSearch
-                  ref={componentlRef}
+                  ref={materialRef}
                   url="/Material/GetPageList"
                   columns={materialColumns}
                   extractParams={{
                     resourceLibId: libId,
                   }}
                   requestSource="resource"
+                  libId={libId}
+                  categoryKey="materialType"
+                  name="物料"
                 />
               </Tabs.TabPane>
-              <Tabs.TabPane tab="组件" key="component">
+              <Tabs.TabPane tab="组件" key={COMPONENT}>
                 <TableCanSearch
-                  ref={componentlRef}
+                  ref={componentRef}
                   url="/Component/GetPageList"
                   columns={componentColumns}
                   requestSource="resource"
@@ -187,6 +254,9 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
                     resourceLibId: libId,
                     isElectricalEquipment: false,
                   }}
+                  libId={libId}
+                  categoryKey="deviceCategory"
+                  name="组件"
                 />
               </Tabs.TabPane>
             </Tabs>
@@ -194,58 +264,6 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         </div>
       </Spin>
     </Modal>
-    // <div>
-    //   <GeneralTable
-    //     buttonLeftContentSlot={() => searchComponent()}
-    //     buttonRightContentSlot={() => tableRightSlot}
-    //     ref={tableRef}
-    //     url="/ComponentDetail/GetPageList"
-    //     columns={columns}
-    //     requestSource="resource"
-    //     getSelectData={(data) => setTableSelectRows(data)}
-    //     extractParams={{
-    //       libId: libId,
-    //       componentIds: selectId,
-    //       keyWord: searchKeyWord,
-    //     }}
-    //   />
-    //   <Modal
-    //     maskClosable={false}
-    //     title="添加-组件明细"
-    //     width="88%"
-    //     visible={addFormVisible}
-    //     okText="确认"
-    //     onOk={() => sureAddComponentDetail()}
-    //     onCancel={() => {
-    //       setAddFormVisible(false)
-    //       addForm.resetFields()
-    //     }}
-    //     cancelText="取消"
-    //     centered
-    //     destroyOnClose
-    //   >
-    //     <Form form={addForm}>
-    //       <AddComponentDetail addForm={addForm} resourceLibId={libId} />
-    //     </Form>
-    //   </Modal>
-
-    //   <Modal
-    //     maskClosable={false}
-    //     title="编辑-组件明细"
-    //     width="50%"
-    //     visible={editFormVisible}
-    //     okText="保存"
-    //     onOk={() => sureEditcomponentDetail()}
-    //     onCancel={() => setEditFormVisible(false)}
-    //     cancelText="取消"
-    //     centered
-    //     destroyOnClose
-    //   >
-    //     <Form form={editForm} preserve={false}>
-    //       <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
-    //     </Form>
-    //   </Modal>
-    // </div>
   )
 }
 
