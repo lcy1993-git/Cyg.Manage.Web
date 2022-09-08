@@ -1,4 +1,7 @@
-import { getComponentDetaiList } from '@/services/resource-config/component'
+import {
+  getComponentDetaiList,
+  updateComponentDetaiList,
+} from '@/services/resource-config/component'
 import { DoubleLeftOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { message, Modal, Spin, Tabs } from 'antd'
@@ -85,13 +88,41 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
 
   const okHandle = () => {
     // console.log(resource, 're')
+    // console.log(JSON.stringify({
+    //   libId,
+    //   belongComponentId:componentId[0],
+    //   items:resource.map((item: any) => {
+    //     return {
+    //       ...item,
+    //       // itemId:item.itemId,
+    //       itemType: String(item.isComponent),
+    //       // itemNumber:item.itemNumber,
+    //     }
+    //   })
+    // }))
+    updateComponentDetaiList(
+      libId,
+      componentId[0],
+      resource.map((item: any) => {
+        return {
+          ...item,
+          // itemId:item.itemId,
+          itemType: String(item.isComponent),
+          // itemNumber:item.itemNumber,
+        }
+      })
+    ).then(() => {
+      message.success('操作成功')
+    })
+    // updateComponentDetaiList(libId, componentId[0], resource)
   }
   const addItemsHandle = () => {
-    //@ts-ignore
     const selectData =
       tabKey === MATERIAL
-        ? materialRef.current?.getCheckedList()
-        : componentRef.current?.getCheckedList()
+        ? //@ts-ignore
+          materialRef.current?.getCheckedList()
+        : //@ts-ignore
+          componentRef.current?.getCheckedList()
     for (let i = 0; i < selectData.length; i++) {
       for (let j = 0; j < resource.length; j++) {
         if (resource[j].id === selectData[i].id) {
@@ -104,9 +135,14 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         }
       }
     }
+    //@ts-ignore
+    tabKey === MATERIAL
+      ? materialRef.current?.clearSelectedRows()
+      : componentRef.current?.clearSelectedRows()
     const addItems = selectData.map((item: any) => {
       if (tabKey === MATERIAL) {
         return {
+          id: item.id,
           itemId: item.materialId,
           componentName: item.materialName,
           spec: item.spec,
@@ -116,6 +152,7 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
         }
       } else {
         return {
+          id: item.id,
           itemId: item.componentId,
           componentName: item.componentName,
           spec: item.componentSpec,
@@ -140,6 +177,8 @@ const ComponentDetail: React.FC<ModuleDetailParams> = (props) => {
       }
     }
     setResource([...copyData])
+    //@ts-ignore
+    componentDetailRef.current?.clearSelectedRows()
   }
   const componentColumns = [
     {

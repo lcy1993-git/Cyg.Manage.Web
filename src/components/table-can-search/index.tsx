@@ -54,6 +54,10 @@ const withSearchTable =
       getCheckedList: () => {
         return selectedRow
       },
+      clearSelectedRows: () => {
+        setSelectedRowKeys([])
+        setSelectedRow([])
+      },
     }))
     const tableResultData = useMemo(() => {
       if (data) {

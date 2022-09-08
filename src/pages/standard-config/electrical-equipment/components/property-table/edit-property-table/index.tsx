@@ -1,8 +1,8 @@
-import { Form } from 'antd'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form } from 'antd'
+import uuid from 'node-uuid'
 import React from 'react'
 import styles from './index.less'
-import uuid from 'node-uuid'
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
 
 interface EditFormTableProps {
   formName: string
@@ -24,8 +24,20 @@ const EditPropertyTable: React.FC<EditFormTableProps> = (props) => {
   return (
     <div className={styles.editFormTable}>
       <Form.List name={formName} initialValue={formData}>
-        {(fields, {}) => (
+        {(fields, { remove, add, move }) => (
           <>
+            <div className={styles.addBtnWrap}>
+              <Button
+                type="primary"
+                className="mr7"
+                onClick={() => {
+                  add()
+                }}
+              >
+                <PlusOutlined />
+                添加
+              </Button>
+            </div>
             <table>
               <thead>
                 <tr>{theadElement}</tr>
@@ -35,18 +47,30 @@ const EditPropertyTable: React.FC<EditFormTableProps> = (props) => {
                   return (
                     <tr key={field.key}>
                       {columns.map((ite) => {
-                        return (
-                          <td key={`${field.key}_${ite.dataIndex}`}>
-                            <Form.Item
-                              {...field}
-                              rules={ite.rules}
-                              name={[field.name, ite.dataIndex]}
-                              fieldKey={[field.fieldKey, ite.dataIndex]}
-                            >
-                              {ite.render?.(index)}
-                            </Form.Item>
-                          </td>
-                        )
+                        if (ite.dataIndex === 'operation') {
+                          return (
+                            <div className={styles.deleteBtnWrap}>
+                              <DeleteOutlined
+                                onClick={() => {
+                                  remove(index)
+                                }}
+                              />
+                            </div>
+                          )
+                        } else {
+                          return (
+                            <td key={`${field.key}_${ite.dataIndex}`}>
+                              <Form.Item
+                                {...field}
+                                rules={ite.rules}
+                                name={[field.name, ite.dataIndex]}
+                                fieldKey={[field.fieldKey, ite.dataIndex]}
+                              >
+                                {ite.render?.(index)}
+                              </Form.Item>
+                            </td>
+                          )
+                        }
                       })}
                     </tr>
                   )

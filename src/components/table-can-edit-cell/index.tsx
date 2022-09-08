@@ -123,6 +123,10 @@ const TableCanEditCell = (props: TableCanEditCellProps, ref: Ref<any>) => {
     getSelectedData: () => {
       return selectedRows
     },
+    clearSelectedRows: () => {
+      setSelectedRowKeys([])
+      setSelectedRows([])
+    },
   }))
 
   useEffect(() => {

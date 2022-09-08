@@ -65,6 +65,24 @@ export const getComponentDetaiList = (libId: string, componentIds: string[], key
     })
   )
 }
+interface ItemType {
+  itemId: string
+  itemType: string
+  itemNumber: number
+}
+//更新明细数据列表
+export const updateComponentDetaiList = (
+  libId: string,
+  belongComponentId: string,
+  items: ItemType[]
+) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/ComponentDetail/SaveBatchCreate`, {
+      method: 'POST',
+      data: { libId, belongComponentId, items },
+    })
+  )
+}
 /**组件明细操作 */
 interface ComponentDetailParams {
   libId: string
