@@ -93,7 +93,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           titlekey="spec"
           valuekey="id"
           postType="body"
-          extraParams={{ libId: resourceLibId, spec: '1' }}
+          extraParams={{ libId: resourceLibId }}
           placeholder="请输入规格型号"
           onChange={changeSpecHandle}
           update={updateName}
