@@ -18,6 +18,13 @@ interface ContextType {
   // 重新获取tree数据标识
   isFilterTree: boolean
   setIsFilterTree: Dispatch<SetStateAction<boolean>>
+  //规划数据
+  planPowerIds: string[]
+  setPlanPowerIds: Dispatch<SetStateAction<string[]>>
+  setPlanSubStations: Dispatch<SetStateAction<string[]>>
+  planSubStations: string[]
+  planLinesId: string[]
+  setPlanLinesId: Dispatch<SetStateAction<string[]>>
 }
 
 // 全局状态管理

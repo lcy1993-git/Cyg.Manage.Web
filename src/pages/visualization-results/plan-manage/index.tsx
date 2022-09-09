@@ -45,6 +45,9 @@ const PlanManage: React.FC = () => {
   const [areaData, setAreaData] = useState<MyContextType['areaData']>([])
   // 行政区域代码与名称映射
   const [areaMap, setAreaMap] = useState<{ [key: string]: string }>({})
+
+  //选中图层
+  const [checkedLayers, setCheckedLayers] = useState<any[]>(['plan'])
   const areaMapData = {}
   const { data: cityData } = useRequest(() => getCityAreas(), {
     onSuccess: () => {
@@ -98,6 +101,8 @@ const PlanManage: React.FC = () => {
         setAreaMap,
         mapLoading,
         setMapLoading,
+        checkedLayers,
+        setCheckedLayers,
       }}
     >
       <PlanManageWrap />

@@ -42,6 +42,9 @@ export interface MyContextType {
   setAreaMap: Dispatch<SetStateAction<{ [key: string]: string }>>
   mapLoading: boolean
   setMapLoading: Dispatch<SetStateAction<boolean>>
+  //选中图层
+  checkedLayers: string[]
+  setCheckedLayers: Dispatch<SetStateAction<string[]>>
 }
 
 // 全局状态管理

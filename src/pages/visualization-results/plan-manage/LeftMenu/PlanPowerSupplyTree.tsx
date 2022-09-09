@@ -61,9 +61,9 @@ interface TreeSelectType {
 const PlanPowerSupplyTree = () => {
   const { isRefresh, setIsRefresh, companyId } = useMyContext()
   const {
-    linesId,
-    setlinesId,
-    setpowerSupplyIds,
+    setPlanLinesId,
+    planLinesId,
+    setPlanPowerIds,
     settreeLoading,
     kvLevels,
     areasId,
@@ -193,8 +193,8 @@ const PlanPowerSupplyTree = () => {
             await deleteLine([node.id])
             setIsRefresh(!isRefresh)
             message.info('删除成功')
-            const currentSelectLineIds = linesId.filter((item) => item !== node.id)
-            setlinesId(currentSelectLineIds)
+            const currentSelectLineIds = planLinesId.filter((item) => item !== node.id)
+            setPlanLinesId(currentSelectLineIds)
           } catch (err) {
             message.error('删除失败')
           }
@@ -246,7 +246,7 @@ const PlanPowerSupplyTree = () => {
         return undefined
       })
       .filter(Boolean)
-    setpowerSupplyIds([...new Set(PowerSupplyIds)])
+    setPlanPowerIds([...new Set(PowerSupplyIds)])
     const currentLineId = checkedKeys
       .map((item: string) => {
         const isSubstation = item.includes(`_&Line`)
@@ -259,9 +259,9 @@ const PlanPowerSupplyTree = () => {
 
     const currentLinesId = [
       ...currentLineId,
-      ...linesId.filter((item) => item.indexOf(TRANSFORMERSUBSTATION) !== -1),
+      ...planLinesId.filter((item) => item.indexOf(TRANSFORMERSUBSTATION) !== -1),
     ]
-    setlinesId([...new Set(currentLinesId)])
+    setPlanLinesId([...new Set(currentLinesId)])
   }
 
   return (

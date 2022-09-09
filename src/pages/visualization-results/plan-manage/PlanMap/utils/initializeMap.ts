@@ -258,9 +258,9 @@ export const getShowLines = (map: any) => {
 }
 
 // 加载地图图层
-export const loadMapLayers = (data: any, map: any, checkLineIds_: any) => {
+export const loadMapLayers = (data: any, map: any, checkLineIds_: any, type: string) => {
   checkLineIds = checkLineIds_
-  loadAllLayer(data, map)
+  loadAllLayer(data, map, type)
 }
 
 export const getCheckLineIds = () => {

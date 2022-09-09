@@ -8,8 +8,7 @@ import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Divider, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import StandingBook from '../../components/standing-book'
-import PowerSupplyTree from '../../grid-manage/LeftMenu/PowerSupplyTree'
-import SubstationTree from '../../grid-manage/LeftMenu/SubstationTree'
+
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
@@ -58,6 +57,7 @@ const LeftMenu = (props: any) => {
     isRefresh,
     setMapLoading,
     checkLineIds,
+    checkedLayers,
   } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
   const [kvLevels, setKvLevels] = useState<number[]>([])
@@ -66,10 +66,16 @@ const LeftMenu = (props: any) => {
 
   // 线路ID集合
   const [linesId, setlinesId] = useState<string[]>([])
+  // 规划线路ID集合
+  const [planLinesId, setPlanLinesId] = useState<string[]>([])
   // 电源集合
   const [powerSupplyIds, setpowerSupplyIds] = useState<string[]>([])
   // 变电站 id集合
   const [subStations, setsubStations] = useState<string[]>([])
+  // 规划电源集合
+  const [planPowerIds, setPlanPowerIds] = useState<string[]>([])
+  // 规划变电站 id集合
+  const [planSubStations, setPlanSubStations] = useState<string[]>([])
   // tree loading
   const [treeLoading, settreeLoading] = useState<boolean>(false)
   /**所属厂站**/
@@ -152,6 +158,7 @@ const LeftMenu = (props: any) => {
     })
   }
 
+  //历史
   const { data: subStationsData, run: GetSubStations } = useRequest(
     () => {
       setMapLoading(true)
@@ -168,6 +175,120 @@ const LeftMenu = (props: any) => {
     }
   )
 
+  //规划
+  const { data: planSubStationsData } = useRequest(
+    () => {
+      setMapLoading(true)
+      return getSubStations({
+        stationIds: planSubStations,
+        powerIds: planPowerIds,
+      })
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        getPlanTreeData()
+      },
+    }
+  )
+
+  //获取规划网架数据
+  const { data: PlanTreeData, run: getPlanTreeData } = useRequest(
+    () => {
+      const ids = [...new Set(linesId)]
+      const lineIds: string[] = ids
+        .map((item: string) => {
+          const exist = item.includes('_&Line')
+          if (exist) {
+            return item.split('_&Line')[0]
+          }
+          return ''
+        })
+        .filter((item: string) => item)
+      return getlinesComponment({
+        lineIds,
+        kvLevels: [],
+        gridDataType: 1,
+      })
+    },
+    {
+      manual: true,
+      onSuccess: () => {
+        const treeDatas = dataHandle(PlanTreeData)
+        let lineList: any[] = []
+        let powerSupplyList: any[] = []
+        // let lineRelationList = [];
+        if (planPowerIds.length) {
+          // @ts-ignore
+          powerSupplyList = planSubStationsData?.powerSupplyList.map((item) => {
+            return {
+              ...item,
+              color: '#4D3900',
+            }
+          })
+        }
+        const filterLineIds: any[] = []
+        // @ts-ignore
+        const subStationList = newData(planSubStationsData?.transformerSubstationList)
+        if (planPowerIds.length || planSubStations.length) {
+          const line = treeDatas.lineRelationList.filter(
+            (item: any) =>
+              item.endTypeText === POWERSUPPLY ||
+              item.endTypeText === TRANSFORMERSUBSTATION ||
+              item.startTypeText === POWERSUPPLY ||
+              item.startTypeText === TRANSFORMERSUBSTATION
+          )
+
+          line.forEach((item: any) => {
+            const exist = powerSupplyList.find(
+              (ndoe: any) => item.startId === ndoe.id || item.endId === ndoe.id
+            )
+            if (!exist) {
+              const sub = subStationList.find(
+                (ndoe: any) => item.startId === ndoe.id || item.endId === ndoe.id
+              )
+              if (!sub) {
+                filterLineIds.push(item.id)
+              }
+            }
+          })
+        }
+
+        if (filterLineIds.length) {
+          lineList = treeDatas.lineRelationList
+            .map((item: any) => {
+              const exist = filterLineIds.find((line) => line === item.id)
+              if (!exist) {
+                return item
+              }
+              return undefined
+            })
+            .filter((item) => item)
+        }
+
+        if (checkedLayers.length === 1 && checkedLayers.includes('plan')) {
+          loadMapLayers(
+            {
+              ...treeDatas,
+              lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
+              powerSupplyList,
+              transformerSubstationList: subStations.length
+                ? // @ts-ignore
+                  newData(subStationsData?.transformerSubstationList)
+                : [],
+            },
+            mapRef.map,
+            checkLineIds,
+            'plan'
+          )
+        }
+
+        setMapLoading(false)
+      },
+    }
+  )
+
+  //获取历史网架数据
   const { data: TreeData, run: getTreeData } = useRequest(
     () => {
       const ids = [...new Set(linesId)]
@@ -239,28 +360,37 @@ const LeftMenu = (props: any) => {
             })
             .filter((item) => item)
         }
-        loadMapLayers(
-          {
-            ...treeDatas,
-            lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
-            powerSupplyList,
-            transformerSubstationList: subStations.length
-              ? // @ts-ignore
-                newData(subStationsData?.transformerSubstationList)
-              : [],
-          },
-          mapRef.map,
-          checkLineIds
-        )
+
+        if (checkedLayers.length === 1 && checkedLayers.includes('history')) {
+          loadMapLayers(
+            {
+              ...treeDatas,
+              lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
+              powerSupplyList,
+              transformerSubstationList: subStations.length
+                ? // @ts-ignore
+                  newData(subStationsData?.transformerSubstationList)
+                : [],
+            },
+            mapRef.map,
+            checkLineIds,
+            'history'
+          )
+        }
         setMapLoading(false)
       },
     }
   )
 
+  useEffect(() => {
+    getTreeData()
+    getPlanTreeData()
+  }, [checkedLayers])
+
   useUpdateEffect(() => {
     GetSubStations()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [powerSupplyIds, subStations, linesId])
+  }, [powerSupplyIds, subStations, linesId, planLinesId, planPowerIds, planSubStations])
 
   // useEffect(() => {
   //   linesId && linesId.length && getTreeData()
@@ -280,10 +410,18 @@ const LeftMenu = (props: any) => {
         value={{
           linesId,
           setlinesId,
+          //历史网架
           powerSupplyIds,
           setpowerSupplyIds,
           subStations,
           setsubStations,
+          //规划网架
+          planLinesId,
+          setPlanLinesId,
+          planPowerIds,
+          setPlanPowerIds,
+          planSubStations,
+          setPlanSubStations,
           settreeLoading,
           treeLoading,
           kvLevels,

@@ -40,6 +40,7 @@ const initialFeatureType = FEATUREOPTIONS.filter(
 
 const Toolbar = (props: { leftMenuVisible: boolean }) => {
   const { leftMenuVisible } = props
+
   const {
     setdrawToolbarVisible,
     setzIndex,
@@ -48,6 +49,8 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     checkLineIds,
     mapRef,
     isDragPoint,
+    checkedLayers,
+    setCheckedLayers,
   } = useMyContext()
 
   // 地图设备类型显示
@@ -114,8 +117,27 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   /** 根据设备展示数据 **/
   const checkGroupChange = (checkedValue: any) => {
     setSelectedFeatureType(checkedValue)
-    loadAllPointLayer(mapRef.map, [TRANSFORMERSUBSTATION, POWERSUPPLY, ...checkedValue])
+    if (checkedLayers.length === 2) {
+      loadAllPointLayer(mapRef.map, [TRANSFORMERSUBSTATION, POWERSUPPLY, ...checkedValue], 'plan')
+      loadAllPointLayer(
+        mapRef.map,
+        [TRANSFORMERSUBSTATION, POWERSUPPLY, ...checkedValue],
+        'history'
+      )
+      return
+    }
+    if (checkedLayers.length === 1 && checkedLayers.includes('plan')) {
+      loadAllPointLayer(mapRef.map, [TRANSFORMERSUBSTATION, POWERSUPPLY, ...checkedValue], 'plan')
+    }
+    if (checkedLayers.length === 1 && checkedLayers.includes('history')) {
+      loadAllPointLayer(
+        mapRef.map,
+        [TRANSFORMERSUBSTATION, POWERSUPPLY, ...checkedValue],
+        'history'
+      )
+    }
   }
+
   /** 点击根据设备展示数据弹窗高亮按钮 **/
   const highlightHandle = (value: any) => {
     let types = [...highlightFeatureType]
@@ -271,6 +293,9 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     twinkle(mapRef.map, [])
   }, [checkLineIds, form, mapRef])
 
+  /**复制历史网架点位 */
+  const copyPointEvent = () => {}
+
   return (
     <>
       <div
@@ -298,9 +323,15 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
           <Button type="primary" onClick={search}>
             搜索
           </Button>
+          <Button type="primary" onClick={copyPointEvent}>
+            复制
+          </Button>
           <Checkbox.Group
             style={{ display: 'flex', flexDirection: 'column' }}
             defaultValue={['plan']}
+            onChange={(value) => {
+              setCheckedLayers(value)
+            }}
           >
             <Checkbox style={{ marginLeft: '8px' }} value="plan">
               规划图层

@@ -51,7 +51,11 @@ export const downloadExcelTemplate = () => {
 }
 
 /** 获取变电站下面的网架数据 **/
-export const getlinesComponment = (params: { lineIds: string[]; kvLevels: string[] }) => {
+export const getlinesComponment = (params: {
+  lineIds: string[]
+  kvLevels: string[]
+  gridDataType?: number
+}) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/Line/GetLineCompoment`, { method: 'POST', data: params })
   )
@@ -102,11 +106,11 @@ export const getAllBelongingLineItem = (gridDataType?: number) => {
   )
 }
 // 获取所有厂站
-export const GetStationItems = (gridDataType?: number) => {
+export const GetStationItems = (GridDataType?: number) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/GridDesign/GetStationItems`, {
       method: 'GET',
-      params: { gridDataType },
+      params: { GridDataType },
     })
   )
 }

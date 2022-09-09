@@ -5,17 +5,17 @@ import { LINE, POINTS } from '../../DrawToolbar/GridUtils'
 import { lineStyle, pointStyle } from './style'
 var mapDatas: any
 var checkedValues: any
-export const loadAllLayer = (data: any, map: any) => {
+export const loadAllLayer = (data: any, map: any, type: string) => {
   mapDatas = data
-  loadAllPointLayer(map, POINTS)
-  loadAllLineayer(map)
+  loadAllPointLayer(map, POINTS, type)
+  loadAllLineayer(map, type)
   locationLayer(map)
 }
 
 // 加载所有点图层
-export const loadAllPointLayer = (map: any, points: any) => {
+export const loadAllPointLayer = (map: any, points: any, type: string) => {
   checkedValues = points
-  let pointLayer = getLayer(map, 'pointLayer', 3, true)
+  let pointLayer = getLayer(map, 'pointLayer', 3, true, type)
   points.forEach((item: any) => {
     const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
     mapDatas[item_] && loadLayer(mapDatas[item_], item, pointLayer, map)
@@ -27,8 +27,8 @@ export const getCheckedValues = () => {
 }
 
 // 加载所有线图层
-export const loadAllLineayer = (map: any) => {
-  let lineLayer = getLayer(map, 'lineLayer', 2, true)
+export const loadAllLineayer = (map: any, type: string) => {
+  let lineLayer = getLayer(map, 'lineLayer', 2, true, type)
 
   // LINES.forEach((item: any) => {
   //   const item_ = item[0].toLocaleLowerCase() + item.substring(1) + 'List'
@@ -70,18 +70,22 @@ export const getLayer = (
   map: any,
   layerName: string,
   zIndex: number = 99,
-  clear: boolean = false
+  clear: boolean = false,
+  type: string = 'plan'
 ) => {
+  const layerName_ = type + '_' + layerName
+  const opacity = type === 'plan' ? 1 : 0.5
   let layer = map
     .getLayers()
     .getArray()
-    .find((item: any) => item.get('name') === layerName)
+    .find((item: any) => item.get('name') === layerName_)
   if (layer) {
     clear && layer.getSource().clear()
   } else {
     layer = new Vector({
       source: new VectorSource(),
       zIndex,
+      opacity,
     })
     layer.set('name', layerName)
     map.addLayer(layer)
