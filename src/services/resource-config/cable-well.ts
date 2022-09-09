@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 interface CableWellParams {
   libId: string
@@ -104,6 +104,34 @@ export const deleteCableWellDetailItem = (libId: string, id: string) => {
     request(`${baseUrl.resource}/CableWellDetails/Delete`, {
       method: 'POST',
       params: { libId, id },
+    })
+  )
+}
+
+// 获取明细列表
+interface ComponentDetaiListlParams {
+  items: any[]
+}
+//获取明细数据列表
+export const getCableWelDetaiList = (libId: string, cableWellIds: string[], keyWord: string) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/CableWellDetails/GetPageList`, {
+      method: 'POST',
+      data: { libId, cableWellIds, keyWord },
+    })
+  )
+}
+interface ItemType {
+  itemId: string
+  itemType: string
+  itemNumber: number
+}
+//更新明细数据列表
+export const updateCableWellDetaiList = (libId: string, cableWellId: string, items: ItemType[]) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/CableWellDetails/SaveBatchCreate`, {
+      method: 'POST',
+      data: { libId, cableWellId, items },
     })
   )
 }

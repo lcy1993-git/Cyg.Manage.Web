@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -14,7 +15,6 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react'
 import CableWellForm from './components/add-edit-form'
-import CableWellDetail from './components/detail-table/index'
 import styles from './index.less'
 
 const { Search } = Input
@@ -410,30 +410,19 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
         </Form>
       </Modal>
 
-      <Modal
-        maskClosable={false}
-        footer=""
-        title="电缆井明细"
-        width="92%"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <CableWellDetail
-            libId={libId}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-            cableWellId={tableSelectRows.map((item) => {
-              return item.cableWellId
-            })}
-          />
-        </Spin>
-      </Modal>
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.cableWellId
+        })}
+        detailVisible={detailVisible}
+        setDetailVisible={setDetailVisible}
+        title="电缆通道明细"
+        type="cable-well"
+      />
     </>
   )
 }

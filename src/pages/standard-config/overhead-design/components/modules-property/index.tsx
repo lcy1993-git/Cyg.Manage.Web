@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -16,7 +17,6 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ModulesPropertyForm from './components/add-edit-form'
-import ModuleDetailTable from './components/detail-table'
 import styles from './index.less'
 
 const { Search } = Input
@@ -524,28 +524,20 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           <ModuleDetailTab detailData={data} />
         </Spin>
       </Modal> */}
-      <Modal
-        maskClosable={false}
-        footer=""
-        title="模块明细"
-        width="90%"
-        visible={moduleDetailVisible}
-        onCancel={() => setModuleDetailVisible(false)}
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <ModuleDetailTable
-            libId={libId}
-            moduleId={tableSelectRows.map((item) => {
-              return item.moduleId
-            })}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-          />
-        </Spin>
-      </Modal>
+
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.moduleId
+        })}
+        detailVisible={moduleDetailVisible}
+        setDetailVisible={setModuleDetailVisible}
+        title="组件明细"
+        type="module"
+      />
     </>
   )
 }

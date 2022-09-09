@@ -132,3 +132,30 @@ export const deleteModulesDetailItem = (libId: string, id: string) => {
 }
 
 /**模块明细操作 */
+// 获取明细列表
+interface ComponentDetaiListlParams {
+  items: any[]
+}
+//获取明细数据列表
+export const getModuleDetaiList = (libId: string, moduleIds: string[], keyWord: string) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/ModulesDetails/GetPageList`, {
+      method: 'POST',
+      data: { libId, moduleIds, keyWord },
+    })
+  )
+}
+interface ItemType {
+  itemId: string
+  itemType: string
+  itemNumber: number
+}
+//更新明细数据列表
+export const updateModulelDetaiList = (libId: string, moduleId: string, items: ItemType[]) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/ModulesDetails/SaveBatchCreate`, {
+      method: 'POST',
+      data: { libId, moduleId, items },
+    })
+  )
+}

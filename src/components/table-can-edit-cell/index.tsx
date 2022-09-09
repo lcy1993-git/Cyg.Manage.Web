@@ -109,13 +109,13 @@ type EditableTableProps = Parameters<typeof Table>[0]
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>
 interface TableCanEditCellProps {
   defaultColumns: any[]
-  defaultResource: any[]
+  dataSource: any[]
+  setDataSource: (arr: any[]) => void
   rowKey?: string
 }
 
 const TableCanEditCell = (props: TableCanEditCellProps, ref: Ref<any>) => {
-  const { defaultColumns, defaultResource, rowKey = 'id' } = props
-  const [dataSource, setDataSource] = useState<any[]>([])
+  const { defaultColumns, dataSource, setDataSource, rowKey = 'id' } = props
   const [selectedRowKeys, setSelectedRowKeys] = useState<any[]>([])
   const [selectedRows, setSelectedRows] = useState<any[]>([])
 
@@ -128,10 +128,6 @@ const TableCanEditCell = (props: TableCanEditCellProps, ref: Ref<any>) => {
       setSelectedRows([])
     },
   }))
-
-  useEffect(() => {
-    setDataSource(defaultResource)
-  }, [defaultResource])
 
   const handleSave = (row: any) => {
     const newData = [...dataSource]

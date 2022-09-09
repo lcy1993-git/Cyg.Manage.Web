@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 interface CableChannelParams {
   libId: string
@@ -103,6 +103,42 @@ export const deleteCableChannelDetailItem = (libId: string, id: string) => {
     request(`${baseUrl.resource}/CableChannelDetails/Delete`, {
       method: 'POST',
       params: { libId, id },
+    })
+  )
+}
+// 获取明细列表
+interface ComponentDetaiListlParams {
+  items: any[]
+}
+
+//获取明细数据列表
+export const getCableChannelDetaiList = (
+  libId: string,
+  cableChannelIds: string[],
+  keyWord: string
+) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/cableChannelDetails/GetPageList`, {
+      method: 'POST',
+      data: { libId, cableChannelIds, keyWord },
+    })
+  )
+}
+interface ItemType {
+  itemId: string
+  itemType: string
+  itemNumber: number
+}
+//更新明细数据列表
+export const updateCableChannelDetaiList = (
+  libId: string,
+  cableChannelId: string,
+  items: ItemType[]
+) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/cableChannelDetails/SaveBatchCreate`, {
+      method: 'POST',
+      data: { libId, cableChannelId, items },
     })
   )
 }

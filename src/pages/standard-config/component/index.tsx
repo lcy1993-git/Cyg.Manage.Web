@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -15,7 +16,6 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ComponentForm from './components/add-edit-form'
-import ComponentDetail from './components/detail-table'
 import SaveImportComponent from './components/import-form'
 import styles from './index.less'
 
@@ -423,31 +423,7 @@ const Component: React.FC<libParams> = (props) => {
         </Form>
       </Modal>
 
-      {/* <Modal
-        maskClosable={false}
-        title="组件明细"
-        width="92%"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        onOk={()=>{}}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <ComponentDetail
-            libId={libId}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-            componentId={tableSelectRows.map((item) => {
-              return item.componentId
-            })}
-          />
-        </Spin>
-      </Modal> */}
-      <ComponentDetail
+      <ComponentDetailModal
         libId={libId}
         selectId={tableSelectRows.map((item) => {
           return item.id
@@ -457,29 +433,9 @@ const Component: React.FC<libParams> = (props) => {
         })}
         detailVisible={detailVisible}
         setDetailVisible={setDetailVisible}
+        title="组件明细"
+        type="component"
       />
-
-      {/* <Modal
-        maskClosable={false}
-        footer=""
-        title="组件属性"
-        width="60%"
-        visible={attributeVisible}
-        onCancel={() => setAttributeVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <ComponentProperty
-            libId={libId}
-            componentId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-          />
-        </Spin>
-      </Modal> */}
 
       <SaveImportComponent
         libId={libId}

@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -14,7 +15,6 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ElectricalEquipmentForm from './components/add-edit-form'
-import ElectricDetail from './components/detail-table'
 import SaveImportElectrical from './components/import-form'
 import ElectricProperty from './components/property-table'
 import styles from './index.less'
@@ -400,30 +400,19 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         </Form>
       </Modal>
 
-      <Modal
-        maskClosable={false}
-        footer=""
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.componentId
+        })}
+        detailVisible={detailVisible}
+        setDetailVisible={setDetailVisible}
         title="组件明细"
-        width="92%"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <ElectricDetail
-            libId={libId}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-            componentId={tableSelectRows.map((item) => {
-              return item.componentId
-            })}
-          />
-        </Spin>
-      </Modal>
+        type="component"
+      />
 
       <Modal
         maskClosable={false}
