@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
-import { Select } from 'antd'
-import { useRequest, useUpdateEffect } from 'ahooks'
 import { getDataByUrl } from '@/services/common'
+import { useRequest } from 'ahooks'
+import { Select } from 'antd'
 
 export interface UrlSelectProps {
   url?: string
@@ -55,6 +55,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
         !(paramsMust.filter((item) => !extraParams[item]).length > 0)
       ),
       refreshDeps: [url, JSON.stringify(extraParams)],
+      manual: true,
     }
   )
 
@@ -81,7 +82,7 @@ const withUrlSelect = <P extends {}>(WrapperComponent: React.ComponentType<P>) =
     }
     return []
   }, [JSON.stringify(resData), JSON.stringify(defaultData)])
-  useUpdateEffect(() => {
+  useEffect(() => {
     run()
   }, [updateFlag])
   return (
