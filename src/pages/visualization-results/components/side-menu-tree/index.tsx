@@ -28,6 +28,7 @@ import ControlLayers from '../control-layers'
 import ExportMapPositionModal from '../export-map-position-modal'
 import FilterModal from '../filter-modal'
 import MaterialModal from '../material-modal'
+import MigrateDataModal from '../migrate-data-modal'
 import ResultModal from '../result-modal'
 import SiderMenuAreaButtons from '../side-menu-area-buttons'
 import SidePopup from '../side-popup'
@@ -193,6 +194,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }, [projectModalVisible])
 
   const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(false)
+  const [migrateDataModalVisible, setMigrateDataModalVisible] = useState<boolean>(false)
+
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false)
 
   const startDateRef = useRef<any>(null)
@@ -631,6 +634,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       message.error('当前未选择项目')
     }
   }
+  const handlerMigrateDataClick = (flag: any) => {
+    if (Array.isArray(flag) && flag.length > 0) {
+      setMigrateDataModalVisible(true)
+    } else {
+      message.error('当前未选择项目')
+    }
+  }
 
   const downLoadMedia = (list: any[]) => {
     if (list.length > 0) {
@@ -753,6 +763,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
+            buttonJurisdictionArray?.includes('export-coordinates') && {
+              title: '迁移数据',
+              dart: require('@/assets/icon-image/menu-tree-icon/迁移数据.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/迁移数据-light.png'),
+              onClick: () => handlerMigrateDataClick(checkedProjectIdList),
+              style:
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0
+                  ? { opacity: 0.4 }
+                  : {},
+            },
           ]}
         />
       </div>
@@ -771,6 +791,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         visible={exportMapPositionModalVisible}
         onCancel={() => setexportMapPositionModalVisible(false)}
         onOk={onOkWithExportMapPosition}
+      />
+      <MigrateDataModal
+        visible={migrateDataModalVisible}
+        onChange={setMigrateDataModalVisible}
+        // projectIds={}
       />
       <Modal
         title="导出多媒体"
