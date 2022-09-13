@@ -1,6 +1,7 @@
 import TableCanEditCell from '@/components/table-can-edit-cell'
 import TableCanSearch from '@/components/table-can-search'
 
+import UrlSelect from '@/components/url-select'
 import {
   getCableChannelDetaiList,
   updateCableChannelDetaiList,
@@ -50,12 +51,6 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'itemId',
-      index: 'itemId',
-      title: '物料/组件编码',
-      width: 180,
-    },
-    {
       dataIndex: 'itemName',
       index: 'itemName',
       title: '物料/组件名称',
@@ -86,12 +81,44 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
       },
     },
   ]
+  const handlerPartChange = (value: string, record: any) => {
+    const copyData = [...resource].map((item: any) => {
+      if (item.id === record.id) {
+        return {
+          ...item,
+          part: value,
+        }
+      }
+      return item
+    })
+    setResource(copyData)
+  }
   if (type === 'module') {
     columns.splice(3, 0, {
       dataIndex: 'part',
       index: 'part',
       title: '所属部件',
       width: 180,
+      // @ts-ignore
+      render: (text: any, record: any) => {
+        return (
+          <UrlSelect
+            titlekey="key"
+            valuekey="value"
+            url="/ModulesDetails/GetParts"
+            placeholder="应用"
+            requestSource="resource"
+            value={record.part}
+            // @ts-ignore
+            placeholder="请选择"
+            // @ts-ignore
+            onChange={(val: string) => {
+              handlerPartChange(val, record)
+            }}
+            allowClear
+          />
+        )
+      },
     })
   }
 
@@ -124,6 +151,13 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
   const materialRef = useRef<HTMLDivElement>(null)
 
   const okHandle = () => {
+    // 在这里简单校验数量
+    for (let i = 0; i < resource.length; i++) {
+      if (!Number(resource[i].itemNumber)) {
+        message.error(`请填写第${i + 1}行的数量`)
+        return
+      }
+    }
     if (type === 'cable-channel') {
       updateCableChannelDetaiList(
         libId,
@@ -158,7 +192,6 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
           return {
             ...item,
             itemType: String(item.isComponent),
-            part: '主杆',
           }
         })
       ).then(() => {
@@ -261,9 +294,9 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
   }
   const componentColumns = [
     {
-      dataIndex: 'componentId',
-      index: 'componentId',
-      title: '组件编码',
+      dataIndex: 'deviceCategory',
+      index: 'deviceCategory',
+      title: '设备分类',
       width: 180,
     },
     {
@@ -280,12 +313,6 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
     },
   ]
   const materialColumns = [
-    {
-      dataIndex: 'materialId',
-      index: 'materialId',
-      title: '物资编码',
-      width: 220,
-    },
     {
       dataIndex: 'category',
       index: 'category',

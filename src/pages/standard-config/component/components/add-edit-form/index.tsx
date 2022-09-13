@@ -1,25 +1,29 @@
-import React, { useState } from 'react'
-import { Input, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
-import { QuestionCircleOutlined } from '@ant-design/icons'
 import EnumSelect from '@/components/enum-select'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
+import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import UrlSelect from '@/components/url-select'
 import {
   deviceCategoryType,
-  kvBothLevelType,
   forDesignType,
   forProjectType,
+  kvBothLevelType,
 } from '@/services/resource-config/resource-enum'
-import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Tooltip } from 'antd'
+import React, { useState } from 'react'
 
 interface ChartListFromLibParams {
   resourceLibId: string
   type?: 'add' | 'edit'
+  onSetDefaultForm?: any
 }
 
 const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
+  const [updateName, setUpdateName] = useState<string>('')
 
   const unitSlot = () => {
     return (
@@ -31,6 +35,15 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       </>
     )
   }
+  const changeNameHandle = (value: string, type: string) => {
+    setUpdateName(value)
+  }
+  const changeSpecHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 选中下拉列表则添加模板数据
+      onSetDefaultForm?.(value)
+    }
+  }
 
   return (
     <>
@@ -40,7 +53,17 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件名称不能为空' }]}
       >
-        <Input placeholder="请输入组件名称" />
+        <SelectCanEditAndSearch
+          url="/Material/GetMaterialByNameList"
+          extraParams={{ libId: resourceLibId }}
+          requestType="post"
+          postType="query"
+          requestSource="resource"
+          titlekey="value"
+          valuekey="value"
+          placeholder="请输入名称"
+          onChange={changeNameHandle}
+        />
       </CyFormItem>
       <CyFormItem
         label="组件编码"
@@ -56,7 +79,18 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件型号不能为空' }]}
       >
-        <Input placeholder="请输入组件型号" />
+        <SelectCanEdit
+          url="/Material/GetListBySpec"
+          requestSource="resource"
+          requestType="post"
+          titlekey="spec"
+          valuekey="id"
+          postType="body"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请输入组件型号"
+          onChange={changeSpecHandle}
+          update={updateName}
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -65,7 +99,15 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件分类不能为空' }]}
       >
-        <Input placeholder="请输入组件分类" />
+        <UrlSelect
+          allowClear
+          showSearch
+          requestSource="resource"
+          url="/Component/GetDeviceCategory"
+          titlekey="key"
+          valuekey="value"
+          placeholder="请选择"
+        />
       </CyFormItem>
       <CyFormItem
         label="设备分类"

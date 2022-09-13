@@ -1,7 +1,9 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
+import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 import UrlSelect from '@/components/url-select'
-import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
 import {
   arrangement,
   forDesignType,
@@ -13,8 +15,6 @@ import {
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Select, Tooltip } from 'antd'
 import React, { useState } from 'react'
-import SelectCanEdit from '@/components/select-can-edit'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 
 const { Option } = Select
 interface PoleTypeParams {
@@ -76,7 +76,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         labelWidth={108}
       >
         <SelectCanEdit
-          url="/PoleType/GetTypeList"
+          url="/Modules/GetPoleTypeList"
           requestSource="resource"
           requestType="get"
           titlekey="value"

@@ -12,6 +12,19 @@ import ImportBatchChartModal from './component/import-batch-form'
 import ImportChartModal from './component/import-form'
 import styles from './index.less'
 
+const mapCategory = {
+  Material: '物料',
+  Component: '组件',
+  Cable: '电缆',
+  Overhead: '架空',
+}
+
+const mapType = {
+  DesignChart: '设计图',
+  ProcessChart: '加工图',
+  Cable: '杆型一览图',
+}
+
 interface libParams {
   libId: string
 }
@@ -175,15 +188,10 @@ const Drawing: React.FC<libParams> = (props) => {
       return
     }
     const editData = tableSelectRows[0]
-    const editDataId = editData.id
 
     setEditFormVisible(true)
-    // const ResourceLibData = await run(libId, editDataId)
-    // setChacheEditData(ResourceLibData)
-
-    // editForm.setFieldsValue(ResourceLibData)
-    // editFormModalRef.current?.setFormValues()
-    setEditFormVisible(true)
+    // @ts-ignore
+    editFormModalRef.current?.setFormValues(editData)
   }
   const editFormModalRef = useRef()
 
@@ -217,7 +225,6 @@ const Drawing: React.FC<libParams> = (props) => {
       <ImportChartModal
         libId={libId}
         securityKey={chartSecurityKey}
-        requestSource="upload"
         visible={importFormVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportFormVisible}
@@ -226,7 +233,6 @@ const Drawing: React.FC<libParams> = (props) => {
       <ImportChartModal
         libId={libId}
         securityKey={chartSecurityKey}
-        requestSource="upload"
         visible={editFormVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setEditFormVisible}

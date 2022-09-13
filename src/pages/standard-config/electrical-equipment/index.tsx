@@ -90,12 +90,6 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'componentId',
-      index: 'componentId',
-      title: '组件编码',
-      width: 180,
-    },
-    {
       dataIndex: 'deviceCategory',
       index: 'deviceCategory',
       title: '设备分类',

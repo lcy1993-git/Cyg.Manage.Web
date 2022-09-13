@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
-import { Input, Select, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
-import { QuestionCircleOutlined } from '@ant-design/icons'
 import EnumSelect from '@/components/enum-select'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import UrlSelect from '@/components/url-select'
 import {
+  coverMode,
+  feature,
   forDesignType,
   forProjectType,
-  feature,
-  coverMode,
 } from '@/services/resource-config/resource-enum'
-import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Select, Tooltip } from 'antd'
+import React, { useState } from 'react'
 
 interface PoleTypeParams {
   type?: 'edit' | 'add'
@@ -42,17 +42,6 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
   }
   return (
     <>
-      <CyFormItem
-        label="模块编码"
-        name="cableWellId"
-        labelWidth={98}
-        align="right"
-        required
-        rules={[{ required: true, message: '编号不能为空' }]}
-      >
-        <Input placeholder="请输入编号" />
-      </CyFormItem>
-
       <CyFormItem
         label="类型"
         name="type"

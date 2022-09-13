@@ -102,12 +102,6 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'moduleId',
-      index: 'moduleId',
-      title: '模块编码',
-      width: 180,
-    },
-    {
       dataIndex: 'moduleName',
       index: 'moduleName',
       title: '模块名称',

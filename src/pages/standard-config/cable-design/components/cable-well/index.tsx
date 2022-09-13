@@ -91,12 +91,6 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
 
   const columns = [
     {
-      dataIndex: 'cableWellId',
-      index: 'cableWellId',
-      title: '模块编码',
-      width: 180,
-    },
-    {
       dataIndex: 'type',
       index: 'type',
       title: '类型',

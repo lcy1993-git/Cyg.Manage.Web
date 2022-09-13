@@ -134,10 +134,12 @@ export enum electricalEquipmentComponentType {
 export enum drawingCategory {
   '物料' = '物料',
   '组件' = '组件',
-  '模块' = '模块',
+  '电缆' = '电缆',
+  '架空' = '架空',
 }
 // 图纸类型
 export enum drawingType {
   '加工图' = '加工图',
   '设计图' = '设计图',
+  '杆型一览图' = '杆型一览图',
 }

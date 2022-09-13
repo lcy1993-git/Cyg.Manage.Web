@@ -370,6 +370,11 @@ const Component: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     // <PageCommonWrap>
@@ -402,7 +407,7 @@ const Component: React.FC<libParams> = (props) => {
         cancelText="取消"
       >
         <Form form={addForm}>
-          <ComponentForm resourceLibId={libId} type="add" />
+          <ComponentForm resourceLibId={libId} type="add" onSetDefaultForm={selctModelId} />
         </Form>
       </Modal>
       <Modal

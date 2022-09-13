@@ -34,6 +34,7 @@ const Material: React.FC<libParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [formData, setFormData] = useState<any>({})
 
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
@@ -271,11 +272,12 @@ const Material: React.FC<libParams> = (props) => {
     const editData = tableSelectRows[0]
     const editDataId = editData.id
 
-    setEditFormVisible(true)
+    // setEditFormVisible(true)
     const ResourceLibData = await run(libId, editDataId)
     setChacheEditData(ResourceLibData)
 
     editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
   }
 
   const reset = () => {
@@ -419,6 +421,7 @@ const Material: React.FC<libParams> = (props) => {
     const ResourceLibData = await run(libId, id)
     addFormVisible && addForm.setFieldsValue(ResourceLibData)
     editFormVisible && editForm.setFieldsValue(ResourceLibData)
+    setFormData(ResourceLibData)
   }
 
   return (
@@ -455,7 +458,12 @@ const Material: React.FC<libParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <MaterialForm onSetDefaultForm={selctModelId} resourceLibId={libId} />
+          <MaterialForm
+            onSetDefaultForm={selctModelId}
+            resourceLibId={libId}
+            form={addForm}
+            formData={formData}
+          />
         </Form>
       </Modal>
       <Modal
@@ -472,7 +480,7 @@ const Material: React.FC<libParams> = (props) => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <MaterialForm resourceLibId={libId} onSetDefaultForm={selctModelId} />
+            <MaterialForm resourceLibId={libId} onSetDefaultForm={selctModelId} form={editForm} />
           </Spin>
         </Form>
       </Modal>

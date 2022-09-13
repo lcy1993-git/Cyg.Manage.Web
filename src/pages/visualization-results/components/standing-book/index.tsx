@@ -23,13 +23,13 @@ import {
 } from '../../grid-manage/DrawToolbar/GridUtils'
 import { upateLineByMainLine } from '../../grid-manage/GridMap/utils/initializeMap'
 import { deletFeatureByTable, editFeature } from '../../grid-manage/GridMap/utils/select'
-import { handleGeom } from '../../utils/methods'
-import SubStationPowerForm from './components/subStation-power-form'
 import {
   transformAreaDataToArr,
   transformAreaDataToString,
   transformArrtToAreaData,
 } from '../../grid-manage/tools'
+import { handleGeom } from '../../utils/methods'
+import SubStationPowerForm from './components/subStation-power-form'
 
 const { TabPane } = Tabs
 

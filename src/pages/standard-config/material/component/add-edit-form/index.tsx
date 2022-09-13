@@ -13,17 +13,19 @@ import {
 } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Radio, Tooltip } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 interface ChartListFromLibParams {
   resourceLibId: string
   onSetDefaultForm?: any
+  form: any
+  formData: any
 }
 
 const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { resourceLibId, onSetDefaultForm } = props
+  const { resourceLibId, onSetDefaultForm, form, formData } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
-  const [type, setType] = useState<string>('')
-  const [updateName, setUpdateName] = useState<string>('水泥')
+  const [type, setType] = useState<string>(form.getFieldValue('materialType'))
+  const [updateName, setUpdateName] = useState<string>('')
 
   const changeTypeHandle = (value: string, type: string) => {
     setType(value)
@@ -49,6 +51,11 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
       </>
     )
   }
+  useEffect(() => {
+    if (formData && formData.materialType) {
+      setType(formData.materialType)
+    }
+  }, [formData])
 
   return (
     <>

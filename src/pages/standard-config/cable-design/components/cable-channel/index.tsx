@@ -97,12 +97,6 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
 
   const columns = [
     {
-      dataIndex: 'channelId',
-      index: 'channelId',
-      title: '模块编码',
-      width: 180,
-    },
-    {
       dataIndex: 'channelName',
       index: 'channelName',
       title: '模块名称',

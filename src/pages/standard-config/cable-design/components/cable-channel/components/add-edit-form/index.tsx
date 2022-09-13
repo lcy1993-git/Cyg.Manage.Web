@@ -1,9 +1,9 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
-import UrlSelect from '@/components/url-select'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
 import SelectCanEdit from '@/components/select-can-edit'
-import { FormExpandButton, FormCollaspeButton } from '@/components/form-hidden-button'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import UrlSelect from '@/components/url-select'
 import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Tooltip } from 'antd'
@@ -156,30 +156,12 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[
           { required: true, message: '支架层数不能为空' },
-          { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+          { pattern: /^([1-9]\d*|[0]{1,1})$/, message: '请输入自然数' },
         ]}
       >
         <Input placeholder="请输入支架层数" type="number" />
       </CyFormItem>
-      <CyFormItem
-        label="排列方式"
-        name="arrangement"
-        labelWidth={130}
-        align="right"
-        required
-        rules={[{ required: true, message: '排列方式不能为空' }]}
-      >
-        <SelectCanEdit
-          requestType="get"
-          requestSource="resource"
-          url="/CableChannel/GetArrangementList"
-          titlekey="value"
-          valuekey="value"
-          placeholder="请选择排列方式"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
-      </CyFormItem>
+
       {isHidden && (
         <div
           onClick={() => {
@@ -190,6 +172,18 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
+        <CyFormItem label="排列方式" name="arrangement" labelWidth={130} align="right">
+          <SelectCanEdit
+            requestType="get"
+            requestSource="resource"
+            url="/CableChannel/GetArrangementList"
+            titlekey="value"
+            valuekey="value"
+            placeholder="请选择排列方式"
+            postType="query"
+            extraParams={{ libId: resourceLibId }}
+          />
+        </CyFormItem>
         <CyFormItem label="设计图" name="designChartIds" labelWidth={130} align="right">
           <UrlSelect
             requestType="post"

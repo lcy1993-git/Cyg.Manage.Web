@@ -85,14 +85,14 @@ const EditableCell: React.FC<EditableCellProps> = ({
       <Form.Item
         style={{ margin: 0 }}
         name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
+        // rules={[
+        //   {
+        //     required: true,
+        //     message: `请填写数量`,
+        //   },
+        // ]}
       >
-        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+        <Input type="number" ref={inputRef} onPressEnter={save} onBlur={save} />
       </Form.Item>
     ) : (
       <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>

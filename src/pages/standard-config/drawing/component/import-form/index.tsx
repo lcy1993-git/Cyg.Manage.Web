@@ -4,7 +4,7 @@ import FileUpload from '@/components/file-upload'
 import { addDrawingItem } from '@/services/resource-config/drawing'
 import { drawingCategory, drawingType } from '@/services/resource-config/resource-enum'
 import { useControllableValue, useRequest } from 'ahooks'
-import { Button, Form, Input, Modal } from 'antd'
+import { Button, Form, Input, message, Modal } from 'antd'
 import { Dispatch, forwardRef, Ref, SetStateAction, useImperativeHandle, useState } from 'react'
 
 interface ImportChartProps {
@@ -13,17 +13,25 @@ interface ImportChartProps {
   changeFinishEvent: () => void
   libId?: string
   securityKey?: string
-  requestSource: 'project' | 'resource' | 'upload'
   title: string
 }
+const mapCategory = {
+  Material: '物料',
+  Component: '组件',
+  Cable: '电缆',
+  Overhead: '架空',
+}
 
+const mapType = {
+  DesignChart: '设计图',
+  ProcessChart: '加工图',
+  Cable: '杆型一览图',
+}
 const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const { libId, requestSource, changeFinishEvent, title } = props
-  const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
+  const { libId, changeFinishEvent, title } = props
   const [form] = Form.useForm()
   const [fileList, setFileList] = useState<any[]>([])
-  const [uploading, setUploading] = useState(false)
 
   const { run } = useRequest(
     (val) => {
@@ -32,26 +40,23 @@ const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
     {
       manual: true,
       onSuccess: () => {
-        // console.log('suc')
+        message.success('图纸上传成功')
+        changeFinishEvent()
+        setState(false)
       },
     }
   )
 
   useImperativeHandle(ref, () => ({
-    setFormValues: (value: any) => {
+    setFormValues: (val: any) => {
+      const value = { ...val }
+      mapCategory[value.category] && (value.category = mapCategory[value.category])
+      mapType[value.type] && (value.type = mapType[value.type])
       form.setFieldsValue(value)
     },
   }))
-  const saveImportChartEvent = () => {}
 
   const onSave = () => {
-    // form.validateFields().then((value) => {
-    //   if (isImportFlag) {
-    //     setState(false)
-    //     return
-    //   }
-    //   message.info('您还未上传文件，点击“开始上传”上传文件')
-    // })
     form.validateFields().then((value) => {
       const formData = new FormData()
       fileList.forEach((file) => {
