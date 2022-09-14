@@ -124,8 +124,8 @@ const MyProject: React.FC = () => {
     }
   }
 
-  const engineerIds = useMemo(() => {
-    return uniq(tableSelectRowData.map((item) => item.engineerId))
+  const projectIds = useMemo(() => {
+    return uniq(tableSelectRowData.map((item) => item.id))
   }, [JSON.stringify(tableSelectRowData)])
 
   const refresh = () => {
@@ -350,7 +350,7 @@ const MyProject: React.FC = () => {
   )
 
   const addFavEvent = () => {
-    if (engineerIds && engineerIds.length > 0) {
+    if (projectIds && projectIds.length > 0) {
       setAddFavoriteModal(true)
       return
     }
@@ -361,7 +361,7 @@ const MyProject: React.FC = () => {
       message.warning('您还未选择收藏夹')
       return
     }
-    if (engineerIds && engineerIds.length === 0) {
+    if (projectIds && projectIds.length === 0) {
       message.warning('请选择要移出当前收藏夹的工程')
       return
     }
@@ -375,7 +375,7 @@ const MyProject: React.FC = () => {
     })
   }
   const removeFavEvent = async () => {
-    await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds })
+    await removeCollectionEngineers({ id: selectedFavId, projectIds: projectIds })
     message.success('已移出当前收藏夹')
     searchByParams()
   }
@@ -645,15 +645,14 @@ const MyProject: React.FC = () => {
                   </Button>
                 </Dropdown>
               )}
-              {buttonJurisdictionArray?.includes('add-favorite-project') && !sideVisible && (
+              {buttonJurisdictionArray?.includes('add-favorite-project') && (
                 <Button className="mr7" onClick={() => addFavEvent()}>
                   收藏
                 </Button>
               )}
               {(buttonJurisdictionArray?.includes('all-project-export-all') ||
                 buttonJurisdictionArray?.includes('all-project-export-selected')) &&
-                currentClickTabType === 'allpro' &&
-                !sideVisible && (
+                currentClickTabType === 'allpro' && (
                   <div className="mr7">
                     <TableExportButton
                       exportUrl="/Porject/Export"
@@ -764,7 +763,7 @@ const MyProject: React.FC = () => {
           visible={addFavoriteModal}
           onChange={setAddFavoriteModal}
           finishEvent={refresh}
-          engineerIds={engineerIds}
+          projectIds={projectIds}
         />
       )}
       {externalArrangeModalVisible && (

@@ -187,7 +187,13 @@ const MyWork: React.FC = () => {
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const [sideVisible, setSideVisible] = useState<boolean>(false)
   const imgSrc = require('../../../assets/icon-image/favorite.png')
-
+  useEffect(() => {
+    if (currentClickTabType === 'allpro') {
+      setSideVisible(true)
+    } else {
+      setSideVisible(false)
+    }
+  }, [currentClickTabType])
   const singleStatisticsTypeClickEvent = (type: string) => {
     const childrenType = myWorkInitData.find((item) => item.id === type)?.children
     // 设置children的第一个是激活状态
@@ -254,7 +260,9 @@ const MyWork: React.FC = () => {
   }, [allProjectSearchParams, myWorkInitData])
 
   useEffect(() => {
-    setSideVisible(favVisible)
+    if (favVisible !== undefined) {
+      setSideVisible(favVisible)
+    }
     setFavName('')
     setSelectedFavId('')
   }, [favVisible])
@@ -295,9 +303,9 @@ const MyWork: React.FC = () => {
 
       <PageCommonWrap noPadding>
         <div className={styles.myWorkContent}>
-          {!sideVisible ? (
-            <>
-              <div className={styles.myWorkTypeContent}>{statisticsElement}</div>
+          <>
+            <div className={styles.myWorkTypeContent}>{statisticsElement}</div>
+            {!sideVisible ? (
               <div className={styles.singleTypeContent}>
                 {loading && myWorkInitData.length === 0 && (
                   <div style={{ width: '100%', paddingTop: '120xpx', textAlign: 'center' }}>
@@ -306,30 +314,30 @@ const MyWork: React.FC = () => {
                 )}
                 {myWorkInitData.length > 0 && <MyProject />}
               </div>
-            </>
-          ) : (
-            <div className={styles.projectsAndFavorite}>
-              <div
-                className={styles.allProjectsFavorite}
-                style={{ display: sideVisible ? 'block' : 'none' }}
-              >
-                <Spin spinning={loading}>
-                  <FavoriteList
-                    getFavId={setSelectedFavId}
-                    setVisible={setSideVisible}
-                    setStatisticalTitle={setStatisticalCategory}
-                    getFavName={setFavName}
-                    favName={favName}
-                    // finishEvent={refresh}
-                    visible={sideVisible}
-                  />
-                </Spin>
+            ) : (
+              <div className={styles.projectsAndFavorite}>
+                <div
+                  className={styles.allProjectsFavorite}
+                  style={{ display: sideVisible ? 'block' : 'none' }}
+                >
+                  <Spin spinning={loading}>
+                    <FavoriteList
+                      getFavId={setSelectedFavId}
+                      setVisible={setSideVisible}
+                      setStatisticalTitle={setStatisticalCategory}
+                      getFavName={setFavName}
+                      favName={favName}
+                      // finishEvent={refresh}
+                      visible={sideVisible}
+                    />
+                  </Spin>
+                </div>
+                <div className={styles.allProjectTableContent}>
+                  <MyProject />
+                </div>
               </div>
-              <div className={styles.allProjectTableContent}>
-                <MyProject />
-              </div>
-            </div>
-          )}
+            )}
+          </>
         </div>
       </PageCommonWrap>
     </MyWorkProvider>

@@ -1061,7 +1061,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       //@ts-ignore
       tableRef.current.searchByParams({
         ...searchParams,
-        engineerFavoritesId: selectedFavId,
+        projectDirectoryId: selectedFavId,
         keyWord,
       })
     }
@@ -1106,7 +1106,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     },
 
     searchByParams: () => {
-      searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+      searchByParams({ ...searchParams, projectDirectoryId: selectedFavId })
     },
     delayRefresh: () => {
       delayRefresh()
@@ -1159,7 +1159,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   useEffect(() => {
     if (selectedFavId) {
-      searchByParams({ ...searchParams, engineerFavoritesId: selectedFavId })
+      searchByParams({ ...searchParams, projectDirectoryId: selectedFavId })
     }
   }, [selectedFavId])
 
