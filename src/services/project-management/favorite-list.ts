@@ -26,7 +26,7 @@ export const deleteFavorite = (id: string) => {
   )
 }
 
-//添加收藏工程
+//添加收藏项目
 export const addCollectionEngineers = (params: { id: string; projectIds: string[] }) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/ProjectDirectory/AddProjects`, {
@@ -36,10 +36,19 @@ export const addCollectionEngineers = (params: { id: string; projectIds: string[
   )
 }
 
-//移除收藏工程
+//移除收藏项目
 export const removeCollectionEngineers = (params: { id: string; projectIds: string[] }) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/ProjectDirectory/RemoveProjects`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+//移除收藏项目
+export const recycleCollectionProject = (params: { projectIds: string[] }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Project/Restore`, {
       method: 'POST',
       data: params,
     })

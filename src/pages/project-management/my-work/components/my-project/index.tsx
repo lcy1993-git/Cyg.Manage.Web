@@ -24,7 +24,10 @@ import {
   receiveProject,
   revokeAllot,
 } from '@/services/project-management/all-project'
-import { removeCollectionEngineers } from '@/services/project-management/favorite-list'
+import {
+  recycleCollectionProject,
+  removeCollectionEngineers,
+} from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
@@ -374,9 +377,29 @@ const MyProject: React.FC = () => {
       onOk: removeFavEvent,
     })
   }
+  const recycleConfirm = () => {
+    if (projectIds && projectIds.length === 0) {
+      message.warning('请选择要恢复的项目')
+      return
+    }
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定要恢复所选项目',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: recycleProject,
+    })
+  }
+
   const removeFavEvent = async () => {
     await removeCollectionEngineers({ id: selectedFavId, projectIds: projectIds })
     message.success('已移出当前收藏夹')
+    searchByParams()
+  }
+  const recycleProject = async () => {
+    await recycleCollectionProject({ projectIds: projectIds })
+    message.success('项目已恢复')
     searchByParams()
   }
 
@@ -507,6 +530,12 @@ const MyProject: React.FC = () => {
       buttonJurisdictionArray?.includes('all-project-kont-approve') && (
         <Button type="primary" onClick={() => auditKnotEvent()}>
           结项审批
+        </Button>
+      )
+    ) : sideVisible && selectedFavId === '1565533453725753460' ? (
+      buttonJurisdictionArray?.includes('remove-favorite-project') && (
+        <Button type="primary" onClick={() => recycleConfirm()}>
+          回收项目
         </Button>
       )
     ) : sideVisible && selectedFavId ? (
