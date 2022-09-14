@@ -56,6 +56,8 @@ var lineLayer: any
 var boxSelectFeatures: any = []
 var dragBox: any
 var checkLineIds: any
+var layerType_: string = 'plan'
+var dragBoxDatas: any = []
 
 export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOps) => {
   mapRef.map = new Map({
@@ -166,6 +168,7 @@ export const location = (map: any, lon: number, lat: number, zoom: number = 12) 
 
 // 绘制点位
 export const drawPoint = (map: any, options: any, clickEvent: any) => {
+  if (layerType_ === 'history' || layerType_ === 'none') return
   pointLayer = getLayer(map, 'pointLayer', 3)
   options.type_ = 'Point'
   if (!drawTool) drawTool = new DrawTool(map, options)
@@ -177,6 +180,7 @@ export const drawPoint = (map: any, options: any, clickEvent: any) => {
 
 // 绘制线路
 export const drawLine = (map: any, options: any, clickEvent: any) => {
+  if (layerType_ === 'history' || layerType_ === 'none') return
   lineLayer = getLayer(map, 'lineLayer', 2)
   options.type_ = 'LineString'
   if (!drawTool) drawTool = new DrawTool(map, options)
@@ -200,6 +204,7 @@ export const drawBox = (map: any) => {
   })
 
   dragBox.on('drawend', function (e: any) {
+    dragBoxDatas = []
     const extent = e.feature.getGeometry().getExtent()
     pointLayer = getLayer(map, 'pointLayer')
     boxSelectFeatures = pointLayer
@@ -207,6 +212,15 @@ export const drawBox = (map: any) => {
       .getFeaturesInExtent(extent)
       .filter((feature: any) => feature.getGeometry().intersectsExtent(extent))
     getSelectFeatures().extend(boxSelectFeatures)
+    dragBoxDatas.push(boxSelectFeatures)
+
+    lineLayer = getLayer(map, 'lineLayer')
+    const boxLineSelectFeatures = lineLayer
+      .getSource()
+      .getFeaturesInExtent(extent)
+      .filter((feature: any) => feature.getGeometry().intersectsExtent(extent))
+    getSelectFeatures().extend(boxSelectFeatures)
+    dragBoxDatas.push(boxLineSelectFeatures)
     // dragBox.setActive(false)
   })
   dragBox.setActive(false)
@@ -214,6 +228,11 @@ export const drawBox = (map: any) => {
 
 export const setDrawBox = (active: boolean) => {
   dragBox.setActive(active)
+}
+
+// 获取框选的数据，用于立项
+export const getDragBoxDatas = () => {
+  return dragBoxDatas
 }
 
 // 删除拉框范围中的要素
@@ -261,6 +280,24 @@ export const getShowLines = (map: any) => {
 export const loadMapLayers = (data: any, map: any, checkLineIds_: any, type: string) => {
   checkLineIds = checkLineIds_
   loadAllLayer(data, map, type)
+}
+
+// 切换规划，历史图层
+// layerType => plan 规划图层，history 历史图层，all 两个图层都显示
+export const changeLayer = (map: any, layerType: string) => {
+  layerType_ = layerType
+  const types = ['plan', 'history']
+  const layers = ['pointLayer', 'lineLayer']
+  types.forEach((type: string) => {
+    layers.forEach((layer: string) => {
+      const l = getLayer(map, layer, 3, false, type)
+      if (layerType === 'all' || layerType === type) {
+        l.setVisible(true)
+      } else {
+        l.setVisible(false)
+      }
+    })
+  })
 }
 
 export const getCheckLineIds = () => {

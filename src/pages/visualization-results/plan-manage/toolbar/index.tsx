@@ -1,5 +1,7 @@
+import { useLayoutStore } from '@/layouts/context'
 import AddEngineerModal from '@/pages/project-management/all-project/components/add-engineer-modal'
 import { getrepeatPointdata } from '@/services/grid-manage/treeMenu'
+import { copyGridHistory } from '@/services/plan-manage/plan-manage'
 import { AimOutlined, BulbOutlined, CloseOutlined, SearchOutlined } from '@ant-design/icons'
 import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Checkbox, Form, Input, message, Space, Spin, Table } from 'antd'
@@ -20,7 +22,7 @@ import {
   TOWER,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { getShowPoints, locationByGeom } from '../PlanMap/utils/initializeMap'
+import { getDragBoxDatas, getShowPoints, locationByGeom } from '../PlanMap/utils/initializeMap'
 import { loadAllPointLayer } from '../PlanMap/utils/loadLayer'
 import { twinkle } from '../PlanMap/utils/style'
 import { LEFTMENUWIDTH } from '../tools'
@@ -38,6 +40,24 @@ const initialFeatureType = FEATUREOPTIONS.filter(
   (item) => item.value !== POWERSUPPLY && item.value !== TRANSFORMERSUBSTATION
 )
 
+/**框选元素枚举 */
+const eleType = {
+  // 无: 0,
+  TransformerSubstation: 1,
+  PowerSupply: 2,
+  // Line: 3,
+  Tower: 4,
+  BoxTransformer: 5,
+  CableBranchBox: 6,
+  CableWell: 7,
+  ColumnCircuitBreaker: 8,
+  ColumnTransformer: 9,
+  ElectricityDistributionRoom: 10,
+  RingNetworkCabinet: 11,
+  SwitchingStation: 12,
+  Line: 100,
+}
+
 const Toolbar = (props: { leftMenuVisible: boolean }) => {
   const { leftMenuVisible } = props
 
@@ -48,10 +68,14 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     pageDrawState,
     checkLineIds,
     mapRef,
+    setIsRefresh,
+    isRefresh,
     isDragPoint,
     checkedLayers,
     setCheckedLayers,
   } = useMyContext()
+
+  const { setPointData } = useLayoutStore()
 
   // 地图设备类型显示
   const [form] = useForm()
@@ -278,7 +302,34 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }, [isDragPoint])
 
   /**根据框选规划数据立项 */
-  const createProject = () => {
+  const createProject = async () => {
+    if (getDragBoxDatas().length === 0) {
+      message.info('还未框选规划数据')
+      return
+    }
+
+    //点位数据
+    const pointData = getDragBoxDatas()[0]
+      .map((item: any) => {
+        return item
+      })
+      .map((ite: any) => {
+        return ite.values_?.data
+      })
+    //线段数据
+    const lineData = getDragBoxDatas()[1]
+      .map((item: any) => {
+        return item
+      })
+      .map((ite: any) => {
+        return ite.values_?.data
+      })
+    const copyData = [...pointData, ...lineData]
+    const finalData = copyData.map((item: any) => {
+      return { projectId: 111, elementId: item.id, elementType: eleType[item.featureType] }
+    })
+
+    setPointData(finalData)
     setCreateProjectVisible(true)
   }
 
@@ -294,7 +345,24 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }, [checkLineIds, form, mapRef])
 
   /**复制历史网架点位 */
-  const copyPointEvent = () => {}
+  const copyPointEvent = async () => {
+    if (checkLineIds.length === 0) {
+      message.info('未勾选历史网架主线路')
+      return
+    }
+    const lineIds: string[] = checkLineIds
+      .map((item: string) => {
+        const exist = item.includes('_&Line')
+        if (exist) {
+          return item.split('_&Line')[0]
+        }
+        return ''
+      })
+      .filter((item: string) => item)
+    await copyGridHistory(lineIds)
+    message.success('复制成功')
+    setIsRefresh(!isRefresh)
+  }
 
   return (
     <>

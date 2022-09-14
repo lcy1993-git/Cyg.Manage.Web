@@ -3,15 +3,16 @@ import { useControllableValue } from 'ahooks'
 import { Modal, Button } from 'antd'
 import { Form } from 'antd'
 import CreateEngineer from '../create-engineer'
-import { addEngineer } from '@/services/project-management/all-project'
+import { addEngineer, getProjectTableList } from '@/services/project-management/all-project'
 import { message } from 'antd'
-import { useMyWorkStore } from '@/pages/project-management/my-work/context'
 import { useLayoutStore } from '@/layouts/context'
+import { relationProject } from '@/services/plan-manage/plan-manage'
 
 interface AddEngineerModalProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
   finishEvent?: () => void
+  isPlan?: boolean
 }
 
 const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
@@ -19,11 +20,37 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
   const [saveLoading, setSaveLoading] = useState<boolean>(false)
   const [current, setCurrent] = useState<number>(0)
   //此处ref是用于规划网架立项后刷新列表
-  const { ref } = useLayoutStore()
+  const { ref, pointData } = useLayoutStore()
 
   const { finishEvent } = props
 
   const [form] = Form.useForm()
+
+  const initParams = {
+    category: [],
+    stage: [],
+    constructType: [],
+    nature: [],
+    kvLevel: [],
+    status: [],
+    dataSourceType: [],
+    majorCategory: [],
+    pType: [],
+    reformAim: [],
+    pCategory: [],
+    attribute: [],
+    sourceType: [],
+    identityType: [],
+    areaType: '-1',
+    areaId: '',
+    logicRelation: 2,
+    startTime: '',
+    endTime: '',
+    designUser: '',
+    surveyUser: '',
+    pageIndex: 1,
+    pageSize: 10,
+  }
 
   const refresh = () => {
     if (ref && ref.current) {
@@ -55,7 +82,6 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
         } = values
 
         const [provinceNumber, city, area] = province
-
         await addEngineer({
           projects,
           engineer: {
@@ -78,6 +104,15 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
           },
         })
 
+        if (!finishEvent) {
+          const res = await getProjectTableList(initParams)
+          const projectId = res?.items[0]?.projects[0]?.id
+
+          const finalData = pointData.map((item: any) => {
+            return { ...item, projectId: projectId }
+          })
+          await relationProject(finalData)
+        }
         message.success('立项成功')
         setState(false)
         finishEvent ? finishEvent?.() : refresh()

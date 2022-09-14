@@ -239,8 +239,8 @@ export interface ProjectTableRequestData {
 }
 
 // 获取我的项目列表
-export const getProjectTableList = (params: AllProjectSearchParams) => {
-  return cyRequest<ProjectTableRequestData>(() =>
+export const getProjectTableList = (params: any) => {
+  return cyRequest<any>(() =>
     request(`${baseUrl.project}/ProjectList/GetAlls`, { method: 'POST', data: params })
   )
 }

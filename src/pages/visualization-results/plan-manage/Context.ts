@@ -32,6 +32,10 @@ export interface MyContextType {
   pageDrawState: boolean
   checkLineIds: string[]
   setcheckLineIds: Dispatch<SetStateAction<string[]>>
+  //选中规划主线路
+  checkPlanLineIds: string[]
+  setCheckPlanLineIds: Dispatch<SetStateAction<string[]>>
+
   companyId: string
   setisDragPoint: Dispatch<SetStateAction<boolean>>
   isDragPoint: boolean
@@ -44,7 +48,7 @@ export interface MyContextType {
   setMapLoading: Dispatch<SetStateAction<boolean>>
   //选中图层
   checkedLayers: string[]
-  setCheckedLayers: Dispatch<SetStateAction<string[]>>
+  setCheckedLayers: Dispatch<SetStateAction<any[]>>
 }
 
 // 全局状态管理

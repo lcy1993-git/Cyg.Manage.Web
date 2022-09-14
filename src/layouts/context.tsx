@@ -22,6 +22,9 @@ interface LayoutContextValue {
   /**规划网架 */
   ref: any //存储列表ref
   setRef: any
+
+  pointData: any
+  setPointData: React.Dispatch<SetStateAction<any>> //立项后获取框选数据
 }
 
 const LayoutContext = createContext({} as LayoutContextValue)

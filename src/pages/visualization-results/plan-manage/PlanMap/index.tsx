@@ -327,6 +327,7 @@ const PlanMap = () => {
       ...value,
       ...currentfeatureData,
       color,
+      gridDataType: 1,
       ...areaData,
     }
     try {

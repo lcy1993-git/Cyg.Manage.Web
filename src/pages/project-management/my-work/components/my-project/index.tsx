@@ -6,6 +6,7 @@ import ApproveModal from '@/pages/project-management/all-project/components/appr
 import ArrangeModal from '@/pages/project-management/all-project/components/arrange-modal'
 import AuditKnotModal from '@/pages/project-management/all-project/components/audit-knot-modal'
 import EditArrangeModal from '@/pages/project-management/all-project/components/edit-arrange-modal'
+import ExportPowerModal from '@/pages/project-management/all-project/components/export-power-modal'
 import ExternalArrangeModal from '@/pages/project-management/all-project/components/external-arrange-modal'
 import ExternalListModal from '@/pages/project-management/all-project/components/external-list-modal'
 import ProjectRecallModal from '@/pages/project-management/all-project/components/project-recall-modal'
@@ -76,7 +77,10 @@ const MyProject: React.FC<ProjectParams> = (props) => {
   const [externalListModalVisible, setExternalListModalVisible] = useState<boolean>(false)
 
   //项目迁移弹窗
+
   const [removalModalVisible, setRemovalModalVisible] = useState<boolean>(false)
+  //坐标导出批量授权弹窗
+  const [exportPointVisible, setExportPointVisible] = useState<boolean>(false)
 
   const { userType = '' } = useGetUserInfo()
 
@@ -476,7 +480,20 @@ const MyProject: React.FC<ProjectParams> = (props) => {
   }
 
   const batchButtonElement = () => {
-    return currentClickTabChildActiveType === 'awaitApprove' &&
+    return currentClickTabChildActiveType === 'my' ? (
+      <Button
+        type="primary"
+        onClick={() => {
+          if (tableSelectKeys.length === 0) {
+            message.info('您还未选择任何项目')
+            return
+          }
+          setExportPointVisible(true)
+        }}
+      >
+        导出坐标授权
+      </Button>
+    ) : currentClickTabChildActiveType === 'awaitApprove' &&
       buttonJurisdictionArray?.includes('all-project-report-project') ? (
       <Button type="primary" onClick={() => reportApprove(tableSelectKeys)}>
         报审
@@ -800,6 +817,14 @@ const MyProject: React.FC<ProjectParams> = (props) => {
           visible={removalModalVisible}
           finishEvent={delayRefresh}
           onChange={setRemovalModalVisible}
+          projectIds={tableSelectKeys}
+        />
+      )}
+      {exportPointVisible && (
+        <ExportPowerModal
+          visible={exportPointVisible}
+          finishEvent={delayRefresh}
+          onChange={setExportPointVisible}
           projectIds={tableSelectKeys}
         />
       )}

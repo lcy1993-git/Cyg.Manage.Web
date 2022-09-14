@@ -8,11 +8,11 @@ interface ProjectRealation {
 }
 
 /*复制历史网架主线路 **/
-export const copyGridHistory = (params: { LineIds: string[] }) => {
+export const copyGridHistory = (LineIds: string[]) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.grid}/GridPlan/CopyGridHistoryByLine`, {
       method: 'POST',
-      data: params,
+      data: LineIds,
     })
   )
 }
@@ -27,12 +27,18 @@ export const relationProject = (params: ProjectRealation[]) => {
   )
 }
 
-/*获取项目关联规划元素 **/
-export const getRelationData = (projectId: string) => {
+interface ArchiveParams {
+  lineId: string | undefined
+  layerType: number | undefined
+  projectId: string
+}
+
+/*项目归档 **/
+export const archiveToHistoryGrid = (params: ArchiveParams) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/ProjectRelationPlanElement/GetRelationDataByProjectId`, {
+    request(`${baseUrl.grid}/GridConstruction/ArchiveToHistoryGrid`, {
       method: 'POST',
-      params: { projectId },
+      data: params,
     })
   )
 }

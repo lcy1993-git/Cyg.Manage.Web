@@ -57,7 +57,7 @@ export const loadLayer = (data: any, type: string, layer: any, map: any) => {
       item.featureType = type
       feature.set('data', item)
       // 设置样式
-      if (layer.get('name') === 'pointLayer')
+      if (layer.get('name').includes('pointLayer'))
         feature.setStyle(pointStyle(feature.get('data'), false, map.getView().getZoom()))
       else feature.setStyle(lineStyle(feature.get('data'), false))
       // 加载数据到图层
@@ -87,7 +87,7 @@ export const getLayer = (
       zIndex,
       opacity,
     })
-    layer.set('name', layerName)
+    layer.set('name', layerName_)
     map.addLayer(layer)
   }
   return layer

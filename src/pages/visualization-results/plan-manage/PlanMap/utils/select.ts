@@ -332,37 +332,53 @@ export const upLoadPoint = async (
     currentColor = color ? color.label : COLORDEFAULT
     switch (data.featureType) {
       case TOWER:
-        await PromiseAll.push(modifyTower({ ...data, color: currentColor }))
+        await PromiseAll.push(modifyTower({ ...data, color: currentColor, gridDataType: 1 }))
         break
       case BOXTRANSFORMER:
-        await PromiseAll.push(modifyBoxTransformer({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifyBoxTransformer({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
       case POWERSUPPLY:
-        await PromiseAll.push(modifyPowerSupply({ ...data, color: currentColor }))
+        await PromiseAll.push(modifyPowerSupply({ ...data, color: currentColor, gridDataType: 1 }))
         break
       case TRANSFORMERSUBSTATION:
-        await PromiseAll.push(modifyTransformerSubstation({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifyTransformerSubstation({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
       case CABLEWELL:
-        await PromiseAll.push(modifyCableWell({ ...data, color: currentColor }))
+        await PromiseAll.push(modifyCableWell({ ...data, color: currentColor, gridDataType: 1 }))
         break
       case RINGNETWORKCABINET:
-        await PromiseAll.push(modifyRingNetworkCabinet({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifyRingNetworkCabinet({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
       case ELECTRICITYDISTRIBUTIONROOM:
-        await PromiseAll.push(modifyElectricityDistributionRoom({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifyElectricityDistributionRoom({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
       case SWITCHINGSTATION:
-        await PromiseAll.push(modifySwitchingStation({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifySwitchingStation({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
       case COLUMNCIRCUITBREAKER:
-        await PromiseAll.push(modifyColumnCircuitBreaker({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifyColumnCircuitBreaker({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
       case COLUMNTRANSFORMER:
-        await PromiseAll.push(modifyColumnTransformer({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifyColumnTransformer({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
       case CABLEBRANCHBOX:
-        await PromiseAll.push(modifyCableBranchBox({ ...data, color: currentColor }))
+        await PromiseAll.push(
+          modifyCableBranchBox({ ...data, color: currentColor, gridDataType: 1 })
+        )
         break
     }
     lines.forEach((item) => {

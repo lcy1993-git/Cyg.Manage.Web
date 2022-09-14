@@ -37,6 +37,8 @@ const PlanManage: React.FC = () => {
 
   /** 选中线路ID **/
   const [checkLineIds, setcheckLineIds] = useState<string[]>([])
+  /** 选中规划线路ID **/
+  const [checkPlanLineIds, setCheckPlanLineIds] = useState<string[]>([])
   /**  **/
   const [zIndex, setzIndex] = useState('')
   // 地图实例
@@ -77,6 +79,8 @@ const PlanManage: React.FC = () => {
   return (
     <MyWorkProvider
       value={{
+        checkPlanLineIds,
+        setCheckPlanLineIds,
         drawToolbarVisible,
         setdrawToolbarVisible,
         selectCity,

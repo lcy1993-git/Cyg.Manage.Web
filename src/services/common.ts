@@ -51,7 +51,7 @@ export const cyCommonRequest = <T extends {}>(
 
     const { code, isSuccess } = res
     if (isSuccess && code === 200) {
-      resolve(res as unknown as T)
+      resolve((res as unknown) as T)
     } else {
       message.error(res.message)
       reject(res.message)
@@ -92,7 +92,8 @@ export const getDataByUrl = (
     | 'tecEco'
     | 'tecEco1'
     | 'component'
-    | 'material',
+    | 'material'
+    | 'grid',
   requestType = 'get',
   postType = 'body'
 ) => {

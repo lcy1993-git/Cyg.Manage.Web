@@ -52,6 +52,7 @@ import React, {
 } from 'react'
 import { history } from 'umi'
 import { useMyWorkStore } from '../../context'
+import ArchiveModal from '../archive-modal'
 import EngineerTable from '../engineer-table'
 import styles from './index.less'
 
@@ -162,6 +163,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [chooseColumns, setChooseColumns] = useState<string[]>([])
   //项目合并模态框
   const [projectMergeVisible, setProjectMergeVisible] = useState<boolean>(false)
+
+  //项目归档模态框
+  const [archiveVisible, setArchiveVisible] = useState<boolean>(false)
   // 预设计
   const { setPreDesignItem } = useLayoutStore()
 
@@ -268,6 +272,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     })
     setProjectInheritVisible(true)
   }
+  /**归档 */
+  const archiveGrid = (projectInfo: any) => {
+    setModalInfo({
+      ...projectInfo,
+    })
+    setArchiveVisible(true)
+  }
 
   const projectItemMenu = (
     jurisdictionInfo: JurisdictionInfo,
@@ -338,11 +349,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         )}
         {stateInfo.status === 7 && (
           <Menu.Item
-            onClick={() => {
-              setPreDesignItem(tableItemData)
-              localStorage.setItem('preDesignItem', JSON.stringify(tableItemData))
-              history.push('/visualization-results/grid-pre-design')
-            }}
+            onClick={() =>
+              archiveGrid({
+                projectId: tableItemData.id,
+              })
+            }
           >
             网架归档
           </Menu.Item>
@@ -1412,6 +1423,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <ProjectMergeModal
           visible={projectMergeVisible}
           onChange={setProjectMergeVisible}
+          finishEvent={delayRefresh}
+          projectId={modalNeedInfo.projectId}
+        />
+      )}
+      {archiveVisible && (
+        <ArchiveModal
+          visible={archiveVisible}
+          onChange={setArchiveVisible}
           finishEvent={delayRefresh}
           projectId={modalNeedInfo.projectId}
         />

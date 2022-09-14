@@ -31,6 +31,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   const [resourceManageFlag, setResourceManageFlag] = useState<boolean>(false)
   const [workHandoverFlag, setWorkHandoverFlag] = useState<boolean>(false)
   const [ref, setRef] = useState<any>()
+  const [pointData, setPointData] = useState<any>()
   const [allProjectSearchParams, setAllProjectSearchParams] = useState({
     areaLevel: '-1',
     areaId: '',
@@ -202,6 +203,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           setPreDesignItem,
           ref,
           setRef,
+          setPointData,
+          pointData,
         }}
       >
         <div className={styles.layoutContent}>

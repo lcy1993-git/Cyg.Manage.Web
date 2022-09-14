@@ -19,7 +19,7 @@ import {
   POWERSUPPLY,
   TRANSFORMERSUBSTATION,
 } from '../DrawToolbar/GridUtils'
-import { loadMapLayers } from '../PlanMap/utils/initializeMap'
+import { changeLayer, loadMapLayers } from '../PlanMap/utils/initializeMap'
 import { dataHandle, newData } from '../tools'
 import DrawGridToolbar from './DrawGridToolbar'
 import GridPowerSupplyTree from './GridPowerSupplyTree'
@@ -57,6 +57,8 @@ const LeftMenu = (props: any) => {
     isRefresh,
     setMapLoading,
     checkLineIds,
+    checkPlanLineIds,
+    setCheckPlanLineIds,
     checkedLayers,
   } = useMyContext()
   const [selectLineType, setselectLineType] = useState('')
@@ -66,6 +68,7 @@ const LeftMenu = (props: any) => {
 
   // 线路ID集合
   const [linesId, setlinesId] = useState<string[]>([])
+
   // 规划线路ID集合
   const [planLinesId, setPlanLinesId] = useState<string[]>([])
   // 电源集合
@@ -176,7 +179,7 @@ const LeftMenu = (props: any) => {
   )
 
   //规划
-  const { data: planSubStationsData } = useRequest(
+  const { data: planSubStationsData, run: GetPlanSubStations } = useRequest(
     () => {
       setMapLoading(true)
       return getSubStations({
@@ -195,7 +198,7 @@ const LeftMenu = (props: any) => {
   //获取规划网架数据
   const { data: PlanTreeData, run: getPlanTreeData } = useRequest(
     () => {
-      const ids = [...new Set(linesId)]
+      const ids = [...new Set(planLinesId)]
       const lineIds: string[] = ids
         .map((item: string) => {
           const exist = item.includes('_&Line')
@@ -266,22 +269,20 @@ const LeftMenu = (props: any) => {
             .filter((item) => item)
         }
 
-        if (checkedLayers.length === 1 && checkedLayers.includes('plan')) {
-          loadMapLayers(
-            {
-              ...treeDatas,
-              lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
-              powerSupplyList,
-              transformerSubstationList: subStations.length
-                ? // @ts-ignore
-                  newData(subStationsData?.transformerSubstationList)
-                : [],
-            },
-            mapRef.map,
-            checkLineIds,
-            'plan'
-          )
-        }
+        loadMapLayers(
+          {
+            ...treeDatas,
+            lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
+            powerSupplyList,
+            transformerSubstationList: planSubStations.length
+              ? // @ts-ignore
+                newData(planSubStationsData?.transformerSubstationList)
+              : [],
+          },
+          mapRef.map,
+          checkPlanLineIds,
+          'plan'
+        )
 
         setMapLoading(false)
       },
@@ -361,41 +362,62 @@ const LeftMenu = (props: any) => {
             .filter((item) => item)
         }
 
-        if (checkedLayers.length === 1 && checkedLayers.includes('history')) {
-          loadMapLayers(
-            {
-              ...treeDatas,
-              lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
-              powerSupplyList,
-              transformerSubstationList: subStations.length
-                ? // @ts-ignore
-                  newData(subStationsData?.transformerSubstationList)
-                : [],
-            },
-            mapRef.map,
-            checkLineIds,
-            'history'
-          )
-        }
+        loadMapLayers(
+          {
+            ...treeDatas,
+            lineRelationList: lineList.length ? lineList : treeDatas.lineRelationList,
+            powerSupplyList,
+            transformerSubstationList: subStations.length
+              ? // @ts-ignore
+                newData(subStationsData?.transformerSubstationList)
+              : [],
+          },
+          mapRef.map,
+          checkLineIds,
+          'history'
+        )
+
         setMapLoading(false)
       },
     }
   )
 
-  useEffect(() => {
-    getTreeData()
-    getPlanTreeData()
-  }, [checkedLayers])
-
   useUpdateEffect(() => {
-    GetSubStations()
+    if (checkedLayers.length === 0 && checkedLayers) {
+      changeLayer(mapRef.map, 'none')
+    }
+    if (checkedLayers.length === 1 && checkedLayers.includes('plan')) {
+      if (planLinesId.length > 0) {
+        GetPlanSubStations()
+        changeLayer(mapRef.map, 'plan')
+        return
+      }
+      changeLayer(mapRef.map, 'none')
+    }
+    if (checkedLayers.length === 1 && checkedLayers.includes('history')) {
+      if (linesId.length > 0) {
+        GetSubStations()
+        changeLayer(mapRef.map, 'history')
+        return
+      }
+      changeLayer(mapRef.map, 'none')
+    }
+    if (checkedLayers.length === 2) {
+      GetSubStations()
+      GetPlanSubStations()
+      changeLayer(mapRef.map, 'all')
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [powerSupplyIds, subStations, linesId, planLinesId, planPowerIds, planSubStations])
-
-  // useEffect(() => {
-  //   linesId && linesId.length && getTreeData()
-
-  // }, [getTreeData, linesId])
+  }, [
+    powerSupplyIds,
+    subStations,
+    linesId,
+    planLinesId,
+    planPowerIds,
+    planSubStations,
+    checkedLayers,
+  ])
 
   useEffect(() => {
     stationItemsHandle()
@@ -404,6 +426,11 @@ const LeftMenu = (props: any) => {
   useEffect(() => {
     setcheckLineIds(linesId)
   }, [linesId, setcheckLineIds])
+
+  useEffect(() => {
+    setCheckPlanLineIds(planLinesId)
+  }, [planLinesId, setCheckPlanLineIds])
+
   return (
     <div className="w-full h-full bg-white flex flex-col">
       <TreeProvider

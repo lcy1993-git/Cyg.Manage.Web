@@ -1,7 +1,7 @@
 import CyTip from '@/components/cy-tip'
 import { modifyExportPowerState } from '@/services/project-management/all-project'
 import { useControllableValue } from 'ahooks'
-import { Divider, Form, message, Modal, Radio } from 'antd'
+import { Divider, message, Modal, Radio } from 'antd'
 import React, { Dispatch, useState } from 'react'
 import { SetStateAction } from 'react'
 
@@ -33,7 +33,7 @@ const ExportPowerModal: React.FC<ExportPowerModalParams> = (props) => {
   return (
     <Modal
       maskClosable={false}
-      title="导出坐标权限设置"
+      title="导出坐标-批量授权"
       width={755}
       visible={state as boolean}
       destroyOnClose

@@ -357,7 +357,7 @@ const FilterEntrustModal: React.FC<FilterEntrustModalProps> = (props) => {
               <CyFormItem
                 label={
                   <>
-                    <span> 项目起止日期</span>
+                    <span>项目起止日期</span>
                     <Tooltip title="筛选出项目起止日期包含在此时间段内的项目" placement="top">
                       <QuestionCircleOutlined style={{ paddingLeft: 5, fontSize: 14 }} />
                     </Tooltip>
