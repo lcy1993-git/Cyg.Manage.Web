@@ -7,6 +7,7 @@ interface MyWorkContextProps {
   currentClickTabChildActiveType: string
   selectedFavId: string
   favName?: string
+  favType?: number | null
   sideVisible?: boolean
   indexToPageSearchParams: any
   setIndexToPageSearchParams: Dispatch<SetStateAction<any>>

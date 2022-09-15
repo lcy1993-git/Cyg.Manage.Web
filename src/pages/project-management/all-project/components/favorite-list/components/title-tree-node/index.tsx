@@ -63,7 +63,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
         refresh?.()
       })
       .catch((error) => {
-        console.log(error)
+        // console.log(error)
       })
   }
 
@@ -110,6 +110,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
           {deep !== 3 && (
             <Tooltip title="添加子级">
               <img
+                alt=""
                 src={createSrc}
                 className={styles.iconItem}
                 onClick={() => createChildNode?.(id)}
@@ -124,11 +125,12 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
               okText="确认"
               cancelText="取消"
             >
-              <img src={deleteSrc} className={styles.iconItem} />
+              <img src={deleteSrc} className={styles.iconItem} alt="" />
             </Popconfirm>
           </Tooltip>
           <Tooltip title="重命名">
             <img
+              alt=""
               src={editSrc}
               className={styles.iconItem}
               onClick={() => {

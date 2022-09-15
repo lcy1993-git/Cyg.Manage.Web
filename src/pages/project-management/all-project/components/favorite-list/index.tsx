@@ -1,22 +1,22 @@
+import arrowImg from '@/assets/image/project-management/arrow.png'
 import EmptyTip from '@/components/empty-tip'
+import ImageIcon from '@/components/image-icon'
 import { getFavorites } from '@/services/project-management/favorite-list'
-import { PlusOutlined, MenuFoldOutlined, PoweroffOutlined } from '@ant-design/icons'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { MenuFoldOutlined, PlusOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Tree } from 'antd'
 import uuid from 'node-uuid'
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import arrowImg from '@/assets/image/project-management/arrow.png'
-import styles from './index.less'
+import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import TitleTreeNode from './components/title-tree-node'
-import findCurrentNode from './utils'
-import { mixinDeps, getParentIds } from './utils'
-import ImageIcon from '@/components/image-icon'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import styles from './index.less'
+import findCurrentNode, { getParentIds, mixinDeps } from './utils'
 interface FavoriteListParams {
   visible?: boolean
   setVisible?: Dispatch<SetStateAction<boolean>>
   getFavId?: Dispatch<SetStateAction<string>>
   getFavName?: Dispatch<SetStateAction<string>>
+  getFavType?: Dispatch<SetStateAction<number>>
   favName?: string
   setStatisticalTitle?: Dispatch<SetStateAction<string>>
   finishEvent?: () => void
@@ -31,7 +31,15 @@ interface treeDataItems {
 const { DirectoryTree } = Tree
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
-  const { setVisible, getFavId, finishEvent, getFavName, setStatisticalTitle, favName } = props
+  const {
+    setVisible,
+    getFavId,
+    finishEvent,
+    getFavName,
+    setStatisticalTitle,
+    favName,
+    getFavType,
+  } = props
   const [treeData, setTreeData] = useState<treeDataItems[]>([])
   const [parentId, setParentId] = useState<string>('')
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -80,6 +88,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         />
       ),
       key: data.id,
+      category: data.category,
       children: data.children?.map(mapTreeData),
       icon: <ImageIcon width={18} height={14} imgUrl="icon-file.png" />,
     }
@@ -106,6 +115,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setIsEdit('')
     }
     getFavId?.(e[0])
+    getFavType?.(g.node.category)
     getFavName?.(g.node.title.props.text)
   }
 
@@ -158,7 +168,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         <div className={styles.favEmpty}>
           <div className={styles.createTips}>
             <span>点击此处新建文件夹</span>
-            <img src={arrowImg} style={{ verticalAlign: 'baseline' }} />
+            <img src={arrowImg} style={{ verticalAlign: 'baseline' }} alt="" />
           </div>
           <EmptyTip description="暂无内容" />
         </div>

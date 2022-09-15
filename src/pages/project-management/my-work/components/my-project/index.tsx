@@ -25,7 +25,10 @@ import {
   receiveProject,
   revokeAllot,
 } from '@/services/project-management/all-project'
-import { removeCollectionEngineers } from '@/services/project-management/favorite-list'
+import {
+  recycleCollectionProject,
+  removeCollectionEngineers,
+} from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
@@ -96,6 +99,7 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     sideVisible,
     selectedFavId,
     favName,
+    favType,
   } = useMyWorkStore()
 
   //添加收藏夹modal
@@ -139,9 +143,8 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     }
   }
 
-  const engineerIds = useMemo(() => {
-    return uniq(tableSelectRowData.map((item) => item.engineerId))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const projectIds = useMemo(() => {
+    return uniq(tableSelectRowData.map((item) => item.id))
   }, [JSON.stringify(tableSelectRowData)])
 
   const refresh = () => {
@@ -366,7 +369,7 @@ const MyProject: React.FC<ProjectParams> = (props) => {
   )
 
   const addFavEvent = () => {
-    if (engineerIds && engineerIds.length > 0) {
+    if (projectIds && projectIds.length > 0) {
       setAddFavoriteModal(true)
       return
     }
@@ -377,7 +380,7 @@ const MyProject: React.FC<ProjectParams> = (props) => {
       message.warning('您还未选择收藏夹')
       return
     }
-    if (engineerIds && engineerIds.length === 0) {
+    if (projectIds && projectIds.length === 0) {
       message.warning('请选择要移出当前收藏夹的工程')
       return
     }
@@ -390,9 +393,29 @@ const MyProject: React.FC<ProjectParams> = (props) => {
       onOk: removeFavEvent,
     })
   }
+  const recycleConfirm = () => {
+    if (projectIds && projectIds.length === 0) {
+      message.warning('请选择要恢复的项目')
+      return
+    }
+    Modal.confirm({
+      title: '提示',
+      icon: <ExclamationCircleOutlined />,
+      content: '确定要恢复所选项目',
+      okText: '确认',
+      cancelText: '取消',
+      onOk: recycleProject,
+    })
+  }
+
   const removeFavEvent = async () => {
-    await removeCollectionEngineers({ id: selectedFavId, engineerIds: engineerIds })
+    await removeCollectionEngineers({ id: selectedFavId, projectIds: projectIds })
     message.success('已移出当前收藏夹')
+    searchByParams()
+  }
+  const recycleProject = async () => {
+    await recycleCollectionProject({ projectIds: projectIds })
+    message.success('项目已恢复')
     searchByParams()
   }
 
@@ -480,7 +503,19 @@ const MyProject: React.FC<ProjectParams> = (props) => {
   }
 
   const batchButtonElement = () => {
-    return currentClickTabChildActiveType === 'my' ? (
+    return sideVisible && favType === 3 ? (
+      buttonJurisdictionArray?.includes('remove-favorite-project') && (
+        <Button type="primary" onClick={() => recycleConfirm()}>
+          回收项目
+        </Button>
+      )
+    ) : sideVisible && selectedFavId && favType === 4 ? (
+      buttonJurisdictionArray?.includes('remove-favorite-project') && (
+        <Button type="primary" onClick={() => removeConfirm()}>
+          移出收藏夹
+        </Button>
+      )
+    ) : currentClickTabChildActiveType === 'my' ? (
       <Button
         type="primary"
         onClick={() => {
@@ -536,12 +571,6 @@ const MyProject: React.FC<ProjectParams> = (props) => {
       buttonJurisdictionArray?.includes('all-project-kont-approve') && (
         <Button type="primary" onClick={() => auditKnotEvent()}>
           结项审批
-        </Button>
-      )
-    ) : sideVisible && selectedFavId ? (
-      buttonJurisdictionArray?.includes('remove-favorite-project') && (
-        <Button type="primary" onClick={() => removeConfirm()}>
-          移出收藏夹
         </Button>
       )
     ) : null
@@ -674,15 +703,14 @@ const MyProject: React.FC<ProjectParams> = (props) => {
                   </Button>
                 </Dropdown>
               )}
-              {buttonJurisdictionArray?.includes('add-favorite-project') && !sideVisible && (
+              {buttonJurisdictionArray?.includes('add-favorite-project') && (
                 <Button className="mr7" onClick={() => addFavEvent()}>
                   收藏
                 </Button>
               )}
               {(buttonJurisdictionArray?.includes('all-project-export-all') ||
                 buttonJurisdictionArray?.includes('all-project-export-selected')) &&
-                currentClickTabType === 'allpro' &&
-                !sideVisible && (
+                currentClickTabType === 'allpro' && (
                   <div className="mr7">
                     <TableExportButton
                       exportUrl="/Porject/Export"
@@ -793,7 +821,7 @@ const MyProject: React.FC<ProjectParams> = (props) => {
           visible={addFavoriteModal}
           onChange={setAddFavoriteModal}
           finishEvent={refresh}
-          engineerIds={engineerIds}
+          projectIds={projectIds}
         />
       )}
       {externalArrangeModalVisible && (

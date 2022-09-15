@@ -1,15 +1,14 @@
+import CyFormItem from '@/components/cy-form-item'
 import CyTip from '@/components/cy-tip'
+import { addCollectionEngineers, getFavorites } from '@/services/project-management/favorite-list'
 import { useControllableValue, useRequest } from 'ahooks'
 import { message, Modal, TreeSelect } from 'antd'
-import React, { Dispatch, useMemo, useState } from 'react'
-import { SetStateAction } from 'react'
-import CyFormItem from '@/components/cy-form-item'
-import { addCollectionEngineers, getFavorites } from '@/services/project-management/favorite-list'
+import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
 // import styles from './index.less';
 
 interface ExportPowerModalParams {
-  engineerIds: string[]
+  projectIds: string[]
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
   finishEvent: () => void
@@ -18,8 +17,8 @@ interface ExportPowerModalParams {
 const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [favId, setFavId] = useState<string>('')
-  const [treeData, setTreeData] = useState<any[]>([])
-  const { engineerIds, finishEvent } = props
+  const [treeData, setTreeData] = useState<any>([])
+  const { projectIds, finishEvent } = props
 
   const { data = [] } = useRequest(() => getFavorites(), {
     onSuccess: () => {
@@ -42,7 +41,7 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
   const addToFavEvent = async () => {
     await addCollectionEngineers({
       id: favId,
-      engineerIds: engineerIds,
+      projectIds: projectIds,
     })
     message.success('操作成功')
     setState(false)
@@ -62,7 +61,7 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
       okText="确认"
       bodyStyle={{ height: 180, padding: 0 }}
     >
-      <CyTip>您已选中{engineerIds.length}个工程，将添加至所选收藏夹。</CyTip>
+      <CyTip>您已选中{projectIds.length}个项目，将添加至所选收藏夹。</CyTip>
       <div style={{ padding: '30px' }}>
         <CyFormItem required label="请选择收藏夹" labelWidth={98}>
           <TreeSelect
