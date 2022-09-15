@@ -324,11 +324,12 @@ export const getStopServerList = (
         return
       }
       const { data } = res
+
       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
       const currenServer = data?.find(
         (item: { propertys: { webSite: string; host: string | null } }) => {
           if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-            return item?.propertys?.webSite === 'http://10.6.1.53:21525/login'
+            return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
           } else if (item?.propertys?.webSite) {
             if (item?.propertys?.host) {
               return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
