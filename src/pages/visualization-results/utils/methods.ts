@@ -11,6 +11,8 @@ import WKT from 'ol/format/WKT'
 import LineString from 'ol/geom/LineString'
 import MultiLineString from 'ol/geom/MultiLineString'
 import Point from 'ol/geom/Point'
+import { Draw } from 'ol/interaction'
+import { createBox } from 'ol/interaction/Draw'
 import LayerGroup from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import Vector from 'ol/layer/Vector'
@@ -40,6 +42,7 @@ var mapMovetimer: any
 var mapMoveEnds: any[] = []
 var layerTypes: any[] = []
 var extent_: any[] = []
+var dragBox: any
 // var showData: any = [];
 /**
  * 由普通线路和水平拉线形成的线簇数组列表
@@ -920,6 +923,91 @@ const clearGroups = (layerGroups: LayerGroup[]) => {
       else layer.getSource().clear()
     })
   })
+}
+
+// 拉框删除
+export const drawBox = (map: any, layerGroups_: any) => {
+  dragBox = new Draw({
+    source: new VectorSource(),
+    // condition: platformModifierKeyOnly,
+    type: 'Circle',
+    geometryFunction: createBox(),
+  })
+  map.addInteraction(dragBox)
+
+  dragBox.on('drawend', function (e: any) {
+    const extent = e.feature.getGeometry().getExtent()
+    const surveyLayer = getLayerGroupByName('surveyLayer', layerGroups_)
+    const planLayer = getLayerGroupByName('planLayer', layerGroups_)
+    // pointLayer = getLayer(map, 'pointLayer')
+    // boxSelectFeatures = pointLayer
+    //   .getSource()
+    //   .getFeaturesInExtent(extent)
+    //   .filter((feature: any) => feature.getGeometry().intersectsExtent(extent))
+    let moveData: any = []
+    surveyLayer
+      .getLayers()
+      .getArray()
+      .forEach((item: any) => {
+        let data = item
+          .getSource()
+          .getFeaturesInExtent(extent)
+          .filter((feature: any) => feature.getGeometry().intersectsExtent(extent))
+        moveData = moveData.concat(data)
+      })
+
+    planLayer
+      .getLayers()
+      .getArray()
+      .forEach((item: any) => {
+        let data = item
+          .getSource()
+          .getFeaturesInExtent(extent)
+          .filter((feature: any) => feature.getGeometry().intersectsExtent(extent))
+        moveData = moveData.concat(data)
+      })
+
+    let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
+    // 高亮显示
+    if (!highlightLayer) {
+      var source = new VectorSource()
+      highlightLayer = new Vector({
+        source,
+        // declutter: true,
+        zIndex: 99,
+      })
+      highlightLayer.set('name', 'highlightLayer')
+      map.addLayer(highlightLayer)
+    }
+    moveData.forEach(function (feature_: any) {
+      // 判断类型(点线面)
+      let featureClone = feature_.clone()
+      let type = featureClone.getGeometry().getType().toLocaleLowerCase()
+      let highlightStyle
+      let id_ = feature_.getProperties().id_
+      let name = id_.substr(0, id_.indexOf('.'))
+      let layerName = name.substring(name.split('_')[0].length + 1, name.length)
+      // 为选中的水平拉线图层添加高亮
+      if (layerName === 'zero_guy') {
+        highlightStyle = zero_guy_style(featureClone, true)
+      } else if (type.indexOf('point') >= 0) {
+        featureClone.set('feature_name', name)
+        highlightStyle = pointStyle(name, featureClone, true, false, map.getView().getResolution())
+      } else if (layerName === 'cable_channel') {
+        highlightStyle = cable_channel_styles(featureClone, true)
+      } else {
+        highlightStyle = line_style(featureClone, true)
+      }
+
+      featureClone.setStyle(highlightStyle)
+      highlightLayer.getSource().addFeature(featureClone)
+    })
+  })
+  dragBox.setActive(false)
+}
+
+export const setDrawBox = (active: boolean) => {
+  dragBox.setActive(active)
 }
 
 /**

@@ -135,6 +135,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
   // 地区or公司状态
   const [tabActiveKey, setTabActiveKey] = useState<string>('1')
+  const [checkedProjectIds, setCheckedProjectIds] = useState<any[]>([])
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
@@ -143,7 +144,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(['-1'])
     isFirstRequest = true
   })
-
   // 验证审阅消息是否含有数据
   const { data: commentCountResponseData, run: fetchCommentCountRquest } = useRequest(
     () => fetchCommentCountById(checkedProjectIdList[0].id),
@@ -398,6 +398,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     store.setProjectIdList(res)
 
     setCheckedKeys(checked)
+    const ids = []
+    for (let i = 0; i < info.checkedNodes.length; i++) {
+      if (info.checkedNodes[i].levelCategory === 6) {
+        ids.push(info.checkedNodes[i].id)
+      }
+    }
+    setCheckedProjectIds(ids)
   }
 
   const onTabChange = (key: string) => {
@@ -635,6 +642,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }
   const handlerMigrateDataClick = (flag: any) => {
+    if (checkedProjectIds.length > 1) {
+      message.error('只能迁移单个项目的数据')
+      return
+    }
     if (Array.isArray(flag) && flag.length > 0) {
       setMigrateDataModalVisible(true)
     } else {
@@ -795,7 +806,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       <MigrateDataModal
         visible={migrateDataModalVisible}
         onChange={setMigrateDataModalVisible}
-        // projectIds={}
+        projectIds={checkedProjectIds}
       />
       <Modal
         title="导出多媒体"

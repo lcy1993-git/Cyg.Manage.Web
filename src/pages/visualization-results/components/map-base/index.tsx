@@ -14,6 +14,7 @@ import {
   checkZoom,
   clearHighlightLayer,
   clearTrackLayers,
+  drawBox,
   getLayerByName,
   getLayerGroupByName,
   loadMediaSign,
@@ -21,6 +22,7 @@ import {
   loadTrackLayers,
   refreshMap,
   relocateMap,
+  setDrawBox,
 } from '../../utils/methods'
 import CheckSource from '../check-source'
 import Footer from '../footer'
@@ -104,8 +106,36 @@ const BaseMap = observer((props: BaseMapProps) => {
     trackLayers.forEach((item: LayerGroup) => {
       initialMap.addLayer(item)
     })
+    drawBox(initialMap, layerGroups)
 
     const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel }
+
+    document.addEventListener('keydown', async (e) => {
+      if (e.keyCode === 16) {
+        setDrawBox(true)
+      }
+
+      if (e.keyCode === 17) {
+        // Ctrl开启点选
+        initialMap.set('isCtrl', true)
+      }
+
+      if (e.keyCode === 27) {
+        // esc清空迁移数据
+        // Ctrl开启点选
+        clearHighlightLayer(initialMap)
+      }
+    })
+
+    document.addEventListener('keyup', async (e) => {
+      if (e.keyCode === 16) {
+        setDrawBox(false)
+      }
+
+      if (e.keyCode === 17) {
+        initialMap.set('isCtrl', false)
+      }
+    })
 
     // 地图点击事件
     initialMap.on('click', (e: Event) =>
@@ -129,6 +159,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
     refreshMap(ops, projects!)
     setMap(initialMap)
+    store.setMapRef(initialMap)
 
     // 注册 点击事件
   })

@@ -32,6 +32,7 @@ export interface VisualizationResultsStateType {
   rangeDate: RangeDate
   mediaListVisibel: boolean // 查看多媒体文件
   mediaListData: any[] // 多媒体数据
+  map: any
 }
 
 const initState = {
@@ -54,6 +55,7 @@ const initState = {
   },
   mediaListVisibel: false,
   mediaListData: [],
+  map: null,
 }
 
 function Store(vState: VisualizationResultsStateType) {
@@ -120,6 +122,9 @@ function Store(vState: VisualizationResultsStateType) {
     },
     clear() {
       this.vState = initState
+    },
+    setMapRef(mapRef: any) {
+      this.vState.map = mapRef
     },
   })
 }
