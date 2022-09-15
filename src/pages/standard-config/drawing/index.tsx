@@ -22,7 +22,7 @@ const mapCategory = {
 const mapType = {
   DesignChart: '设计图',
   ProcessChart: '加工图',
-  Cable: '杆型一览图',
+  TowerModelChart: '杆型一览图',
 }
 
 interface libParams {
@@ -103,12 +103,18 @@ const Drawing: React.FC<libParams> = (props) => {
       index: 'category',
       title: '类别',
       width: 240,
+      render: (text: any, row: any) => {
+        return mapCategory[text]
+      },
     },
     {
       dataIndex: 'type',
       index: 'type',
       title: '类型',
       width: 240,
+      render: (text: any, row: any) => {
+        return mapType[text]
+      },
     },
 
     {

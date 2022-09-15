@@ -15,6 +15,7 @@ interface SelectCanEditProps {
   requestSource?: 'project' | 'common' | 'resource' | 'material' | 'component' | 'tecEco'
   requestType?: 'post' | 'get'
   postType?: 'query' | 'body'
+  // 依赖的参数值
   update?: string
 }
 

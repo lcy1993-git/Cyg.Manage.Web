@@ -267,6 +267,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         remark: values.remark,
         chartIds: values.chartIds,
         reservedWidth: values.reservedWidth ? values.reservedWidth : 0,
+        channelId: editData.channelId,
       }
 
       await updateCableChannelItem(submitInfo)

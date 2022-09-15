@@ -54,7 +54,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         rules={[{ required: true, message: '组件名称不能为空' }]}
       >
         <SelectCanEditAndSearch
-          url="/Material/GetMaterialByNameList"
+          url="/Component/GetComponentByNameList"
           extraParams={{ libId: resourceLibId }}
           requestType="post"
           postType="query"
@@ -66,24 +66,16 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         />
       </CyFormItem>
       <CyFormItem
-        label="组件编码"
-        name="componentId"
-        required
-        rules={[{ required: true, message: '组件编码不能为空' }]}
-      >
-        <Input placeholder="请输入组件编码"></Input>
-      </CyFormItem>
-      <CyFormItem
         label="组件型号"
         name="componentSpec"
         required
         rules={[{ required: true, message: '组件型号不能为空' }]}
       >
         <SelectCanEdit
-          url="/Material/GetListBySpec"
+          url="/Component/GetListBySpec"
           requestSource="resource"
           requestType="post"
-          titlekey="spec"
+          titlekey="componentSpec"
           valuekey="id"
           postType="body"
           extraParams={{ libId: resourceLibId }}
@@ -103,10 +95,13 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
           allowClear
           showSearch
           requestSource="resource"
-          url="/Component/GetDeviceCategory"
+          url="/Component/GetComponentTypeListByType"
           titlekey="key"
           valuekey="value"
           placeholder="请选择"
+          requestType="post"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
         />
       </CyFormItem>
       <CyFormItem

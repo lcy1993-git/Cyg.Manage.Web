@@ -114,12 +114,6 @@ const Component: React.FC<libParams> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'componentId',
-      index: 'componentId',
-      title: '组件编码',
-      width: 180,
-    },
-    {
       dataIndex: 'componentName',
       index: 'componentName',
       title: '组件名称',
@@ -405,8 +399,9 @@ const Component: React.FC<libParams> = (props) => {
         onOk={() => sureAddComponent()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
+        <Form form={addForm} preserve={false}>
           <ComponentForm resourceLibId={libId} type="add" onSetDefaultForm={selctModelId} />
         </Form>
       </Modal>

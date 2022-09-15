@@ -132,14 +132,14 @@ export enum electricalEquipmentComponentType {
 }
 // 图纸类别
 export enum drawingCategory {
-  '物料' = '物料',
-  '组件' = '组件',
-  '电缆' = '电缆',
-  '架空' = '架空',
+  'Material' = '物料',
+  'Component' = '组件',
+  'Cable' = '电缆',
+  'Overhead' = '架空',
 }
 // 图纸类型
 export enum drawingType {
-  '加工图' = '加工图',
-  '设计图' = '设计图',
-  '杆型一览图' = '杆型一览图',
+  'ProcessChart' = '加工图',
+  'DesignChart' = '设计图',
+  'TowerModelChart' = '杆型一览图',
 }

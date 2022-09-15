@@ -269,6 +269,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           designChartIds: editData.designChartIds,
           towerModelChartIds: editData.towerModelChartIds,
           rodDiameter: editData.rodDiameter,
+          moduleId: editData.moduleId,
         },
 
         {

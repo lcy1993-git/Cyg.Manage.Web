@@ -15,18 +15,6 @@ interface ImportChartProps {
   securityKey?: string
   title: string
 }
-const mapCategory = {
-  Material: '物料',
-  Component: '组件',
-  Cable: '电缆',
-  Overhead: '架空',
-}
-
-const mapType = {
-  DesignChart: '设计图',
-  ProcessChart: '加工图',
-  Cable: '杆型一览图',
-}
 const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { libId, changeFinishEvent, title } = props
@@ -50,8 +38,6 @@ const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
   useImperativeHandle(ref, () => ({
     setFormValues: (val: any) => {
       const value = { ...val }
-      mapCategory[value.category] && (value.category = mapCategory[value.category])
-      mapType[value.type] && (value.type = mapType[value.type])
       form.setFieldsValue(value)
     },
   }))

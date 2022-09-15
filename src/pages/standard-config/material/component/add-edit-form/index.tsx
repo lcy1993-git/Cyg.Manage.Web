@@ -199,13 +199,43 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           {isCable && (
             <>
               <CyFormItem label="内侧终端头" name="neice">
-                <EnumSelect placeholder="请选择终端头" enumList={materialType} valueString />
+                <UrlSelect
+                  allowClear
+                  showSearch
+                  requestSource="resource"
+                  url="/Material/GetListByName"
+                  titlekey="spec"
+                  valuekey="materialId"
+                  placeholder="请选择"
+                  requestType="post"
+                  extraParams={{ libId: resourceLibId, type: '电缆附件' }}
+                />
               </CyFormItem>
               <CyFormItem label="外侧终端头" name="waice">
-                <EnumSelect placeholder="请选择终端头" enumList={materialType} valueString />
+                <UrlSelect
+                  allowClear
+                  showSearch
+                  requestSource="resource"
+                  url="/Material/GetListByName"
+                  titlekey="spec"
+                  valuekey="materialId"
+                  placeholder="请选择"
+                  requestType="post"
+                  extraParams={{ libId: resourceLibId, type: '电缆附件' }}
+                />
               </CyFormItem>
               <CyFormItem label="中间头" name="zhongjiantou">
-                <EnumSelect placeholder="请选择中间头" enumList={materialType} valueString />
+                <UrlSelect
+                  allowClear
+                  showSearch
+                  requestSource="resource"
+                  url="/Material/GetListByName"
+                  titlekey="spec"
+                  valuekey="materialId"
+                  placeholder="请选择"
+                  requestType="post"
+                  extraParams={{ libId: resourceLibId, type: '电缆附件' }}
+                />
               </CyFormItem>
             </>
           )}

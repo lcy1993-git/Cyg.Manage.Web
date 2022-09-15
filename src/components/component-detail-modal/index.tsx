@@ -48,7 +48,6 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
 
   const [tabKey, setTabKey] = useState<string>(MATERIAL)
   const [resource, setResource] = useState<any[]>([])
-
   const columns = [
     {
       dataIndex: 'itemName',
@@ -145,6 +144,7 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
   )
   useEffect(() => {
     detailVisible && getDetailList()
+    setTabKey(MATERIAL)
   }, [detailVisible])
   const componentDetailRef = useRef<HTMLDivElement>(null)
   const componentRef = useRef<HTMLDivElement>(null)

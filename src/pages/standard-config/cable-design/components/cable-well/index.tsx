@@ -282,6 +282,7 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
           forDesign: editData.forDesign,
           remark: editData.remark,
           chartIds: editData.chartIds,
+          cableWellId: editData.cableWellId,
         },
         values
       )
