@@ -41,6 +41,7 @@ const Drawing: React.FC<libParams> = (props) => {
   const [resourceLibId, setResourceLibId] = useState<string | undefined>('')
   const { data: keyData } = useRequest(() => getUploadUrl())
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [editChartId, setEditChartId] = useState<string>()
 
   const chartSecurityKey = keyData?.uploadChartApiSecurity
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -198,6 +199,7 @@ const Drawing: React.FC<libParams> = (props) => {
     setEditFormVisible(true)
     // @ts-ignore
     editFormModalRef.current?.setFormValues(editData)
+    setEditChartId(editData.chartId)
   }
   const editFormModalRef = useRef()
 
@@ -230,7 +232,6 @@ const Drawing: React.FC<libParams> = (props) => {
       />
       <ImportChartModal
         libId={libId}
-        securityKey={chartSecurityKey}
         visible={importFormVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportFormVisible}
@@ -238,12 +239,12 @@ const Drawing: React.FC<libParams> = (props) => {
       />
       <ImportChartModal
         libId={libId}
-        securityKey={chartSecurityKey}
         visible={editFormVisible}
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setEditFormVisible}
         title="编辑图纸"
         ref={editFormModalRef}
+        chartId={editChartId}
       />
       {/* </PageCommonWrap> */}
     </>

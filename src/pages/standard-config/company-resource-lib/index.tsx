@@ -1,29 +1,28 @@
-import PageCommonWrap from '@/components/page-common-wrap'
-import { EditOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
-import { Button, Modal, Form, message, Spin, Dropdown, Menu, Table } from 'antd'
-import React, { useEffect, useState } from 'react'
-import styles from './index.less'
-import { useMount, useRequest, useUpdateEffect } from 'ahooks'
-import {
-  getResourceLibDetail,
-  updateResourceLibItem,
-  restartResourceLib,
-  getCampanyResourceLibLists,
-  creatCampanyResourceLib,
-} from '@/services/resource-config/resource-lib'
-import { isArray } from 'lodash'
-import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
-import UploadDrawing from '../canon-resource-lib/./components/upload-drawing'
-import { getUploadUrl } from '@/services/resource-config/drawing'
-import SaveImportLib from '../canon-resource-lib/./components/upload-lib'
-import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
-import { history } from 'umi'
-import { useLayoutStore } from '@/layouts/context'
-import { useMemo } from 'react'
-import UploadAll from '../canon-resource-lib/./components/upload-all'
-import ResourceLibraryManageModal from '../canon-resource-lib/./components/resource-library-manage-modal'
-import EmptyTip from '@/components/empty-tip'
 import CommonTitle from '@/components/common-title'
+import EmptyTip from '@/components/empty-tip'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { useLayoutStore } from '@/layouts/context'
+import { getUploadUrl } from '@/services/resource-config/drawing'
+import {
+  creatCampanyResourceLib,
+  getCampanyResourceLibLists,
+  getResourceLibDetail,
+  restartResourceLib,
+  updateResourceLibItem,
+} from '@/services/resource-config/resource-lib'
+import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Dropdown, Form, Menu, message, Modal, Spin, Table } from 'antd'
+import { isArray } from 'lodash'
+import React, { useMemo, useState } from 'react'
+import { history } from 'umi'
+import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
+import ResourceLibraryManageModal from '../canon-resource-lib/./components/resource-library-manage-modal'
+import UploadAll from '../canon-resource-lib/./components/upload-all'
+import UploadDrawing from '../canon-resource-lib/./components/upload-drawing'
+import SaveImportLib from '../canon-resource-lib/./components/upload-lib'
+import styles from './index.less'
 
 const ResourceLib: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null)
@@ -109,21 +108,29 @@ const ResourceLib: React.FC = () => {
         {
           dataIndex: 'action',
           title: '操作',
-          width: 100,
+          width: 170,
           render: (text: any, record: any) => {
             const storage = window.localStorage
             return (
-              <span
-                className="canClick"
-                onClick={() => {
-                  setCurrentCompanyManageId(record.id)
-                  storage.setItem('manageId', record.id)
-                  history.push({
-                    pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
-                  })
-                }}
-              >
-                <u>管理</u>
+              <span>
+                <span
+                  className="canClick"
+                  onClick={() => {
+                    setCurrentCompanyManageId(record.id)
+                    storage.setItem('manageId', record.id)
+                    history.push({
+                      pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
+                    })
+                  }}
+                >
+                  <u>管理</u>
+                </span>
+                <span className="canClick" style={{ marginLeft: '20px' }} onClick={() => {}}>
+                  <u>备份</u>
+                </span>
+                <span className="canClick" style={{ marginLeft: '20px' }} onClick={() => {}}>
+                  <u>还原</u>
+                </span>
               </span>
             )
           },

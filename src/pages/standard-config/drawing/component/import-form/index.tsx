@@ -12,12 +12,12 @@ interface ImportChartProps {
   onChange: Dispatch<SetStateAction<boolean>>
   changeFinishEvent: () => void
   libId?: string
-  securityKey?: string
   title: string
+  chartId?: string
 }
 const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const { libId, changeFinishEvent, title } = props
+  const { libId, changeFinishEvent, title, chartId } = props
   const [form] = Form.useForm()
   const [fileList, setFileList] = useState<any[]>([])
 
@@ -53,7 +53,7 @@ const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
       formData.append('chartName', value.chartName)
       formData.append('fileName', value.chartName)
       formData.append('resourceLibId', libId as string)
-
+      chartId && formData.append('chartId', chartId)
       run(formData)
     })
   }
