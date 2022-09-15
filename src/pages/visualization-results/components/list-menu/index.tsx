@@ -1,6 +1,7 @@
-import React, { FC, useState } from 'react'
-import { Menu, message, Switch, Tooltip } from 'antd'
-import styles from './index.less'
+import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
+import { downloadMapPositon } from '@/services/visualization-results/list-menu'
+import { fetchCommentCountById } from '@/services/visualization-results/side-tree'
+import { ProjectList } from '@/services/visualization-results/visualization-results'
 import {
   CommentOutlined,
   CopyOutlined,
@@ -9,16 +10,15 @@ import {
   NodeIndexOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons'
-import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
+import { useRequest } from 'ahooks'
+import { Menu, message, Switch, Tooltip } from 'antd'
+import { observer } from 'mobx-react-lite'
+import { FC, useState } from 'react'
 import { useContainer } from '../../result-page/mobx-store'
 import CommentModal from '../comment-modal'
-import MaterialModal from '../material-modal'
-import { useRequest } from 'ahooks'
-import { ProjectList } from '@/services/visualization-results/visualization-results'
-import { observer } from 'mobx-react-lite'
-import { fetchCommentCountById } from '@/services/visualization-results/side-tree'
-import { downloadMapPositon } from '@/services/visualization-results/list-menu'
 import ExportMapPositionModal from '../export-map-position-modal'
+import MaterialModal from '../material-modal'
+import styles from './index.less'
 
 const ListMenu: FC = observer(() => {
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false)

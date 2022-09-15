@@ -28,6 +28,7 @@ import ControlLayers from '../control-layers'
 import ExportMapPositionModal from '../export-map-position-modal'
 import FilterModal from '../filter-modal'
 import MaterialModal from '../material-modal'
+import MigrateDataModal from '../migrate-data-modal'
 import ResultModal from '../result-modal'
 import SiderMenuAreaButtons from '../side-menu-area-buttons'
 import SidePopup from '../side-popup'
@@ -134,6 +135,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([])
   // 地区or公司状态
   const [tabActiveKey, setTabActiveKey] = useState<string>('1')
+  const [checkedProjectIds, setCheckedProjectIds] = useState<any[]>([])
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
@@ -142,7 +144,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setExpandedKeys(['-1'])
     isFirstRequest = true
   })
-
   // 验证审阅消息是否含有数据
   const { data: commentCountResponseData, run: fetchCommentCountRquest } = useRequest(
     () => fetchCommentCountById(checkedProjectIdList[0].id),
@@ -193,6 +194,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }, [projectModalVisible])
 
   const [exportMapPositionModalVisible, setexportMapPositionModalVisible] = useState<boolean>(false)
+  const [migrateDataModalVisible, setMigrateDataModalVisible] = useState<boolean>(false)
+
   const [materialModalVisible, setMaterialModalVisible] = useState<boolean>(false)
 
   const startDateRef = useRef<any>(null)
@@ -395,6 +398,13 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     store.setProjectIdList(res)
 
     setCheckedKeys(checked)
+    const ids = []
+    for (let i = 0; i < info.checkedNodes.length; i++) {
+      if (info.checkedNodes[i].levelCategory === 6) {
+        ids.push(info.checkedNodes[i].id)
+      }
+    }
+    setCheckedProjectIds(ids)
   }
 
   const onTabChange = (key: string) => {
@@ -631,6 +641,17 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       message.error('当前未选择项目')
     }
   }
+  const handlerMigrateDataClick = (flag: any) => {
+    if (checkedProjectIds.length > 1) {
+      message.error('只能迁移单个项目的数据')
+      return
+    }
+    if (Array.isArray(flag) && flag.length > 0) {
+      setMigrateDataModalVisible(true)
+    } else {
+      message.error('当前未选择项目')
+    }
+  }
 
   const downLoadMedia = (list: any[]) => {
     if (list.length > 0) {
@@ -753,6 +774,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
+            buttonJurisdictionArray?.includes('export-coordinates') && {
+              title: '迁移数据',
+              dart: require('@/assets/icon-image/menu-tree-icon/迁移数据.png'),
+              light: require('@/assets/icon-image/menu-tree-icon/迁移数据-light.png'),
+              onClick: () => handlerMigrateDataClick(checkedProjectIdList),
+              style:
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0
+                  ? { opacity: 0.4 }
+                  : {},
+            },
           ]}
         />
       </div>
@@ -771,6 +802,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         visible={exportMapPositionModalVisible}
         onCancel={() => setexportMapPositionModalVisible(false)}
         onOk={onOkWithExportMapPosition}
+      />
+      <MigrateDataModal
+        visible={migrateDataModalVisible}
+        onChange={setMigrateDataModalVisible}
+        projectIds={checkedProjectIds}
       />
       <Modal
         title="导出多媒体"

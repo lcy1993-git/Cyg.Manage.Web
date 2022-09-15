@@ -31,6 +31,7 @@ import {
 import { getMode } from './threeMode'
 import { format, getCustomXmlData } from './utils'
 
+var removeData: any = [] // 迁移数据
 const LevelEnmu = ['无', '220V', '380V', '10kV']
 
 /**
@@ -121,6 +122,16 @@ let selectedFeature = null
  */
 let trackRecordDate = ''
 let mapContent = null
+
+export const getMoveData = (map: any) => {
+  let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
+  if (highlightLayer) {
+    return highlightLayer.getSource().getFeatures()
+  } else {
+    return null
+  }
+}
+
 export const mapClick = (evt: any, map: any, ops: any) => {
   mapContent = map
 
@@ -141,7 +152,12 @@ export const mapClick = (evt: any, map: any, ops: any) => {
   // 处理点击事件点击到物体也会setFlase的bug
   // let setRightSidebarVisiviabelFlag = false;
   // 清除高亮
-  clearHighlightLayer(map)
+  const isCtrl = map.get('isCtrl')
+
+  if (!isCtrl) {
+    clearHighlightLayer(map)
+    removeData = []
+  }
   let layerName = ''
   // 遍历选中的数据
   map.forEachFeatureAtPixel(evt.pixel, async function (feature_: any, layer: any) {
@@ -151,8 +167,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     selected = true
 
     if (layer.getProperties().name == 'highlightLayer') {
-      clearHighlightLayer(map)
-      return
+      if (isCtrl) {
+        layer.getSource().removeFeature(feature_)
+      } else {
+        clearHighlightLayer(map)
+        removeData = []
+        return
+      }
     }
 
     if (layer.getSource() instanceof Cluster) {
@@ -175,8 +196,16 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     let layerType = layer.getProperties().name.split('_')[0]
     feature.set('layerType', layerTypeIDEnum[layerType])
 
+    if (isCtrl) {
+      if (layerTypeIDEnum[layerType] === 1 || layerTypeIDEnum[layerType] === 2) {
+        removeData.push(feature.getProperties())
+      } else {
+        return
+      }
+    }
+
     if (layerType === 'preDesign') return
-    map.getTargetElement().style.cursor = 'wait'
+    if (!isCtrl) map.getTargetElement().style.cursor = 'wait'
     if (layer.getProperties().name.includes('mediaSign')) {
       let params = {
         projectId: feature.getProperties().data.project_id,
@@ -332,6 +361,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         highlightLayer.getSource().addFeature(featureClone)
       })
       highlightLayer.setVisible(true)
+    }
+
+    if (isCtrl) {
+      return
     }
     let featureId = feature.getProperties().id
     // if (!featureId) featureId = feature.getId().split('.')[1];
@@ -868,15 +901,15 @@ export const mapPointermove = (evt: any, map: any) => {
   map.getTargetElement().style.cursor = 'default'
   let allowed = true
   map.forEachFeatureAtPixel(evt.pixel, function (feature: any, layer: any) {
-    if (layer.getSource() instanceof Cluster) {
-      if (feature.get('features').length > 1) {
-        let lont = feature.get('features')[0].getGeometry().getCoordinates()
-        let item = feature
-          .get('features')
-          .find((item: any) => item.getGeometry().getCoordinates().toString() !== lont.toString())
-        if (item) allowed = false
-      }
-    }
+    // if (layer.getSource() instanceof Cluster) {
+    //   if (feature.get('features').length > 1) {
+    //     let lont = feature.get('features')[0].getGeometry().getCoordinates()
+    //     let item = feature
+    //       .get('features')
+    //       .find((item: any) => item.getGeometry().getCoordinates().toString() !== lont.toString())
+    //     if (item) allowed = false
+    //   }
+    // }
     if (allowed) map.getTargetElement().style.cursor = 'pointer'
     else map.getTargetElement().style.cursor = 'not-allowed'
   })
