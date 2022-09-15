@@ -48,7 +48,7 @@ export const removeCollectionEngineers = (params: { id: string; projectIds: stri
 //移除收藏项目
 export const recycleCollectionProject = (params: { projectIds: string[] }) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Project/Restore`, {
+    request(`${baseUrl.project}/Porject/Restore`, {
       method: 'POST',
       data: params,
     })

@@ -17,7 +17,7 @@ interface ExportPowerModalParams {
 const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [favId, setFavId] = useState<string>('')
-  const [treeData, setTreeData] = useState<any[]>([])
+  const [treeData, setTreeData] = useState<any>([])
   const { projectIds, finishEvent } = props
 
   const { data = [] } = useRequest(() => getFavorites(), {
