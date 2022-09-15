@@ -128,6 +128,7 @@ const LeftMenu = (props: any) => {
         isOverhead: formData.lineType === LINE,
         id: createFeatureId(),
         color,
+        gridDataType: 1,
       }
       createLineItem(params)
     } catch (err) {}
@@ -421,7 +422,7 @@ const LeftMenu = (props: any) => {
 
   useEffect(() => {
     stationItemsHandle()
-  }, [stationItemsHandle, lineAssemble, isRefresh])
+  }, [lineAssemble, isRefresh, stationItemsHandle])
 
   useEffect(() => {
     setcheckLineIds(linesId)
@@ -638,7 +639,7 @@ const LeftMenu = (props: any) => {
           </Form.Item> */}
         </Form>
       </Modal>
-      <StandingBook visible={standingBookVisible} onChange={setStandingBookVisible} />
+      <StandingBook visible={standingBookVisible} onChange={setStandingBookVisible} isPlan={true} />
     </div>
   )
 }

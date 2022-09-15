@@ -66,6 +66,7 @@ interface StandingBookProps {
   onChange: Dispatch<SetStateAction<boolean>>
   lineTitle?: string
   lineId: string
+  isPlan?: boolean
 }
 
 const tabTitle = {
@@ -86,7 +87,7 @@ const { Search } = Input
 const EquipLineList: React.FC<StandingBookProps> = (props) => {
   const { companyId, checkLineIds, mapRef } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const { lineTitle, lineId } = props
+  const { lineTitle, lineId, isPlan } = props
 
   const [lineType, setLineType] = useState<'Line' | 'CableCircuit'>('Line')
 
@@ -1120,6 +1121,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 // keyWord: subStationKeyWord,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1137,6 +1139,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: cableWellKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1154,6 +1157,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: towerKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1171,6 +1175,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: boxTransKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1188,6 +1193,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: cabinetKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1205,6 +1211,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: elecRoomKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1222,6 +1229,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: switchKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1239,6 +1247,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: breakerKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1256,6 +1265,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: columnTransKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1273,6 +1283,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: cableBoxKey,
                 lineId: lineId,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -1294,7 +1305,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
         onOk={() => setFormVisible(false)}
       >
         <Form form={getCurrentForm(currentTab)}>
-          <EquipForm currentEditTab={currentTab} selectLineType={lineType} />
+          <EquipForm currentEditTab={currentTab} selectLineType={lineType} isPlan={isPlan} />
         </Form>
       </Modal>
     </>

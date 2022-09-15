@@ -268,6 +268,7 @@ const PlanSubstationTree = () => {
       />
 
       <EquipLineList
+        isPlan={true}
         visible={isModalVisible}
         onChange={setIsModalVisible}
         lineTitle={lineTitle}

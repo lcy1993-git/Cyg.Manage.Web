@@ -235,6 +235,11 @@ export const getDragBoxDatas = () => {
   return dragBoxDatas
 }
 
+// 清除立项框选的数据，用于立项
+export const clearDragBoxDatas = () => {
+  dragBoxDatas = []
+}
+
 // 删除拉框范围中的要素
 export const deletBoxFeature = (map: any) => {
   if (boxSelectFeatures.length === 0) return

@@ -7,6 +7,10 @@ import { addEngineer, getProjectTableList } from '@/services/project-management/
 import { message } from 'antd'
 import { useLayoutStore } from '@/layouts/context'
 import { relationProject } from '@/services/plan-manage/plan-manage'
+import {
+  clearBoxData,
+  clearDragBoxDatas,
+} from '@/pages/visualization-results/plan-manage/PlanMap/utils/initializeMap'
 
 interface AddEngineerModalProps {
   visible: boolean
@@ -136,7 +140,13 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
       }}
       footer={[
         <>
-          <Button key="cancle" onClick={() => setState(false)}>
+          <Button
+            key="cancle"
+            onClick={() => {
+              clearDragBoxDatas()
+              setState(false)
+            }}
+          >
             取消
           </Button>
           {current > 0 ? (
@@ -161,7 +171,10 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
         </>,
       ]}
       width={820}
-      onCancel={() => setState(false)}
+      onCancel={() => {
+        clearDragBoxDatas()
+        setState(false)
+      }}
       title="项目立项"
       destroyOnClose
     >

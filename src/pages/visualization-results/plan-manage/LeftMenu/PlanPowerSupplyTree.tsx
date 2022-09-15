@@ -275,6 +275,7 @@ const PlanPowerSupplyTree = () => {
         treeData={treeData}
       />
       <EquipLineList
+        isPlan={true}
         visible={isModalVisible}
         onChange={setIsModalVisible}
         lineTitle={lineTitle}

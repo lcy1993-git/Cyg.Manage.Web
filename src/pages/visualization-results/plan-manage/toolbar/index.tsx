@@ -72,6 +72,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     isRefresh,
     isDragPoint,
     checkedLayers,
+    checkPlanLineIds,
     setCheckedLayers,
   } = useMyContext()
 
@@ -176,7 +177,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
 
   // 当前选中的主线线路
   const currentChecklineIds = () => {
-    const ids = [...new Set(checkLineIds)]
+    const ids = [...new Set(checkPlanLineIds)]
     const lineIds: string[] = ids
       .map((item: string) => {
         const exist = item.includes('_&Line')
@@ -228,7 +229,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }
   // 点击搜索按钮
   const search = () => {
-    if (!checkLineIds.length) {
+    if (!checkPlanLineIds.length) {
       setRepeatPointState(false)
       message.info('请勾选线路')
       return
@@ -251,7 +252,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
   }
   // 点击按设备筛选按钮
   const filterByequipmentHand = () => {
-    if (!checkLineIds.length) {
+    if (!checkPlanLineIds.length) {
       setToolbalHasShow(false)
       message.info('请勾选线路')
       return
@@ -342,7 +343,7 @@ const Toolbar = (props: { leftMenuVisible: boolean }) => {
     setSelectedFeatureType(initialFeatureType.map((item) => item.value))
     setHighlightFeatureType([])
     twinkle(mapRef.map, [])
-  }, [checkLineIds, form, mapRef])
+  }, [checkPlanLineIds, form, mapRef])
 
   /**复制历史网架点位 */
   const copyPointEvent = async () => {

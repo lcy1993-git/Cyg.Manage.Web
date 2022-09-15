@@ -20,12 +20,13 @@ interface SubStationPowerParams {
   transId: string
   dataOnchange: Dispatch<SetStateAction<any[]>>
   intervalData: any[]
+  isPlan?: boolean
 }
 
 const { Option } = Select
 
 const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
-  const { currentEditTab, form, transId, dataOnchange, intervalData } = props
+  const { currentEditTab, form, transId, dataOnchange, intervalData, isPlan } = props
   const { areaData } = useMyContext()
   const [stationItemsData, setstationItemsData] = useState<BelongingLineType[]>([])
   const [selectLineType, setselectLineType] = useState<string>(form.getFieldValue('lineType'))
@@ -36,7 +37,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const [endBelonging, setEndBelonging] = useState<string | undefined>(
     form.getFieldValue('endBelonging')
   )
-  const { data: stationItems } = useRequest(GetStationItems, {
+  const { data: stationItems } = useRequest(GetStationItems(isPlan ? 1 : 0), {
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
     },

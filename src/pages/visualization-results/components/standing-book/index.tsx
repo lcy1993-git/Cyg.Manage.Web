@@ -36,6 +36,7 @@ const { TabPane } = Tabs
 interface StandingBookProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
+  isPlan?: boolean
 }
 
 const tabTitle = {
@@ -50,6 +51,7 @@ const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
 const StandingBook: React.FC<StandingBookProps> = (props) => {
   const { companyId, setIsRefresh, isRefresh, checkLineIds, mapRef, areaMap } = useMyContext()
+  const { isPlan } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
   const [powerKeyWord, setPowerKeyWord] = useState<string>('')
@@ -89,7 +91,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       index: 'name',
       width: 200,
       render: (text: any, record: any) => {
-        return companyId !== record.companyId ? (
+        return companyId !== record.companyId && !isPlan ? (
           <>
             <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
             <span style={{ paddingLeft: '3px' }}> {record.name}</span>
@@ -153,7 +155,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       index: 'name',
       width: 200,
       render: (text: any, record: any) => {
-        return companyId !== record.companyId ? (
+        return companyId !== record.companyId && !isPlan ? (
           <>
             <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
             <span style={{ paddingLeft: '3px' }}> {record.name}</span>
@@ -217,7 +219,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       index: 'name',
       width: 200,
       render: (text: any, record: any) => {
-        return companyId !== record.companyId ? (
+        return companyId !== record.companyId && !isPlan ? (
           <>
             <InfoCircleOutlined style={{ color: '#2d7de3' }} title="子公司项目" />
             <span style={{ paddingLeft: '3px' }}> {record.name}</span>
@@ -451,6 +453,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           transformerInterval: intervalData,
           color,
           ...transformArrtToAreaData(values.areas, areaMap),
+          gridDataType: isPlan ? 1 : 0,
         }
         await modifyTransformerSubstation(submitInfo)
 
@@ -481,6 +484,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           ...values,
           color: '咖啡',
           ...transformArrtToAreaData(values.areas, areaMap),
+          gridDataType: isPlan ? 1 : 0,
         }
         await modifyPowerSupply(submitInfo)
         const drawParams = {
@@ -489,6 +493,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           ...values,
           color: '#4D3900',
           featureType: POWERSUPPLY,
+          gridDataType: isPlan ? 1 : 0,
         }
         editFeature(mapRef.map, drawParams)
         powerForm.resetFields()
@@ -516,6 +521,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         ...values,
         isOverhead: values.lineType === 'Line' ? true : false,
         color: values.color ? values.color : color,
+        gridDataType: isPlan ? 1 : 0,
       }
 
       await modifyLine(submitInfo)
@@ -684,7 +690,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: subStationKeyWord,
-                gridDataType: 1,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -701,7 +707,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: powerKeyWord,
-                gridDataType: 1,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -718,7 +724,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: lineKeyWord,
-                gridDataType: 1,
+                gridDataType: isPlan ? 1 : 0,
               }}
             />
           </TabPane>
@@ -743,6 +749,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         >
           {/* 只有主线路表单需要做特殊处理所以只传lineForm */}
           <SubStationPowerForm
+            isPlan={isPlan}
             currentEditTab={currentTab}
             form={lineForm}
             transId={selectTransId}

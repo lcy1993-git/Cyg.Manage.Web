@@ -15,15 +15,16 @@ import UrlSelect from '@/components/url-select'
 interface EquipFormParams {
   currentEditTab: string
   selectLineType: 'Line' | 'CableCircuit'
+  isPlan?: boolean
 }
 
 const { Option } = Select
 
 const EquipForm: React.FC<EquipFormParams> = (props) => {
-  const { currentEditTab, selectLineType } = props
+  const { currentEditTab, selectLineType, isPlan } = props
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
 
-  const { data } = useRequest(getAllBelongingLineItem, {
+  const { data } = useRequest(getAllBelongingLineItem(isPlan ? 1 : 0), {
     onSuccess: () => {
       data && setbelongingLineData(data)
     },

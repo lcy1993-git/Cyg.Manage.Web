@@ -269,6 +269,7 @@ const LeftMenu = (props: any) => {
   useEffect(() => {
     setcheckLineIds(linesId)
   }, [linesId, setcheckLineIds])
+
   return (
     <div className="w-full h-full bg-white flex flex-col">
       <TreeProvider
