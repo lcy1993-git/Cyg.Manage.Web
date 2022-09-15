@@ -86,6 +86,7 @@ const MyProject: React.FC = () => {
     sideVisible,
     selectedFavId,
     favName,
+    favType,
   } = useMyWorkStore()
 
   //添加收藏夹modal
@@ -532,13 +533,13 @@ const MyProject: React.FC = () => {
           结项审批
         </Button>
       )
-    ) : sideVisible && selectedFavId === '1565533453725753460' ? (
+    ) : sideVisible && favType === 3 ? (
       buttonJurisdictionArray?.includes('remove-favorite-project') && (
         <Button type="primary" onClick={() => recycleConfirm()}>
           回收项目
         </Button>
       )
-    ) : sideVisible && selectedFavId ? (
+    ) : sideVisible && selectedFavId && favType === 4 ? (
       buttonJurisdictionArray?.includes('remove-favorite-project') && (
         <Button type="primary" onClick={() => removeConfirm()}>
           移出收藏夹

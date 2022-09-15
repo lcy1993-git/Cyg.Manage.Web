@@ -16,6 +16,7 @@ interface FavoriteListParams {
   setVisible?: Dispatch<SetStateAction<boolean>>
   getFavId?: Dispatch<SetStateAction<string>>
   getFavName?: Dispatch<SetStateAction<string>>
+  getFavType?: Dispatch<SetStateAction<number>>
   favName?: string
   setStatisticalTitle?: Dispatch<SetStateAction<string>>
   finishEvent?: () => void
@@ -30,7 +31,15 @@ interface treeDataItems {
 const { DirectoryTree } = Tree
 
 const FavoriteList: React.FC<FavoriteListParams> = (props) => {
-  const { setVisible, getFavId, finishEvent, getFavName, setStatisticalTitle, favName } = props
+  const {
+    setVisible,
+    getFavId,
+    finishEvent,
+    getFavName,
+    setStatisticalTitle,
+    favName,
+    getFavType,
+  } = props
   const [treeData, setTreeData] = useState<treeDataItems[]>([])
   const [parentId, setParentId] = useState<string>('')
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -79,6 +88,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         />
       ),
       key: data.id,
+      category: data.category,
       children: data.children?.map(mapTreeData),
       icon: <ImageIcon width={18} height={14} imgUrl="icon-file.png" />,
     }
@@ -105,6 +115,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       setIsEdit('')
     }
     getFavId?.(e[0])
+    getFavType?.(g.node.category)
     getFavName?.(g.node.title.props.text)
   }
 
@@ -157,7 +168,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
         <div className={styles.favEmpty}>
           <div className={styles.createTips}>
             <span>点击此处新建文件夹</span>
-            <img src={arrowImg} style={{ verticalAlign: 'baseline' }} />
+            <img src={arrowImg} style={{ verticalAlign: 'baseline' }} alt="" />
           </div>
           <EmptyTip description="暂无内容" />
         </div>

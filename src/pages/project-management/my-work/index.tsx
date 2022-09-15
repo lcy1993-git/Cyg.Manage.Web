@@ -29,6 +29,7 @@ const MyWork: React.FC = () => {
   const [selectedFavId, setSelectedFavId] = useState<string>('')
   const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
   const [favName, setFavName] = useState<string>('')
+  const [favType, setFavType] = useState<number>(0)
   const [indexToPageSearchParams, setIndexToPageSearchParams] = useState({
     requestUrl: '/ProjectList/GetAlls',
   })
@@ -264,6 +265,7 @@ const MyWork: React.FC = () => {
       setSideVisible(favVisible)
     }
     setFavName('')
+    setFavType(0)
     setSelectedFavId('')
   }, [favVisible])
 
@@ -278,6 +280,7 @@ const MyWork: React.FC = () => {
         currentClickTabChildActiveType,
         sideVisible,
         favName,
+        favType,
         setSideVisible,
         setCurrentClickTabChildActiveType,
         refreshStatistics,
@@ -326,6 +329,7 @@ const MyWork: React.FC = () => {
                       setVisible={setSideVisible}
                       setStatisticalTitle={setStatisticalCategory}
                       getFavName={setFavName}
+                      getFavType={setFavType}
                       favName={favName}
                       // finishEvent={refresh}
                       visible={sideVisible}
