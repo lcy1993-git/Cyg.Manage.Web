@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 import qs from 'qs'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 interface ResourceLibParams {
   libName: string
@@ -89,5 +89,30 @@ export const creatCampanyResourceLib = (params: {
 }) => {
   return cyRequest<ItemDetailData>(() =>
     request(`${baseUrl.resource}/ResourceLib/SaveCreate`, { method: 'POST', data: params })
+  )
+}
+//获取公司资源库列表
+export const getCampanyResourceLibListsWithBackUpInfo = (params: {
+  libType: number
+  libSource: string
+  status: number
+}) => {
+  return cyRequest<ItemDetailData>(() =>
+    request(`${baseUrl.resource}/ResourceLib/GetListWithBackUpInfo`, {
+      method: 'GET',
+      params: params,
+    })
+  )
+}
+//备份公司资源库列表
+export const backupResourceLib = (params: { libId: string; isCreateNew: boolean }) => {
+  return cyRequest<ItemDetailData>(() =>
+    request(`${baseUrl.resource}/ResourceLib/BackUpResource`, { method: 'POST', params: params })
+  )
+}
+//还原公司资源库列表
+export const restoreResourceLib = (params: { libId: string; version: string }) => {
+  return cyRequest<ItemDetailData>(() =>
+    request(`${baseUrl.resource}/ResourceLib/RestoreResource`, { method: 'POST', params: params })
   )
 }

@@ -118,13 +118,13 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
           <Radio value={false}>否</Radio>
         </Radio.Group>
       </CyFormItem>
-      <CyFormItem label="是否防风" name="isfangfeng" initialValue={false}>
+      <CyFormItem label="是否防风" name="isWind" initialValue={false}>
         <Radio.Group>
           <Radio value={true}>是</Radio>
           <Radio value={false}>否</Radio>
         </Radio.Group>
       </CyFormItem>
-      <CyFormItem label="是否分支" name="isfenzhi" initialValue={false}>
+      <CyFormItem label="是否分支" name="isBranch" initialValue={false}>
         <Radio.Group>
           <Radio value={true}>是</Radio>
           <Radio value={false}>否</Radio>

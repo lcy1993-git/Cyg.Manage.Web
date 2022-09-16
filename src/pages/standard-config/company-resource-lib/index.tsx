@@ -4,17 +4,20 @@ import PageCommonWrap from '@/components/page-common-wrap'
 import { useLayoutStore } from '@/layouts/context'
 import { getUploadUrl } from '@/services/resource-config/drawing'
 import {
+  backupResourceLib,
   creatCampanyResourceLib,
-  getCampanyResourceLibLists,
+  getCampanyResourceLibListsWithBackUpInfo,
   getResourceLibDetail,
   restartResourceLib,
+  restoreResourceLib,
   updateResourceLibItem,
 } from '@/services/resource-config/resource-lib'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { EditOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
-import { useRequest } from 'ahooks'
+import { useMount, useRequest } from 'ahooks'
 import { Button, Dropdown, Form, Menu, message, Modal, Spin, Table } from 'antd'
 import { isArray } from 'lodash'
+import moment from 'moment'
 import React, { useMemo, useState } from 'react'
 import { history } from 'umi'
 import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
@@ -25,7 +28,6 @@ import SaveImportLib from '../canon-resource-lib/./components/upload-lib'
 import styles from './index.less'
 
 const ResourceLib: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
@@ -64,24 +66,48 @@ const ResourceLib: React.FC = () => {
     }
   )
   // 获取公司资源库，没有则创建
-  useRequest(() => getCampanyResourceLibLists({ libType: 1, libSource: userInfo.companyId }), {
-    onSuccess: (res: any) => {
-      if (res?.items.length === 0) {
-        createLib()
-      } else {
-        setTableData(res?.items)
-      }
-    },
-  })
+  const { run: getList } = useRequest(
+    () =>
+      getCampanyResourceLibListsWithBackUpInfo({
+        libType: 1,
+        libSource: userInfo.companyId,
+        status: 0,
+      }),
+    {
+      manual: true,
+      onSuccess: (res: any) => {
+        if (res?.length === 0) {
+          createLib()
+        } else {
+          let libInfo = {
+            ...res[0],
+            backUpVersion: res[0]?.version,
+            backUpTime: moment(res[0]?.createdOn).format('YYYY-MM-DD'),
+          }
+          setTableData([libInfo])
+        }
+      },
+    }
+  )
 
   const { resourceManageFlag } = useLayoutStore()
 
   // 列表刷新
   const refresh = () => {
-    if (tableRef && tableRef.current) {
-      // @ts-ignore
-      tableRef.current.refresh()
-    }
+    getList()
+  }
+  useMount(() => {
+    getList()
+  })
+  const backupLib = async (record: any) => {
+    await backupResourceLib({ libId: record.id, isCreateNew: false })
+    message.success('备份成功')
+    refresh()
+  }
+  const restoreLib = (record: any) => {
+    restoreResourceLib({ libId: record.id, version: record.backUpVersion })
+    message.success('还原成功')
+    refresh()
   }
 
   const columns = useMemo(() => {
@@ -106,6 +132,11 @@ const ResourceLib: React.FC = () => {
           title: '备注',
         },
         {
+          dataIndex: 'backUpTime',
+          index: 'backUpTime',
+          title: '备份时间',
+        },
+        {
           dataIndex: 'action',
           title: '操作',
           width: 170,
@@ -125,10 +156,22 @@ const ResourceLib: React.FC = () => {
                 >
                   <u>管理</u>
                 </span>
-                <span className="canClick" style={{ marginLeft: '20px' }} onClick={() => {}}>
+                <span
+                  className="canClick"
+                  style={{ marginLeft: '20px' }}
+                  onClick={() => {
+                    backupLib(record)
+                  }}
+                >
                   <u>备份</u>
                 </span>
-                <span className="canClick" style={{ marginLeft: '20px' }} onClick={() => {}}>
+                <span
+                  className="canClick"
+                  style={{ marginLeft: '20px' }}
+                  onClick={() => {
+                    restoreLib(record)
+                  }}
+                >
                   <u>还原</u>
                 </span>
               </span>
@@ -156,16 +199,41 @@ const ResourceLib: React.FC = () => {
         title: '备注',
       },
       {
+        dataIndex: 'backUpTime',
+        index: 'backUpTime',
+        title: '备份时间',
+      },
+      {
         dataIndex: '',
         title: '操作',
         width: 100,
         render: (text: any, record: any) => {
           return (
-            <span
-              className="canClick"
-              onClick={() => message.error('已打开"资源库模块管理"界面，请关闭后重试')}
-            >
-              <u>管理</u>
+            <span>
+              <span
+                className="canClick"
+                onClick={() => message.error('已打开"资源库模块管理"界面，请关闭后重试')}
+              >
+                <u>管理</u>
+              </span>
+              <span
+                className="canClick"
+                style={{ marginLeft: '20px' }}
+                onClick={() => {
+                  backupLib(record)
+                }}
+              >
+                <u>备份</u>
+              </span>
+              <span
+                className="canClick"
+                style={{ marginLeft: '20px' }}
+                onClick={() => {
+                  restoreLib(record)
+                }}
+              >
+                <u>还原</u>
+              </span>
             </span>
           )
         },
