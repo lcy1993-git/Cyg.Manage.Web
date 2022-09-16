@@ -52,6 +52,37 @@ export const deleteComponentItem = (libId: string, ids: string[]) => {
   )
 }
 
+interface ComponentDetaiListlParams {
+  items: any[]
+}
+
+//获取明细数据列表
+export const getComponentDetaiList = (libId: string, componentIds: string[], keyWord: string) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/ComponentDetail/GetPageList`, {
+      method: 'POST',
+      data: { libId, componentIds, keyWord },
+    })
+  )
+}
+interface ItemType {
+  itemId: string
+  itemType: string
+  itemNumber: number
+}
+//更新明细数据列表
+export const updateComponentDetaiList = (
+  libId: string,
+  belongComponentId: string,
+  items: ItemType[]
+) => {
+  return cyRequest<ComponentDetaiListlParams>(() =>
+    request(`${baseUrl.resource}/ComponentDetail/SaveBatchCreate`, {
+      method: 'POST',
+      data: { libId, belongComponentId, items },
+    })
+  )
+}
 /**组件明细操作 */
 interface ComponentDetailParams {
   libId: string

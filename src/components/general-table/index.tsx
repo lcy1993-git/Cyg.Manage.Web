@@ -105,7 +105,6 @@ const withGeneralTable = <P extends {}>(WrapperComponent: React.ComponentType<P>
       getTableRequestData?.(data!)
     },
   })
-
   const tableResultData = useMemo(() => {
     if (!noPaging) {
       if (data) {

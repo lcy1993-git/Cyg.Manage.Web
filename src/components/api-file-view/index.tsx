@@ -1,46 +1,36 @@
-import { useState } from "react";
-import type { ReactElement } from "react";
-import { useMount } from "ahooks";
-import { Empty, message } from "antd";
-import FileDwgView from "./componnents/file-dwg-view";
-import getStrategyComponent from './getStrategyComponent';
-import type { FileType } from './getStrategyComponent';
+import { useMount } from 'ahooks'
+import { Empty, message } from 'antd'
+import type { ReactElement } from 'react'
+import { useState } from 'react'
+import type { FileType } from './getStrategyComponent'
+import getStrategyComponent from './getStrategyComponent'
 
 type ApiFileViewProps = {
-  api: () => Promise<ArrayBuffer>;
-  type: FileType;
-  onError?: () => void;
-  emptySlot?: () => ReactElement;
-  
-} & Record<string, unknown>;
+  api: () => Promise<ArrayBuffer>
+  type: FileType
+  onError?: () => void
+  emptySlot?: () => ReactElement
+} & Record<string, unknown>
 
-const ApiFileView: React.FC<ApiFileViewProps> = ({
-  api,
-  type,
-  onError,
-  emptySlot,
-  ...rest
-}) => {
-
-  const [data, setData] = useState<ArrayBuffer | null>(null);
+const ApiFileView: React.FC<ApiFileViewProps> = ({ api, type, onError, emptySlot, ...rest }) => {
+  const [data, setData] = useState<ArrayBuffer | null>(null)
 
   useMount(async () => {
-    if (type !== "pdf") {
+    if (type !== 'pdf') {
       const res = await api()
-      if(Object.prototype.toString.call(res) === "[object ArrayBuffer]"){
+      if (Object.prototype.toString.call(res) === '[object ArrayBuffer]') {
         setData(res)
-      }else{
-        message.error("文件读取失败")
+      } else {
+        message.error('文件读取失败')
       }
-  }})
-
-
+    }
+  })
 
   if (!data) {
     return <Empty />
   }
-  const Component = getStrategyComponent(type)!;
+  const Component = getStrategyComponent(type)!
   return <Component data={data} {...rest} />
 }
 
-export { ApiFileView as default} ;
+export { ApiFileView as default }

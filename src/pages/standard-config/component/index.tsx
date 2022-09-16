@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -15,9 +16,7 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ComponentForm from './components/add-edit-form'
-import ComponentDetail from './components/detail-table'
 import SaveImportComponent from './components/import-form'
-import ComponentProperty from './components/property-table'
 import styles from './index.less'
 
 const { Search } = Input
@@ -61,7 +60,7 @@ const Component: React.FC<libParams> = (props) => {
             placeholder="请输入组件信息"
           />
         </TableSearch>
-        <TableSearch marginLeft="20px" label="组件" width="220px">
+        <TableSearch marginLeft="20px" label="设备分类" width="220px">
           <UrlSelect
             allowClear
             showSearch
@@ -114,12 +113,6 @@ const Component: React.FC<libParams> = (props) => {
   }
 
   const columns = [
-    {
-      dataIndex: 'componentId',
-      index: 'componentId',
-      title: '组件编码',
-      width: 180,
-    },
     {
       dataIndex: 'componentName',
       index: 'componentName',
@@ -371,6 +364,11 @@ const Component: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     // <PageCommonWrap>
@@ -401,9 +399,10 @@ const Component: React.FC<libParams> = (props) => {
         onOk={() => sureAddComponent()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
+        destroyOnClose
       >
-        <Form form={addForm}>
-          <ComponentForm resourceLibId={libId} type="add" />
+        <Form form={addForm} preserve={false}>
+          <ComponentForm resourceLibId={libId} type="add" onSetDefaultForm={selctModelId} />
         </Form>
       </Modal>
       <Modal
@@ -424,52 +423,19 @@ const Component: React.FC<libParams> = (props) => {
         </Form>
       </Modal>
 
-      <Modal
-        maskClosable={false}
-        footer=""
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.componentId
+        })}
+        detailVisible={detailVisible}
+        setDetailVisible={setDetailVisible}
         title="组件明细"
-        width="92%"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <ComponentDetail
-            libId={libId}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-            componentId={tableSelectRows.map((item) => {
-              return item.componentId
-            })}
-          />
-        </Spin>
-      </Modal>
-
-      {/* <Modal
-        maskClosable={false}
-        footer=""
-        title="组件属性"
-        width="60%"
-        visible={attributeVisible}
-        onCancel={() => setAttributeVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <ComponentProperty
-            libId={libId}
-            componentId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-          />
-        </Spin>
-      </Modal> */}
+        type="component"
+      />
 
       <SaveImportComponent
         libId={libId}

@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -14,7 +15,6 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ElectricalEquipmentForm from './components/add-edit-form'
-import ElectricDetail from './components/detail-table'
 import SaveImportElectrical from './components/import-form'
 import ElectricProperty from './components/property-table'
 import styles from './index.less'
@@ -89,12 +89,6 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   }
 
   const columns = [
-    {
-      dataIndex: 'componentId',
-      index: 'componentId',
-      title: '组件编码',
-      width: 180,
-    },
     {
       dataIndex: 'deviceCategory',
       index: 'deviceCategory',
@@ -226,6 +220,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
           forDesign: editData.forDesign,
           remark: editData.remark,
           chartIds: editData.chartIds,
+          componentId: editData.componentId,
         },
         values
       )
@@ -339,7 +334,11 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
-
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
   return (
     // <PageCommonWrap>
     <div className={styles.electrical}>
@@ -371,7 +370,11 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <ElectricalEquipmentForm resourceLibId={libId} type="add" />
+          <ElectricalEquipmentForm
+            resourceLibId={libId}
+            type="add"
+            onSetDefaultForm={selctModelId}
+          />
         </Form>
       </Modal>
       <Modal
@@ -387,35 +390,24 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <ElectricalEquipmentForm resourceLibId={libId} />
+            <ElectricalEquipmentForm resourceLibId={libId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>
 
-      <Modal
-        maskClosable={false}
-        footer=""
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.componentId
+        })}
+        detailVisible={detailVisible}
+        setDetailVisible={setDetailVisible}
         title="组件明细"
-        width="92%"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <ElectricDetail
-            libId={libId}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-            componentId={tableSelectRows.map((item) => {
-              return item.componentId
-            })}
-          />
-        </Spin>
-      </Modal>
+        type="component"
+      />
 
       <Modal
         maskClosable={false}

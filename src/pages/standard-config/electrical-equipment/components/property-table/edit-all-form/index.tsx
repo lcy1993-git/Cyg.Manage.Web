@@ -1,7 +1,6 @@
+import { Input } from 'antd'
 import React from 'react'
-import { Form, Input } from 'antd'
 import EditPropertyTable from '../edit-property-table'
-import { isArray } from '@umijs/deps/compiled/lodash'
 
 interface PropertyParams {
   propertyName: string
@@ -25,7 +24,8 @@ const EditAllPropertyForm: React.FC<EditAllPropertyParams> = (props) => {
       index: 'propertyName',
       width: 320,
       render: () => {
-        return <Input disabled bordered={false} />
+        // return <Input disabled bordered={false} />
+        return <Input placeholder="--请输入属性名--" />
       },
     },
     {
@@ -35,6 +35,12 @@ const EditAllPropertyForm: React.FC<EditAllPropertyParams> = (props) => {
       render: () => {
         return <Input placeholder="--请输入属性值--" />
       },
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation',
+      index: 'operation',
+      width: 50,
     },
   ]
 

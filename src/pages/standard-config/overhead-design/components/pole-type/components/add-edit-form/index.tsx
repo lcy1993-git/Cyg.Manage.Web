@@ -1,5 +1,6 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
+import SelectCanEdit from '@/components/select-can-edit'
 import {
   loopNumber,
   poleKvLevel,
@@ -14,6 +15,7 @@ interface PoleTypeParams {
 }
 
 const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
+  const { resourceLibId } = props
   return (
     <>
       <CyFormItem
@@ -60,7 +62,16 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '杆型类型不能为空' }]}
       >
-        <Input placeholder="请输入杆型类型" />
+        <SelectCanEdit
+          url="/PoleType/GetTypeList"
+          requestSource="resource"
+          requestType="get"
+          titlekey="value"
+          valuekey="value"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请输入杆型类型"
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -69,7 +80,16 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '转角不能为空' }]}
       >
-        <Input placeholder="请输入转角" />
+        <SelectCanEdit
+          url="/PoleType/GetCornerList"
+          requestSource="resource"
+          requestType="get"
+          titlekey="value"
+          valuekey="value"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请输入转角类型"
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -93,6 +113,18 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="是否耐张" name="isTension" initialValue={false}>
+        <Radio.Group>
+          <Radio value={true}>是</Radio>
+          <Radio value={false}>否</Radio>
+        </Radio.Group>
+      </CyFormItem>
+      <CyFormItem label="是否防风" name="isWind" initialValue={false}>
+        <Radio.Group>
+          <Radio value={true}>是</Radio>
+          <Radio value={false}>否</Radio>
+        </Radio.Group>
+      </CyFormItem>
+      <CyFormItem label="是否分支" name="isBranch" initialValue={false}>
         <Radio.Group>
           <Radio value={true}>是</Radio>
           <Radio value={false}>否</Radio>

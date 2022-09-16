@@ -1,63 +1,63 @@
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload, { UploadStatus } from '@/components/file-upload';
-import { uploadDrawing } from '@/services/resource-config/resource-lib';
-import { useBoolean, useControllableValue } from 'ahooks';
-import { Button, Form, message, Modal } from 'antd';
-import React, { useState } from 'react';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload, { UploadStatus } from '@/components/file-upload'
+import { uploadDrawing } from '@/services/resource-config/resource-lib'
+import { useBoolean, useControllableValue } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
+import React, { useState } from 'react'
+import { Dispatch } from 'react'
+import { SetStateAction } from 'react'
 
 interface UploadDrawingProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  libId?: string;
-  securityKey?: string;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  libId?: string
+  securityKey?: string
 }
 
 const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { libId = '', securityKey = '', changeFinishEvent } = props;
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { libId = '', securityKey = '', changeFinishEvent } = props
   const [
     triggerUploadFile,
     { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
-  const [requestLoading, setRequestLoading] = useState<boolean>(false);
-  const [form] = Form.useForm();
+  ] = useBoolean(false)
+  const [requestLoading, setRequestLoading] = useState<boolean>(false)
+  const [form] = Form.useForm()
 
   const saveDrawingEvent = () => {
     return form
       .validateFields()
       .then((values) => {
-        const { file } = values;
+        const { file } = values
 
-        setRequestLoading(true);
-        return uploadDrawing(file, { libId, securityKey });
+        setRequestLoading(true)
+        return uploadDrawing(file, { libId, securityKey })
       })
       .then(
         () => {
-          return Promise.resolve();
+          return Promise.resolve()
         },
         () => {
-          return Promise.reject();
-        },
+          return Promise.reject()
+        }
       )
       .finally(() => {
-        changeFinishEvent?.();
-        setUploadFileFalse();
-        setRequestLoading(true);
-      });
-  };
+        changeFinishEvent?.()
+        setUploadFileFalse()
+        setRequestLoading(true)
+      })
+  }
 
   const onSave = () => {
     form.validateFields().then((value) => {
       if (requestLoading) {
-        setState(false);
-        return;
+        setState(false)
+        return
       }
-      message.info('您还未上传文件，点击“开始上传”上传文件');
-    });
-  };
+      message.info('您还未上传文件，点击“开始上传”上传文件')
+    })
+  }
 
   return (
     <Modal
@@ -92,7 +92,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
         </CyFormItem>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default UploadDrawing;
+export default UploadDrawing

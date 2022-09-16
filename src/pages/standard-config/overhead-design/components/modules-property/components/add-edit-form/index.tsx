@@ -1,5 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
+import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 import UrlSelect from '@/components/url-select'
 import {
   arrangement,
@@ -11,16 +14,18 @@ import {
 } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Select, Tooltip } from 'antd'
-import React from 'react'
+import React, { useState } from 'react'
 
 const { Option } = Select
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string
+  onSetDefaultForm?: any
 }
 
 const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
+  const [isHidden, setIsHidden] = useState<boolean>(true)
 
   const unitSlot = () => {
     return (
@@ -32,37 +37,54 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       </>
     )
   }
+  const changeNameHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 根据选择的id填充表单数据
+      onSetDefaultForm?.(value)
+    }
+  }
 
   return (
     <>
       <CyFormItem
-        label="模块编码"
-        name="moduleId"
-        required
-        labelWidth={108}
-        rules={[{ required: true, message: '模块编码不能为空' }]}
-      >
-        <Input placeholder="请输入模块编码" />
-      </CyFormItem>
-
-      <CyFormItem
         label="模块名称"
         name="moduleName"
         required
-        labelWidth={108}
         rules={[{ required: true, message: '模块名称不能为空' }]}
+        labelWidth={108}
       >
-        <Input placeholder="请输入模块名称" />
+        <SelectCanEditAndSearch
+          url="/Modules/GetPageList"
+          extraParams={{ resourceLibId: resourceLibId }}
+          requestType="post"
+          postType="body"
+          requestSource="resource"
+          titlekey="moduleName"
+          valuekey="id"
+          placeholder="请输入模块名称"
+          onChange={changeNameHandle}
+          searchKey="keyWord"
+          dataStructure="items"
+        />
       </CyFormItem>
 
       <CyFormItem
         label="杆型简号"
         name="poleTypeCode"
         required
-        labelWidth={108}
         rules={[{ required: true, message: '杆型简号不能为空' }]}
+        labelWidth={108}
       >
-        <Input placeholder="请输入杆型简号" />
+        <SelectCanEdit
+          url="/Modules/GetPoleTypeList"
+          requestSource="resource"
+          requestType="get"
+          titlekey="value"
+          valuekey="value"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请选择杆型简号"
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -74,7 +96,6 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       >
         <Input placeholder="请输入典设编码" />
       </CyFormItem>
-
       <CyFormItem
         labelSlot={unitSlot}
         name="unit"
@@ -84,72 +105,6 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       >
         <Input placeholder="请输入单位" />
       </CyFormItem>
-
-      <CyFormItem label="设计图" name="designChartIds" labelWidth={108}>
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
-          requestSource="resource"
-          url="/Chart/GetDesignChartList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择图纸"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
-      </CyFormItem>
-      <CyFormItem label="加工图" name="processChartIds" labelWidth={108}>
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
-          requestSource="resource"
-          url="/Chart/GetProcessChartList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择图纸"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
-      </CyFormItem>
-      <CyFormItem label="杆型一览图" name="towerModelChartIds" labelWidth={108}>
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
-          requestSource="resource"
-          url="/Chart/GetTowerModelChartList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择图纸"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
-      </CyFormItem>
-
-      <CyFormItem
-        label="所属工程"
-        name="forProject"
-        required
-        initialValue="不限"
-        rules={[{ required: true, message: '所属工程不能为空' }]}
-        labelWidth={108}
-      >
-        <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
-      </CyFormItem>
-
-      <CyFormItem
-        label="所属设计"
-        name="forDesign"
-        required
-        initialValue="不限"
-        rules={[{ required: true, message: '所属设计不能为空' }]}
-        labelWidth={108}
-      >
-        <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
-      </CyFormItem>
-
       <CyFormItem
         label="高度（m）"
         name="height"
@@ -169,15 +124,6 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       >
         <Input placeholder="请输入埋深" type="number" />
       </CyFormItem>
-
-      <CyFormItem label="呼称高（m）" name="nominalHeight" labelWidth={108}>
-        <Input placeholder="请输入呼称高" type="number" />
-      </CyFormItem>
-
-      <CyFormItem label="杆梢径（mm）" name="rodDiameter" labelWidth={108}>
-        <Input placeholder="请输入杆梢径" type="number" />
-      </CyFormItem>
-
       <CyFormItem
         label="分段方式"
         name="segmentMode"
@@ -237,6 +183,69 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           <Option value={4}>4</Option>
         </Select>
       </CyFormItem>
+      {isHidden && (
+        <div
+          onClick={() => {
+            setIsHidden(false)
+          }}
+        >
+          <FormExpandButton />
+        </div>
+      )}
+      <div style={{ display: isHidden ? 'none' : 'block' }}>
+        <CyFormItem label="设计图" name="designChartIds" labelWidth={108}>
+          <UrlSelect
+            requestType="post"
+            mode="multiple"
+            showSearch
+            requestSource="resource"
+            url="/Chart/GetDesignChartList"
+            titlekey="chartName"
+            valuekey="chartId"
+            placeholder="请选择图纸"
+            postType="query"
+            extraParams={{ libId: resourceLibId }}
+          />
+        </CyFormItem>
+        <CyFormItem label="杆型一览图" name="towerModelChartIds" labelWidth={108}>
+          <UrlSelect
+            requestType="post"
+            mode="multiple"
+            showSearch
+            requestSource="resource"
+            url="/Chart/GetTowerModelChartList"
+            titlekey="chartName"
+            valuekey="chartId"
+            placeholder="请选择图纸"
+            postType="query"
+            extraParams={{ libId: resourceLibId }}
+          />
+        </CyFormItem>
+        <CyFormItem label="呼称高（m）" name="nominalHeight" labelWidth={108}>
+          <Input placeholder="请输入呼称高" type="number" />
+        </CyFormItem>
+
+        <CyFormItem label="杆梢径（mm）" name="rodDiameter" labelWidth={108}>
+          <Input placeholder="请输入杆梢径" type="number" />
+        </CyFormItem>
+
+        <CyFormItem label="所属工程" name="forProject" initialValue="不限" labelWidth={108}>
+          <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
+        </CyFormItem>
+
+        <CyFormItem label="所属设计" name="forDesign" initialValue="不限" labelWidth={108}>
+          <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
+        </CyFormItem>
+      </div>
+      {!isHidden && (
+        <div
+          onClick={() => {
+            setIsHidden(true)
+          }}
+        >
+          <FormCollaspeButton />
+        </div>
+      )}
     </>
   )
 }

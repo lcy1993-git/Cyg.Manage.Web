@@ -29,6 +29,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   // const [allProjectSearchProjectId, setAllProjectSearchProjectId] = useState('')
   const [mapSelectCity, setMapSelectCity] = useState('')
   const [resourceManageFlag, setResourceManageFlag] = useState<boolean>(false)
+  const [lineStressSagFlag, setLineStressSagFlag] = useState<boolean>(false)
   const [workHandoverFlag, setWorkHandoverFlag] = useState<boolean>(false)
   const [ref, setRef] = useState<any>()
   const [pointData, setPointData] = useState<any>()
@@ -101,6 +102,9 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     const keyIndex = copyRouteList.findIndex((item) => item.tabKey === key)
     if (keyIndex !== -1 && copyRouteList[keyIndex].title.indexOf('resource-manage') !== -1) {
       setResourceManageFlag(false)
+    }
+    if (keyIndex !== -1 && copyRouteList[keyIndex].title.indexOf('line-stress-sag-manage') !== -1) {
+      setLineStressSagFlag(false)
     }
     // 判断他当前删除的是不是当前激活的tab,如果是，则需要激活这个tab的相邻的tab,如果不是，就直接删除
     let needActiveIndex = 0
@@ -196,6 +200,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           setMapSelectCity,
           resourceManageFlag,
           setResourceManageFlag,
+          lineStressSagFlag,
+          setLineStressSagFlag,
           workHandoverFlag,
           setWorkHandoverFlag,
           removeTab,

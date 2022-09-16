@@ -1,23 +1,29 @@
-import React from 'react'
-import { Input, Tooltip } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
-import { QuestionCircleOutlined } from '@ant-design/icons'
 import EnumSelect from '@/components/enum-select'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
+import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import UrlSelect from '@/components/url-select'
 import {
   deviceCategoryType,
-  kvBothLevelType,
   forDesignType,
   forProjectType,
+  kvBothLevelType,
 } from '@/services/resource-config/resource-enum'
+import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Tooltip } from 'antd'
+import React, { useState } from 'react'
 
 interface ChartListFromLibParams {
   resourceLibId: string
   type?: 'add' | 'edit'
+  onSetDefaultForm?: any
 }
 
 const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
+  const [isHidden, setIsHidden] = useState<boolean>(true)
+  const [updateName, setUpdateName] = useState<string>('')
 
   const unitSlot = () => {
     return (
@@ -29,49 +35,75 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       </>
     )
   }
+  const changeNameHandle = (value: string, type: string) => {
+    setUpdateName(value)
+  }
+  const changeSpecHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 选中下拉列表则添加模板数据
+      onSetDefaultForm?.(value)
+    }
+  }
 
   return (
     <>
-      <CyFormItem
-        label="组件编码"
-        name="componentId"
-        required
-        rules={[{ required: true, message: '组件编码不能为空' }]}
-      >
-        <Input placeholder="请输入组件编码"></Input>
-      </CyFormItem>
-
       <CyFormItem
         label="组件名称"
         name="componentName"
         required
         rules={[{ required: true, message: '组件名称不能为空' }]}
       >
-        <Input placeholder="请输入组件名称" />
+        <SelectCanEditAndSearch
+          url="/Component/GetComponentByNameList"
+          extraParams={{ libId: resourceLibId }}
+          requestType="post"
+          postType="query"
+          requestSource="resource"
+          titlekey="value"
+          valuekey="value"
+          placeholder="请输入名称"
+          onChange={changeNameHandle}
+        />
       </CyFormItem>
-
       <CyFormItem
         label="组件型号"
         name="componentSpec"
         required
         rules={[{ required: true, message: '组件型号不能为空' }]}
       >
-        <Input placeholder="请输入组件型号" />
-      </CyFormItem>
-
-      <CyFormItem label="典设编码" name="typicalCode">
-        <Input placeholder="请输入典设编码" />
+        <SelectCanEdit
+          url="/Component/GetListBySpec"
+          requestSource="resource"
+          requestType="post"
+          titlekey="componentSpec"
+          valuekey="id"
+          postType="body"
+          extraParams={{ libId: resourceLibId }}
+          placeholder="请输入组件型号"
+          onChange={changeSpecHandle}
+          update={updateName}
+        />
       </CyFormItem>
 
       <CyFormItem
-        labelSlot={unitSlot}
-        name="unit"
+        label="组件分类"
+        name="componentType"
         required
-        rules={[{ required: true, message: '单位不能为空' }]}
+        rules={[{ required: true, message: '组件分类不能为空' }]}
       >
-        <Input placeholder="请输入单位" />
+        <UrlSelect
+          allowClear
+          showSearch
+          requestSource="resource"
+          url="/Component/GetComponentTypeListByType"
+          titlekey="key"
+          valuekey="value"
+          placeholder="请选择"
+          requestType="post"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+        />
       </CyFormItem>
-
       <CyFormItem
         label="设备分类"
         name="deviceCategory"
@@ -81,14 +113,13 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       >
         <EnumSelect placeholder="请选择所属设计" enumList={deviceCategoryType} valueString />
       </CyFormItem>
-
       <CyFormItem
-        label="组件分类"
-        name="componentType"
+        labelSlot={unitSlot}
+        name="unit"
         required
-        rules={[{ required: true, message: '组件分类不能为空' }]}
+        rules={[{ required: true, message: '单位不能为空' }]}
       >
-        <Input placeholder="请输入组件分类" />
+        <Input placeholder="请输入单位" />
       </CyFormItem>
 
       <CyFormItem
@@ -100,41 +131,50 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       >
         <EnumSelect placeholder="请选择电压等级" enumList={kvBothLevelType} valueString />
       </CyFormItem>
+      {isHidden && (
+        <div
+          onClick={() => {
+            setIsHidden(false)
+          }}
+        >
+          <FormExpandButton />
+        </div>
+      )}
+      <div style={{ display: isHidden ? 'none' : 'block' }}>
+        <CyFormItem label="加工图" name="chartIds">
+          <UrlSelect
+            requestType="post"
+            mode="multiple"
+            showSearch
+            requestSource="resource"
+            url="/Chart/GetList"
+            titlekey="chartName"
+            valuekey="chartId"
+            placeholder="请选择图纸"
+            postType="query"
+            extraParams={{ libId: resourceLibId }}
+          />
+        </CyFormItem>
+        <CyFormItem label="典设编码" name="typicalCode">
+          <Input placeholder="请输入典设编码" />
+        </CyFormItem>
+        <CyFormItem label="所属工程" name="forProject" initialValue="不限">
+          <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
+        </CyFormItem>
 
-      <CyFormItem
-        label="所属工程"
-        name="forProject"
-        required
-        initialValue="不限"
-        rules={[{ required: true, message: '所属工程不能为空' }]}
-      >
-        <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
-      </CyFormItem>
-
-      <CyFormItem
-        label="所属设计"
-        name="forDesign"
-        required
-        initialValue="不限"
-        rules={[{ required: true, message: '所属设计不能为空' }]}
-      >
-        <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
-      </CyFormItem>
-
-      <CyFormItem label="加工图" name="chartIds">
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
-          requestSource="resource"
-          url="/Chart/GetList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择图纸"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
-      </CyFormItem>
+        <CyFormItem label="所属设计" name="forDesign" initialValue="不限">
+          <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
+        </CyFormItem>
+      </div>
+      {!isHidden && (
+        <div
+          onClick={() => {
+            setIsHidden(true)
+          }}
+        >
+          <FormCollaspeButton />
+        </div>
+      )}
     </>
   )
 }

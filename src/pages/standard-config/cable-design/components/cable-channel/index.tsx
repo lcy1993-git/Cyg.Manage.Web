@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -14,7 +15,6 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react'
 import CableChannelForm from './components/add-edit-form'
-import CableChannelDetail from './components/detail-table'
 import styles from './index.less'
 
 const { Search } = Input
@@ -96,12 +96,6 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
   }, [libId])
 
   const columns = [
-    {
-      dataIndex: 'channelId',
-      index: 'channelId',
-      title: '模块编码',
-      width: 180,
-    },
     {
       dataIndex: 'channelName',
       index: 'channelName',
@@ -273,6 +267,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         remark: values.remark,
         chartIds: values.chartIds,
         reservedWidth: values.reservedWidth ? values.reservedWidth : 0,
+        channelId: editData.channelId,
       }
 
       await updateCableChannelItem(submitInfo)
@@ -338,6 +333,11 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
     }
     setDetailVisible(true)
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     <>
@@ -367,8 +367,12 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         bodyStyle={{ height: '680px', overflowY: 'auto' }}
         destroyOnClose
       >
-        <Form form={addForm} preserve={false}>
-          <CableChannelForm resourceLibId={resourceLibId} type="add" />
+        <Form form={addForm} preserve={false} initialValues={{ reservedWidth: 3 }}>
+          <CableChannelForm
+            resourceLibId={resourceLibId}
+            type="add"
+            onSetDefaultForm={selctModelId}
+          />
         </Form>
       </Modal>
       <Modal
@@ -385,35 +389,24 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CableChannelForm resourceLibId={resourceLibId} />
+            <CableChannelForm resourceLibId={resourceLibId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>
 
-      <Modal
-        maskClosable={false}
-        footer=""
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.channelId
+        })}
+        detailVisible={detailVisible}
+        setDetailVisible={setDetailVisible}
         title="电缆通道明细"
-        width="92%"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <CableChannelDetail
-            libId={libId}
-            cableChannelId={tableSelectRows.map((item) => {
-              return item.channelId
-            })}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-          />
-        </Spin>
-      </Modal>
+        type="cable-channel"
+      />
     </>
   )
 }

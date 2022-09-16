@@ -25,6 +25,8 @@ interface LayoutContextValue {
 
   pointData: any
   setPointData: React.Dispatch<SetStateAction<any>> //立项后获取框选数据
+  lineStressSagFlag?: boolean
+  setLineStressSagFlag: (value: boolean) => void
 }
 
 const LayoutContext = createContext({} as LayoutContextValue)

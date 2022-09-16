@@ -1,6 +1,7 @@
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import UrlSelect from '@/components/url-select'
 import {
   addMaterialItem,
   deleteMaterialItem,
@@ -13,7 +14,6 @@ import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
-// import UrlSelect from '@/components/url-select';
 import MaterialForm from './component/add-edit-form'
 import CableMapping from './component/cable-mapping'
 import SaveImportMaterial from './component/import-form'
@@ -34,6 +34,7 @@ const Material: React.FC<libParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [formData, setFormData] = useState<any>({})
 
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
@@ -41,11 +42,14 @@ const Material: React.FC<libParams> = (props) => {
 
   const [attributeVisible, setAttributeVisible] = useState<boolean>(false)
   const [cableTerminalVisible, setCableTerminalVisible] = useState<boolean>(false)
+  const [materialCategory, setMaterialCategory] = useState<string>('')
+  const [chacheEditData, setChacheEditData] = useState<any>({})
+  const [updateFlag, setUpdateFlag] = useState<boolean>(false)
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, run, loading } = useRequest(getMaterialDetail, {
+  const { run, loading } = useRequest(getMaterialDetail, {
     manual: true,
   })
 
@@ -61,6 +65,22 @@ const Material: React.FC<libParams> = (props) => {
             placeholder="请输入物料信息"
           />
         </TableSearch>
+        <TableSearch marginLeft="20px" label="类别" width="220px">
+          <UrlSelect
+            allowClear
+            showSearch
+            requestSource="resource"
+            url="/Material/GetMaterialTypeList"
+            titlekey="key"
+            valuekey="value"
+            placeholder="请选择"
+            onChange={(value: any) => setMaterialCategory(value)}
+            extraParams={{ libId: libId }}
+            postType="query"
+            requestType="post"
+            updateFlag={updateFlag}
+          />
+        </TableSearch>
       </div>
     )
   }
@@ -70,7 +90,9 @@ const Material: React.FC<libParams> = (props) => {
     setResourceLibId(value)
     search()
   }
-
+  useEffect(() => {
+    search()
+  }, [materialCategory])
   useEffect(() => {
     searchByLib(resourceLibId)
   }, [resourceLibId])
@@ -80,6 +102,7 @@ const Material: React.FC<libParams> = (props) => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.refresh()
+      setUpdateFlag(!updateFlag)
     }
   }
 
@@ -92,12 +115,6 @@ const Material: React.FC<libParams> = (props) => {
   }
 
   const columns = [
-    {
-      dataIndex: 'materialId',
-      index: 'materialId',
-      title: '物料编码',
-      width: 180,
-    },
     {
       dataIndex: 'code',
       index: 'code',
@@ -236,7 +253,6 @@ const Material: React.FC<libParams> = (props) => {
         },
         value
       )
-
       await addMaterialItem(submitInfo)
       refresh()
       setAddFormVisible(false)
@@ -256,10 +272,12 @@ const Material: React.FC<libParams> = (props) => {
     const editData = tableSelectRows[0]
     const editDataId = editData.id
 
-    setEditFormVisible(true)
+    // setEditFormVisible(true)
     const ResourceLibData = await run(libId, editDataId)
+    setChacheEditData(ResourceLibData)
 
     editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
   }
 
   const reset = () => {
@@ -274,7 +292,7 @@ const Material: React.FC<libParams> = (props) => {
       message.error('请选择一条数据进行编辑')
       return
     }
-    const editData = data!
+    const editData = chacheEditData!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
@@ -399,6 +417,12 @@ const Material: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+    setFormData(ResourceLibData)
+  }
 
   return (
     // <PageCommonWrap>
@@ -417,8 +441,10 @@ const Material: React.FC<libParams> = (props) => {
         extractParams={{
           resourceLibId: libId,
           keyWord: searchKeyWord,
+          materialType: materialCategory,
         }}
       />
+
       <Modal
         maskClosable={false}
         title="添加-物料"
@@ -428,11 +454,16 @@ const Material: React.FC<libParams> = (props) => {
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <MaterialForm resourceLibId={libId} />
+          <MaterialForm
+            onSetDefaultForm={selctModelId}
+            resourceLibId={libId}
+            form={addForm}
+            formData={formData}
+          />
         </Form>
       </Modal>
       <Modal
@@ -444,12 +475,12 @@ const Material: React.FC<libParams> = (props) => {
         onOk={() => sureEditMaterial()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '650px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <MaterialForm resourceLibId={libId} />
+            <MaterialForm resourceLibId={libId} onSetDefaultForm={selctModelId} form={editForm} />
           </Spin>
         </Form>
       </Modal>

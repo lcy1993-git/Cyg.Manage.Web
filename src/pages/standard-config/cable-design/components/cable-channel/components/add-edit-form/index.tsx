@@ -1,18 +1,23 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
+import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
+import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
 import UrlSelect from '@/components/url-select'
 import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Tooltip } from 'antd'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface PoleTypeParams {
   type?: 'edit' | 'add'
   resourceLibId: string
+  onSetDefaultForm?: any
 }
 
 const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
+  const [isHidden, setIsHidden] = useState<boolean>(true)
   const unitSlot = () => {
     return (
       <>
@@ -23,29 +28,36 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
       </>
     )
   }
+  const changeNameHandle = (value: string, type: string) => {
+    if (type === 'select') {
+      // 根据选择的id填充表单数据
+      onSetDefaultForm?.(value)
+    }
+  }
 
   return (
     <>
       <CyFormItem
-        label="模块编码"
-        name="channelId"
-        labelWidth={130}
-        align="right"
-        required
-        rules={[{ required: true, message: '模块编码不能为空' }]}
-      >
-        <Input placeholder="请输入编号" />
-      </CyFormItem>
-
-      <CyFormItem
         label="模块名称"
         name="channelName"
-        labelWidth={130}
-        align="right"
         required
         rules={[{ required: true, message: '模块名称不能为空' }]}
+        labelWidth={130}
+        align="right"
       >
-        <Input placeholder="请输入模块名称" />
+        <SelectCanEditAndSearch
+          url="/CableChannel"
+          extraParams={{ libId: resourceLibId }}
+          requestType="post"
+          postType="body"
+          requestSource="resource"
+          titlekey="channelName"
+          valuekey="id"
+          placeholder="请输入模块名称"
+          onChange={changeNameHandle}
+          searchKey="keyWord"
+          dataStructure="items"
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -80,60 +92,6 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
       >
         <Input placeholder="请输入单位" />
       </CyFormItem>
-
-      <CyFormItem label="设计图" name="designChartIds" labelWidth={130} align="right">
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
-          requestSource="resource"
-          url="/Chart/GetDesignChartList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择图纸"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
-      </CyFormItem>
-      <CyFormItem label="加工图" name="processChartIds" labelWidth={130} align="right">
-        <UrlSelect
-          requestType="post"
-          mode="multiple"
-          showSearch
-          requestSource="resource"
-          url="/Chart/GetProcessChartList"
-          titlekey="chartName"
-          valuekey="chartId"
-          placeholder="请选择图纸"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
-      </CyFormItem>
-
-      <CyFormItem
-        label="所属工程"
-        name="forProject"
-        required
-        align="right"
-        labelWidth={130}
-        initialValue="不限"
-        rules={[{ required: true, message: '所属工程不能为空' }]}
-      >
-        <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
-      </CyFormItem>
-
-      <CyFormItem
-        label="所属设计"
-        name="forDesign"
-        required
-        align="right"
-        labelWidth={130}
-        initialValue="不限"
-        rules={[{ required: true, message: '所属设计不能为空' }]}
-      >
-        <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
-      </CyFormItem>
-
       <CyFormItem
         label="通道预留宽度(mm)"
         name="reservedWidth"
@@ -164,7 +122,16 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '敷设方式不能为空' }]}
       >
-        <Input placeholder="请输入敷设方式" />
+        <SelectCanEdit
+          requestType="get"
+          requestSource="resource"
+          url="/CableChannel/GetLayingModeList"
+          titlekey="value"
+          valuekey="value"
+          placeholder="请选择敷设方式"
+          postType="query"
+          extraParams={{ libId: resourceLibId }}
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -189,21 +156,93 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[
           { required: true, message: '支架层数不能为空' },
-          { pattern: /^[1-9]\d*$/, message: '请输入正整数' },
+          { pattern: /^([1-9]\d*|[0]{1,1})$/, message: '请输入自然数' },
         ]}
       >
         <Input placeholder="请输入支架层数" type="number" />
       </CyFormItem>
-      <CyFormItem
-        label="排列方式"
-        name="arrangement"
-        labelWidth={130}
-        align="right"
-        required
-        rules={[{ required: true, message: '排列方式不能为空' }]}
-      >
-        <Input placeholder="请输入排列方式" />
-      </CyFormItem>
+
+      {isHidden && (
+        <div
+          onClick={() => {
+            setIsHidden(false)
+          }}
+        >
+          <FormExpandButton />
+        </div>
+      )}
+      <div style={{ display: isHidden ? 'none' : 'block' }}>
+        <CyFormItem label="排列方式" name="arrangement" labelWidth={130} align="right">
+          <SelectCanEdit
+            requestType="get"
+            requestSource="resource"
+            url="/CableChannel/GetArrangementList"
+            titlekey="value"
+            valuekey="value"
+            placeholder="请选择排列方式"
+            postType="query"
+            extraParams={{ libId: resourceLibId }}
+          />
+        </CyFormItem>
+        <CyFormItem label="设计图" name="designChartIds" labelWidth={130} align="right">
+          <UrlSelect
+            requestType="post"
+            mode="multiple"
+            showSearch
+            requestSource="resource"
+            url="/Chart/GetDesignChartList"
+            titlekey="chartName"
+            valuekey="chartId"
+            placeholder="请选择图纸"
+            postType="query"
+            extraParams={{ libId: resourceLibId }}
+          />
+        </CyFormItem>
+        <CyFormItem label="加工图" name="processChartIds" labelWidth={130} align="right">
+          <UrlSelect
+            requestType="post"
+            mode="multiple"
+            showSearch
+            requestSource="resource"
+            url="/Chart/GetProcessChartList"
+            titlekey="chartName"
+            valuekey="chartId"
+            placeholder="请选择图纸"
+            postType="query"
+            extraParams={{ libId: resourceLibId }}
+          />
+        </CyFormItem>
+
+        <CyFormItem
+          label="所属工程"
+          name="forProject"
+          align="right"
+          labelWidth={130}
+          initialValue="不限"
+        >
+          <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
+        </CyFormItem>
+
+        <CyFormItem
+          label="所属设计"
+          name="forDesign"
+          align="right"
+          labelWidth={130}
+          initialValue="不限"
+        >
+          <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
+        </CyFormItem>
+      </div>
+
+      {!isHidden && (
+        <div
+          onClick={() => {
+            setIsHidden(true)
+          }}
+        >
+          <FormCollaspeButton />
+        </div>
+      )}
     </>
   )
 }

@@ -1,3 +1,4 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
@@ -14,7 +15,6 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { forwardRef, Ref, useEffect, useImperativeHandle, useState } from 'react'
 import CableWellForm from './components/add-edit-form'
-import CableWellDetail from './components/detail-table/index'
 import styles from './index.less'
 
 const { Search } = Input
@@ -90,12 +90,6 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
   }
 
   const columns = [
-    {
-      dataIndex: 'cableWellId',
-      index: 'cableWellId',
-      title: '模块编码',
-      width: 180,
-    },
     {
       dataIndex: 'type',
       index: 'type',
@@ -288,6 +282,7 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
           forDesign: editData.forDesign,
           remark: editData.remark,
           chartIds: editData.chartIds,
+          cableWellId: editData.cableWellId,
         },
         values
       )
@@ -352,6 +347,11 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
     }
     setDetailVisible(true)
   }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
+  }
 
   return (
     <>
@@ -379,11 +379,11 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '680px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '680px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <CableWellForm resourceLibId={resourceLibId} type="add" />
+          <CableWellForm resourceLibId={resourceLibId} type="add" onSetDefaultForm={selctModelId} />
         </Form>
       </Modal>
       <Modal
@@ -395,40 +395,29 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
         onOk={() => sureEditCableWell()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '680px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '680px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CableWellForm resourceLibId={resourceLibId} />
+            <CableWellForm resourceLibId={resourceLibId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>
 
-      <Modal
-        maskClosable={false}
-        footer=""
-        title="电缆井明细"
-        width="92%"
-        visible={detailVisible}
-        onCancel={() => setDetailVisible(false)}
-        okText="确认"
-        cancelText="取消"
-        bodyStyle={{ height: '650px', overflowY: 'auto' }}
-        destroyOnClose
-      >
-        <Spin spinning={loading}>
-          <CableWellDetail
-            libId={libId}
-            selectId={tableSelectRows.map((item) => {
-              return item.id
-            })}
-            cableWellId={tableSelectRows.map((item) => {
-              return item.cableWellId
-            })}
-          />
-        </Spin>
-      </Modal>
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.cableWellId
+        })}
+        detailVisible={detailVisible}
+        setDetailVisible={setDetailVisible}
+        title="电缆通道明细"
+        type="cable-well"
+      />
     </>
   )
 }

@@ -1,8 +1,6 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { Button, Input, Select, Cascader } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import { GetStationItems } from '@/services/grid-manage/treeMenu'
-import { useRequest } from 'ahooks'
+import UrlSelect from '@/components/url-select'
+import { useMyContext } from '@/pages/visualization-results/grid-manage/Context'
 import { BelongingLineType } from '@/pages/visualization-results/grid-manage/DrawToolbar'
 import {
   CABLECIRCUITMODEL,
@@ -10,9 +8,11 @@ import {
   KVLEVELTYPES,
   LINEMODEL,
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
+import { GetStationItems } from '@/services/grid-manage/treeMenu'
+import { useRequest } from 'ahooks'
+import { Button, Cascader, Input, Select } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import TransIntervalTable from '../trans-interval-table'
-import UrlSelect from '@/components/url-select'
-import { useMyContext } from '@/pages/visualization-results/grid-manage/Context'
 
 interface SubStationPowerParams {
   currentEditTab: string
