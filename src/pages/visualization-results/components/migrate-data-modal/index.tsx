@@ -1,7 +1,6 @@
 import TableSearch from '@/components/table-search'
 import { getProjectTableList } from '@/services/project-management/all-project'
 import { copyMember, dataMigrate } from '@/services/visualization-results/side-tree'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Input, message, Modal, Pagination, Spin, Table } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
@@ -112,16 +111,18 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
     await dataMigrate(projectIds[0], id, surveyGisData, planGisData).then((res) => {
       // isSuccess
       if (res.isSuccess) {
-        if (tableSelectRows[0].stateInfo?.status === 14) {
-          Modal.confirm({
-            title: '提示',
-            icon: <ExclamationCircleOutlined />,
-            content: '数据迁移成功，是否复制源项目的勘察人员，并修改项目状态为“已勘察”',
-            okText: '确认',
-            cancelText: '取消',
-            onOk: sureCopyMemberAndChangeState,
-          })
-        }
+        message.success('数据迁移成功')
+        setState(false)
+        // if (tableSelectRows[0].stateInfo?.status === 14) {
+        //   Modal.confirm({
+        //     title: '提示',
+        //     icon: <ExclamationCircleOutlined />,
+        //     content: '数据迁移成功，是否复制源项目的勘察人员，并修改项目状态为“已勘察”',
+        //     okText: '确认',
+        //     cancelText: '取消',
+        //     onOk: sureCopyMemberAndChangeState,
+        //   })
+        // }
       } else {
         message.error(res.message)
       }
