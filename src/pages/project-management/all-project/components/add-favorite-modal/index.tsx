@@ -51,7 +51,7 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
   return (
     <Modal
       maskClosable={false}
-      title="添加至收藏夹"
+      title="添加至项目目录"
       width={755}
       visible={state as boolean}
       destroyOnClose
@@ -61,13 +61,13 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
       okText="确认"
       bodyStyle={{ height: 180, padding: 0 }}
     >
-      <CyTip>您已选中{projectIds.length}个项目，将添加至所选收藏夹。</CyTip>
+      <CyTip>您已选中{projectIds.length}个项目，将添加至所选项目目录。</CyTip>
       <div style={{ padding: '30px' }}>
-        <CyFormItem required label="请选择收藏夹" labelWidth={98}>
+        <CyFormItem required label="请选择项目目录" labelWidth={108}>
           <TreeSelect
             treeData={handleData}
             treeDefaultExpandAll
-            placeholder="请选择收藏夹"
+            placeholder="请选择目录"
             onChange={(value: any) => setFavId(value)}
           />
         </CyFormItem>

@@ -60,7 +60,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     let currentNode = findCurrentNode(cloneData, id)
     const newChildNode = {
       id: uuid.v1(),
-      text: '收藏夹1',
+      text: '目录1',
       children: [],
     }
     setParentId(id)
@@ -90,7 +90,21 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
       key: data.id,
       category: data.category,
       children: data.children?.map(mapTreeData),
-      icon: <ImageIcon width={18} height={14} imgUrl="icon-file.png" />,
+      icon: (
+        <ImageIcon
+          width={18}
+          height={14}
+          imgUrl={`${
+            data.category === 1
+              ? 'all.png'
+              : data.category === 2
+              ? 'unclass.png'
+              : data.category === 3
+              ? 'recycle.png'
+              : 'self.png'
+          }`}
+        />
+      ),
     }
   }
 
@@ -101,7 +115,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   const createEvent = () => {
     const newTreeNode = {
       id: uuid.v1(),
-      text: '收藏夹1',
+      text: '目录1',
       children: [],
     }
     setIsEdit(newTreeNode.id)
@@ -135,7 +149,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   return (
     <div className={styles.engineerList}>
       <div className={styles.favHeader}>
-        <div className={styles.favTitle}>收藏夹</div>
+        <div className={styles.favTitle}>项目目录</div>
         <div className={styles.headBtn}>
           {buttonJurisdictionArray?.includes('new-favorite') && (
             <Button className="mr7" onClick={createEvent}>

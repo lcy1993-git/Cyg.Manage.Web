@@ -120,7 +120,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
 
           <Tooltip title="删除">
             <Popconfirm
-              title="您确定要删除当前收藏夹?"
+              title="您确定要删除当前项目目录?"
               onConfirm={deleteEvent}
               okText="确认"
               cancelText="取消"

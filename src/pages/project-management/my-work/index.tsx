@@ -294,7 +294,7 @@ const MyWork: React.FC = () => {
       }}
     >
       {buttonJurisdictionArray?.includes('engineer-favorite') && (
-        <Tooltip title="工程收藏夹">
+        <Tooltip title="项目目录">
           <div
             className={styles.folderButton}
             onClick={() => {
@@ -306,7 +306,7 @@ const MyWork: React.FC = () => {
             style={{ display: sideVisible || currentClickTabType !== 'allpro' ? 'none' : 'block' }}
           >
             <img src={imgSrc} alt="" />
-            <div>收藏</div>
+            <div>目录</div>
           </div>
         </Tooltip>
       )}

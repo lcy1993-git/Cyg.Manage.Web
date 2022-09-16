@@ -512,7 +512,7 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     ) : sideVisible && selectedFavId && favType === 4 ? (
       buttonJurisdictionArray?.includes('remove-favorite-project') && (
         <Button type="primary" onClick={() => removeConfirm()}>
-          移出收藏夹
+          移出目录
         </Button>
       )
     ) : currentClickTabChildActiveType === 'my' ? (
