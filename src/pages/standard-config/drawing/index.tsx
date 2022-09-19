@@ -151,13 +151,13 @@ const Drawing: React.FC<libParams> = (props) => {
             导入图纸
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('drawing-import') && (
+        {buttonJurisdictionArray?.includes('batch-drawing-import') && (
           <Button className="mr7" onClick={() => importBatchChartEvent()}>
             <ImportOutlined />
             批量导入图纸
           </Button>
         )}
-        {buttonJurisdictionArray?.includes('drawing-import') && (
+        {buttonJurisdictionArray?.includes('edit-drawing') && (
           <Button className="mr7" onClick={() => editChartEvent()}>
             <EditOutlined />
             编辑
@@ -169,7 +169,7 @@ const Drawing: React.FC<libParams> = (props) => {
             删除
           </Button>
         )} */}
-        {buttonJurisdictionArray?.includes('drawing-import') && (
+        {buttonJurisdictionArray?.includes('delete-drawing') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </div>
