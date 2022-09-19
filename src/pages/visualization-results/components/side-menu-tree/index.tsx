@@ -774,7 +774,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
                   ? { opacity: 0.4 }
                   : {},
             },
-            buttonJurisdictionArray?.includes('export-coordinates') && {
+            buttonJurisdictionArray?.includes('migrate-data') && {
               title: '迁移数据',
               dart: require('@/assets/icon-image/menu-tree-icon/迁移数据.png'),
               light: require('@/assets/icon-image/menu-tree-icon/迁移数据-light.png'),
