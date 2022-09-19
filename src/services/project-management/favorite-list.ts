@@ -57,5 +57,7 @@ export const recycleCollectionProject = (params: { projectIds: string[] }) => {
 
 // 获取收藏夹
 export const getFavorites = () => {
-  return cyRequest(() => request(`${baseUrl.project}/ProjectDirectory/GetTree`, { method: 'GET' }))
+  return cyRequest<any[]>(() =>
+    request(`${baseUrl.project}/ProjectDirectory/GetTree`, { method: 'GET' })
+  )
 }

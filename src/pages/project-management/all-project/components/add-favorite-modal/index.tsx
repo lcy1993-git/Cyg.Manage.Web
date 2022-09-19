@@ -22,7 +22,11 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
 
   const { data = [] } = useRequest(() => getFavorites(), {
     onSuccess: () => {
-      setTreeData(data)
+      const copyData = data?.filter((item: any) => {
+        return item.category === 4
+      })
+
+      setTreeData(copyData)
     },
   })
 
@@ -63,7 +67,7 @@ const AddFavoriteModal: React.FC<ExportPowerModalParams> = (props) => {
     >
       <CyTip>您已选中{projectIds.length}个项目，将添加至所选项目目录。</CyTip>
       <div style={{ padding: '30px' }}>
-        <CyFormItem required label="请选择项目目录" labelWidth={108}>
+        <CyFormItem required label="请选择项目目录" labelWidth={115}>
           <TreeSelect
             treeData={handleData}
             treeDefaultExpandAll

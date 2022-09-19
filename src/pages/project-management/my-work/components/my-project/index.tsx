@@ -373,21 +373,21 @@ const MyProject: React.FC<ProjectParams> = (props) => {
       setAddFavoriteModal(true)
       return
     }
-    message.warning('您还未选择任何工程')
+    message.warning('您还未选择任何项目')
   }
   const removeConfirm = () => {
     if (!selectedFavId) {
-      message.warning('您还未选择收藏夹')
+      message.warning('您还未选择目录')
       return
     }
     if (projectIds && projectIds.length === 0) {
-      message.warning('请选择要移出当前收藏夹的工程')
+      message.warning('请选择要移出当前目录的项目')
       return
     }
     Modal.confirm({
       title: '提示',
       icon: <ExclamationCircleOutlined />,
-      content: '确定要移除所选工程',
+      content: '确定要移除所选项目',
       okText: '确认',
       cancelText: '取消',
       onOk: removeFavEvent,
@@ -506,7 +506,7 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     return sideVisible && favType === 3 ? (
       buttonJurisdictionArray?.includes('remove-favorite-project') && (
         <Button type="primary" onClick={() => recycleConfirm()}>
-          回收项目
+          恢复项目
         </Button>
       )
     ) : sideVisible && selectedFavId && favType === 4 ? (
