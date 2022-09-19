@@ -23,6 +23,7 @@ interface TitleTreeNodeProps {
   setIsEdit?: (id: string) => void
   setParentId?: (parentId: string) => void
   createChildNode?: (id: string) => void
+  category?: number
 }
 
 const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
@@ -30,6 +31,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   deep,
   text,
   isEdit,
+  category,
   favName,
   parentId,
   refresh,
@@ -42,17 +44,20 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   const [editName, setEditName] = useState<string | undefined>(text)
   const [editFlag, setEditFlag] = useState<boolean>(false)
 
-  const addOrModifyEvent = () => {
+  const addOrModifyEvent = async () => {
     if (editFlag) {
       if (!editName) {
         message.error('名称不能为空')
         return
       }
-      modifyFavoriteName({ id: id, name: editName })
-      setIsEdit?.('')
-      setEditFlag(false)
-      message.success('修改成功')
-      refresh?.()
+      await modifyFavoriteName({ id: id, name: editName })
+        .then((res) => {
+          setIsEdit?.('')
+          setEditFlag(false)
+          message.success('修改成功')
+          return
+        })
+        .catch((err) => {})
       return
     }
     creatFavorite({ name: editName, parentId: parentId })
@@ -60,10 +65,9 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
         setIsEdit?.('')
         setParentId?.('')
         message.success('创建成功')
-        refresh?.()
       })
-      .catch((error) => {
-        // console.log(error)
+      .catch((err) => {
+        return
       })
   }
 
@@ -84,6 +88,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
           <Input
             id="editInput"
             onFocus={() => {
+              //@ts-ignore
               document.getElementById('editInput')?.select()
             }}
             value={editName}
@@ -93,6 +98,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
             }}
             style={{ height: '25px', width: '10vw' }}
             onChange={(e: any) => setEditName(e.target.value)}
+            maxLength=""
           />
         </div>
         <Button onClick={() => addOrModifyEvent()} style={{ height: '30px', marginTop: '9px' }}>
@@ -107,7 +113,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
       <div>{text}</div>
       {onSelect ? (
         <div>
-          {deep !== 3 && (
+          {deep !== 3 && category === 4 && (
             <Tooltip title="添加子级">
               <img
                 alt=""
@@ -118,29 +124,33 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
             </Tooltip>
           )}
 
-          <Tooltip title="删除">
-            <Popconfirm
-              title="您确定要删除当前项目目录?"
-              onConfirm={deleteEvent}
-              okText="确认"
-              cancelText="取消"
-            >
-              <img src={deleteSrc} className={styles.iconItem} alt="" />
-            </Popconfirm>
-          </Tooltip>
-          <Tooltip title="重命名">
-            <img
-              alt=""
-              src={editSrc}
-              className={styles.iconItem}
-              onClick={() => {
-                setIsEdit?.(id)
-                setEditFlag(true)
-                setEditName(favName)
-                editRef.current?.focus()
-              }}
-            />
-          </Tooltip>
+          {category === 4 && (
+            <>
+              <Tooltip title="删除">
+                <Popconfirm
+                  title="您确定要删除当前项目目录?"
+                  onConfirm={deleteEvent}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <img src={deleteSrc} className={styles.iconItem} alt="" />
+                </Popconfirm>
+              </Tooltip>
+              <Tooltip title="重命名">
+                <img
+                  alt=""
+                  src={editSrc}
+                  className={styles.iconItem}
+                  onClick={() => {
+                    setIsEdit?.(id)
+                    setEditFlag(true)
+                    setEditName(favName)
+                    editRef.current?.focus()
+                  }}
+                />
+              </Tooltip>
+            </>
+          )}
         </div>
       ) : null}
     </div>

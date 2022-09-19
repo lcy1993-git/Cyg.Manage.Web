@@ -1,5 +1,6 @@
 .engineerList {
   position: relative;
+
   .favHeader {
     display: flex;
     justify-content: space-between;
@@ -9,14 +10,17 @@
     color: #8c8c8c;
     font-size: 15px;
     border-bottom: 1px solid #f7f7f7;
+
     .favTitle {
       height: 30px;
       line-height: 30px;
     }
+
     .headBtn {
       display: flex;
     }
   }
+
   .favEmpty {
     position: relative;
     display: flex;
@@ -25,23 +29,28 @@
     height: 66vh;
     margin-top: 35px;
     color: #8c8c8c;
+
     .createTips {
       position: absolute;
       right: 60px;
       bottom: 60.5vh;
     }
   }
+
   .favTree {
-    height: 66vh;
+    height: 61vh;
     margin-top: 35px;
+
     :global {
       .ant-tree {
         margin: -20px;
       }
+
       .ant-tree.ant-tree-directory .ant-tree-treenode-selected:hover::before,
       .ant-tree.ant-tree-directory .ant-tree-treenode-selected::before {
         background: #e4f5eb;
       }
+
       .ant-tree.ant-tree-directory
         .ant-tree-treenode
         .ant-tree-node-content-wrapper.ant-tree-node-selected,
@@ -50,17 +59,26 @@
         color: black;
         line-height: 46px;
       }
+
       .ant-tree .ant-tree-node-content-wrapper .ant-tree-iconEle {
         line-height: 42px;
       }
+
       .ant-tree-indent-unit {
         width: 12px;
       }
+
       .ant-tree-list {
-        height: 66vh;
+        height: 61vh;
+        overflow-y: auto;
+      }
+
+      .ant-tree-list .ant-tree-list-holder {
+        overflow-y: visible !important;
       }
     }
   }
+
   .favFooter {
     position: absolute;
     top: calc(100vh - 258px);

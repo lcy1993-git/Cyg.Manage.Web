@@ -84,6 +84,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           refresh={run}
           favName={favName}
           deep={data.deps}
+          category={data.category}
           createChildNode={createChildNode}
         />
       ),
@@ -123,7 +124,10 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     setTreeData([...JSON.parse(JSON.stringify(treeData ? treeData : '')), newTreeNode])
   }
 
-  const selectEvent = (e: any, g: any, m: any) => {
+  const selectEvent = (e: any, g: any) => {
+    if (e[0].length > 19 || e[0].indexOf('-') > -1) {
+      return
+    }
     if (e[0] !== selectkey) {
       setSelectkey(e[0])
       setIsEdit('')
@@ -198,6 +202,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
               onExpand={onExpand}
               expandedKeys={expandedKeys}
               selectedKeys={[selectkey]}
+              virtual={false}
               expandAction="doubleClick"
             />
           </div>
