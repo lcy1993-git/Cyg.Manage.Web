@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
-import SelectCanEdit from '@/components/select-can-edit'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import SelectCanSearch from '@/components/select-can-search'
+import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
 import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
@@ -45,7 +45,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         labelWidth={130}
         align="right"
       >
-        <SelectCanEditAndSearch
+        <SelectCanSearch
           url="/CableChannel"
           extraParams={{ libId: resourceLibId }}
           requestType="post"
@@ -122,7 +122,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '敷设方式不能为空' }]}
       >
-        <SelectCanEdit
+        <SelectCanUpdate
           requestType="get"
           requestSource="resource"
           url="/CableChannel/GetLayingModeList"
@@ -173,7 +173,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
         <CyFormItem label="排列方式" name="arrangement" labelWidth={130} align="right">
-          <SelectCanEdit
+          <SelectCanUpdate
             requestType="get"
             requestSource="resource"
             url="/CableChannel/GetArrangementList"
