@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import SelectCanSearch from '@/components/select-can-search'
 import UrlSelect from '@/components/url-select'
 import {
   coverMode,
@@ -60,7 +60,7 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
         rules={[{ required: true, message: '模块名称不能为空' }]}
         labelWidth={98}
       >
-        <SelectCanEditAndSearch
+        <SelectCanSearch
           url="/CableWell/GetPageList"
           extraParams={{ resourceLibId: resourceLibId }}
           requestType="post"

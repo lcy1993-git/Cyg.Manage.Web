@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
-import SelectCanEdit from '@/components/select-can-edit'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import SelectCanSearch from '@/components/select-can-search'
+import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
 import {
   deviceCategoryType,
@@ -53,7 +53,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件名称不能为空' }]}
       >
-        <SelectCanEditAndSearch
+        <SelectCanSearch
           url="/Component/GetComponentByNameList"
           extraParams={{ libId: resourceLibId }}
           requestType="post"
@@ -71,7 +71,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件型号不能为空' }]}
       >
-        <SelectCanEdit
+        <SelectCanUpdate
           url="/Component/GetListBySpec"
           requestSource="resource"
           requestType="post"

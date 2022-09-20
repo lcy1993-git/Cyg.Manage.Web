@@ -1,6 +1,6 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
-import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanUpdate from '@/components/select-can-update'
 import {
   loopNumber,
   poleKvLevel,
@@ -62,7 +62,7 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '杆型类型不能为空' }]}
       >
-        <SelectCanEdit
+        <SelectCanUpdate
           url="/PoleType/GetTypeList"
           requestSource="resource"
           requestType="get"
@@ -80,7 +80,7 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '转角不能为空' }]}
       >
-        <SelectCanEdit
+        <SelectCanUpdate
           url="/PoleType/GetCornerList"
           requestSource="resource"
           requestType="get"

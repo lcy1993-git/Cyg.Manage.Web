@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
-import SelectCanEdit from '@/components/select-can-edit'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import SelectCanSearch from '@/components/select-can-search'
+import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
 import {
   arrangement,
@@ -53,7 +53,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         rules={[{ required: true, message: '模块名称不能为空' }]}
         labelWidth={108}
       >
-        <SelectCanEditAndSearch
+        <SelectCanSearch
           url="/Modules/GetPageList"
           extraParams={{ resourceLibId: resourceLibId }}
           requestType="post"
@@ -75,7 +75,7 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         rules={[{ required: true, message: '杆型简号不能为空' }]}
         labelWidth={108}
       >
-        <SelectCanEdit
+        <SelectCanUpdate
           url="/Modules/GetPoleTypeList"
           requestSource="resource"
           requestType="get"

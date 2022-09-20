@@ -1,8 +1,8 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
-import SelectCanEdit from '@/components/select-can-edit'
-import SelectCanEditAndSearch from '@/components/select-can-edit-and-search'
+import SelectCanSearch from '@/components/select-can-search'
+import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
 import {
   forDesignType,
@@ -74,7 +74,18 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '物料名称不能为空' }]}
       >
-        <SelectCanEditAndSearch
+        {/* <SelectCanEditAndSearch
+          url="/Material/GetMaterialByNameList"
+          extraParams={{ libId: resourceLibId }}
+          requestType="post"
+          postType="query"
+          requestSource="resource"
+          titlekey="value"
+          valuekey="value"
+          placeholder="请输入名称"
+          onChange={changeNameHandle}
+        /> */}
+        <SelectCanSearch
           url="/Material/GetMaterialByNameList"
           extraParams={{ libId: resourceLibId }}
           requestType="post"
@@ -92,8 +103,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '规格型号不能为空' }]}
       >
-        {/* <Input placeholder="请输入规格型号" /> */}
-        <SelectCanEdit
+        {/* <SelectCanEdit
           url="/Material/GetListBySpec"
           requestSource="resource"
           requestType="post"
@@ -104,8 +114,40 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           placeholder="请输入规格型号"
           onChange={changeSpecHandle}
           update={updateName}
-        />
+        /> */}
+        {
+          <SelectCanUpdate
+            url="/Material/GetListBySpec"
+            requestSource="resource"
+            requestType="post"
+            titlekey="spec"
+            valuekey="id"
+            postType="body"
+            extraParams={{ libId: resourceLibId }}
+            placeholder="请输入规格型号"
+            onChange={changeSpecHandle}
+            update={updateName}
+          />
+        }
       </CyFormItem>
+      {/* <CyFormItem
+        label="测试"
+        name="test"
+        required
+        rules={[{ required: true, message: '规格型号不能为空' }]}
+      >
+        <Test
+           url="/Material/GetMaterialByNameList"
+           extraParams={{ libId: resourceLibId }}
+           requestType="post"
+           postType="query"
+           requestSource="resource"
+           titlekey="value"
+           valuekey="value"
+           placeholder="请输入名称"
+           onChange={changeNameHandle}
+        />
+      </CyFormItem> */}
 
       <CyFormItem
         label="类别"
@@ -113,7 +155,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '类别不能为空' }]}
       >
-        <SelectCanEdit
+        <SelectCanUpdate
           url="/Material/GetMaterialTypeList"
           requestSource="resource"
           requestType="post"

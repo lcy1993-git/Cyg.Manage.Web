@@ -1,7 +1,7 @@
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
-import SelectCanEdit from '@/components/select-can-edit'
+import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
 import {
   electricalEquipmentComponentType,
@@ -91,7 +91,7 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件型号不能为空' }]}
       >
-        <SelectCanEdit
+        <SelectCanUpdate
           url="/ElectricalEquipment/GetElectricalEquipmentByComponentTypeList"
           requestSource="resource"
           requestType="get"
