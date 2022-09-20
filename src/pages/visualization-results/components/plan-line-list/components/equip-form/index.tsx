@@ -23,7 +23,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
   const { currentEditTab, selectLineType } = props
   const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
 
-  const { data } = useRequest(getAllBelongingLineItem, {
+  const { data } = useRequest(getAllBelongingLineItem(1), {
     onSuccess: () => {
       data && setbelongingLineData(data)
     },

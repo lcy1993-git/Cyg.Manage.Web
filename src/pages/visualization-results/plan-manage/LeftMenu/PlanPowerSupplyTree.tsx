@@ -5,6 +5,7 @@ import { message, Modal, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
 import EquipLineList from '../../components/line-equip-list'
+import PlanLineList from '../../components/plan-line-list'
 import { useMyContext } from '../Context'
 import { LINE, POWERSUPPLY, TRANSFORMERSUBSTATION } from '../DrawToolbar/GridUtils'
 import { useTreeContext } from './TreeContext'
@@ -274,8 +275,7 @@ const PlanPowerSupplyTree = () => {
         onSelect={onSelect}
         treeData={treeData}
       />
-      <EquipLineList
-        isPlan={true}
+      <PlanLineList
         visible={isModalVisible}
         onChange={setIsModalVisible}
         lineTitle={lineTitle}

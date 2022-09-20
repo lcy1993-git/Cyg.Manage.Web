@@ -14,7 +14,6 @@ import { useControllableValue, useUpdateEffect } from 'ahooks'
 import { Button, Form, Input, message, Modal, Tabs } from 'antd'
 import { isArray } from 'lodash'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
-import { useMyContext } from '../../grid-manage/Context'
 import {
   COLORU,
   KVLEVELOPTIONS,
@@ -28,6 +27,7 @@ import {
   transformAreaDataToString,
   transformArrtToAreaData,
 } from '../../grid-manage/tools'
+import { useMyContext } from '../../plan-manage/Context'
 import { handleGeom } from '../../utils/methods'
 import SubStationPowerForm from './components/subStation-power-form'
 
@@ -48,7 +48,7 @@ const { Search } = Input
 
 const kvOptions = { 3: '10kV', 4: '20kV', 5: '35kV', 6: '110kV', 7: '330kV' }
 
-const StandingBook: React.FC<StandingBookProps> = (props) => {
+const PlanStandingBook: React.FC<StandingBookProps> = (props) => {
   const { companyId, setIsRefresh, isRefresh, checkLineIds, mapRef, areaMap } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [subStationKeyWord, setSubStationKeyWord] = useState<string>('')
@@ -451,6 +451,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           transformerInterval: intervalData,
           color,
           ...transformArrtToAreaData(values.areas, areaMap),
+          gridDataType: 1,
         }
         await modifyTransformerSubstation(submitInfo)
 
@@ -481,6 +482,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           ...values,
           color: '咖啡',
           ...transformArrtToAreaData(values.areas, areaMap),
+          gridDataType: 1,
         }
         await modifyPowerSupply(submitInfo)
         const drawParams = {
@@ -489,6 +491,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
           ...values,
           color: '#4D3900',
           featureType: POWERSUPPLY,
+          gridDataType: 1,
         }
         editFeature(mapRef.map, drawParams)
         powerForm.resetFields()
@@ -516,6 +519,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         ...values,
         isOverhead: values.lineType === 'Line' ? true : false,
         color: values.color ? values.color : color,
+        gridDataType: 1,
       }
 
       await modifyLine(submitInfo)
@@ -527,6 +531,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
         const drawParams = {
           ...submitInfo,
           color: currentLinesColor ? currentLinesColor.value : '',
+          gridDataType: 1,
         }
         upateLineByMainLine(mapRef.map, drawParams)
       }
@@ -684,6 +689,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: subStationKeyWord,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -700,6 +706,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: powerKeyWord,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -716,6 +723,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
               requestSource="grid"
               extractParams={{
                 keyWord: lineKeyWord,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -752,4 +760,4 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
   )
 }
 
-export default StandingBook
+export default PlanStandingBook

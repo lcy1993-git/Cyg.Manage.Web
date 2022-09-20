@@ -44,7 +44,6 @@ import {
   switchColumns,
   towerColumns,
 } from './components/equip-columns'
-import { useMyContext } from '../../grid-manage/Context'
 import { editFeature } from '../../grid-manage/GridMap/utils/select'
 import {
   BOXTRANSFORMER,
@@ -58,6 +57,7 @@ import {
   SWITCHINGSTATION,
   TOWER,
 } from '../../grid-manage/DrawToolbar/GridUtils'
+import { useMyContext } from '../../plan-manage/Context'
 
 const { TabPane } = Tabs
 
@@ -83,7 +83,7 @@ const tabTitle = {
 
 const { Search } = Input
 
-const EquipLineList: React.FC<StandingBookProps> = (props) => {
+const PlanLineList: React.FC<StandingBookProps> = (props) => {
   const { companyId, checkLineIds, mapRef } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { lineTitle, lineId } = props
@@ -611,6 +611,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
       ...data,
       color: currentLinesColor?.value,
       featureType: type,
+      gridDataType: 1,
     })
   }
 
@@ -624,6 +625,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           ...values,
           isOverhead: editData.isOverhead,
           color: editData.color,
+          gridDataType: 1,
         }
 
         await modifyRelationLine(submitInfo)
@@ -643,6 +645,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyCableWell(submitInfo)
         updateMapInfo(submitInfo, CABLEWELL)
@@ -662,6 +665,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyTower(submitInfo)
         updateMapInfo(submitInfo, TOWER)
@@ -681,6 +685,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyBoxTransformer(submitInfo)
         updateMapInfo(submitInfo, BOXTRANSFORMER)
@@ -699,6 +704,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyRingNetworkCabinet(submitInfo)
         updateMapInfo(submitInfo, RINGNETWORKCABINET)
@@ -717,6 +723,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyElectricityDistributionRoom(submitInfo)
         updateMapInfo(submitInfo, ELECTRICITYDISTRIBUTIONROOM)
@@ -736,6 +743,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifySwitchingStation(submitInfo)
         updateMapInfo(submitInfo, SWITCHINGSTATION)
@@ -756,6 +764,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyColumnCircuitBreaker(submitInfo)
         updateMapInfo(submitInfo, COLUMNCIRCUITBREAKER)
@@ -773,6 +782,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyColumnTransformer(submitInfo)
         updateMapInfo(submitInfo, COLUMNTRANSFORMER)
@@ -792,6 +802,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
           geom: `POINT (${values.lng} ${values.lat})`,
           ...values,
           color: editData.color,
+          gridDataType: 1,
         }
         await modifyCableBranchBox(submitInfo)
         updateMapInfo(submitInfo, CABLEBRANCHBOX)
@@ -1120,6 +1131,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 // keyWord: subStationKeyWord,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1137,6 +1149,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: cableWellKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1154,6 +1167,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: towerKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1171,6 +1185,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: boxTransKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1188,6 +1203,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: cabinetKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1205,6 +1221,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: elecRoomKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1222,6 +1239,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: switchKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1239,6 +1257,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: breakerKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1256,6 +1275,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: columnTransKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1273,6 +1293,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
               extractParams={{
                 keyWord: cableBoxKey,
                 lineId: lineId,
+                gridDataType: 1,
               }}
             />
           </TabPane>
@@ -1301,4 +1322,4 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
   )
 }
 
-export default EquipLineList
+export default PlanLineList

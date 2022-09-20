@@ -7,7 +7,7 @@ import {
 import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Divider, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
-import StandingBook from '../../components/standing-book'
+import PlanStandingBook from '../../components/plan-standing-book'
 
 import { useMyContext } from '../Context'
 import {
@@ -639,7 +639,7 @@ const LeftMenu = (props: any) => {
           </Form.Item> */}
         </Form>
       </Modal>
-      <StandingBook visible={standingBookVisible} onChange={setStandingBookVisible} isPlan={true} />
+      <PlanStandingBook visible={standingBookVisible} onChange={setStandingBookVisible} />
     </div>
   )
 }

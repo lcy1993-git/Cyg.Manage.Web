@@ -100,9 +100,9 @@ export const getTransformerSubstationMenu = (params: any) => {
 }
 
 // 获取所属线路
-export const getAllBelongingLineItem = (gridDataType?: number) => {
+export const getAllBelongingLineItem = (GridDataType?: number) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.grid}/Line/GetLineItems`, { method: 'GET', params: { gridDataType } })
+    request(`${baseUrl.grid}/Line/GetLineItems`, { method: 'GET', params: { GridDataType } })
   )
 }
 // 获取所有厂站

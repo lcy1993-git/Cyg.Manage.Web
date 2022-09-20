@@ -1,6 +1,5 @@
 import CyFormItem from '@/components/cy-form-item'
 import UrlSelect from '@/components/url-select'
-import { useMyContext } from '@/pages/visualization-results/grid-manage/Context'
 import { BelongingLineType } from '@/pages/visualization-results/grid-manage/DrawToolbar'
 import {
   CABLECIRCUITMODEL,
@@ -8,6 +7,7 @@ import {
   KVLEVELTYPES,
   LINEMODEL,
 } from '@/pages/visualization-results/grid-manage/DrawToolbar/GridUtils'
+import { useMyContext } from '@/pages/visualization-results/plan-manage/Context'
 import { GetStationItems } from '@/services/grid-manage/treeMenu'
 import { useRequest } from 'ahooks'
 import { Button, Cascader, Input, Select } from 'antd'
@@ -36,7 +36,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const [endBelonging, setEndBelonging] = useState<string | undefined>(
     form.getFieldValue('endBelonging')
   )
-  const { data: stationItems } = useRequest(GetStationItems, {
+  const { data: stationItems } = useRequest(GetStationItems(1), {
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
     },

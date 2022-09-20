@@ -117,7 +117,6 @@ const formItemLayout = {
 }
 
 const PlanMap = () => {
-  const [form] = useForm()
   const {
     mapRef,
     setIsRefresh,
@@ -131,7 +130,10 @@ const PlanMap = () => {
     areaData,
     areaMap,
   } = useMyContext()
+
   const ref = useRef<HTMLDivElement>(null)
+  const [form] = useForm()
+
   const [currentFeatureType, setcurrentFeatureType] = useState('')
   const [currentfeatureData, setcurrentfeatureData] = useState({ id: '', geom: '', color: '' })
   /**所属线路数据**/
@@ -306,6 +308,8 @@ const PlanMap = () => {
   /** 编辑 **/
   const onFinish = async (value: any) => {
     let color
+    // console.log(belongingLineData, '1111')
+
     const currentThread = belongingLineData.find((item) => item.id === value.lineId) // 上传数据颜色处理
     if (currentFeatureType === TRANSFORMERSUBSTATION) {
       // 如果是变电站就根据电压等级显示
@@ -330,6 +334,7 @@ const PlanMap = () => {
       gridDataType: 1,
       ...areaData,
     }
+
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -565,10 +570,13 @@ const PlanMap = () => {
   })
 
   // 获取所有所属线路
-  const { data, run } = useRequest(getAllBelongingLineItem, {
+  const { data: LineData, run: getLineItem } = useRequest(getAllBelongingLineItem(1), {
     manual: true,
     onSuccess: () => {
-      data && setbelongingLineData(data)
+      LineData && setbelongingLineData(LineData)
+    },
+    onError: (err) => {
+      // console.log(err)
     },
   })
 
@@ -587,8 +595,8 @@ const PlanMap = () => {
   }
 
   useEffect(() => {
-    run()
-  }, [isRefresh, run])
+    getLineItem()
+  }, [isRefresh])
 
   return (
     <>
