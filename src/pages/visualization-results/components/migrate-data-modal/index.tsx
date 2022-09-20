@@ -28,7 +28,11 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
   const { map } = vState
 
   const { projectIds } = props
-  const { data, loading, run: getDataList } = useRequest(
+  const {
+    data,
+    loading,
+    run: getDataList,
+  } = useRequest(
     () => {
       return getProjectTableList({
         statisticalCategory: '-1',
@@ -92,7 +96,16 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
       let str = data[i].values_.id_
       const id = data[i].values_.id
       let arr = str.split('.')[0].split('_')
-      const key = `${arr[1]}Ids`
+      arr.shift()
+      let key = ''
+      for (let i = 0; i < arr.length; i++) {
+        if (i === 0) {
+          key += arr[i]
+        } else {
+          key += arr[i].slice(0, 1).toUpperCase() + arr[i].slice(1)
+        }
+      }
+      key += 'Ids'
       if (arr[0] === 'survey') {
         if (!surveyGisData[key]) {
           surveyGisData[key] = []
