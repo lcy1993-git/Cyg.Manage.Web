@@ -92,15 +92,24 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
       let str = data[i].values_.id_
       const id = data[i].values_.id
       let arr = str.split('.')[0].split('_')
-      const key = `${arr[1]}Ids`
-      if (arr[0] === 'survey') {
+      let type = arr.shift()
+      let key = ''
+      for (let i = 0; i < arr.length; i++) {
+        if (i === 0) {
+          key += arr[i]
+        } else {
+          key += arr[i].slice(0, 1).toUpperCase() + arr[i].slice(1)
+        }
+      }
+      key += 'Ids'
+      if (type === 'survey') {
         if (!surveyGisData[key]) {
           surveyGisData[key] = []
         }
         surveyGisData[key].push()
         surveyGisData[key].push(id)
       }
-      if (arr[0] === 'plan') {
+      if (type === 'plan') {
         if (!planGisData[key]) {
           planGisData[key] = []
         }
