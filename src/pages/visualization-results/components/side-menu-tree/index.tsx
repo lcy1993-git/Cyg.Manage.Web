@@ -22,6 +22,7 @@ import { observer } from 'mobx-react-lite'
 import moment from 'moment'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useContainer } from '../../result-page/mobx-store'
+import { getMoveData } from '../../utils/mapClick'
 import { flattenDeepToKey, getSelectKeyByKeyword, TreeNodeType } from '../../utils/utils'
 import CommentModal from '../comment-modal'
 import ControlLayers from '../control-layers'
@@ -642,6 +643,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }
   const handlerMigrateDataClick = (flag: any) => {
+    const data = getMoveData(store.vState.map)
+    if (!data || (data && data.length === 0)) {
+      message.error('请选择需要迁移的数据')
+      return
+    }
     if (checkedProjectIds.length > 1) {
       message.error('只能迁移单个项目的数据')
       return
