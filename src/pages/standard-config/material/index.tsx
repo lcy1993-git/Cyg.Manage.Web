@@ -9,7 +9,7 @@ import {
   updateMaterialItem,
 } from '@/services/resource-config/material'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
@@ -352,12 +352,12 @@ const Material: React.FC<libParams> = (props) => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
-        {buttonJurisdictionArray?.includes('material-import') && (
+        {/* {buttonJurisdictionArray?.includes('material-import') && (
           <Button className="mr7" onClick={() => importMaterialEvent()}>
             <ImportOutlined />
             导入物料
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('material-property') && (
           <Button className={styles.importBtn} onClick={() => openWireAttribute()}>

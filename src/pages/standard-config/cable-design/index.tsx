@@ -1,11 +1,9 @@
 // import { EditOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button } from 'antd'
-import React, { useState, useRef } from 'react'
-import styles from './index.less'
 import CommonTitle from '@/components/common-title'
+import React, { useRef, useState } from 'react'
 import CableDesignTab from './components/cableDesign-tab'
-import { ImportOutlined } from '@ant-design/icons'
 import ImportCableModal from './components/import-form'
+import styles from './index.less'
 
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
@@ -41,12 +39,12 @@ const CableDesign: React.FC<libParams> = (props) => {
               <CommonTitle>电缆设计</CommonTitle>
             </div>
             <div>
-              {buttonJurisdictionArray?.includes('cable-design-import') && (
+              {/* {buttonJurisdictionArray?.includes('cable-design-import') && (
                 <Button className="mr7" onClick={() => importCableDesignEvent()}>
                   <ImportOutlined />
                   导入(电缆井+电缆通道)
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
           <CableDesignTab ref={uploadRefresh} libId={libId} />

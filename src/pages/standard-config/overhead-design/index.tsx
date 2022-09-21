@@ -1,12 +1,10 @@
-import { Button } from 'antd'
-import React, { useState } from 'react'
-import styles from './index.less'
 import CommonTitle from '@/components/common-title'
-import OverHeadDesignTab from './components/overHeadDesign-tab'
-import { ImportOutlined } from '@ant-design/icons'
-import ImportOverheadModal from './components/import-form'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import React, { useState } from 'react'
+import ImportOverheadModal from './components/import-form'
+import OverHeadDesignTab from './components/overHeadDesign-tab'
 import { OverHeadProvider } from './context'
+import styles from './index.less'
 
 interface libParams {
   libId: string
@@ -33,12 +31,12 @@ const OverheadDesign: React.FC<libParams> = (props) => {
               <CommonTitle>架空设计</CommonTitle>
             </div>
             <div>
-              {buttonJurisdictionArray?.includes('modules-import') && (
+              {/* {buttonJurisdictionArray?.includes('modules-import') && (
                 <Button className="mr7" onClick={() => importOverheadDesignEvent()}>
                   <ImportOutlined />
                   导入(杆型+模块)
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
           <OverHeadDesignTab libId={libId} />
