@@ -206,7 +206,7 @@ const ResourceLib: React.FC = () => {
       {
         dataIndex: '',
         title: '操作',
-        width: 100,
+        width: 170,
         render: (text: any, record: any) => {
           return (
             <span>

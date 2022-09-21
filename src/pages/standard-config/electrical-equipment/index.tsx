@@ -9,7 +9,7 @@ import {
   updateElectricalEquipmentItem,
 } from '@/services/resource-config/electrical-equipment'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
@@ -253,12 +253,12 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
-        {buttonJurisdictionArray?.includes('electrical-import') && (
+        {/* {buttonJurisdictionArray?.includes('electrical-import') && (
           <Button className="mr7" onClick={() => importElectricalEvent()}>
             <ImportOutlined />
             导入电气设备
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('electrical-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>

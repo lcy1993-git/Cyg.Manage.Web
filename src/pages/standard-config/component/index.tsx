@@ -10,7 +10,7 @@ import {
   updateComponentItem,
 } from '@/services/resource-config/component'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { EditOutlined, ImportOutlined, PlusOutlined } from '@ant-design/icons'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
@@ -288,12 +288,12 @@ const Component: React.FC<libParams> = (props) => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
-        {buttonJurisdictionArray?.includes('component-import') && (
+        {/* {buttonJurisdictionArray?.includes('component-import') && (
           <Button className="mr7" onClick={() => importComponentEvent()}>
             <ImportOutlined />
             导入组件
           </Button>
-        )}
+        )} */}
 
         {buttonJurisdictionArray?.includes('component-detail') && (
           <Button className={styles.importBtn} onClick={() => openDetail()}>
