@@ -22,6 +22,7 @@ interface TitleTreeNodeProps {
   onSelect?: boolean
   setIsEdit?: (id: string) => void
   setParentId?: (parentId: string) => void
+  setFavName?: (favName: string) => void
   createChildNode?: (id: string) => void
   category?: number
 }
@@ -36,6 +37,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
   parentId,
   refresh,
   onSelect,
+  setFavName,
   setIsEdit,
   setParentId,
   createChildNode,
@@ -53,6 +55,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
       await modifyFavoriteName({ id: id, name: editName })
         .then((res) => {
           setIsEdit?.('')
+          setFavName?.(editName)
           setEditFlag(false)
           message.success('修改成功')
           return
@@ -98,7 +101,7 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
             }}
             style={{ height: '25px', width: '10vw' }}
             onChange={(e: any) => setEditName(e.target.value)}
-            maxLength=""
+            maxLength={20}
           />
         </div>
         <Button onClick={() => addOrModifyEvent()} style={{ height: '30px', marginTop: '9px' }}>
@@ -107,10 +110,11 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
       </div>
     )
   }
-
   return (
     <div className={styles.treeItem}>
-      <div>{text}</div>
+      <div className={styles.titleText}>
+        {text && text.length > 14 ? <Tooltip title={text}>{text}</Tooltip> : text}
+      </div>
       {onSelect ? (
         <div>
           {deep !== 3 && category === 4 && (

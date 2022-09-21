@@ -6,14 +6,20 @@
   height: 48px;
   line-height: 48px;
 
+  .titleText {
+    width: 75%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   .iconItem {
     width: 15px;
     margin-left: 5px;
-    transition: all 0.2s;
+    transition: all 0.3s;
   }
 
   .iconItem:hover {
-    width: 17px;
-    margin-left: 5px;
+    transform: rotate(360deg);
   }
 }

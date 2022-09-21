@@ -40,6 +40,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
     favName,
     getFavType,
   } = props
+
   const [treeData, setTreeData] = useState<treeDataItems[]>([])
   const [parentId, setParentId] = useState<string>('')
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -86,6 +87,7 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
           deep={data.deps}
           category={data.category}
           createChildNode={createChildNode}
+          setFavName={getFavName}
         />
       ),
       key: data.id,

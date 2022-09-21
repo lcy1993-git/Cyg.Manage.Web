@@ -148,6 +148,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       run(url, {
         ...searchParams,
         ...pageInfo,
+        projectDirectoryId: selectedFavId,
       })
       emptyTableSelect()
     },
@@ -162,6 +163,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...searchParams,
         ...pageInfo,
         pageIndex: 1,
+        projectDirectoryId: selectedFavId,
       })
       emptyTableSelect()
     },
@@ -176,6 +178,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...params,
         ...pageInfo,
         pageIndex: 1,
+        projectDirectoryId: selectedFavId,
       })
       emptyTableSelect()
     },
@@ -191,6 +194,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
         ...searchParams,
         ...pageInfo,
         pageIndex: 1,
+        projectDirectoryId: selectedFavId,
       })
       emptyTableSelect()
     },
