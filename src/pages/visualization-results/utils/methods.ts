@@ -1031,7 +1031,9 @@ const changeLayerType = (type: number, visible: boolean) => {
     layerTypes.push(type)
   } else {
     layerTypes.forEach((layerType: number, index: number) => {
-      if (layerType === type) layerTypes.splice(index, index)
+      if (layerType === type) {
+        layerTypes.splice(index, 1)
+      }
     })
   }
 }
