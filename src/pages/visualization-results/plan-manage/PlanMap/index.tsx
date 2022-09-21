@@ -308,8 +308,6 @@ const PlanMap = () => {
   /** 编辑 **/
   const onFinish = async (value: any) => {
     let color
-    // console.log(belongingLineData, '1111')
-
     const currentThread = belongingLineData.find((item) => item.id === value.lineId) // 上传数据颜色处理
     if (currentFeatureType === TRANSFORMERSUBSTATION) {
       // 如果是变电站就根据电压等级显示
@@ -334,7 +332,6 @@ const PlanMap = () => {
       gridDataType: 1,
       ...areaData,
     }
-
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -570,13 +567,10 @@ const PlanMap = () => {
   })
 
   // 获取所有所属线路
-  const { data: LineData, run: getLineItem } = useRequest(getAllBelongingLineItem(1), {
+  const { data, run } = useRequest(getAllBelongingLineItem, {
     manual: true,
     onSuccess: () => {
-      LineData && setbelongingLineData(LineData)
-    },
-    onError: (err) => {
-      // console.log(err)
+      data && setbelongingLineData(data)
     },
   })
 
@@ -595,8 +589,8 @@ const PlanMap = () => {
   }
 
   useEffect(() => {
-    getLineItem()
-  }, [isRefresh])
+    run(1)
+  }, [isRefresh, run])
 
   return (
     <>
@@ -633,7 +627,7 @@ const PlanMap = () => {
               rules={[{ required: true, message: '请选择所属线路' }]}
             >
               <Select dropdownStyle={{ zIndex: 3000 }}>
-                {belongingLineData.map((item) => (
+                {belongingLineData?.map((item) => (
                   <Option value={item.id} key={item.id}>
                     {item.name}
                   </Option>

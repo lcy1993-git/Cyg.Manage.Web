@@ -36,7 +36,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
   const [endBelonging, setEndBelonging] = useState<string | undefined>(
     form.getFieldValue('endBelonging')
   )
-  const { data: stationItems } = useRequest(GetStationItems(1), {
+  const { data: stationItems } = useRequest(() => GetStationItems(1), {
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
     },

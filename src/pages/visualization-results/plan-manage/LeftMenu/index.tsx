@@ -146,7 +146,7 @@ const LeftMenu = (props: any) => {
   })
 
   // 获取所有厂站
-  const { data: stationItems, run: stationItemsHandle } = useRequest(GetStationItems(1), {
+  const { data: stationItems, run: stationItemsHandle } = useRequest(GetStationItems, {
     manual: true,
     onSuccess: () => {
       stationItems && setstationItemsData(stationItems)
@@ -421,7 +421,7 @@ const LeftMenu = (props: any) => {
   ])
 
   useEffect(() => {
-    stationItemsHandle()
+    stationItemsHandle(1)
   }, [lineAssemble, isRefresh, stationItemsHandle])
 
   useEffect(() => {

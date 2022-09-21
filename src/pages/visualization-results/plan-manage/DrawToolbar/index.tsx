@@ -1,5 +1,5 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import {
   Button,
   Cascader,
@@ -451,9 +451,9 @@ const DrawToolbar = () => {
       data && setbelongingLineData(data)
     },
   })
-  useEffect(() => {
-    run()
-  }, [isRefresh, run])
+  useUpdateEffect(() => {
+    run(1)
+  }, [isRefresh])
 
   const formChange = async (changeValues: any, allvalues: any) => {
     if (clickState) {

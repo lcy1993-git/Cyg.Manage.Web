@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { Input, Select } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import EnumSelect from '@/components/enum-select'
-import { equipKvLevel, getAllBelongingLineItem } from '@/services/grid-manage/treeMenu'
+import { getAllBelongingLineItem } from '@/services/grid-manage/treeMenu'
 import {
   CABLECIRCUITMODEL,
   handleKvOptions,
