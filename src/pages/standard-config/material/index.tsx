@@ -480,7 +480,12 @@ const Material: React.FC<libParams> = (props) => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <MaterialForm resourceLibId={libId} onSetDefaultForm={selctModelId} form={editForm} />
+            <MaterialForm
+              resourceLibId={libId}
+              onSetDefaultForm={selctModelId}
+              form={editForm}
+              formData={formData}
+            />
           </Spin>
         </Form>
       </Modal>

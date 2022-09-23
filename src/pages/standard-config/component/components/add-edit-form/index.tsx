@@ -12,18 +12,28 @@ import {
 } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Tooltip } from 'antd'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 interface ChartListFromLibParams {
   resourceLibId: string
   type?: 'add' | 'edit'
   onSetDefaultForm?: any
+  form: any
+  formData?: any
 }
 
 const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
+  const { type = 'edit', resourceLibId, onSetDefaultForm, form, formData } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const [updateName, setUpdateName] = useState<string>('')
+  const [deviceCategory, setDeviceCategory] = useState<string>(form.getFieldValue('deviceCategory'))
+
+  const isTransformer = deviceCategory === '变压器'
+  useEffect(() => {
+    if (formData && formData.deviceCategory) {
+      setDeviceCategory(formData.deviceCategory)
+    }
+  }, [formData])
 
   const unitSlot = () => {
     return (
@@ -43,6 +53,9 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       // 选中下拉列表则添加模板数据
       onSetDefaultForm?.(value)
     }
+  }
+  const changeDeviceCategoryHandle = (value: string) => {
+    setDeviceCategory(value)
   }
 
   return (
@@ -111,7 +124,12 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '设备分类不能为空' }]}
       >
-        <EnumSelect placeholder="请选择所属设计" enumList={deviceCategoryType} valueString />
+        <EnumSelect
+          placeholder="请选择所属设计"
+          enumList={deviceCategoryType}
+          valueString
+          onChange={changeDeviceCategoryHandle}
+        />
       </CyFormItem>
       <CyFormItem
         labelSlot={unitSlot}
@@ -131,6 +149,16 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       >
         <EnumSelect placeholder="请选择电压等级" enumList={kvBothLevelType} valueString />
       </CyFormItem>
+      {isTransformer && (
+        <CyFormItem
+          label="变压器容量"
+          name="capacity"
+          required
+          rules={[{ required: true, message: '变压器容量不能为空' }]}
+        >
+          <Input placeholder="请输入变压器容量" />
+        </CyFormItem>
+      )}
       {isHidden && (
         <div
           onClick={() => {
@@ -141,6 +169,11 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
+        {isTransformer && (
+          <CyFormItem label="主杆杆高" name="mainTowerHeight">
+            <Input placeholder="请输入主杆杆高" type="number" />
+          </CyFormItem>
+        )}
         <CyFormItem label="加工图" name="chartIds">
           <UrlSelect
             requestType="post"

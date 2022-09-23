@@ -93,9 +93,8 @@ const SelectCanSearch: React.FC<SelectCanEditAndSearchProps> = (props) => {
     left += scrollLeft
 
     //
-    dropdown.setAttribute('class', 'dropdown')
     dropdown.style.width = width + 'px'
-    dropdown.style.height = list.length * 32 + 'px'
+    dropdown.style.height = 8 * 32 + 'px'
     dropdown.style.left = left + 'px'
     dropdown.style.top = Number(top) + 27 + 5 + 'px'
     dropdown.style.position = 'absolute'
@@ -104,6 +103,9 @@ const SelectCanSearch: React.FC<SelectCanEditAndSearchProps> = (props) => {
     dropdown.style.backgroundColor = '#ffffff'
     dropdown.style.boxShadow =
       '0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%)'
+    dropdown.style.overflowY = 'scroll'
+    dropdown.style.overflowX = 'hidden'
+    dropdown.style.maxHeight = 8 * 32 + 'px'
     // wrap
     const dropWrap = document.createElement('div')
     dropWrap.setAttribute('id', 'rxq-dropWrap')
@@ -132,6 +134,10 @@ const SelectCanSearch: React.FC<SelectCanEditAndSearchProps> = (props) => {
     const classNameList = [...e.target.classList]
     if (classNameList.includes('rxq-item')) {
       selectHandle(e.target.dataset.datasource)
+    }
+    // 允许滚轮
+    if (classNameList.includes('rxq-dropdown')) {
+      return
     }
     const el = document.getElementById('rxq-dropWrap')
     el && el.remove()
@@ -176,6 +182,8 @@ const SelectCanSearch: React.FC<SelectCanEditAndSearchProps> = (props) => {
           }
         })
         listRef.current = list
+        const el = document.getElementById('rxq-dropWrap')
+        if (el) showDropMenu(list)
       } else {
         const list = res.map((item) => {
           return {
@@ -184,6 +192,8 @@ const SelectCanSearch: React.FC<SelectCanEditAndSearchProps> = (props) => {
           }
         })
         listRef.current = list
+        const el = document.getElementById('rxq-dropWrap')
+        if (el) showDropMenu(list)
       }
     })
   })
