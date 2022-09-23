@@ -200,13 +200,15 @@ const MyWork: React.FC = () => {
     }
   }, [currentClickTabType])
   const singleStatisticsTypeClickEvent = (type: string) => {
+    setFavName('')
+    setFavType(0)
+    setSelectedFavId('')
     const childrenType = myWorkInitData.find((item) => item.id === type)?.children
     // 设置children的第一个是激活状态
     if (childrenType && childrenType.length > 0) {
       setCurrentClickTabChildActiveType(childrenType[0].id)
     }
     setCurrentClickType(type)
-
     const requestUrl = childrenType[0].url
 
     setIndexToPageSearchParams({

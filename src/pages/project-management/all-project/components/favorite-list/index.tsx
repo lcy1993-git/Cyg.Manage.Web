@@ -4,10 +4,10 @@ import ImageIcon from '@/components/image-icon'
 import { getFavorites } from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { MenuFoldOutlined, PlusOutlined } from '@ant-design/icons'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Tree } from 'antd'
 import uuid from 'node-uuid'
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import TitleTreeNode from './components/title-tree-node'
 import styles from './index.less'
 import findCurrentNode, { getParentIds, mixinDeps } from './utils'
@@ -151,6 +151,12 @@ const FavoriteList: React.FC<FavoriteListParams> = (props) => {
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue)
   }
+
+  useUpdateEffect(() => {
+    if (!favName) {
+      setSelectkey('')
+    }
+  }, [favName])
 
   return (
     <div className={styles.engineerList}>

@@ -225,7 +225,7 @@ export interface AllProjectStatisticsParams {
   surveyUser?: string
   designUser?: string
   areaInfo?: any
-  projectDirectoryId: string
+  projectDirectoryId?: string
 }
 
 export interface AllProjectSearchParams extends AllProjectStatisticsParams {

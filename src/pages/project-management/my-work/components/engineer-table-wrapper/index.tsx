@@ -1173,6 +1173,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }
 
   useEffect(() => {
+    setKeyWord('')
     if (selectedFavId) {
       searchByParams({ ...searchParams, projectDirectoryId: selectedFavId })
     }
