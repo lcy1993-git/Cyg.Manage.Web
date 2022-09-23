@@ -44,12 +44,15 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
       refreshDeps: [url, JSON.stringify(extraParams)],
       manual: true,
       onSuccess: (res) => {
-        listRef.current = res.map((item) => {
+        const list = res.map((item) => {
           return {
             label: item[titlekey],
             value: item[valuekey],
           }
         })
+        listRef.current = list
+        // const el = document.getElementById('rxq-dropWrap')
+        // if (el) showDropMenu(list)
       },
     }
   )
@@ -74,9 +77,8 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
     left += scrollLeft
 
     //
-    dropdown.setAttribute('class', 'dropdown')
     dropdown.style.width = width + 'px'
-    dropdown.style.height = list.length * 32 + 'px'
+    // dropdown.style.height = 8 * 32 + 'px'
     dropdown.style.left = left + 'px'
     dropdown.style.top = Number(top) + 27 + 5 + 'px'
     dropdown.style.position = 'absolute'
@@ -85,6 +87,9 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
     dropdown.style.backgroundColor = '#ffffff'
     dropdown.style.boxShadow =
       '0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%)'
+    dropdown.style.overflowY = 'scroll'
+    dropdown.style.overflowX = 'hidden'
+    dropdown.style.maxHeight = 8 * 32 + 'px'
     // wrap
     const dropWrap = document.createElement('div')
     dropWrap.setAttribute('id', 'rxq-dropWrap')
@@ -114,6 +119,10 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
     if (classNameList.includes('rxq-item')) {
       selectHandle(e.target.dataset.datasource)
     }
+    // 允许滚轮
+    if (classNameList.includes('rxq-dropdown')) {
+      return
+    }
     const el = document.getElementById('rxq-dropWrap')
     el && el.remove()
     document.removeEventListener('mousedown', removeDropMenu)
@@ -141,7 +150,7 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
   }
   const selectHandle = (data: any) => {
     const obj = JSON.parse(data)
-    setVal(obj.value)
+    setVal(obj.label)
     onChange?.(obj.value, 'select')
   }
   useEffect(() => {

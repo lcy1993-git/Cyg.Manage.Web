@@ -43,6 +43,8 @@ const getSpecKey = (type: string) => {
   return 'itemSpec'
 }
 
+// 自增标识，标记架空设计模块可选择多个相同数据的id
+let flag = 0
 const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
   const { libId, componentId, selectId, detailVisible, setDetailVisible, title, type } = props
 
@@ -81,6 +83,11 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
     },
   ]
   const handlerPartChange = (value: string, record: any) => {
+    for (let i = 0; i < resource.length; i++) {
+      if (resource[i].itemId === record.itemId && resource[i].part === value) {
+        message.warn('相同所属部件下不允许存在多个相同物料或组件')
+      }
+    }
     const copyData = [...resource].map((item: any) => {
       if (item.id === record.id) {
         return {
@@ -138,6 +145,17 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
     {
       manual: true,
       onSuccess: (res) => {
+        //fixme
+        // if(type === 'module') {
+        //   setResource(res.items.map((item)=>{
+        //     return {
+        //       ...item,
+        //       id: `${item.id}-${flag++}`,
+        //     }
+        //   }))
+        // }else {
+        //   setResource(res.items)
+        // }
         setResource(res.items)
       },
     }
@@ -214,6 +232,7 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
     }
   }
   const addItemsHandle = () => {
+    const isModule = type === 'module'
     const selectData =
       tabKey === MATERIAL
         ? //@ts-ignore
@@ -224,21 +243,25 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
       message.warning('请选择要添加的物料/组件')
       return
     }
-    for (let i = 0; i < selectData.length; i++) {
-      for (let j = 0; j < resource.length; j++) {
-        if (
-          resource[j].itemId === selectData[i].materialId ||
-          resource[j].itemId === selectData[i].componentId
-        ) {
-          message.error(
-            `明细列表中包含${
-              tabKey === MATERIAL ? selectData[i].materialName : selectData[i].componentName
-            }请勿重复添加`
-          )
-          return
+    if (!isModule) {
+      // 架空模块不校验
+      for (let i = 0; i < selectData.length; i++) {
+        for (let j = 0; j < resource.length; j++) {
+          if (
+            resource[j].itemId === selectData[i].materialId ||
+            resource[j].itemId === selectData[i].componentId
+          ) {
+            message.error(
+              `明细列表中包含${
+                tabKey === MATERIAL ? selectData[i].materialName : selectData[i].componentName
+              }请勿重复添加`
+            )
+            return
+          }
         }
       }
     }
+
     //@ts-ignore
     tabKey === MATERIAL
       ? //@ts-ignore
@@ -248,9 +271,8 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
     const addItems = selectData.map((item: any) => {
       if (tabKey === MATERIAL) {
         return {
-          id: item.id,
+          id: isModule ? `${item.id}-${flag++}` : item.id,
           itemId: item.materialId,
-          // componentName: item.materialName,:
           spec: item.spec, // 组件用的型号数据
           itemNumber: 1,
           isComponent: 0,
@@ -259,9 +281,8 @@ const ComponentDetailModal: React.FC<ModuleDetailParams> = (props) => {
         }
       } else {
         return {
-          id: item.id,
+          id: isModule ? `${item.id}-${flag++}` : item.id,
           itemId: item.componentId,
-          // componentName: item.componentName,
           spec: item.componentSpec, // 组件用的型号数据
           itemNumber: 1,
           isComponent: 1,

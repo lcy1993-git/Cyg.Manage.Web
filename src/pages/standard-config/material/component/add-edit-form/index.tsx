@@ -18,7 +18,7 @@ interface ChartListFromLibParams {
   resourceLibId: string
   onSetDefaultForm?: any
   form: any
-  formData: any
+  formData?: any
 }
 
 const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {

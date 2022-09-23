@@ -100,14 +100,30 @@ const ResourceLib: React.FC = () => {
     getList()
   })
   const backupLib = async (record: any) => {
-    await backupResourceLib({ libId: record.id, isCreateNew: false })
-    message.success('备份成功')
-    refresh()
+    Modal.confirm({
+      title: '提示',
+      okText: '确认',
+      cancelText: '取消',
+      content: '确定备份当前资源库？',
+      onOk: async () => {
+        await backupResourceLib({ libId: record.id, isCreateNew: false })
+        message.success('备份成功')
+        refresh()
+      },
+    })
   }
   const restoreLib = (record: any) => {
-    restoreResourceLib({ libId: record.id, version: record.backUpVersion })
-    message.success('还原成功')
-    refresh()
+    Modal.confirm({
+      title: '提示',
+      okText: '确认',
+      cancelText: '取消',
+      content: '确定还原当前资源库？',
+      onOk: async () => {
+        await restoreResourceLib({ libId: record.id, version: record.backUpVersion })
+        message.success('还原成功')
+        refresh()
+      },
+    })
   }
 
   const columns = useMemo(() => {
