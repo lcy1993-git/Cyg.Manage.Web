@@ -648,6 +648,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       message.error('请选择需要迁移的数据')
       return
     }
+
+    for (let i = 0; i < data.length; i++) {
+      let str = data[i].values_.id_
+      let arr = str.split('.')[0].split('_')
+      let type = arr.shift()
+      if (type !== 'survey' && type !== 'plan') {
+        message.error('只能迁移勘察图层与方案图层')
+        return
+      }
+    }
     if (checkedProjectIds.length > 1) {
       message.error('只能迁移单个项目的数据')
       return
