@@ -336,6 +336,7 @@ const BaseMap = observer((props: BaseMapProps) => {
           sideMenuVisibel={sideMenuVisibel}
           controlLayersProps={controlLayersProps}
           sidePopupProps={sidePopupProps}
+          layersState={layersState}
         />
       </div>
 
