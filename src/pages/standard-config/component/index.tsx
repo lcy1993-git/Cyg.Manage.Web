@@ -256,6 +256,7 @@ const Component: React.FC<libParams> = (props) => {
           forDesign: editData.forDesign,
           remark: editData.remark,
           chartIds: editData.chartIds,
+          componentId: editData.componentId,
         },
         values
       )
