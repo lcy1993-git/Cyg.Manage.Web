@@ -143,3 +143,10 @@ export enum drawingType {
   'DesignChart' = '设计图',
   'TowerModelChart' = '杆型一览图',
 }
+// 电缆井类型
+export enum cableWellType {
+  '直路井' = '直路井',
+  '转角井' = '转角井',
+  'T型井' = 'T型井',
+  '四通井' = '四通井',
+}

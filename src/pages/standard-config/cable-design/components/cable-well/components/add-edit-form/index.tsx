@@ -4,6 +4,7 @@ import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-b
 import SelectCanSearch from '@/components/select-can-search'
 import UrlSelect from '@/components/url-select'
 import {
+  cableWellType,
   coverMode,
   feature,
   forDesignType,
@@ -50,7 +51,7 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '类型不能为空' }]}
       >
-        <Input placeholder="请输入类型" />
+        <EnumSelect placeholder="请选择类型" enumList={cableWellType} valueString />
       </CyFormItem>
       <CyFormItem
         label="模块名称"
