@@ -104,17 +104,15 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '组件分类不能为空' }]}
       >
-        <UrlSelect
-          allowClear
-          showSearch
-          requestSource="resource"
+        <SelectCanUpdate
           url="/Component/GetComponentTypeListByType"
+          requestSource="resource"
+          requestType="post"
           titlekey="key"
           valuekey="value"
-          placeholder="请选择"
-          requestType="post"
           postType="query"
           extraParams={{ libId: resourceLibId }}
+          placeholder="请输入组件分类"
         />
       </CyFormItem>
       <CyFormItem
