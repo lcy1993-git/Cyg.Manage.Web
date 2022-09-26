@@ -23,16 +23,13 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
   const [tableData, setTableData] = useState<any[]>([])
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
+  const [loadingMigrate, setLoadingMigrate] = useState<boolean>(false)
   const store = useContainer()
   const { vState } = store
   const { map } = vState
 
   const { projectIds } = props
-  const {
-    data,
-    loading,
-    run: getDataList,
-  } = useRequest(
+  const { data, loading, run: getDataList } = useRequest(
     () => {
       return getProjectTableList({
         statisticalCategory: '-1',
@@ -121,25 +118,30 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
         planGisData[key].push(id)
       }
     }
-    await dataMigrate(projectIds[0], id, surveyGisData, planGisData).then((res) => {
-      // isSuccess
-      if (res.isSuccess) {
-        message.success('数据迁移成功')
-        setState(false)
-        // if (tableSelectRows[0].stateInfo?.status === 14) {
-        //   Modal.confirm({
-        //     title: '提示',
-        //     icon: <ExclamationCircleOutlined />,
-        //     content: '数据迁移成功，是否复制源项目的勘察人员，并修改项目状态为“已勘察”',
-        //     okText: '确认',
-        //     cancelText: '取消',
-        //     onOk: sureCopyMemberAndChangeState,
-        //   })
-        // }
-      } else {
-        message.error(res.message)
-      }
-    })
+    setLoadingMigrate(true)
+    await dataMigrate(projectIds[0], id, surveyGisData, planGisData)
+      .then((res: any) => {
+        // isSuccess
+        if (res.isSuccess) {
+          message.success('数据迁移成功')
+          setState(false)
+          // if (tableSelectRows[0].stateInfo?.status === 14) {
+          //   Modal.confirm({
+          //     title: '提示',
+          //     icon: <ExclamationCircleOutlined />,
+          //     content: '数据迁移成功，是否复制源项目的勘察人员，并修改项目状态为“已勘察”',
+          //     okText: '确认',
+          //     cancelText: '取消',
+          //     onOk: sureCopyMemberAndChangeState,
+          //   })
+          // }
+        } else {
+          message.error(res.message)
+        }
+      })
+      .finally(() => {
+        setLoadingMigrate(false)
+      })
   }
 
   const closeEvent = () => {
@@ -221,7 +223,7 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
                 onSearch={() => getDataList()}
               />
             </TableSearch>
-            <Button type="primary" onClick={() => handleOK()}>
+            <Button type="primary" onClick={() => handleOK()} loading={loadingMigrate}>
               确认迁移
             </Button>
           </div>
