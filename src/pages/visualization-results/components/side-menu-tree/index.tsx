@@ -44,7 +44,6 @@ export interface SideMenuProps {
   sideMenuVisibel: boolean
   controlLayersProps: any
   sidePopupProps: any
-  layersState: any
 }
 
 type Moment = moment.Moment | undefined
@@ -239,7 +238,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }, [checkedProjectIdList.length])
 
-  const { className, onChange, sideMenuVisibel, layersState } = props
+  const { className, onChange, sideMenuVisibel } = props
   const activeStyle = (key: string) => (tabActiveKey === key ? '#0e7b3b' : '#000')
 
   useEffect(() => {
@@ -644,13 +643,20 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }
   const handlerMigrateDataClick = (flag: any) => {
-    if (layersState[2] === true || layersState[3] === true) {
-      return
-    }
     const data = getMoveData(store.vState.map)
     if (!data || (data && data.length === 0)) {
       message.error('请选择需要迁移的数据')
       return
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      let str = data[i].values_.id_
+      let arr = str.split('.')[0].split('_')
+      let type = arr.shift()
+      if (type !== 'survey' && type !== 'plan') {
+        message.error('只能迁移勘察图层与方案图层')
+        return
+      }
     }
     if (checkedProjectIds.length > 1) {
       message.error('只能迁移单个项目的数据')
@@ -790,9 +796,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
               light: require('@/assets/icon-image/menu-tree-icon/迁移数据-light.png'),
               onClick: () => handlerMigrateDataClick(checkedProjectIdList),
               style:
-                (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0) ||
-                layersState[2] === true ||
-                layersState[3] === true
+                Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0
                   ? { opacity: 0.4 }
                   : {},
             },

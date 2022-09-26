@@ -94,6 +94,10 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
       const id = data[i].values_.id
       let arr = str.split('.')[0].split('_')
       let type = arr.shift()
+      if (type !== 'survey' && type !== 'plan') {
+        message.error('只能迁移勘察图层与方案图层')
+        return
+      }
       let key = ''
       for (let i = 0; i < arr.length; i++) {
         if (i === 0) {
