@@ -4,7 +4,11 @@ import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-b
 import SelectCanSearch from '@/components/select-can-search'
 import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
-import { forDesignType, forProjectType } from '@/services/resource-config/resource-enum'
+import {
+  forDesignType,
+  forProjectType,
+  layingModeType,
+} from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Tooltip } from 'antd'
 import React, { useState } from 'react'
@@ -122,16 +126,7 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
         required
         rules={[{ required: true, message: '敷设方式不能为空' }]}
       >
-        <SelectCanUpdate
-          requestType="get"
-          requestSource="resource"
-          url="/CableChannel/GetLayingModeList"
-          titlekey="value"
-          valuekey="value"
-          placeholder="请选择敷设方式"
-          postType="query"
-          extraParams={{ libId: resourceLibId }}
-        />
+        <EnumSelect placeholder="请选择敷设方式" enumList={layingModeType} valueString />
       </CyFormItem>
 
       <CyFormItem

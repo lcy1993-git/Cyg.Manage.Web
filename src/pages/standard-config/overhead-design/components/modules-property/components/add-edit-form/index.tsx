@@ -2,7 +2,6 @@ import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
 import SelectCanSearch from '@/components/select-can-search'
-import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
 import {
   arrangement,
@@ -75,15 +74,16 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
         rules={[{ required: true, message: '杆型简号不能为空' }]}
         labelWidth={108}
       >
-        <SelectCanUpdate
-          url="/Modules/GetPoleTypeList"
-          requestSource="resource"
+        <UrlSelect
           requestType="get"
+          showSearch
+          requestSource="resource"
+          url="/Modules/GetPoleTypeList"
           titlekey="value"
           valuekey="value"
+          placeholder="请选择杆型简号"
           postType="query"
           extraParams={{ libId: resourceLibId }}
-          placeholder="请选择杆型简号"
         />
       </CyFormItem>
 

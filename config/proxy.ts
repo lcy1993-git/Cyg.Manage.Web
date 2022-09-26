@@ -22,6 +22,7 @@ export default {
       // target: 'http://171.223.214.154:21563',
       // 测试服 2
       // target: 'https://srthcs2.gczhyun.com:21574',
+      // target: 'https://srthkf1.gczhyun.com:21530/',
       changeOrigin: true,
       pathRewrite: { '^/api': '/' },
     },

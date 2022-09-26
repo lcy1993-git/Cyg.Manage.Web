@@ -20,8 +20,9 @@ const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
   const { libId, changeFinishEvent, title, chartId } = props
   const [form] = Form.useForm()
   const [fileList, setFileList] = useState<any[]>([])
+  const [fileName, setFileName] = useState<string>('')
 
-  const { run } = useRequest(
+  const { run, loading } = useRequest(
     (val) => {
       return addDrawingItem(val)
     },
@@ -51,7 +52,7 @@ const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
       formData.append('category', value.category)
       formData.append('type', value.type)
       formData.append('chartName', value.chartName)
-      formData.append('fileName', value.chartName)
+      formData.append('fileName', fileName)
       formData.append('resourceLibId', libId as string)
       chartId && formData.append('chartId', chartId)
       run(formData)
@@ -67,7 +68,7 @@ const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
         <Button key="cancle" onClick={() => setState(false)}>
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={onSave}>
+        <Button key="save" type="primary" onClick={onSave} loading={loading}>
           保存
         </Button>,
       ]}
@@ -105,6 +106,7 @@ const ImportChartModal = (props: ImportChartProps, ref: Ref<any>) => {
             maxCount={1}
             onChange={(file: any) => {
               setFileList(file)
+              setFileName(file[0].name)
               form.setFieldsValue({ chartName: file[0].name.split('.')[0] })
 
               return false
