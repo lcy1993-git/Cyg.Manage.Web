@@ -19,6 +19,8 @@ interface SelectCanEditAndSearchProps {
 }
 // 选择选项时的开关，以及失去焦点时暂存组件的value值
 let isFocus = false
+// 同一表单包含多个此控件需要标识一下
+let flag = 1
 const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
   const {
     onChange,
@@ -34,6 +36,7 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
     update,
   } = props
   const [val, setVal] = useState<string>('')
+  const [flagNumber, setFlagNumber] = useState<number>(flag++)
   const inputRef = useRef<HTMLDivElement>(null)
   const listRef: any = useRef()
 
@@ -59,7 +62,7 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
 
   const showDropMenu = (list: any = []) => {
     // 已展示菜单
-    const el = document.getElementById('rxq-dropWrap')
+    const el = document.getElementById(`rxq-dropWrap${flagNumber}`)
     if (el) el.remove()
     const input = inputRef.current
     // fixme
@@ -92,7 +95,7 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
     dropdown.style.maxHeight = 8 * 32 + 'px'
     // wrap
     const dropWrap = document.createElement('div')
-    dropWrap.setAttribute('id', 'rxq-dropWrap')
+    dropWrap.setAttribute('id', `rxq-dropWrap${flagNumber}`)
     dropWrap.style.position = 'absolute'
     dropWrap.style.left = '0px'
     dropWrap.style.top = '0px'
@@ -123,7 +126,7 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
     if (classNameList.includes('rxq-dropdown')) {
       return
     }
-    const el = document.getElementById('rxq-dropWrap')
+    const el = document.getElementById(`rxq-dropWrap${flagNumber}`)
     el && el.remove()
     document.removeEventListener('mousedown', removeDropMenu)
   }
@@ -138,7 +141,7 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
 
   const clickHandle = () => {
     if (isFocus) return
-    const el = document.getElementById('rxq-dropWrap')
+    const el = document.getElementById(`rxq-dropWrap${flagNumber}`)
     el && el.remove()
     !el && showDropMenu(listRef.current)
   }

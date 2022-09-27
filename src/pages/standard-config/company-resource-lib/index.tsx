@@ -82,7 +82,7 @@ const ResourceLib: React.FC = () => {
           let libInfo = {
             ...res[0],
             backUpVersion: res[0]?.resourceLibBackUp[0]?.version,
-            backUpTime: moment(res[0]?.createdOn).format('YYYY-MM-DD'),
+            backUpTime: moment(res[0]?.resourceLibBackUp[0]?.createdOn).format('YYYY-MM-DD'),
           }
           setTableData([libInfo])
         }
