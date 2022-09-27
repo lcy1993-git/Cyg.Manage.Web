@@ -188,7 +188,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
             />
           </CyFormItem>
         )}
-        <CyFormItem label="加工图" name="chartIds" labelWidth={98}>
+        <CyFormItem label="加工图" name="processChartIds" labelWidth={98}>
           <UrlSelect
             requestType="post"
             mode="multiple"

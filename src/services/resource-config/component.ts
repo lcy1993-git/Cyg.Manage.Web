@@ -15,8 +15,9 @@ interface ComponentParams {
   forProject: string
   forDesign: string
   remark: string
-  chartIds: string[]
+  // chartIds: string[]
   isElectricalEquipment: boolean
+  processChartIds: string[]
 }
 
 interface ItemDetailData extends ComponentParams {
