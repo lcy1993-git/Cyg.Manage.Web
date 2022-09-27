@@ -12,8 +12,9 @@ import {
   supplySideType,
 } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
+import { useUpdateEffect } from 'ahooks'
 import { Input, Radio, Tooltip } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 interface ChartListFromLibParams {
   resourceLibId: string
   onSetDefaultForm?: any
@@ -51,7 +52,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
       </>
     )
   }
-  useEffect(() => {
+  useUpdateEffect(() => {
     if (formData && formData.materialType) {
       setType(formData.materialType)
     }
