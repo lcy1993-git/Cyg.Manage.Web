@@ -165,6 +165,26 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
           <Input placeholder="请输入变压器容量" />
         </CyFormItem>
       )}
+      {isTransformer && (
+        <CyFormItem
+          label="主杆杆高(米)"
+          name="mainTowerHeight"
+          labelWidth={98}
+          initialValue={8}
+          required
+          rules={[{ required: true, message: '主杆杆高不能为空' }]}
+        >
+          <Select
+            options={[
+              { label: '8', value: 8 },
+              { label: '10', value: 10 },
+              { label: '12', value: 12 },
+              { label: '15', value: 15 },
+            ]}
+            placeholder="请选择主杆杆高"
+          />
+        </CyFormItem>
+      )}
       {isHidden && (
         <div
           onClick={() => {
@@ -175,19 +195,6 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
-        {isTransformer && (
-          <CyFormItem label="主杆杆高(米)" name="mainTowerHeight" labelWidth={98}>
-            <Select
-              options={[
-                { label: '8', value: 8 },
-                { label: '10', value: 10 },
-                { label: '12', value: 12 },
-                { label: '15', value: 15 },
-              ]}
-              placeholder="请选择主杆杆高"
-            />
-          </CyFormItem>
-        )}
         <CyFormItem label="加工图" name="processChartIds" labelWidth={98}>
           <UrlSelect
             requestType="post"
