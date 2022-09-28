@@ -1,12 +1,11 @@
 import { parseInt } from 'lodash'
 import {
-  grooveEnum,
-  getMatrixData,
   getGrooveData,
-  pipeMode5,
-  pipeJacking,
-  getMatrixDataRowPipe,
   getMatrixDataDirectBurial,
+  getMatrixDataRowPipe,
+  grooveEnum,
+  pipeJacking,
+  pipeMode5,
 } from './canvasData'
 
 interface DataOptions {
@@ -32,12 +31,14 @@ const sortDataByRowCol = (data: any[]) => {
 
 const simpleMixIn = (org, resRedData) => {
   if (Array.isArray(org)) {
+    var d = resRedData.length / org.length
+    if (d % 1 !== 0) d = 1
     return org.map((item, index) => {
-      if (resRedData[index]?.usageState === 1) {
+      if (resRedData[d * index]?.usageState === 1) {
         item.fill = 'green'
-      } else if (resRedData[index]?.usageState === 2) {
+      } else if (resRedData[d * index]?.usageState === 2) {
         item.fill = 'gray'
-      } else if (resRedData[index]?.usageState === 3) {
+      } else if (resRedData[d * index]?.usageState === 3) {
         item.fill = '#fff'
       } else {
         item.fill = 'rgba(0,0,0,0)'
@@ -94,6 +95,7 @@ const drawCircular = (
   data.forEach((item) => {
     if (!item) return
     const { x, y, r, stroke, fill, lineWidth } = item
+
     ctx.beginPath()
     ctx.lineWidth = 0.5
     if (stroke) {
@@ -191,9 +193,7 @@ export const initCtx = (
       const [a, b] = enumText.split('×')
 
       const mode5RowCol = grooveEnum?.['t' + a + b]
-
       const type5Data = getGrooveData(mode5RowCol.row, mode5RowCol.col, title.includes('双'))
-
       drawCircular(simpleMixIn(type5Data[0], sortData), ctx, type5Data[1])
       break
     case 6:

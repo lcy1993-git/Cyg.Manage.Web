@@ -301,6 +301,7 @@ export const getGrooveData: (
       })
     }
   }
+
   return [circleArray, lineArray]
 }
 
