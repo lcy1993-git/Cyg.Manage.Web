@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
 import { CaretDownOutlined } from '@ant-design/icons'
+import { Dispatch, SetStateAction } from 'react'
 
 interface ExpanderProps {
-  defaultExpanded?: boolean
+  expanded?: boolean
+  setExpanded: Dispatch<SetStateAction<boolean>>
   callback: (expanded: boolean) => void
 }
 
-const Expander = ({ defaultExpanded, callback }: ExpanderProps) => {
-  const [expanded, setExpanded] = useState(defaultExpanded)
-
+const Expander = ({ expanded, setExpanded, callback }: ExpanderProps) => {
+  // const [expanded, setExpanded] = useState(defaultExpanded)
   return (
     <CaretDownOutlined
       rotate={expanded ? 0 : 180}

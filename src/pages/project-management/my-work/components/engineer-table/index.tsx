@@ -57,7 +57,12 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [allCheckValue, setAllCheckValue] = useState<boolean>(false)
   const [indeterminate, setIndeterminate] = useState<boolean>(false)
   const { sideVisible, selectedFavId, currentClickTabType } = useMyWorkStore()
-  const { data: tableData, run, loading, cancel } = useRequest(getTableData, {
+  const {
+    data: tableData,
+    run,
+    loading,
+    cancel,
+  } = useRequest(getTableData, {
     manual: true,
     throttleInterval: 500,
   })
@@ -232,8 +237,6 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       emptyTableSelect()
     }
   }
-
-  // useUpdateEffect(() => {},[])
 
   return (
     <div className={styles.engineerTable}>

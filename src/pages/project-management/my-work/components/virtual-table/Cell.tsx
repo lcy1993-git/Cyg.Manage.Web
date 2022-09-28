@@ -1,4 +1,4 @@
-import React, { CSSProperties, memo, PropsWithChildren, ReactNode } from 'react'
+import { CSSProperties, memo, PropsWithChildren, ReactNode } from 'react'
 import useCell from './useCell'
 import { Column } from './VirtualTable'
 
@@ -17,6 +17,7 @@ export type CellProps<T> = PropsWithChildren<
 
 const VTCell = memo(<T extends Record<string, any>>({ prefix, ...rest }: CellProps<T>) => {
   const { wrapperStyle, wrapperClass, renderer } = useCell<T>(rest)
+
   return (
     <div style={wrapperStyle} className={wrapperClass}>
       {typeof prefix === 'function' && prefix(rest.columnIndex, rest.rowData)}

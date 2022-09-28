@@ -123,7 +123,6 @@ const VirtualTable = <T extends Record<string, any>>(
 ) => {
   const selection = useSelection({ rowSelection, data })
   const { updateSelectedKeysFlow, emptySelectArray, selectedKeys, selectAll } = selection
-
   useImperativeHandle(
     ref,
     () => ({

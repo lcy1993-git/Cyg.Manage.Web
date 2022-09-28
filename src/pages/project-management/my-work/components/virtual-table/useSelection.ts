@@ -28,7 +28,6 @@ const useSelection = <T>(props: Pick<VirtualTableProps<T>, 'rowSelection' | 'dat
     }, [])
 
     const selectLength = items.map(({ id }) => id).length
-
     if (selectedKeys.length > 0 && selectedKeys.length < selectLength) {
       rowSelection.getSelectIndeterminate?.(true)
     } else {
@@ -69,7 +68,6 @@ const useSelection = <T>(props: Pick<VirtualTableProps<T>, 'rowSelection' | 'dat
       rowKeys.forEach((k) => rowSelection.onSelect!(k, selected, rowData))
     }
   }
-
   const emptySelectArray = () => {
     updateSelectedKeys([])
     updateSelectRows([])

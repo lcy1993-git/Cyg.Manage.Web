@@ -1,5 +1,5 @@
 import { Checkbox } from 'antd'
-import { Key } from 'react'
+import { Key, useState } from 'react'
 import VTCell from './Cell'
 import Expander from './Expander'
 import { Column, OriginParams } from './VirtualTable'
@@ -41,6 +41,8 @@ const ParentRow = ({
   selectRows,
   selectedRowKeys,
 }: ParentRowProps) => {
+  const [expanded, setExpanded] = useState(true)
+
   // 滚动条宽度
   const SCROLL_BAR_WIDTH = 19
   // 是否超出容器高度
@@ -73,24 +75,24 @@ const ParentRow = ({
     const updatedData = Array.from(data)
     // 缓存数据
     const cachedData = cache.current
-
+    // 当前行ID
     const parentId = rowData.id
+    // 当前行在数据的第几个位置
     const parentIndexInData = data.findIndex((d: any) => d.id === parentId)
+
     const parentIndexInCache = cachedData.findIndex((d: any) => d.id === parentId)
     const childrenLength = rowData.projects.length
 
     // 默认是否展开
     const defaultExpanded =
       data[parentIndexInData + 2]?.id === cachedData[parentIndexInCache + 2]?.id
-
+    setExpanded(defaultExpanded)
     const expandCallback = (expanded: boolean) => {
       if (expanded) {
         // todo 展开
-
         if (!cachedData) {
           throw new Error('no cached data to implement expanding operation.')
         }
-
         const children = cachedData.slice(
           parentIndexInCache + 1,
           parentIndexInCache + 1 + childrenLength + 1
@@ -101,13 +103,11 @@ const ParentRow = ({
         // todo 收起
         updatedData.splice(parentIndexInData + 1, childrenLength + 1)
       }
-
       update(updatedData)
     }
-
     return (
       <>
-        <Expander defaultExpanded={defaultExpanded} callback={expandCallback} />
+        <Expander expanded={expanded} setExpanded={setExpanded} callback={expandCallback} />
         <Checkbox
           onChange={(e) => selectRows(allRelatedKeys, e.target.checked)}
           indeterminate={indeterminate}
@@ -122,21 +122,23 @@ const ParentRow = ({
       style={{ width: maxRowWidth < usefulWidth ? usefulWidth : maxRowWidth }}
       className="h-full"
     >
-      {_columns!.map(({ width, ...rest }, index) => (
-        <VTCell
-          {...rest}
-          className="parent ellipsis"
-          style={{ border: 'none', backgroundColor: '#F2F2F2' }}
-          width={width}
-          prefix={prefix}
-          height={rowHeight}
-          rowData={rowData}
-          rowIndex={rowIndex}
-          columnIndex={index}
-          columns={_columns}
-          key={index}
-        />
-      ))}
+      {_columns!.map(({ width, ...rest }, index) => {
+        return (
+          <VTCell
+            {...rest}
+            className="parent ellipsis"
+            style={{ border: 'none', backgroundColor: '#F2F2F2' }}
+            width={width}
+            prefix={prefix}
+            height={rowHeight}
+            rowData={rowData}
+            rowIndex={rowIndex}
+            columnIndex={index}
+            columns={_columns}
+            key={index}
+          />
+        )
+      })}
     </div>
   )
 }
