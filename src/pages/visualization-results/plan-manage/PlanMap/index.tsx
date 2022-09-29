@@ -80,6 +80,7 @@ import {
   getCurrrentSelectFeature,
   getDeleFeatures,
 } from './utils/select'
+import { dataHandle } from './utils/utils'
 interface BelongingLineType {
   id: string
   name: string
@@ -150,19 +151,6 @@ const PlanMap = () => {
   //是否显示保存按钮
   const [isSaveVisible, setIsSaveVisible] = useState<boolean>(false)
 
-  const dataHandle = (data: any) => {
-    if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
-      return []
-    }
-    return data.map((item: { kvLevel: number; color: any }) => {
-      const exist = COLORU.find((co) => co.value === item.color)
-      return {
-        ...item,
-        color: exist ? exist.label : '',
-      }
-    })
-  }
-
   const size = useSize(ref)
 
   useUpdateEffect(() => {
@@ -173,6 +161,7 @@ const PlanMap = () => {
   const uploadLocalData = async () => {
     const pointDatas = getDrawPoints()
     const lineDatas = getDrawLines()
+
     // 点位数据处理
     const pointData = dataHandle(pointDatas)
     // 线路数据处理
@@ -181,6 +170,7 @@ const PlanMap = () => {
       const powerSupplyList = pointData.filter(
         (item: { featureType: string }) => item.featureType === POWERSUPPLY
       )
+
       const transformerStationList = pointData.filter(
         (item: { featureType: string }) => item.featureType === TRANSFORMERSUBSTATION
       )

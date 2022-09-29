@@ -238,7 +238,6 @@ const PlanSubstationTree = () => {
       })
       .filter(Boolean)
     setPlanSubStations([...new Set(SubstationIds)])
-
     const currentLineId = checkedKeys
       .map((item: string) => {
         const isSubstation = item.includes(`_&Line`)

@@ -23,7 +23,7 @@ import {
   getDrawLines,
   getDrawPoints,
 } from '../PlanMap/utils/initializeMap'
-import { companyId } from '../PlanMap/utils/utils'
+import { companyId, dataHandle } from '../PlanMap/utils/utils'
 import {
   transformArrtToAreaData,
   verificationLat,
@@ -295,12 +295,16 @@ const DrawToolbar = () => {
 
   /** 上传本地数据 **/
   const uploadLocalData = async () => {
-    const pointData = getDrawPoints()
+    const pointDatas = getDrawPoints()
     const lineData = getDrawLines()
+
+    // 点位数据处理
+    const pointData = dataHandle(pointDatas)
     if ((pointData && pointData.length) || (lineData && lineData.length)) {
       const powerSupplyList = pointData.filter(
         (item: { featureType: string }) => item.featureType === POWERSUPPLY
       )
+
       const transformerStationList = pointData.filter(
         (item: { featureType: string }) => item.featureType === TRANSFORMERSUBSTATION
       )
@@ -361,6 +365,7 @@ const DrawToolbar = () => {
         powerSupplyList,
         transformerStationList,
         lineElementRelationList,
+
         // transformerIntervalList,
       })
       // 退出手动绘制
@@ -453,7 +458,7 @@ const DrawToolbar = () => {
   })
   useUpdateEffect(() => {
     run(1)
-  }, [isRefresh])
+  }, [isRefresh, zIndex])
 
   const formChange = async (changeValues: any, allvalues: any) => {
     if (clickState) {

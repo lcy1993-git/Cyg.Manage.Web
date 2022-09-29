@@ -388,20 +388,21 @@ const LeftMenu = (props: any) => {
       changeLayer(mapRef.map, 'none')
     }
     if (checkedLayers.length === 1 && checkedLayers.includes('plan')) {
-      if (planLinesId.length > 0) {
-        GetPlanSubStations()
-        changeLayer(mapRef.map, 'plan')
-        return
-      }
-      changeLayer(mapRef.map, 'none')
+      // if (planLinesId.length > 0) {
+
+      GetPlanSubStations()
+      changeLayer(mapRef.map, 'plan')
+      return
+      // }
+      // changeLayer(mapRef.map, 'none')
     }
     if (checkedLayers.length === 1 && checkedLayers.includes('history')) {
-      if (linesId.length > 0) {
-        GetSubStations()
-        changeLayer(mapRef.map, 'history')
-        return
-      }
-      changeLayer(mapRef.map, 'none')
+      // if (linesId.length > 0) {
+      GetSubStations()
+      changeLayer(mapRef.map, 'history')
+      return
+      // }
+      // changeLayer(mapRef.map, 'none')
     }
     if (checkedLayers.length === 2) {
       GetSubStations()

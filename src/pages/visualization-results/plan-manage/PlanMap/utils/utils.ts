@@ -4,6 +4,7 @@ import {
   CABLEBRANCHBOX,
   CABLECIRCUIT,
   CABLEWELL,
+  COLORU,
   COLUMNCIRCUITBREAKER,
   COLUMNTRANSFORMER,
   ELECTRICITYDISTRIBUTIONROOM,
@@ -214,3 +215,17 @@ export const getDistrictdata = () => {
 
 //@ts-ignore
 export const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
+
+export const dataHandle = (data: any) => {
+  if (!data || Object.prototype.toString.call(data) !== '[object Array]') {
+    return []
+  }
+  return data.map((item: { kvLevel: number; color: any }) => {
+    const exist = COLORU.find((co) => co.value === item.color)
+    return {
+      ...item,
+      color: exist ? exist.label : '',
+      gridDataType: 1,
+    }
+  })
+}
