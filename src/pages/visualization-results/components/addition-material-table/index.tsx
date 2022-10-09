@@ -112,6 +112,7 @@ export const AdditionMaterialTable: FC<AdditionMaterialProps> = (props) => {
   const materialIds = data?.map((item: any) => item.materialId)
   const { data: detailsData, loading } = useRequest(
     () => getAdditionalDetails({ materialIds: materialIds, resourceLibID: libId }),
+
     {
       onSuccess: () => {
         setHandleData(

@@ -97,7 +97,7 @@ export const getMaterialItemData = (params: any) => {
    */
   let { type = 0, ...rest } = params
   if (params.layerName !== 'tower') type = 1
-  if (params.layerName == 'cable_channel') type = 2
+  if (params.layerName === 'cable_channel') type = 2
   const url = [
     '/LibraryDesign/GetModuleDetailView',
     '/LibraryComponent/GetComponentDetailView',

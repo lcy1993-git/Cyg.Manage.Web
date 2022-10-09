@@ -446,11 +446,11 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                     <div>
                       {ohterProjectTotalNumber > 0 ? (
                         <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
-                          跳转可视化
+                          跳转在建网架
                         </span>
                       ) : (
                         <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
-                          跳转可视化
+                          跳转在建网架
                         </span>
                       )}
                     </div>
