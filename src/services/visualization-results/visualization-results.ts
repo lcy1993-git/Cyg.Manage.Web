@@ -88,6 +88,15 @@ export const getAdditionalDetails = (params: any) => {
   })
 }
 
+//获取公司库id
+export const getCompanyLibInfo = (params: {
+  status: number
+  libType: number
+  libSource: string
+}) => {
+  return request(`${baseUrl.resource}/ResourceLib/GetList`, { method: 'GET', params })
+}
+
 // 获取材料表数据
 export const getMaterialItemData = (params: any) => {
   /**
