@@ -1,20 +1,35 @@
 .searchArea {
   display: flex;
+
   :global {
     .ant-select {
       width: 140px;
     }
   }
 }
+
 .buttonArea {
   display: flex;
+
   .importBtn {
     margin-right: 7px;
   }
 }
+
+:global {
+  .ant-radio-inner {
+    border-radius: 0 !important;
+  }
+
+  .ant-table-row-selected > td {
+    background-color: #e4f5eb !important;
+  }
+}
+
 .cyGeneralTableTitleContnet {
   display: flex;
   align-items: center;
+
   .cyGeneralTableTitleShowContent {
     display: flex;
     align-items: center;
@@ -22,6 +37,7 @@
     width: 100%;
   }
 }
+
 .cyGeneralTableButtonContent {
   display: flex;
   flex-direction: row-reverse;

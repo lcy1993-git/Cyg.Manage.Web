@@ -116,3 +116,28 @@ export const restoreResourceLib = (params: { libId: string; version: string }) =
     request(`${baseUrl.resource}/ResourceLib/RestoreResource`, { method: 'POST', params: params })
   )
 }
+
+//获取图纸存放文件夹
+export const getChartPath = (libId: string) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/Chart/GetChartDirPathAsync`, { method: 'GET', params: { libId } })
+  )
+}
+
+//导出图纸
+export const exportChartByPath = (fileDir: string) => {
+  return request(`${baseUrl.upload}/Download/DownloadFileByDirPath`, {
+    method: 'POST',
+    params: { fileDir },
+    responseType: 'blob',
+  })
+}
+
+//导出公司库资源库
+export const exportCompanyLib = (libId: string) => {
+  return request(`${baseUrl.resource}/ResourceLib/ExportCompanyResourceByLibId`, {
+    method: 'POST',
+    params: { libId },
+    responseType: 'blob',
+  })
+}
