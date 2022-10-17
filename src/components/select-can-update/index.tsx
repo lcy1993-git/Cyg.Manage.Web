@@ -1,9 +1,10 @@
 import { getDataByUrl } from '@/services/common'
 import { useRequest } from 'ahooks'
-import React, { useEffect, useRef, useState } from 'react'
-import styles from './index.less'
+import { AutoComplete } from 'antd'
+import React, { useEffect, useState } from 'react'
+const { Option } = AutoComplete
 
-interface SelectCanEditAndSearchProps {
+interface AutoCompleteCanUpdateProps {
   onChange?: (a: string, b: string) => void
   value?: string
   placeholder?: string
@@ -17,11 +18,7 @@ interface SelectCanEditAndSearchProps {
   // 依赖的参数值
   update?: string
 }
-// 选择选项时的开关，以及失去焦点时暂存组件的value值
-let isFocus = false
-// 同一表单包含多个此控件需要标识一下
-let flag = 1
-const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
+const AutoCompleteCanUpdate: React.FC<AutoCompleteCanUpdateProps> = (props) => {
   const {
     onChange,
     value,
@@ -35,10 +32,8 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
     postType = 'body',
     update,
   } = props
+  const [result, setResult] = useState<any[]>([])
   const [val, setVal] = useState<string>('')
-  const [flagNumber, setFlagNumber] = useState<number>(flag++)
-  const inputRef = useRef<HTMLDivElement>(null)
-  const listRef: any = useRef()
 
   const { run } = useRequest(
     () => getDataByUrl(url, { ...extraParams, name: update }, requestSource, requestType, postType),
@@ -53,134 +48,43 @@ const SelectCanUpdate: React.FC<SelectCanEditAndSearchProps> = (props) => {
             value: item[valuekey],
           }
         })
-        listRef.current = list
-        // const el = document.getElementById('rxq-dropWrap')
-        // if (el) showDropMenu(list)
+        setResult(list)
       },
     }
   )
-
-  const showDropMenu = (list: any = []) => {
-    // 已展示菜单
-    const el = document.getElementById(`rxq-dropWrap${flagNumber}`)
-    if (el) el.remove()
-    const input = inputRef.current
-    // fixme
-    let left = input?.getBoundingClientRect().left
-    let top = input?.getBoundingClientRect().top
-    const width = input?.getBoundingClientRect().width
-    const dropdown = document.createElement('div')
-    const scrollTop =
-      document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
-    const scrollLeft =
-      document.documentElement.scrollLeft || window.pageXOffset || document.body.scrollLeft
-    // @ts-ignore
-    top += scrollTop
-    // @ts-ignore
-    left += scrollLeft
-
-    //
-    dropdown.style.width = width + 'px'
-    // dropdown.style.height = 8 * 32 + 'px'
-    dropdown.style.left = left + 'px'
-    dropdown.style.top = Number(top) + 27 + 5 + 'px'
-    dropdown.style.position = 'absolute'
-    dropdown.style.zIndex = '1025'
-    dropdown.setAttribute('class', 'rxq-dropdown')
-    dropdown.style.backgroundColor = '#ffffff'
-    dropdown.style.boxShadow =
-      '0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%)'
-    dropdown.style.overflowY = 'scroll'
-    dropdown.style.overflowX = 'hidden'
-    dropdown.style.maxHeight = 8 * 32 + 'px'
-    // wrap
-    const dropWrap = document.createElement('div')
-    dropWrap.setAttribute('id', `rxq-dropWrap${flagNumber}`)
-    dropWrap.style.position = 'absolute'
-    dropWrap.style.left = '0px'
-    dropWrap.style.top = '0px'
-    dropWrap.appendChild(dropdown)
-
-    for (let i = 0; i < list.length; i++) {
-      const item = document.createElement('div')
-      item.setAttribute('class', 'rxq-item')
-      item.style.width = width + 'px'
-      item.style.height = 32 + 'px'
-      item.innerHTML = list[i].label
-      dropdown.appendChild(item)
-      item.dataset.datasource = JSON.stringify(list[i])
-    }
-    document.body.appendChild(dropWrap)
-  }
-  const removeDropMenu = (e: any) => {
-    // 不是鼠标左键
-    if (e.which !== 1) return
-    if (e.target === inputRef.current) {
-      return
-    }
-    const classNameList = [...e.target.classList]
-    if (classNameList.includes('rxq-item')) {
-      selectHandle(e.target.dataset.datasource)
-    }
-    // 允许滚轮
-    if (classNameList.includes('rxq-dropdown')) {
-      return
-    }
-    const el = document.getElementById(`rxq-dropWrap${flagNumber}`)
-    el && el.remove()
-    document.removeEventListener('mousedown', removeDropMenu)
-  }
-  const focusHandle = () => {
-    isFocus = true
-    setTimeout(() => {
-      isFocus = false
-    }, 200)
-    showDropMenu(listRef.current)
-    document.addEventListener('mousedown', removeDropMenu)
-  }
-
-  const clickHandle = () => {
-    if (isFocus) return
-    const el = document.getElementById(`rxq-dropWrap${flagNumber}`)
-    el && el.remove()
-    !el && showDropMenu(listRef.current)
-  }
-  const inputeHanle = (e: any) => {
-    // @ts-ignore
-    const value = inputRef.current?.value as string
+  const handleSearch = (value: string) => {
     setVal(value)
-    onChange?.(value, 'input')
   }
-  const selectHandle = (data: any) => {
-    const obj = JSON.parse(data)
-    setVal(obj.label)
-    onChange?.(obj.value, 'select')
+
+  const handleSelect = (value: string) => {
+    onChange?.(value, 'select')
   }
-  useEffect(() => {
-    run()
-  }, [update, run])
+  const handleBlur = () => {
+    onChange?.(val, 'blur')
+  }
 
   useEffect(() => {
     value && setVal(value)
   }, [value])
+  useEffect(() => {
+    run()
+  }, [update, run])
 
   return (
-    <div className={styles.wrap}>
-      <input
-        // @ts-ignore
-        ref={inputRef}
-        className={styles.input}
-        type="text"
-        id="input"
-        value={val}
-        autoComplete="off"
-        placeholder={placeholder}
-        onChange={() => {}}
-        onFocus={focusHandle}
-        onClick={clickHandle}
-        onInput={inputeHanle}
-      />
-    </div>
+    <AutoComplete
+      onSearch={handleSearch}
+      onSelect={handleSelect}
+      onBlur={handleBlur}
+      placeholder={placeholder}
+      value={val}
+    >
+      {result.map((item: any, index: number) => (
+        <Option key={index} value={item.value}>
+          {item.label}
+        </Option>
+      ))}
+    </AutoComplete>
   )
 }
-export default SelectCanUpdate
+
+export default AutoCompleteCanUpdate
