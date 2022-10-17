@@ -1,0 +1,78 @@
+.monitorPage {
+  width: 100%;
+  height: 100%;
+  background-color: @bg-primary-color;
+
+  .timeAndAccount {
+    position: relative;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 150px;
+    margin-bottom: 18px;
+    padding: 0 20px;
+    background-color: @white-color;
+
+    .service {
+      width: 13%;
+      margin-left: 56px;
+      color: #1f9c55;
+      font-weight: bold;
+      font-size: 40px;
+    }
+
+    .checkItem {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #a3a3a3;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .accountItem {
+      display: flex;
+      align-items: end;
+      justify-content: space-around;
+      width: 48%;
+    }
+
+    .projectItem {
+      display: flex;
+      align-items: end;
+      justify-content: space-around;
+      width: 32%;
+    }
+
+    .time {
+      width: 35%;
+      color: #1f9c55;
+      font-weight: 800;
+      font-size: 50px;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    }
+
+    .exportItem {
+      display: flex;
+      flex-direction: column;
+      height: 55px;
+      margin-left: 160px;
+    }
+  }
+
+  .moduleChart {
+    height: calc(100% - 170px);
+    background-color: @bg-primary-color;
+
+    .lineItem {
+      flex: 1;
+      height: 640px;
+      background-color: #f7fcf9;
+    }
+
+    .lineItem:not(:last-child) {
+      margin-right: 10px;
+    }
+  }
+}

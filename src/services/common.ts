@@ -15,6 +15,7 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
     const res = await func()
 
     const { code, content, isSuccess, data } = res
+
     if (isSuccess && code === 200) {
       if (content) {
         resolve(content)

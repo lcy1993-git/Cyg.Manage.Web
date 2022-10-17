@@ -1,5 +1,6 @@
 {
     "requestUrl": {
+        "monitor": "/monitor/v2/api",
         "project": "/manage/v2/api",
         "common": "/common/api",
         "upload": "/storage/api",
