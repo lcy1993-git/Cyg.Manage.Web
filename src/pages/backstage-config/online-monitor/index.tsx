@@ -1,5 +1,9 @@
 import PageCommonWrap from '@/components/page-common-wrap'
-import { getProjectStatistics, getUserStatistics } from '@/services/backstage-config/online-monitor'
+import {
+  exportUserStatistics,
+  getProjectStatistics,
+  getUserStatistics,
+} from '@/services/backstage-config/online-monitor'
 import {
   ExportOutlined,
   LeftCircleOutlined,
@@ -7,7 +11,9 @@ import {
   RightOutlined,
 } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
+import { message, Spin } from 'antd'
 import React, { useMemo, useState } from 'react'
+import BarChartItem from './components/bar-chart-item'
 import LineChartItem from './components/line-chart-item'
 import NumberItem from './components/number-item'
 import styles from './index.less'
@@ -19,6 +25,12 @@ const OnlineMonitor: React.FC = () => {
   const [statisType, setStatisType] = useState<'user' | 'project'>('user')
   //获取用户数量
   const { data: userQtyData } = useRequest(() => getUserStatistics(), {})
+
+  const [area, setArea] = useState<string>('')
+  //获取项目数量
+  const { data: projectQtyData } = useRequest(() => getProjectStatistics({ areaCode: area }), {})
+
+  const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   //获取系统时间
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,101 +54,141 @@ const OnlineMonitor: React.FC = () => {
     setInterval(getTime, 1000)
   }, [])
 
+  //导出用户数据
+  const exportEvent = async () => {
+    setExportLoading(true)
+    const res = await exportUserStatistics()
+    let blob = new Blob([res], {
+      type: 'application/vnd.ms-excel;charset=utf-8',
+    })
+    let finalyFileName = `账号统计信息.xlsx`
+    // for IE
+    //@ts-ignore
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
+      window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+    } else {
+      // for Non-IE
+      let objectUrl = URL.createObjectURL(blob)
+      let link = document.createElement('a')
+      link.href = objectUrl
+      link.setAttribute('download', finalyFileName)
+      document.body.appendChild(link)
+      link.click()
+      window.URL.revokeObjectURL(link.href)
+    }
+    setExportLoading(false)
+    message.success('导出成功')
+  }
+
   return (
     <PageCommonWrap noPadding={true}>
-      <div className={styles.monitorPage}>
-        <div className={styles.timeAndAccount}>
-          <div className={styles.time}>{realTime}</div>
+      <Spin spinning={exportLoading} tip="导出中...">
+        <div className={styles.monitorPage}>
+          <div className={styles.timeAndAccount}>
+            <div className={styles.time}>{realTime}</div>
+            {statisType === 'user' && (
+              <>
+                <div className={styles.accountItem}>
+                  <NumberItem
+                    account={userQtyData?.companyUserTotalQty}
+                    size="large"
+                    title="公司用户总数"
+                  />
+                  <NumberItem
+                    account={userQtyData?.companyUserOnLineTotalQty}
+                    size="small"
+                    title="当前在线"
+                  />
+
+                  <NumberItem
+                    account={userQtyData?.companyAdminUserTotalQty}
+                    size="large"
+                    title="用户账号总数"
+                  />
+
+                  <NumberItem
+                    account={userQtyData?.companyAdminUserOnLineTotalQty}
+                    size="small"
+                    title="当前在线"
+                  />
+                </div>
+                <div className={styles.exportItem}>
+                  <ExportOutlined
+                    style={{ color: '#1f9c55', fontSize: '45px' }}
+                    onClick={() => exportEvent()}
+                  />
+                  <div style={{ fontSize: '18px', color: '#a3a3a3' }}>账号信息导出</div>
+                </div>
+                <RightCircleOutlined
+                  title="查看项目统计"
+                  className={styles.checkItem}
+                  onClick={() => setStatisType('project')}
+                />
+              </>
+            )}
+            {statisType === 'project' && (
+              <>
+                <div className={styles.projectItem}>
+                  <NumberItem
+                    account={projectQtyData?.engineerQty}
+                    size="large"
+                    title="工程总数量"
+                  />
+
+                  <NumberItem
+                    account={projectQtyData?.projectQty}
+                    size="small"
+                    title="项目总数量"
+                  />
+                </div>
+                <div className={styles.service}>新疆服</div>
+                <div className={styles.exportItem}>
+                  <ExportOutlined style={{ color: '#1f9c55', fontSize: '45px' }} />
+                  <div style={{ fontSize: '18px', color: '#a3a3a3' }}>项目信息导出</div>
+                </div>
+                <LeftCircleOutlined
+                  title="返回用户统计"
+                  className={styles.checkItem}
+                  onClick={() => setStatisType('user')}
+                />
+              </>
+            )}
+          </div>
+
           {statisType === 'user' && (
             <>
-              <div className={styles.accountItem}>
-                <NumberItem
-                  account={userQtyData?.companyUserTotalQty}
-                  size="large"
-                  title="公司用户总数"
-                />
-                <NumberItem
-                  account={userQtyData?.companyUserOnLineTotalQty}
-                  size="small"
-                  title="当前在线"
-                />
-
-                <NumberItem
-                  account={userQtyData?.companyAdminUserTotalQty}
-                  size="large"
-                  title="用户账号总数"
-                />
-
-                <NumberItem
-                  account={userQtyData?.companyAdminUserOnLineTotalQty}
-                  size="small"
-                  title="当前在线"
-                />
+              <div className={styles.moduleChart}>
+                <div className="flex">
+                  <div className={styles.lineItem}>
+                    <LineChartItem data={userQtyData?.clientCategorys[0]} />
+                  </div>
+                  <div className={styles.lineItem}>
+                    <LineChartItem data={userQtyData?.clientCategorys[1]} />
+                  </div>
+                  <div className={styles.lineItem}>
+                    <LineChartItem data={userQtyData?.clientCategorys[2]} />
+                  </div>
+                </div>
               </div>
-              <div className={styles.exportItem}>
-                <ExportOutlined style={{ color: '#1f9c55', fontSize: '45px' }} />
-                <div style={{ fontSize: '18px', color: '#a3a3a3' }}>账号信息导出</div>
-              </div>
-              <RightCircleOutlined
-                title="查看项目统计"
-                className={styles.checkItem}
-                onClick={() => setStatisType('project')}
-              />
             </>
           )}
           {statisType === 'project' && (
             <>
-              <div className={styles.projectItem}>
-                <NumberItem account={1234456} size="large" title="工程总数量" />
-
-                <NumberItem account={5555} size="small" title="项目总数量" />
+              <div className={styles.moduleChart}>
+                <div className="flex">
+                  <div className={styles.lineItem}>
+                    <BarChartItem data={projectQtyData} setArea={setArea} area={area} />
+                  </div>
+                  <div className={styles.lineItem}>
+                    {/* <BarChartItem data={projectQtyData} /> */}
+                  </div>
+                </div>
               </div>
-              <div className={styles.service}>新疆服</div>
-              <div className={styles.exportItem}>
-                <ExportOutlined style={{ color: '#1f9c55', fontSize: '45px' }} />
-                <div style={{ fontSize: '18px', color: '#a3a3a3' }}>项目信息导出</div>
-              </div>
-              <LeftCircleOutlined
-                title="返回用户统计"
-                className={styles.checkItem}
-                onClick={() => setStatisType('user')}
-              />
             </>
           )}
         </div>
-
-        {statisType === 'user' && (
-          <>
-            <div className={styles.moduleChart}>
-              <div className="flex">
-                <div className={styles.lineItem}>
-                  <LineChartItem data={userQtyData?.clientCategorys[0]} />
-                </div>
-                <div className={styles.lineItem}>
-                  <LineChartItem data={userQtyData?.clientCategorys[1]} />
-                </div>
-                <div className={styles.lineItem}>
-                  <LineChartItem data={userQtyData?.clientCategorys[2]} />
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-        {statisType === 'project' && (
-          <>
-            <div className={styles.moduleChart}>
-              <div className="flex">
-                <div className={styles.lineItem}>
-                  <LineChartItem />
-                </div>
-                <div className={styles.lineItem}>
-                  <LineChartItem />
-                </div>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+      </Spin>
     </PageCommonWrap>
   )
 }
