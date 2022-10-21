@@ -189,6 +189,36 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     editTabsEvent(route, 'remove')
   }
 
+  //获取token
+  const token = localStorage.getItem('Authorization')
+  /**webSocket */
+  let heart: any
+  // let ws = new WebSocket(`wss://srthkf2.gczhyun.com:21530/usercenter-ws/?accessToken=${token}`)
+  useEffect(() => {
+    if (window.WebSocket) {
+      let ws = new WebSocket(`wss://srthkf2.gczhyun.com:21530/usercenter-ws/?accessToken=${token}`)
+      ws.onopen = () => {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        heart = setInterval(() => {
+          ws.send('PING')
+        }, 6000)
+      }
+      ws.onclose = () => {
+        clearInterval(heart)
+      }
+      ws.onmessage = () => {}
+      ws.onerror = () => {}
+
+      return () => {
+        // window.addEventListener('beforeunload', () => {
+        //   ws.close()
+        // })
+        ws.close()
+      }
+    }
+    return
+  }, [])
+
   return (
     <ConfigProvider locale={zhCN}>
       <LayoutProvider

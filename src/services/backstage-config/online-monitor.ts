@@ -55,7 +55,7 @@ export const getQtyByArea = (params: { areaCode: string }) => {
 
 //按项目状态获取数量
 export const getQtyByState = (params: { areaCode: string }) => {
-  return cyRequest(() =>
+  return cyRequest<any>(() =>
     request(`http://www.monitor.dev2.com/api/ProjectStatistic/GetQtyByState`, {
       method: 'POST',
       data: params,
@@ -68,5 +68,6 @@ export const exportProjectInfo = (params: { areaCode: string }) => {
   return request(`http://www.monitor.dev2.com/api/ProjectStatistic/Export`, {
     method: 'POST',
     data: params,
+    responseType: 'blob',
   })
 }

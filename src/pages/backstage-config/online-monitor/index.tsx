@@ -1,5 +1,6 @@
 import PageCommonWrap from '@/components/page-common-wrap'
 import {
+  exportProjectInfo,
   exportUserStatistics,
   getProjectStatistics,
   getUserStatistics,
@@ -28,7 +29,9 @@ const OnlineMonitor: React.FC = () => {
 
   const [area, setArea] = useState<string>('')
   //获取项目数量
-  const { data: projectQtyData } = useRequest(() => getProjectStatistics({ areaCode: area }), {})
+  const { data: projectQtyData } = useRequest(() => getProjectStatistics({ areaCode: area }), {
+    refreshDeps: [area],
+  })
 
   const [exportLoading, setExportLoading] = useState<boolean>(false)
 
@@ -57,26 +60,50 @@ const OnlineMonitor: React.FC = () => {
   //导出用户数据
   const exportEvent = async () => {
     setExportLoading(true)
-    const res = await exportUserStatistics()
-    let blob = new Blob([res], {
-      type: 'application/vnd.ms-excel;charset=utf-8',
-    })
-    let finalyFileName = `账号统计信息.xlsx`
-    // for IE
-    //@ts-ignore
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    if (statisType === 'user') {
+      const res = await exportUserStatistics()
+      let blob = new Blob([res], {
+        type: 'application/vnd.ms-excel;charset=utf-8',
+      })
+      let finalyFileName = `账号统计信息.xlsx`
+      // for IE
       //@ts-ignore
-      window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        //@ts-ignore
+        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+      } else {
+        // for Non-IE
+        let objectUrl = URL.createObjectURL(blob)
+        let link = document.createElement('a')
+        link.href = objectUrl
+        link.setAttribute('download', finalyFileName)
+        document.body.appendChild(link)
+        link.click()
+        window.URL.revokeObjectURL(link.href)
+      }
     } else {
-      // for Non-IE
-      let objectUrl = URL.createObjectURL(blob)
-      let link = document.createElement('a')
-      link.href = objectUrl
-      link.setAttribute('download', finalyFileName)
-      document.body.appendChild(link)
-      link.click()
-      window.URL.revokeObjectURL(link.href)
+      const res = await exportProjectInfo({ areaCode: area })
+      let blob = new Blob([res], {
+        type: 'application/vnd.ms-excel;charset=utf-8',
+      })
+      let finalyFileName = `项目统计信息.xlsx`
+      // for IE
+      //@ts-ignore
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        //@ts-ignore
+        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+      } else {
+        // for Non-IE
+        let objectUrl = URL.createObjectURL(blob)
+        let link = document.createElement('a')
+        link.href = objectUrl
+        link.setAttribute('download', finalyFileName)
+        document.body.appendChild(link)
+        link.click()
+        window.URL.revokeObjectURL(link.href)
+      }
     }
+
     setExportLoading(false)
     message.success('导出成功')
   }
@@ -144,7 +171,10 @@ const OnlineMonitor: React.FC = () => {
                 </div>
                 <div className={styles.service}>新疆服</div>
                 <div className={styles.exportItem}>
-                  <ExportOutlined style={{ color: '#1f9c55', fontSize: '45px' }} />
+                  <ExportOutlined
+                    style={{ color: '#1f9c55', fontSize: '45px' }}
+                    onClick={() => exportEvent()}
+                  />
                   <div style={{ fontSize: '18px', color: '#a3a3a3' }}>项目信息导出</div>
                 </div>
                 <LeftCircleOutlined
@@ -178,10 +208,10 @@ const OnlineMonitor: React.FC = () => {
               <div className={styles.moduleChart}>
                 <div className="flex">
                   <div className={styles.lineItem}>
-                    <BarChartItem data={projectQtyData} setArea={setArea} area={area} />
+                    <BarChartItem setArea={setArea} area={area} type="area" />
                   </div>
                   <div className={styles.lineItem}>
-                    {/* <BarChartItem data={projectQtyData} /> */}
+                    <BarChartItem area={area} type="state" />
                   </div>
                 </div>
               </div>

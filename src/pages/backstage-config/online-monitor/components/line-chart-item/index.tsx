@@ -1,35 +1,48 @@
 import { getOnlineUserQty } from '@/services/backstage-config/online-monitor'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import * as echarts from 'echarts/lib/echarts'
 import React, { useRef, useState } from 'react'
 import NumberItem from '../number-item'
 import styles from './index.less'
 import EnumSelect from '@/components/enum-select'
+import { DatePicker, DatePickerProps, Space, Spin } from 'antd'
+import moment, { Moment } from 'moment'
 
 interface ChartParams {
   data?: any
 }
 
 enum dateUnit {
-  '按天展示' = 1,
-  '按月展示' = 2,
-  '按年展示' = 3,
+  date = '按天展示',
+  month = '按月展示',
+  year = '按年展示',
+}
+
+const getDate = () => {
+  const time = new Date()
+  const year = time.getFullYear()
+  const month = time.getMonth() + 1
+  const day = time.getDate()
+  return { year, month, day }
 }
 
 const initParams = {
-  year: 2022,
+  year: getDate().year,
   month: 0,
   day: 0,
 }
+
+type PickerType = 'date' | 'month' | 'year'
 
 const LineChartItem: React.FC<ChartParams> = (props) => {
   const { data } = props
   const divRef = useRef<HTMLDivElement>(null)
   //日期单位展示
-  const [unit, setUnit] = useState<string>('3')
+  const [unit, setUnit] = useState<PickerType>('year')
   const [initDate, setInitDate] = useState<any>(initParams)
+  // const [dateVal, setDateVal] = useState<Moment>(moment(`${getDate().year}`))
   // const size = useSize(divRef)
-  const { data: QtyData } = useRequest(
+  const { data: QtyData, loading } = useRequest(
     () =>
       getOnlineUserQty({
         clientCategory: data && data?.clientCategory,
@@ -47,26 +60,9 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
   const getOptions = () => {
     const dateData = QtyData?.map((item: any) => item.key)
     const currentDateData = QtyData.map((item: any) => item.value)
-    // const changeDateData = data.map((item) => item.value.qty - item.value.yesterdayQty).reverse()
     return {
-      // dataZoom: {
-      //   show: true,
-      //   realtime: true,
-      //   y: 36,
-      //   height: 2,
-      //   start: 20,
-      //   end: 80,
-      // },
-      // grid: {
-      //   top: 20,
-      //   bottom: 40,
-      //   right: 30,
-      //   left: 60,
-      // },
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(0,0,0,0.9)',
-        borderColor: '#000',
         axisPointer: {
           type: 'shadow',
         },
@@ -116,18 +112,44 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
     }
   }
 
-  /**切换日期类型查看 */
-  const searchChange = (value: string) => {
-    setUnit(value)
-    const time = new Date()
-    const year = time.getFullYear()
-    const month = time.getMonth() + 1
-    const day = time.getDate()
+  /**切换日期查看 */
+  const changeDate = (value: any) => {
+    const dateArray = moment(value).format('YYYY-MM-DD').split('-')
     setInitDate({
-      year: year,
-      month: value === '2' || value === '1' ? month : 0,
-      day: value === '1' ? day : 0,
+      year: dateArray[0],
+      month: unit === 'month' || unit === 'date' ? dateArray[1] : 0,
+      day: unit === 'date' ? dateArray[2] : 0,
     })
+  }
+
+  const changeDateTypeEvent = (value: PickerType) => {
+    setUnit(value)
+    switch (value) {
+      case 'date':
+        setInitDate({
+          year: getDate().year,
+          month: getDate().month,
+          day: getDate().day,
+        })
+        break
+      case 'month':
+        setInitDate({
+          year: getDate().year,
+          month: getDate().month,
+          day: 0,
+        })
+        break
+      case 'year':
+        setInitDate({
+          year: getDate().year,
+          month: 0,
+          day: 0,
+        })
+        break
+
+      default:
+        break
+    }
   }
 
   return (
@@ -143,14 +165,25 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
       </div>
       <div className={styles.chart}>
         <div>用户在线时段统计</div>
-        <EnumSelect
-          style={{ width: '120px' }}
-          enumList={dateUnit}
-          value={unit}
-          onChange={(value: any) => searchChange(value)}
-        />
+        <Space>
+          <EnumSelect
+            valueString
+            style={{ width: '120px' }}
+            enumList={dateUnit}
+            value={unit}
+            onChange={(value: any) => changeDateTypeEvent(value)}
+          />
+          <DatePicker
+            // value={dateVal}
+            style={{ width: '150px' }}
+            picker={unit}
+            onChange={(value) => changeDate(value)}
+          />
+        </Space>
       </div>
-      <div style={{ width: '100%', height: '435px' }} ref={divRef}></div>
+      <Spin spinning={loading}>
+        <div style={{ width: '100%', height: '435px' }} ref={divRef}></div>
+      </Spin>
     </div>
   )
 }

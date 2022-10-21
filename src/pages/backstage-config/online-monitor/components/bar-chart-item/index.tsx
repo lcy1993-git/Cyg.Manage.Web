@@ -3,6 +3,7 @@ import {
   getQtyByArea,
   getQtyByState,
 } from '@/services/backstage-config/online-monitor'
+import { LeftOutlined, VerticalAlignTopOutlined, VerticalRightOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import * as echarts from 'echarts/lib/echarts'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
@@ -12,94 +13,71 @@ interface ChartParams {
   data?: any
   setArea?: Dispatch<SetStateAction<string>>
   area: string
+  type: 'area' | 'state'
 }
 let myChart: any = null
+let stateChart: any = null
 const BarChartItem: React.FC<ChartParams> = (props) => {
-  const { data, setArea, area } = props
+  const { setArea, area, type } = props
   const divRef = useRef<HTMLDivElement>(null)
-  const [drillData, setDrillData] = useState<any>([])
   // const
 
   const { data: QtyData } = useRequest(() => getQtyByArea({ areaCode: area }), {
+    ready: type === 'area',
     onSuccess: () => {
-      const handleData = QtyData?.map((item: any) => {
-        return { upCode: area, data: [item.area.text, item.qty] }
-      })
-      setDrillData(handleData)
+      // const handleData = QtyData?.map((item: any) => {
+      //   return { upCode: area, data: [item.area.text, item.qty] }
+      // })
+      // setDrillData(handleData)
+      if (QtyData.length) {
+        initChart()
+      }
+    },
+    refreshDeps: [area],
+  })
+
+  //获取项目状态数量
+  const { data: stateData } = useRequest(() => getQtyByState({ areaCode: area }), {
+    ready: type === 'state',
+    onSuccess: () => {
       initChart()
     },
     refreshDeps: [area],
   })
 
-  // const { data: stateData } = useRequest(() => getQtyByState({ areaCode: '' }), {
-  //   onSuccess: () => {
-  //     const handleData = QtyData?.map((item: any) => {
-  //       return { key: item.area.text, value: item.qty }
-  //     })
-  //     setBarData(handleData)
-  //     initChart()
-  //   },
-  // })
-
   myChart?.on('click', (e: any) => {
     setArea?.(e.data?.areaCode)
-
-    if (e.data) {
-      var subData = drillData.find((data: any) => {
-        return data.upCode === e.data.areaCode
-      })
-      if (!subData) {
-        return
-      }
-
-      myChart.setOption({
-        xAxis: {
-          data: subData.data.map((item: any) => {
-            return item[0]
-          }),
-        },
-        series: {
-          type: 'bar',
-          id: 'area',
-          dataGroupId: subData.dataGroupId,
-          data: subData.data.map((item: any) => {
-            return item[1]
-          }),
-          universalTransition: {
-            enabled: true,
-            divideShape: 'clone',
-          },
-        },
-        graphic: [
-          {
-            type: 'text',
-            left: 50,
-            top: 20,
-            style: {
-              text: 'Back',
-              fontSize: 18,
-            },
-            onclick: initChart(),
-          },
-        ],
-      })
-    }
   })
 
   const getOptions = () => {
-    // if(DrillData.length )
-    const areaDat = QtyData?.map((item: any) => item.area.text)
-    const valueDat = QtyData.map((item: any) => {
-      return { value: item.qty, areaCode: item.area.value }
-    })
+    const areaDat =
+      type === 'area'
+        ? QtyData?.map((item: any) => item.area.text)
+        : stateData?.map((item: any) => item.key)
+    const valueDat =
+      type === 'area'
+        ? QtyData.map((item: any) => {
+            return { value: item.qty, areaCode: item.area.value }
+          })
+        : stateData.map((item: any) => item.value)
     return {
       xAxis: {
+        axisLabel: {
+          show: true,
+          interval: 0,
+        },
         data: areaDat,
       },
       yAxis: {
         type: 'value',
         axisLabel: {
           color: '#74AC91',
+        },
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
         },
       },
       dataGroupId: '',
@@ -119,22 +97,35 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
 
   const initChart = () => {
     if (divRef && divRef.current) {
-      myChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+      if (type === 'area') {
+        myChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+        const options = getOptions()
+        myChart.setOption(options)
+        return
+      }
+      stateChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
       const options = getOptions()
-      myChart.setOption(options)
+      stateChart.setOption(options)
     }
   }
 
-  const backEvent = () => {}
+  const backEvent = () => {
+    setArea?.('')
+  }
 
   return (
-    <div className={styles.lineContent}>
-      <div className={styles.title}>{data?.clientCategoryText}</div>
-
+    <div className={styles.barContent}>
       <div className={styles.chart}>
-        <div style={{ width: '100%', height: '580px' }} ref={divRef}></div>
-        {/* <div onClick={() => backEvent()}>back</div> */}
+        {area && type === 'area' && (
+          <LeftOutlined
+            onClick={() => backEvent()}
+            style={{ fontSize: '20px', color: '#1f9c55', width: '5%' }}
+            title="返回顶层"
+          />
+        )}
+        <div style={{ width: '95%', height: '580px' }} ref={divRef}></div>
       </div>
+      <div className={styles.barTitle}>{type === 'area' ? '项目数量统计' : '项目状态数量统计'}</div>
     </div>
   )
 }
