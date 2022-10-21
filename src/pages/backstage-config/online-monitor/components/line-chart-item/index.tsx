@@ -1,12 +1,12 @@
 import { getOnlineUserQty } from '@/services/backstage-config/online-monitor'
-import { useRequest, useUpdateEffect } from 'ahooks'
+import { useRequest } from 'ahooks'
 import * as echarts from 'echarts/lib/echarts'
 import React, { useRef, useState } from 'react'
 import NumberItem from '../number-item'
 import styles from './index.less'
 import EnumSelect from '@/components/enum-select'
-import { DatePicker, DatePickerProps, Space, Spin } from 'antd'
-import moment, { Moment } from 'moment'
+import { DatePicker, Space, Spin } from 'antd'
+import moment from 'moment'
 
 interface ChartParams {
   data?: any

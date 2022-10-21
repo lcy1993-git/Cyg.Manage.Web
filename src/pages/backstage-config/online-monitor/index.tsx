@@ -5,12 +5,7 @@ import {
   getProjectStatistics,
   getUserStatistics,
 } from '@/services/backstage-config/online-monitor'
-import {
-  ExportOutlined,
-  LeftCircleOutlined,
-  RightCircleOutlined,
-  RightOutlined,
-} from '@ant-design/icons'
+import { ExportOutlined, LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { message, Spin } from 'antd'
 import React, { useMemo, useState } from 'react'
@@ -169,7 +164,7 @@ const OnlineMonitor: React.FC = () => {
                     title="项目总数量"
                   />
                 </div>
-                <div className={styles.service}>新疆服</div>
+                {/* <div className={styles.service}>新疆服</div> */}
                 <div className={styles.exportItem}>
                   <ExportOutlined
                     style={{ color: '#1f9c55', fontSize: '45px' }}

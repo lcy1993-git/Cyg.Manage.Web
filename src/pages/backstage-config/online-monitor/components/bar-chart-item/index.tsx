@@ -1,12 +1,9 @@
-import {
-  getOnlineUserQty,
-  getQtyByArea,
-  getQtyByState,
-} from '@/services/backstage-config/online-monitor'
-import { LeftOutlined, VerticalAlignTopOutlined, VerticalRightOutlined } from '@ant-design/icons'
+import { getQtyByArea, getQtyByState } from '@/services/backstage-config/online-monitor'
+import { LeftOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
+import { Spin } from 'antd'
 import * as echarts from 'echarts/lib/echarts'
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useRef } from 'react'
 import styles from './index.less'
 
 interface ChartParams {
@@ -22,7 +19,7 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
   const divRef = useRef<HTMLDivElement>(null)
   // const
 
-  const { data: QtyData } = useRequest(() => getQtyByArea({ areaCode: area }), {
+  const { data: QtyData, loading } = useRequest(() => getQtyByArea({ areaCode: area }), {
     ready: type === 'area',
     onSuccess: () => {
       // const handleData = QtyData?.map((item: any) => {
@@ -37,13 +34,16 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
   })
 
   //获取项目状态数量
-  const { data: stateData } = useRequest(() => getQtyByState({ areaCode: area }), {
-    ready: type === 'state',
-    onSuccess: () => {
-      initChart()
-    },
-    refreshDeps: [area],
-  })
+  const { data: stateData, loading: stateLoading } = useRequest(
+    () => getQtyByState({ areaCode: area }),
+    {
+      ready: type === 'state',
+      onSuccess: () => {
+        initChart()
+      },
+      refreshDeps: [area],
+    }
+  )
 
   myChart?.on('click', (e: any) => {
     setArea?.(e.data?.areaCode)
@@ -115,16 +115,16 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
 
   return (
     <div className={styles.barContent}>
-      <div className={styles.chart}>
-        {area && type === 'area' && (
-          <LeftOutlined
-            onClick={() => backEvent()}
-            style={{ fontSize: '20px', color: '#1f9c55', width: '5%' }}
-            title="返回顶层"
-          />
-        )}
+      {area && type === 'area' && (
+        <LeftOutlined
+          onClick={() => backEvent()}
+          style={{ fontSize: '20px', color: '#1f9c55', width: '5%' }}
+          title="返回顶层"
+        />
+      )}
+      <Spin spinning={type === 'area' ? loading : stateLoading}>
         <div style={{ width: '95%', height: '580px' }} ref={divRef}></div>
-      </div>
+      </Spin>
       <div className={styles.barTitle}>{type === 'area' ? '项目数量统计' : '项目状态数量统计'}</div>
     </div>
   )
