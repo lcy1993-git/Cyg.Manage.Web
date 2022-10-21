@@ -141,7 +141,7 @@ export const getModuleDetaiList = (libId: string, moduleIds: string[], keyWord: 
   return cyRequest<ComponentDetaiListlParams>(() =>
     request(`${baseUrl.resource}/ModulesDetails/GetPageList`, {
       method: 'POST',
-      data: { libId, moduleIds, keyWord },
+      data: { libId, moduleIds, keyWord, pageSize: 200, pageIndex: 1 },
     })
   )
 }

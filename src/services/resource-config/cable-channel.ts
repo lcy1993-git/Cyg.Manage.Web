@@ -120,7 +120,7 @@ export const getCableChannelDetaiList = (
   return cyRequest<ComponentDetaiListlParams>(() =>
     request(`${baseUrl.resource}/cableChannelDetails/GetPageList`, {
       method: 'POST',
-      data: { libId, cableChannelIds, keyWord },
+      data: { libId, cableChannelIds, keyWord, pageSize: 200, pageIndex: 1 },
     })
   )
 }

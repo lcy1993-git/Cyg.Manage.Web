@@ -117,7 +117,7 @@ export const getCableWelDetaiList = (libId: string, cableWellIds: string[], keyW
   return cyRequest<ComponentDetaiListlParams>(() =>
     request(`${baseUrl.resource}/CableWellDetails/GetPageList`, {
       method: 'POST',
-      data: { libId, cableWellIds, keyWord },
+      data: { libId, cableWellIds, keyWord, pageSize: 200, pageIndex: 1 },
     })
   )
 }
