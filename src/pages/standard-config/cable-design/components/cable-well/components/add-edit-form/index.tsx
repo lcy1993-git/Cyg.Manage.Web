@@ -86,6 +86,16 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
       >
         <Input placeholder="请输入模块简称" />
       </CyFormItem>
+      <CyFormItem
+        label="典设编码"
+        name="typicalCode"
+        labelWidth={98}
+        align="right"
+        required
+        rules={[{ required: true, message: '典设编码不能为空' }]}
+      >
+        <Input placeholder="请输入典设编码" />
+      </CyFormItem>
 
       <CyFormItem
         labelSlot={unitSlot}

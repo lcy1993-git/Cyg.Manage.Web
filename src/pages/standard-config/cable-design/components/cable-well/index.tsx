@@ -108,7 +108,12 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
       title: '模块简称',
       width: 200,
     },
-
+    {
+      dataIndex: 'typicalCode',
+      index: 'typicalCode',
+      title: '典设编码',
+      width: 320,
+    },
     {
       dataIndex: 'unit',
       index: 'unit',

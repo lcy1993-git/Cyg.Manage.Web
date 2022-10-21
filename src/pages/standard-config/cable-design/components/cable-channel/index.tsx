@@ -116,6 +116,12 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
       width: 320,
     },
     {
+      dataIndex: 'typicalCode',
+      index: 'typicalCode',
+      title: '典设编码',
+      width: 320,
+    },
+    {
       dataIndex: 'unit',
       index: 'unit',
       title: '单位',
@@ -364,7 +370,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         onOk={() => sureAddMaterial()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
-        bodyStyle={{ height: '680px', overflowY: 'auto' }}
+        bodyStyle={{ maxHeight: '680px', overflowY: 'auto' }}
         destroyOnClose
       >
         <Form form={addForm} preserve={false} initialValues={{ reservedWidth: 3 }}>

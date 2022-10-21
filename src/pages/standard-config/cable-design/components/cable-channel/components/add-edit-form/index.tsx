@@ -85,7 +85,16 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
       >
         <Input placeholder="请输入简号" />
       </CyFormItem>
-
+      <CyFormItem
+        label="典设编码"
+        name="typicalCode"
+        labelWidth={130}
+        align="right"
+        required
+        rules={[{ required: true, message: '典设编码不能为空' }]}
+      >
+        <Input placeholder="请输入典设编码" />
+      </CyFormItem>
       <CyFormItem
         labelSlot={unitSlot}
         name="unit"

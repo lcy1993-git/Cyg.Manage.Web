@@ -97,7 +97,7 @@ const AutoCompleteCanSearch: React.FC<AutoCompleteCanSearchProps> = (props) => {
     >
       {result.map((item: any, index: number) => (
         <Option key={index} value={item.value}>
-          {item.value}
+          {item.label}
         </Option>
       ))}
     </AutoComplete>
