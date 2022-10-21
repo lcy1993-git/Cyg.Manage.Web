@@ -218,6 +218,12 @@ const ResourceLib: React.FC = () => {
         width: 280,
       },
       {
+        dataIndex: 'companyName',
+        index: 'companyName',
+        title: '公司名称',
+        width: 280,
+      },
+      {
         dataIndex: 'version',
         index: 'version',
         title: '版本',

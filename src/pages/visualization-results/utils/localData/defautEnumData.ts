@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-anonymous-default-export
 export default [
   {
     key: 'AssessState',
@@ -440,12 +441,12 @@ export default [
       { value: 3, text: '已勘察' },
       { value: 4, text: '设计中' },
       { value: 19, text: '已设计' },
-      { value: 5, text: '设计内审' },
-      { value: 6, text: '设计内审完成' },
-      { value: 11, text: '造价中' },
-      { value: 9, text: '已造价' },
-      { value: 10, text: '造价内审' },
-      { value: 8, text: '外审' },
+      // { value: 5, text: '设计内审' },
+      // { value: 6, text: '设计内审完成' },
+      // { value: 11, text: '造价中' },
+      // { value: 9, text: '已造价' },
+      // { value: 10, text: '造价内审' },
+      // { value: 8, text: '外审' },
       { value: 7, text: '设计完成' },
       { value: 15, text: '结项中' },
       { value: 16, text: '已结项' },

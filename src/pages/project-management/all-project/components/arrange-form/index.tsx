@@ -52,12 +52,12 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
 
   const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId))
 
-  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
+  // const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
 
   const { data: groupData = [] } = useRequest(() => getTreeSelectData({ pId: groupId }))
 
   const mapTreeData = (data: any) => {
-    if (data.children && data.children.length > 0 && checkedValue != '3') {
+    if (data.children && data.children.length > 0 && checkedValue !== '3') {
       return {
         title: data.text,
         value: data.id,
@@ -80,12 +80,12 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   }
 
   const searchEvent = async (value: string) => {
-    if (value == '') {
+    if (value === '') {
       message.warning('请输入单位账户')
       return
     }
     const res = await getCompanyInfoEvent(value)
-    if (res == undefined) {
+    if (res === undefined) {
       message.error('账户不存在')
       return
     }
@@ -97,6 +97,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
       setCheckedValue(defaultType === '5' ? '2' : defaultType)
       onChange?.(defaultType === '5' ? '2' : defaultType)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultType])
 
   const notChoose = (() => {
@@ -177,7 +178,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-          <CyFormItem label="造价" name="costUser">
+          {/* <CyFormItem label="造价" name="costUser">
             <TreeSelect
               key="costUser"
               style={{ width: '100%' }}
@@ -186,7 +187,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               treeDefaultExpandAll
               allowClear
             />
-          </CyFormItem>
+          </CyFormItem> */}
 
           {/* 继续安排审核 */}
           <div className={styles.continueAudit}>

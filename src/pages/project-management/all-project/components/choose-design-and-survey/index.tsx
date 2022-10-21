@@ -111,7 +111,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
             />
           </div>
         </div>
-        <div className={styles.popContentItem}>
+        {/* <div className={styles.popContentItem}>
           <span className={styles.popContentItemLabel}>造价人</span>
           <div className={styles.popContentItemSelect}>
             <DataSelect
@@ -123,7 +123,7 @@ const ChooseDesignAndSurveySelect = (props: SelectProps, ref: Ref<any>) => {
               options={[{ label: '全部', value: '-1' }, ...personData]}
             />
           </div>
-        </div>
+        </div> */}
       </div>
       <div className={styles.lastLine}>
         <Radio.Group
