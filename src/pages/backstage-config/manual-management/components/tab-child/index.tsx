@@ -166,7 +166,7 @@ const ManualUpload: React.FC<Props> = (props) => {
         >
           <ManualPreview
             file={file}
-            fileTitle={`${tabList.find((item) => item.value == id)?.text ?? ''}说明书`}
+            fileTitle={`${tabList.find((item) => item.value === id)?.text ?? ''}说明书`}
           />
           <div
             style={{

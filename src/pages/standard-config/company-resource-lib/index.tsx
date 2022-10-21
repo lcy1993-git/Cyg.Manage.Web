@@ -6,18 +6,20 @@ import { getUploadUrl } from '@/services/resource-config/drawing'
 import {
   backupResourceLib,
   creatCampanyResourceLib,
+  exportChartByPath,
+  exportCompanyLib,
   getCampanyResourceLibListsWithBackUpInfo,
+  getChartPath,
   getResourceLibDetail,
   restartResourceLib,
   restoreResourceLib,
   updateResourceLibItem,
 } from '@/services/resource-config/resource-lib'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
-import { EditOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
+import { EditOutlined, ExportOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
 import { useMount, useRequest } from 'ahooks'
 import { Button, Dropdown, Form, Menu, message, Modal, Spin, Table } from 'antd'
 import { isArray } from 'lodash'
-import moment from 'moment'
 import React, { useMemo, useState } from 'react'
 import { history } from 'umi'
 import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
@@ -36,10 +38,14 @@ const ResourceLib: React.FC = () => {
   const [libVisible, setLibVisible] = useState(false)
   const [libId, setLibId] = useState<string>('')
   const [tableData, setTableData] = useState<any[]>([])
+  const [clickKey, setClickKey] = useState<any[]>([])
   const [currentCompanyManageId, setCurrentCompanyManageId] = useState<string>(
     window.localStorage.manageId
   ) //当前管理 模块的资源库Id
   const userInfo = useGetUserInfo()
+
+  //导出加载
+  const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   const { data: keyData } = useRequest(() => getUploadUrl())
   const [editForm] = Form.useForm()
@@ -79,16 +85,17 @@ const ResourceLib: React.FC = () => {
         if (res?.length === 0) {
           createLib()
         } else {
-          let libInfo = {
-            ...res[0],
-            backUpVersion: res[0]?.resourceLibBackUp[0]?.version,
-            backUpTime: moment(res[0]?.resourceLibBackUp[0]?.createdOn).format('YYYY-MM-DD'),
-          }
-          setTableData([libInfo])
+          setTableData(res)
         }
       },
     }
   )
+
+  /**获取图纸路径 */
+  const { data: chartPath } = useRequest(() => getChartPath(clickKey[0]), {
+    ready: !!clickKey.length,
+    refreshDeps: [clickKey[0]],
+  })
 
   const { resourceManageFlag } = useLayoutStore()
 
@@ -137,6 +144,12 @@ const ResourceLib: React.FC = () => {
           width: 280,
         },
         {
+          dataIndex: 'companyName',
+          index: 'companyName',
+          title: '公司名称',
+          width: 280,
+        },
+        {
           dataIndex: 'version',
           index: 'version',
           title: '版本',
@@ -151,11 +164,12 @@ const ResourceLib: React.FC = () => {
           dataIndex: 'backUpTime',
           index: 'backUpTime',
           title: '备份时间',
+          width: 200,
         },
         {
           dataIndex: 'action',
           title: '操作',
-          width: 170,
+          width: 200,
           render: (text: any, record: any) => {
             const storage = window.localStorage
             return (
@@ -255,6 +269,7 @@ const ResourceLib: React.FC = () => {
         },
       },
     ]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourceManageFlag])
 
   //编辑
@@ -340,13 +355,105 @@ const ResourceLib: React.FC = () => {
     setUploadDrawingVisible(true)
   }
 
+  /**导出图纸 */
+  const exportDrawingEvent = async () => {
+    if (!chartPath) {
+      message.warning('未选择公司库或导出路径不存在')
+      return
+    }
+    try {
+      setExportLoading(true)
+      const res = await exportChartByPath(chartPath)
+      let blob = new Blob([res], {
+        type: 'application/zip',
+      })
+      let finalyFileName = `图纸.zip`
+      // for IE
+      //@ts-ignore
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        //@ts-ignore
+        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+      } else {
+        // for Non-IE
+        let objectUrl = URL.createObjectURL(blob)
+        let link = document.createElement('a')
+        link.href = objectUrl
+        link.setAttribute('download', finalyFileName)
+        document.body.appendChild(link)
+        link.click()
+        window.URL.revokeObjectURL(link.href)
+      }
+      message.success('导出成功')
+    } catch (msg) {
+      console.error(msg)
+    } finally {
+      setExportLoading(false)
+    }
+  }
+
+  /**导出资源库 */
+  const exportLibEvent = async () => {
+    if (!clickKey.length) {
+      message.warning('未选择公司资源库')
+      return
+    }
+    try {
+      setExportLoading(true)
+      const res = await exportCompanyLib(clickKey[0])
+      let blob = new Blob([res], {
+        type: 'application/zip',
+      })
+      let finalyFileName = `资源库.zip`
+      // for IE
+      //@ts-ignore
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        //@ts-ignore
+        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+      } else {
+        // for Non-IE
+        let objectUrl = URL.createObjectURL(blob)
+        let link = document.createElement('a')
+        link.href = objectUrl
+        link.setAttribute('download', finalyFileName)
+        document.body.appendChild(link)
+        link.click()
+        window.URL.revokeObjectURL(link.href)
+      }
+      message.success('导出成功')
+    } catch (msg) {
+      console.error(msg)
+    } finally {
+      setExportLoading(false)
+    }
+  }
+
   const importMenu = (
     <Menu>
       {buttonJurisdictionArray?.includes('lib-import-drawing') && (
-        <Menu.Item onClick={() => uploadDrawingEvent()}>导入图纸</Menu.Item>
+        <Menu.Item key="importDraw" onClick={() => uploadDrawingEvent()}>
+          导入图纸
+        </Menu.Item>
       )}
       {buttonJurisdictionArray?.includes('lib-import-lib') && (
-        <Menu.Item onClick={() => importLibEvent()}>导入资源库</Menu.Item>
+        <Menu.Item key="importLib" onClick={() => importLibEvent()}>
+          导入资源库
+        </Menu.Item>
+      )}
+    </Menu>
+  )
+
+  //导出
+  const exportMenu = (
+    <Menu>
+      {buttonJurisdictionArray?.includes('lib-export-drawing') && (
+        <Menu.Item key="exportDraw" onClick={() => exportDrawingEvent()}>
+          导出图纸
+        </Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('lib-export-lib') && (
+        <Menu.Item key="exportLib" onClick={() => exportLibEvent()}>
+          导出资源库
+        </Menu.Item>
       )}
     </Menu>
   )
@@ -359,6 +466,14 @@ const ResourceLib: React.FC = () => {
             <EditOutlined />
             编辑
           </Button>
+        )}
+        {buttonJurisdictionArray?.includes('lib-export') && (
+          <Dropdown overlay={exportMenu}>
+            <Button className="mr7">
+              <ExportOutlined />
+              导出
+            </Button>
+          </Dropdown>
         )}
         {buttonJurisdictionArray?.includes('lib-oneclick-import') && (
           <Button className="mr7" onClick={() => uploadAllEvent()}>
@@ -396,73 +511,88 @@ const ResourceLib: React.FC = () => {
     refresh()
   }
 
+  const rowSelection = {
+    onChange: (values: any[], selectedRows: any[]) => {
+      setClickKey(selectedRows.map((item) => item['id']))
+      // setTableSelectData(selectedRows)
+    },
+  }
+
   return (
     <PageCommonWrap>
-      <div className={styles.cyGeneralTableTitleContnet}>
-        <div className={styles.cyGeneralTableTitleShowContent}>
-          {<CommonTitle>{'资源库管理'}</CommonTitle>}
+      <Spin spinning={exportLoading} tip="导出中...">
+        <div className={styles.cyGeneralTableTitleContnet}>
+          <div className={styles.cyGeneralTableTitleShowContent}>
+            {<CommonTitle>{'资源库管理'}</CommonTitle>}
+          </div>
         </div>
-      </div>
-      <div className={styles.cyGeneralTableButtonContent}>
-        <div className={styles.cyGeneralTableButtonRightContent}>{tableElement?.()}</div>
-      </div>
-      <Table
-        columns={columns}
-        dataSource={tableData}
-        rowKey="id"
-        pagination={false}
-        bordered={true}
-        locale={{
-          emptyText: <EmptyTip className="pt20 pb20" />,
-        }}
-      />
-      <Modal
-        maskClosable={false}
-        title="编辑-资源库"
-        width="680px"
-        visible={editFormVisible}
-        okText="确认"
-        onOk={() => sureEditResourceLib()}
-        onCancel={() => setEditFormVisible(false)}
-        cancelText="取消"
-        destroyOnClose
-      >
-        <Form form={editForm} preserve={false}>
-          <Spin spinning={loading}>
-            <ResourceLibForm />
-          </Spin>
-        </Form>
-      </Modal>
-
-      <UploadDrawing
-        libId={libId}
-        securityKey={keyData?.uploadChartApiSecurity}
-        visible={uploadDrawingVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setUploadDrawingVisible}
-      />
-      <SaveImportLib
-        libId={libId}
-        requestSource="resource"
-        visible={uploadLibVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setUploadLibVisible}
-      />
-      <UploadAll
-        libId={libId}
-        requestSource="resource"
-        visible={uploadAllVisible}
-        changeFinishEvent={() => uploadFinishEvent()}
-        onChange={setUploadAllVisible}
-      />
-
-      {libVisible && (
-        <ResourceLibraryManageModal
-          visible={libVisible}
-          onChange={setLibVisible}
-          changeFinishEvent={refresh}
+        <div className={styles.cyGeneralTableButtonContent}>
+          <div className={styles.cyGeneralTableButtonRightContent}>{tableElement?.()}</div>
+        </div>
+        <Table
+          columns={columns}
+          dataSource={tableData}
+          rowKey="id"
+          pagination={false}
+          bordered={true}
+          locale={{
+            emptyText: <EmptyTip className="pt20 pb20" />,
+          }}
+          rowSelection={{
+            type: 'radio',
+            columnWidth: '38px',
+            selectedRowKeys: clickKey,
+            ...rowSelection,
+          }}
         />
-      )}
+        <Modal
+          maskClosable={false}
+          title="编辑-资源库"
+          width="680px"
+          visible={editFormVisible}
+          okText="确认"
+          onOk={() => sureEditResourceLib()}
+          onCancel={() => setEditFormVisible(false)}
+          cancelText="取消"
+          destroyOnClose
+        >
+          <Form form={editForm} preserve={false}>
+            <Spin spinning={loading}>
+              <ResourceLibForm />
+            </Spin>
+          </Form>
+        </Modal>
+
+        <UploadDrawing
+          libId={libId}
+          securityKey={keyData?.uploadChartApiSecurity}
+          visible={uploadDrawingVisible}
+          changeFinishEvent={() => uploadFinishEvent()}
+          onChange={setUploadDrawingVisible}
+        />
+        <SaveImportLib
+          libId={libId}
+          requestSource="resource"
+          visible={uploadLibVisible}
+          changeFinishEvent={() => uploadFinishEvent()}
+          onChange={setUploadLibVisible}
+        />
+        <UploadAll
+          libId={libId}
+          requestSource="resource"
+          visible={uploadAllVisible}
+          changeFinishEvent={() => uploadFinishEvent()}
+          onChange={setUploadAllVisible}
+        />
+
+        {libVisible && (
+          <ResourceLibraryManageModal
+            visible={libVisible}
+            onChange={setLibVisible}
+            changeFinishEvent={refresh}
+          />
+        )}
+      </Spin>
     </PageCommonWrap>
   )
 }
