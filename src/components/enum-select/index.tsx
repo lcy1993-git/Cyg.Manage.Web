@@ -22,7 +22,6 @@ export const withEnum = <P extends {}>(WrapperComponent: React.ComponentType<P>)
   } = props
 
   const enumListKeysArray = Object.keys(enumList)
-
   const options = valueString
     ? enumListKeysArray
         .filter((item, index) => index < enumListKeysArray.length)

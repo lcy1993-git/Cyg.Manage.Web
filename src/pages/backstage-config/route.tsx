@@ -77,6 +77,13 @@ const VisualConfig = Loadable({
   delay: 150,
 })
 
+const OnlineMonitor = Loadable({
+  loader: () => import('@/pages/backstage-config/online-monitor'),
+  loading: Loading,
+  delay: 150,
+})
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default [
   {
     title: '功能管理',
@@ -148,5 +155,10 @@ export default [
     title: '可视化配置',
     path: '/backstage-config/visual-config',
     component: <VisualConfig />,
+  },
+  {
+    title: '运维监控',
+    path: '/backstage-config/online-monitor',
+    component: <OnlineMonitor />,
   },
 ]

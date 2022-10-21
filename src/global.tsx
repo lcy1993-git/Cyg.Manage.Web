@@ -4,6 +4,7 @@ const { NODE_ENV } = process.env
 // 为了防止有可能初始化失败，所以先默认一套设置
 export let webConfig = {
   requestUrl: {
+    monitor: '/monitor/v2/api',
     project: '/manage/v2/api',
     common: '/common/api',
     upload: '/storage/api',
@@ -43,6 +44,7 @@ const initConfig = async () => {
   if (NODE_ENV === 'development') {
     // 如果是开发环境，那么将webConfig.requestUrl 中的每一个数据前面加上 /api
     const copyConfig = cloneDeep(configInfo)
+
     const { requestUrl } = copyConfig
     let newRequestUrl = {}
     if (requestUrl) {
