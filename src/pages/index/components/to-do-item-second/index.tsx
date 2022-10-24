@@ -23,7 +23,7 @@ const imageObject = {
   agent: agentSrc,
   approve: approveSrc,
   arrange: arrangeSrc,
-  review: reviewSrc,
+  // review: reviewSrc,
   knot: knotSrc,
 }
 

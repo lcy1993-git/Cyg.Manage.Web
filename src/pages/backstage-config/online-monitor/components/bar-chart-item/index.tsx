@@ -9,14 +9,17 @@ import styles from './index.less'
 interface ChartParams {
   data?: any
   setArea?: Dispatch<SetStateAction<string>>
+  setShowName?: Dispatch<SetStateAction<string>>
+  showName?: string
   area: string
   type: 'area' | 'state'
 }
 let myChart: any = null
 let stateChart: any = null
 const BarChartItem: React.FC<ChartParams> = (props) => {
-  const { setArea, area, type } = props
+  const { setArea, area, type, showName, setShowName } = props
   const divRef = useRef<HTMLDivElement>(null)
+
   // const
 
   const { data: QtyData, loading } = useRequest(() => getQtyByArea({ areaCode: area }), {
@@ -47,6 +50,7 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
 
   myChart?.on('click', (e: any) => {
     setArea?.(e.data?.areaCode)
+    setShowName?.(e.name)
   })
 
   const getOptions = () => {
@@ -111,6 +115,7 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
 
   const backEvent = () => {
     setArea?.('')
+    setShowName?.('')
   }
 
   return (
@@ -122,6 +127,7 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
           title="返回顶层"
         />
       )}
+      {showName && type === 'state' && <div className={styles.barTitle}>{showName}</div>}
       <Spin spinning={type === 'area' ? loading : stateLoading}>
         <div style={{ width: '95%', height: '580px' }} ref={divRef}></div>
       </Spin>

@@ -20,13 +20,18 @@ const OnlineMonitor: React.FC = () => {
   //项目统计
   const [statisType, setStatisType] = useState<'user' | 'project'>('user')
   //获取用户数量
-  const { data: userQtyData } = useRequest(() => getUserStatistics(), {})
+  const { data: userQtyData } = useRequest(() => getUserStatistics(), {
+    pollingInterval: 8000,
+  })
 
   const [area, setArea] = useState<string>('')
   //获取项目数量
   const { data: projectQtyData } = useRequest(() => getProjectStatistics({ areaCode: area }), {
+    pollingInterval: 8000,
     refreshDeps: [area],
   })
+
+  const [currentClickName, setCurrentClickName] = useState<string>('')
 
   const [exportLoading, setExportLoading] = useState<boolean>(false)
 
@@ -120,19 +125,19 @@ const OnlineMonitor: React.FC = () => {
                   <NumberItem
                     account={userQtyData?.companyUserOnLineTotalQty}
                     size="small"
-                    title="当前在线"
+                    title="在线公司用户总数"
                   />
 
                   <NumberItem
                     account={userQtyData?.companyAdminUserTotalQty}
                     size="large"
-                    title="用户账号总数"
+                    title="公司管理员总数"
                   />
 
                   <NumberItem
                     account={userQtyData?.companyAdminUserOnLineTotalQty}
                     size="small"
-                    title="当前在线"
+                    title="在线公司管理员总数"
                   />
                 </div>
                 <div className={styles.exportItem}>
@@ -203,10 +208,15 @@ const OnlineMonitor: React.FC = () => {
               <div className={styles.moduleChart}>
                 <div className="flex">
                   <div className={styles.lineItem}>
-                    <BarChartItem setArea={setArea} area={area} type="area" />
+                    <BarChartItem
+                      setArea={setArea}
+                      area={area}
+                      type="area"
+                      setShowName={setCurrentClickName}
+                    />
                   </div>
                   <div className={styles.lineItem}>
-                    <BarChartItem area={area} type="state" />
+                    <BarChartItem area={area} type="state" showName={currentClickName} />
                   </div>
                 </div>
               </div>

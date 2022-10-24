@@ -13,7 +13,7 @@ const NumberItem: React.FC<NumberItemProps> = (props) => {
   return (
     <div className={styles.numberItem}>
       <div className={styles.number} style={{ fontSize: `${fontSize}px` }}>
-        {account.toLocaleString()}
+        {account && account.toLocaleString()}
       </div>
       <div className={styles.title}>{title}</div>
     </div>

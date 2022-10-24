@@ -159,9 +159,9 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
         <NumberItem
           size="small"
           account={data?.userTotalQty}
-          title={`${data?.clientCategoryText}权限总数`}
+          title={`${data?.clientCategoryText ? data?.clientCategoryText : ' '}权限总数`}
         />
-        <NumberItem size="small" account={data?.userOnlineTotalQty} title="当前在线用户数" />
+        <NumberItem size="small" account={data?.userOnLineTotalQty} title="当前在线用户数" />
       </div>
       <div className={styles.chart}>
         <div>用户在线时段统计</div>

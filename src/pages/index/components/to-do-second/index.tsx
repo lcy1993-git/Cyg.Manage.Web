@@ -38,10 +38,7 @@ const areaTypeObj = {
 }
 
 const ToDo: React.FC<ToDoProps> = (props) => {
-  const {
-    componentProps = ['agent', 'approve', 'arrange', 'review', 'knot'],
-    currentAreaInfo,
-  } = props
+  const { componentProps = ['agent', 'approve', 'arrange', 'knot'], currentAreaInfo } = props
 
   const { setAllProjectSearchParams } = useLayoutStore()
 
