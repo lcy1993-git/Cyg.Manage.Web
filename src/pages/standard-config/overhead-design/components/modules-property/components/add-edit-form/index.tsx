@@ -185,11 +185,12 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       </CyFormItem>
       {isHidden && (
         <div
+          style={{ marginLeft: '108px' }}
           onClick={() => {
             setIsHidden(false)
           }}
         >
-          <FormExpandButton />
+          <FormExpandButton label={108} />
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
@@ -239,11 +240,12 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
       </div>
       {!isHidden && (
         <div
+          style={{ marginLeft: '108px' }}
           onClick={() => {
             setIsHidden(true)
           }}
         >
-          <FormCollaspeButton />
+          <FormCollaspeButton label={108} />
         </div>
       )}
     </>

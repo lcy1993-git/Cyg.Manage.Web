@@ -123,11 +123,12 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
       </CyFormItem>
       {isHidden && (
         <div
+          style={{ marginLeft: '90px' }}
           onClick={() => {
             setIsHidden(false)
           }}
         >
-          <FormExpandButton />
+          <FormExpandButton label={90} />
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
@@ -170,11 +171,12 @@ const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
       </div>
       {!isHidden && (
         <div
+          style={{ marginLeft: '90px' }}
           onClick={() => {
             setIsHidden(true)
           }}
         >
-          <FormCollaspeButton />
+          <FormCollaspeButton label={90} />
         </div>
       )}
     </>

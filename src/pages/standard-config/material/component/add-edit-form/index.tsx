@@ -75,17 +75,6 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '物料名称不能为空' }]}
       >
-        {/* <SelectCanEditAndSearch
-          url="/Material/GetMaterialByNameList"
-          extraParams={{ libId: resourceLibId }}
-          requestType="post"
-          postType="query"
-          requestSource="resource"
-          titlekey="value"
-          valuekey="value"
-          placeholder="请输入名称"
-          onChange={changeNameHandle}
-        /> */}
         <SelectCanSearch
           url="/Material/GetMaterialByNameList"
           extraParams={{ libId: resourceLibId }}
@@ -104,18 +93,6 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         rules={[{ required: true, message: '规格型号不能为空' }]}
       >
-        {/* <SelectCanEdit
-          url="/Material/GetListBySpec"
-          requestSource="resource"
-          requestType="post"
-          titlekey="spec"
-          valuekey="id"
-          postType="body"
-          extraParams={{ libId: resourceLibId }}
-          placeholder="请输入规格型号"
-          onChange={changeSpecHandle}
-          update={updateName}
-        /> */}
         {
           <SelectCanUpdate
             url="/Material/GetListBySpec"
@@ -131,24 +108,6 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           />
         }
       </CyFormItem>
-      {/* <CyFormItem
-        label="测试"
-        name="test"
-        required
-        rules={[{ required: true, message: '规格型号不能为空' }]}
-      >
-        <Test
-           url="/Material/GetMaterialByNameList"
-           extraParams={{ libId: resourceLibId }}
-           requestType="post"
-           postType="query"
-           requestSource="resource"
-           titlekey="value"
-           valuekey="value"
-           placeholder="请输入名称"
-           onChange={changeNameHandle}
-        />
-      </CyFormItem> */}
 
       <CyFormItem
         label="类别"
@@ -200,11 +159,12 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
 
       {isHidden && (
         <div
+          style={{ marginLeft: '90px' }}
           onClick={() => {
             setIsHidden(false)
           }}
         >
-          <FormExpandButton />
+          <FormExpandButton label={90} />
         </div>
       )}
 
@@ -312,11 +272,12 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
       }
       {!isHidden && (
         <div
+          style={{ marginLeft: '90px' }}
           onClick={() => {
             setIsHidden(true)
           }}
         >
-          <FormCollaspeButton />
+          <FormCollaspeButton label={90} />
         </div>
       )}
     </>

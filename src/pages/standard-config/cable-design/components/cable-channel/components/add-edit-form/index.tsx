@@ -168,11 +168,12 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
 
       {isHidden && (
         <div
+          style={{ marginLeft: '130px' }}
           onClick={() => {
             setIsHidden(false)
           }}
         >
-          <FormExpandButton />
+          <FormExpandButton label={130} />
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
@@ -240,11 +241,12 @@ const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
 
       {!isHidden && (
         <div
+          style={{ marginLeft: '130px' }}
           onClick={() => {
             setIsHidden(true)
           }}
         >
-          <FormCollaspeButton />
+          <FormCollaspeButton label={130} />
         </div>
       )}
     </>

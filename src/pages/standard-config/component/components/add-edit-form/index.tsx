@@ -187,11 +187,12 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       )}
       {isHidden && (
         <div
+          style={{ marginLeft: '98px' }}
           onClick={() => {
             setIsHidden(false)
           }}
         >
-          <FormExpandButton />
+          <FormExpandButton label={98} />
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
@@ -222,11 +223,12 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       </div>
       {!isHidden && (
         <div
+          style={{ marginLeft: '98px' }}
           onClick={() => {
             setIsHidden(true)
           }}
         >
-          <FormCollaspeButton />
+          <FormCollaspeButton label={98} />
         </div>
       )}
     </>
