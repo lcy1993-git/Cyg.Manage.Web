@@ -348,7 +348,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                 setCurrentFileInfo={setCurrentFileInfo}
               />
             </TabPane>
-            <TabPane key="audit" tab="评审成果">
+            {/* <TabPane key="audit" tab="评审成果">
               <AuditResultTab
                 auditResultData={handleAuditData}
                 createEvent={setAuditKeys}
@@ -356,7 +356,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
                 setAuditFileInfo={setAuditFileInfo}
                 projectInfo={projectInfo}
               />
-            </TabPane>
+            </TabPane> */}
           </Tabs>
         </div>
       </Spin>

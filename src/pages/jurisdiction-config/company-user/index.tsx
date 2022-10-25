@@ -455,20 +455,20 @@ const CompanyUser: React.FC = () => {
             </div>
             <div className="flex">
               <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic label="管理端" icon="manage" accreditData={handleData?.[0]} />
+              </div>
+              <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="勘察端" icon="prospect" accreditData={handleData?.[1]} />
               </div>
               <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="设计端" icon="design" accreditData={handleData?.[2]} />
               </div>
-              <div className={styles.accreditStatisticItem}>
+              {/* <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="技经端" icon="skillBy" accreditData={handleData?.[4]} />
               </div>
               <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="评审端" icon="review" accreditData={handleData?.[3]} />
-              </div>
-              <div className={styles.accreditStatisticItem}>
-                <AccreditStatistic label="管理端" icon="manage" accreditData={handleData?.[0]} />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

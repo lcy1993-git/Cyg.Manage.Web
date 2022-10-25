@@ -1052,10 +1052,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                     编辑
                   </Button>
                 )}
-              {record?.operationAuthority?.canEdit &&
+              {/* {record?.operationAuthority?.canEdit &&
                 buttonJurisdictionArray?.includes('all-project-file-engineer') && (
                   <Button onClick={() => approvalFileEvent(record)}>批复文件</Button>
-                )}
+                )} */}
             </div>
           </>
         )
