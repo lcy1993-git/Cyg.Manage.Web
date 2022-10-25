@@ -15,7 +15,7 @@ const statusObject = {
   agent: '项目获取',
   approve: '立项审批',
   arrange: '任务安排',
-  review: '评审管理',
+  // review: '评审管理',
   knot: '结项管理',
 }
 
@@ -23,7 +23,7 @@ const imageObject = {
   agent: agentSrc,
   approve: approveSrc,
   arrange: arrangeSrc,
-  review: reviewSrc,
+  // review: reviewSrc,
   knot: knotSrc,
 }
 

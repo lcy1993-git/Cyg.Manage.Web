@@ -26,6 +26,7 @@ const Login: React.FC = () => {
       setStopInfo(res)
     }
   }
+
   useMount(async () => {
     await getServerList()
   })

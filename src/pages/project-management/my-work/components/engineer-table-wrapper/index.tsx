@@ -1,7 +1,7 @@
 import CyTag from '@/components/cy-tag'
 import ImageIcon from '@/components/image-icon'
 import TableSearch from '@/components/table-search'
-import { useLayoutStore } from '@/layouts/context'
+// import { useLayoutStore } from '@/layouts/context'
 import AddProjectModal from '@/pages/project-management/all-project/components/add-project-modal'
 import ApprovalProjectModal from '@/pages/project-management/all-project/components/approval-project-modal'
 import ApproveModal from '@/pages/project-management/all-project/components/approve-modal'
@@ -50,7 +50,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { history } from 'umi'
+// import { history } from 'umi'
 import { useMyWorkStore } from '../../context'
 import ArchiveModal from '../archive-modal'
 import EngineerTable from '../engineer-table'
@@ -167,7 +167,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   //项目归档模态框
   const [archiveVisible, setArchiveVisible] = useState<boolean>(false)
   // 预设计
-  const { setPreDesignItem } = useLayoutStore()
+  // const { setPreDesignItem } = useLayoutStore()
 
   //获取用户身份
   // @ts-ignore

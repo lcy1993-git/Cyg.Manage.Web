@@ -137,27 +137,27 @@ const MyWork: React.FC = () => {
               number: data.arrange.awaitAllot,
               url: '/ProjectList/GetAwaitAllots',
             },
-            {
-              label: '待安排评审',
-              id: 'waitArrangAudit',
-              number: data.arrange.awaitAllotExternalReview,
-              url: '/ProjectList/GetAwaitAllotExternalReviews',
-            },
+            // {
+            //   label: '待安排评审',
+            //   id: 'waitArrangAudit',
+            //   number: data.arrange.awaitAllotExternalReview,
+            //   url: '/ProjectList/GetAwaitAllotExternalReviews',
+            // },
           ],
         },
-        {
-          label: '评审管理',
-          id: 'review',
-          number: data.review.total,
-          children: [
-            {
-              label: '外审中',
-              id: 'externalReviewing',
-              number: data.review.externalReviewing,
-              url: '/ProjectList/GetExternalReviewings',
-            },
-          ],
-        },
+        // {
+        //   label: '评审管理',
+        //   id: 'review',
+        //   number: data.review.total,
+        //   children: [
+        //     {
+        //       label: '外审中',
+        //       id: 'externalReviewing',
+        //       number: data.review.externalReviewing,
+        //       url: '/ProjectList/GetExternalReviewings',
+        //     },
+        //   ],
+        // },
         {
           label: '结项管理',
           id: 'knot',

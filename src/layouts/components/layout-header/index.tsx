@@ -8,7 +8,7 @@ import { BellOutlined } from '@ant-design/icons'
 import { useInterval } from 'ahooks'
 import { Badge, Dropdown, Menu } from 'antd'
 import uuid from 'node-uuid'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { history } from 'umi'
 import CutAccount from '../cut-account'
 import EditPassword from '../edit-password'
@@ -29,6 +29,7 @@ const LayoutHeader: React.FC = () => {
 
   const loginOut = async () => {
     history.push('/login')
+
     await signOut()
     localStorage.setItem('Authorization', '')
   }
@@ -52,13 +53,13 @@ const LayoutHeader: React.FC = () => {
   const myBaseInfoMenu = (
     <Menu>
       <div className={styles.myNameContent}>{userInfo.userName}</div>
-      <Menu.Item onClick={() => personInfoEditEvent()}>
+      <Menu.Item onClick={() => personInfoEditEvent()} key="info">
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="messager.png" />
         </span>
         <span>个人信息</span>
       </Menu.Item>
-      <Menu.Item onClick={() => setEditPasswordModalVisible(true)}>
+      <Menu.Item onClick={() => setEditPasswordModalVisible(true)} key="setPwd">
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="lack.png" />
         </span>
@@ -70,7 +71,7 @@ const LayoutHeader: React.FC = () => {
         </span>
         <span>快捷登录</span>
       </Menu.Item> */}
-      <Menu.Item onClick={() => loginOut()}>
+      <Menu.Item onClick={() => loginOut()} key="out">
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="out.png" />
         </span>
@@ -117,7 +118,7 @@ const LayoutHeader: React.FC = () => {
           <Dropdown overlay={myBaseInfoMenu}>
             <div>
               <div className={styles.myBaseInfo}>
-                <img className={styles.myHeadPortait} src={headPortraitSrc} />
+                <img className={styles.myHeadPortait} src={headPortraitSrc} alt="" />
                 <div className={styles.foldIcon}>
                   <ImageIcon imgUrl="fold.png" width={8} height={8} />
                 </div>

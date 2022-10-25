@@ -402,3 +402,12 @@ export const noAutoCompletePassword = {
   readOnly: true,
   onFocus: (e: any) => e.currentTarget.removeAttribute('readonly'),
 }
+
+//数字国际化显示 正则
+export const thousandBitSeparator = (n: number) => {
+  const re = /\d{1,3}(?=(\d{3})+$)/g
+  const n1 = n.toString().replace(/^(\d+)((\.\d+)?)$/, (s, s1, s2) => {
+    return s1.replace(re, '$&,') + s2
+  })
+  return n1
+}
