@@ -176,11 +176,12 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
 
       {isHidden && (
         <div
+          style={{ marginLeft: '98px' }}
           onClick={() => {
             setIsHidden(false)
           }}
         >
-          <FormExpandButton />
+          <FormExpandButton label={98} />
         </div>
       )}
       <div style={{ display: isHidden ? 'none' : 'block' }}>
@@ -261,11 +262,12 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
       </div>
       {!isHidden && (
         <div
+          style={{ marginLeft: '98px' }}
           onClick={() => {
             setIsHidden(true)
           }}
         >
-          <FormCollaspeButton />
+          <FormCollaspeButton label={98} />
         </div>
       )}
     </>
