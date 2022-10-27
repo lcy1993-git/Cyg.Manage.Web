@@ -239,6 +239,18 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
             <Option value={0}>否</Option>
           </Select>
         </CyFormItem>
+        <CyFormItem
+          labelWidth={98}
+          align="right"
+          label="沟体设计"
+          name="grooveStructure"
+          initialValue={'砖砌'}
+        >
+          <Select>
+            <Option value={'砖砌'}>砖砌</Option>
+            <Option value={'钢筋混凝土'}>钢筋混凝土</Option>
+          </Select>
+        </CyFormItem>
 
         <CyFormItem
           label="所属工程"
