@@ -191,12 +191,14 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
 
   //获取token
   const token = localStorage.getItem('Authorization')
+  const url =
+    window.location.hostname === 'localhost' ? 'srthkf2.gczhyun.com:21530' : window.location.host
   /**webSocket */
   let heart: any
-  // let ws = new WebSocket(`wss://srthkf2.gczhyun.com:21530/usercenter-ws/?accessToken=${token}`)
+  // let ws = new WebSocket(`wss://${window.location.host}/usercenter-ws/?accessToken=${token}`)
   useEffect(() => {
     if (window.WebSocket) {
-      let ws = new WebSocket(`wss://srthkf2.gczhyun.com:21530/usercenter-ws/?accessToken=${token}`)
+      let ws = new WebSocket(`wss://${url}/usercenter-ws/?accessToken=${token}`)
       ws.onopen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
         heart = setInterval(() => {

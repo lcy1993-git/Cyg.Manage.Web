@@ -7,7 +7,7 @@ import { downLoadFileItem } from '@/services/operation-config/company-file'
 import { useControllableValue, useMount } from 'ahooks'
 import { getUploadUrl } from '@/services/resource-config/drawing'
 import { Button, Table } from 'antd'
-import { Form, message, Modal } from 'antd'
+import { message, Modal } from 'antd'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useRequest } from 'ahooks'
 
@@ -96,7 +96,7 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
     },
     {
       title: '操作',
-      render(t, record: any) {
+      render(t: any, record: any) {
         const { id, fileId, fileName } = record
         return (
           <div className={styles.buttonArea}>

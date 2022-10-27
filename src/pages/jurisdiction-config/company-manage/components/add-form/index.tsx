@@ -1,35 +1,35 @@
-import React, { useMemo } from 'react';
-import { Input, DatePicker, TreeSelect } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import { TreeDataItem } from '@/services/jurisdiction-config/company-manage';
-import ClickInputNumber from '@/components/clickInput-number';
-import styles from './index.less';
-import rules from '../../rule';
+import React, { useMemo } from 'react'
+import { Input, DatePicker } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import { TreeDataItem } from '@/services/jurisdiction-config/company-manage'
+import ClickInputNumber from '@/components/clickInput-number'
+import styles from './index.less'
+import rules from '../../rule'
 
 interface CompanyManageForm {}
 
 interface CompanyManageFormProps {
-  treeData: TreeDataItem[];
-  form: any;
+  treeData: TreeDataItem[]
+  form: any
 }
 
 const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
-  const { treeData = [], form } = props;
+  const { treeData = [], form } = props
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
       value: data.id,
       children: data.children?.map(mapTreeData),
-    };
-  };
+    }
+  }
 
   const handleData = useMemo(() => {
-    return treeData.map(mapTreeData);
-  }, [JSON.stringify(treeData)]);
+    return treeData.map(mapTreeData)
+  }, [JSON.stringify(treeData)])
 
   const reset = () => {
-    form.resetFields(['authorityExpireDate']);
-  };
+    form.resetFields(['authorityExpireDate'])
+  }
 
   return (
     <>
@@ -66,7 +66,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         <ClickInputNumber minNumber={0} maxNumber={50} />
       </CyFormItem>
 
-      <CyFormItem
+      {/* <CyFormItem
         labelWidth={100}
         align="right"
         label="技经端"
@@ -86,7 +86,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         required
       >
         <ClickInputNumber minNumber={0} maxNumber={50} limit={5} />
-      </CyFormItem>
+      </CyFormItem> */}
 
       <CyFormItem
         labelWidth={100}
@@ -131,7 +131,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         <FormSwitch />
       </CyFormItem> */}
     </>
-  );
-};
+  )
+}
 
-export default CompanyManageForm;
+export default CompanyManageForm
