@@ -106,7 +106,7 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
   let myChart: any = null
   const initChart = () => {
     if (divRef && divRef.current) {
-      myChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+      myChart = echarts.init(divRef.current as unknown as HTMLDivElement)
       const options = getOptions()
       myChart.setOption(options)
     }
@@ -174,10 +174,11 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
             onChange={(value: any) => changeDateTypeEvent(value)}
           />
           <DatePicker
-            // value={dateVal}
+            defaultValue={moment(getDate().year, 'YYYY')}
             style={{ width: '150px' }}
             picker={unit}
             onChange={(value) => changeDate(value)}
+            allowClear={false}
           />
         </Space>
       </div>
