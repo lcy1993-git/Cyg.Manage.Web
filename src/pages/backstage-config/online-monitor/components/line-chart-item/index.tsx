@@ -6,7 +6,7 @@ import NumberItem from '../number-item'
 import styles from './index.less'
 import EnumSelect from '@/components/enum-select'
 import { DatePicker, Space, Spin } from 'antd'
-import moment from 'moment'
+import moment, { Moment } from 'moment'
 
 interface ChartParams {
   data?: any
@@ -40,7 +40,7 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
   //日期单位展示
   const [unit, setUnit] = useState<PickerType>('year')
   const [initDate, setInitDate] = useState<any>(initParams)
-  // const [dateVal, setDateVal] = useState<Moment>(moment(`${getDate().year}`))
+  const [dateVal, setDateVal] = useState<Moment>(moment(getDate().year, 'YYYY'))
   // const size = useSize(divRef)
   const { data: QtyData, loading } = useRequest(
     () =>
@@ -114,6 +114,7 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
 
   /**切换日期查看 */
   const changeDate = (value: any) => {
+    setDateVal(value)
     const dateArray = moment(value).format('YYYY-MM-DD').split('-')
     setInitDate({
       year: dateArray[0],
@@ -124,6 +125,7 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
 
   const changeDateTypeEvent = (value: PickerType) => {
     setUnit(value)
+    getDefaultDate(value)
     switch (value) {
       case 'date':
         setInitDate({
@@ -152,6 +154,23 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
     }
   }
 
+  //获取默认日期
+  const getDefaultDate = (value: PickerType) => {
+    switch (value) {
+      case 'year':
+        setDateVal(moment(getDate().year, 'YYYY'))
+        break
+      case 'month':
+        setDateVal(moment(`${getDate().year}-${getDate().month}`, 'YYYY-MM'))
+        break
+      case 'date':
+        setDateVal(moment(`${getDate().year}-${getDate().month}-${getDate().day}`, 'YYYY-MM-DD'))
+        break
+      default:
+        return
+    }
+  }
+
   return (
     <div className={styles.lineContent}>
       <div className={styles.title}>{data?.clientCategoryText}</div>
@@ -174,9 +193,9 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
             onChange={(value: any) => changeDateTypeEvent(value)}
           />
           <DatePicker
-            defaultValue={moment(getDate().year, 'YYYY')}
             style={{ width: '150px' }}
             picker={unit}
+            value={dateVal}
             onChange={(value) => changeDate(value)}
             allowClear={false}
           />
