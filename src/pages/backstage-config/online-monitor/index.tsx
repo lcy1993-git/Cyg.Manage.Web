@@ -126,6 +126,7 @@ const OnlineMonitor: React.FC = () => {
                     account={userQtyData?.companyUserOnLineTotalQty}
                     size="small"
                     title="在线公司用户总数"
+                    type="all"
                   />
 
                   <NumberItem
@@ -138,6 +139,7 @@ const OnlineMonitor: React.FC = () => {
                     account={userQtyData?.companyAdminUserOnLineTotalQty}
                     size="small"
                     title="在线公司管理员总数"
+                    type="admin"
                   />
                 </div>
                 <div className={styles.exportItem}>
@@ -191,13 +193,13 @@ const OnlineMonitor: React.FC = () => {
               <div className={styles.moduleChart}>
                 <div className="flex">
                   <div className={styles.lineItem}>
-                    <LineChartItem data={userQtyData?.clientCategorys[0]} />
+                    <LineChartItem data={userQtyData?.clientCategorys[0]} type="manage" />
                   </div>
                   <div className={styles.lineItem}>
-                    <LineChartItem data={userQtyData?.clientCategorys[1]} />
+                    <LineChartItem data={userQtyData?.clientCategorys[1]} type="survey" />
                   </div>
                   <div className={styles.lineItem}>
-                    <LineChartItem data={userQtyData?.clientCategorys[2]} />
+                    <LineChartItem data={userQtyData?.clientCategorys[2]} type="design" />
                   </div>
                 </div>
               </div>

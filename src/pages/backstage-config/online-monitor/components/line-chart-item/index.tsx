@@ -9,6 +9,7 @@ import { DatePicker, Space, Spin } from 'antd'
 import moment, { Moment } from 'moment'
 
 interface ChartParams {
+  type?: 'all' | 'admin' | 'survey' | 'design' | 'manage'
   data?: any
 }
 
@@ -28,19 +29,21 @@ const getDate = () => {
 
 const initParams = {
   year: getDate().year,
-  month: 0,
-  day: 0,
+  month: getDate().month,
+  day: getDate().day,
 }
 
 type PickerType = 'date' | 'month' | 'year'
 
 const LineChartItem: React.FC<ChartParams> = (props) => {
-  const { data } = props
+  const { data, type } = props
   const divRef = useRef<HTMLDivElement>(null)
   //日期单位展示
-  const [unit, setUnit] = useState<PickerType>('year')
+  const [unit, setUnit] = useState<PickerType>('date')
   const [initDate, setInitDate] = useState<any>(initParams)
-  const [dateVal, setDateVal] = useState<Moment>(moment(getDate().year, 'YYYY'))
+  const [dateVal, setDateVal] = useState<Moment>(
+    moment(`${getDate().year}-${getDate().month}-${getDate().day}`, 'YYYY-MM-DD')
+  )
   // const size = useSize(divRef)
   const { data: QtyData, loading } = useRequest(
     () =>
@@ -65,6 +68,11 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
         trigger: 'axis',
         axisPointer: {
           type: 'shadow',
+        },
+        formatter(params: any) {
+          const data = params[0]
+          return `<span>${data.name}</span><br />
+          <span style="display:inline-block;margin-right:5px;border-radius:100px;width:10px;height:10px;background-color:#1f9c55"></span><span>在线用户数：</span><span>${data.value}</span>`
         },
       },
       xAxis: {
@@ -180,7 +188,12 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
           account={data?.userTotalQty}
           title={`${data?.clientCategoryText ? data?.clientCategoryText : ' '}权限总数`}
         />
-        <NumberItem size="small" account={data?.userOnLineTotalQty} title="当前在线用户数" />
+        <NumberItem
+          size="small"
+          account={data?.userOnLineTotalQty}
+          title="当前在线用户数"
+          type={type}
+        />
       </div>
       <div className={styles.chart}>
         <div>用户在线时段统计</div>

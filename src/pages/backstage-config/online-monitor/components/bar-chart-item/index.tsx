@@ -25,10 +25,6 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
   const { data: QtyData, loading } = useRequest(() => getQtyByArea({ areaCode: area }), {
     ready: type === 'area',
     onSuccess: () => {
-      // const handleData = QtyData?.map((item: any) => {
-      //   return { upCode: area, data: [item.area.text, item.qty] }
-      // })
-      // setDrillData(handleData)
       if (QtyData.length) {
         initChart()
       }
@@ -83,6 +79,11 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
         axisPointer: {
           type: 'shadow',
         },
+        formatter(params: any) {
+          const data = params[0]
+          return `<span>${data.name}</span><br />
+          <span style="display:inline-block;margin-right:5px;border-radius:100px;width:10px;height:10px;background-color:#1f9c55"></span><span>项目数量：</span><span>${data.value}</span>`
+        },
       },
       dataGroupId: '',
       animationDurationUpdate: 500,
@@ -102,12 +103,12 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
   const initChart = () => {
     if (divRef && divRef.current) {
       if (type === 'area') {
-        myChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+        myChart = echarts.init(divRef.current as unknown as HTMLDivElement)
         const options = getOptions()
         myChart.setOption(options)
         return
       }
-      stateChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+      stateChart = echarts.init(divRef.current as unknown as HTMLDivElement)
       const options = getOptions()
       stateChart.setOption(options)
     }
