@@ -2,7 +2,7 @@ import React from 'react'
 import styles from './index.less'
 
 interface ImageIconProps {
-  width?: number | string
+  width?: any
   height?: number | string
   marginRight?: number | string
   // 指向/assets/icon-image目录
@@ -21,8 +21,17 @@ const ImageIcon: React.FC<ImageIconProps> = (props) => {
 
   return (
     <img
+      alt=""
       className={styles.imageIcon}
-      style={{ width: `${width}px`, height: `${height}px`, marginRight: `${marginRight}px` }}
+      style={{
+        width: `${
+          typeof width === 'string'
+            ? `${width.includes('%') ? `${width}` : `${width}px`}`
+            : `${width}px`
+        }`,
+        height: `${height}px`,
+        marginRight: `${marginRight}px`,
+      }}
       src={imgSrc}
     />
   )

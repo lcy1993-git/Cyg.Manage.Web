@@ -1,23 +1,109 @@
 .lineContent {
-  padding: 15px 20px 0px 20px;
+  height: 92%;
+  margin: 10px;
+  padding: 15px 20px 0px 0px;
 
   .chart {
     display: flex;
     justify-content: space-between;
+    height: 7%;
+    margin-left: 8px;
     padding: 10px 0;
+    color: #fff;
+
+    .chooseType {
+      width: 125px;
+      height: 25px;
+      padding-left: 14px;
+      background-color: @time-choose-input-bg;
+
+      :global {
+        .ant-select {
+          color: @index-to-do-item-color;
+        }
+
+        .ant-select-single .ant-select-selector .ant-select-selection-item,
+        .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+          line-height: 22px;
+        }
+
+        .ant-select-arrow {
+          color: @index-to-do-item-color;
+        }
+
+        .ant-select-single.ant-select-open .ant-select-selection-item {
+          color: @index-to-do-item-color;
+        }
+      }
+    }
+
+    .chooseTime {
+      width: 130px;
+      height: 25px;
+      padding-left: 12px;
+      background-color: @time-choose-input-bg;
+
+      :global {
+        .ant-picker {
+          height: 16px;
+          padding: 0;
+          line-height: 1;
+          border: none;
+
+          .ant-picker-input {
+            height: 16px;
+
+            input {
+              height: 16px;
+              color: @index-to-do-item-color;
+              font-size: 12px;
+              line-height: 1;
+            }
+          }
+
+          .ant-picker-active-bar {
+            display: none;
+          }
+
+          .ant-picker-suffix {
+            color: @index-to-do-item-color;
+          }
+
+          .anticon-swap-right {
+            color: @index-to-do-item-color;
+          }
+        }
+      }
+    }
   }
 
-  .title {
-    color: #1f9c55;
+  .portTitle {
+    display: flex;
+    align-items: center;
+    height: 2%;
+    color: #fff;
     font-weight: bold;
-    font-size: 32px;
+    font-size: 23px;
+
+    .categoryTxt {
+      margin-left: 10px;
+    }
   }
 
   .account {
     display: flex;
     justify-content: space-around;
-    height: 90px;
-    margin: 0 -20px;
-    background-color: @white-color;
+    height: 24%;
+    margin: 5px -20px;
+  }
+
+  :global {
+    .ant-spin-nested-loading {
+      height: 67%;
+    }
+
+    .ant-spin-container {
+      height: 100%;
+    }
   }
 }

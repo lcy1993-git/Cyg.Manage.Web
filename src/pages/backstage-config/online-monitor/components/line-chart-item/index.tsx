@@ -1,12 +1,13 @@
 import { getOnlineUserQty } from '@/services/backstage-config/online-monitor'
 import { useRequest } from 'ahooks'
 import * as echarts from 'echarts/lib/echarts'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import NumberItem from '../number-item'
 import styles from './index.less'
 import EnumSelect from '@/components/enum-select'
 import { DatePicker, Space, Spin } from 'antd'
 import moment, { Moment } from 'moment'
+import ImageIcon from '@/components/image-icon'
 
 interface ChartParams {
   type?: 'all' | 'admin' | 'survey' | 'design' | 'manage'
@@ -64,6 +65,13 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
     const dateData = QtyData?.map((item: any) => item.key)
     const currentDateData = QtyData.map((item: any) => item.value)
     return {
+      title: {
+        text: '单位（个）',
+        textStyle: {
+          color: '#74AC91',
+          fontSize: '12px',
+        },
+      },
       tooltip: {
         trigger: 'axis',
         axisPointer: {
@@ -94,18 +102,25 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
         axisLabel: {
           color: '#74AC91',
         },
-        splitLine: {
-          lineStyle: {
-            color: '#74AC91',
-            type: 'dashed',
-          },
-        },
       },
       series: [
         {
           data: currentDateData,
           type: 'line',
           color: '#1f9c55',
+          smooth: true,
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: 'rgba(77, 169, 68, 0.9)',
+              },
+              {
+                offset: 1,
+                color: 'rgba(77, 169, 68, 0.3)',
+              },
+            ]),
+          },
         },
       ],
     }
@@ -119,6 +134,29 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
       myChart.setOption(options)
     }
   }
+
+  const resize = () => {
+    if (myChart) {
+      setTimeout(() => {
+        myChart.resize()
+      }, 100)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      if (!divRef.current) {
+        // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
+        window.removeEventListener('resize', resize)
+      } else {
+        resize()
+      }
+    })
+
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  })
 
   /**切换日期查看 */
   const changeDate = (value: any) => {
@@ -181,41 +219,54 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
 
   return (
     <div className={styles.lineContent}>
-      <div className={styles.title}>{data?.clientCategoryText}</div>
+      <div className={styles.portTitle}>
+        <ImageIcon width={25} height={10} imgUrl="monitor/rightArrow.png" />
+        <span className={styles.categoryTxt}>{data?.clientCategoryText}</span>
+      </div>
       <div className={styles.account}>
         <NumberItem
-          size="small"
           account={data?.userTotalQty}
           title={`${data?.clientCategoryText ? data?.clientCategoryText : ' '}权限总数`}
+          imgSrc="portTotal.png"
         />
         <NumberItem
-          size="small"
           account={data?.userOnLineTotalQty}
           title="当前在线用户数"
           type={type}
+          imgSrc="portOnline.png"
         />
       </div>
+      <ImageIcon width="100%" height={1} imgUrl="monitor/cutLine.png" />
       <div className={styles.chart}>
-        <div>用户在线时段统计</div>
+        <div>
+          <ImageIcon width={4} height={15} imgUrl="monitor/side.png" />
+          <span style={{ marginLeft: '10px' }}>用户在线时段统计</span>
+        </div>
         <Space>
-          <EnumSelect
-            valueString
-            style={{ width: '120px' }}
-            enumList={dateUnit}
-            value={unit}
-            onChange={(value: any) => changeDateTypeEvent(value)}
-          />
-          <DatePicker
-            style={{ width: '150px' }}
-            picker={unit}
-            value={dateVal}
-            onChange={(value) => changeDate(value)}
-            allowClear={false}
-          />
+          <div className={styles.chooseType}>
+            <EnumSelect
+              valueString
+              style={{ width: '105px', height: '25px', color: '@index-to-do-item-color' }}
+              enumList={dateUnit}
+              value={unit}
+              onChange={(value: any) => changeDateTypeEvent(value)}
+              bordered={false}
+            />
+          </div>
+          <div className={styles.chooseTime}>
+            <DatePicker
+              style={{ width: '105px' }}
+              picker={unit}
+              value={dateVal}
+              onChange={(value) => changeDate(value)}
+              allowClear={false}
+              bordered={false}
+            />
+          </div>
         </Space>
       </div>
       <Spin spinning={loading}>
-        <div style={{ width: '100%', height: '435px' }} ref={divRef}></div>
+        <div style={{ width: '100%', height: '100%' }} ref={divRef}></div>
       </Spin>
     </div>
   )

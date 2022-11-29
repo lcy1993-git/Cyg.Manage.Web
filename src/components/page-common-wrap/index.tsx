@@ -4,16 +4,18 @@ interface PageCommonWrapProps {
   noPadding?: boolean
   noColor?: boolean
   className?: string
+  noPagePadding?: boolean
 }
 
 const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
-  const { noPadding = false, className, noColor = false } = props
+  const { noPadding = false, className, noColor = false, noPagePadding = false } = props
 
   const noPaddingClass = noPadding ? styles.noPadding : ''
+  const noPagePaddingClass = noPagePadding ? styles.noPagePadding : ''
   const noColorClass = noColor ? styles.noColor : ''
 
   return (
-    <div className={`${styles.pageCommonWrap} ${className}`}>
+    <div className={`${styles.pageCommonWrap} ${className} ${noPagePaddingClass}`}>
       <div className={`${styles.pageCommonWrapContent} ${noPaddingClass} ${noColorClass}`}>
         {props.children}
       </div>

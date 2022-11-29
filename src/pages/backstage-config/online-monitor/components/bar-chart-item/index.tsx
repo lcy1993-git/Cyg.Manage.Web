@@ -3,7 +3,7 @@ import { LeftOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Spin } from 'antd'
 import * as echarts from 'echarts/lib/echarts'
-import React, { Dispatch, SetStateAction, useRef } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styles from './index.less'
 
 interface ChartParams {
@@ -61,10 +61,22 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
           })
         : stateData.map((item: any) => item.value)
     return {
+      title: {
+        text: '单位（个）',
+        textStyle: {
+          color: '#74AC91',
+          fontSize: '12px',
+        },
+      },
       xAxis: {
         axisLabel: {
           show: true,
           interval: 0,
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#74AC91',
+          },
         },
         data: areaDat,
       },
@@ -72,6 +84,12 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
         type: 'value',
         axisLabel: {
           color: '#74AC91',
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#74AC91',
+            type: 'dashed',
+          },
         },
       },
       tooltip: {
@@ -114,6 +132,34 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
     }
   }
 
+  const resize = () => {
+    if (myChart) {
+      setTimeout(() => {
+        myChart.resize()
+      }, 100)
+    }
+    if (stateChart) {
+      setTimeout(() => {
+        stateChart.resize()
+      }, 100)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      if (!divRef.current) {
+        // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
+        window.removeEventListener('resize', resize)
+      } else {
+        resize()
+      }
+    })
+
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  })
+
   const backEvent = () => {
     setArea?.('')
     setShowName?.('')
@@ -124,13 +170,13 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
       {area && type === 'area' && (
         <LeftOutlined
           onClick={() => backEvent()}
-          style={{ fontSize: '20px', color: '#1f9c55', width: '5%' }}
+          style={{ fontSize: '20px', color: '#1f9c55', width: '5%', marginBottom: '10px' }}
           title="返回顶层"
         />
       )}
       {showName && type === 'state' && <div className={styles.barTitle}>{showName}</div>}
       <Spin spinning={type === 'area' ? loading : stateLoading}>
-        <div style={{ width: '95%', height: '580px' }} ref={divRef}></div>
+        <div style={{ width: '100%', height: '100%' }} ref={divRef}></div>
       </Spin>
       <div className={styles.barTitle}>{type === 'area' ? '项目数量统计' : '项目状态数量统计'}</div>
     </div>
