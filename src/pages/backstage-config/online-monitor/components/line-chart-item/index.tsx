@@ -102,6 +102,12 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
         axisLabel: {
           color: '#74AC91',
         },
+        splitLine: {
+          lineStyle: {
+            color: '#74AC91',
+            type: 'dashed',
+          },
+        },
       },
       series: [
         {
