@@ -1,79 +1,148 @@
 .monitorPage {
   width: 100%;
   height: 100%;
-  background-color: @bg-primary-color;
+  font-family: 'Source Han Sans SC';
+  background-image: url('../../../assets/icon-image/monitor/bgBox.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 
-  .timeAndAccount {
+  &.projectBg {
+    background-image: url('../../../assets/icon-image/monitor/bgBox2.png');
+  }
+
+  .header {
     position: relative;
     display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    width: 100%;
-    height: 150px;
-    margin-bottom: 18px;
-    padding: 0 20px;
-    background-color: @white-color;
+    height: 14%;
+    padding: 10px;
+    color: #2afc96;
+    font-size: 1.3vw;
 
-    // .service {
-    //   width: 13%;
-    //   margin-left: 56px;
-    //   color: #1f9c55;
-    //   font-weight: bold;
-    //   font-size: 40px;
-    // }
+    .topLeft {
+      position: relative;
+      width: 32%;
+      margin-top: 18px;
+      font-weight: bold;
+      font-size: 1.45vw;
 
-    .checkItem {
+      .time {
+        position: absolute;
+        top: 24%;
+        left: 8%;
+      }
+
+      .day {
+        position: absolute;
+        top: 24%;
+        left: 70%;
+      }
+    }
+
+    .topCenter {
+      position: relative;
+      width: 54%;
+      margin-top: 30px;
+      color: white;
+
+      .title {
+        position: absolute;
+        top: 35%;
+        left: 33%;
+        font-weight: bold;
+        font-size: 2vw;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .imgBox1 {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      color: #a3a3a3;
-      font-size: 20px;
+      top: 19%;
+      right: 15.3%;
+      width: 16.8%;
+    }
+
+    .imgBox2 {
+      position: absolute;
+      top: 19%;
+      right: 1.1%;
+      width: 16.8%;
+    }
+
+    .imgHover1 {
+      position: absolute;
+      top: 19%;
+      right: 15.3%;
+      display: none;
+      width: 16.8%;
+      pointer-events: none;
+    }
+
+    .imgHover2 {
+      position: absolute;
+      top: 19%;
+      right: 1.1%;
+      display: none;
+      width: 16.8%;
+      pointer-events: none;
+    }
+
+    .export:hover + .imgHover1 {
+      display: block;
+    }
+
+    .pageChange:hover + .imgHover2 {
+      display: block;
+    }
+
+    .export {
+      position: absolute;
+      top: 42%;
+      right: 19.8%;
+      z-index: 999;
       cursor: pointer;
     }
 
-    .accountItem {
-      display: flex;
-      align-items: end;
-      justify-content: space-around;
-      width: 48%;
-    }
-
-    .projectItem {
-      display: flex;
-      align-items: end;
-      justify-content: space-around;
-      width: 48%;
-    }
-
-    .time {
-      width: 35%;
-      color: #1f9c55;
-      font-weight: 800;
-      font-size: 50px;
-      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    }
-
-    .exportItem {
-      display: flex;
-      flex-direction: column;
-      height: 55px;
-      margin-left: 160px;
+    .pageChange {
+      position: absolute;
+      top: 42%;
+      right: 7%;
+      z-index: 999;
       cursor: pointer;
     }
   }
 
+  .account {
+    display: flex;
+    justify-content: space-around;
+    height: 20%;
+
+    @media screen and (min-height: 1080px) {
+      height: 15%;
+    }
+
+    @media screen and (min-height: 1297px) {
+      height: 20%;
+    }
+
+    @media screen and (min-height: 1440px) {
+      height: 15%;
+    }
+  }
+
   .moduleChart {
-    height: calc(100% - 170px);
-    background-color: @bg-primary-color;
+    display: flex;
+    height: 66%;
+
+    .lineItem:first-child {
+      padding-left: 20px;
+    }
 
     .lineItem {
       flex: 1;
-      height: 640px;
-      background-color: #f7fcf9;
     }
 
     .lineItem:not(:last-child) {
-      margin-right: 10px;
+      margin-right: -5px;
     }
   }
 }

@@ -1,5 +1,6 @@
 import { getProductServerList, getStopServerNotice } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
+import { Moment } from 'moment'
 
 const { NODE_ENV } = process.env
 
@@ -409,4 +410,19 @@ export const thousandBitSeparator = (n: number) => {
     return s1.replace(re, '$&,') + s2
   })
   return n1
+}
+
+/**计算时间戳之差 */
+export const intervalTime = (time: string) => {
+  let dateTime = new Date(time)
+  let dateNow = new Date() // 获取当前时间
+  let timeDiff = dateNow.getTime() - dateTime.getTime() // 时间差的毫秒数
+  // timeDiff = 时间戳差值
+
+  let days = Math.floor(timeDiff / (24 * 3600 * 1000)) // 计算出天数
+  let leavel1 = timeDiff % (24 * 3600 * 1000) // 计算天数后剩余的时间
+  let hours = Math.floor(leavel1 / (3600 * 1000)) // 计算天数后剩余的小时数
+  let leavel2 = timeDiff % (3600 * 1000) // 计算剩余小时后剩余的毫秒数
+  let minutes = Math.floor(leavel2 / (60 * 1000)) // 计算剩余的分钟数
+  return { days, hours, minutes }
 }

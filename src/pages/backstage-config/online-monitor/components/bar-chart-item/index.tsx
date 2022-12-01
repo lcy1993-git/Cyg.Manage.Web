@@ -3,7 +3,7 @@ import { LeftOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Spin } from 'antd'
 import * as echarts from 'echarts/lib/echarts'
-import React, { Dispatch, SetStateAction, useRef } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react'
 import styles from './index.less'
 
 interface ChartParams {
@@ -25,10 +25,6 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
   const { data: QtyData, loading } = useRequest(() => getQtyByArea({ areaCode: area }), {
     ready: type === 'area',
     onSuccess: () => {
-      // const handleData = QtyData?.map((item: any) => {
-      //   return { upCode: area, data: [item.area.text, item.qty] }
-      // })
-      // setDrillData(handleData)
       if (QtyData.length) {
         initChart()
       }
@@ -65,10 +61,22 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
           })
         : stateData.map((item: any) => item.value)
     return {
+      title: {
+        text: '单位（个）',
+        textStyle: {
+          color: '#74AC91',
+          fontSize: '12px',
+        },
+      },
       xAxis: {
         axisLabel: {
           show: true,
           interval: 0,
+        },
+        axisLine: {
+          lineStyle: {
+            color: '#74AC91',
+          },
         },
         data: areaDat,
       },
@@ -77,11 +85,22 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
         axisLabel: {
           color: '#74AC91',
         },
+        splitLine: {
+          lineStyle: {
+            color: '#74AC91',
+            type: 'dashed',
+          },
+        },
       },
       tooltip: {
         trigger: 'axis',
         axisPointer: {
           type: 'shadow',
+        },
+        formatter(params: any) {
+          const data = params[0]
+          return `<span>${data.name}</span><br />
+          <span style="display:inline-block;margin-right:5px;border-radius:100px;width:10px;height:10px;background-color:#1f9c55"></span><span>项目数量：</span><span>${data.value}</span>`
         },
       },
       dataGroupId: '',
@@ -95,6 +114,31 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
           enabled: true,
           divideShape: 'clone',
         },
+        itemStyle: {
+          normal: {
+            color: new echarts.graphic.LinearGradient(
+              0,
+              1,
+              0,
+              0,
+              [
+                {
+                  offset: 0,
+                  color: 'rgba(77, 169, 68, 0.9)', // 0% 处的颜色
+                },
+                {
+                  offset: 0.6,
+                  color: 'rgba(77, 169, 68, 0.7)', // 60% 处的颜色
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(77, 169, 68, 0.5)', // 100% 处的颜色
+                },
+              ],
+              false
+            ),
+          },
+        },
       },
     }
   }
@@ -102,16 +146,44 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
   const initChart = () => {
     if (divRef && divRef.current) {
       if (type === 'area') {
-        myChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+        myChart = echarts.init(divRef.current as unknown as HTMLDivElement)
         const options = getOptions()
         myChart.setOption(options)
         return
       }
-      stateChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+      stateChart = echarts.init(divRef.current as unknown as HTMLDivElement)
       const options = getOptions()
       stateChart.setOption(options)
     }
   }
+
+  const resize = () => {
+    if (myChart) {
+      setTimeout(() => {
+        myChart.resize()
+      }, 100)
+    }
+    if (stateChart) {
+      setTimeout(() => {
+        stateChart.resize()
+      }, 100)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', () => {
+      if (!divRef.current) {
+        // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
+        window.removeEventListener('resize', resize)
+      } else {
+        resize()
+      }
+    })
+
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  })
 
   const backEvent = () => {
     setArea?.('')
@@ -123,13 +195,13 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
       {area && type === 'area' && (
         <LeftOutlined
           onClick={() => backEvent()}
-          style={{ fontSize: '20px', color: '#1f9c55', width: '5%' }}
+          style={{ fontSize: '20px', color: '#1f9c55', width: '5%', marginBottom: '10px' }}
           title="返回顶层"
         />
       )}
       {showName && type === 'state' && <div className={styles.barTitle}>{showName}</div>}
       <Spin spinning={type === 'area' ? loading : stateLoading}>
-        <div style={{ width: '95%', height: '580px' }} ref={divRef}></div>
+        <div style={{ width: '100%', height: '100%' }} ref={divRef}></div>
       </Spin>
       <div className={styles.barTitle}>{type === 'area' ? '项目数量统计' : '项目状态数量统计'}</div>
     </div>
