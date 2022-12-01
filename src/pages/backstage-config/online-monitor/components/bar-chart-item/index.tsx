@@ -114,6 +114,31 @@ const BarChartItem: React.FC<ChartParams> = (props) => {
           enabled: true,
           divideShape: 'clone',
         },
+        itemStyle: {
+          normal: {
+            color: new echarts.graphic.LinearGradient(
+              0,
+              1,
+              0,
+              0,
+              [
+                {
+                  offset: 0,
+                  color: 'rgba(77, 169, 68, 0.9)', // 0% 处的颜色
+                },
+                {
+                  offset: 0.6,
+                  color: 'rgba(77, 169, 68, 0.7)', // 60% 处的颜色
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(77, 169, 68, 0.5)', // 100% 处的颜色
+                },
+              ],
+              false
+            ),
+          },
+        },
       },
     }
   }
