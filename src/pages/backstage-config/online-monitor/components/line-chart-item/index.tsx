@@ -108,6 +108,7 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
             type: 'dashed',
           },
         },
+        minInterval: 1,
       },
       series: [
         {
@@ -231,11 +232,13 @@ const LineChartItem: React.FC<ChartParams> = (props) => {
       </div>
       <div className={styles.account}>
         <NumberItem
+          className="line"
           account={data?.userTotalQty}
           title={`${data?.clientCategoryText ? data?.clientCategoryText : ' '}权限总数`}
           imgSrc="portTotal.png"
         />
         <NumberItem
+          className="line"
           account={data?.userOnLineTotalQty}
           title="当前在线用户数"
           type={type}

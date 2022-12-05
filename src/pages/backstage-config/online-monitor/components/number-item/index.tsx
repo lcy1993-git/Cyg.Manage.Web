@@ -10,9 +10,10 @@ interface NumberItemProps {
   type?: 'all' | 'admin' | 'survey' | 'design' | 'manage' //总在线人数 | 各端在线人数
   account: number
   title: string
+  className?: string
 }
 const NumberItem: React.FC<NumberItemProps> = (props) => {
-  const { account = 0, title, type, imgSrc } = props
+  const { account = 0, title, type, imgSrc, className } = props
   const [onlineModal, setOnlineModal] = useState<boolean>(false)
   const [sendData, setSendData] = useState<any[]>([])
   const { data: totalData, run: getTotalData } = useRequest(getOnlineUser, {
@@ -50,12 +51,22 @@ const NumberItem: React.FC<NumberItemProps> = (props) => {
         <div className={styles.rightContent}>
           <div
             className={styles.number}
-            style={{ fontSize: '42px', cursor: `${type ? 'pointer' : 'default'}` }}
+            style={{
+              fontSize: '42px',
+              cursor: `${type ? 'pointer' : 'default'}`,
+              color: `${className === 'line' ? '#2afc96' : '#fff'}`,
+              fontWeight: 'bold',
+            }}
             onClick={() => clickEvent()}
           >
             {account && account.toLocaleString()}
           </div>
-          <div className={styles.title}>{title}</div>
+          <div
+            className={styles.title}
+            style={{ color: `${className === 'line' ? '#fff' : '#2afc96'}` }}
+          >
+            {title}
+          </div>
         </div>
       </div>
       {onlineModal && (
