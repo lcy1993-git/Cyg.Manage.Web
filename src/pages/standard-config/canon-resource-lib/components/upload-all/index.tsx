@@ -3,9 +3,7 @@ import FileUpload from '@/components/file-upload'
 import { newUploadLineStressSag } from '@/services/resource-config/drawing'
 import { useBoolean, useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
-import React, { useState } from 'react'
-import { Dispatch } from 'react'
-import { SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 interface UploadAllProps {
   visible: boolean
@@ -85,7 +83,7 @@ const UploadAll: React.FC<UploadAllProps> = (props) => {
     <>
       <Modal
         maskClosable={false}
-        title="一键导入"
+        title="文件导入"
         visible={state as boolean}
         footer={[
           <Button key="cancle" onClick={() => setState(false)}>

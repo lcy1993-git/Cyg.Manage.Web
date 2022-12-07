@@ -5,8 +5,6 @@ import SelectCanSearch from '@/components/select-can-search'
 import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
 import {
-  forDesignType,
-  forProjectType,
   kvBothLevelType,
   materialType,
   supplySideType,
@@ -261,13 +259,13 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           <CyFormItem label="运输类型" name="transportationType">
             <Input placeholder="请输入运输类型" />
           </CyFormItem>
-          <CyFormItem label="所属工程" name="forProject" initialValue="不限">
+          {/* <CyFormItem label="所属工程" name="forProject" initialValue="不限">
             <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
           </CyFormItem>
 
           <CyFormItem label="所属设计" name="forDesign" initialValue="不限">
             <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
-          </CyFormItem>
+          </CyFormItem> */}
         </div>
       }
       {!isHidden && (

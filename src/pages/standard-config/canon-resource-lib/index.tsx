@@ -1,6 +1,18 @@
+import EnumSelect from '@/components/enum-select'
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
+import { useLayoutStore } from '@/layouts/context'
+import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import { getUploadUrl } from '@/services/resource-config/drawing'
+import {
+  addResourceLibItem,
+  changeLibStatus,
+  getResourceLibDetail,
+  restartResourceLib,
+  updateResourceLibItem,
+} from '@/services/resource-config/resource-lib'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import {
   EditOutlined,
   ImportOutlined,
@@ -8,30 +20,16 @@ import {
   QuestionCircleOutlined,
   RedoOutlined,
 } from '@ant-design/icons'
-import { Input, Button, Modal, Form, message, Spin, Tooltip, Dropdown, Menu } from 'antd'
-import React, { useState } from 'react'
-import styles from './index.less'
 import { useRequest } from 'ahooks'
-import {
-  getResourceLibDetail,
-  addResourceLibItem,
-  updateResourceLibItem,
-  restartResourceLib,
-  changeLibStatus,
-} from '@/services/resource-config/resource-lib'
+import { Button, Dropdown, Form, Input, Menu, message, Modal, Spin, Tooltip } from 'antd'
 import { isArray } from 'lodash'
-import ResourceLibForm from './components/add-edit-form'
-import UploadDrawing from './components/upload-drawing'
-import { getUploadUrl } from '@/services/resource-config/drawing'
-import SaveImportLib from './components/upload-lib'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import EnumSelect from '@/components/enum-select'
-import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import React, { useMemo, useState } from 'react'
 import { history } from 'umi'
-import { useLayoutStore } from '@/layouts/context'
-import { useMemo } from 'react'
+import ResourceLibForm from './components/add-edit-form'
 import UploadAll from './components/upload-all'
-import ResourceLibraryManageModal from './components/resource-library-manage-modal'
+import UploadDrawing from './components/upload-drawing'
+import SaveImportLib from './components/upload-lib'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -47,7 +45,6 @@ const ResourceLib: React.FC = () => {
   const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const [status, setStatus] = useState<string>('0')
-  const [libVisible, setLibVisible] = useState(false)
   const [libId, setLibId] = useState<string>('')
   const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId) //当前管理 模块的资源库Id
 
@@ -483,12 +480,6 @@ const ResourceLib: React.FC = () => {
             重启资源服务
           </Button>
         )}
-
-        {buttonJurisdictionArray?.includes('lib-resource-iterate') && (
-          <Button className="mr7" onClick={() => setLibVisible(true)}>
-            资源库迭代
-          </Button>
-        )}
       </div>
     )
   }
@@ -575,13 +566,6 @@ const ResourceLib: React.FC = () => {
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setUploadAllVisible}
       />
-      {libVisible && (
-        <ResourceLibraryManageModal
-          visible={libVisible}
-          onChange={setLibVisible}
-          changeFinishEvent={refresh}
-        />
-      )}
     </PageCommonWrap>
   )
 }

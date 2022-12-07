@@ -73,10 +73,13 @@ export const changeLibStatus = (params: { id: string; status: number }) => {
     request(`${baseUrl.resource}/ResourceLib/UpdateStatus`, { method: 'POST', data: params })
   )
 }
-//获取公司资源库列表
-export const getCampanyResourceLibLists = (params: { libType: number; libSource: string }) => {
-  return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.resource}/ResourceLib/GetPageList`, { method: 'POST', data: params })
+//获取所有资源库列表
+export const getResourceLibLists = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/ResourceLib/GetPageList`, {
+      method: 'POST',
+      data: { PageSize: 50, PageIndex: 1 },
+    })
   )
 }
 //创建公司资源库
@@ -87,7 +90,7 @@ export const creatCampanyResourceLib = (params: {
   version: string
   remark: string
 }) => {
-  return cyRequest<ItemDetailData>(() =>
+  return cyRequest<any>(() =>
     request(`${baseUrl.resource}/ResourceLib/SaveCreate`, { method: 'POST', data: params })
   )
 }
@@ -97,7 +100,7 @@ export const getCampanyResourceLibListsWithBackUpInfo = (params: {
   libSource: string
   status: number
 }) => {
-  return cyRequest<ItemDetailData>(() =>
+  return cyRequest<any>(() =>
     request(`${baseUrl.resource}/ResourceLib/GetListWithBackUpInfo`, {
       method: 'GET',
       params: params,
@@ -106,13 +109,13 @@ export const getCampanyResourceLibListsWithBackUpInfo = (params: {
 }
 //备份公司资源库列表
 export const backupResourceLib = (params: { libId: string; isCreateNew: boolean }) => {
-  return cyRequest<ItemDetailData>(() =>
+  return cyRequest<any>(() =>
     request(`${baseUrl.resource}/ResourceLib/BackUpResource`, { method: 'POST', params: params })
   )
 }
 //还原公司资源库列表
 export const restoreResourceLib = (params: { libId: string; version: string }) => {
-  return cyRequest<ItemDetailData>(() =>
+  return cyRequest<any>(() =>
     request(`${baseUrl.resource}/ResourceLib/RestoreResource`, { method: 'POST', params: params })
   )
 }

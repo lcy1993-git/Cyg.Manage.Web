@@ -1,6 +1,7 @@
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import TemplateLibImportModal from '@/components/template-lib-import'
 import UrlSelect from '@/components/url-select'
 import {
   addMaterialItem,
@@ -18,6 +19,7 @@ import MaterialForm from './component/add-edit-form'
 import CableMapping from './component/cable-mapping'
 import SaveImportMaterial from './component/import-form'
 import LineProperty from './component/line-property'
+
 import styles from './index.less'
 
 const { Search } = Input
@@ -32,6 +34,7 @@ const Material: React.FC<libParams> = (props) => {
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [templateLibImportModalVisible, setTemplateLibImportModalVisible] = useState<boolean>(false)
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [formData, setFormData] = useState<any>({})
@@ -202,19 +205,23 @@ const Material: React.FC<libParams> = (props) => {
       title: '电压等级',
       width: 160,
     },
-    {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 160,
-    },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 160,
-    },
+    // {
+    //   dataIndex: 'forProject',
+    //   index: 'forProject',
+    //   title: '所属工程',
+    //   width: 160,
+    // },
+    // {
+    //   dataIndex: 'forDesign',
+    //   index: 'forDesign',
+    //   title: '所属设计',
+    //   width: 160,
+    // },
   ]
+  //已有库导入
+  const temlateLibImport = () => {
+    setTemplateLibImportModalVisible(true)
+  }
 
   //添加
   const addEvent = () => {
@@ -246,8 +253,8 @@ const Material: React.FC<libParams> = (props) => {
           transportationType: '',
           statisticType: '',
           kvLevel: '',
-          forProject: '',
-          forDesign: '',
+          // forProject: '',
+          // forDesign: '',
           remark: '',
           chartIds: '',
         },
@@ -315,8 +322,8 @@ const Material: React.FC<libParams> = (props) => {
           transportationType: editData.transportationType,
           statisticType: editData.statisticType,
           kvLevel: editData.kvLevel,
-          forProject: editData.forProject,
-          forDesign: editData.forDesign,
+          // forProject: editData.forProject,
+          // forDesign: editData.forDesign,
           remark: editData.remark,
           chartIds: editData.chartIds,
         },
@@ -334,6 +341,12 @@ const Material: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('material-template-lib-import') && (
+          <Button type="primary" className="mr7" onClick={() => temlateLibImport()}>
+            <PlusOutlined />
+            模板库导入
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('material-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
@@ -417,6 +430,13 @@ const Material: React.FC<libParams> = (props) => {
   const uploadFinishEvent = () => {
     refresh()
   }
+  const temlateLibImportFinishEvent = async (resourceLibId: string, id: string) => {
+    const ResourceLibData = await run(resourceLibId, id)
+    setChacheEditData(ResourceLibData)
+
+    editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
+  }
   const selctModelId = async (id: string) => {
     const ResourceLibData = await run(libId, id)
     addFormVisible && addForm.setFieldsValue(ResourceLibData)
@@ -444,7 +464,14 @@ const Material: React.FC<libParams> = (props) => {
           materialType: materialCategory,
         }}
       />
-
+      <TemplateLibImportModal
+        visible={templateLibImportModalVisible}
+        onChange={setTemplateLibImportModalVisible}
+        requestUrl="/Material/GetPageList"
+        changeFinishEvent={temlateLibImportFinishEvent}
+        libId={libId}
+        type="material"
+      />
       <Modal
         maskClosable={false}
         title="添加-物料"

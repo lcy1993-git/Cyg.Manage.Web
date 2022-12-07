@@ -16,26 +16,34 @@ import {
   updateResourceLibItem,
 } from '@/services/resource-config/resource-lib'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
-import { EditOutlined, ExportOutlined, ImportOutlined, RedoOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  ExclamationCircleOutlined,
+  ExportOutlined,
+  ImportOutlined,
+  PlusOutlined,
+  RedoOutlined,
+} from '@ant-design/icons'
 import { useMount, useRequest } from 'ahooks'
 import { Button, Dropdown, Form, Menu, message, Modal, Spin, Table } from 'antd'
-import { isArray } from 'lodash'
 import React, { useMemo, useState } from 'react'
 import { history } from 'umi'
 import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
-import ResourceLibraryManageModal from '../canon-resource-lib/./components/resource-library-manage-modal'
 import UploadAll from '../canon-resource-lib/./components/upload-all'
 import UploadDrawing from '../canon-resource-lib/./components/upload-drawing'
+import UploadExistedLib from '../canon-resource-lib/./components/upload-existed-lib'
 import SaveImportLib from '../canon-resource-lib/./components/upload-lib'
+
 import styles from './index.less'
 
 const ResourceLib: React.FC = () => {
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
   const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false)
+  const [uploadExistedLibVisible, setUploadExistedLibVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-  const [libVisible, setLibVisible] = useState(false)
   const [libId, setLibId] = useState<string>('')
   const [tableData, setTableData] = useState<any[]>([])
   const [clickKey, setClickKey] = useState<any[]>([])
@@ -48,29 +56,30 @@ const ResourceLib: React.FC = () => {
   const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   const { data: keyData } = useRequest(() => getUploadUrl())
+  const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   })
-  // 默认创建公司库test
-  const { run: createLib } = useRequest(
-    () => {
-      return creatCampanyResourceLib({
-        libType: 1,
-        libSource: userInfo.companyId,
-        libName: '公司库',
-        version: 'v1.0',
-        remark: '公司库',
-      })
-    },
-    {
-      manual: true,
-      onSuccess: (res) => {
-        setTableData([res])
-      },
-    }
-  )
+  // // 默认创建公司库test
+  // const { run: createLib } = useRequest(
+  //   () => {
+  //     return creatCampanyResourceLib({
+  //       libType: 1,
+  //       libSource: userInfo.companyId,
+  //       libName: '公司库',
+  //       version: 'v1.0',
+  //       remark: '公司库',
+  //     })
+  //   },
+  //   {
+  //     manual: true,
+  //     onSuccess: (res) => {
+  //       setTableData([res])
+  //     },
+  //   }
+  // )
   // 获取公司资源库，没有则创建
   const { run: getList } = useRequest(
     () =>
@@ -82,11 +91,12 @@ const ResourceLib: React.FC = () => {
     {
       manual: true,
       onSuccess: (res: any) => {
-        if (res?.length === 0) {
-          createLib()
-        } else {
-          setTableData(res)
-        }
+        setTableData(res)
+        // if (res?.length === 0) {
+        //   createLib()
+        // } else {
+        //   setTableData(res)
+        // }
       },
     }
   )
@@ -110,6 +120,7 @@ const ResourceLib: React.FC = () => {
     Modal.confirm({
       title: '提示',
       okText: '确认',
+      icon: <ExclamationCircleOutlined />,
       cancelText: '取消',
       content: '确定备份当前资源库？',
       onOk: async () => {
@@ -123,6 +134,7 @@ const ResourceLib: React.FC = () => {
     Modal.confirm({
       title: '提示',
       okText: '确认',
+      icon: <ExclamationCircleOutlined />,
       cancelText: '取消',
       content: '确定还原当前资源库？',
       onOk: async () => {
@@ -278,10 +290,37 @@ const ResourceLib: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resourceManageFlag])
 
+  //添加
+  const addEvent = () => {
+    if (tableData && tableData.length >= 3) {
+      message.error('公司库已达3个创建上限')
+      return
+    }
+    setAddFormVisible(true)
+  }
+  const sureAddResourceLib = () => {
+    addForm.validateFields().then(async (value) => {
+      const submitInfo = Object.assign(
+        {
+          libName: '',
+          version: '',
+          remark: '',
+        },
+        value
+      )
+      await creatCampanyResourceLib({ ...submitInfo, libType: 1, libSource: userInfo.companyId })
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
   //编辑
   const editEvent = async () => {
-    const editDataId = tableData[0].id
-
+    if (!clickKey.length) {
+      message.warning('未选择公司资源库')
+      return
+    }
+    const editDataId = clickKey[0]
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
       message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
@@ -322,42 +361,64 @@ const ResourceLib: React.FC = () => {
   }
 
   const uploadAllEvent = () => {
-    const editDataId = tableData[0].id
+    if (!clickKey.length) {
+      message.warning('未选择公司资源库')
+      return
+    }
+    const editDataId = clickKey[0]
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
       message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
       return
     }
-    setLibId(tableData[0].id)
+    setLibId(editDataId)
     setUploadAllVisible(true)
   }
-
-  const importLibEvent = () => {
-    const editDataId = tableData[0].id
+  const uploadExistedLib = () => {
+    if (!clickKey.length) {
+      message.warning('未选择公司资源库')
+      return
+    }
+    const editDataId = clickKey[0]
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
       message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
       return
     }
-    setLibId(tableData[0].id)
+    setLibId(editDataId)
+    setUploadExistedLibVisible(true)
+  }
+  const importLibEvent = () => {
+    if (!clickKey.length) {
+      message.warning('未选择公司资源库')
+      return
+    }
+    const editDataId = clickKey[0]
+
+    //如果打开了当前资源库模块管理，则无法操作此项
+    if (editDataId === currentCompanyManageId) {
+      message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
+      return
+    }
+    setLibId(editDataId)
     setUploadLibVisible(true)
   }
 
   const uploadDrawingEvent = () => {
-    if (tableData && isArray(tableData) && tableData.length === 0) {
-      message.warning('请选择要操作的行')
+    if (!clickKey.length) {
+      message.warning('未选择公司资源库')
       return
     }
-    const editDataId = tableData[0].id
+    const editDataId = clickKey[0]
 
     //如果打开了当前资源库模块管理，则无法操作此项
     if (editDataId === currentCompanyManageId) {
       message.error('当前资源库已打开"模块管理"界面，请关闭后重试')
       return
     }
-    setLibId(tableData[0].id)
+    setLibId(editDataId)
     setUploadDrawingVisible(true)
   }
 
@@ -447,6 +508,20 @@ const ResourceLib: React.FC = () => {
       )}
     </Menu>
   )
+  const oneKeyimportMenu = (
+    <Menu>
+      {buttonJurisdictionArray?.includes('lib-oneclick-import') && (
+        <Menu.Item key="importDraw" onClick={() => uploadAllEvent()}>
+          文件导入
+        </Menu.Item>
+      )}
+      {buttonJurisdictionArray?.includes('existed-lib-import') && (
+        <Menu.Item key="importLib" onClick={() => uploadExistedLib()}>
+          已有库导入
+        </Menu.Item>
+      )}
+    </Menu>
+  )
 
   //导出
   const exportMenu = (
@@ -467,6 +542,12 @@ const ResourceLib: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('lib-add') && (
+          <Button type="primary" className="mr7" onClick={() => addEvent()}>
+            <PlusOutlined />
+            创建
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('lib-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
@@ -482,10 +563,12 @@ const ResourceLib: React.FC = () => {
           </Dropdown>
         )}
         {buttonJurisdictionArray?.includes('lib-oneclick-import') && (
-          <Button className="mr7" onClick={() => uploadAllEvent()}>
-            <ImportOutlined />
-            一键导入
-          </Button>
+          <Dropdown overlay={oneKeyimportMenu}>
+            <Button className="mr7">
+              <ImportOutlined />
+              一键导入
+            </Button>
+          </Dropdown>
         )}
 
         {buttonJurisdictionArray?.includes('lib-import') && (
@@ -501,12 +584,6 @@ const ResourceLib: React.FC = () => {
           <Button className="mr7" onClick={() => restartLib()}>
             <RedoOutlined />
             重启资源服务
-          </Button>
-        )}
-
-        {buttonJurisdictionArray?.includes('lib-resource-iterate') && (
-          <Button className="mr7" onClick={() => setLibVisible(true)}>
-            资源库迭代
           </Button>
         )}
       </div>
@@ -553,6 +630,21 @@ const ResourceLib: React.FC = () => {
         />
         <Modal
           maskClosable={false}
+          title="创建资源库"
+          width="680px"
+          visible={addFormVisible}
+          okText="确认"
+          onOk={() => sureAddResourceLib()}
+          onCancel={() => setAddFormVisible(false)}
+          cancelText="取消"
+          destroyOnClose
+        >
+          <Form form={addForm} preserve={false}>
+            <ResourceLibForm />
+          </Form>
+        </Modal>
+        <Modal
+          maskClosable={false}
           title="编辑-资源库"
           width="680px"
           visible={editFormVisible}
@@ -590,14 +682,13 @@ const ResourceLib: React.FC = () => {
           changeFinishEvent={() => uploadFinishEvent()}
           onChange={setUploadAllVisible}
         />
-
-        {libVisible && (
-          <ResourceLibraryManageModal
-            visible={libVisible}
-            onChange={setLibVisible}
-            changeFinishEvent={refresh}
-          />
-        )}
+        <UploadExistedLib
+          libId={libId}
+          requestSource="resource"
+          visible={uploadExistedLibVisible}
+          // changeFinishEvent={() => uploadFinishEvent()}
+          onChange={setUploadExistedLibVisible}
+        />
       </Spin>
     </PageCommonWrap>
   )
