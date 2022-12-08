@@ -239,7 +239,9 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
 
   //登录初始化连接webSocket，退出卸载
   useEffect(() => {
-    createWebSocket()
+    if (token) {
+      createWebSocket()
+    }
     return () => {
       ws.close()
     }

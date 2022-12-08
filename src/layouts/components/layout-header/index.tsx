@@ -29,9 +29,8 @@ const LayoutHeader: React.FC = () => {
 
   const loginOut = async () => {
     history.push('/login')
-
-    await signOut()
     localStorage.setItem('Authorization', '')
+    await signOut()
   }
 
   const menuData: any[] = useGetFunctionModules()
