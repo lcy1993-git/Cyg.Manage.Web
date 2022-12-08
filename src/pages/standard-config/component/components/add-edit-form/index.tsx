@@ -4,12 +4,7 @@ import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-b
 import SelectCanSearch from '@/components/select-can-search'
 import SelectCanUpdate from '@/components/select-can-update'
 import UrlSelect from '@/components/url-select'
-import {
-  deviceCategoryType,
-  forDesignType,
-  forProjectType,
-  kvBothLevelType,
-} from '@/services/resource-config/resource-enum'
+import { deviceCategoryType, kvBothLevelType } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import { Input, Select, Tooltip } from 'antd'
@@ -213,13 +208,13 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
         <CyFormItem label="典设编码" name="typicalCode" labelWidth={98}>
           <Input placeholder="请输入典设编码" />
         </CyFormItem>
-        <CyFormItem label="所属工程" name="forProject" initialValue="不限" labelWidth={98}>
+        {/* <CyFormItem label="所属工程" name="forProject" initialValue="不限" labelWidth={98}>
           <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
         </CyFormItem>
 
         <CyFormItem label="所属设计" name="forDesign" initialValue="不限" labelWidth={98}>
           <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
-        </CyFormItem>
+        </CyFormItem> */}
       </div>
       {!isHidden && (
         <div

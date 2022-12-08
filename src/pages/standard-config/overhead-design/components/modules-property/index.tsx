@@ -60,7 +60,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入模块信息"
+            placeholder="请输入杆型信息"
           />
         </TableSearch>
       </div>
@@ -104,7 +104,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'moduleName',
       index: 'moduleName',
-      title: '模块名称',
+      title: '杆型名称',
       width: 500,
     },
     {
@@ -291,14 +291,14 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('modules-add') && (
+        {buttonJurisdictionArray?.includes('pole-type-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('modules-edit') && (
+        {buttonJurisdictionArray?.includes('pole-type-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
@@ -311,7 +311,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           </Button>
         )} */}
 
-        {buttonJurisdictionArray?.includes('modules-delete') && (
+        {buttonJurisdictionArray?.includes('pole-type-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
 
@@ -322,10 +322,10 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           </Button>
         )} */}
 
-        {buttonJurisdictionArray?.includes('modules-detail') && (
+        {buttonJurisdictionArray?.includes('pole-type-detail') && (
           <Button className="mr7" onClick={() => openModuleDetail()}>
             <FileTextOutlined />
-            模块明细
+            杆型明细
           </Button>
         )}
       </div>
@@ -356,7 +356,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     message.success('删除成功')
   }
 
-  //展示模块明细
+  //展示杆型明细
   const openModuleDetail = () => {
     if (
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
@@ -368,7 +368,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     setModuleDetailVisible(true)
   }
 
-  //编辑模块属性
+  //编辑杆型属性
   const editAttributeEvent = async () => {
     if (!resourceLibId) {
       message.warning('请先选择资源库')
@@ -391,7 +391,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
     editAttributeForm.setFieldsValue(AttributeData)
   }
 
-  //保存修改的模块属性
+  //保存修改的杆型属性
   const sureEditAttribute = () => {
     const editData = AttributeData!
     editAttributeForm.validateFields().then(async (values) => {
@@ -449,7 +449,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       />
       <Modal
         maskClosable={false}
-        title="添加-模块"
+        title="添加-杆型"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -470,7 +470,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-模块"
+        title="编辑-杆型"
         width="680px"
         visible={editFormVisible}
         okText="保存"
@@ -490,7 +490,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
 
       {/* <Modal
         maskClosable={false}
-        title="编辑-模块属性"
+        title="编辑-杆型属性"
         width="680px"
         visible={editAttributeVisible}
         onCancel={() => setEditAttributeVisible(false)}

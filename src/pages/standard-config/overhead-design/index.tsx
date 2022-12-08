@@ -31,10 +31,10 @@ const OverheadDesign: React.FC<libParams> = (props) => {
               <CommonTitle>架空设计</CommonTitle>
             </div>
             <div>
-              {/* {buttonJurisdictionArray?.includes('modules-import') && (
+              {/* {buttonJurisdictionArray?.includes('category-and-pole-import') && (
                 <Button className="mr7" onClick={() => importOverheadDesignEvent()}>
                   <ImportOutlined />
-                  导入(杆型+模块)
+                  导入(分类+杆型)
                 </Button>
               )} */}
             </div>

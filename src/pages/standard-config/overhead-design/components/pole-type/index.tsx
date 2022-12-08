@@ -13,7 +13,7 @@ import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { OverHeadProvider, useOverHeadStore } from '../../context'
+import { useOverHeadStore } from '../../context'
 import PoleTypeForm from './components/add-edit-form'
 import styles from './index.less'
 
@@ -51,7 +51,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入杆型信息"
+            placeholder="请输入分类信息"
           />
         </TableSearch>
       </div>
@@ -99,13 +99,13 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'poleTypeCode',
       index: 'poleTypeCode',
-      title: '杆型简号',
+      title: '分类简号',
       width: 180,
     },
     {
       dataIndex: 'poleTypeName',
       index: 'poleTypeName',
-      title: '杆型名称',
+      title: '分类名称',
       width: 280,
     },
     {
@@ -123,7 +123,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'type',
       index: 'type',
-      title: '杆型类型',
+      title: '分类类型',
       width: 180,
     },
     {
@@ -135,7 +135,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     {
       dataIndex: 'material',
       index: 'material',
-      title: '杆型材质',
+      title: '分类材质',
       width: 180,
     },
     {
@@ -246,21 +246,21 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('pole-type-add') && (
+        {buttonJurisdictionArray?.includes('catogery-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('pole-type-edit') && (
+        {buttonJurisdictionArray?.includes('catogerye-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('pole-type-delete') && (
+        {buttonJurisdictionArray?.includes('catogerye-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </div>
@@ -299,7 +299,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       />
       <Modal
         maskClosable={false}
-        title="添加-杆型"
+        title="添加-分类"
         width="680px"
         visible={addFormVisible}
         okText="确认"
@@ -314,7 +314,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-杆型"
+        title="编辑-分类"
         width="680px"
         visible={editFormVisible}
         okText="确认"

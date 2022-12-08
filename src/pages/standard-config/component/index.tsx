@@ -2,6 +2,7 @@ import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import TemplateLibImportModal from '@/components/template-lib-import'
 import UrlSelect from '@/components/url-select'
 import {
   addComponentItem,
@@ -16,6 +17,7 @@ import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import ComponentForm from './components/add-edit-form'
+import ElectricProperty from './components/component-property'
 import SaveImportComponent from './components/import-form'
 import styles from './index.less'
 
@@ -31,6 +33,7 @@ const Component: React.FC<libParams> = (props) => {
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [templateLibImportModalVisible, setTemplateLibImportModalVisible] = useState<boolean>(false)
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [importComponentVisible, setImportComponentVisible] = useState<boolean>(false)
@@ -157,20 +160,23 @@ const Component: React.FC<libParams> = (props) => {
       title: '电压等级',
       width: 180,
     },
-    {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 150,
-    },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 150,
-    },
+    // {
+    //   dataIndex: 'forProject',
+    //   index: 'forProject',
+    //   title: '所属工程',
+    //   width: 150,
+    // },
+    // {
+    //   dataIndex: 'forDesign',
+    //   index: 'forDesign',
+    //   title: '所属设计',
+    //   width: 150,
+    // },
   ]
-
+  //已有库导入
+  const temlateLibImport = () => {
+    setTemplateLibImportModalVisible(true)
+  }
   //添加
   const addEvent = () => {
     // if (!resourceLibId) {
@@ -200,8 +206,8 @@ const Component: React.FC<libParams> = (props) => {
           deviceCategory: '',
           componentType: '',
           kvLevel: '',
-          forProject: '',
-          forDesign: '',
+          // forProject: '',
+          // forDesign: '',
           remark: '',
           chartIds: '',
         },
@@ -228,7 +234,8 @@ const Component: React.FC<libParams> = (props) => {
     const editDataId = editData.id
 
     const ResourceLibData = await run(libId, editDataId)
-
+    // 电气设备若为空字符串，给默认枚举值不限
+    ResourceLibData.kvLevel = !!ResourceLibData.kvLevel ? ResourceLibData.kvLevel : '不限'
     editForm.setFieldsValue(ResourceLibData)
     setEditFormVisible(true)
   }
@@ -252,8 +259,8 @@ const Component: React.FC<libParams> = (props) => {
           deviceCategory: editData.deviceCategory,
           componentType: editData.componentType,
           kvLevel: editData.kvLevel,
-          forProject: editData.forProject,
-          forDesign: editData.forDesign,
+          // forProject: editData.forProject,
+          // forDesign: editData.forDesign,
           remark: editData.remark,
           processChartIds: editData.processChartIds,
           componentId: editData.componentId,
@@ -272,6 +279,12 @@ const Component: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('component-template-lib-import') && (
+          <Button type="primary" className="mr7" onClick={() => temlateLibImport()}>
+            <PlusOutlined />
+            模板库导入
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('component-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
@@ -303,11 +316,11 @@ const Component: React.FC<libParams> = (props) => {
           </Button>
         )}
 
-        {/* {buttonJurisdictionArray?.includes('component-property') && (
+        {buttonJurisdictionArray?.includes('component-property') && (
           <Button className={styles.importBtn} onClick={() => openProperty()}>
             组件属性
           </Button>
-        )} */}
+        )}
       </div>
     )
   }
@@ -349,10 +362,6 @@ const Component: React.FC<libParams> = (props) => {
 
   //展示组件属性
   const openProperty = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请先选择资源库');
-    //   return;
-    // }
     if (
       (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
       tableSelectRows.length > 1
@@ -360,11 +369,21 @@ const Component: React.FC<libParams> = (props) => {
       message.warning('请选择单行数据查看')
       return
     }
+    // 仅电气设备可打开弹窗
+    if (tableSelectRows[0].deviceCategory !== '电气设备') {
+      message.warning('请选择电气设备数据进行查看')
+      return
+    }
     setAttributeVisible(true)
   }
 
   const uploadFinishEvent = () => {
     refresh()
+  }
+  const temlateLibImportFinishEvent = async (resourceLibId: string, id: string) => {
+    const ResourceLibData = await run(resourceLibId, id)
+    editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
   }
   const selctModelId = async (id: string) => {
     const ResourceLibData = await run(libId, id)
@@ -388,9 +407,20 @@ const Component: React.FC<libParams> = (props) => {
         type="checkbox"
         extractParams={{
           resourceLibId: libId,
-          isElectricalEquipment: false,
+          isElectricalEquipment: true,
           deviceCategory: deviceCategory,
           keyWord: searchKeyWord,
+        }}
+      />
+      <TemplateLibImportModal
+        visible={templateLibImportModalVisible}
+        onChange={setTemplateLibImportModalVisible}
+        requestUrl="/Component/GetPageList"
+        changeFinishEvent={temlateLibImportFinishEvent}
+        libId={libId}
+        type="component"
+        extractParams={{
+          isElectricalEquipment: true,
         }}
       />
       <Modal
@@ -450,7 +480,26 @@ const Component: React.FC<libParams> = (props) => {
         title="组件明细"
         type="component"
       />
-
+      <Modal
+        maskClosable={false}
+        footer=""
+        title="组件属性"
+        width="60%"
+        visible={attributeVisible}
+        onCancel={() => setAttributeVisible(false)}
+        okText="确认"
+        cancelText="取消"
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+      >
+        <Spin spinning={loading}>
+          <ElectricProperty
+            libId={libId}
+            componentId={tableSelectRows.map((item) => {
+              return item.id
+            })}
+          />
+        </Spin>
+      </Modal>
       <SaveImportComponent
         libId={libId}
         requestSource="resource"

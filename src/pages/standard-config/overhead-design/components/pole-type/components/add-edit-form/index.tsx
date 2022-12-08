@@ -19,21 +19,21 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
   return (
     <>
       <CyFormItem
-        label="杆型简号"
+        label="分类简号"
         name="poleTypeCode"
         required
-        rules={[{ required: true, message: '杆型简号不能为空' }]}
+        rules={[{ required: true, message: '分类简号不能为空' }]}
       >
-        <Input placeholder="请输入杆型简号" />
+        <Input placeholder="请输入分类简号" />
       </CyFormItem>
 
       <CyFormItem
-        label="杆型名称"
+        label="分类名称"
         name="poleTypeName"
         required
-        rules={[{ required: true, message: '杆型名称不能为空' }]}
+        rules={[{ required: true, message: '分类名称不能为空' }]}
       >
-        <Input placeholder="请输入杆型名称" />
+        <Input placeholder="请输入分类名称" />
       </CyFormItem>
 
       <CyFormItem
@@ -57,10 +57,10 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
       </CyFormItem>
 
       <CyFormItem
-        label="杆型类型"
+        label="分类类型"
         name="type"
         required
-        rules={[{ required: true, message: '杆型类型不能为空' }]}
+        rules={[{ required: true, message: '分类类型不能为空' }]}
       >
         <SelectCanUpdate
           url="/PoleType/GetTypeList"
@@ -70,7 +70,7 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
           valuekey="value"
           postType="query"
           extraParams={{ libId: resourceLibId }}
-          placeholder="请输入杆型类型"
+          placeholder="请输入分类类型"
         />
       </CyFormItem>
 
@@ -93,13 +93,13 @@ const PoleTypeForm: React.FC<PoleTypeParams> = (props) => {
       </CyFormItem>
 
       <CyFormItem
-        label="杆型材质"
+        label="分类材质"
         name="material"
         required
         initialValue="水泥单杆"
-        rules={[{ required: true, message: '杆型材质不能为空' }]}
+        rules={[{ required: true, message: '分类材质不能为空' }]}
       >
-        <EnumSelect placeholder="请选择杆型材质" enumList={poleMaterial} valueString />
+        <EnumSelect placeholder="请选择分类材质" enumList={poleMaterial} valueString />
       </CyFormItem>
 
       <CyFormItem

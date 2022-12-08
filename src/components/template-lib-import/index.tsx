@@ -18,10 +18,18 @@ interface UploadAllProps {
   requestSource?: 'resource'
   requestUrl: string
   type: string
+  extractParams?: object
 }
 
 const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
-  const { libId = '', requestSource = 'resource', changeFinishEvent, requestUrl, type } = props
+  const {
+    libId = '',
+    requestSource = 'resource',
+    changeFinishEvent,
+    requestUrl,
+    type,
+    extractParams,
+  } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [keyWord, setKeyWord] = useState('')
   const [resourceLibId, setResourceLibId] = useState(libId)
@@ -65,6 +73,20 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
         ])
         break
       case 'component':
+        setColumns([
+          {
+            dataIndex: 'componentName',
+            index: 'componentName',
+            title: '组件名称',
+            width: 380,
+          },
+          {
+            dataIndex: 'componentSpec',
+            index: 'componentName',
+            title: '组件型号',
+            width: 380,
+          },
+        ])
         break
     }
   }, [state])
@@ -154,7 +176,7 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
           getSelectData={(data) => setTableSelectRows(data)}
           buttonLeftContentSlot={tableButton}
           columns={columns}
-          extractParams={{ keyWord, resourceLibId }}
+          extractParams={{ ...extractParams, keyWord, resourceLibId }}
           needTitleLine={false}
           requestSource={requestSource}
           url={requestUrl}

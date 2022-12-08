@@ -1,17 +1,16 @@
-import React from 'react'
-import qs from 'qs'
-import { Tabs } from 'antd'
-import styles from './index.less'
-import PageCommonWrap from '@/components/page-common-wrap'
 import CommonTitle from '@/components/common-title'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { useLayoutStore } from '@/layouts/context'
+import { useMount, useUnmount } from 'ahooks'
+import { Tabs } from 'antd'
+import qs from 'qs'
+import React from 'react'
+import CableDesign from '../cable-design'
+import Component from '../component'
 import Drawing from '../drawing'
 import Material from '../material'
-import Component from '../component'
-import ElectricalEquipment from '../electrical-equipment'
-import CableDesign from '../cable-design'
 import OverheadDesign from '../overhead-design'
-import { useMount, useUnmount } from 'ahooks'
-import { useLayoutStore } from '@/layouts/context'
+import styles from './index.less'
 
 const { TabPane } = Tabs
 
@@ -58,11 +57,11 @@ const ResourceManage: React.FC = () => {
                 <CableDesign libId={libId} />
               </div>
             </TabPane>
-            <TabPane tab="电气设备" key="electric">
+            {/* <TabPane tab="电气设备" key="electric">
               <div className={styles.pannelTable}>
                 <ElectricalEquipment libId={libId} />
               </div>
-            </TabPane>
+            </TabPane> */}
             <TabPane tab="图纸" key="drawing">
               <div className={styles.pannelTable}>
                 <Drawing libId={libId} />
