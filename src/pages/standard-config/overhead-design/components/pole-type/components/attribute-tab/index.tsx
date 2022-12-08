@@ -1,13 +1,13 @@
-import ReadonlyItem from '@/components/readonly-item';
-import React from 'react';
+import ReadonlyItem from '@/components/readonly-item'
+import React from 'react'
 
 interface AttributeProps {
-  info: any;
+  info: any
 }
 
 const Attribute: React.FC<AttributeProps> = (props) => {
-  const { info } = props;
-  let attribute = info?.propertys;
+  const { info } = props
+  let attribute = info?.propertys
 
   return (
     <div>
@@ -87,7 +87,7 @@ const Attribute: React.FC<AttributeProps> = (props) => {
         <ReadonlyItem label="导线型号">{attribute?.conductorSpec}</ReadonlyItem>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Attribute;
+export default Attribute

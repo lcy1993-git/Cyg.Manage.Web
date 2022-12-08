@@ -1,12 +1,12 @@
-import ReadonlyItem from '@/components/readonly-item';
-import React from 'react';
+import ReadonlyItem from '@/components/readonly-item'
+import React from 'react'
 
 interface ModuleProps {
-  baseInfo: any;
+  baseInfo: any
 }
 
 const Modules: React.FC<ModuleProps> = (props) => {
-  const { baseInfo } = props;
+  const { baseInfo } = props
   return (
     <div>
       <div className="flex">
@@ -46,7 +46,7 @@ const Modules: React.FC<ModuleProps> = (props) => {
         <ReadonlyItem label="描述">{baseInfo?.remark}</ReadonlyItem>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Modules;
+export default Modules

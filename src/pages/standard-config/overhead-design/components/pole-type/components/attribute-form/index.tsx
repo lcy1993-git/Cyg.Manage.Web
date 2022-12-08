@@ -1,13 +1,13 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
 
 interface AttributeParams {
-  resourceLibId: string;
+  resourceLibId: string
 }
 
 const ModuleAttributeForm: React.FC<AttributeParams> = (props) => {
-  const { resourceLibId } = props;
+  const { resourceLibId } = props
 
   return (
     <>
@@ -70,7 +70,7 @@ const ModuleAttributeForm: React.FC<AttributeParams> = (props) => {
         <Input />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default ModuleAttributeForm;
+export default ModuleAttributeForm

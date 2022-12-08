@@ -1,7 +1,7 @@
 import { Tabs } from 'antd'
 import React from 'react'
-import ModulesProperty from '../modules-property'
-import PoleType from '../pole-type'
+import PoleType from '../catogery'
+import ModulesProperty from '../pole-type'
 
 const { TabPane } = Tabs
 

@@ -1,20 +1,22 @@
+import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
 import {
-  addPoleTypeItem,
-  deletePoleTypeItem,
-  getPoleTypeDetail,
-  updatePoleTypeItem,
-} from '@/services/resource-config/pole-type'
+  addModulesPropertyItem,
+  deleteModulesPropertyItem,
+  getModuleAttribute,
+  getModulesPropertyDetail,
+  saveModuleAttributeItem,
+  updateModulesPropertyItem,
+} from '@/services/resource-config/modules-property'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { useRequest, useUpdateEffect } from 'ahooks'
+import { EditOutlined, FileTextOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
 import { Button, Form, Input, message, Modal, Spin } from 'antd'
 import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useOverHeadStore } from '../../context'
-import PoleTypeForm from './components/add-edit-form'
+import ModulesPropertyForm from './components/add-edit-form'
 import styles from './index.less'
 
 const { Search } = Input
@@ -23,7 +25,7 @@ interface CableDesignParams {
   libId: string
 }
 
-const PoleType: React.FC<CableDesignParams> = (props) => {
+const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const { libId } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
@@ -32,13 +34,20 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const { isRefresh } = useOverHeadStore()
+  const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false)
+  const [detailVisible, setDetailVisible] = useState<boolean>(false)
+  const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false)
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
+  const [editAttributeForm] = Form.useForm()
 
-  const { data, run, loading } = useRequest(getPoleTypeDetail, {
+  const { data, run, loading } = useRequest(getModulesPropertyDetail, {
+    manual: true,
+  })
+
+  const { data: AttributeData, run: getAttribute } = useRequest(getModuleAttribute, {
     manual: true,
   })
 
@@ -51,16 +60,12 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
             onChange={(e) => setSearchKeyWord(e.target.value)}
             onSearch={() => search()}
             enterButton
-            placeholder="请输入分类信息"
+            placeholder="请输入杆型信息"
           />
         </TableSearch>
       </div>
     )
   }
-
-  useUpdateEffect(() => {
-    refresh()
-  }, [isRefresh])
 
   //选择资源库传libId
   const searchByLib = (value: any) => {
@@ -80,13 +85,6 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     }
   }
 
-  const reset = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.reset()
-    }
-  }
-
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
@@ -95,64 +93,104 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     }
   }
 
+  const reset = () => {
+    if (tableRef && tableRef.current) {
+      //@ts-ignore
+      tableRef.current.reset()
+    }
+  }
+
   const columns = [
+    {
+      dataIndex: 'moduleName',
+      index: 'moduleName',
+      title: '杆型名称',
+      width: 500,
+    },
     {
       dataIndex: 'poleTypeCode',
       index: 'poleTypeCode',
-      title: '分类简号',
-      width: 180,
-    },
-    {
-      dataIndex: 'poleTypeName',
-      index: 'poleTypeName',
-      title: '分类名称',
+      title: '杆型简号',
       width: 280,
     },
     {
-      dataIndex: 'category',
-      index: 'category',
-      title: '类型',
+      dataIndex: 'typicalCode',
+      index: 'typicalCode',
+      title: '典设编码',
+      width: 180,
+    },
+    {
+      dataIndex: 'unit',
+      index: 'unit',
+      title: '单位',
+      width: 100,
+    },
+
+    {
+      dataIndex: 'forProject',
+      index: 'forProject',
+      title: '所属工程',
       width: 200,
     },
     {
-      dataIndex: 'kvLevel',
-      index: 'kvLevel',
-      title: '电压等级',
-      width: 180,
+      dataIndex: 'forDesign',
+      index: 'forDesign',
+      title: '所属设计',
+      width: 200,
     },
     {
-      dataIndex: 'type',
-      index: 'type',
-      title: '分类类型',
-      width: 180,
+      dataIndex: 'height',
+      index: 'height',
+      title: '高度（m）',
+      width: 200,
     },
     {
-      dataIndex: 'corner',
-      index: 'corner',
-      title: '转角',
-      width: 180,
+      dataIndex: 'depth',
+      index: 'depth',
+      title: '埋深（m）',
+      width: 200,
     },
     {
-      dataIndex: 'material',
-      index: 'material',
-      title: '分类材质',
-      width: 180,
+      dataIndex: 'nominalHeight',
+      index: 'nominalHeight',
+      title: '呼称高（m）',
+      width: 200,
+    },
+    {
+      dataIndex: 'rodDiameter',
+      index: 'rodDiameter',
+      title: '杆梢径（mm）',
+      width: 200,
+    },
+    {
+      dataIndex: 'segmentMode',
+      index: 'segmentMode',
+      title: '分段方式',
+      width: 200,
+    },
+    {
+      dataIndex: 'arrangement',
+      index: 'arrangement',
+      title: '导线排列方式',
+      width: 240,
+    },
+    {
+      dataIndex: 'meteorologic',
+      index: 'meteorologic',
+      title: '气象区',
+      width: 200,
     },
     {
       dataIndex: 'loopNumber',
       index: 'loopNumber',
       title: '回路数',
-      width: 180,
+      width: 200,
     },
-
     {
-      dataIndex: 'isTension',
-      index: 'isTension',
-      title: '是否耐张',
-      width: 180,
-      render: (text: any, record: any) => {
-        return record.isTension == true ? '是' : '否'
-      },
+      dataIndex: 'lineNumber',
+      index: 'lineNumber',
+      title: '线数',
+      width: 140,
     },
   ]
 
@@ -165,27 +203,30 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     setAddFormVisible(true)
   }
 
-  const sureAddPoleType = () => {
+  const sureAddModuleProperty = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
+          libId: libId,
+          moduleId: '',
+          moduleName: '',
+          shortName: '',
+          typicalCode: '',
           poleTypeCode: '',
-          poleTypeName: '',
-          category: '',
-          kvLevel: '',
-          type: '',
-          corner: '',
-          material: '',
-          loopNumber: '',
-          isTension: false,
+          unit: '',
+          moduleType: '',
+          forProject: '',
+          forDesign: '',
           remark: '',
-          chartIds: [],
+          processChartIds: [],
+          designChartIds: [],
+          towerModelChartIds: [],
         },
         value
       )
-      await addPoleTypeItem(submitInfo)
+      await addModulesPropertyItem(submitInfo)
       refresh()
+      message.success('添加成功')
       setAddFormVisible(false)
       addForm.resetFields()
     })
@@ -209,32 +250,36 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
     editForm.setFieldsValue(ResourceLibData)
   }
 
-  const sureEditPoleType = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
+  const sureEditModuleProperty = () => {
     const editData = data!
 
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
-          libId: resourceLibId,
           id: editData.id,
-          poleTypeName: editData.poleTypeName,
-          category: editData.category,
-          kvLevel: editData.kvLevel,
-          type: editData.type,
-          corner: editData.corner,
-          material: editData.material,
-          loopNumber: editData.loopNumber,
-          isTension: editData.isTension,
+          libId: libId,
+          moduleName: editData.moduleName,
+          shortName: editData.shortName,
+          unit: editData.unit,
+          moduleType: editData.moduleType,
+          forProject: editData.forProject,
+          forDesign: editData.forDesign,
           remark: editData.remark,
-          chartIds: editData.chartIds,
+          processChartIds: editData.processChartIds,
+          designChartIds: editData.designChartIds,
+          towerModelChartIds: editData.towerModelChartIds,
+          rodDiameter: editData.rodDiameter,
+          moduleId: editData.moduleId,
         },
-        values
+
+        {
+          ...values,
+          rodDiameter: values.rodDiameter ? values.rodDiameter : 0,
+          nominalHeight: values.nominalHeight ? values.nominalHeight : 0,
+        }
       )
-      await updatePoleTypeItem(submitInfo)
+
+      await updateModulesPropertyItem(submitInfo)
       refresh()
       message.success('更新成功')
       editForm.resetFields()
@@ -246,50 +291,155 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('catogery-add') && (
+        {buttonJurisdictionArray?.includes('pole-type-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
             添加
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('catogerye-edit') && (
+        {buttonJurisdictionArray?.includes('pole-type-edit') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
           </Button>
         )}
 
-        {buttonJurisdictionArray?.includes('catogerye-delete') && (
+        {/* {buttonJurisdictionArray?.includes('modules-property') && (
+          <Button className="mr7" onClick={() => editAttributeEvent()}>
+            编辑属性
+          </Button>
+        )} */}
+
+        {buttonJurisdictionArray?.includes('pole-type-delete') && (
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
+        )}
+
+        {/* {buttonJurisdictionArray?.includes('modules-check') && (
+          <Button className="mr7" onClick={() => checkDetailEvent()}>
+            <FileOutlined />
+            详情
+          </Button>
+        )} */}
+
+        {buttonJurisdictionArray?.includes('pole-type-detail') && (
+          <Button className="mr7" onClick={() => openModuleDetail()}>
+            <FileTextOutlined />
+            杆型明细
+          </Button>
         )}
       </div>
     )
   }
 
-  const sureDeleteData = async () => {
+  //详情
+  const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
+      message.error('请选择一条数据查看详情')
       return
     }
-    const editData = tableSelectRows
-    const editDataId = editData.map((item: any) => item.id)
+    setDetailVisible(true)
 
-    await deletePoleTypeItem({ libId: resourceLibId, poleTypeIds: editDataId })
+    await run(resourceLibId, tableSelectRows[0].id)
+  }
+
+  const sureDeleteData = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.error('请选择一条数据进行删除')
+      return
+    }
+    const ids = tableSelectRows.map((item: any) => item.id)
+
+    await deleteModulesPropertyItem({ libId: libId, ids: ids })
     refresh()
     setTableSelectRows([])
     message.success('删除成功')
+  }
+
+  //展示杆型明细
+  const openModuleDetail = () => {
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.warning('请选择单行数据查看')
+      return
+    }
+    setModuleDetailVisible(true)
+  }
+
+  //编辑杆型属性
+  const editAttributeEvent = async () => {
+    if (!resourceLibId) {
+      message.warning('请先选择资源库')
+      return
+    }
+    if (
+      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+      tableSelectRows.length > 1
+    ) {
+      message.error('请选择一条数据进行编辑')
+      return
+    }
+    setEditAttributeVisible(true)
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
+
+    setEditAttributeVisible(true)
+    const AttributeData = await getAttribute(resourceLibId, editDataId)
+
+    editAttributeForm.setFieldsValue(AttributeData)
+  }
+
+  //保存修改的杆型属性
+  const sureEditAttribute = () => {
+    const editData = AttributeData!
+    editAttributeForm.validateFields().then(async (values) => {
+      const submitInfo = Object.assign(
+        {
+          libId: libId,
+          moduleId: editData.moduleId,
+          height: editData.height,
+          depth: editData.depth,
+          nominalHeight: editData.nominalHeight,
+          steelStrength: editData.steelStrength,
+          poleStrength: editData.poleStrength,
+          rodDimaeter: editData.rodDiameter,
+          baseWeight: editData.baseWeight,
+          segmentMode: editData.segmentMode,
+          earthwork: editData.earthwork,
+          arrangement: editData.arrangement,
+          meteorologic: editData.meteorologic,
+          loopNumber: editData.loopNumber,
+          lineNumber: editData.lineNumber,
+          conductorType: editData.conductorType,
+          conductorSpec: editData.conductorSpec,
+        },
+        values
+      )
+
+      await saveModuleAttributeItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editAttributeForm.resetFields()
+      setEditAttributeVisible(false)
+    })
+  }
+  const selctModelId = async (id: string) => {
+    const ResourceLibData = await run(libId, id)
+    addFormVisible && addForm.setFieldsValue(ResourceLibData)
+    editFormVisible && editForm.setFieldsValue(ResourceLibData)
   }
 
   return (
     <>
       <GeneralTable
         ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
+        buttonLeftContentSlot={searchComponent}
         columns={columns}
         requestSource="resource"
-        url="/PoleType/GetPageList"
+        url="/Modules/GetPageList"
         getSelectData={(data) => setTableSelectRows(data)}
         type="checkbox"
         extractParams={{
@@ -299,38 +449,92 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       />
       <Modal
         maskClosable={false}
-        title="添加-分类"
+        title="添加-杆型"
         width="680px"
         visible={addFormVisible}
         okText="确认"
-        onOk={() => sureAddPoleType()}
+        centered
+        bodyStyle={{ overflowY: 'auto', maxHeight: 750 }}
+        onOk={() => sureAddModuleProperty()}
         onCancel={() => setAddFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
         <Form form={addForm} preserve={false}>
-          <PoleTypeForm resourceLibId={resourceLibId} type="add" />
+          <ModulesPropertyForm
+            resourceLibId={resourceLibId}
+            type="add"
+            onSetDefaultForm={selctModelId}
+          />
         </Form>
       </Modal>
       <Modal
         maskClosable={false}
-        title="编辑-分类"
+        title="编辑-杆型"
         width="680px"
         visible={editFormVisible}
-        okText="确认"
-        onOk={() => sureEditPoleType()}
+        okText="保存"
+        bodyStyle={{ overflowY: 'auto', maxHeight: 750 }}
+        centered
+        onOk={() => sureEditModuleProperty()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
         destroyOnClose
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <PoleTypeForm resourceLibId={resourceLibId} />
+            <ModulesPropertyForm resourceLibId={resourceLibId} onSetDefaultForm={selctModelId} />
           </Spin>
         </Form>
       </Modal>
+
+      {/* <Modal
+        maskClosable={false}
+        title="编辑-杆型属性"
+        width="680px"
+        visible={editAttributeVisible}
+        onCancel={() => setEditAttributeVisible(false)}
+        onOk={() => sureEditAttribute()}
+        okText="保存"
+        cancelText="取消"
+        bodyStyle={{ height: '650px', overflowY: 'auto' }}
+        destroyOnClose
+      >
+        <Form form={editAttributeForm} preserve={false}>
+          <Spin spinning={loading}>
+            <ModuleAttributeForm resourceLibId={resourceLibId} />
+          </Spin>
+        </Form>
+      </Modal> */}
+      {/* <Modal
+        maskClosable={false}
+        footer=""
+        title="详情"
+        width="980px"
+        visible={detailVisible}
+        onCancel={() => setDetailVisible(false)}
+        destroyOnClose
+      >
+        <Spin spinning={loading}>
+          <ModuleDetailTab detailData={data} />
+        </Spin>
+      </Modal> */}
+
+      <ComponentDetailModal
+        libId={libId}
+        selectId={tableSelectRows.map((item) => {
+          return item.id
+        })}
+        componentId={tableSelectRows.map((item) => {
+          return item.moduleId
+        })}
+        detailVisible={moduleDetailVisible}
+        setDetailVisible={setModuleDetailVisible}
+        title="组件明细"
+        type="module"
+      />
     </>
   )
 }
 
-export default PoleType
+export default ModulesProperty

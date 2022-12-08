@@ -1,17 +1,17 @@
-import { Tabs } from 'antd';
-import React from 'react';
-import Modules from '../module-tab';
-import Attribute from '../attribute-tab';
+import { Tabs } from 'antd'
+import React from 'react'
+import Modules from '../module-tab'
+import Attribute from '../attribute-tab'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 // TODO 参数声明,不能是any
 interface ModuleDetailTabProps {
-  detailData: any;
+  detailData: any
 }
 
 const ModuleDetailTab: React.FC<ModuleDetailTabProps> = (props) => {
-  const { detailData } = props;
+  const { detailData } = props
 
   return (
     <>
@@ -24,7 +24,7 @@ const ModuleDetailTab: React.FC<ModuleDetailTabProps> = (props) => {
         </TabPane>
       </Tabs>
     </>
-  );
-};
+  )
+}
 
-export default ModuleDetailTab;
+export default ModuleDetailTab
