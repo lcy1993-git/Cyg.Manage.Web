@@ -2,6 +2,7 @@ import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import TemplateLibImportModal from '@/components/template-lib-import'
 import {
   addModulesPropertyItem,
   deleteModulesPropertyItem,
@@ -32,6 +33,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [templateLibImportModalVisible, setTemplateLibImportModalVisible] = useState<boolean>(false)
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false)
@@ -126,18 +128,18 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       width: 100,
     },
 
-    {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 200,
-    },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 200,
-    },
+    // {
+    //   dataIndex: 'forProject',
+    //   index: 'forProject',
+    //   title: '所属工程',
+    //   width: 200,
+    // },
+    // {
+    //   dataIndex: 'forDesign',
+    //   index: 'forDesign',
+    //   title: '所属设计',
+    //   width: 200,
+    // },
     {
       dataIndex: 'height',
       index: 'height',
@@ -193,7 +195,10 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       width: 140,
     },
   ]
-
+  //已有库导入
+  const temlateLibImport = () => {
+    setTemplateLibImportModalVisible(true)
+  }
   //添加
   const addEvent = () => {
     if (!resourceLibId) {
@@ -215,8 +220,8 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           poleTypeCode: '',
           unit: '',
           moduleType: '',
-          forProject: '',
-          forDesign: '',
+          // forProject: '',
+          // forDesign: '',
           remark: '',
           processChartIds: [],
           designChartIds: [],
@@ -262,8 +267,8 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           shortName: editData.shortName,
           unit: editData.unit,
           moduleType: editData.moduleType,
-          forProject: editData.forProject,
-          forDesign: editData.forDesign,
+          // forProject: editData.forProject,
+          // forDesign: editData.forDesign,
           remark: editData.remark,
           processChartIds: editData.processChartIds,
           designChartIds: editData.designChartIds,
@@ -291,6 +296,12 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('pole-type-template-lib-import') && (
+          <Button type="primary" className="mr7" onClick={() => temlateLibImport()}>
+            <PlusOutlined />
+            模板库导入
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('pole-type-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
@@ -425,6 +436,11 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
       setEditAttributeVisible(false)
     })
   }
+  const temlateLibImportFinishEvent = async (resourceLibId: string, id: string) => {
+    const ResourceLibData = await run(resourceLibId, id)
+    editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
+  }
   const selctModelId = async (id: string) => {
     const ResourceLibData = await run(libId, id)
     addFormVisible && addForm.setFieldsValue(ResourceLibData)
@@ -446,6 +462,14 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
           resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
+      />
+      <TemplateLibImportModal
+        visible={templateLibImportModalVisible}
+        onChange={setTemplateLibImportModalVisible}
+        requestUrl="/Modules/GetPageList"
+        changeFinishEvent={temlateLibImportFinishEvent}
+        libId={libId}
+        type="pole-type"
       />
       <Modal
         maskClosable={false}

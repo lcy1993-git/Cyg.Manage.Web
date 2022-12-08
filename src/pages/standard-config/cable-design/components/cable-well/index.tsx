@@ -2,6 +2,7 @@ import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import TemplateLibImportModal from '@/components/template-lib-import'
 import {
   addCableWellItem,
   deleteCableWellItem,
@@ -30,6 +31,7 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [templateLibImportModalVisible, setTemplateLibImportModalVisible] = useState<boolean>(false)
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
@@ -120,18 +122,18 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
       title: '单位',
       width: 140,
     },
-    {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 240,
-    },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 240,
-    },
+    // {
+    //   dataIndex: 'forProject',
+    //   index: 'forProject',
+    //   title: '所属工程',
+    //   width: 240,
+    // },
+    // {
+    //   dataIndex: 'forDesign',
+    //   index: 'forDesign',
+    //   title: '所属设计',
+    //   width: 240,
+    // },
     {
       dataIndex: 'width',
       index: 'width',
@@ -194,7 +196,10 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
       width: 200,
     },
   ]
-
+  //已有库导入
+  const temlateLibImport = () => {
+    setTemplateLibImportModalVisible(true)
+  }
   //添加
   const addEvent = () => {
     if (!resourceLibId) {
@@ -224,8 +229,8 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
           size: '',
           coverMode: '',
           grooveStructure: '',
-          forProject: '',
-          forDesign: '',
+          // forProject: '',
+          // forDesign: '',
           remark: '',
           chartIds: [],
         },
@@ -283,8 +288,8 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
           size: editData.size,
           coverMode: editData.coverMode,
           grooveStructure: editData.grooveStructure,
-          forProject: editData.forProject,
-          forDesign: editData.forDesign,
+          // forProject: editData.forProject,
+          // forDesign: editData.forDesign,
           remark: editData.remark,
           chartIds: editData.chartIds,
           cableWellId: editData.cableWellId,
@@ -298,10 +303,21 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
       setEditFormVisible(false)
     })
   }
+  const temlateLibImportFinishEvent = async (resourceLibId: string, id: string) => {
+    const ResourceLibData = await run(resourceLibId, id)
 
+    editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
+  }
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('cable-well-template-lib-import') && (
+          <Button type="primary" className="mr7" onClick={() => temlateLibImport()}>
+            <PlusOutlined />
+            模板库导入
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('cable-well-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
@@ -374,7 +390,14 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
           keyWord: searchKeyWord,
         }}
       />
-
+      <TemplateLibImportModal
+        visible={templateLibImportModalVisible}
+        onChange={setTemplateLibImportModalVisible}
+        requestUrl="/CableWell/GetPageList"
+        changeFinishEvent={temlateLibImportFinishEvent}
+        libId={libId}
+        type="cable-well"
+      />
       <Modal
         maskClosable={false}
         title="添加-电缆井"

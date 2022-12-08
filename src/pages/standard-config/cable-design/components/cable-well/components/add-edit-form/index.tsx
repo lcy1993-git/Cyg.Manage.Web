@@ -3,13 +3,7 @@ import EnumSelect from '@/components/enum-select'
 import { FormCollaspeButton, FormExpandButton } from '@/components/form-hidden-button'
 import SelectCanSearch from '@/components/select-can-search'
 import UrlSelect from '@/components/url-select'
-import {
-  cableWellType,
-  coverMode,
-  feature,
-  forDesignType,
-  forProjectType,
-} from '@/services/resource-config/resource-enum'
+import { cableWellType, coverMode, feature } from '@/services/resource-config/resource-enum'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { Input, Select, Tooltip } from 'antd'
 import React, { useState } from 'react'
@@ -252,7 +246,7 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
           </Select>
         </CyFormItem>
 
-        <CyFormItem
+        {/* <CyFormItem
           label="所属工程"
           name="forProject"
           align="right"
@@ -270,7 +264,7 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
           initialValue="不限"
         >
           <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
-        </CyFormItem>
+        </CyFormItem> */}
       </div>
       {!isHidden && (
         <div

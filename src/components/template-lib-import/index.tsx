@@ -34,6 +34,7 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
   const [keyWord, setKeyWord] = useState('')
   const [resourceLibId, setResourceLibId] = useState(libId)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [placeholder, setPlaceholder] = useState('')
   const [libOptions, setLibOptions] = useState<any[]>([])
   const [defaultValue, setDefaultValue] = useState('')
   const [columns, setColumns] = useState<any>([])
@@ -54,7 +55,7 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
   useEffect(() => {
     // 第一次打开弹窗时默认选中下拉列表当前资源库
     state && setDefaultValue(resourceLibId)
-    // 根据不同的type设置不同的columns
+    // 根据不同的type设置不同的columns，搜索框提示文字
     switch (type) {
       case 'material':
         setColumns([
@@ -62,15 +63,16 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
             dataIndex: 'materialName',
             index: 'materialName',
             title: '物料名称',
-            width: 320,
+            width: 200,
           },
           {
             dataIndex: 'spec',
             index: 'spec',
             title: '规格型号',
-            width: 320,
+            width: 200,
           },
         ])
+        setPlaceholder('请输入物料名称')
         break
       case 'component':
         setColumns([
@@ -78,15 +80,84 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
             dataIndex: 'componentName',
             index: 'componentName',
             title: '组件名称',
-            width: 380,
+            width: 200,
           },
           {
             dataIndex: 'componentSpec',
             index: 'componentName',
             title: '组件型号',
-            width: 380,
+            width: 200,
           },
         ])
+        setPlaceholder('请输入组件名称')
+        break
+      case 'category':
+        setColumns([
+          {
+            dataIndex: 'poleTypeName',
+            index: 'poleTypeName',
+            title: '分类名称',
+            width: 200,
+          },
+          {
+            dataIndex: 'poleTypeCode',
+            index: 'poleTypeCode',
+            title: '分类简号',
+            width: 200,
+          },
+        ])
+        setPlaceholder('请输入分类名称')
+        break
+      case 'pole-type':
+        setColumns([
+          {
+            dataIndex: 'moduleName',
+            index: 'moduleName',
+            title: '杆型名称',
+            width: 200,
+          },
+          {
+            dataIndex: 'poleTypeCode',
+            index: 'poleTypeCode',
+            title: '杆型简号',
+            width: 200,
+          },
+        ])
+        setPlaceholder('请输入杆型名称')
+        break
+      case 'cable-well':
+        setColumns([
+          {
+            dataIndex: 'cableWellName',
+            index: 'cableWellName',
+            title: '电缆井名称',
+            width: 420,
+          },
+          {
+            dataIndex: 'shortName',
+            index: 'shortName',
+            title: '模块简称',
+            width: 200,
+          },
+        ])
+        setPlaceholder('请输入电缆井名称')
+        break
+      case 'cable-channel':
+        setColumns([
+          {
+            dataIndex: 'channelName',
+            index: 'channelName',
+            title: '电缆通道名称',
+            width: 480,
+          },
+          {
+            dataIndex: 'shortName',
+            index: 'shortName',
+            title: '模块简称',
+            width: 260,
+          },
+        ])
+        setPlaceholder('请输入电缆通道名称')
         break
     }
   }, [state])
@@ -130,7 +201,7 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
       <div className={styles.searchArea}>
         <TableSearch width="230px">
           <Search
-            placeholder="请输入资源库名称"
+            placeholder={placeholder}
             enterButton
             value={keyWord}
             onChange={(e) => setKeyWord(e.target.value)}

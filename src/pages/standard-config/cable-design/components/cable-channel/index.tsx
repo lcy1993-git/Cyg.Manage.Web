@@ -2,6 +2,7 @@ import ComponentDetailModal from '@/components/component-detail-modal'
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import TemplateLibImportModal from '@/components/template-lib-import'
 import {
   addCableChannelItem,
   deleteCableChannelItem,
@@ -30,6 +31,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [templateLibImportModalVisible, setTemplateLibImportModalVisible] = useState<boolean>(false)
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
 
@@ -134,12 +136,12 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
       title: '所属工程',
       width: 240,
     },
-    {
-      dataIndex: 'forDesign',
-      index: 'forDesign',
-      title: '所属设计',
-      width: 240,
-    },
+    // {
+    //   dataIndex: 'forDesign',
+    //   index: 'forDesign',
+    //   title: '所属设计',
+    //   width: 240,
+    // },
     {
       dataIndex: 'reservedWidth',
       index: 'reservedWidth',
@@ -179,7 +181,10 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
       width: 180,
     },
   ]
-
+  //已有库导入
+  const temlateLibImport = () => {
+    setTemplateLibImportModalVisible(true)
+  }
   //添加
   const addEvent = () => {
     if (!resourceLibId) {
@@ -209,8 +214,8 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
           ductMaterialId: '',
           arrangement: '',
           bracketNumber: 0,
-          forProject: '',
-          forDesign: '',
+          // forProject: '',
+          // forDesign: '',
           remark: '',
           chartIds: '',
         },
@@ -268,8 +273,8 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         ductMaterialId: values.ductMaterialId,
         arrangement: values.arrangement,
         bracketNumber: values.bracketNumber,
-        forProject: values.forProject,
-        forDesign: values.forDesign,
+        // forProject: values.forProject,
+        // forDesign: values.forDesign,
         remark: values.remark,
         chartIds: values.chartIds,
         reservedWidth: values.reservedWidth ? values.reservedWidth : 0,
@@ -284,10 +289,21 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
       setEditFormVisible(false)
     })
   }
+  const temlateLibImportFinishEvent = async (resourceLibId: string, id: string) => {
+    const ResourceLibData = await run(resourceLibId, id)
 
+    editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
+  }
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('cable-channel-template-lib-import') && (
+          <Button type="primary" className="mr7" onClick={() => temlateLibImport()}>
+            <PlusOutlined />
+            模板库导入
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('cable-channel-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
@@ -360,6 +376,15 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
           libId: libId,
           keyWord: searchKeyWord,
         }}
+      />
+      <TemplateLibImportModal
+        visible={templateLibImportModalVisible}
+        onChange={setTemplateLibImportModalVisible}
+        requestUrl="/CableChannel"
+        changeFinishEvent={temlateLibImportFinishEvent}
+        libId={libId}
+        type="cable-channel"
+        extractParams={{ libId: libId }}
       />
       <Modal
         maskClosable={false}

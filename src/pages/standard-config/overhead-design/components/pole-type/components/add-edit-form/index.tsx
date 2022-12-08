@@ -5,8 +5,6 @@ import SelectCanSearch from '@/components/select-can-search'
 import UrlSelect from '@/components/url-select'
 import {
   arrangement,
-  forDesignType,
-  forProjectType,
   loopNumber,
   meteorologic,
   segment,
@@ -230,13 +228,13 @@ const ModulesPropertyForm: React.FC<PoleTypeParams> = (props) => {
           <Input placeholder="请输入杆梢径" type="number" />
         </CyFormItem>
 
-        <CyFormItem label="所属工程" name="forProject" initialValue="不限" labelWidth={108}>
+        {/* <CyFormItem label="所属工程" name="forProject" initialValue="不限" labelWidth={108}>
           <EnumSelect placeholder="请选择所属工程" enumList={forProjectType} valueString />
         </CyFormItem>
 
         <CyFormItem label="所属设计" name="forDesign" initialValue="不限" labelWidth={108}>
           <EnumSelect placeholder="请选择所属设计" enumList={forDesignType} valueString />
-        </CyFormItem>
+        </CyFormItem> */}
       </div>
       {!isHidden && (
         <div

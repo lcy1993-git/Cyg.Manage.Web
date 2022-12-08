@@ -1,6 +1,7 @@
 import GeneralTable from '@/components/general-table'
 import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
+import TemplateLibImportModal from '@/components/template-lib-import'
 import {
   addPoleTypeItem,
   deletePoleTypeItem,
@@ -30,6 +31,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [templateLibImportModalVisible, setTemplateLibImportModalVisible] = useState<boolean>(false)
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const { isRefresh } = useOverHeadStore()
@@ -155,7 +157,10 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       },
     },
   ]
-
+  //已有库导入
+  const temlateLibImport = () => {
+    setTemplateLibImportModalVisible(true)
+  }
   //添加
   const addEvent = () => {
     if (!resourceLibId) {
@@ -242,10 +247,21 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
       setEditFormVisible(false)
     })
   }
+  const temlateLibImportFinishEvent = async (resourceLibId: string, id: string) => {
+    const ResourceLibData = await run(resourceLibId, id)
 
+    editForm.setFieldsValue(ResourceLibData)
+    setEditFormVisible(true)
+  }
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('catogery-template-lib-import') && (
+          <Button type="primary" className="mr7" onClick={() => temlateLibImport()}>
+            <PlusOutlined />
+            模板库导入
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('catogery-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />
@@ -296,6 +312,14 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
           resourceLibId: libId,
           keyWord: searchKeyWord,
         }}
+      />
+      <TemplateLibImportModal
+        visible={templateLibImportModalVisible}
+        onChange={setTemplateLibImportModalVisible}
+        requestUrl="/PoleType/GetPageList"
+        changeFinishEvent={temlateLibImportFinishEvent}
+        libId={libId}
+        type="category"
       />
       <Modal
         maskClosable={false}
