@@ -452,7 +452,10 @@ const Component: React.FC<libParams> = (props) => {
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditMaterial()}
-        onCancel={() => setEditFormVisible(false)}
+        onCancel={() => {
+          setEditFormVisible(false)
+          refresh()
+        }}
         cancelText="取消"
         destroyOnClose
       >

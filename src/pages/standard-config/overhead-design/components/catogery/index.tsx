@@ -344,7 +344,10 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditPoleType()}
-        onCancel={() => setEditFormVisible(false)}
+        onCancel={() => {
+          setEditFormVisible(false)
+          refresh()
+        }}
         cancelText="取消"
         destroyOnClose
       >

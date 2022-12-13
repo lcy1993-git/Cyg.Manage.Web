@@ -406,7 +406,10 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
         visible={addFormVisible}
         okText="确认"
         onOk={() => sureAddMaterial()}
-        onCancel={() => setAddFormVisible(false)}
+        onCancel={() => {
+          setEditFormVisible(false)
+          refresh()
+        }}
         cancelText="取消"
         bodyStyle={{ maxHeight: '680px', overflowY: 'auto' }}
         destroyOnClose

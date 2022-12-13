@@ -413,7 +413,10 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         visible={editFormVisible}
         okText="确认"
         onOk={() => sureEditMaterial()}
-        onCancel={() => setEditFormVisible(false)}
+        onCancel={() => {
+          setEditFormVisible(false)
+          refresh()
+        }}
         cancelText="取消"
         bodyStyle={{ height: '680px', overflowY: 'auto' }}
         destroyOnClose

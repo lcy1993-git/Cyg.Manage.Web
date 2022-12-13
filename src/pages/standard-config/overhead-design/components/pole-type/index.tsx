@@ -502,7 +502,10 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         bodyStyle={{ overflowY: 'auto', maxHeight: 750 }}
         centered
         onOk={() => sureEditModuleProperty()}
-        onCancel={() => setEditFormVisible(false)}
+        onCancel={() => {
+          setEditFormVisible(false)
+          refresh()
+        }}
         cancelText="取消"
         destroyOnClose
       >
