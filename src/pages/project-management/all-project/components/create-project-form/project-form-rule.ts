@@ -31,5 +31,8 @@ export default {
     },
   ],
   natures: [{ required: true, message: '项目性质不能为空' }],
+  lib: [{ required: true, message: '资源库不能为空' }],
+  inventory: [{ required: true, message: '协议库存不能为空' }],
+  warehouse: [{ required: true, message: '利旧库存协议不能为空' }],
   assetsNature: [{ required: true, message: '资产性质不能为空' }],
 }
