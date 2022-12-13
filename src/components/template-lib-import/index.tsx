@@ -26,6 +26,7 @@ interface Props {
   requestSource?: 'resource'
   requestUrl: string
   type: string
+  extractParams?: object
   refeshTable: () => void
 }
 
@@ -36,6 +37,7 @@ const TemplateLibImportModal: React.FC<Props> = (props) => {
     changeFinishEvent,
     requestUrl,
     type,
+    extractParams,
     refeshTable,
   } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
@@ -311,7 +313,7 @@ const TemplateLibImportModal: React.FC<Props> = (props) => {
           buttonLeftContentSlot={tableButton}
           columns={columns}
           // 电缆通道用libId传值
-          extractParams={{ keyWord, resourceLibId, libId: resourceLibId }}
+          extractParams={{ ...extractParams, keyWord, resourceLibId, libId: resourceLibId }}
           needTitleLine={false}
           requestSource={requestSource}
           url={requestUrl}
