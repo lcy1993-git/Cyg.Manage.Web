@@ -1,9 +1,10 @@
-import GeneralTable from '@/components/general-table'
+import EmptyTip from '@/components/empty-tip'
 import TableSearch from '@/components/table-search'
+import { existedLibImport, getAllLib } from '@/services/resource-config/resource-lib'
 import { useControllableValue } from 'ahooks'
-import { Button, Input, message, Modal } from 'antd'
+import { Button, Input, message, Modal, Table } from 'antd'
 import { isArray } from 'lodash'
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 const { Search } = Input
 
 interface UploadAllProps {
@@ -19,22 +20,33 @@ const UploadExistedLib: React.FC<UploadAllProps> = (props) => {
   const [keyWord, setKeyWord] = useState('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const { libId = '', requestSource, changeFinishEvent } = props
-
-  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableData, setTableData] = useState<any>([])
+  const [copyTableData, setCopyTableData] = useState<any>([])
+  const [loading, setLoading] = useState(false)
 
   const search = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.search()
-    }
+    const newData = copyTableData.filter((item: any) => {
+      return item.libName.includes(keyWord)
+    })
+    setTableData(newData)
   }
-  const onSave = () => {
+  const onSave = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择要操作的行')
       return
     }
-    // console.log(libId,tableSelectRows[0].id)
-    message.info('222')
+    setLoading(true)
+    try {
+      await existedLibImport({
+        fromId: tableSelectRows[0],
+        targetId: libId,
+      })
+      setLoading(false)
+      message.info('导入成功')
+      setState(false)
+    } catch (error) {
+      setLoading(false)
+    }
     changeFinishEvent?.()
   }
   const tableColumns = [
@@ -57,22 +69,26 @@ const UploadExistedLib: React.FC<UploadAllProps> = (props) => {
       //   width: 200,
     },
   ]
-  const tableButton = () => {
-    return (
-      <>
-        <TableSearch className="mr22" label="资源库名称" width="248px">
-          <Search
-            placeholder="请输入资源库名称"
-            enterButton
-            value={keyWord}
-            onChange={(e) => setKeyWord(e.target.value)}
-            onSearch={() => search()}
-          />
-        </TableSearch>
-      </>
-    )
+  useEffect(() => {
+    getAllLib().then((res) => {
+      setTableData(res)
+      setCopyTableData(res)
+    })
+  }, [])
+  const rowSelection = {
+    onChange: (values: any[], selectedRows: any[]) => {
+      setTableSelectRows(selectedRows.map((item) => item['id']))
+    },
   }
-
+  useEffect(() => {
+    if (state) {
+      const data = copyTableData.filter((item: any) => {
+        return item.id !== libId
+      })
+      setTableData(data)
+      setCopyTableData(data)
+    }
+  }, [state])
   return (
     <>
       <Modal
@@ -83,25 +99,41 @@ const UploadExistedLib: React.FC<UploadAllProps> = (props) => {
           <Button key="cancle" onClick={() => setState(false)}>
             取消
           </Button>,
-          <Button key="save" type="primary" onClick={onSave}>
+          <Button key="save" type="primary" onClick={onSave} loading={loading}>
             保存
           </Button>,
         ]}
         onCancel={() => setState(false)}
         destroyOnClose
-        // bodyStyle={{height:'600px'}}
+        bodyStyle={{ height: 820, overflowY: 'auto' }}
         width={750}
       >
-        <GeneralTable
-          ref={tableRef}
-          type="radio"
-          getSelectData={(data) => setTableSelectRows(data)}
-          buttonLeftContentSlot={tableButton}
+        <div style={{ padding: `10px 0 20px 0` }}>
+          <TableSearch className="mr22" label="资源库名称" width="248px">
+            <Search
+              placeholder="请输入资源库名称"
+              enterButton
+              value={keyWord}
+              onChange={(e) => setKeyWord(e.target.value)}
+              onSearch={() => search()}
+            />
+          </TableSearch>
+        </div>
+        <Table
           columns={tableColumns}
-          extractParams={{ keyWord }}
-          needTitleLine={false}
-          requestSource="resource"
-          url="/ResourceLib/GetPageList"
+          dataSource={tableData}
+          rowKey="id"
+          pagination={false}
+          bordered={true}
+          locale={{
+            emptyText: <EmptyTip className="pt20 pb20" />,
+          }}
+          rowSelection={{
+            type: 'radio',
+            columnWidth: '38px',
+            selectedRowKeys: tableSelectRows,
+            ...rowSelection,
+          }}
         />
       </Modal>
     </>

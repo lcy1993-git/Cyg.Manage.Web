@@ -215,10 +215,10 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
   }
 
   const sureEditPoleType = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
+    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    //   message.error('请选择一条数据进行编辑')
+    //   return
+    // }
     const editData = data!
 
     editForm.validateFields().then(async (values) => {
@@ -320,6 +320,7 @@ const PoleType: React.FC<CableDesignParams> = (props) => {
         changeFinishEvent={temlateLibImportFinishEvent}
         libId={libId}
         type="category"
+        refeshTable={refresh}
       />
       <Modal
         maskClosable={false}

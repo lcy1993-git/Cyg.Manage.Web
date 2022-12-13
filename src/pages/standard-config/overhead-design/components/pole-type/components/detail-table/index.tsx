@@ -1,23 +1,22 @@
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import TableSearch from '@/components/table-search'
-import { Input, Button, message, Form, Modal } from 'antd'
-import React, { useState, useEffect } from 'react'
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { Popconfirm } from 'antd'
-import styles from './index.less'
-import { isArray } from 'lodash'
+import UrlSelect from '@/components/url-select'
 import {
-  updateModulesDetailItem,
   addModuleDetailItem,
   deleteModulesDetailItem,
   getModuleDetailItem,
+  updateModulesDetailItem,
 } from '@/services/resource-config/modules-property'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import UrlSelect from '@/components/url-select'
+import { Button, Form, Input, message, Modal } from 'antd'
+import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
 import AddModuleDetailTable from './add-form'
 import EditModuleDetail from './edit-form'
-import ModalConfirm from '@/components/modal-confirm'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import styles from './index.less'
 interface ModuleDetailParams {
   libId: string
   moduleId: string[]
@@ -226,19 +225,19 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
 
   const tableRightSlot = (
     <>
-      {buttonJurisdictionArray?.includes('add-module-detail') && (
+      {buttonJurisdictionArray?.includes('add-poleType-detail') && (
         <Button type="primary" className="mr7" onClick={() => addEvent()}>
           <PlusOutlined />
           添加
         </Button>
       )}
-      {buttonJurisdictionArray?.includes('edit-module-detail') && (
+      {buttonJurisdictionArray?.includes('edit-poleType-detail') && (
         <Button className="mr7" onClick={() => editEvent()}>
           <EditOutlined />
           编辑
         </Button>
       )}
-      {buttonJurisdictionArray?.includes('delete-module-detail') && (
+      {buttonJurisdictionArray?.includes('delete-poleType-detail') && (
         <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
       )}
     </>

@@ -1,9 +1,8 @@
-import React from 'react'
-import { Input, Form, Modal } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { updateLineStressSagItem } from '@/services/resource-config/line-strss-sag'
-import { useUpdateEffect, useControllableValue } from 'ahooks'
-import { divide } from 'lodash'
+import { useControllableValue, useUpdateEffect } from 'ahooks'
+import { Form, Input, Modal } from 'antd'
+import React from 'react'
 
 interface DisplayItemParams {
   value?: string
@@ -68,6 +67,12 @@ const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
             <DisplayItem />
           </CyFormItem>
           <CyFormItem label="安全系数" name="safetyFactor" labelWidth={120} align="left">
+            <DisplayItem />
+          </CyFormItem>
+          <CyFormItem label="档距点" name="spanPoint" labelWidth={120} align="left">
+            <DisplayItem />
+          </CyFormItem>
+          <CyFormItem label="温度" name="temperature" labelWidth={120} align="left">
             <DisplayItem />
           </CyFormItem>
           <CyFormItem

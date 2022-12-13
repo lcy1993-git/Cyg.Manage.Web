@@ -1,5 +1,5 @@
-import Loadable from 'react-loadable'
 import Loading from '@ant-design/pro-layout/es/PageLoading'
+import Loadable from 'react-loadable'
 const CanonyResourceLib = Loadable({
   loader: () => import('@/pages/standard-config/canon-resource-lib'),
   loading: Loading,
@@ -67,11 +67,6 @@ export default [
   {
     title: '应力弧垂表',
     path: '/standard-config/line-stress-sag',
-    component: <LineStressSag />,
-  },
-  {
-    title: '应力弧垂表管理',
-    path: '/standard-config/line-stress-sag-manage',
     component: <LineStressSagManage />,
   },
   {

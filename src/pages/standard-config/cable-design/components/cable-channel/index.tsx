@@ -249,10 +249,10 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
   }
 
   const sureEditMaterial = () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
+    // if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+    //   message.error('请选择一条数据进行编辑')
+    //   return
+    // }
     const editData = data!
 
     editForm.validateFields().then(async (values) => {
@@ -384,7 +384,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
         changeFinishEvent={temlateLibImportFinishEvent}
         libId={libId}
         type="cable-channel"
-        extractParams={{ libId: libId }}
+        refeshTable={refresh}
       />
       <Modal
         maskClosable={false}

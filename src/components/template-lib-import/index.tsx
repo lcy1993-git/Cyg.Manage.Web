@@ -1,6 +1,14 @@
 import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
-import { getResourceLibLists } from '@/services/resource-config/resource-lib'
+import {
+  CopyCableChannel,
+  CopyCableWell,
+  CopyCatogery,
+  CopyComponent,
+  CopyMaterial,
+  CopyPoleType,
+  getAllLib,
+} from '@/services/resource-config/resource-lib'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
 import { Button, Input, message, Modal, Select } from 'antd'
@@ -10,7 +18,7 @@ import styles from './index.less'
 
 const { Search } = Input
 
-interface UploadAllProps {
+interface Props {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
   changeFinishEvent: (resourceLibId: string, id: string) => void
@@ -18,17 +26,17 @@ interface UploadAllProps {
   requestSource?: 'resource'
   requestUrl: string
   type: string
-  extractParams?: object
+  refeshTable: () => void
 }
 
-const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
+const TemplateLibImportModal: React.FC<Props> = (props) => {
   const {
     libId = '',
     requestSource = 'resource',
     changeFinishEvent,
     requestUrl,
     type,
-    extractParams,
+    refeshTable,
   } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [keyWord, setKeyWord] = useState('')
@@ -43,9 +51,9 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
   const tableRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     // 初始化获取资源库列表
-    getResourceLibLists().then((res) => {
-      if (res && res.items) {
-        let libs = res.items?.map((item: any) => {
+    getAllLib().then((res) => {
+      if (res) {
+        let libs = res?.map((item: any) => {
           return { label: item['libName'], value: item['id'] }
         })
         setLibOptions(libs)
@@ -53,8 +61,9 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
     })
   }, [])
   useEffect(() => {
-    // 第一次打开弹窗时默认选中下拉列表当前资源库
-    state && setDefaultValue(resourceLibId)
+    if (!state) return
+    // 默认选中下拉列表当前资源库
+    setDefaultValue(resourceLibId)
     // 根据不同的type设置不同的columns，搜索框提示文字
     switch (type) {
       case 'material':
@@ -176,25 +185,79 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
     setResourceLibId(val)
     setDefaultValue(val)
   }
-  const onSave = () => {
+  const onSave = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择要操作的行')
       return
     }
-    // console.log(libId,tableSelectRows[0].id)
-    setLoading(true)
-    setLoading(false)
-    Modal.confirm({
-      title: '编辑数据',
-      icon: <ExclamationCircleOutlined />,
-      content: '模板导入成功，是否编辑该条数据',
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => {
-        changeFinishEvent(resourceLibId, tableSelectRows[0].id)
-        setState(false)
-      },
-    })
+
+    try {
+      setLoading(true)
+      let res = {}
+      switch (type) {
+        case 'material':
+          res = await CopyMaterial({
+            dataIds: [tableSelectRows[0].id],
+            fromId: defaultValue,
+            targetId: libId,
+          })
+          break
+        case 'component':
+          res = await CopyComponent({
+            dataIds: [tableSelectRows[0].id],
+            fromId: defaultValue,
+            targetId: libId,
+          })
+          break
+        case 'category':
+          res = await CopyCatogery({
+            dataIds: [tableSelectRows[0].id],
+            fromId: defaultValue,
+            targetId: libId,
+          })
+          break
+        case 'pole-type':
+          res = await CopyPoleType({
+            dataIds: [tableSelectRows[0].id],
+            fromId: defaultValue,
+            targetId: libId,
+          })
+          break
+        case 'cable-well':
+          res = await CopyCableWell({
+            dataIds: [tableSelectRows[0].id],
+            fromId: defaultValue,
+            targetId: libId,
+          })
+          break
+        case 'cable-channel':
+          res = await CopyCableChannel({
+            dataIds: [tableSelectRows[0].id],
+            fromId: defaultValue,
+            targetId: libId,
+          })
+          break
+      }
+      setLoading(false)
+      Modal.confirm({
+        title: '编辑数据',
+        icon: <ExclamationCircleOutlined />,
+        content: '模板导入成功，是否编辑该条数据',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          changeFinishEvent(libId, res[0])
+          setState(false)
+        },
+        onCancel: () => {
+          setState(false)
+          // 刷新外层组件的数据列表
+          refeshTable?.()
+        },
+      })
+    } catch (error) {
+      setLoading(false)
+    }
   }
   const tableButton = () => {
     return (
@@ -247,7 +310,8 @@ const TemplateLibImportModal: React.FC<UploadAllProps> = (props) => {
           getSelectData={(data) => setTableSelectRows(data)}
           buttonLeftContentSlot={tableButton}
           columns={columns}
-          extractParams={{ ...extractParams, keyWord, resourceLibId }}
+          // 电缆通道用libId传值
+          extractParams={{ keyWord, resourceLibId, libId: resourceLibId }}
           needTitleLine={false}
           requestSource={requestSource}
           url={requestUrl}

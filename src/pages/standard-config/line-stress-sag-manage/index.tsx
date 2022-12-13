@@ -1,26 +1,25 @@
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { Input, Button } from 'antd'
+import { Button, Input } from 'antd'
 import React, { useEffect, useState } from 'react'
 // import ElectricCompanyForm from './components/add-edit-form';
 import styles from './index.less'
-import UrlSelect from '@/components/url-select'
 // import TableImportButton from '@/components/table-import-button';
 import { getUploadUrl } from '@/services/resource-config/drawing'
-import { useRequest, useMount, useUnmount } from 'ahooks'
-import EditLineStressSag from './components/edit-lineStressSag'
-import UploadLineStressSag from './components/upload-lineStressSag'
-import ImportLineStressSag from './components/import-lineStressSag'
+import { useMount, useRequest, useUnmount } from 'ahooks'
 import { message } from 'antd'
+import EditLineStressSag from './components/edit-lineStressSag'
+import ImportLineStressSag from './components/import-lineStressSag'
+import UploadLineStressSag from './components/upload-lineStressSag'
 // import FileUploadOnline from '@/components/file-upload-online';
 // import CygFormItem from '@/components/cy-form-item';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import lib, { ImportOutlined, EditOutlined } from '@ant-design/icons'
-import qs from 'qs'
 import CommonTitle from '@/components/common-title'
 import { useLayoutStore } from '@/layouts/context'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, ImportOutlined } from '@ant-design/icons'
 import { isArray } from 'lodash'
+import qs from 'qs'
 
 const { Search } = Input
 
@@ -99,6 +98,18 @@ const LineStressSag: React.FC<libParams> = (props) => {
       index: 'spec',
       title: '导线型号',
       width: 220,
+    },
+    {
+      dataIndex: 'spanPoint',
+      index: 'spanPoint',
+      title: '档距点',
+      width: 80,
+    },
+    {
+      dataIndex: 'temperature',
+      index: 'temperature',
+      title: '温度',
+      width: 80,
     },
     {
       dataIndex: 'stress',
@@ -209,8 +220,8 @@ const LineStressSag: React.FC<libParams> = (props) => {
           // tableTitle="应力弧垂表"
           type="radio"
           extractParams={{
-            resourceLibId: libId,
             keyWord: searchKeyWord,
+            resourceLibId: '',
           }}
           getSelectData={(data) => setTableSelectRows(data)}
         />

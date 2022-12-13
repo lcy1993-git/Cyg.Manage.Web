@@ -81,7 +81,7 @@ const ResourceLib: React.FC = () => {
   //   }
   // )
   // 获取公司资源库，没有则创建
-  const { run: getList } = useRequest(
+  const { run: getList, loading: tableListLoading } = useRequest(
     () =>
       getCampanyResourceLibListsWithBackUpInfo({
         libType: 1,
@@ -522,7 +522,6 @@ const ResourceLib: React.FC = () => {
       )}
     </Menu>
   )
-
   //导出
   const exportMenu = (
     <Menu>
@@ -618,6 +617,7 @@ const ResourceLib: React.FC = () => {
           rowKey="id"
           pagination={false}
           bordered={true}
+          loading={tableListLoading}
           locale={{
             emptyText: <EmptyTip className="pt20 pb20" />,
           }}

@@ -470,6 +470,7 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
         changeFinishEvent={temlateLibImportFinishEvent}
         libId={libId}
         type="pole-type"
+        refeshTable={refresh}
       />
       <Modal
         maskClosable={false}

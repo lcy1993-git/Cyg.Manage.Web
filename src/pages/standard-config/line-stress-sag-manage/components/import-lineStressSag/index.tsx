@@ -3,9 +3,7 @@ import FileUpload from '@/components/file-upload'
 import { uploadLineStressSag } from '@/services/resource-config/drawing'
 import { useBoolean, useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
-import React, { useState } from 'react'
-import { Dispatch } from 'react'
-import { SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 interface ImportLineStreeSagProps {
   visible: boolean
@@ -32,7 +30,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
       .validateFields()
       .then((values) => {
         const { file } = values
-        return uploadLineStressSag(file, { libId }, requestSource, '/LineStressSag/SaveImport')
+        return uploadLineStressSag(file, { libId: '' }, requestSource, '/LineStressSag/SaveImport')
       })
       .then(
         (res) => {

@@ -144,3 +144,73 @@ export const exportCompanyLib = (libId: string) => {
     responseType: 'blob',
   })
 }
+//公司库资源库-已有库导入
+export const existedLibImport = (params: { fromId: string; targetId: string }) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/CopyResourceLibData/CopyResourceLib`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+//获取所有资源库
+export const getAllLib = () => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/ResourceLib/GetItems`, { method: 'GET', params: {} })
+  )
+}
+//模板库导入-物料
+export const CopyMaterial = (params: { dataIds: string[]; fromId: string; targetId: string }) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/CopyResourceLibData/CopyMaterial`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+//模板库导入-组件
+export const CopyComponent = (params: { dataIds: string[]; fromId: string; targetId: string }) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/CopyResourceLibData/CopyComponent`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+//模板库导入-分类
+export const CopyCatogery = (params: { dataIds: string[]; fromId: string; targetId: string }) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/CopyResourceLibData/CopyPoleType`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+//模板库导入-杆型
+export const CopyPoleType = (params: { dataIds: string[]; fromId: string; targetId: string }) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/CopyResourceLibData/CopyModule`, { method: 'POST', data: params })
+  )
+}
+//模板库导入-电缆井
+export const CopyCableWell = (params: { dataIds: string[]; fromId: string; targetId: string }) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/CopyResourceLibData/CopyCableWell`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+//模板库导入-电缆通道
+export const CopyCableChannel = (params: {
+  dataIds: string[]
+  fromId: string
+  targetId: string
+}) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/CopyResourceLibData/CopyCableChannel`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
