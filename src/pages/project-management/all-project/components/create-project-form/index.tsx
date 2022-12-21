@@ -1,9 +1,11 @@
 import CyFormItem from '@/components/cy-form-item'
+import DataSelect from '@/components/data-select'
 import UrlSelect from '@/components/url-select'
 import { getProjectInfo } from '@/services/project-management/all-project'
-import { useGetProjectEnum } from '@/utils/hooks'
-import { useMount, useRequest } from 'ahooks'
-import { DatePicker, Input, InputNumber, Select } from 'antd'
+import { useGetProjectEnum, useGetSelectData } from '@/utils/hooks'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { useMount, useRequest, useUpdateEffect } from 'ahooks'
+import { DatePicker, Input, InputNumber, Select, Tooltip } from 'antd'
 import { isEmpty, isNumber } from 'lodash'
 import moment, { Moment } from 'moment'
 import React, { memo, useEffect, useMemo, useState } from 'react'
@@ -25,6 +27,8 @@ interface CreateProjectFormProps {
   isInherit?: boolean
   isEdit?: boolean
   pointVisible?: boolean
+  copyLibId?: string
+  getWarehouseData?: (value: any[]) => void
 }
 
 const { TextArea } = Input
@@ -32,7 +36,6 @@ const { TextArea } = Input
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const {
     field = {},
-    // areaId,
     // company,
     pointVisible,
     status,
@@ -42,9 +45,12 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     engineerEnd,
     copyFlag,
     index,
+    areaId,
     isInherit = false,
     isEdit = false,
     setCopyFlag,
+    getWarehouseData,
+    copyLibId: inputLibId,
   } = props
 
   const [startDate, setStartDate] = useState<Moment>()
@@ -52,9 +58,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const [dataSourceType, setDataSourceType] = useState<number>()
   const [disRangeValue] = useState<number>()
   const [pileRangeValue] = useState<number>()
+  const [warehouseId, setWarehouseId] = useState<string>()
+  const [libId, setLibId] = useState<string | undefined>(inputLibId)
+  const [newLibSelectData, setNewLibSelectData] = useState([])
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     onSuccess: () => {
+      setLibId(projectInfo?.libId)
+      setWarehouseId(projectInfo?.warehouseId)
       setStartDate(moment(projectInfo?.startTime))
       setEndDate(moment(projectInfo?.endTime))
     },
@@ -79,6 +90,104 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(projectInfo)])
+
+  const labelElement = (label: any) => {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {label}
+        </span>
+        <ExclamationCircleOutlined />
+      </div>
+    )
+  }
+
+  const { data: libSelectData = [] } = useGetSelectData({
+    url: '/ResourceLib/GetList?status=0',
+    requestSource: 'resource',
+    titleKey: 'libName',
+    valueKey: 'id',
+  })
+
+  const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
+    {
+      url: `/Inventory/GetList?libId=${libId}`,
+      valueKey: 'id',
+      titleKey: 'name',
+      otherKey: 'hasMaped',
+      requestSource: 'resource',
+    },
+    {
+      ready: !!libId,
+      refreshDeps: [libId, index],
+    }
+  )
+
+  const { data: warehouseSelectData = [] } = useGetSelectData(
+    {
+      url: '/WareHouse/GetWareHouseListByArea',
+      extraParams: { area: areaId },
+      requestSource: 'resource',
+      method: 'post',
+      postType: 'query',
+    },
+    {
+      ready: !!areaId,
+      refreshDeps: [areaId],
+      onSuccess: () => {
+        getWarehouseData?.(warehouseSelectData)
+      },
+    }
+  )
+
+  const handleInventoryData = useMemo(() => {
+    if (inventoryOverviewSelectData) {
+      return inventoryOverviewSelectData.map((item: any) => {
+        if (!item.otherKey) {
+          return { label: labelElement(item.label), value: item.value }
+        }
+        return { label: item.label, value: item.value }
+      })
+    }
+    return []
+  }, [inventoryOverviewSelectData])
+
+  //工程区域选择后重置利库选择
+  useUpdateEffect(() => {
+    const projectInfo = form.getFieldValue('projects')
+    const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+      if (inx === index) {
+        return { ...item, warehouseId: undefined }
+      }
+      return item
+    })
+    form.setFieldsValue({ projects: newProjectInfo })
+  }, [areaId])
+
+  useEffect(() => {
+    if (inputLibId) {
+      setLibId(inputLibId)
+      const selectData = libSelectData
+        .filter((item: any) => {
+          if (item.isDisabled) {
+            return item.value === inputLibId
+          }
+          return true
+        })
+        .map((item: { disabled: any; isDisabled: any }) => {
+          item.disabled = item.isDisabled
+          return item
+        })
+      setNewLibSelectData(selectData)
+    } else {
+      const copyData = libSelectData.filter((item: any) => {
+        if (!item.isDisabled) {
+          return item
+        }
+      })
+      setNewLibSelectData(copyData)
+    }
+  }, [inputLibId, libSelectData])
 
   const {
     projectCategory,
@@ -122,6 +231,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     }
   }
 
+  const invSlot = () => {
+    return (
+      <>
+        <span>协议库存</span>
+        <Tooltip
+          title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
+          placement="top"
+        >
+          <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    )
+  }
+
   return (
     <>
       <div className="flex">
@@ -139,8 +262,10 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <Input placeholder="请输入" />
           </CyFormItem>
         </div>
+
         <div className="flex1 flowHidden">
           <CyFormItem
+            // shouldUpdate={valueChangeEvent}
             label="项目编码"
             fieldKey={[field.fieldKey, 'code']}
             name={isEmpty(field) ? 'code' : [field.name, 'code']}
@@ -152,6 +277,80 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         </div>
       </div>
       <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            fieldKey={[field.fieldKey, 'libId']}
+            name={isEmpty(field) ? 'libId' : [field.name, 'libId']}
+            label="资源库"
+            labelWidth={120}
+            align="right"
+            required
+            rules={Rule.lib}
+          >
+            <DataSelect
+              placeholder="请选择"
+              options={newLibSelectData}
+              onChange={(value: any) => {
+                setLibId(value)
+                if (field.fieldKey === undefined) {
+                  form.setFieldsValue({ inventoryOverviewId: undefined })
+                } else {
+                  // form.setFieldsValue( {'inventoryOverviewId'[field.fieldKey]: undefined })
+                  const projectInfo = form.getFieldValue('projects')
+                  const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+                    if (inx === index) {
+                      return { ...item, inventoryOverviewId: undefined }
+                    }
+                    return item
+                  })
+                  form.setFieldsValue({ projects: newProjectInfo })
+                }
+              }}
+            />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            fieldKey={[field.fieldKey, 'inventoryOverviewId']}
+            name={isEmpty(field) ? 'inventoryOverviewId' : [field.name, 'inventoryOverviewId']}
+            labelSlot={invSlot}
+            labelWidth={120}
+            align="right"
+            required
+            rules={Rule.inventory}
+          >
+            <DataSelect
+              options={
+                handleInventoryData.length !== 0
+                  ? handleInventoryData
+                  : [{ label: '无', value: 'none' }]
+              }
+              placeholder="请先选择资源库"
+            />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            fieldKey={[field.fieldKey, 'warehouseId']}
+            name={isEmpty(field) ? 'warehouseId' : [field.name, 'warehouseId']}
+            label="利旧库存协议"
+            labelWidth={120}
+            align="right"
+            required
+            rules={Rule.warehouse}
+          >
+            <DataSelect
+              options={
+                warehouseSelectData.length !== 0
+                  ? warehouseSelectData
+                  : [{ label: '无', value: 'none' }]
+              }
+              placeholder="请先选择区域"
+            />
+          </CyFormItem>
+        </div>
         <div className="flex1 flowHidden">
           <CyFormItem
             label="项目分类"
@@ -169,17 +368,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               titlekey="text"
               placeholder="请选择"
             />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="截止日期"
-            fieldKey={[field.fieldKey, 'deadline']}
-            name={isEmpty(field) ? 'deadline' : [field.name, 'deadline']}
-            labelWidth={120}
-            align="right"
-          >
-            <DatePicker placeholder="请选择" />
           </CyFormItem>
         </div>
       </div>
@@ -647,9 +835,20 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
+            label="截止日期"
+            fieldKey={[field.fieldKey, 'deadline']}
+            name={isEmpty(field) ? 'deadline' : [field.name, 'deadline']}
+            labelWidth={120}
+            align="right"
+          >
+            <DatePicker placeholder="请选择" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
             label="项目属性"
             initialValue={1}
-            fieldKey={[field.fieldKey, 'category']}
+            fieldKey={[field.fieldKey, 'pAttribute']}
             name={isEmpty(field) ? 'pAttribute' : [field.name, 'pAttribute']}
             required
             labelWidth={120}
@@ -658,25 +857,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <UrlSelect
               defaultData={projectAttribute}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="气象区"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'category']}
-            name={isEmpty(field) ? 'meteorologic' : [field.name, 'meteorologic']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-          >
-            <UrlSelect
-              defaultData={meteorologicLevel}
               valuekey="value"
               titlekey="text"
               placeholder="请选择"
@@ -924,6 +1104,27 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
+            label="气象区"
+            initialValue={1}
+            fieldKey={[field.fieldKey, 'meteorologic']}
+            name={isEmpty(field) ? 'meteorologic' : [field.name, 'meteorologic']}
+            required
+            labelWidth={120}
+            align="right"
+            rules={Rule.required}
+          >
+            <UrlSelect
+              defaultData={meteorologicLevel}
+              valuekey="value"
+              titlekey="text"
+              placeholder="请选择"
+            />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
             label="备注"
             fieldKey={[field.fieldKey, 'remark']}
             name={isEmpty(field) ? 'remark' : [field.name, 'remark']}
@@ -939,7 +1140,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
-      <div className="flex"></div>
     </>
   )
 }

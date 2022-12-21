@@ -16,7 +16,11 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
 
   const { engineerId } = props
 
-  const { data: engineerInfo, run, loading } = useRequest(() => getEngineerInfo(engineerId), {
+  const {
+    data: engineerInfo,
+    run,
+    loading,
+  } = useRequest(() => getEngineerInfo(engineerId), {
     manual: true,
   })
 
@@ -46,39 +50,14 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
             </ReadonlyItem>
           </div>
           <div className="flex1">
-            <ReadonlyItem label="资源库">{engineerInfo?.libName}</ReadonlyItem>
-          </div>
-        </div>
-        <div className="flex">
-          <div className="flex1">
             <ReadonlyItem label="编制单位">
               <Tooltip title={engineerInfo?.organization} placement="topLeft">
                 {engineerInfo?.organization}
               </Tooltip>
             </ReadonlyItem>
           </div>
-          <div className="flex1">
-            <ReadonlyItem label="协议库存">
-              {engineerInfo?.inventoryOverviewName == '__'
-                ? '无'
-                : engineerInfo?.inventoryOverviewName}
-            </ReadonlyItem>
-          </div>
         </div>
-        <div className="flex">
-          <div className="flex1">
-            <ReadonlyItem label="利旧库存协议">
-              {engineerInfo?.warehouseName == '_' ? '无' : engineerInfo?.warehouseName}
-            </ReadonlyItem>
-          </div>
-          <div className="flex1">
-            <ReadonlyItem label="编制人">
-              <Tooltip title={engineerInfo?.compiler} placement="topLeft">
-                {engineerInfo?.compiler}
-              </Tooltip>
-            </ReadonlyItem>
-          </div>
-        </div>
+
         <div className="flex">
           <div className="flex1">
             <ReadonlyItem label="重要程度">{engineerInfo?.importanceText}</ReadonlyItem>
@@ -112,6 +91,13 @@ const EngineerDetailInfo: React.FC<EngineerDetailInfoProps> = (props) => {
           </div>
         </div>
         <div className="flex">
+          <div className="flex1">
+            <ReadonlyItem label="编制人">
+              <Tooltip title={engineerInfo?.compiler} placement="topLeft">
+                {engineerInfo?.compiler}
+              </Tooltip>
+            </ReadonlyItem>
+          </div>
           <div className="flex1">
             <ReadonlyItem label="工程日期">
               {engineerInfo?.startTime ? moment(engineerInfo?.startTime).format('YYYY-MM-DD') : ''}

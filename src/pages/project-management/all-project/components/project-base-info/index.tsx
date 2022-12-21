@@ -50,15 +50,29 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
         </div>
         <div className="flex">
           <div className="flex1">
+            <ReadonlyItem label="资源库" labelWidth={100}>
+              {projectInfo?.libName}
+            </ReadonlyItem>
+          </div>
+          <div className="flex1">
+            <ReadonlyItem label="协议库存" labelWidth={100}>
+              {projectInfo?.inventoryOverviewName == '__'
+                ? '无'
+                : projectInfo?.inventoryOverviewName}
+            </ReadonlyItem>
+          </div>
+        </div>
+        <div className="flex">
+          <div className="flex1">
+            <ReadonlyItem label="利旧库存协议" labelWidth={100}>
+              {projectInfo?.warehouseName == '_' ? '无' : projectInfo?.warehouseName}
+            </ReadonlyItem>
+          </div>
+          <div className="flex1">
             <ReadonlyItem label="立项日期" labelWidth={100}>
               {projectInfo?.createdOn
                 ? moment(projectInfo?.createdOn).format('YYYY-MM-DD HH:mm:ss')
                 : ''}
-            </ReadonlyItem>
-          </div>
-          <div className="flex1">
-            <ReadonlyItem label="状态" labelWidth={100}>
-              {projectInfo?.stateInfo.showStatusText}
             </ReadonlyItem>
           </div>
         </div>
@@ -241,6 +255,11 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
           </div>
         </div>
         <div className="flex">
+          <div className="flex1">
+            <ReadonlyItem label="状态" labelWidth={100}>
+              {projectInfo?.stateInfo.showStatusText}
+            </ReadonlyItem>
+          </div>
           <div className="flex1">
             <ReadonlyItem label="备注" labelWidth={100}>
               <Tooltip title={projectInfo?.remark} placement="topLeft">

@@ -20,6 +20,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
   const [company, setCompany] = useState<string>('')
   const [companyName, setCompanyName] = useState<string>('')
   const [copyFlag, setCopyFlag] = useState<number[]>([0])
+  const [copyLibId, setCopyLibId] = useState<string>('')
 
   const tabChangeEvent = (activeKey: string) => {
     setActiveProjectKey(activeKey)
@@ -31,8 +32,10 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
       setActiveProjectKey('0')
       return
     }
+
     if (currentIndex > 0) {
       setActiveProjectKey(String(currentIndex - 1))
+
       const copyData = [...copyFlag]
       copyData.splice(currentIndex, 1)
       setCopyFlag(copyData)
@@ -46,6 +49,8 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
     const { projects } = formData
 
     const copyFormData = projects[activeProjectKey]
+
+    setCopyLibId(copyFormData.libId)
 
     if (copyFormData.dataSourceType === 0) {
       setCopyFlag([...copyFlag, 0])
@@ -131,6 +136,7 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
                       status={1}
                       form={form}
                       isEdit={true}
+                      copyLibId={copyLibId}
                     />
                   </TabPane>
                 ))}

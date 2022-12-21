@@ -42,8 +42,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   const [libId, setLibId] = useState<string>('')
   const [city, setCity] = useState<any[]>([])
 
-  const [newLibSelectData, setNewLibSelectData] = useState([])
-
   const disableDate = (current: any) => {
     return current < moment('2010-01-01') || current > moment('2051-01-01')
   }
@@ -56,37 +54,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
       }
     },
   })
-
-  const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList?status=0',
-    requestSource: 'resource',
-    titleKey: 'libName',
-    valueKey: 'id',
-  })
-  const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
-    {
-      url: `/Inventory/GetList?libId=${libId}`,
-      valueKey: 'id',
-      titleKey: 'name',
-      otherKey: 'hasMaped',
-      requestSource: 'resource',
-    },
-    {
-      ready: !!libId,
-      refreshDeps: [libId],
-    }
-  )
-
-  const { data: warehouseSelectData = [] } = useGetSelectData(
-    {
-      url: '/WareHouse/GetWareHouseListByArea',
-      extraParams: { area: areaId },
-      requestSource: 'resource',
-      method: 'post',
-      postType: 'query',
-    },
-    { ready: !!areaId, refreshDeps: [areaId] }
-  )
 
   const { data: companySelectData = [] } = useGetSelectData(
     {
@@ -110,29 +77,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
         : undefined,
     }
   }
-
-  const labelElement = (label: any) => {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {label}
-        </span>
-        <ExclamationCircleOutlined />
-      </div>
-    )
-  }
-
-  const handleInventoryData = useMemo(() => {
-    if (inventoryOverviewSelectData) {
-      return inventoryOverviewSelectData.map((item: any) => {
-        if (!item.otherKey) {
-          return { label: labelElement(item.label), value: item.value }
-        }
-        return { label: item.label, value: item.value }
-      })
-    }
-    return []
-  }, [inventoryOverviewSelectData])
 
   const afterHandleData = useMemo(() => {
     return city?.map(mapHandleCityData)
@@ -159,14 +103,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
           })
         }
       }
-      if (prevValues.libId !== curValues.libId) {
-        setLibId(curValues.libId)
-        if (form && canChange) {
-          form.setFieldsValue({
-            inventoryOverviewId: undefined,
-          })
-        }
-      }
+
       if (prevValues.company !== curValues.company) {
         const [currentAreaId = ''] = curValues.province
         exportDataChange?.({
@@ -180,48 +117,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     },
     [canChange]
   )
-
-  useEffect(() => {
-    if (province) {
-      setAreaId(province)
-    }
-    if (inputLibId) {
-      setLibId(inputLibId)
-      const selectData = libSelectData
-        .filter((item: any) => {
-          if (item.isDisabled) {
-            return item.value === inputLibId
-          }
-          return true
-        })
-        .map((item: { disabled: any; isDisabled: any }) => {
-          item.disabled = item.isDisabled
-          return item
-        })
-      setNewLibSelectData(selectData)
-    } else {
-      const copyData = libSelectData.filter((item: any) => {
-        if (!item.isDisabled) {
-          return item
-        }
-      })
-      setNewLibSelectData(copyData)
-    }
-  }, [province, inputLibId, libSelectData])
-
-  const invSlot = () => {
-    return (
-      <>
-        <span>协议库存</span>
-        <Tooltip
-          title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
-          placement="top"
-        >
-          <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
-        </Tooltip>
-      </>
-    )
-  }
 
   return (
     <>
@@ -238,6 +133,23 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             <Input placeholder="请输入" />
           </CyFormItem>
         </div>
+
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="项目级别"
+            name="grade"
+            labelWidth={120}
+            align="right"
+            initialValue={'1'}
+            required
+            rules={Rule.grade}
+          >
+            <EnumSelect placeholder="请选择" enumList={ProjectLevel} />
+          </CyFormItem>
+        </div>
+      </div>
+
+      <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
             label="区域"
@@ -250,71 +162,16 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             <Cascader options={afterHandleData || provinceData} />
           </CyFormItem>
         </div>
-      </div>
-      <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="资源库"
-            name="libId"
+            label="所属公司"
+            name="company"
             labelWidth={120}
             align="right"
             required
-            rules={Rule.lib}
+            rules={Rule.company}
           >
-            <DataSelect placeholder="请选择" options={newLibSelectData} />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            labelSlot={invSlot}
-            name="inventoryOverviewId"
-            labelWidth={120}
-            align="right"
-            required
-            rules={Rule.inventory}
-          >
-            <DataSelect
-              options={
-                handleInventoryData.length !== 0
-                  ? handleInventoryData
-                  : [{ label: '无', value: 'none' }]
-              }
-              placeholder="请先选择资源库"
-            />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="利旧库存协议"
-            name="warehouseId"
-            labelWidth={120}
-            align="right"
-            required
-            rules={Rule.warehouse}
-          >
-            <DataSelect
-              options={
-                warehouseSelectData.length !== 0
-                  ? warehouseSelectData
-                  : [{ label: '无', value: 'none' }]
-              }
-              placeholder="请先选择区域"
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            shouldUpdate={valueChangeEvenet}
-            label="编制人"
-            name="compiler"
-            labelWidth={120}
-            align="right"
-            required
-            rules={Rule.compiler}
-          >
-            <Input placeholder="请输入" />
+            <DataSelect options={companySelectData} placeholder="请先选择区域" />
           </CyFormItem>
         </div>
       </div>
@@ -342,6 +199,34 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             rules={Rule.organization}
           >
             <Input placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            shouldUpdate={valueChangeEvenet}
+            label="编制人"
+            name="compiler"
+            labelWidth={120}
+            align="right"
+            required
+            rules={Rule.compiler}
+          >
+            <Input placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="重要程度"
+            name="importance"
+            labelWidth={120}
+            align="right"
+            initialValue={'1'}
+            required
+            rules={Rule.importance}
+          >
+            <EnumSelect placeholder="请选择" enumList={FormImportantLevel} />
           </CyFormItem>
         </div>
       </div>
@@ -411,33 +296,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
           </CyFormItem>
         </div>
       </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="所属公司"
-            name="company"
-            labelWidth={120}
-            align="right"
-            required
-            rules={Rule.company}
-          >
-            <DataSelect options={companySelectData} placeholder="请先选择区域" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="重要程度"
-            name="importance"
-            labelWidth={120}
-            align="right"
-            initialValue={'1'}
-            required
-            rules={Rule.importance}
-          >
-            <EnumSelect placeholder="请选择" enumList={FormImportantLevel} />
-          </CyFormItem>
-        </div>
-      </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -449,20 +308,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             required
             rules={Rule.plannedYear}
           >
-            <Input type="number" placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="项目级别"
-            name="grade"
-            labelWidth={120}
-            align="right"
-            initialValue={'1'}
-            required
-            rules={Rule.grade}
-          >
-            <EnumSelect placeholder="请选择" enumList={ProjectLevel} />
+            <Input type="number" placeholder="请输入" style={{ width: '40.85%' }} />
           </CyFormItem>
         </div>
       </div>

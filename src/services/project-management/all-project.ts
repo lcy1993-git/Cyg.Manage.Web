@@ -403,6 +403,9 @@ interface ProjectInfoParams {
   assetsNature: string
   assetsNatureText: string
   majorCategory: string
+  libId: string
+  inventoryOverviewId: string
+  warehouseId: string
   majorCategoryText: string
   isAcrossYear: string
   reformCause: string

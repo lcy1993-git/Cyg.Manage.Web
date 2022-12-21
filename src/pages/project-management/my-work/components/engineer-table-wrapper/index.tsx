@@ -297,6 +297,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
               editProjectEvent({
                 projectId: tableItemData.id,
                 areaId: engineerInfo.province,
+                libId: engineerInfo.libId,
                 company: engineerInfo.company,
                 companyName: engineerInfo.company,
                 startTime: engineerInfo.startTime,

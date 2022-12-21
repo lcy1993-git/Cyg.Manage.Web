@@ -25,6 +25,7 @@ interface EditProjectProps {
 const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState(false)
+  const [warehouseInfo, setWarehouseInfo] = useState<any[]>([])
   const [form] = Form.useForm()
 
   const {
@@ -40,7 +41,11 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     setInheritState,
   } = props
 
-  const { data: projectInfo, run, loading } = useRequest(() => getProjectInfo(projectId), {
+  const {
+    data: projectInfo,
+    run,
+    loading,
+  } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
     onSuccess: (res) => {
       form.setFieldsValue({
@@ -51,6 +56,10 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
         powerSupply: projectInfo?.powerSupply ? projectInfo?.powerSupply : '无',
+        warehouseId:
+          warehouseInfo.findIndex((item: any) => item.value === projectInfo?.warehouseId) === -1
+            ? undefined
+            : projectInfo?.warehouseId,
         disclosureRange:
           projectInfo?.dataSourceType === 2
             ? undefined
@@ -68,10 +77,11 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   })
 
   useEffect(() => {
-    if (state) {
+    if (state && warehouseInfo) {
       run()
     }
-  }, [state])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, warehouseInfo])
 
   const edit = () => {
     form.validateFields().then(async (value) => {
@@ -140,6 +150,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             isEdit={projectInfo?.canEditStage}
             engineerEnd={endTime}
             form={form}
+            getWarehouseData={setWarehouseInfo}
             // onLoadingFinish={() => setLoading(true)}
           />
         </Spin>
