@@ -103,14 +103,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
           })
         }
       }
-      if (prevValues.libId !== curValues.libId) {
-        setLibId(curValues.libId)
-        if (form && canChange) {
-          form.setFieldsValue({
-            inventoryOverviewId: undefined,
-          })
-        }
-      }
+
       if (prevValues.company !== curValues.company) {
         const [currentAreaId = ''] = curValues.province
         exportDataChange?.({

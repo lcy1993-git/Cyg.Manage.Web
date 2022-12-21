@@ -4,11 +4,11 @@ import UrlSelect from '@/components/url-select'
 import { getProjectInfo } from '@/services/project-management/all-project'
 import { useGetProjectEnum, useGetSelectData } from '@/utils/hooks'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { useMount, useRequest } from 'ahooks'
+import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { DatePicker, Input, InputNumber, Select, Tooltip } from 'antd'
 import { isEmpty, isNumber } from 'lodash'
 import moment, { Moment } from 'moment'
-import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, useEffect, useMemo, useState } from 'react'
 import Rule from './project-form-rule'
 
 interface CreateProjectFormProps {
@@ -27,8 +27,8 @@ interface CreateProjectFormProps {
   isInherit?: boolean
   isEdit?: boolean
   pointVisible?: boolean
-  libId?: string
-  canChange?: boolean
+  copyLibId?: string
+  getWarehouseData?: (value: any[]) => void
 }
 
 const { TextArea } = Input
@@ -36,7 +36,6 @@ const { TextArea } = Input
 const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const {
     field = {},
-    // areaId,
     // company,
     pointVisible,
     status,
@@ -49,9 +48,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     areaId,
     isInherit = false,
     isEdit = false,
-    libId: inputLibId,
-    canChange = true,
     setCopyFlag,
+    getWarehouseData,
+    copyLibId: inputLibId,
   } = props
 
   const [startDate, setStartDate] = useState<Moment>()
@@ -59,12 +58,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const [dataSourceType, setDataSourceType] = useState<number>()
   const [disRangeValue] = useState<number>()
   const [pileRangeValue] = useState<number>()
-
-  const [libId, setLibId] = useState<string>('')
+  const [warehouseId, setWarehouseId] = useState<string>()
+  const [libId, setLibId] = useState<string | undefined>(inputLibId)
   const [newLibSelectData, setNewLibSelectData] = useState([])
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     onSuccess: () => {
+      setLibId(projectInfo?.libId)
+      setWarehouseId(projectInfo?.warehouseId)
       setStartDate(moment(projectInfo?.startTime))
       setEndDate(moment(projectInfo?.endTime))
     },
@@ -118,7 +119,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     },
     {
       ready: !!libId,
-      refreshDeps: [libId],
+      refreshDeps: [libId, index],
     }
   )
 
@@ -130,7 +131,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
       method: 'post',
       postType: 'query',
     },
-    { ready: !!areaId, refreshDeps: [areaId] }
+    {
+      ready: !!areaId,
+      refreshDeps: [areaId],
+      onSuccess: () => {
+        getWarehouseData?.(warehouseSelectData)
+      },
+    }
   )
 
   const handleInventoryData = useMemo(() => {
@@ -145,35 +152,42 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     return []
   }, [inventoryOverviewSelectData])
 
-  // useEffect(() => {
-  //   // if (province) {
-  //   //   setAreaId(province)
-  //   // }
-  //   console.log(inputLibId, '111')
+  //工程区域选择后重置利库选择
+  useUpdateEffect(() => {
+    const projectInfo = form.getFieldValue('projects')
+    const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+      if (inx === index) {
+        return { ...item, warehouseId: undefined }
+      }
+      return item
+    })
+    form.setFieldsValue({ projects: newProjectInfo })
+  }, [areaId])
 
-  //   if (inputLibId) {
-  //     setLibId(inputLibId)
-  //     const selectData = libSelectData
-  //       .filter((item: any) => {
-  //         if (item.isDisabled) {
-  //           return item.value === inputLibId
-  //         }
-  //         return true
-  //       })
-  //       .map((item: { disabled: any; isDisabled: any }) => {
-  //         item.disabled = item.isDisabled
-  //         return item
-  //       })
-  //     setNewLibSelectData(selectData)
-  //   } else {
-  //     const copyData = libSelectData.filter((item: any) => {
-  //       if (!item.isDisabled) {
-  //         return item
-  //       }
-  //     })
-  //     setNewLibSelectData(copyData)
-  //   }
-  // }, [inputLibId, libSelectData])
+  useEffect(() => {
+    if (inputLibId) {
+      setLibId(inputLibId)
+      const selectData = libSelectData
+        .filter((item: any) => {
+          if (item.isDisabled) {
+            return item.value === inputLibId
+          }
+          return true
+        })
+        .map((item: { disabled: any; isDisabled: any }) => {
+          item.disabled = item.isDisabled
+          return item
+        })
+      setNewLibSelectData(selectData)
+    } else {
+      const copyData = libSelectData.filter((item: any) => {
+        if (!item.isDisabled) {
+          return item
+        }
+      })
+      setNewLibSelectData(copyData)
+    }
+  }, [inputLibId, libSelectData])
 
   const {
     projectCategory,
@@ -231,25 +245,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     )
   }
 
-  const valueChangeEvent = useCallback(
-    (prevValues: any, curValues: any) => {
-      // console.log(prevValues, '11')
-      // console.log(curValues, '22')
-
-      if (prevValues.libId !== curValues.libId) {
-        setLibId(curValues.libId)
-        if (form && canChange) {
-          form.setFieldsValue({
-            inventoryOverviewId: undefined,
-          })
-        }
-      }
-
-      return false
-    },
-    [canChange]
-  )
-
   return (
     <>
       <div className="flex">
@@ -270,7 +265,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
 
         <div className="flex1 flowHidden">
           <CyFormItem
-            shouldUpdate={valueChangeEvent}
+            // shouldUpdate={valueChangeEvent}
             label="项目编码"
             fieldKey={[field.fieldKey, 'code']}
             name={isEmpty(field) ? 'code' : [field.name, 'code']}
@@ -294,9 +289,22 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           >
             <DataSelect
               placeholder="请选择"
-              options={libSelectData}
+              options={newLibSelectData}
               onChange={(value: any) => {
                 setLibId(value)
+                if (field.fieldKey === undefined) {
+                  form.setFieldsValue({ inventoryOverviewId: undefined })
+                } else {
+                  // form.setFieldsValue( {'inventoryOverviewId'[field.fieldKey]: undefined })
+                  const projectInfo = form.getFieldValue('projects')
+                  const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+                    if (inx === index) {
+                      return { ...item, inventoryOverviewId: undefined }
+                    }
+                    return item
+                  })
+                  form.setFieldsValue({ projects: newProjectInfo })
+                }
               }}
             />
           </CyFormItem>
