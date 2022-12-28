@@ -62,24 +62,6 @@ const ResourceLib: React.FC = () => {
   const { data, run, loading } = useRequest(getResourceLibDetail, {
     manual: true,
   })
-  // // 默认创建公司库test
-  // const { run: createLib } = useRequest(
-  //   () => {
-  //     return creatCampanyResourceLib({
-  //       libType: 1,
-  //       libSource: userInfo.companyId,
-  //       libName: '公司库',
-  //       version: 'v1.0',
-  //       remark: '公司库',
-  //     })
-  //   },
-  //   {
-  //     manual: true,
-  //     onSuccess: (res) => {
-  //       setTableData([res])
-  //     },
-  //   }
-  // )
   // 获取公司资源库，没有则创建
   const { run: getList, loading: tableListLoading } = useRequest(
     () =>
@@ -92,11 +74,6 @@ const ResourceLib: React.FC = () => {
       manual: true,
       onSuccess: (res: any) => {
         setTableData(res)
-        // if (res?.length === 0) {
-        //   createLib()
-        // } else {
-        //   setTableData(res)
-        // }
       },
     }
   )
@@ -541,6 +518,19 @@ const ResourceLib: React.FC = () => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
+        {buttonJurisdictionArray?.includes('resource-approval') && (
+          <Button
+            className="mr7"
+            onClick={() => {
+              history.push({
+                pathname: `/standard-config/approval-list`,
+              })
+            }}
+          >
+            <i className="iconfont iconshouquan" />
+            资源审批
+          </Button>
+        )}
         {buttonJurisdictionArray?.includes('lib-add') && (
           <Button type="primary" className="mr7" onClick={() => addEvent()}>
             <PlusOutlined />

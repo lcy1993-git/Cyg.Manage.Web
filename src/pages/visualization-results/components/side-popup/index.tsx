@@ -16,21 +16,20 @@ import {
   porjectIsExecutor,
 } from '@/services/visualization-results/side-popup'
 import {
-  getAdditionalMaterials,
+  GetDesignResultMaterial,
   getHouseholdLineInfo,
   getlibId_new,
-  getMaterialItemData,
   getMedium,
 } from '@/services/visualization-results/visualization-results'
 import { translateMatDataToTree } from '@/utils/utils'
 import classnames from 'classnames'
 import { findEnumKeyByCN } from '../../utils/loadEnum'
+import { AdditionMaterialTable } from '../addition-material-table'
 import CableSection from '../cable-section'
 import { HouseholdTable } from '../household-table'
 import { MaterialTableNew } from '../material-table-new'
 import MediaModal from '../media-modal'
 import styles from './index.less'
-import { AdditionMaterialTable } from '../addition-material-table'
 
 export interface TableDataType {
   [propName: string]: any
@@ -224,62 +223,32 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       }
     },
   })
-
-  const { data: materialData, run: materialDataRun, loading: matiralsLoading } = useRequest(
-    getMaterialItemData,
-    {
-      manual: true,
-      onSuccess(data) {
-        if (data?.content?.length > 0) {
-          data.content.forEach((item: any) => {
-            if (item.unit === 'km') {
-              item.itemNumber = item.itemNumber / 1000
-            }
-          })
-          materialRef.current!.innerHTML = '查看'
-          materialRef.current!.className = 'mapSideBarlinkBtn'
-        } else {
-          materialRef.current!.innerHTML = '暂无数据'
-          materialRef.current!.className = ''
-        }
-      },
-    }
-  )
-
-  const { data: householdData, run: houseHoldRun, loading: houseHoldLoading } = useRequest(
-    getHouseholdLineInfo,
-    {
-      manual: true,
-      onSuccess(data) {
-        if (data?.content?.length > 0) {
-          data.content.forEach((item: any) => {
-            if (item.unit === 'km') {
-              item.itemNumber = item.itemNumber / 1000
-            }
-          })
-          householdRef.current!.innerHTML = '查看'
-          householdRef.current!.className = 'mapSideBarlinkBtn'
-        } else {
-          householdRef.current!.innerHTML = '暂无数据'
-          householdRef.current!.className = ''
-        }
-      },
-    }
-  )
-
-  //附加材料表数据
   const {
-    data: additionMaterialData,
-    run: additionMaterialRun,
-    // loading: additionMaterialLoading,
-  } = useRequest(getAdditionalMaterials, {
+    data: materialData,
+    run: materialDataRun,
+    loading: matiralsLoading,
+  } = useRequest(GetDesignResultMaterial, {
     manual: true,
     onSuccess(data) {
-      if (data?.content?.length > 0) {
-        data.content.forEach((item: any) => {
-          if (item.unit === 'km') {
-            item.itemNumber = item.itemNumber / 1000
-          }
+      // 材料表
+      if (data?.content?.materialList?.length > 0) {
+        data.content.materialList.forEach((item: any) => {
+          // if (item.unit === 'km') {
+          //   item.itemNumber = item.itemNumber / 1000
+          // }
+        })
+        materialRef.current!.innerHTML = '查看'
+        materialRef.current!.className = 'mapSideBarlinkBtn'
+      } else {
+        materialRef.current!.innerHTML = '暂无数据'
+        materialRef.current!.className = ''
+      }
+      // 附加材料表
+      if (data?.content?.additionalMaterialList?.length > 0) {
+        data.content.additionalMaterialList.forEach((item: any) => {
+          // if (item.unit === 'km') {
+          //   item.itemNumber = item.itemNumber / 1000
+          // }
         })
         additionMaterialRef.current!.innerHTML = '查看'
         additionMaterialRef.current!.className = 'mapSideBarlinkBtn'
@@ -290,18 +259,30 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     },
   })
 
-  const returnlibId = async (materialParams: any) => {
-    await getlibId_new({ projectId: materialParams?.getProperties.project_id }).then((data) => {
-      if (data.isSuccess) {
-        const resourceLibID = data?.content
-        setResourceLibId(resourceLibID)
-        materialDataRun({
-          resourceLibID,
-          ...materialParams.rest,
-          layerName: materialParams.rest.layerName,
+  const {
+    data: householdData,
+    run: houseHoldRun,
+    loading: houseHoldLoading,
+  } = useRequest(getHouseholdLineInfo, {
+    manual: true,
+    onSuccess(data) {
+      if (data?.content?.length > 0) {
+        data.content.forEach((item: any) => {
+          if (item.unit === 'km') {
+            item.itemNumber = item.itemNumber / 1000
+          }
         })
+        householdRef.current!.innerHTML = '查看'
+        householdRef.current!.className = 'mapSideBarlinkBtn'
+      } else {
+        householdRef.current!.innerHTML = '暂无数据'
+        householdRef.current!.className = ''
       }
-    })
+    },
+  })
+
+  const returnlibId = async (materialParams: any) => {
+    materialDataRun(materialParams)
   }
 
   useEffect(() => {
@@ -316,15 +297,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         mediaRef.current.innerHTML = '暂无数据'
         mediaRef.current.className = ''
       }
-      // 材料表数据请求
-      const materialParams =
-        dataResource?.find((item: any) => item.propertyName === '材料表')?.data?.params ?? {}
-
-      if (materialParams?.rest?.objectID && materialParams?.getProperties.project_id) {
-        returnlibId(materialParams)
-      } else {
-        setMmaterialRefNone()
-      }
 
       //入户线数据请求
       const houseHoldParams =
@@ -337,8 +309,10 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           scope: houseHoldParams?.type,
         })
       }
-
-      //附加材料表id
+      // 材料表params
+      const materialParams =
+        dataResource?.find((item: any) => item.propertyName === '材料表')?.data?.params ?? {}
+      //附加材料表params 这次开发两个接口合并为一个
       const additionMaterialParams =
         dataResource?.find((item: any) => item.propertyName === '附加材料表')?.data?.params ?? {}
       if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
@@ -350,11 +324,15 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             }
           })
         }
-
-        additionMaterialRun({
+        // 设置材料表展示文本
+        if (!materialParams?.rest?.objectID || !materialParams?.getProperties.project_id) {
+          setMmaterialRefNone()
+        }
+        returnlibId({
           deviceId: additionMaterialParams?.deviceId,
           projectId: additionMaterialParams?.projectId,
-          scope: additionMaterialParams?.type,
+          layerType: materialParams?.rest?.layerName,
+          groupType: additionMaterialParams?.type,
         })
       }
 
@@ -643,8 +621,11 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   }, [JSON.stringify(checkedProjectIdList)])
 
   const materialDataRes = useMemo(() => {
-    if (Array.isArray(materialData?.content) && materialData?.content.length > 0) {
-      return translateMatDataToTree(materialData.content)
+    if (
+      Array.isArray(materialData?.content?.materialList) &&
+      materialData?.content?.materialList?.length > 0
+    ) {
+      return translateMatDataToTree(materialData.content?.materialList)
     } else {
       return []
     }
@@ -720,7 +701,10 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           <HouseholdTable data={householdData?.content} loading={houseHoldLoading} />
         )}
         {activeType === 'additionMaterial' && (
-          <AdditionMaterialTable data={additionMaterialData?.content} libId={resourceLibId} />
+          <AdditionMaterialTable
+            data={materialData?.content?.additionalMaterialList}
+            libId={resourceLibId}
+          />
         )}
 
         {activeType?.split('&')[0] === 'annotation' && (

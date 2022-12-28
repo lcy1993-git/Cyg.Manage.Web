@@ -27,6 +27,8 @@ interface LayoutContextValue {
   setPointData: React.Dispatch<SetStateAction<any>> //立项后获取框选数据
   lineStressSagFlag?: boolean
   setLineStressSagFlag: (value: boolean) => void
+  resourceLibApprovalListFlag?: boolean // 审批管理页面审批、驳回后刷新审批列表页面
+  setResourceLibApprovalListFlag: (value: boolean) => void
 }
 
 const LayoutContext = createContext({} as LayoutContextValue)

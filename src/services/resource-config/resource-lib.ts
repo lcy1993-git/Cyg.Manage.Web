@@ -123,7 +123,7 @@ export const restoreResourceLib = (params: { libId: string; version: string }) =
 //获取图纸存放文件夹
 export const getChartPath = (libId: string) => {
   return cyRequest<any>(() =>
-    request(`${baseUrl.resource}/Chart/GetChartDirPathAsync`, { method: 'GET', params: { libId } })
+    request(`${baseUrl.upload}/Download/GetChartDirPathAsync`, { method: 'GET', params: { libId } })
   )
 }
 

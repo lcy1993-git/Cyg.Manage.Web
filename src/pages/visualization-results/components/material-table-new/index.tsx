@@ -49,12 +49,12 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'code',
     key: 'code',
   },
-  {
-    title: '物料编号',
-    width: 150,
-    dataIndex: 'materialId',
-    key: 'materialId',
-  },
+  // {
+  //   title: '物料编号',
+  //   width: 150,
+  //   dataIndex: 'materialId',
+  //   key: 'materialId',
+  // },
 
   {
     title: '物料单位',
@@ -96,12 +96,12 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'state',
     key: 'state',
   },
-  {
-    title: '物料 描述',
-    width: 200,
-    dataIndex: 'description',
-    key: 'description',
-  },
+  // {
+  //   title: '物料 描述',
+  //   width: 200,
+  //   dataIndex: 'description',
+  //   key: 'description',
+  // },
   {
     title: '供给方',
     width: 200,

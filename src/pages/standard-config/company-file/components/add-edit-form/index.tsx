@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
-import { Input } from 'antd'
-import FileUpload from '@/components/file-upload'
 import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
 import UrlSelect from '@/components/url-select'
-import { useMemo } from 'react'
+import { Input } from 'antd'
+import React, { useMemo, useState } from 'react'
 interface CompanyFileForm {
   type?: 'add' | 'edit'
   securityKey?: string
@@ -29,6 +28,9 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
     }
     if ([5, 6, 8].includes(categoryValue!) || [5, 6, 8].includes(fileCategory!)) {
       return '.docx,.doc'
+    }
+    if ([10, 11].includes(categoryValue!) || [10, 11].includes(fileCategory!)) {
+      return '.xls,.xlsx'
     }
     return '.dwg'
   }, [categoryValue])

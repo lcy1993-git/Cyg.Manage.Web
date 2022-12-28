@@ -112,13 +112,20 @@ export const getMaterialItemData = (params: any) => {
     '/LibraryComponent/GetComponentDetailView',
     '/LibraryCable/GetCableChannelDetailView',
   ]
+
   return request(
     `${baseUrl.resourceV1}` + url[type],
     // 'http://10.6.1.36:8015/api/LibraryDesign/GetModuleDetailView',
     { method: 'POST', data: { ...rest } }
   )
 }
-
+// 获取材料表数据和附加材料表数据
+export const GetDesignResultMaterial = (params: any) => {
+  return request(`${baseUrl.design}/Resource/GetDesignResultMaterial`, {
+    method: 'POST',
+    data: params,
+  })
+}
 // 获取多媒体数据
 export const getMedium = (params: any) => {
   return request(`${baseUrl.design}/WebGis/GetMedias`, { method: 'POST', data: { ...params } })

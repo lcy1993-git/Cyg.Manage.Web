@@ -33,14 +33,14 @@ export const columns = [
   {
     title: '分类',
     width: 120,
-    dataIndex: 'materialType',
-    key: 'materialType',
+    dataIndex: 'type',
+    key: 'type',
   },
   {
     title: '名称',
     width: 180,
-    dataIndex: 'materialName',
-    key: 'materialName',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
     title: '规格型号',
@@ -57,11 +57,11 @@ export const columns = [
   {
     title: '数量',
     width: 80,
-    dataIndex: 'number',
-    key: 'number',
-    render: (text: any, record: any) => {
-      return record.unit === 'km' ? record.number / 1000 : record.number
-    },
+    dataIndex: 'itemNumber',
+    key: 'itemNumber',
+    // render: (text: any, record: any) => {
+    //   return record.unit === 'km' ? record.itemNumber / 1000 : record.itemNumber
+    // },
   },
   {
     title: '单重(kg)',
@@ -86,9 +86,9 @@ export const columns = [
     width: 100,
     dataIndex: 'state',
     key: 'state',
-    render: (text: any, record: any) => {
-      return stateMenu[record.state]
-    },
+    // render: (text: any, record: any) => {
+    //   return stateMenu[record.state]
+    // },
   },
   {
     title: '物资编号',
@@ -101,9 +101,9 @@ export const columns = [
     width: 120,
     dataIndex: 'kvLevel',
     key: 'kvLevel',
-    render: (text: any, record: any) => {
-      return kvEnum[record.kvLevel]
-    },
+    // render: (text: any, record: any) => {
+    //   return kvEnum[record.kvLevel]
+    // },
   },
   {
     title: '备注',
@@ -131,7 +131,11 @@ export const AdditionMaterialTable: FC<AdditionMaterialProps> = (props) => {
       },
     }
   )
-  const { data: detailsData, run: getDetail, loading } = useRequest(
+  const {
+    data: detailsData,
+    run: getDetail,
+    loading,
+  } = useRequest(
     () =>
       getAdditionalDetails({
         materialIds: materialIds,

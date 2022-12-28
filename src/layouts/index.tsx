@@ -30,6 +30,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   const [mapSelectCity, setMapSelectCity] = useState('')
   const [resourceManageFlag, setResourceManageFlag] = useState<boolean>(false)
   const [lineStressSagFlag, setLineStressSagFlag] = useState<boolean>(false)
+  const [resourceLibApprovalListFlag, setResourceLibApprovalListFlag] = useState<boolean>(false)
   const [workHandoverFlag, setWorkHandoverFlag] = useState<boolean>(false)
   const [ref, setRef] = useState<any>()
   const [pointData, setPointData] = useState<any>()
@@ -268,6 +269,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
           setRef,
           setPointData,
           pointData,
+          resourceLibApprovalListFlag,
+          setResourceLibApprovalListFlag,
         }}
       >
         <div className={styles.layoutContent}>

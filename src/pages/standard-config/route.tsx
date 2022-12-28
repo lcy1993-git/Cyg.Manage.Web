@@ -52,6 +52,16 @@ const SignManage = Loadable({
   loading: Loading,
   delay: 150,
 })
+const ApprovalList = Loadable({
+  loader: () => import('@/pages/standard-config/approval-list'),
+  loading: Loading,
+  delay: 150,
+})
+const ApprovalManage = Loadable({
+  loader: () => import('@/pages/standard-config/approval-manage'),
+  loading: Loading,
+  delay: 150,
+})
 
 export default [
   {
@@ -93,5 +103,15 @@ export default [
     title: '宣贯',
     path: '/standard-config/info-manage',
     component: <InfoManage />,
+  },
+  {
+    title: '资源审批',
+    path: '/standard-config/approval-list',
+    component: <ApprovalList />,
+  },
+  {
+    title: '资源审批管理',
+    path: '/standard-config/approval-manage',
+    component: <ApprovalManage />,
   },
 ]

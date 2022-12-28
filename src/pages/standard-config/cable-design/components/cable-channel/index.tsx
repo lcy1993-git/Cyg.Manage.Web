@@ -130,12 +130,12 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
       width: 180,
     },
 
-    {
-      dataIndex: 'forProject',
-      index: 'forProject',
-      title: '所属工程',
-      width: 240,
-    },
+    // {
+    //   dataIndex: 'forProject',
+    //   index: 'forProject',
+    //   title: '所属工程',
+    //   width: 240,
+    // },
     // {
     //   dataIndex: 'forDesign',
     //   index: 'forDesign',
