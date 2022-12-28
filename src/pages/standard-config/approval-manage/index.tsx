@@ -132,7 +132,7 @@ const ApprovalManage: React.FC<Props> = (props) => {
       return
     }
     if (tableSelectData?.materialType !== '电力电缆') {
-      message.error('请选择导线数据进行查看')
+      message.error('请选择电力电缆数据进行查看')
       return
     }
     setCableTerminalVisible(true)
