@@ -158,7 +158,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
-        {buttonJurisdictionArray?.includes('lib-edit') && (
+        {buttonJurisdictionArray?.includes('edit-line-stress-sag') && (
           <Button className="mr7" onClick={() => editEvent()}>
             <EditOutlined />
             编辑
