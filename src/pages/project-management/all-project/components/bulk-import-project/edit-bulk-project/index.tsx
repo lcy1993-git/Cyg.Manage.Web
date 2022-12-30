@@ -1,14 +1,15 @@
 import CyFormItem from '@/components/cy-form-item'
 import DataSelect from '@/components/data-select'
 import UrlSelect from '@/components/url-select'
-import { useGetProjectEnum } from '@/utils/hooks'
+import { useGetProjectEnum, useGetSelectData } from '@/utils/hooks'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
-import { DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd'
+import { DatePicker, Form, Input, InputNumber, Modal, Select, Tooltip } from 'antd'
 import { cloneDeep } from 'lodash'
 // import DataSelect from '@/components/data-select';
 // import EnumSelect from '@/components/enum-select';
 import moment from 'moment'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import Rule from '../../create-project-form/project-form-rule'
 
 interface EditBulkProjectProps {
@@ -17,6 +18,8 @@ interface EditBulkProjectProps {
   finishEvent: (projectInfo: any) => void
   projectInfo: any
   currentChooseEngineerInfo: any
+  editLibId?: string | undefined
+  areaId?: string | undefined
 }
 
 const { TextArea } = Input
@@ -27,15 +30,57 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   // const [powerSupplySelectData, setPowerSupplySelectData] = useState<any[]>([])
   const [powerSupply, setPowerSupply] = useState<string>('')
   const [dataSourceType, setDataSourceType] = useState<number>()
-  const [disRangeValue, setDisRangeValue] = useState<number>()
-  const [pileRangeValue, setPileRangeValue] = useState<number>()
+  const [disRangeValue] = useState<number>()
+  const [pileRangeValue] = useState<number>()
 
-  const { projectInfo, finishEvent, currentChooseEngineerInfo } = props
+  const {
+    projectInfo,
+    finishEvent,
+    currentChooseEngineerInfo,
+    editLibId: inputLibId,
+    areaId,
+  } = props
+  const [newLibSelectData, setNewLibSelectData] = useState([])
+  const [libId, setLibId] = useState<string | undefined>(inputLibId)
 
   const [form] = Form.useForm()
 
+  const { data: libSelectData = [] } = useGetSelectData({
+    url: '/ResourceLib/GetList?status=0',
+    requestSource: 'resource',
+    titleKey: 'libName',
+    valueKey: 'id',
+  })
+
+  const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
+    {
+      url: `/Inventory/GetList?libId=${libId}`,
+      valueKey: 'id',
+      titleKey: 'name',
+      otherKey: 'hasMaped',
+      requestSource: 'resource',
+    },
+    {
+      ready: !!libId,
+      refreshDeps: [libId],
+    }
+  )
+
+  const { data: warehouseSelectData = [] } = useGetSelectData(
+    {
+      url: '/WareHouse/GetWareHouseListByArea',
+      extraParams: { area: areaId },
+      requestSource: 'resource',
+      method: 'post',
+      postType: 'query',
+    },
+    {
+      ready: !!areaId,
+      refreshDeps: [areaId],
+    }
+  )
+
   useEffect(() => {
-    const { selectData } = currentChooseEngineerInfo
     form.setFieldsValue({
       ...projectInfo,
       startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -57,6 +102,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           ? undefined
           : projectInfo?.pileRange,
     })
+
     setDataSourceType(projectInfo?.dataSourceType)
     // setPowerSupplySelectData(selectData.departmentSelectData)
     setPowerSupply(projectInfo.powerSupply)
@@ -114,6 +160,69 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   const closeModalEvent = () => {
     setState(false)
   }
+
+  const invSlot = () => {
+    return (
+      <>
+        <span>协议库存</span>
+        <Tooltip
+          title="'!'符号表示当前所选的资源库和该协议库无映射，选用后将在后台为您自动创建映射；"
+          placement="top"
+        >
+          <ExclamationCircleOutlined style={{ paddingLeft: 8, fontSize: 14 }} />
+        </Tooltip>
+      </>
+    )
+  }
+
+  useEffect(() => {
+    if (inputLibId) {
+      setLibId(inputLibId)
+      const selectData = libSelectData
+        .filter((item: any) => {
+          if (item.isDisabled) {
+            return item.value === inputLibId
+          }
+          return true
+        })
+        .map((item: { disabled: any; isDisabled: any }) => {
+          item.disabled = item.isDisabled
+          return item
+        })
+      setNewLibSelectData(selectData)
+    } else {
+      const copyData = libSelectData.filter((item: any) => {
+        if (!item.isDisabled) {
+          return item
+        }
+      })
+      setNewLibSelectData(copyData)
+    }
+  }, [inputLibId, libSelectData])
+
+  const labelElement = (label: any) => {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {label}
+        </span>
+        <ExclamationCircleOutlined />
+      </div>
+    )
+  }
+
+  const handleInventoryData = useMemo(() => {
+    if (inventoryOverviewSelectData) {
+      return inventoryOverviewSelectData.map((item: any) => {
+        if (!item.otherKey) {
+          return { label: labelElement(item.label), value: item.value }
+        }
+        return { label: item.label, value: item.value }
+      })
+    }
+    return []
+  }, [inventoryOverviewSelectData])
+
   return (
     <>
       <Modal
@@ -148,6 +257,70 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           <div className="flex">
             <div className="flex1 flowHidden">
               <CyFormItem
+                label="资源库"
+                name="libId"
+                labelWidth={120}
+                align="right"
+                required
+                rules={Rule.lib}
+              >
+                <DataSelect
+                  style={{ width: '100%' }}
+                  value={libId}
+                  onChange={(value: any) => {
+                    setLibId(value)
+                    form.setFieldsValue({ inventoryOverviewId: undefined })
+                  }}
+                  options={newLibSelectData}
+                  placeholder="-资源库-"
+                />
+              </CyFormItem>
+            </div>
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                labelSlot={invSlot}
+                name="inventoryOverviewId"
+                labelWidth={120}
+                align="right"
+                required
+                rules={Rule.inventory}
+              >
+                <DataSelect
+                  style={{ width: '100%' }}
+                  options={
+                    handleInventoryData?.length !== 0
+                      ? handleInventoryData
+                      : [{ label: '无', value: 'none' }]
+                  }
+                  placeholder="请先选择资源库"
+                />
+              </CyFormItem>
+            </div>
+          </div>
+
+          <div className="flex">
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                label="利旧库存协议"
+                name="warehouseId"
+                labelWidth={120}
+                align="right"
+                required
+                rules={Rule.warehouse}
+              >
+                <DataSelect
+                  style={{ width: '100%' }}
+                  options={
+                    warehouseSelectData !== undefined
+                      ? warehouseSelectData
+                      : [{ label: '无', value: 'none' }]
+                  }
+                  placeholder="请先选择区域"
+                />
+              </CyFormItem>
+            </div>
+            <div className="flex1 flowHidden">
+              <CyFormItem
                 label="项目分类"
                 initialValue={1}
                 name="category"
@@ -162,11 +335,6 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   titlekey="text"
                   placeholder="请选择"
                 />
-              </CyFormItem>
-            </div>
-            <div className="flex1 flowHidden">
-              <CyFormItem label="截止日期" name="deadline" labelWidth={120} align="right">
-                <DatePicker placeholder="请选择" />
               </CyFormItem>
             </div>
           </div>
@@ -518,6 +686,11 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           </div>
           <div className="flex">
             <div className="flex1 flowHidden">
+              <CyFormItem label="截止日期" name="deadline" labelWidth={120} align="right">
+                <DatePicker placeholder="请选择" />
+              </CyFormItem>
+            </div>
+            <div className="flex1 flowHidden">
               <CyFormItem
                 label="项目属性"
                 initialValue={1}
@@ -529,24 +702,6 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               >
                 <UrlSelect
                   defaultData={projectAttribute}
-                  valuekey="value"
-                  titlekey="text"
-                  placeholder="请选择"
-                />
-              </CyFormItem>
-            </div>
-            <div className="flex1 flowHidden">
-              <CyFormItem
-                label="气象区"
-                initialValue={1}
-                name="meteorologic"
-                required
-                labelWidth={120}
-                align="right"
-                rules={Rule.required}
-              >
-                <UrlSelect
-                  defaultData={meteorologicLevel}
                   valuekey="value"
                   titlekey="text"
                   placeholder="请选择"
@@ -722,14 +877,34 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               )}
             </div>
             <div className="flex1 flowHidden">
-              <CyFormItem label="备注" name="remark" labelWidth={120} align="right">
-                <TextArea
-                  placeholder="请输入备注"
-                  showCount
-                  maxLength={200}
-                  style={{ width: '100%' }}
+              <CyFormItem
+                label="气象区"
+                initialValue={1}
+                name="meteorologic"
+                required
+                labelWidth={120}
+                align="right"
+                rules={Rule.required}
+              >
+                <UrlSelect
+                  defaultData={meteorologicLevel}
+                  valuekey="value"
+                  titlekey="text"
+                  placeholder="请选择"
                 />
               </CyFormItem>
+            </div>
+            <div className="flex">
+              <div className="flex1 flowHidden">
+                <CyFormItem label="备注" name="remark" labelWidth={120} align="right">
+                  <TextArea
+                    placeholder="请输入备注"
+                    showCount
+                    maxLength={200}
+                    style={{ width: '100%' }}
+                  />
+                </CyFormItem>
+              </div>
             </div>
           </div>
         </Form>
