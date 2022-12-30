@@ -38,7 +38,11 @@ const MyWork: React.FC = () => {
     requestUrl: '/ProjectList/GetAlls',
   })
 
-  const { data, run: refreshStatistics, loading } = useRequest(() => getMyWorkStatisticsData(), {
+  const {
+    data,
+    run: refreshStatistics,
+    loading,
+  } = useRequest(() => getMyWorkStatisticsData(), {
     onSuccess: () => {
       setMyWorkInitData([
         {

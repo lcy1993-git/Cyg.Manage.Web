@@ -71,3 +71,29 @@ export const exportProjectInfo = (params: { areaCode: string }) => {
     responseType: 'blob',
   })
 }
+
+//获取在线用户
+export const getOnlineUser = (params: {}) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.monitor}/UserStatistic/GetOnlineUser`, {
+      method: 'POST',
+      data: params,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  )
+}
+
+//获取各端在线用户
+export const getClientOnlineUser = (params: {}) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.monitor}/UserStatistic/GetClientOnlineUser`, {
+      method: 'POST',
+      data: params,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  )
+}

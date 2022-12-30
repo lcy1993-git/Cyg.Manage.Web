@@ -207,6 +207,16 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     initWebSocket()
   }
 
+  //断开重连
+  const reconnect = () => {
+    if (lockReconnect) return
+    lockReconnect = true
+    setTimeout(() => {
+      createWebSocket()
+      lockReconnect = false
+    }, 2000)
+  }
+
   //ws事件初始化
   const initWebSocket = () => {
     ws.onopen = () => {
@@ -228,19 +238,11 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     }
   }
 
-  //断开重连
-  const reconnect = () => {
-    if (lockReconnect) return
-    lockReconnect = true
-    setTimeout(() => {
-      createWebSocket()
-      lockReconnect = false
-    }, 2000)
-  }
-
   //登录初始化连接webSocket，退出卸载
   useEffect(() => {
-    createWebSocket()
+    if (token) {
+      createWebSocket()
+    }
     return () => {
       ws.close()
     }

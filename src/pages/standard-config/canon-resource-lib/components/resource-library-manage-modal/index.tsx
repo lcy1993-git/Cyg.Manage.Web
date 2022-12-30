@@ -7,7 +7,7 @@ import { Modal, Input } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import DataSelect from '@/components/data-select'
 import { useRef } from 'react'
-import { modifyMultipleEngineerLib } from '@/services/project-management/all-project'
+import { modifyMultipleProjectLib } from '@/services/project-management/all-project'
 
 const { Search } = Input
 
@@ -57,9 +57,9 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
 
   const tableColumns = [
     {
-      dataIndex: 'engineerName',
-      index: 'engineerName',
-      title: '工程',
+      dataIndex: 'projectName',
+      index: 'projectName',
+      title: '项目名称',
     },
     {
       dataIndex: 'libName',
@@ -72,9 +72,9 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
   const tableButton = () => {
     return (
       <>
-        <TableSearch className="mr22" label="工程名称" width="248px">
+        <TableSearch className="mr22" width="248px">
           <Search
-            placeholder="请输入工程名称"
+            placeholder="请输入项目名称"
             enterButton
             value={keyWord}
             onChange={(e) => setKeyWord(e.target.value)}
@@ -116,10 +116,10 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
       return
     }
     setRequestLoading(true)
-    const engineerIds = tableSelectRows.map((item) => item.engineerId)
+    const projectIds = tableSelectRows.map((item) => item.projectId)
     try {
-      await modifyMultipleEngineerLib({
-        engineerIds: engineerIds,
+      await modifyMultipleProjectLib({
+        projectIds: projectIds,
         libId: libId,
       })
       message.success('批量变更资源库成功')
@@ -151,6 +151,7 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
       visible={state as boolean}
       destroyOnClose
       footer={null}
+      bodyStyle={{ height: '700px', overflowY: 'auto' }}
       onCancel={() => closeEvent()}
     >
       <GeneralTable
@@ -162,8 +163,8 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
         columns={tableColumns}
         extractParams={{ keyWord }}
         needTitleLine={false}
-        rowKey="engineerId"
-        url="/Engineer/GetEngineerByLibList"
+        rowKey="projectId"
+        url="/Porject/GetProjectByLibList"
       />
     </Modal>
   )

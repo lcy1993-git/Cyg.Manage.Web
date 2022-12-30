@@ -403,6 +403,9 @@ interface ProjectInfoParams {
   assetsNature: string
   assetsNatureText: string
   majorCategory: string
+  libId: string
+  inventoryOverviewId: string
+  warehouseId: string
   majorCategoryText: string
   isAcrossYear: string
   reformCause: string
@@ -612,9 +615,9 @@ export const canEditArrange = (projectIds: string[]) => {
 }
 
 // 迭代资源库
-export const modifyMultipleEngineerLib = (params: any) => {
+export const modifyMultipleProjectLib = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Engineer/ModifyMultipleEngineerLib`, {
+    request(`${baseUrl.project}/Porject/ModifyMultipleProjectLib`, {
       method: 'POST',
       data: params,
     })

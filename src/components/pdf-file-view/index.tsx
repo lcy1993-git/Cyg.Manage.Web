@@ -49,14 +49,15 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({ params, hasAuthorization = fa
     pdfInfo.getPage(1).then((page: any) => {
       if (!page._pdfBug) {
         const normalSize = page.getViewport({ scale: 1 })
+
         const width = normalSize.width
         const height = normalSize.height
-        maxScale.current = +parseInt((Math.min(4000 / width, 4000 / height) as unknown) as string)
+        maxScale.current = +parseInt(Math.min(4000 / width, 4000 / height) as unknown as string)
         minScale.current = +parseFloat(
-          (Math.min(
+          Math.min(
             wrapRef.current!.clientWidth / width,
             wrapRef.current!.clientHeight / height
-          ) as unknown) as string
+          ) as unknown as string
         ).toFixed(1)
 
         const viewport = page.getViewport({ scale: minScale.current })
