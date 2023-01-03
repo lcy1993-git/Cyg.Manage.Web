@@ -1,7 +1,7 @@
 import { Table } from 'antd'
 
 interface Props {
-  data: { componentPropertyList: any[] }
+  data: { ComponentPropertyList: any[] }
 }
 
 const ComponentAttribute: React.FC<Props> = (props) => {
@@ -9,14 +9,14 @@ const ComponentAttribute: React.FC<Props> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'propertyName',
-      index: 'propertyName',
+      dataIndex: 'PropertyName',
+      index: 'PropertyName',
       title: '属性名称',
       width: 280,
     },
     {
-      dataIndex: 'propertyValue',
-      index: 'propertyValue',
+      dataIndex: 'PropertyValue',
+      index: 'PropertyValue',
       title: '属性值',
     },
   ]
@@ -24,7 +24,7 @@ const ComponentAttribute: React.FC<Props> = (props) => {
   return (
     <Table
       columns={columns}
-      dataSource={data.componentPropertyList || []}
+      dataSource={data.ComponentPropertyList || []}
       rowKey="propertyName"
       pagination={false}
       bordered={true}

@@ -1,11 +1,12 @@
 import { Table } from 'antd'
 
 interface Props {
-  data: { LineProperty: any[] }
+  data: { LineProperty: any }
+  name: string
 }
 
 const LineProperty: React.FC<Props> = (props) => {
-  const { data } = props
+  const { data, name } = props
 
   const columns = [
     {
@@ -36,11 +37,13 @@ const LineProperty: React.FC<Props> = (props) => {
       },
     },
   ]
+  let obj = data.LineProperty || {}
+  let tableData = [{ ...obj, MaterialName: name }]
 
   return (
     <Table
       columns={columns}
-      dataSource={data.LineProperty || []}
+      dataSource={tableData}
       rowKey="id"
       pagination={false}
       bordered={true}

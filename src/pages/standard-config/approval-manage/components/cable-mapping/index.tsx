@@ -54,7 +54,11 @@ const CableMapping: React.FC<Props> = (props) => {
   ]
 
   const dataSource = useMemo(() => {
-    return [data.CableHeadOutside, data.CableHeadInside, data.CableHeadMiddle]
+    const tableData = []
+    data.CableHeadOutside && tableData.push(data.CableHeadOutside)
+    data.CableHeadInside && tableData.push(data.CableHeadInside)
+    data.CableHeadMiddle && tableData.push(data.CableHeadMiddle)
+    return tableData
   }, [JSON.stringify(data)])
 
   return (
