@@ -1,7 +1,7 @@
 import { Table } from 'antd'
 
 interface Props {
-  data: { materialList: any[]; componentList: any[] }
+  data: { MaterialList: any[]; ComponentList: any[] }
   type: string
 }
 const getSpecKey = (type: string) => {
@@ -15,10 +15,13 @@ const ComponentDetail: React.FC<Props> = (props) => {
 
   const columns = [
     {
-      dataIndex: 'itemName',
-      index: 'itemName',
+      dataIndex: 'ItemName',
+      index: 'ItemName',
       title: '物料/组件名称',
       width: 450,
+      render: (text: any, record: any) => {
+        return record.ComponentType ? record.ComponentName : record.MaterialName
+      },
     },
 
     {
@@ -26,33 +29,37 @@ const ComponentDetail: React.FC<Props> = (props) => {
       index: getSpecKey(type),
       title: '物料/组件型号',
       width: 350,
+      render: (text: any, record: any) => {
+        return record.ComponentType ? record.ComponentSpec : record.Spec
+      },
     },
 
     {
-      dataIndex: 'itemNumber',
-      index: 'itemNumber',
+      dataIndex: 'ItemNumber',
+      index: 'ItemNumber',
       title: '数量',
       width: 150,
       editable: true,
     },
     {
-      dataIndex: 'isComponent',
-      index: 'isComponent',
+      dataIndex: 'IsComponent',
+      index: 'IsComponent',
       title: '是否组件',
       width: 220,
       render: (text: any, record: any) => {
-        return record.isComponent === 1 ? '是' : '否'
+        return record.ComponentType ? '是' : '否'
       },
     },
   ]
+  const materialList = data?.MaterialList || []
+  const componentList = data?.ComponentList || []
 
-  //   const dataSource = data.materialList.concat(data.componentList)
-  const dataSource = data.materialList
+  const dataSource = materialList.concat(componentList)
 
   return (
     <Table
       columns={columns}
-      dataSource={dataSource || []}
+      dataSource={dataSource}
       rowKey="id"
       pagination={false}
       bordered={true}

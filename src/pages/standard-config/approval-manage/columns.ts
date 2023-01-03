@@ -100,8 +100,8 @@ export const ComponentColumns = [
   },
 
   {
-    dataIndex: 'KvLevel',
-    index: 'KvLevel',
+    dataIndex: 'KVLevel',
+    index: 'KVLevel',
     title: '电压等级',
     width: 180,
   },
