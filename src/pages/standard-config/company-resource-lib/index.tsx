@@ -29,6 +29,7 @@ import { Button, Dropdown, Form, Menu, message, Modal, Spin, Table } from 'antd'
 import React, { useMemo, useState } from 'react'
 import { history } from 'umi'
 import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
+import ResourceLibraryManageModal from '../canon-resource-lib/./components/resource-library-manage-modal'
 import UploadAll from '../canon-resource-lib/./components/upload-all'
 import UploadDrawing from '../canon-resource-lib/./components/upload-drawing'
 import UploadExistedLib from '../canon-resource-lib/./components/upload-existed-lib'
@@ -41,6 +42,7 @@ const ResourceLib: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
+  const [libVisible, setLibVisible] = useState(false)
   const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false)
   const [uploadExistedLibVisible, setUploadExistedLibVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -575,6 +577,11 @@ const ResourceLib: React.FC = () => {
             重启资源服务
           </Button>
         )}
+        {/* {buttonJurisdictionArray?.includes('lib-resource-iterate') && (
+          <Button className="mr7" onClick={() => setLibVisible(true)}>
+            资源库迭代
+          </Button>
+        )} */}
       </div>
     )
   }
@@ -679,6 +686,13 @@ const ResourceLib: React.FC = () => {
           // changeFinishEvent={() => uploadFinishEvent()}
           onChange={setUploadExistedLibVisible}
         />
+        {libVisible && (
+          <ResourceLibraryManageModal
+            visible={libVisible}
+            onChange={setLibVisible}
+            changeFinishEvent={refresh}
+          />
+        )}
       </Spin>
     </PageCommonWrap>
   )

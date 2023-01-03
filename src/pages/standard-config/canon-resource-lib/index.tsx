@@ -26,6 +26,7 @@ import { isArray } from 'lodash'
 import React, { useMemo, useState } from 'react'
 import { history } from 'umi'
 import ResourceLibForm from './components/add-edit-form'
+import ResourceLibraryManageModal from './components/resource-library-manage-modal'
 import UploadAll from './components/upload-all'
 import UploadDrawing from './components/upload-drawing'
 import SaveImportLib from './components/upload-lib'
@@ -39,6 +40,7 @@ const ResourceLib: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [libVisible, setLibVisible] = useState(false)
 
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
@@ -480,6 +482,11 @@ const ResourceLib: React.FC = () => {
             重启资源服务
           </Button>
         )}
+        {/* {buttonJurisdictionArray?.includes('lib-resource-iterate') && (
+          <Button className="mr7" onClick={() => setLibVisible(true)}>
+            资源库迭代
+          </Button>
+        )} */}
       </div>
     )
   }
@@ -566,6 +573,13 @@ const ResourceLib: React.FC = () => {
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setUploadAllVisible}
       />
+      {libVisible && (
+        <ResourceLibraryManageModal
+          visible={libVisible}
+          onChange={setLibVisible}
+          changeFinishEvent={refresh}
+        />
+      )}
     </PageCommonWrap>
   )
 }
