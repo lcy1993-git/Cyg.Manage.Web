@@ -11,6 +11,7 @@ import {
 } from '../../columns'
 
 import CyFormItem from '@/components/cy-form-item'
+import ImageIcon from '@/components/image-icon'
 import { useLayoutStore } from '@/layouts/context'
 import { resourceLibApproval } from '@/services/resource-config/approval'
 import {
@@ -45,24 +46,50 @@ const TabTable: React.FC<Props> = (props) => {
   const { resourceLibApprovalListFlag, setResourceLibApprovalListFlag } = useLayoutStore()
   const [rejectForm] = Form.useForm()
   useMount(() => {
+    const operationColumns = [
+      {
+        dataIndex: 'operationType',
+        index: 'operationType',
+        title: '操作类型',
+        width: 120,
+        render: (text: any, record: any) => {
+          return record.operationType === 10 ? (
+            <ImageIcon width={52} height={18} imgUrl="resource-add.png" />
+          ) : record.operationType === 20 ? (
+            <ImageIcon width={52} height={18} imgUrl="resource-edit.png" />
+          ) : (
+            <ImageIcon width={66} height={18} imgUrl="resource-delete.png" />
+          )
+        },
+      },
+      {
+        dataIndex: 'approvalRemark',
+        index: 'approvalRemark',
+        title: '提审备注',
+        width: 500,
+      },
+    ]
+
     switch (type) {
       case 'material':
-        setColumns(MaterialColumns)
+        setColumns(MaterialColumns.concat(operationColumns))
         break
       case 'component':
-        setColumns(ComponentColumns)
+        setColumns(ComponentColumns.concat(operationColumns))
         break
       case 'category':
-        setColumns(CategoryColumns)
+        // @ts-ignore
+        setColumns(CategoryColumns.concat(operationColumns))
         break
       case 'pole-type':
-        setColumns(PoleTypeColumns)
+        setColumns(PoleTypeColumns.concat(operationColumns))
         break
       case 'cable-channel':
-        setColumns(CableChannelColumns)
+        setColumns(CableChannelColumns.concat(operationColumns))
         break
       case 'cable-well':
-        setColumns(CableWellColumns)
+        // @ts-ignore
+        setColumns(CableWellColumns.concat(operationColumns))
         break
     }
   })
