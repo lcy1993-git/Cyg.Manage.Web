@@ -282,6 +282,7 @@ const TemplateLibImportModal: React.FC<Props> = (props) => {
               handleChangeLib(value)
             }}
             value={defaultValue}
+            filterOption={(input, option: any) => (option?.label ?? '').includes(input)}
             options={libOptions}
           />
         </TableSearch>

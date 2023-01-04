@@ -26,6 +26,7 @@ import {
 } from '@ant-design/icons'
 import { useMount, useRequest } from 'ahooks'
 import { Button, Dropdown, Form, Menu, message, Modal, Spin, Table } from 'antd'
+import moment from 'moment'
 import React, { useMemo, useState } from 'react'
 import { history } from 'umi'
 import ResourceLibForm from '../canon-resource-lib/./components/add-edit-form'
@@ -75,7 +76,14 @@ const ResourceLib: React.FC = () => {
     {
       manual: true,
       onSuccess: (res: any) => {
-        setTableData(res)
+        let libList = res.map((item: any) => {
+          return {
+            ...item,
+            backUpVersion: item?.resourceLibBackUp[0]?.version,
+            backUpTime: moment(item?.resourceLibBackUp[0]?.createdOn).format('YYYY-MM-DD'),
+          }
+        })
+        setTableData(libList)
       },
     }
   )
