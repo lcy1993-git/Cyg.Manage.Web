@@ -14,11 +14,7 @@ import CyFormItem from '@/components/cy-form-item'
 import ImageIcon from '@/components/image-icon'
 import { useLayoutStore } from '@/layouts/context'
 import { resourceLibApproval } from '@/services/resource-config/approval'
-import {
-  CheckSquareOutlined,
-  CloseSquareOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
+import { CheckSquareOutlined, CloseSquareOutlined } from '@ant-design/icons'
 import { useMount } from 'ahooks'
 import CableMapping from '..//cable-mapping'
 import ComponentAttribute from '../component-attribute'
@@ -42,9 +38,10 @@ const TabTable: React.FC<Props> = (props) => {
   const [cableTerminalVisible, setCableTerminalVisible] = useState<boolean>(false)
   const [componentAttributeVisible, setComponentAttributeVisible] = useState<boolean>(false)
   const [componentDetailVisible, setComponentDetailVisible] = useState<boolean>(false)
-  const [rejectApprovalVisible, setRejectApprovalVisible] = useState<boolean>(false)
+  const [approvalVisible, setApprovalVisible] = useState<boolean>(false)
   const { resourceLibApprovalListFlag, setResourceLibApprovalListFlag } = useLayoutStore()
-  const [rejectForm] = Form.useForm()
+  const [approvalType, setApprovalType] = useState<string>('')
+  const [approvalForm] = Form.useForm()
   useMount(() => {
     const operationColumns = [
       {
@@ -63,8 +60,8 @@ const TabTable: React.FC<Props> = (props) => {
         },
       },
       {
-        dataIndex: 'approvalRemark',
-        index: 'approvalRemark',
+        dataIndex: 'createdRemark',
+        index: 'createdRemark',
         title: '提审备注',
         width: 500,
       },
@@ -98,46 +95,56 @@ const TabTable: React.FC<Props> = (props) => {
       message.error('请选择数据后进行操作')
       return
     }
-    Modal.confirm({
-      title: '提示',
-      okText: '确认',
-      icon: <ExclamationCircleOutlined />,
-      cancelText: '取消',
-      content: '确定通过审批？',
-      onOk: async () => {
-        await resourceLibApproval({ ids: clickKey, state: 20, approvalRemark: '' })
-        message.success('审批通过成功')
-        setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
-        refresh?.()
-      },
-    })
+    setApprovalType('aprroval')
+    setApprovalVisible(true)
   }
   const rejectHandle = () => {
     if (clickKey.length === 0) {
       message.error('请选择数据后进行操作')
       return
     }
-    setRejectApprovalVisible(true)
+    setApprovalType('reject')
+    setApprovalVisible(true)
   }
-  const rejectApproval = () => {
-    rejectForm.validateFields().then(async (value) => {
-      const submitInfo = Object.assign(
-        {
-          approvalRemark: '',
-          ids: clickKey,
-          state: 30,
-        },
-        value
-      )
-      await resourceLibApproval(submitInfo)
-      message.success('审批驳回成功')
-      setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
-      setRejectApprovalVisible(false)
-      refresh?.()
+  const approvalHandle = () => {
+    approvalForm.validateFields().then(async (value) => {
+      if (approvalType === 'reject') {
+        // 驳回
+        const submitInfo = Object.assign(
+          {
+            approvalRemark: '',
+            ids: clickKey,
+            state: 30,
+          },
+          value
+        )
+        await resourceLibApproval(submitInfo)
+        message.success('审批驳回成功')
+        setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
+        setApprovalVisible(false)
+        refresh?.()
+        setClickKey([])
+      } else {
+        // 通过
+        const submitInfo = Object.assign(
+          {
+            approvalRemark: '',
+            ids: clickKey,
+            state: 20,
+          },
+          value
+        )
+        await resourceLibApproval(submitInfo)
+        message.success('审批通过成功')
+        setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
+        setApprovalVisible(false)
+        refresh?.()
+        setClickKey([])
+      }
     })
   }
   const openWireAttribute = () => {
-    if (clickKey.length === 0) {
+    if (clickKey.length !== 1) {
       message.error('请选择一条数据进行查看')
       return
     }
@@ -148,7 +155,7 @@ const TabTable: React.FC<Props> = (props) => {
     setWireAttributeVisible(true)
   }
   const openCableTerminal = () => {
-    if (clickKey.length === 0) {
+    if (clickKey.length !== 1) {
       message.error('请选择一条数据进行查看')
       return
     }
@@ -159,14 +166,14 @@ const TabTable: React.FC<Props> = (props) => {
     setCableTerminalVisible(true)
   }
   const openComponentDetail = () => {
-    if (clickKey.length === 0) {
+    if (clickKey.length !== 1) {
       message.error('请选择一条数据进行查看')
       return
     }
     setComponentDetailVisible(true)
   }
   const openComponentAttribute = () => {
-    if (clickKey.length === 0) {
+    if (clickKey.length !== 1) {
       message.error('请选择一条数据进行查看')
       return
     }
@@ -294,19 +301,19 @@ const TabTable: React.FC<Props> = (props) => {
       </Modal>
       <Modal
         maskClosable={false}
-        title="驳回审批"
+        title={approvalType === 'reject' ? '驳回审批' : '通过审批'}
         width="680px"
-        visible={rejectApprovalVisible}
-        onCancel={() => setRejectApprovalVisible(false)}
+        visible={approvalVisible}
+        onCancel={() => setApprovalVisible(false)}
         onOk={() => {
-          rejectApproval()
+          approvalHandle()
         }}
         okText="确认"
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={rejectForm} preserve={false}>
-          <CyFormItem label="备注" name="failRemark">
+        <Form form={approvalForm} preserve={false}>
+          <CyFormItem label="备注" name="approvalRemark">
             <TextArea showCount maxLength={100} placeholder="备注说明" />
           </CyFormItem>
         </Form>
