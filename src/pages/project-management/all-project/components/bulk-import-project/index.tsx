@@ -682,7 +682,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
     })
 
     const engineerKeys = ['area', 'city', 'province', 'company']
-    const projectKeys = ['warehouseId', 'libId', 'inventoryOverviewId', 'powerSupply']
+    const projectKeys = ['warehouseId', 'libId', 'inventoryOverviewId']
 
     // projects 里面的供应组也要同上
     saveData.forEach((item, index) => {

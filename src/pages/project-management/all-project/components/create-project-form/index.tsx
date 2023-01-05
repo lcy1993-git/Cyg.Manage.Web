@@ -29,6 +29,7 @@ interface CreateProjectFormProps {
   pointVisible?: boolean
   copyLibId?: string
   getWarehouseData?: (value: any[]) => void
+  getLibData?: (value: any[]) => void
 }
 
 const { TextArea } = Input
@@ -50,6 +51,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     isEdit = false,
     setCopyFlag,
     getWarehouseData,
+    getLibData,
     copyLibId: inputLibId,
   } = props
 
@@ -58,14 +60,14 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const [dataSourceType, setDataSourceType] = useState<number>()
   const [disRangeValue] = useState<number>()
   const [pileRangeValue] = useState<number>()
-  const [warehouseId, setWarehouseId] = useState<string>()
+  // const [warehouseId, setWarehouseId] = useState<string>()
   const [libId, setLibId] = useState<string | undefined>(inputLibId)
   const [newLibSelectData, setNewLibSelectData] = useState([])
 
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     onSuccess: () => {
       setLibId(projectInfo?.libId)
-      setWarehouseId(projectInfo?.warehouseId)
+      // setWarehouseId(projectInfo?.warehouseId)
       setStartDate(moment(projectInfo?.startTime))
       setEndDate(moment(projectInfo?.endTime))
     },
@@ -102,12 +104,19 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     )
   }
 
-  const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList?status=0',
-    requestSource: 'resource',
-    titleKey: 'libName',
-    valueKey: 'id',
-  })
+  const { data: libSelectData = [] } = useGetSelectData(
+    {
+      url: '/ResourceLib/GetList?status=0',
+      requestSource: 'resource',
+      titleKey: 'libName',
+      valueKey: 'id',
+    },
+    {
+      onSuccess: () => {
+        getLibData?.(libSelectData)
+      },
+    }
+  )
 
   const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
     {
@@ -178,6 +187,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           item.disabled = item.isDisabled
           return item
         })
+      getLibData?.(selectData)
       setNewLibSelectData(selectData)
     } else {
       const copyData = libSelectData.filter((item: any) => {
@@ -185,6 +195,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           return item
         }
       })
+      getLibData?.(copyData)
       setNewLibSelectData(copyData)
     }
   }, [inputLibId, libSelectData])
