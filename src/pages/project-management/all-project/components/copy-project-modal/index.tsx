@@ -1,8 +1,8 @@
 import { copyProject, getProjectInfo } from '@/services/project-management/all-project'
 import { useControllableValue, useRequest } from 'ahooks'
-import { Button, Form, message, Modal } from 'antd'
+import { Button, Form, message, Modal, Spin } from 'antd'
 import moment, { Moment } from 'moment'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import CreateProjectForm from '../create-project-form'
 
 interface CopyProjectModalProps {
@@ -22,6 +22,9 @@ interface CopyProjectModalProps {
 const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState(false)
+  const [warehouseInfo, setWarehouseInfo] = useState<any[]>([])
+  //获取资源库选项
+  const [libData, setLibData] = useState<any[]>([])
   const [form] = Form.useForm()
 
   const {
@@ -35,9 +38,11 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     endTime,
   } = props
 
-  const { data: projectInfo } = useRequest(() => getProjectInfo(projectId), {
-    ready: !!projectId,
-    refreshDeps: [projectId],
+  const {
+    data: projectInfo,
+    run,
+    loading,
+  } = useRequest(() => getProjectInfo(projectId), {
     onSuccess: (res) => {
       form.setFieldsValue({
         ...projectInfo,
@@ -46,6 +51,18 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
         deadline: projectInfo?.startTime ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
+        inventoryOverviewId:
+          libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
+            ? undefined
+            : projectInfo?.inventoryOverviewId,
+        libId:
+          libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
+            ? undefined
+            : projectInfo?.libId,
+        warehouseId:
+          warehouseInfo.findIndex((item: any) => item.value === projectInfo?.warehouseId) === -1
+            ? undefined
+            : projectInfo?.warehouseId,
         disclosureRange:
           projectInfo?.dataSourceType === 2
             ? undefined
@@ -89,6 +106,13 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     })
   }
 
+  useEffect(() => {
+    if (state && warehouseInfo && libData) {
+      run()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, warehouseInfo, libData])
+
   return (
     <Modal
       maskClosable={false}
@@ -96,6 +120,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
       title="复制项目"
       width={800}
       visible={state as boolean}
+      bodyStyle={{ height: '780px', overflowY: 'auto' }}
       destroyOnClose
       footer={[
         <Button key="cancle" onClick={() => setState(false)}>
@@ -109,17 +134,21 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
       onCancel={() => setState(false)}
     >
       <Form form={form} preserve={false}>
-        <CreateProjectForm
-          companyName={companyName}
-          areaId={areaId}
-          company={company}
-          projectId={projectId}
-          form={form}
-          status={1}
-          engineerStart={startTime}
-          engineerEnd={endTime}
-          isEdit={true}
-        />
+        <Spin spinning={loading}>
+          <CreateProjectForm
+            companyName={companyName}
+            areaId={areaId}
+            company={company}
+            projectId={projectId}
+            form={form}
+            status={1}
+            engineerStart={startTime}
+            engineerEnd={endTime}
+            isEdit={true}
+            getWarehouseData={setWarehouseInfo}
+            getLibData={setLibData}
+          />
+        </Spin>
       </Form>
     </Modal>
   )

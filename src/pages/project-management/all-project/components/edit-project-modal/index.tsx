@@ -26,6 +26,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState(false)
   const [warehouseInfo, setWarehouseInfo] = useState<any[]>([])
+  //获取资源库选项
+  const [libData, setLibData] = useState<any[]>([])
   const [form] = Form.useForm()
 
   const {
@@ -56,6 +58,14 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
         powerSupply: projectInfo?.powerSupply ? projectInfo?.powerSupply : '无',
+        inventoryOverviewId:
+          libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
+            ? undefined
+            : projectInfo?.inventoryOverviewId,
+        libId:
+          libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
+            ? undefined
+            : projectInfo?.libId,
         warehouseId:
           warehouseInfo.findIndex((item: any) => item.value === projectInfo?.warehouseId) === -1
             ? undefined
@@ -77,11 +87,11 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   })
 
   useEffect(() => {
-    if (state && warehouseInfo) {
+    if (state && warehouseInfo && libData) {
       run()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, warehouseInfo])
+  }, [state, warehouseInfo, libData])
 
   const edit = () => {
     form.validateFields().then(async (value) => {
@@ -117,6 +127,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
       width={800}
       visible={state as boolean}
       destroyOnClose
+      bodyStyle={{ height: '780px', overflowY: 'auto' }}
       footer={[
         <Button
           key="cancle"
@@ -151,6 +162,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             engineerEnd={endTime}
             form={form}
             getWarehouseData={setWarehouseInfo}
+            getLibData={setLibData}
             // onLoadingFinish={() => setLoading(true)}
           />
         </Spin>

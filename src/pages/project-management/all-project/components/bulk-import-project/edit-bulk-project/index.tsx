@@ -233,6 +233,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
         visible={state as boolean}
         onOk={() => saveCurrentProject()}
         onCancel={() => closeModalEvent()}
+        bodyStyle={{ height: '780px', overflowY: 'auto' }}
       >
         <Form form={form}>
           <div className="flex">
@@ -894,17 +895,17 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 />
               </CyFormItem>
             </div>
-            <div className="flex">
-              <div className="flex1 flowHidden">
-                <CyFormItem label="备注" name="remark" labelWidth={120} align="right">
-                  <TextArea
-                    placeholder="请输入备注"
-                    showCount
-                    maxLength={200}
-                    style={{ width: '100%' }}
-                  />
-                </CyFormItem>
-              </div>
+          </div>
+          <div className="flex">
+            <div className="flex1 flowHidden">
+              <CyFormItem label="备注" name="remark" labelWidth={120} align="right">
+                <TextArea
+                  placeholder="请输入备注"
+                  showCount
+                  maxLength={200}
+                  style={{ width: '100%' }}
+                />
+              </CyFormItem>
             </div>
           </div>
         </Form>
