@@ -1,4 +1,10 @@
+import CyFormItem from '@/components/cy-form-item'
 import EmptyTip from '@/components/empty-tip'
+import ImageIcon from '@/components/image-icon'
+import { useLayoutStore } from '@/layouts/context'
+import { resourceLibApproval } from '@/services/resource-config/approval'
+import { CheckSquareOutlined, CloseSquareOutlined } from '@ant-design/icons'
+import { useMount } from 'ahooks'
 import { Button, Form, Input, message, Modal, Table } from 'antd'
 import React, { useState } from 'react'
 import {
@@ -9,14 +15,8 @@ import {
   MaterialColumns,
   PoleTypeColumns,
 } from '../../columns'
-
-import CyFormItem from '@/components/cy-form-item'
-import ImageIcon from '@/components/image-icon'
-import { useLayoutStore } from '@/layouts/context'
-import { resourceLibApproval } from '@/services/resource-config/approval'
-import { CheckSquareOutlined, CloseSquareOutlined } from '@ant-design/icons'
-import { useMount } from 'ahooks'
 import CableMapping from '..//cable-mapping'
+import CategoryInfo from '../category-info'
 import ComponentAttribute from '../component-attribute'
 import ComponentDetail from '../component-detail'
 import LineProperty from '../line-property'
@@ -41,6 +41,7 @@ const TabTable: React.FC<Props> = (props) => {
   const [approvalVisible, setApprovalVisible] = useState<boolean>(false)
   const { resourceLibApprovalListFlag, setResourceLibApprovalListFlag } = useLayoutStore()
   const [approvalType, setApprovalType] = useState<string>('')
+  const [catogeryInfoVisible, setCatogeryInfoVisible] = useState<boolean>(false)
   const [approvalForm] = Form.useForm()
   useMount(() => {
     const operationColumns = [
@@ -110,14 +111,11 @@ const TabTable: React.FC<Props> = (props) => {
     approvalForm.validateFields().then(async (value) => {
       if (approvalType === 'reject') {
         // 驳回
-        const submitInfo = Object.assign(
-          {
-            approvalRemark: '',
-            ids: clickKey,
-            state: 30,
-          },
-          value
-        )
+        const submitInfo = {
+          approvalRemark: value?.approvalRemark ?? '',
+          ids: clickKey,
+          state: 20,
+        }
         await resourceLibApproval(submitInfo)
         message.success('审批驳回成功')
         setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
@@ -126,14 +124,11 @@ const TabTable: React.FC<Props> = (props) => {
         setClickKey([])
       } else {
         // 通过
-        const submitInfo = Object.assign(
-          {
-            approvalRemark: '',
-            ids: clickKey,
-            state: 20,
-          },
-          value
-        )
+        const submitInfo = {
+          approvalRemark: value?.approvalRemark ?? '',
+          ids: clickKey,
+          state: 20,
+        }
         await resourceLibApproval(submitInfo)
         message.success('审批通过成功')
         setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
@@ -183,6 +178,13 @@ const TabTable: React.FC<Props> = (props) => {
     }
     setComponentAttributeVisible(true)
   }
+  const openCatogeryInfo = () => {
+    if (clickKey.length !== 1) {
+      message.error('请选择一条数据进行查看')
+      return
+    }
+    setCatogeryInfoVisible(true)
+  }
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -213,6 +215,11 @@ const TabTable: React.FC<Props> = (props) => {
         {type === 'component' && (
           <Button className="mr7" onClick={() => openComponentAttribute()}>
             组件属性
+          </Button>
+        )}
+        {type === 'pole-type' && (
+          <Button className="mr7" onClick={() => openCatogeryInfo()}>
+            分类信息
           </Button>
         )}
       </div>
@@ -298,6 +305,19 @@ const TabTable: React.FC<Props> = (props) => {
         destroyOnClose
       >
         <ComponentAttribute data={tableSelectData} />
+      </Modal>
+      <Modal
+        maskClosable={false}
+        footer=""
+        title="分类信息"
+        width="92%"
+        visible={catogeryInfoVisible}
+        onCancel={() => setCatogeryInfoVisible(false)}
+        okText="确认"
+        cancelText="取消"
+        destroyOnClose
+      >
+        <CategoryInfo data={tableSelectData} />
       </Modal>
       <Modal
         maskClosable={false}
