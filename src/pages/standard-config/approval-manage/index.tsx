@@ -16,7 +16,7 @@ const ApprovalManage: React.FC = () => {
 
   const [materialData, setMaterialData] = useState<any[]>([])
   const [componentData, setComponentData] = useState<any[]>([])
-  const [categoryData, setCategoryData] = useState<any[]>([])
+  // const [categoryData, setCategoryData] = useState<any[]>([])
   const [poleTypeData, setPoleTypeData] = useState<any[]>([])
   const [cableWellData, setCableWellData] = useState<any[]>([])
   const [cableChannelData, setCableChannelData] = useState<any[]>([])
@@ -29,7 +29,7 @@ const ApprovalManage: React.FC = () => {
         // 处理审批列表数据，分离为各种类型的数据数组
         const materialData: any = []
         const componentData: any = []
-        const categoryData: any = []
+        // const categoryData: any = []
         const poleTypeData: any = []
         const cableWellData: any = []
         const cableChannelData: any = []
@@ -45,9 +45,9 @@ const ApprovalManage: React.FC = () => {
             case 2:
               poleTypeData.push(obj)
               break
-            case 3:
-              categoryData.push(obj)
-              break
+            // case 3:
+            //   categoryData.push(obj)
+            //   break
             case 4:
               cableWellData.push(obj)
               break
@@ -58,7 +58,7 @@ const ApprovalManage: React.FC = () => {
         })
         setMaterialData(materialData)
         setComponentData(componentData)
-        setCategoryData(categoryData)
+        // setCategoryData(categoryData)
         setPoleTypeData(poleTypeData)
         setCableWellData(cableWellData)
         setCableChannelData(cableChannelData)
@@ -87,11 +87,11 @@ const ApprovalManage: React.FC = () => {
                   <TabTable type="component" tableData={componentData} refresh={getList} />
                 </div>
               </TabPane>
-              <TabPane tab="分类" key="category">
+              {/* <TabPane tab="分类" key="category">
                 <div className={styles.pannelTable}>
                   <TabTable type="category" tableData={categoryData} refresh={getList} />
                 </div>
-              </TabPane>
+              </TabPane> */}
               <TabPane tab="杆型" key="pole-type">
                 <div className={styles.pannelTable}>
                   <TabTable type="pole-type" tableData={poleTypeData} refresh={getList} />
