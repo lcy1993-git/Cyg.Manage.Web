@@ -25,6 +25,7 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
     } else {
       if (code === 401) {
         history.push('/again-login')
+
         // message.error('会话超时，已自动跳转到登录界面');
       } else {
         // eslint-disable-next-line no-lonely-if
@@ -52,7 +53,7 @@ export const cyCommonRequest = <T extends {}>(
 
     const { code, isSuccess } = res
     if (isSuccess && code === 200) {
-      resolve((res as unknown) as T)
+      resolve(res as unknown as T)
     } else {
       message.error(res.message)
       reject(res.message)

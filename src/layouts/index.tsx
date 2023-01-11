@@ -25,7 +25,7 @@ interface ElementDiv extends Element {
 
 const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, history, match }) => {
   const [activeKey, setActiveKey] = useState<string>('/index')
-
+  const [newSocket, setNewSocket] = useState<WebSocket>()
   // const [allProjectSearchProjectId, setAllProjectSearchProjectId] = useState('')
   const [mapSelectCity, setMapSelectCity] = useState('')
   const [resourceManageFlag, setResourceManageFlag] = useState<boolean>(false)
@@ -204,7 +204,12 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     if (window.WebSocket) {
       ws = new WebSocket(`wss://${url}/usercenter-ws/?accessToken=${token}`)
     }
+    setNewSocket(ws)
     initWebSocket()
+  }
+
+  const clearWs = () => {
+    newSocket?.close()
   }
 
   //断开重连
@@ -253,6 +258,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     <ConfigProvider locale={zhCN}>
       <LayoutProvider
         value={{
+          clearWs,
           clearAgainLogin,
           allProjectSearchParams,
           mapSelectCity,
