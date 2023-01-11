@@ -1,10 +1,11 @@
 import CyFormItem from '@/components/cy-form-item'
+import { useLayoutStore } from '@/layouts/context'
 import { getAuthorityModules, getUserInfoRequest, userLoginRequest } from '@/services/login'
 import { useGetUserInfo } from '@/utils/hooks'
 import { flatten, getStopServerList } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, Input, message, Modal, Space } from 'antd'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { history } from 'umi'
 
 interface EditPasswordProps {
@@ -15,6 +16,7 @@ interface EditPasswordProps {
 }
 
 const CutAccount = (props: EditPasswordProps) => {
+  const { clearWs } = useLayoutStore()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { againLogin = false, finishEvent } = props
   const [form] = Form.useForm()
@@ -89,6 +91,11 @@ const CutAccount = (props: EditPasswordProps) => {
       history.push('/login')
     }
   }
+
+  useEffect(() => {
+    clearWs?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Modal

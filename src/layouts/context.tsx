@@ -1,6 +1,8 @@
 import { createContext, SetStateAction, useContext } from 'react'
 
 interface LayoutContextValue {
+  clearWs?: () => void
+
   resourceManageFlag?: boolean
   workHandoverFlag?: boolean
   clearAgainLogin?: () => void
