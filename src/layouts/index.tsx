@@ -230,8 +230,8 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
       }, 6000)
     }
     ws.onclose = (err) => {
-      //如果浏览器未操作自动断开，根据code判断是主动关闭还是被动断开，来重连websocket或清除心跳
-      if (err.code === 1005) {
+      //如果浏览器未操作自动断开，根据code判断是主动关闭还是被动断开，来重连websocket或清除心跳，wasClean用于兼容不同浏览器的判断参数。
+      if (err.code === 1005 || (!err.wasClean && err.code !== 1005)) {
         clearInterval(heart)
         return
       }
