@@ -29,7 +29,11 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
   const { map } = vState
 
   const { projectIds } = props
-  const { data, loading, run: getDataList } = useRequest(
+  const {
+    data,
+    loading,
+    run: getDataList,
+  } = useRequest(
     () => {
       return getProjectTableList({
         statisticalCategory: '-1',
@@ -216,7 +220,7 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
           <div className={styles.toolBarWrap}>
             <TableSearch className="mr7" width="258px">
               <Search
-                placeholder="请输入工程名称"
+                placeholder="请输入工程/项目名称/项目编码"
                 enterButton
                 value={keyWord}
                 onChange={(e) => setKeyWord(e.target.value)}
