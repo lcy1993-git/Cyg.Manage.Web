@@ -7,9 +7,9 @@ interface LogoComponentProps {
 }
 
 const LogoComponent: React.FC<LogoComponentProps> = (props) => {
+  const { className, ...rest } = props
   const thisHostName = window.location.hostname
   const imgName = webConfig.logoUrl[thisHostName]
-  const { className, ...rest } = props
   const imgSrc = imgName ? require('../../assets/image/' + imgName + '') : logonSrc
   return <img src={imgSrc} {...rest} className={className} alt="logo" />
 }
