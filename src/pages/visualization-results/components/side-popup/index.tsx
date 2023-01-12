@@ -324,17 +324,18 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             }
           })
         }
-        // 设置材料表展示文本
-        if (!materialParams?.rest?.objectID || !materialParams?.getProperties.project_id) {
-          setMmaterialRefNone()
-        }
-        returnlibId({
-          deviceId: additionMaterialParams?.deviceId,
-          projectId: additionMaterialParams?.projectId,
-          layerType: materialParams?.rest?.layerName,
-          groupType: additionMaterialParams?.type,
-        })
       }
+      // 设置材料表展示文本
+      if (!materialParams?.rest?.objectID || !materialParams?.getProperties.project_id) {
+        setMmaterialRefNone()
+      }
+      // 获取材料表和附加材料表
+      returnlibId({
+        deviceId: materialParams?.deviceId,
+        projectId: materialParams?.projectId,
+        layerType: materialParams?.rest?.layerName, // 元素类型
+        groupType: materialParams?.type, // 图层
+      })
 
       // 审阅数据
       const reviewData = dataResource?.find((item: any) => item.propertyName === '审阅')?.data ?? {}
