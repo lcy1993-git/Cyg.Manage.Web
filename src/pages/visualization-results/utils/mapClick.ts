@@ -649,6 +649,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         pJSON['材料表'] = {
           params: {
             holeId: feature.getProperties().project_id,
+            projectId: feature.getProperties().project_id,
+            deviceId: featureId,
+            type: layerType,
             rest: {
               objectID,
               forProject: 0,
