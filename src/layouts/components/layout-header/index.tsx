@@ -8,7 +8,7 @@ import { BellOutlined } from '@ant-design/icons'
 import { useInterval } from 'ahooks'
 import { Badge, Dropdown, Menu } from 'antd'
 import uuid from 'node-uuid'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { history } from 'umi'
 import CutAccount from '../cut-account'
 import EditPassword from '../edit-password'
@@ -51,7 +51,9 @@ const LayoutHeader: React.FC = () => {
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (
     <Menu>
-      <div className={styles.myNameContent}>{userInfo.userName}</div>
+      <div className={styles.myNameContent} key="userName">
+        {userInfo.userName}
+      </div>
       <Menu.Item onClick={() => personInfoEditEvent()} key="info">
         <span className={styles.headerMenuIcon}>
           <ImageIcon width={18} height={18} imgUrl="messager.png" />
@@ -115,12 +117,10 @@ const LayoutHeader: React.FC = () => {
             </Badge>
           </div>
           <Dropdown overlay={myBaseInfoMenu}>
-            <div>
-              <div className={styles.myBaseInfo}>
-                <img className={styles.myHeadPortait} src={headPortraitSrc} alt="" />
-                <div className={styles.foldIcon}>
-                  <ImageIcon imgUrl="fold.png" width={8} height={8} />
-                </div>
+            <div className={styles.myBaseInfo}>
+              <img className={styles.myHeadPortait} src={headPortraitSrc} alt="" />
+              <div className={styles.foldIcon}>
+                <ImageIcon imgUrl="fold.png" width={8} height={8} />
               </div>
             </div>
           </Dropdown>
