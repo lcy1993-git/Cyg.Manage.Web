@@ -1,6 +1,5 @@
 import { getProductServerList, getStopServerNotice } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
-import { Moment } from 'moment'
 
 const { NODE_ENV } = process.env
 
