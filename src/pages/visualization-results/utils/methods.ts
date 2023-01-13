@@ -80,7 +80,7 @@ const refreshMap = async (
   // }
   // currentLevel = Math.round(map.getView().getZoom());
 
-  if (projects.length === 0) {
+  if (projects.length === 0 || layerTypes.length === 0) {
     extent_ = []
     clearGroups(groupLayers)
     return false
@@ -154,12 +154,14 @@ const refreshMap = async (
     }
   }, 500)
 
+  // await loadPreDesignLayers(groupLayers)
+
   // const postData = getXmlData(projects, startDate, endDate)
 
   // await loadPlanLayers(postData, groupLayers, map)
   // await loadDismantleLayers(postData, groupLayers, map)
   // await loadDesignLayers(postData, groupLayers, view, setView, map, location)
-  await loadPreDesignLayers(groupLayers)
+
   // for (let index = 0; index < lineClusters.length; index++) {
   //   const lineCluster = lineClusters[index]
   //   lineCluster.updateLabelControlValue(false)

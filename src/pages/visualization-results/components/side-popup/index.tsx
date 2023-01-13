@@ -229,32 +229,38 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     loading: matiralsLoading,
   } = useRequest(GetDesignResultMaterial, {
     manual: true,
+    throwOnError: true,
     onSuccess(data) {
       // 材料表
-      if (data?.content?.materialList?.length > 0) {
-        data.content.materialList.forEach((item: any) => {
-          // if (item.unit === 'km') {
-          //   item.itemNumber = item.itemNumber / 1000
-          // }
-        })
-        materialRef.current!.innerHTML = '查看'
-        materialRef.current!.className = 'mapSideBarlinkBtn'
-      } else {
-        materialRef.current!.innerHTML = '暂无数据'
-        materialRef.current!.className = ''
+      if (materialRef.current) {
+        if (data?.content?.materialList?.length > 0) {
+          data.content.materialList.forEach((item: any) => {
+            // if (item.unit === 'km') {
+            //   item.itemNumber = item.itemNumber / 1000
+            // }
+          })
+          materialRef.current!.innerHTML = '查看'
+          materialRef.current!.className = 'mapSideBarlinkBtn'
+        } else {
+          materialRef.current!.innerHTML = '暂无数据'
+          materialRef.current!.className = ''
+        }
       }
+
       // 附加材料表
-      if (data?.content?.additionalMaterialList?.length > 0) {
-        data.content.additionalMaterialList.forEach((item: any) => {
-          // if (item.unit === 'km') {
-          //   item.itemNumber = item.itemNumber / 1000
-          // }
-        })
-        additionMaterialRef.current!.innerHTML = '查看'
-        additionMaterialRef.current!.className = 'mapSideBarlinkBtn'
-      } else {
-        additionMaterialRef.current!.innerHTML = '暂无数据'
-        additionMaterialRef.current!.className = ''
+      if (additionMaterialRef.current) {
+        if (data?.content?.additionalMaterialList?.length > 0) {
+          data.content.additionalMaterialList.forEach((item: any) => {
+            // if (item.unit === 'km') {
+            //   item.itemNumber = item.itemNumber / 1000
+            // }
+          })
+          additionMaterialRef.current!.innerHTML = '查看'
+          additionMaterialRef.current!.className = 'mapSideBarlinkBtn'
+        } else {
+          additionMaterialRef.current!.innerHTML = '暂无数据'
+          additionMaterialRef.current!.className = ''
+        }
       }
     },
   })
@@ -330,12 +336,14 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         setMmaterialRefNone()
       }
       // 获取材料表和附加材料表
-      returnlibId({
-        deviceId: materialParams?.deviceId,
-        projectId: materialParams?.projectId,
-        layerType: materialParams?.rest?.layerName, // 元素类型
-        groupType: materialParams?.type, // 图层
-      })
+      if (materialParams?.deviceId && materialParams?.projectId) {
+        returnlibId({
+          deviceId: materialParams?.deviceId,
+          projectId: materialParams?.projectId,
+          layerType: materialParams?.rest?.layerName, // 元素类型
+          groupType: materialParams?.type, // 图层
+        })
+      }
 
       // 审阅数据
       const reviewData = dataResource?.find((item: any) => item.propertyName === '审阅')?.data ?? {}
