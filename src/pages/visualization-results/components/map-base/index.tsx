@@ -156,7 +156,6 @@ const BaseMap = observer((props: BaseMapProps) => {
     initialMap.getView().on('change:resolution', (e: Event) => {
       checkZoom(e, initialMap)
     })
-
     refreshMap(ops, projects!)
     setMap(initialMap)
     store.setMapRef(initialMap)
