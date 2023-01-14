@@ -114,7 +114,7 @@ const TabTable: React.FC<Props> = (props) => {
         const submitInfo = {
           approvalRemark: value?.approvalRemark ?? '',
           ids: clickKey,
-          state: 20,
+          state: 30,
         }
         await resourceLibApproval(submitInfo)
         message.success('审批驳回成功')
