@@ -65,7 +65,7 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
         <div className="flex">
           <div className="flex1">
             <ReadonlyItem label="利旧库存协议" labelWidth={100}>
-              {projectInfo?.warehouseName == '_' ? '无' : projectInfo?.warehouseName}
+              {projectInfo?.warehouseName === null ? '无' : projectInfo?.warehouseName}
             </ReadonlyItem>
           </div>
           <div className="flex1">
