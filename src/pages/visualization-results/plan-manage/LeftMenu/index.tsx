@@ -587,6 +587,21 @@ const LeftMenu = (props: any) => {
               <Option value="CableCircuit">电缆线路</Option>
             </Select>
           </Form.Item>
+
+          {selectLineType === 'CableCircuit' && (
+            <>
+              <Form.Item name="channelType" label="通道类型">
+                <Input placeholder="请输入通道类型" />
+              </Form.Item>
+              <Form.Item name="channelModel" label="通道型号">
+                <Input placeholder="请输入通道型号" />
+              </Form.Item>
+              <Form.Item name="cableCapacity" label="电缆容量">
+                <Input placeholder="请输入电缆容量" />
+              </Form.Item>
+            </>
+          )}
+
           <Form.Item
             name="conductorModel"
             label="线路型号"

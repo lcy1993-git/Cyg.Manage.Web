@@ -14,7 +14,7 @@ import {
   Select,
   Tabs,
 } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useMyContext } from '../Context'
 import {
   clear,
@@ -556,6 +556,20 @@ const DrawToolbar = () => {
                   ))}
                 </Select>
               </Form.Item>
+              {/* 杆塔 */}
+              {currentFeatureType === TOWER && (
+                <>
+                  <Form.Item name="towerSpecification" label="杆塔规格">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item name="towerType" label="杆塔类型">
+                    <Input />
+                  </Form.Item>
+                  <Form.Item name="towerMaterial" label="杆塔材质">
+                    <Input />
+                  </Form.Item>
+                </>
+              )}
               {/* 变电站 */}
               {currentFeatureType === TRANSFORMERSUBSTATION && (
                 <>

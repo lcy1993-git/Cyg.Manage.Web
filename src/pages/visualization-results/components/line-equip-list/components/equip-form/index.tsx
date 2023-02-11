@@ -57,6 +57,20 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         />
       </CyFormItem>
 
+      {currentEditTab === 'tower' && (
+        <>
+          <CyFormItem label="杆塔规格" name="towerSpecification">
+            <Input disabled />
+          </CyFormItem>
+          <CyFormItem label="杆塔类型" name="towerType">
+            <Input disabled />
+          </CyFormItem>
+          <CyFormItem label="杆塔材质" name="towerMaterial">
+            <Input disabled />
+          </CyFormItem>
+        </>
+      )}
+
       <CyFormItem
         name="lineId"
         label="所属线路"

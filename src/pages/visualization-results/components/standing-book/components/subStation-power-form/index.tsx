@@ -171,6 +171,20 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
             </Select>
           </CyFormItem>
 
+          {selectLineType === 'CableCircuit' && (
+            <>
+              <CyFormItem name="channelType" label="通道类型">
+                <Input placeholder="请输入通道类型" />
+              </CyFormItem>
+              <CyFormItem name="channelModel" label="通道型号">
+                <Input placeholder="请输入通道型号" />
+              </CyFormItem>
+              <CyFormItem name="cableCapacity" label="电缆容量">
+                <Input placeholder="请输入电缆容量" />
+              </CyFormItem>
+            </>
+          )}
+
           <CyFormItem
             name="conductorModel"
             label="线路型号"

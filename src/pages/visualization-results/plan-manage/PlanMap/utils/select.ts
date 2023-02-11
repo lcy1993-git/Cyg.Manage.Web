@@ -453,7 +453,7 @@ export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => 
     lineLayer
       .getSource()
       .getFeatures()
-      .forEach((line: any) => {
+      ?.forEach((line: any) => {
         if ((line.get('data').id = data.id)) lineLayer.getSource().removeFeature(line)
       })
   }
