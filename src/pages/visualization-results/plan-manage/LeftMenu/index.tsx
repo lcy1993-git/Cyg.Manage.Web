@@ -502,12 +502,14 @@ const LeftMenu = (props: any) => {
 
       <Modal
         title="新增线路"
+        destroyOnClose
         visible={visible}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={() => {
           form.resetFields()
           setVisible(false)
+          setselectLineType('')
         }}
       >
         <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>

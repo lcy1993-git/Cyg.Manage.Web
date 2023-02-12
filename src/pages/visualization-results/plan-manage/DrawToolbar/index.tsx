@@ -68,6 +68,9 @@ export interface BelongingLineType {
   color?: string
   lineModel?: string
   lineNumber?: string
+  cableCapacity?: string
+  channelModel?: string
+  channelType?: string
 }
 
 const DrawToolbar = () => {
@@ -82,6 +85,11 @@ const DrawToolbar = () => {
     areaData,
     areaMap,
   } = useMyContext()
+
+  //存储电缆或架空主线路
+  const [chooseLineData, setChooseLineData] = useState<BelongingLineType[] | undefined>([])
+  //绘制线段所选主线路类型
+  const [selectLineType, setSelectLineType] = useState<string>('line')
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   // 当前的电压等级
@@ -159,8 +167,12 @@ const DrawToolbar = () => {
     // 设置key时添加当前select标识，在key中获取
     const selectNumber = option.key.split('__')[1]
     const currentLineData = belongingLineData.find((item) => item.id === value)
+
     if (currentLineData) {
       const data = {
+        [`channelType${selectNumber}`]: currentLineData?.channelType,
+        [`channelModel${selectNumber}`]: currentLineData?.channelModel,
+        [`cableCapacity${selectNumber}`]: currentLineData?.cableCapacity,
         [`kvLevel_${selectNumber}`]: currentLineData?.kvLevel,
         [`lineType_${selectNumber}`]: currentLineData.isOverhead ? 'Line' : 'CableCircuit',
         [`lineModel_${selectNumber}`]: currentLineData.lineModel ? '111' : '',
@@ -185,66 +197,84 @@ const DrawToolbar = () => {
     }
     return lines.map((line) => {
       return (
-        <React.Fragment key={line.value}>
-          <Form.Item
-            name={`lineId_${line.value}`}
-            label={`所属线路${line.value}`}
-            rules={[{ required: true, message: '请选择所属线路' }]}
-          >
-            <Select dropdownStyle={{ zIndex: 3000 }} onChange={selectLine}>
-              {belongingLineData.map((item) => (
-                <Option value={item.id} key={`${item.id}__${line.value}`}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name={`lineType_${line.value}`} label={`线路类型${line.value}`}>
-            <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
-              {[
-                { label: '架空线路', value: 'Line' },
-                { label: '电缆线路', value: 'CableCircuit' },
-              ].map((item) => (
-                <Option value={item.value} key={item.value}>
-                  {item.label}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item name={`lineModel_${line.value}`} label={`线路型号${line.value}`}>
-            <Select dropdownStyle={{ zIndex: 3000 }}>
-              {lineTypeArray.includes(String(line.value))
-                ? LINEMODEL.map((item) => (
-                    <Option key={item.value} value={item.value}>
-                      {item.label}
-                    </Option>
-                  ))
-                : CABLECIRCUITMODEL.map((item) => (
-                    <Option key={item.value} value={item.value}>
-                      {item.label}
-                    </Option>
-                  ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name={`kvLevel_${line.value}`}
-            label={`电压等级${line.value}`}
-            rules={[{ required: true, message: '请输入名称' }]}
-          >
-            <Select
-              dropdownStyle={{ zIndex: 3000 }}
-              onChange={(value: number) => {
-                setcurrentKvleve(value)
-              }}
+        <>
+          <React.Fragment key={line.value}>
+            <Form.Item
+              name={`lineId_${line.value}`}
+              label={`所属线路${line.value}`}
+              rules={[{ required: true, message: '请选择所属线路' }]}
             >
-              {KVLEVELOPTIONS.map((item) => (
-                <Option key={item.kvLevel} value={item.kvLevel}>
-                  {item.label}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </React.Fragment>
+              <Select dropdownStyle={{ zIndex: 3000 }} onChange={selectLine}>
+                {chooseLineData?.map((item) => (
+                  <Option value={item.id} key={`${item.id}__${line.value}`}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item name={`lineType_${line.value}`} label={`线路类型${line.value}`}>
+              <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
+                {[
+                  { label: '架空线路', value: 'Line' },
+                  { label: '电缆线路', value: 'CableCircuit' },
+                ].map((item) => (
+                  <Option value={item.value} key={item.value}>
+                    {item.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            {selectLineType === 'cableCircuit' && (
+              <>
+                <Form.Item name={`channelType${line.value}`} label={`通道类型${line.value}`}>
+                  <Input disabled placeholder="请输入通道类型" />
+                </Form.Item>
+                <Form.Item name={`channelModel${line.value}`} label={`通道型号${line.value}`}>
+                  <Input disabled placeholder="请输入通道型号" />
+                </Form.Item>
+                <Form.Item name={`cableCapacity${line.value}`} label={`电缆容量${line.value}`}>
+                  <Input disabled placeholder="请输入电缆容量" />
+                </Form.Item>
+              </>
+            )}
+
+            <Form.Item name={`lineModel_${line.value}`} label={`线路型号${line.value}`}>
+              <Select dropdownStyle={{ zIndex: 3000 }}>
+                {lineTypeArray.includes(String(line.value))
+                  ? LINEMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))
+                  : CABLECIRCUITMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name={`kvLevel_${line.value}`}
+              label={`电压等级${line.value}`}
+              rules={[{ required: true, message: '请输入名称' }]}
+            >
+              <Select
+                dropdownStyle={{ zIndex: 3000 }}
+                onChange={(value: number) => {
+                  setcurrentKvleve(value)
+                }}
+              >
+                {KVLEVELOPTIONS.map((item) => (
+                  <Option key={item.kvLevel} value={item.kvLevel}>
+                    {item.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </React.Fragment>
+          {lines.length > 1 && <Divider />}
+        </>
       )
     })
   }
@@ -454,6 +484,8 @@ const DrawToolbar = () => {
     manual: true,
     onSuccess: () => {
       data && setbelongingLineData(data)
+      const handleData = data && data.filter((item) => item.isOverhead)
+      setChooseLineData(handleData)
     },
   })
   useUpdateEffect(() => {
@@ -465,6 +497,24 @@ const DrawToolbar = () => {
       await uploadLocalData()
       setClickState(false)
     }
+  }
+
+  //绘制多线路回数线路类型选择
+  const selectMainType = (e: any) => {
+    lineForm.resetFields()
+    setLineNumber('1')
+    renderLines()
+    setSelectLineType(e.target.value)
+    const copyData = [...belongingLineData]
+
+    const handleData = copyData.filter((item: any) => {
+      if (e.target.value === 'line') {
+        return item.isOverhead
+      }
+      return item.isOverhead === false
+    })
+
+    setChooseLineData(handleData)
   }
 
   return (
@@ -669,6 +719,14 @@ const DrawToolbar = () => {
               onValuesChange={formChange}
               initialValues={{ lineNumber: '1' }}
             >
+              <Form.Item name="lineType" label="回数类型">
+                <Radio.Group onChange={selectMainType} defaultValue={selectLineType}>
+                  <Radio value="line" checked>
+                    架空
+                  </Radio>
+                  <Radio value="cableCircuit">电缆</Radio>
+                </Radio.Group>
+              </Form.Item>
               <Form.Item name="lineNumber" label="线路回数">
                 <Select
                   allowClear

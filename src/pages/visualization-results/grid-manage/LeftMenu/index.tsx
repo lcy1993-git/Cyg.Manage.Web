@@ -234,6 +234,7 @@ const LeftMenu = (props: any) => {
             })
             .filter((item) => item)
         }
+
         loadMapLayers(
           {
             ...treeDatas,

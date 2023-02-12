@@ -85,10 +85,11 @@ const DrawToolbar = () => {
     areaData,
     areaMap,
   } = useMyContext()
+
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   //绘制线段所选主线路类型
-  const [selectLineType, setSelectLineType] = useState<string>('')
+  const [selectLineType, setSelectLineType] = useState<string>('line')
   // 当前的电压等级
   const [currentKvleve, setcurrentKvleve] = useState<number>()
   // Tab切换控制
@@ -98,13 +99,16 @@ const DrawToolbar = () => {
   // 当前主线路的电压等级
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number | undefined>()
   /**所属线路数据**/
-  const [belongingLineData, setbelongingLineData] = useState<BelongingLineType[]>([])
+  const [belongingLineData, setBelongingLineData] = useState<BelongingLineType[]>([])
   /**所属线路数据回数**/
   const [lineNumber, setLineNumber] = useState<string>('1')
   // 绘制线段选择架空线路的回路数组
   const [lineTypeArray, setLineTypeArray] = useState<string[]>([])
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
+
+  //存储电缆或架空主线路
+  const [chooseLineData, setChooseLineData] = useState<BelongingLineType[] | undefined>([])
 
   const [clickState, setClickState] = useState<boolean>(false)
 
@@ -123,6 +127,7 @@ const DrawToolbar = () => {
     labelCol: { span: 6 },
     wrapperCol: { span: 17 },
   }
+
   /** 转换绘制线路多个回数数据 **/
   const transformLines = (formData: any) => {
     const arr = []
@@ -166,7 +171,6 @@ const DrawToolbar = () => {
     const currentLineData = belongingLineData.find((item) => item.id === value)
 
     if (currentLineData) {
-      setSelectLineType(currentLineData.isOverhead ? 'Line' : 'CableCircuit')
       const data = {
         [`channelType${selectNumber}`]: currentLineData?.channelType,
         [`channelModel${selectNumber}`]: currentLineData?.channelModel,
@@ -203,7 +207,7 @@ const DrawToolbar = () => {
               rules={[{ required: true, message: '请选择所属线路' }]}
             >
               <Select dropdownStyle={{ zIndex: 3000 }} onChange={selectLine}>
-                {belongingLineData.map((item) => (
+                {chooseLineData?.map((item) => (
                   <Option value={item.id} key={`${item.id}__${line.value}`}>
                     {item.name}
                   </Option>
@@ -223,7 +227,7 @@ const DrawToolbar = () => {
               </Select>
             </Form.Item>
 
-            {selectLineType === 'CableCircuit' && (
+            {selectLineType === 'cableCircuit' && (
               <>
                 <Form.Item name={`channelType${line.value}`} label={`通道类型${line.value}`}>
                   <Input disabled placeholder="请输入通道类型" />
@@ -478,9 +482,12 @@ const DrawToolbar = () => {
   const { data, run } = useRequest(getAllBelongingLineItem, {
     manual: true,
     onSuccess: () => {
-      data && setbelongingLineData(data)
+      data && setBelongingLineData(data)
+      const handleData = data && data.filter((item) => item.isOverhead)
+      setChooseLineData(handleData)
     },
   })
+
   useEffect(() => {
     run()
   }, [isRefresh, run])
@@ -490,6 +497,24 @@ const DrawToolbar = () => {
       await uploadLocalData()
       setClickState(false)
     }
+  }
+
+  //绘制多线路回数线路类型选择
+  const selectMainType = (e: any) => {
+    lineForm.resetFields()
+    setLineNumber('1')
+    renderLines()
+    setSelectLineType(e.target.value)
+    const copyData = [...belongingLineData]
+
+    const handleData = copyData.filter((item: any) => {
+      if (e.target.value === 'line') {
+        return item.isOverhead
+      }
+      return item.isOverhead === false
+    })
+
+    setChooseLineData(handleData)
   }
 
   return (
@@ -694,6 +719,14 @@ const DrawToolbar = () => {
               onValuesChange={formChange}
               initialValues={{ lineNumber: '1' }}
             >
+              <Form.Item name="lineType" label="回数类型">
+                <Radio.Group onChange={selectMainType} defaultValue={selectLineType}>
+                  <Radio value="line" checked>
+                    架空
+                  </Radio>
+                  <Radio value="cableCircuit">电缆</Radio>
+                </Radio.Group>
+              </Form.Item>
               <Form.Item name="lineNumber" label="线路回数">
                 <Select
                   allowClear
@@ -714,6 +747,7 @@ const DrawToolbar = () => {
                   ))}
                 </Select>
               </Form.Item>
+
               {renderLines()}
               <Form.Item wrapperCol={{ offset: 6, span: 17 }}>
                 <Button type="primary" onClick={createLine}>

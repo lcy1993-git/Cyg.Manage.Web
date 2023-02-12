@@ -69,6 +69,7 @@ export const initSelect = (
     if (evt.selected.length > 0) {
       translate.setActive(true)
       currrentSelectFeature = evt.selected[0]
+
       // console.log(currrentSelectFeature.get('data'));
 
       /* 弹出属性显示框 **/

@@ -31,13 +31,16 @@ const PlatFormFeedBack: React.FC = () => {
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const [feedbackDetailVisible, setFeedBackDetailVisible] = useState<boolean>(false)
 
-  const { data: detailData, loading, run: getDetailData } = useRequest(getFeedbackDetail, {
+  const {
+    data: detailData,
+    loading,
+    run: getDetailData,
+  } = useRequest(getFeedbackDetail, {
     manual: true,
   })
 
   const [form] = Form.useForm()
   const downFile = async () => {
-    console.log(tableSelectRows)
     if (tableSelectRows?.length === 0) {
       message.error('请选择一条数据下载文件')
       return
@@ -52,7 +55,6 @@ const PlatFormFeedBack: React.FC = () => {
     const suffix = tableSelectRows[0]?.fileName?.substring(
       tableSelectRows[0]?.fileName.lastIndexOf('.') + 1
     )
-    console.log(suffix)
     const blob = new Blob([res], {
       type: `application/${suffix}`,
     })

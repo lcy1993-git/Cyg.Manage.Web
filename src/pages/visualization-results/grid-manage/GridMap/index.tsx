@@ -130,7 +130,7 @@ const GridMap = () => {
     companyId,
     areaData,
     areaMap,
-    checkLineIds,
+    // checkLineIds,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
@@ -256,10 +256,10 @@ const GridMap = () => {
       }
     }
   }
-
   /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
     setClickCompanyId(data?.companyId)
+
     if (data) {
       const featureData = { ...data }
       setcurrentfeatureData({
@@ -280,7 +280,7 @@ const GridMap = () => {
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.featureType,
+        lineType: featureData.isOverhead ? LINE : CABLECIRCUIT,
         areas: transformAreaDataToArr(featureData),
       })
     } else {
@@ -766,7 +766,7 @@ const GridMap = () => {
               </Form.Item>
             </>
           )}
-          {currentFeatureType === CABLECIRCUIT && (
+          {/* {selectLineType === CABLECIRCUIT && currentFeatureType === 'Line' && (
             <>
               <Form.Item name="channelType" label="通道类型">
                 <Input placeholder="请输入通道类型" />
@@ -778,7 +778,7 @@ const GridMap = () => {
                 <Input placeholder="请输入电缆容量" />
               </Form.Item>
             </>
-          )}
+          )} */}
           {currentFeatureType === TRANSFORMERSUBSTATION && (
             <Form.Item label="出线间隔">
               <Button

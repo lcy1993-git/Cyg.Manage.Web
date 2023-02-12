@@ -271,7 +271,7 @@ const PlanMap = () => {
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.featureType,
+        lineType: featureData.isOverhead ? LINE : CABLECIRCUIT,
         areas: transformAreaDataToArr(featureData),
       })
     } else {
