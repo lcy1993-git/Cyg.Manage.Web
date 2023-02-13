@@ -4,7 +4,6 @@ import {
   getlibId_new,
   getMaterialItemData,
   getMedium,
-  getModulesRequest,
   loadLayer,
 } from '@/services/visualization-results/visualization-results'
 import { message } from 'antd'
@@ -721,19 +720,20 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         pJSON[p] = `${feature.getProperties().rod}*${feature.getProperties().height}`
       }
       if (p === '呼称高') {
-        await getlibId_new({ projectId: feature.getProperties().project_id }).then(async (data) => {
-          if (data.isSuccess) {
-            const resourceLibID = data?.content
-            await getModulesRequest({
-              moduleIDs: [feature.getProperties().mode_id],
-              resourceLibID,
-            }).then((res) => {
-              if (res.isSuccess && res?.content.length > 0) {
-                pJSON[p] = res?.content[0].nominalHeight
-              }
-            })
-          }
-        })
+        pJSON[p] = feature.getProperties().normimalheight
+        // await getlibId_new({ projectId: feature.getProperties().project_id }).then(async (data) => {
+        //   if (data.isSuccess) {
+        //     const resourceLibID = data?.content
+        //     await getModulesRequest({
+        //       moduleIDs: [feature.getProperties().mode_id],
+        //       resourceLibID,
+        //     }).then((res) => {
+        //       if (res.isSuccess && res?.content.length > 0) {
+        //         pJSON[p] = res?.content[0].nominalHeight
+        //       }
+        //     })
+        //   }
+        // })
       }
       if (p === '导线相数') {
         pJSON[p] = feature.getProperties().kv_level === 2 ? '三相' : '两相'
