@@ -3,6 +3,7 @@ import DataSelect from '@/components/data-select'
 import UrlSelect from '@/components/url-select'
 import { getProjectInfo } from '@/services/project-management/all-project'
 import { useGetProjectEnum, useGetSelectData } from '@/utils/hooks'
+import { getDefaultStartEndDate } from '@/utils/utils'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useMount, useRequest, useUpdateEffect } from 'ahooks'
 import { DatePicker, Input, InputNumber, Select, Tooltip } from 'antd'
@@ -145,6 +146,17 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
       refreshDeps: [areaId],
       onSuccess: () => {
         getWarehouseData?.(warehouseSelectData)
+        const projectInfo = form.getFieldValue('projects')
+        const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+          if (inx === index) {
+            return {
+              ...item,
+              warehouseId: warehouseSelectData.length !== 0 ? warehouseSelectData[0].value : 'none',
+            }
+          }
+          return item
+        })
+        form.setFieldsValue({ projects: newProjectInfo })
       },
     }
   )
@@ -347,6 +359,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'warehouseId']}
             name={isEmpty(field) ? 'warehouseId' : [field.name, 'warehouseId']}
             label="利旧库存协议"
+            initialValue="none"
             labelWidth={120}
             align="right"
             required
@@ -382,85 +395,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="项目类型"
-            fieldKey={[field.fieldKey, 'pType']}
-            initialValue={1}
-            name={isEmpty(field) ? 'pType' : [field.name, 'pType']}
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-            required
-          >
-            <UrlSelect
-              defaultData={projectPType}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="电压等级"
-            fieldKey={[field.fieldKey, 'kvLevel']}
-            initialValue={1}
-            name={isEmpty(field) ? 'kvLevel' : [field.name, 'kvLevel']}
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-            required
-          >
-            <UrlSelect
-              defaultData={projectKvLevel}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="总投资(万元)"
-            labelWidth={120}
-            align="right"
-            fieldKey={[field.fieldKey, 'totalInvest']}
-            name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
-            rules={Rule.total}
-          >
-            <Input
-              type="number"
-              placeholder="请输入"
-              min={0}
-              defaultValue={0}
-              onKeyPress={keyPressEvent}
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="项目性质"
-            labelWidth={120}
-            align="right"
-            rules={Rule.natures}
-            fieldKey={[field.fieldKey, 'natures']}
-            name={isEmpty(field) ? 'natures' : [field.name, 'natures']}
-            required
-          >
-            <UrlSelect
-              defaultData={projectNature}
-              mode="multiple"
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
-      </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -470,6 +405,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'startTime']}
             name={isEmpty(field) ? 'startTime' : [field.name, 'startTime']}
             required
+            initialValue={moment(getDefaultStartEndDate().startDate)}
             dependencies={['startTime', 'endTime']}
             rules={[
               { required: true, message: '项目开始日期不能为空' },
@@ -535,6 +471,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'endTime' : [field.name, 'endTime']}
             dependencies={['endTime', 'startTime']}
             required
+            initialValue={moment(getDefaultStartEndDate().endDate)}
             rules={[
               { required: true, message: '项目结束日期不能为空' },
               ({ getFieldValue }) => ({
@@ -590,6 +527,88 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
+
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="项目类型"
+            fieldKey={[field.fieldKey, 'pType']}
+            initialValue={1}
+            name={isEmpty(field) ? 'pType' : [field.name, 'pType']}
+            labelWidth={120}
+            align="right"
+            rules={Rule.required}
+            required
+          >
+            <UrlSelect
+              defaultData={projectPType}
+              valuekey="value"
+              titlekey="text"
+              placeholder="请选择"
+            />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="电压等级"
+            fieldKey={[field.fieldKey, 'kvLevel']}
+            initialValue={2}
+            name={isEmpty(field) ? 'kvLevel' : [field.name, 'kvLevel']}
+            labelWidth={120}
+            align="right"
+            rules={Rule.required}
+            required
+          >
+            <UrlSelect
+              defaultData={projectKvLevel}
+              valuekey="value"
+              titlekey="text"
+              placeholder="请选择"
+            />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="总投资(万元)"
+            labelWidth={120}
+            align="right"
+            fieldKey={[field.fieldKey, 'totalInvest']}
+            name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
+            rules={Rule.total}
+          >
+            <Input
+              type="number"
+              placeholder="请输入"
+              min={0}
+              defaultValue={0}
+              onKeyPress={keyPressEvent}
+            />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="项目性质"
+            labelWidth={120}
+            align="right"
+            rules={Rule.natures}
+            fieldKey={[field.fieldKey, 'natures']}
+            name={isEmpty(field) ? 'natures' : [field.name, 'natures']}
+            required
+            initialValue={4096}
+          >
+            <UrlSelect
+              defaultData={projectNature}
+              mode="multiple"
+              valuekey="value"
+              titlekey="text"
+              placeholder="请选择"
+            />
+          </CyFormItem>
+        </div>
+      </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -708,8 +727,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'assetsOrganization' : [field.name, 'assetsOrganization']}
             labelWidth={120}
             align="right"
-            rules={Rule.assetsOrganization}
-            required
+            // rules={Rule.assetsOrganization}
+            // required
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -721,8 +740,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'cityCompany' : [field.name, 'cityCompany']}
             labelWidth={120}
             align="right"
-            rules={[{ required: true, message: '所属市公司不能为空' }]}
-            required
+            // rules={[{ required: true, message: '所属市公司不能为空' }]}
+            // required
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -755,8 +774,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'countyCompany' : [field.name, 'countyCompany']}
             labelWidth={120}
             align="right"
-            required
-            rules={[{ required: true, message: '所属县公司不能为空' }]}
+            // required
+            // rules={[{ required: true, message: '所属县公司不能为空' }]}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -950,7 +969,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               fieldKey={[field.fieldKey, 'disclosureRange']}
               name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
               labelWidth={120}
-              required
+              // required
               align="right"
             >
               <InputNumber
@@ -967,7 +986,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               fieldKey={[field.fieldKey, 'disclosureRange']}
               name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
               labelWidth={120}
-              required
+              // required
               align="right"
             >
               <InputNumber
@@ -984,13 +1003,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               fieldKey={[field.fieldKey, 'disclosureRange']}
               name={isEmpty(field) ? 'disclosureRange' : [field.name, 'disclosureRange']}
               labelWidth={120}
-              required
+              // required
               align="right"
               rules={[
-                {
-                  required: true,
-                  message: '交底范围不能为空',
-                },
+                // {
+                //   required: true,
+                //   message: '交底范围不能为空',
+                // },
                 () => ({
                   validator(_, value) {
                     if (value <= 999 && value > -1) {

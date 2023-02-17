@@ -101,12 +101,16 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           : projectInfo?.dataSourceType === 1
           ? undefined
           : projectInfo?.pileRange,
+      warehouseId:
+        warehouseSelectData && warehouseSelectData.length !== 0
+          ? warehouseSelectData[0].value
+          : 'none',
     })
 
     setDataSourceType(projectInfo?.dataSourceType)
     // setPowerSupplySelectData(selectData.departmentSelectData)
     setPowerSupply(projectInfo.powerSupply)
-  }, [JSON.stringify(projectInfo)])
+  }, [JSON.stringify(projectInfo), warehouseSelectData])
 
   const powerSupplyOnchange = (value: any) => {
     setPowerSupply(value)
@@ -307,12 +311,13 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 labelWidth={120}
                 align="right"
                 required
+                initialValue="none"
                 rules={Rule.warehouse}
               >
                 <DataSelect
                   style={{ width: '100%' }}
                   options={
-                    warehouseSelectData !== undefined
+                    warehouseSelectData && warehouseSelectData.length !== 0
                       ? warehouseSelectData
                       : [{ label: '无', value: 'none' }]
                   }
@@ -339,44 +344,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               </CyFormItem>
             </div>
           </div>
-          <div className="flex">
-            <div className="flex1 flowHidden">
-              <CyFormItem
-                label="项目类型"
-                initialValue={1}
-                name="pType"
-                labelWidth={120}
-                align="right"
-                rules={Rule.required}
-                required
-              >
-                <UrlSelect
-                  defaultData={projectPType}
-                  valuekey="value"
-                  titlekey="text"
-                  placeholder="请选择"
-                />
-              </CyFormItem>
-            </div>
-            <div className="flex1 flowHidden">
-              <CyFormItem
-                label="电压等级"
-                initialValue={1}
-                name="kvLevel"
-                labelWidth={120}
-                align="right"
-                rules={Rule.required}
-                required
-              >
-                <UrlSelect
-                  defaultData={projectKvLevel}
-                  valuekey="value"
-                  titlekey="text"
-                  placeholder="请选择"
-                />
-              </CyFormItem>
-            </div>
-          </div>
+
           <div className="flex">
             <div className="flex1 flowHidden">
               <CyFormItem
@@ -419,6 +387,46 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               </CyFormItem>
             </div>
           </div>
+
+          <div className="flex">
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                label="项目类型"
+                initialValue={1}
+                name="pType"
+                labelWidth={120}
+                align="right"
+                rules={Rule.required}
+                required
+              >
+                <UrlSelect
+                  defaultData={projectPType}
+                  valuekey="value"
+                  titlekey="text"
+                  placeholder="请选择"
+                />
+              </CyFormItem>
+            </div>
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                label="电压等级"
+                initialValue={2}
+                name="kvLevel"
+                labelWidth={120}
+                align="right"
+                rules={Rule.required}
+                required
+              >
+                <UrlSelect
+                  defaultData={projectKvLevel}
+                  valuekey="value"
+                  titlekey="text"
+                  placeholder="请选择"
+                />
+              </CyFormItem>
+            </div>
+          </div>
+
           <div className="flex">
             <div className="flex1 flowHidden">
               <CyFormItem
@@ -558,8 +566,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 name="assetsOrganization"
                 labelWidth={120}
                 align="right"
-                rules={Rule.assetsOrganization}
-                required
+                // rules={Rule.assetsOrganization}
+                // required
               >
                 <Input placeholder="请输入" />
               </CyFormItem>
@@ -570,8 +578,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 name="cityCompany"
                 labelWidth={120}
                 align="right"
-                required
-                rules={[{ required: true, message: '所属市公司不能为空' }]}
+                // required
+                // rules={[{ required: true, message: '所属市公司不能为空' }]}
               >
                 <Input placeholder="请输入" />
               </CyFormItem>
@@ -602,8 +610,8 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                 name="countyCompany"
                 labelWidth={120}
                 align="right"
-                required
-                rules={[{ required: true, message: '所属县公司不能为空' }]}
+                // required
+                // rules={[{ required: true, message: '所属县公司不能为空' }]}
               >
                 <Input placeholder="请输入" />
               </CyFormItem>
@@ -743,7 +751,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   // initialValue={'50'}
                   name="disclosureRange"
                   labelWidth={120}
-                  required
+                  // required
                   align="right"
                 >
                   <InputNumber
@@ -759,7 +767,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   // initialValue={'50'}
                   name="disclosureRange"
                   labelWidth={120}
-                  required
+                  // required
                   align="right"
                 >
                   <InputNumber
@@ -775,13 +783,13 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
                   // initialValue={'50'}
                   name="disclosureRange"
                   labelWidth={120}
-                  required
+                  // required
                   align="right"
                   rules={[
-                    {
-                      required: true,
-                      message: '交底范围不能为空',
-                    },
+                    // {
+                    //   required: true,
+                    //   message: '交底范围不能为空',
+                    // },
                     () => ({
                       validator(_, value) {
                         if (value <= 999 && value > -1) {

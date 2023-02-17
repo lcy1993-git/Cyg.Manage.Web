@@ -1,5 +1,6 @@
 import { getProductServerList, getStopServerNotice } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
+import moment from 'moment'
 
 const { NODE_ENV } = process.env
 
@@ -424,4 +425,31 @@ export const intervalTime = (time: string) => {
   let leavel2 = timeDiff % (3600 * 1000) // 计算剩余小时后剩余的毫秒数
   let minutes = Math.floor(leavel2 / (60 * 1000)) // 计算剩余的分钟数
   return { days, hours, minutes }
+}
+
+/**获取当前日期 计算特定结束日期  */
+export const getDefaultStartEndDate = () => {
+  let endDate
+  let lastDate
+  let time = new Date()
+  let month = time.getMonth() + 1
+  let date = time.getDate()
+  let year = time.getFullYear()
+  let startDate = moment(time).format('YYYY-MM-DD')
+
+  //处理结束日期：当天大于15号 则结束日期为下月15号
+  if (date > 15) {
+    if (month === 12) {
+      month = 1
+      year = year + 1
+      endDate = [year, month, 15].join('-')
+    } else {
+      month = month + 1
+      endDate = [year, month, 15].join('-')
+    }
+  } else {
+    lastDate = new Date(year, month, 0).getDate()
+    endDate = [year, month, lastDate].join('-')
+  }
+  return { startDate, endDate }
 }

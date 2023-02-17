@@ -7,6 +7,7 @@ import {
   ProjectLevel,
 } from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
+import { getDefaultStartEndDate } from '@/utils/utils'
 import useRequest from '@ahooksjs/use-request'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Cascader, DatePicker, Input, Tooltip } from 'antd'
@@ -39,7 +40,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   } = props
 
   const [areaId, setAreaId] = useState<string>('')
-  const [libId, setLibId] = useState<string>('')
+  // const [libId, setLibId] = useState<string>('')
   const [city, setCity] = useState<any[]>([])
 
   const disableDate = (current: any) => {
@@ -54,6 +55,9 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
       }
     },
   })
+
+  //@ts-ignore
+  const { companyName, userName } = JSON.parse(localStorage.getItem('userInfo'))
 
   const { data: companySelectData = [] } = useGetSelectData(
     {
@@ -197,6 +201,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             align="right"
             required
             rules={Rule.organization}
+            initialValue={companyName}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -212,6 +217,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             align="right"
             required
             rules={Rule.compiler}
+            initialValue={userName}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
@@ -236,6 +242,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             label="工程开始时间"
             name="startTime"
             labelWidth={120}
+            initialValue={moment(getDefaultStartEndDate().startDate)}
             align="right"
             required
             rules={[
@@ -266,6 +273,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             align="right"
             required
             dependencies={['startTime']}
+            initialValue={moment(getDefaultStartEndDate().endDate)}
             rules={[
               { required: true, message: '工程结束时间不能为空' },
               ({ getFieldValue }) => ({

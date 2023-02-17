@@ -159,7 +159,10 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         const handleProjects = item.projects.map((ite: any) => {
           return {
             ...ite,
-            warehouseId: null,
+            warehouseId:
+              handleWarehouseSelectData && handleWarehouseSelectData.length !== 0
+                ? handleWarehouseSelectData[0].value
+                : 'none',
             // powerSupply: null,
           }
         })

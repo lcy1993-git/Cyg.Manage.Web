@@ -14,7 +14,7 @@ import {
 import { phoneNumberRule } from '@/utils/common-rule'
 import { flatten, getStopServerList } from '@/utils/utils'
 import { Button, Form, Input, message, Tabs } from 'antd'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { history } from 'umi'
 import VerifycodeImage from '../verifycode-image'
 import styles from './index.less'
@@ -143,38 +143,6 @@ const LoginForm: React.FC<Props> = (props) => {
       getStopInfo()
     }
   }
-
-  const showPosition = (position: any) => {
-    var lat = position.coords.latitude //纬度
-    var lag = position.coords.longitude //经度
-    console.log(`纬度:'${lat}+',经度:'+${lag}`)
-  }
-  const showError = (error: any) => {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        alert('定位失败,用户拒绝请求地理定位')
-        break
-      case error.POSITION_UNAVAILABLE:
-        alert('定位失败,位置信息是不可用')
-        break
-      case error.TIMEOUT:
-        alert('定位失败,请求获取用户位置超时')
-        break
-      case error.UNKNOWN_ERROR:
-        alert('定位失败,定位系统失效')
-        break
-    }
-  }
-
-  useEffect(() => {
-    if (window.navigator) {
-      console.log('执行')
-
-      window.navigator.geolocation.getCurrentPosition(showPosition, showError)
-    } else {
-      console.log('333')
-    }
-  }, [])
 
   return (
     <Form form={form} onValuesChange={formChangeEvent} onKeyDown={(e) => onKeyDownLogin(e)}>

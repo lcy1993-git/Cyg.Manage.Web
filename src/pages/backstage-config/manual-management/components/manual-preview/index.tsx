@@ -118,7 +118,6 @@ const ManualPreview: React.FC<Props> = (props) => {
   })
   useMount(() => {
     turnFileToBlob(file)
-    console.log('start')
     setTimeout(() => {
       setPageLoading(false)
     }, 2000)
