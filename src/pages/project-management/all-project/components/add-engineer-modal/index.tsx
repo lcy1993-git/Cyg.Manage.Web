@@ -7,10 +7,7 @@ import { addEngineer, getProjectTableList } from '@/services/project-management/
 import { message } from 'antd'
 import { useLayoutStore } from '@/layouts/context'
 import { relationProject } from '@/services/plan-manage/plan-manage'
-import {
-  clearBoxData,
-  clearDragBoxDatas,
-} from '@/pages/visualization-results/plan-manage/PlanMap/utils/initializeMap'
+import { clearDragBoxDatas } from '@/pages/visualization-results/plan-manage/PlanMap/utils/initializeMap'
 
 interface AddEngineerModalProps {
   visible: boolean

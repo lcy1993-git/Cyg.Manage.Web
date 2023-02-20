@@ -118,10 +118,10 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
 
   const areaChangeEvent = async (value: any, numberIndex: number) => {
     let [province, city, area] = value
-    if (city?.indexOf('null') != -1) {
+    if (city?.indexOf('null') !== -1) {
       city = ''
     }
-    if (area?.indexOf('null') != -1) {
+    if (area?.indexOf('null') !== -1) {
       area = ''
     }
     const copyEngineerInfo = cloneDeep(engineerInfo)
