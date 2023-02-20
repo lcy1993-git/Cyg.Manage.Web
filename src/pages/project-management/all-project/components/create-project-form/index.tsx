@@ -596,7 +596,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             fieldKey={[field.fieldKey, 'natures']}
             name={isEmpty(field) ? 'natures' : [field.name, 'natures']}
             required
-            initialValue={4096}
+            initialValue={[4096]}
           >
             <UrlSelect
               defaultData={projectNature}

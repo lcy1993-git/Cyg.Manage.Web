@@ -769,7 +769,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             if (hasThisValueData && hasThisValueData.length > 0) {
               ele[ite] = hasThisValueData[hasThisValueData.length - 1][ite]
             } else {
-              ele[ite] = hasValueData[hasValueData.length - 1].projects[0][ite]
+              ele[ite] = hasValueData[hasValueData.length - 1]?.projects[0][ite]
             }
           }
         })
