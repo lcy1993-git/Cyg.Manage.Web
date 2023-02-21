@@ -84,7 +84,7 @@ const tabTitle = {
 const { Search } = Input
 
 const EquipLineList: React.FC<StandingBookProps> = (props) => {
-  const { companyId, checkLineIds, mapRef } = useMyContext()
+  const { companyId, mapRef } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { lineTitle, lineId } = props
 
@@ -464,8 +464,10 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
       }
       const editData = cableWellRows[0]
       const geom = handleGeom(editData.geom)
+
       cableWellForm.setFieldsValue({
         ...editData,
+        lineId: editData.lineId.split(','),
         lng: geom[0],
         lat: geom[1],
       })
@@ -483,6 +485,7 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
 
       towerForm.setFieldsValue({
         ...editData,
+        lineId: editData.lineId.split(','),
         lng: geom[0],
         lat: geom[1],
       })

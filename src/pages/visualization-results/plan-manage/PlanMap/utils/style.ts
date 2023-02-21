@@ -50,7 +50,9 @@ export const pointStyle = (
       else text = '\ue617'
       break
 
-    case CABLEWELL: /* 电缆井 */
+    case CABLEWELL /* 电缆井 */:
+      text = '\ue840'
+      break
     case TOWER /* 杆塔 */:
       text = '\ue608'
       break

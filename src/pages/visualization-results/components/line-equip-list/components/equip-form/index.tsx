@@ -77,7 +77,7 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         required
         rules={[{ required: true, message: '请选择所属线路' }]}
       >
-        <Select disabled dropdownStyle={{ zIndex: 3000 }}>
+        <Select disabled dropdownStyle={{ zIndex: 3000 }} mode="multiple">
           {belongingLineData.map((item) => (
             <Option value={item.id} key={item.id}>
               {item.name}

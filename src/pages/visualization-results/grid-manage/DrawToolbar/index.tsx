@@ -1,4 +1,5 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
+import { PlusOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import {
   Button,
@@ -12,9 +13,11 @@ import {
   RadioChangeEvent,
   Row,
   Select,
+  Space,
   Tabs,
 } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { ModelType } from '../../plan-manage/DrawToolbar'
 import { useMyContext } from '../Context'
 import {
   clear,
@@ -112,6 +115,11 @@ const DrawToolbar = () => {
 
   const [clickState, setClickState] = useState<boolean>(false)
 
+  const [modelItems, setModelItems] = useState<ModelType[]>(LINEMODEL)
+  const [name, setName] = useState('')
+
+  const inputRef = useRef<any>(null)
+
   const [kelevelOptions, setkelevelOptions] = useState([
     ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
       item.belonging.find((type: string) => type.includes(currentFeatureType))
@@ -191,6 +199,29 @@ const DrawToolbar = () => {
       setLineTypeArray(arr)
     }
   }
+
+  let index = 0
+  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    e.preventDefault()
+    setModelItems([
+      name
+        ? { label: name, value: name }
+        : {
+            label: `自定义型号${index++}`,
+            value: `自定义型号${index++}`,
+          },
+      ...modelItems,
+    ])
+    setName('')
+    setTimeout(() => {
+      inputRef.current?.focus()
+    }, 0)
+  }
+
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+  }
+
   /** 线路回数个数改变渲染多个线路回路表单项 **/
   const renderLines = () => {
     const lines = []
@@ -242,7 +273,27 @@ const DrawToolbar = () => {
             )}
 
             <Form.Item name={`lineModel_${line.value}`} label={`线路型号${line.value}`}>
-              <Select dropdownStyle={{ zIndex: 3000 }}>
+              <Select
+                // showSearch
+                dropdownStyle={{ zIndex: 3000 }}
+                // dropdownRender={(menu) => (
+                //   <>
+                //     {menu}
+                //     <Divider style={{ margin: '8px 0' }} />
+                //     <Space style={{ padding: '0 8px 4px' }}>
+                //       <Input
+                //         placeholder="请输入型号"
+                //         ref={inputRef}
+                //         value={name}
+                //         onChange={onNameChange}
+                //       />
+                //       <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
+                //         添加
+                //       </Button>
+                //     </Space>
+                //   </>
+                // )}
+              >
                 {lineTypeArray.includes(String(line.value))
                   ? LINEMODEL.map((item) => (
                       <Option key={item.value} value={item.value}>
@@ -254,6 +305,11 @@ const DrawToolbar = () => {
                         {item.label}
                       </Option>
                     ))}
+                {/* {modelItems.map((item) => (
+                  <Option key={item.value} value={item.value}>
+                    {item.label}
+                  </Option>
+                ))} */}
               </Select>
             </Form.Item>
             <Form.Item
@@ -509,8 +565,10 @@ const DrawToolbar = () => {
 
     const handleData = copyData.filter((item: any) => {
       if (e.target.value === 'line') {
+        setModelItems(LINEMODEL)
         return item.isOverhead
       }
+      setModelItems(CABLECIRCUITMODEL)
       return item.isOverhead === false
     })
 

@@ -465,7 +465,7 @@ export const deleFeature = (map: any, feature: any, lineIds?: String[]) => {
   const pointLayer = getLayer(map, 'pointLayer')
   const lineLayer = getLayer(map, 'lineLayer')
   if (geomType === 'LineString') {
-    lineLayer.getSource().removeFeature(feature)
+    lineLayer?.getSource()?.removeFeature(feature)
     deleFeatures.push(feature.get('data'))
     //! 删除线路 ....currrentSelectFeature.get('data')
   } else if (geomType === 'Point') {
