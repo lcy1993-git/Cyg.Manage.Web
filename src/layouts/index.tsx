@@ -227,7 +227,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     ws.onopen = () => {
       heart = setInterval(() => {
         ws.send('PING')
-      }, 6000)
+      }, 10000)
     }
     ws.onclose = (err) => {
       const currentToken = localStorage.getItem('Authorization')
@@ -240,6 +240,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     }
     ws.onmessage = () => {}
     ws.onerror = (err) => {
+      clearInterval(heart)
       reconnect()
     }
   }
