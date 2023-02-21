@@ -87,12 +87,8 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           engineerId: engineerId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
-          disclosureRange:
-            value.disclosureRange === undefined || value.disclosureRange === undefined
-              ? 0
-              : value.disclosureRange,
-          pileRange:
-            value.pileRange === undefined || value.pileRange === undefined ? 0 : value.pileRange,
+          disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
+          pileRange: value.pileRange ? value.pileRange : 0,
         })
         message.success('项目复制成功')
         setState(false)

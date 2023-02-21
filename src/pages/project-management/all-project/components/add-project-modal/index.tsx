@@ -33,6 +33,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           engineerId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
+          disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
         })
         message.success('项目新增成功')
         setState(false)
@@ -87,6 +88,7 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           engineerEnd={moment(engineerInfo?.endTime)}
           status={1}
           isEdit={true}
+          isAdd={true}
         />
       </Form>
     </Modal>

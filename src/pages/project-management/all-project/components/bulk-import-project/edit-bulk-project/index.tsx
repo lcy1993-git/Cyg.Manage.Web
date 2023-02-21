@@ -142,6 +142,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
       const newProjectInfo = {
         ...projectInfo,
         ...values,
+        disclosureRange: values.disclosureRange ? values.disclosureRange : 0,
         powerSupply,
       }
 

@@ -68,7 +68,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             : projectInfo?.libId,
         warehouseId:
           warehouseInfo.findIndex((item: any) => item.value === projectInfo?.warehouseId) === -1
-            ? undefined
+            ? 'none'
             : projectInfo?.warehouseId,
         disclosureRange:
           projectInfo?.dataSourceType === 2
@@ -100,12 +100,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
           id: projectId,
           ...value,
           totalInvest: value.totalInvest ? value.totalInvest : 0,
-          disclosureRange:
-            value.disclosureRange === undefined || value.disclosureRange === undefined
-              ? 0
-              : value.disclosureRange,
-          pileRange:
-            value.pileRange === undefined || value.pileRange === undefined ? 0 : value.pileRange,
+          disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
+          pileRange: value.pileRange ? value.pileRange : 0,
         })
         message.success('项目信息更新成功')
         setState(false)
@@ -158,7 +154,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             status={status}
             projectId={projectId}
             engineerStart={startTime}
-            isEdit={projectInfo?.canEditStage}
+            canEditStage={projectInfo?.canEditStage}
+            isEdit={true}
             engineerEnd={endTime}
             form={form}
             getWarehouseData={setWarehouseInfo}

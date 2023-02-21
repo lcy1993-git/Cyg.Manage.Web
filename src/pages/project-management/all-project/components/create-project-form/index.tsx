@@ -27,6 +27,8 @@ interface CreateProjectFormProps {
   index?: any
   isInherit?: boolean
   isEdit?: boolean
+  isAdd?: boolean
+  canEditStage?: boolean
   pointVisible?: boolean
   copyLibId?: string
   getWarehouseData?: (value: any[]) => void
@@ -50,6 +52,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     areaId,
     isInherit = false,
     isEdit = false,
+    isAdd = false,
+    canEditStage = true,
     setCopyFlag,
     getWarehouseData,
     getLibData,
@@ -146,17 +150,25 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
       refreshDeps: [areaId],
       onSuccess: () => {
         getWarehouseData?.(warehouseSelectData)
-        const projectInfo = form.getFieldValue('projects')
-        const newProjectInfo = projectInfo.map((item: any, inx: number) => {
-          if (inx === index) {
-            return {
-              ...item,
-              warehouseId: warehouseSelectData.length !== 0 ? warehouseSelectData[0].value : 'none',
+        if (!isEdit) {
+          const projectInfo = form.getFieldValue('projects')
+          const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+            if (inx === index) {
+              return {
+                ...item,
+                warehouseId:
+                  warehouseSelectData.length !== 0 ? warehouseSelectData[0].value : 'none',
+              }
             }
-          }
-          return item
-        })
-        form.setFieldsValue({ projects: newProjectInfo })
+            return item
+          })
+          form.setFieldsValue({ projects: newProjectInfo })
+        }
+        if (isAdd) {
+          form.setFieldsValue({
+            warehouseId: warehouseSelectData.length !== 0 ? warehouseSelectData[0].value : 'none',
+          })
+        }
       },
     }
   )
@@ -836,7 +848,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             <UrlSelect
               defaultData={isInherit ? handleProjectStage : projectStage}
               valuekey="value"
-              disabled={!isEdit && !isInherit} //判断是否参与继承 && 是否开始继承 &&是否新增项目
+              disabled={!canEditStage && !isInherit} //判断是否参与继承 && 是否开始继承 &&是否新增项目
               titlekey="text"
               placeholder="请选择"
             />
