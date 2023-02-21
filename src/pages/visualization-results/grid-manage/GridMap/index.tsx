@@ -637,7 +637,14 @@ const GridMap = () => {
               label="所属线路"
               rules={[{ required: true, message: '请选择所属线路' }]}
             >
-              <Select dropdownStyle={{ zIndex: 3000 }} mode="multiple">
+              <Select
+                dropdownStyle={{ zIndex: 3000 }}
+                mode={
+                  currentFeatureType === TOWER || currentFeatureType === CABLEWELL
+                    ? 'multiple'
+                    : undefined
+                }
+              >
                 {belongingLineData.map((item) => (
                   <Option value={item.id} key={item.id}>
                     {item.name}

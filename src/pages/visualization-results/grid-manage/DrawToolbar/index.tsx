@@ -357,8 +357,8 @@ const DrawToolbar = () => {
   }
 
   /* 绘制线路选择所属线路 **/
-  const seleceBelongingLine = (value: string) => {
-    const currentLineData = belongingLineData.find((item) => item.id === value)
+  const seleceBelongingLine = (value: any) => {
+    const currentLineData = belongingLineData.find((item) => item.id === value[0])
     if (currentLineData) {
       setcurrentColor(currentLineData.color)
       setcurrentLineKvLevel(currentLineData?.kvLevel)
@@ -637,7 +637,15 @@ const DrawToolbar = () => {
                   label="所属线路"
                   rules={[{ required: true, message: '请选择所属线路' }]}
                 >
-                  <Select dropdownStyle={{ zIndex: 3000 }} onChange={seleceBelongingLine}>
+                  <Select
+                    dropdownStyle={{ zIndex: 3000 }}
+                    onChange={seleceBelongingLine}
+                    // mode={
+                    //   currentFeatureType === TOWER || currentFeatureType === CABLEWELL
+                    //     ? 'multiple'
+                    //     : undefined
+                    // }
+                  >
                     {belongingLineData.map((item) => (
                       <Option value={item.id} key={item.id}>
                         {item.name}
