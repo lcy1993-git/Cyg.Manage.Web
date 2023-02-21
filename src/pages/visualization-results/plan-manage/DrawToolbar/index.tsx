@@ -276,31 +276,42 @@ const DrawToolbar = () => {
 
             <Form.Item name={`lineModel_${line.value}`} label={`线路型号${line.value}`}>
               <Select
-                showSearch
+                // showSearch
                 dropdownStyle={{ zIndex: 3000 }}
-                dropdownRender={(menu) => (
-                  <>
-                    {menu}
-                    <Divider style={{ margin: '8px 0' }} />
-                    <Space style={{ padding: '0 8px 4px' }}>
-                      <Input
-                        placeholder="请输入型号"
-                        ref={inputRef}
-                        value={name}
-                        onChange={onNameChange}
-                      />
-                      <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
-                        添加
-                      </Button>
-                    </Space>
-                  </>
-                )}
+                // dropdownRender={(menu) => (
+                //   <>
+                //     {menu}
+                //     <Divider style={{ margin: '8px 0' }} />
+                //     <Space style={{ padding: '0 8px 4px' }}>
+                //       <Input
+                //         placeholder="请输入型号"
+                //         ref={inputRef}
+                //         value={name}
+                //         onChange={onNameChange}
+                //       />
+                //       <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
+                //         添加
+                //       </Button>
+                //     </Space>
+                //   </>
+                // )}
               >
-                {modelItems.map((item) => (
+                {lineTypeArray.includes(String(line.value))
+                  ? LINEMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))
+                  : CABLECIRCUITMODEL.map((item) => (
+                      <Option key={item.value} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))}
+                {/* {modelItems.map((item) => (
                   <Option key={item.value} value={item.value}>
                     {item.label}
                   </Option>
-                ))}
+                ))} */}
               </Select>
             </Form.Item>
             <Form.Item

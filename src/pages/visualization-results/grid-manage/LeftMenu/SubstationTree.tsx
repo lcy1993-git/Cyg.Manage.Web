@@ -51,15 +51,8 @@ const SubstationTree = () => {
     }
   )
   const { isRefresh, setIsRefresh, companyId } = useMyContext()
-  const {
-    linesId,
-    setlinesId,
-    setsubStations,
-    settreeLoading,
-    kvLevels,
-    areasId,
-    isFilterTree,
-  } = useTreeContext()
+  const { linesId, setlinesId, setsubStations, settreeLoading, kvLevels, areasId, isFilterTree } =
+    useTreeContext()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -185,7 +178,7 @@ const SubstationTree = () => {
 
   useEffect(() => {
     getTree()
-  }, [getTree, isRefresh, isFilterTree])
+  }, [isRefresh, isFilterTree])
 
   // 点击左键，编辑线路数据
   const onSelect = async (_selectedKeys: Key[], info: TreeSelectType) => {

@@ -768,6 +768,21 @@ const GridMap = () => {
                       ))}
                 </Select>
               </Form.Item>
+              {/* {currentLineKvLevel === 3 && (
+                <Form.Item
+                  name="color"
+                  label="线路颜色"
+                  rules={[{ required: true, message: '请选择线路颜色' }]}
+                >
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )} */}
             </>
           ) : (
             <>
