@@ -776,7 +776,7 @@ const PlanMap = () => {
             </>
           )}
 
-          {currentFeatureType === CABLECIRCUIT && (
+          {selectLineType === CABLECIRCUIT && (
             <>
               <Form.Item name="channelType" label="通道类型">
                 <Input placeholder="请输入通道类型" />

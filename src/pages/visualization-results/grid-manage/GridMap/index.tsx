@@ -264,7 +264,6 @@ const GridMap = () => {
   const isActiveFeature = (data: pointType | null) => {
     let lineType
     setClickCompanyId(data?.companyId)
-
     if (data) {
       const featureData = { ...data }
       setcurrentfeatureData({
@@ -812,7 +811,7 @@ const GridMap = () => {
               </Form.Item>
             </>
           )}
-          {currentFeatureType === CABLECIRCUIT && (
+          {selectLineType === CABLECIRCUIT && (
             <>
               <Form.Item name="channelType" label="通道类型">
                 <Input placeholder="请输入通道类型" />
