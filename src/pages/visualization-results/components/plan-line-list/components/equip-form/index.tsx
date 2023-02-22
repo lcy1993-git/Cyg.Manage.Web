@@ -127,6 +127,20 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         </>
       )}
 
+      {selectLineType === 'CableCircuit' && (
+        <>
+          <CyFormItem name="channelType" label="通道类型">
+            <Input placeholder="请输入通道类型" disabled />
+          </CyFormItem>
+          <CyFormItem name="channelModel" label="通道型号">
+            <Input placeholder="请输入通道型号" disabled />
+          </CyFormItem>
+          <CyFormItem name="cableCapacity" label="电缆容量">
+            <Input placeholder="请输入电缆容量" disabled />
+          </CyFormItem>
+        </>
+      )}
+
       {currentEditTab === 'cabinet' && (
         <>
           <CyFormItem label="型号" name="model">

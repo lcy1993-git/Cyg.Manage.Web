@@ -263,33 +263,7 @@ const PlanStandingBook: React.FC<StandingBookProps> = (props) => {
         return record.isOverhead ? '架空线路' : '电缆线路'
       },
     },
-    {
-      title: '通道类型',
-      dataIndex: 'channelType',
-      index: 'channelType',
-      width: 150,
-      render: (text: any, record: any) => {
-        return record.isOverhead ? '-' : record.channelType
-      },
-    },
-    {
-      title: '通道型号',
-      dataIndex: 'channelModel',
-      index: 'channelModel',
-      width: 150,
-      render: (text: any, record: any) => {
-        return record.isOverhead ? '-' : record.channelModel
-      },
-    },
-    {
-      title: '电缆容量',
-      dataIndex: 'cableCapacity',
-      index: 'cableCapacity',
-      width: 150,
-      render: (text: any, record: any) => {
-        return record.isOverhead ? '-' : record.cableCapacity
-      },
-    },
+
     {
       title: '线路型号',
       dataIndex: 'conductorModel',

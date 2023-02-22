@@ -70,6 +70,7 @@ import {
   deletBoxFeature,
   getDrawLines,
   getDrawPoints,
+  getShowPoints,
   initMap,
   setDrawBox,
 } from './utils/initializeMap'
@@ -143,7 +144,7 @@ const GridMap = () => {
   const [editModel, seteditModel] = useState(false)
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
-  const [selectLineType, setselectLineType] = useState('')
+  const [selectLineType, setSelectLineType] = useState('')
 
   //当前点击点位公司id
   const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
@@ -173,10 +174,13 @@ const GridMap = () => {
   const uploadLocalData = async () => {
     const pointDatas = getDrawPoints()
     const lineDatas = getDrawLines()
+    // const datas = getShowPoints(mapRef.map)
+
     // 点位数据处理
     const pointData = dataHandle(pointDatas)
     // 线路数据处理
     const lineData = dataHandle(lineDatas)
+
     if ((pointData && pointData.length) || (lineData && lineData.length)) {
       const powerSupplyList = pointData.filter(
         (item: { featureType: string }) => item.featureType === POWERSUPPLY
@@ -217,7 +221,6 @@ const GridMap = () => {
           isOverhead: item.lineType === LINE,
         }
       })
-
       // const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
       //   return {
       //     id: createFeatureId(),
@@ -284,7 +287,7 @@ const GridMap = () => {
         lineType = featureData.isOverhead ? LINE : CABLECIRCUIT
       }
 
-      setselectLineType(lineType)
+      setSelectLineType(lineType)
 
       form.setFieldsValue({
         ...featureData,
@@ -341,6 +344,7 @@ const GridMap = () => {
       color,
       ...areaData,
       lineId: value.lineId.join(),
+      isOverhead: value.lineType === 'Line' ? true : false,
     }
 
     try {
@@ -749,7 +753,14 @@ const GridMap = () => {
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
             <>
               <Form.Item name="lineType" label="线路类型">
-                <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
+                <Select
+                  allowClear
+                  dropdownStyle={{ zIndex: 3000 }}
+                  onChange={(value: string) => {
+                    setSelectLineType(value)
+                    form.setFieldsValue({ lineModel: undefined })
+                  }}
+                >
                   {[
                     { label: '架空线路', value: 'Line' },
                     { label: '电缆线路', value: 'CableCircuit' },
@@ -801,7 +812,7 @@ const GridMap = () => {
               </Form.Item>
             </>
           )}
-          {/* {selectLineType === CABLECIRCUIT && currentFeatureType === 'Line' && (
+          {currentFeatureType === CABLECIRCUIT && (
             <>
               <Form.Item name="channelType" label="通道类型">
                 <Input placeholder="请输入通道类型" />
@@ -813,7 +824,7 @@ const GridMap = () => {
                 <Input placeholder="请输入电缆容量" />
               </Form.Item>
             </>
-          )} */}
+          )}
           {currentFeatureType === TRANSFORMERSUBSTATION && (
             <Form.Item label="出线间隔">
               <Button

@@ -1,6 +1,6 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
 import { PlusOutlined } from '@ant-design/icons'
-import { useRequest } from 'ahooks'
+import { useRequest, useUpdateEffect } from 'ahooks'
 import {
   Button,
   Cascader,
@@ -76,6 +76,11 @@ export interface BelongingLineType {
   channelType?: string
 }
 
+export interface DrawLineType {
+  type: string
+  value: number
+}
+
 const DrawToolbar = () => {
   const {
     drawToolbarVisible,
@@ -92,7 +97,9 @@ const DrawToolbar = () => {
   // 需要绘制的当前图元
   const [currentFeatureType, setcurrentFeatureType] = useState('PowerSupply')
   //绘制线段所选主线路类型
-  const [selectLineType, setSelectLineType] = useState<string>('line')
+  const [belongLineType, setBelongLineType] = useState<string>('Line')
+  //绘制线段类型
+  const [drawLineArray, setDrawLineArray] = useState<DrawLineType[]>([{ type: 'Line', value: 1 }])
   // 当前的电压等级
   const [currentKvleve, setcurrentKvleve] = useState<number>()
   // Tab切换控制
@@ -144,6 +151,9 @@ const DrawToolbar = () => {
       const kvLevel = `kvLevel_${i + 1}`
       const lineType = `lineType_${i + 1}`
       const lineModel = `lineModel_${i + 1}`
+      const cableCapacity = `cableCapacity${i + 1}`
+      const channelModel = `channelModel${i + 1}`
+      const channelType = `channelType${i + 1}`
       const lineId = `lineId_${i + 1}`
       let color
       const lineData = belongingLineData.find((item) => item.id === formData[lineId])
@@ -162,6 +172,9 @@ const DrawToolbar = () => {
         kvLevel: formData[kvLevel],
         lineType: formData[lineType],
         lineModel: formData[lineModel],
+        channelModel: formData[channelModel] ?? '',
+        cableCapacity: formData[cableCapacity] ?? '',
+        channelType: formData[channelType] ?? '',
         lineId: formData[lineId],
         color,
         featureType: formData[lineType],
@@ -189,6 +202,7 @@ const DrawToolbar = () => {
       }
       lineForm.setFieldsValue(data)
       let arr = [...lineTypeArray]
+
       if (currentLineData.isOverhead) {
         // 架空线路
         arr.push(selectNumber)
@@ -224,11 +238,11 @@ const DrawToolbar = () => {
 
   /** 线路回数个数改变渲染多个线路回路表单项 **/
   const renderLines = () => {
-    const lines = []
+    const lines: any = []
     for (let i = 0; i < Number(lineNumber); i++) {
-      lines.push({ value: i + 1 })
+      lines.push({ type: drawLineArray[i].type, value: i + 1 })
     }
-    return lines.map((line) => {
+    return lines.map((line: any) => {
       return (
         <>
           <React.Fragment key={line.value}>
@@ -246,7 +260,15 @@ const DrawToolbar = () => {
               </Select>
             </Form.Item>
             <Form.Item name={`lineType_${line.value}`} label={`线路类型${line.value}`}>
-              <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
+              <Select
+                allowClear
+                dropdownStyle={{ zIndex: 3000 }}
+                onChange={(value: string) => {
+                  lines.find((item: any) => item.value === line.value).type = value
+                  // form.setFieldsValue({ `lineModel_${line.value}`:undefined })
+                  setDrawLineArray(lines)
+                }}
+              >
                 {[
                   { label: '架空线路', value: 'Line' },
                   { label: '电缆线路', value: 'CableCircuit' },
@@ -258,16 +280,16 @@ const DrawToolbar = () => {
               </Select>
             </Form.Item>
 
-            {selectLineType === 'cableCircuit' && (
+            {drawLineArray[line.value - 1]?.type === 'CableCircuit' && (
               <>
                 <Form.Item name={`channelType${line.value}`} label={`通道类型${line.value}`}>
-                  <Input disabled placeholder="请输入通道类型" />
+                  <Input placeholder="请输入通道类型" />
                 </Form.Item>
                 <Form.Item name={`channelModel${line.value}`} label={`通道型号${line.value}`}>
-                  <Input disabled placeholder="请输入通道型号" />
+                  <Input placeholder="请输入通道型号" />
                 </Form.Item>
                 <Form.Item name={`cableCapacity${line.value}`} label={`电缆容量${line.value}`}>
-                  <Input disabled placeholder="请输入电缆容量" />
+                  <Input placeholder="请输入电缆容量" />
                 </Form.Item>
               </>
             )}
@@ -294,7 +316,7 @@ const DrawToolbar = () => {
                 //   </>
                 // )}
               >
-                {lineTypeArray.includes(String(line.value))
+                {lineTypeArray.includes(String(line.value)) && line.type === 'Line'
                   ? LINEMODEL.map((item) => (
                       <Option key={item.value} value={item.value}>
                         {item.label}
@@ -385,6 +407,7 @@ const DrawToolbar = () => {
   const uploadLocalData = async () => {
     const pointData = getDrawPoints()
     const lineData = getDrawLines()
+
     if ((pointData && pointData.length) || (lineData && lineData.length)) {
       const powerSupplyList = pointData.filter(
         (item: { featureType: string }) => item.featureType === POWERSUPPLY
@@ -560,11 +583,12 @@ const DrawToolbar = () => {
     lineForm.resetFields()
     setLineNumber('1')
     renderLines()
-    setSelectLineType(e.target.value)
+    setBelongLineType(e.target.value)
+    setDrawLineArray([{ type: e.target.value, value: 1 }])
     const copyData = [...belongingLineData]
 
     const handleData = copyData.filter((item: any) => {
-      if (e.target.value === 'line') {
+      if (e.target.value === 'Line') {
         setModelItems(LINEMODEL)
         return item.isOverhead
       }
@@ -574,6 +598,10 @@ const DrawToolbar = () => {
 
     setChooseLineData(handleData)
   }
+
+  // useUpdateEffect(() => {
+  //   renderLines()
+  // }, [drawLineArray])
 
   return (
     <Drawer
@@ -786,11 +814,11 @@ const DrawToolbar = () => {
               initialValues={{ lineNumber: '1' }}
             >
               <Form.Item name="lineType" label="回数类型">
-                <Radio.Group onChange={selectMainType} defaultValue={selectLineType}>
-                  <Radio value="line" checked>
+                <Radio.Group onChange={selectMainType} defaultValue={belongLineType}>
+                  <Radio value="Line" checked>
                     架空
                   </Radio>
-                  <Radio value="cableCircuit">电缆</Radio>
+                  <Radio value="CableCircuit">电缆</Radio>
                 </Radio.Group>
               </Form.Item>
               <Form.Item name="lineNumber" label="线路回数">
@@ -799,6 +827,11 @@ const DrawToolbar = () => {
                   dropdownStyle={{ zIndex: 3000 }}
                   onChange={(val: string) => {
                     setLineNumber(val)
+                    const copyArr = [...drawLineArray]
+                    for (let i = copyArr.length + 1; i <= Number(val); i++) {
+                      copyArr.push({ type: 'Line', value: i })
+                    }
+                    setDrawLineArray(copyArr)
                   }}
                 >
                   {[

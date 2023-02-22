@@ -74,7 +74,7 @@ const LeftMenu = (props: any) => {
   // 终点厂站表单项select当前选中值
   const [endBelonging, setEndBelonging] = useState<string | undefined>()
   const showModal = () => {
-    setIsRefresh(!isRefresh)
+    // setIsRefresh(!isRefresh)
     setcurrentLineKvLevel(1)
     setBelonging(undefined)
     setEndBelonging(undefined)

@@ -5,7 +5,7 @@ export const lineColumns = [
     title: '电压等级',
     dataIndex: 'kvLevel',
     index: 'kvLevel',
-    width: '33.3%',
+    width: 200,
     render: (text: any, record: any) => {
       return kvOptions[record.kvLevel]
     },
@@ -15,7 +15,7 @@ export const lineColumns = [
     title: '线路类型',
     dataIndex: 'isOverhead',
     index: 'isOverhead',
-    width: '33.3%',
+    width: 200,
     render: (text: any, record: any) => {
       return record.isOverhead ? '架空线路' : '电缆线路'
     },
@@ -24,7 +24,34 @@ export const lineColumns = [
     title: '线路型号',
     dataIndex: 'lineModel',
     index: 'lineModel',
-    width: '33.3%',
+    width: 200,
+  },
+  {
+    title: '通道类型',
+    dataIndex: 'channelType',
+    index: 'channelType',
+    width: 200,
+    render: (text: any, record: any) => {
+      return record.isOverhead ? '-' : record.channelType
+    },
+  },
+  {
+    title: '通道型号',
+    dataIndex: 'channelModel',
+    index: 'channelModel',
+    width: 200,
+    render: (text: any, record: any) => {
+      return record.isOverhead ? '-' : record.channelModel
+    },
+  },
+  {
+    title: '电缆容量',
+    dataIndex: 'cableCapacity',
+    index: 'cableCapacity',
+    width: 200,
+    render: (text: any, record: any) => {
+      return record.isOverhead ? '-' : record.cableCapacity
+    },
   },
 ]
 
