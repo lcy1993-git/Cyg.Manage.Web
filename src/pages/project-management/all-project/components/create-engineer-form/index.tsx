@@ -57,7 +57,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   })
 
   //@ts-ignore
-  const { companyName, userName } = JSON.parse(localStorage.getItem('userInfo'))
+  const { companyName, userName, name } = JSON.parse(localStorage.getItem('userInfo'))
 
   const { data: companySelectData = [] } = useGetSelectData(
     {
@@ -217,7 +217,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             align="right"
             required
             rules={Rule.compiler}
-            initialValue={userName}
+            initialValue={name ?? userName}
           >
             <Input placeholder="请输入" />
           </CyFormItem>
