@@ -284,6 +284,7 @@ class DrawTool {
         if (lineIds.indexOf(item) === -1) lineIds.push(item)
       })
       node.get('data').lineId = lineIds.toString()
+      node.get('data').type_ = 'Point'
     }
 
     if (!node && isAdd) {
