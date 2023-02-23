@@ -1,5 +1,4 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
-import { PlusOutlined } from '@ant-design/icons'
 import { useRequest, useUpdateEffect } from 'ahooks'
 import {
   Button,
@@ -13,7 +12,6 @@ import {
   RadioChangeEvent,
   Row,
   Select,
-  Space,
   Tabs,
 } from 'antd'
 import React, { useRef, useState } from 'react'
