@@ -288,6 +288,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   ) => {
     const { stateInfo } = tableItemData
 
+    console.log(tableItemData, '111')
+
     return (
       <Menu>
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
@@ -364,6 +366,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           status !== 31 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
+          )}
+
+        {tableItemData.identitys.findIndex((item: any) => item.value === 4) > -1 &&
+          buttonJurisdictionArray?.includes('all-project-merge') && (
+            <Menu.Item>
+              <a href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}`}>
+                打开设计端
+              </a>
+            </Menu.Item>
           )}
       </Menu>
     )
