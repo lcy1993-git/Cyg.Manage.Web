@@ -102,6 +102,7 @@ export interface pointType {
   capacity?: string
   isOverhead?: boolean
   model?: string
+  lineType?: string
   properties?: string
   lng?: string
   geom: string
@@ -144,7 +145,7 @@ const PlanMap = () => {
   const [editModel, seteditModel] = useState(false)
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
-  const [selectLineType, setselectLineType] = useState('')
+  const [selectLineType, setSelectLineType] = useState('')
 
   //当前点击点位公司id
   const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
@@ -250,6 +251,7 @@ const PlanMap = () => {
 
   /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
+    let lineType
     setClickCompanyId(data?.companyId)
     if (data) {
       const featureData = { ...data }
@@ -266,12 +268,20 @@ const PlanMap = () => {
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
-      setselectLineType(featureData.isOverhead ? LINE : CABLECIRCUIT)
+
+      if (featureData.lineType) {
+        lineType = featureData.lineType === 'Line' ? LINE : CABLECIRCUIT
+      } else {
+        lineType = featureData.isOverhead ? LINE : CABLECIRCUIT
+      }
+
+      setSelectLineType(lineType)
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.featureType,
+        lineType: lineType,
+        lineId: featureData.lineId?.split(','),
         areas: transformAreaDataToArr(featureData),
       })
     } else {
@@ -298,7 +308,7 @@ const PlanMap = () => {
   /** 编辑 **/
   const onFinish = async (value: any) => {
     let color
-    const currentThread = belongingLineData.find((item) => item.id === value.lineId) // 上传数据颜色处理
+    const currentThread = belongingLineData.find((item) => item.id === value.lineId[0]) // 上传数据颜色处理
     if (currentFeatureType === TRANSFORMERSUBSTATION) {
       // 如果是变电站就根据电压等级显示
       const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
@@ -321,6 +331,7 @@ const PlanMap = () => {
       color,
       gridDataType: 1,
       ...areaData,
+      lineId: value.lineId.join(),
     }
     try {
       switch (currentFeatureType) {
@@ -616,7 +627,7 @@ const PlanMap = () => {
               label="所属线路"
               rules={[{ required: true, message: '请选择所属线路' }]}
             >
-              <Select dropdownStyle={{ zIndex: 3000 }}>
+              <Select dropdownStyle={{ zIndex: 3000 }} mode="multiple">
                 {belongingLineData?.map((item) => (
                   <Option value={item.id} key={item.id}>
                     {item.name}
@@ -642,6 +653,20 @@ const PlanMap = () => {
                 <Input />
               </Form.Item>
               <Form.Item name="mainWiringMode" label="主接线方式">
+                <Input />
+              </Form.Item>
+            </>
+          )}
+          {/* 杆塔 */}
+          {currentFeatureType === TOWER && (
+            <>
+              <Form.Item name="towerSpecification" label="杆塔规格">
+                <Input />
+              </Form.Item>
+              <Form.Item name="towerType" label="杆塔类型">
+                <Input />
+              </Form.Item>
+              <Form.Item name="towerMaterial" label="杆塔材质">
                 <Input />
               </Form.Item>
             </>
@@ -706,7 +731,14 @@ const PlanMap = () => {
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
             <>
               <Form.Item name="lineType" label="线路类型">
-                <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
+                <Select
+                  allowClear
+                  dropdownStyle={{ zIndex: 3000 }}
+                  onChange={(value: string) => {
+                    setSelectLineType(value)
+                    form.setFieldsValue({ lineModel: undefined })
+                  }}
+                >
                   {[
                     { label: '架空线路', value: 'Line' },
                     { label: '电缆线路', value: 'CableCircuit' },
@@ -743,6 +775,21 @@ const PlanMap = () => {
               </Form.Item>
             </>
           )}
+
+          {selectLineType === CABLECIRCUIT && (
+            <>
+              <Form.Item name="channelType" label="通道类型">
+                <Input placeholder="请输入通道类型" />
+              </Form.Item>
+              <Form.Item name="channelModel" label="通道型号">
+                <Input placeholder="请输入通道型号" />
+              </Form.Item>
+              <Form.Item name="cableCapacity" label="电缆容量">
+                <Input placeholder="请输入电缆容量" />
+              </Form.Item>
+            </>
+          )}
+
           {currentFeatureType === TRANSFORMERSUBSTATION && (
             <Form.Item label="出线间隔">
               <Button

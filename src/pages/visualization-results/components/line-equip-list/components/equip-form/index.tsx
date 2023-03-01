@@ -57,13 +57,27 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
         />
       </CyFormItem>
 
+      {currentEditTab === 'tower' && (
+        <>
+          <CyFormItem label="杆塔规格" name="towerSpecification">
+            <Input disabled />
+          </CyFormItem>
+          <CyFormItem label="杆塔类型" name="towerType">
+            <Input disabled />
+          </CyFormItem>
+          <CyFormItem label="杆塔材质" name="towerMaterial">
+            <Input disabled />
+          </CyFormItem>
+        </>
+      )}
+
       <CyFormItem
         name="lineId"
         label="所属线路"
         required
         rules={[{ required: true, message: '请选择所属线路' }]}
       >
-        <Select disabled dropdownStyle={{ zIndex: 3000 }}>
+        <Select disabled dropdownStyle={{ zIndex: 3000 }} mode="multiple">
           {belongingLineData.map((item) => (
             <Option value={item.id} key={item.id}>
               {item.name}
@@ -108,6 +122,20 @@ const EquipForm: React.FC<EquipFormParams> = (props) => {
                     </Option>
                   ))}
             </Select>
+          </CyFormItem>
+        </>
+      )}
+
+      {selectLineType === 'CableCircuit' && (
+        <>
+          <CyFormItem name="channelType" label="通道类型">
+            <Input placeholder="请输入通道类型" disabled />
+          </CyFormItem>
+          <CyFormItem name="channelModel" label="通道型号">
+            <Input placeholder="请输入通道型号" disabled />
+          </CyFormItem>
+          <CyFormItem name="cableCapacity" label="电缆容量">
+            <Input placeholder="请输入电缆容量" disabled />
           </CyFormItem>
         </>
       )}

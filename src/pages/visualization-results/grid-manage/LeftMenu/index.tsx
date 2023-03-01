@@ -74,7 +74,7 @@ const LeftMenu = (props: any) => {
   // 终点厂站表单项select当前选中值
   const [endBelonging, setEndBelonging] = useState<string | undefined>()
   const showModal = () => {
-    setIsRefresh(!isRefresh)
+    // setIsRefresh(!isRefresh)
     setcurrentLineKvLevel(1)
     setBelonging(undefined)
     setEndBelonging(undefined)
@@ -234,6 +234,7 @@ const LeftMenu = (props: any) => {
             })
             .filter((item) => item)
         }
+
         loadMapLayers(
           {
             ...treeDatas,
@@ -318,12 +319,14 @@ const LeftMenu = (props: any) => {
 
       <Modal
         title="新增线路"
+        destroyOnClose
         visible={visible}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={() => {
           form.resetFields()
           setVisible(false)
+          setselectLineType('')
         }}
       >
         <Form {...lineformLayout} style={{ marginTop: '10px' }} form={form}>
@@ -403,6 +406,20 @@ const LeftMenu = (props: any) => {
               <Option value="CableCircuit">电缆线路</Option>
             </Select>
           </Form.Item>
+          {selectLineType === 'CableCircuit' && (
+            <>
+              <Form.Item name="channelType" label="通道类型">
+                <Input placeholder="请输入通道类型" />
+              </Form.Item>
+              <Form.Item name="channelModel" label="通道型号">
+                <Input placeholder="请输入通道型号" />
+              </Form.Item>
+              <Form.Item name="cableCapacity" label="电缆容量">
+                <Input placeholder="请输入电缆容量" />
+              </Form.Item>
+            </>
+          )}
+
           <Form.Item
             name="conductorModel"
             label="线路型号"

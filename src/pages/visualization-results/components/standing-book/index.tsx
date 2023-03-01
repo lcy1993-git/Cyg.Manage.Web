@@ -215,7 +215,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       title: '名称',
       dataIndex: 'name',
       index: 'name',
-      width: 200,
+      width: 220,
       render: (text: any, record: any) => {
         return companyId !== record.companyId ? (
           <>
@@ -231,7 +231,7 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       title: '电压等级',
       dataIndex: 'kvLevel',
       index: 'kvLevel',
-      width: 150,
+      width: 100,
       render: (text: any, record: any) => {
         return kvOptions[record.kvLevel]
       },
@@ -240,46 +240,47 @@ const StandingBook: React.FC<StandingBookProps> = (props) => {
       title: '所属厂站',
       dataIndex: 'belongingName',
       index: 'belongingName',
-      width: 150,
+      width: 160,
     },
     {
       title: '配变总容量',
       dataIndex: 'totalCapacity',
       index: 'totalCapacity',
-      width: 150,
+      width: 120,
     },
     {
       title: '线路总长度',
       dataIndex: 'totalLength',
       index: 'totalLength',
-      width: 150,
+      width: 120,
     },
     {
       title: '线路类型',
       dataIndex: 'isOverhead',
       index: 'isOverhead',
-      width: 150,
+      width: 140,
       render: (text: any, record: any) => {
         return record.isOverhead ? '架空线路' : '电缆线路'
       },
     },
+
     {
       title: '线路型号',
       dataIndex: 'conductorModel',
       index: 'conductorModel',
-      width: 150,
+      width: 160,
     },
     {
       title: '线路性质',
       dataIndex: 'lineProperties',
       index: 'lineProperties',
-      width: 150,
+      width: 120,
     },
     {
       title: '颜色',
       dataIndex: 'color',
       index: 'color',
-      width: 150,
+      width: 80,
     },
     // {
     //   title: '经纬度',

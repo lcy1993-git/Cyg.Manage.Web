@@ -5,7 +5,7 @@ export const lineColumns = [
     title: '电压等级',
     dataIndex: 'kvLevel',
     index: 'kvLevel',
-    width: '33.3%',
+    width: 200,
     render: (text: any, record: any) => {
       return kvOptions[record.kvLevel]
     },
@@ -15,7 +15,7 @@ export const lineColumns = [
     title: '线路类型',
     dataIndex: 'isOverhead',
     index: 'isOverhead',
-    width: '33.3%',
+    width: 200,
     render: (text: any, record: any) => {
       return record.isOverhead ? '架空线路' : '电缆线路'
     },
@@ -24,7 +24,34 @@ export const lineColumns = [
     title: '线路型号',
     dataIndex: 'lineModel',
     index: 'lineModel',
-    width: '33.3%',
+    width: 200,
+  },
+  {
+    title: '通道类型',
+    dataIndex: 'channelType',
+    index: 'channelType',
+    width: 200,
+    render: (text: any, record: any) => {
+      return record.isOverhead ? '-' : record.channelType
+    },
+  },
+  {
+    title: '通道型号',
+    dataIndex: 'channelModel',
+    index: 'channelModel',
+    width: 200,
+    render: (text: any, record: any) => {
+      return record.isOverhead ? '-' : record.channelModel
+    },
+  },
+  {
+    title: '电缆容量',
+    dataIndex: 'cableCapacity',
+    index: 'cableCapacity',
+    width: 200,
+    render: (text: any, record: any) => {
+      return record.isOverhead ? '-' : record.cableCapacity
+    },
   },
 ]
 
@@ -60,22 +87,40 @@ export const towerColumns = [
     title: '名称',
     dataIndex: 'name',
     index: 'name',
-    width: '33.3%',
+    width: 200,
   },
   {
     title: '电压等级',
     dataIndex: 'kvLevel',
     index: 'kvLevel',
-    width: '33.3%',
+    width: 150,
     render: (text: any, record: any) => {
       return kvOptions[record.kvLevel]
     },
   },
   {
+    title: '杆塔规格',
+    dataIndex: 'towerSpecification',
+    index: 'towerSpecification',
+    width: 160,
+  },
+  {
+    title: '杆塔类型',
+    dataIndex: 'towerType',
+    index: 'towerType',
+    width: 160,
+  },
+  {
+    title: '杆塔材质',
+    dataIndex: 'towerMaterial',
+    index: 'towerMaterial',
+    width: 160,
+  },
+  {
     title: '经纬度',
     dataIndex: 'geom',
     index: 'geom',
-    width: '33.3%',
+    // width: '33.3%',
     render: (text: any, record: any) => {
       return record.geom.slice(6).replace(' ', ' ，')
     },

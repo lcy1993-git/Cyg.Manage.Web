@@ -1,56 +1,44 @@
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState } from 'react'
 
 // @ts-ignore
-import mammoth from 'mammoth';
-import { useMount } from "ahooks";
-import { message } from "antd";
-
+import mammoth from 'mammoth'
+import { useMount } from 'ahooks'
+import { message } from 'antd'
 
 interface DocxFileViewerProps {
-    filePath: ArrayBuffer | null,
-    onSuccess?: (val:string) => void
+  filePath: ArrayBuffer | null
+  onSuccess?: (val: string) => void
 }
 
 const DocxFileViewer: React.FC<DocxFileViewerProps> = (props) => {
-    const { filePath, onSuccess } = props;
-    const loadFile = () => {
-               try {
-                 mammoth.convertToHtml(
-                   { arrayBuffer: filePath },
-                   { includeDefaultStyleMap: true },
-                 )
-                   .then((result: any) => {
-
-                     const docEl = document.createElement('div');
-                     docEl.id = 'docxContainer';
-                     console.log(result.value)
-                     docEl.innerHTML = result.value;
-                     if (document.getElementById('docx') !== null) {
-                       document.getElementById('docx')!.innerHTML = docEl.outerHTML;
-                     }
-                     onSuccess?.(result.value);
-                   })
-                   .catch((a: any) => {
-                     console.log('alexei: something went wrong', a);
-                   })
-                   .done();
-               }
-               catch {
-                 message.warn('文件解析失败')
-               }
+  const { filePath, onSuccess } = props
+  const loadFile = () => {
+    try {
+      mammoth
+        .convertToHtml({ arrayBuffer: filePath }, { includeDefaultStyleMap: true })
+        .then((result: any) => {
+          const docEl = document.createElement('div')
+          docEl.id = 'docxContainer'
+          docEl.innerHTML = result.value
+          if (document.getElementById('docx') !== null) {
+            document.getElementById('docx')!.innerHTML = docEl.outerHTML
+          }
+          onSuccess?.(result.value)
+        })
+        .catch((a: any) => {})
+        .done()
+    } catch {
+      message.warn('文件解析失败')
     }
+  }
 
-    useMount(() => {
-        loadFile();
-    })
-    useEffect(()=>{
-      loadFile()
-    },[filePath])
-    return (
-        <div id="docx" >
-
-        </div>
-    )
+  useMount(() => {
+    loadFile()
+  })
+  useEffect(() => {
+    loadFile()
+  }, [filePath])
+  return <div id="docx"></div>
 }
 
 export default DocxFileViewer
