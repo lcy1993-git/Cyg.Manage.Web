@@ -7,8 +7,9 @@ const request = extend({})
 request.interceptors.request.use(async (url: string, options: RequestOptionsInit) => {
   let host = window.location.host
   let c_token = localStorage.getItem('Authorization')
+  let protocol = window.location.protocol
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
-  let targetUrl = encodeURIComponent(`${host}${url}`) //目标接口转码
+  let targetUrl = encodeURIComponent(`${protocol}//${host}${url}`) //目标接口转码
   let isBbgl = url.includes('bbgl.gczhyun.com') //是否为版本管理地址
 
   const { headers } = options
@@ -29,8 +30,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   }
 
   return {
-    url: url,
-    // url: `${accessUrl}?targetUrl=${targetUrl}`,
+    // url: url,
+    url: isBbgl ? url : `${accessUrl}?targetUrl=${targetUrl}`,
     options: {
       ...options,
       headers: {
