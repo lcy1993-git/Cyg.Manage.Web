@@ -9,12 +9,13 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let c_token = localStorage.getItem('Authorization')
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
   let targetUrl = encodeURIComponent(`${host}${url}`) //目标接口转码
+  let isBbgl = url.includes('bbgl.gczhyun.com') //是否为版本管理地址
 
   const { headers } = options
   if (c_token) {
     return {
-      // url: `${accessUrl}?targetUrl=${targetUrl}`,
-      url: url,
+      url: isBbgl ? url : `${accessUrl}?targetUrl=${targetUrl}`,
+      // url: url,
       options: {
         ...options,
         headers: {

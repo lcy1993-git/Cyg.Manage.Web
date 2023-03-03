@@ -368,7 +368,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
           )}
 
-        {tableItemData.identitys.findIndex((item: any) => item.value === 4) > -1 &&
+        {tableItemData.stateInfo.status !== 14 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item>
               <a href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}`}>
