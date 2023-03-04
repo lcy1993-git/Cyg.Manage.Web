@@ -9,13 +9,16 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let c_token = localStorage.getItem('Authorization')
   let protocol = window.location.protocol
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
-  let targetUrl = encodeURIComponent(`${protocol}//${host}${url}`) //目标接口转码
+
+  let handleUrl = url.slice(4)
+  let targetUrl = encodeURIComponent(`${protocol}//${host}${handleUrl}`) //目标接口转码
   let isBbgl = url.includes('bbgl.gczhyun.com') //是否为版本管理地址
+  let isJson = url.includes('/json')
 
   const { headers } = options
   if (c_token) {
     return {
-      url: isBbgl ? url : `${accessUrl}?targetUrl=${targetUrl}`,
+      url: isBbgl || isJson ? url : `http://10.6.211.96:8080${accessUrl}?target_url=${targetUrl}`,
       // url: url,
       options: {
         ...options,
@@ -31,7 +34,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   return {
     // url: url,
-    url: isBbgl ? url : `${accessUrl}?targetUrl=${targetUrl}`,
+    url: isBbgl || isJson ? url : `http://10.6.211.96:8080${accessUrl}?target_url=${targetUrl}`,
     options: {
       ...options,
       headers: {

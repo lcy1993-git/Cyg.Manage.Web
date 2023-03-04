@@ -288,8 +288,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   ) => {
     const { stateInfo } = tableItemData
 
-    console.log(tableItemData, '111')
-
     return (
       <Menu>
         {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
