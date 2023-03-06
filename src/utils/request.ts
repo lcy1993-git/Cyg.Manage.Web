@@ -11,7 +11,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
 
   let handleUrl = url.slice(4)
-  let targetUrl = encodeURIComponent(`${protocol}//${host}${handleUrl}`) //目标接口转码
+  // let targetUrl = encodeURIComponent(`${protocol}//${host}${handleUrl}`) //目标接口转码
+  let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530${handleUrl}`) //目标接口转码
   let isBbgl = url.includes('bbgl.gczhyun.com') //是否为版本管理地址
   let isJson = url.includes('/json')
 
