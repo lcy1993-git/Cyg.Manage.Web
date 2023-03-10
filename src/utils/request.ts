@@ -1,25 +1,25 @@
 import { extend, RequestOptionsInit } from 'umi-request'
+import { getServiceIP } from './utils'
 
 const request = extend({})
 
 // request拦截器, 改变url 或 options.
 // @ts-ignore
 request.interceptors.request.use(async (url: string, options: RequestOptionsInit) => {
-  let host = window.location.host
+  // let host = window.location.host
   let c_token = localStorage.getItem('Authorization')
-  let protocol = window.location.protocol
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
 
-  let handleUrl = url.slice(4)
   // let targetUrl = encodeURIComponent(`${protocol}//${host}${handleUrl}`) //目标接口转码
-  let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530${handleUrl}`) //目标接口转码
-  let isBbgl = url.includes('bbgl.gczhyun.com') //是否为版本管理地址
+  let handleUrl = url.includes('bbgl') ? url.slice(23) : url.slice(4)
+  let targetPort = getServiceIP(url)
+  let targetUrl = `http://${targetPort}${handleUrl}` //目标接口转码
   let isJson = url.includes('/json')
 
   const { headers } = options
   if (c_token) {
     return {
-      url: isBbgl || isJson ? url : `http://10.6.211.96:8080${accessUrl}?target_url=${targetUrl}`,
+      url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
       // url: url,
       options: {
         ...options,
@@ -35,7 +35,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   return {
     // url: url,
-    url: isBbgl || isJson ? url : `http://10.6.211.96:8080${accessUrl}?target_url=${targetUrl}`,
+    url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
     options: {
       ...options,
       headers: {
