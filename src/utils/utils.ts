@@ -453,3 +453,52 @@ export const getDefaultStartEndDate = () => {
   }
   return { startDate, endDate }
 }
+
+//中台接入获取各服务地址
+export const getServiceIP = (api: string) => {
+  if (api.includes('bbgl.gczhyun.com')) {
+    return '172.2.48.22:31830'
+  }
+  if (api.includes('manage/v2')) {
+    return '172.2.48.22:31805'
+  }
+  if (api.includes('monitor')) {
+    return '172.2.48.22:31809'
+  }
+
+  if (api.includes('storage')) {
+    return '172.2.48.33:31811'
+  }
+  if (api.includes('design')) {
+    return '172.2.48.33:31817'
+  }
+  if (api.includes('review')) {
+    return '172.2.48.33:31810'
+  }
+  if (api.includes('manage')) {
+    return '172.2.48.22:31815'
+  }
+  if (api.includes('resourcemanage')) {
+    return '172.2.48.33:31808'
+  }
+  if (api.includes('gridremediation')) {
+    return '172.2.48.33:31803'
+  }
+  if (api.includes('quota')) {
+    return '172.2.48.33:31807'
+  }
+  if (api.includes('technicaleconomy')) {
+    return '172.2.48.244:31813'
+  }
+  if (api.includes('comment')) {
+    return '172.2.48.244:31806'
+  }
+  if (api.includes('gridpredesign')) {
+    return '172.2.48.244:31802'
+  }
+
+  if (api.includes('common')) {
+    return '172.2.48.22:31801'
+  }
+  return
+}
