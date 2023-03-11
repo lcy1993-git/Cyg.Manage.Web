@@ -1,4 +1,4 @@
-import { getProductServerList, getStopServerNotice } from '@/services/index'
+import { getStopServerNotice } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
 import moment from 'moment'
 
@@ -313,45 +313,46 @@ export const getStopServerList = (
   values: Login,
   stopLoginFuc?: CallableFunction
 ) => {
-  getProductServerList({
-    productCode,
-    category: 0,
-    status: 0,
-    province: '',
-  })
-    .then((res) => {
-      if (res?.code !== 200) {
-        loginFuc(values)
-        return
-      }
-      const { data } = res
-      const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
-      const currenServer = data?.find(
-        (item: { propertys: { webSite: string; host: string | null } }) => {
-          if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-            return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
-          } else if (item?.propertys?.webSite) {
-            if (item?.propertys?.host) {
-              return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
-            } else {
-              return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
-            }
-          } else {
-            return undefined
-          }
-        }
-      )
-      if (currenServer && currenServer?.code) {
-        // 是否查询到 服务器信息
-        localStorage.setItem('serverCode', currenServer?.code || '')
-        getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
-      } else {
-        loginFuc(values)
-      }
-    })
-    .catch(() => {
-      loginFuc(values)
-    })
+  // getProductServerList({
+  //   productCode,
+  //   category: 0,
+  //   status: 0,
+  //   province: '',
+  // })
+  //   .then((res) => {
+  //     if (res?.code !== 200) {
+  //       loginFuc(values)
+  //       return
+  //     }
+  //     const { data } = res
+  //     const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
+  //     const currenServer = data?.find(
+  //       (item: { propertys: { webSite: string; host: string | null } }) => {
+  //         if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+  //           return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
+  //         } else if (item?.propertys?.webSite) {
+  //           if (item?.propertys?.host) {
+  //             return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
+  //           } else {
+  //             return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
+  //           }
+  //         } else {
+  //           return undefined
+  //         }
+  //       }
+  //     )
+  //     if (currenServer && currenServer?.code) {
+  //       // 是否查询到 服务器信息
+  //       localStorage.setItem('serverCode', currenServer?.code || '')
+  //       getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
+  //     } else {
+  //       loginFuc(values)
+  //     }
+  //   })
+  //   .catch(() => {
+  //     loginFuc(values)
+  //   })
+  loginFuc(values)
 }
 const getNoticeReq = (
   code: string,
