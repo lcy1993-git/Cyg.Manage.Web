@@ -1,5 +1,5 @@
 import { extend, RequestOptionsInit } from 'umi-request'
-import { getServiceIP } from './utils'
+// import { getServiceIP } from './utils'
 
 const request = extend({})
 
@@ -12,8 +12,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   // let targetUrl = encodeURIComponent(`${protocol}//${host}${handleUrl}`) //目标接口转码
   let handleUrl = url.includes('bbgl') ? url.slice(23) : url
-  let targetPort = getServiceIP(url)
-  let targetUrl = encodeURIComponent(`http://${targetPort}${handleUrl}`) //目标接口转码
+  // let targetPort = getServiceIP(url)
+  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`) //目标接口转码
   let isJson = url.includes('/json')
 
   const { headers } = options
