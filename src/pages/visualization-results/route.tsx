@@ -2,7 +2,7 @@ import Loading from '@ant-design/pro-layout/es/PageLoading'
 import Loadable from 'react-loadable'
 
 const ResultPage = Loadable({
-  loader: () => import('@/pages/visualization-results/result-page'),
+  loader: () => import('@/pages/visualization-results/siji-map'),
   loading: Loading,
   delay: 150,
 })
@@ -43,7 +43,7 @@ const PlanManage = Loadable({
 const routes = [
   {
     title: '在建网架',
-    path: '/visualization-results/result-page',
+    path: '/visualization-results/siji-map',
     component: <ResultPage />,
   },
   // {
