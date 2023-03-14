@@ -1,3 +1,5 @@
+import { addCircle } from './addLayers'
+import { testData } from './localData/data'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
 var map: any = null // 地图对象
 
@@ -19,6 +21,9 @@ export const initMap = (mapDivId: string) => {
       // 地图默认字体
       localIdeographFontFamily: 'Microsoft YoHei',
     })
+    map.on('load', (e: any) => {
+      addDatas(testData)
+    })
   })
 }
 
@@ -26,4 +31,36 @@ export const initMap = (mapDivId: string) => {
  * 加载勘察、设计、方案、拆除图层数据到地图中
  * @param res 接口返回的数据
  */
-export const addDatas = (res: any) => {}
+export const addDatas = (res: any) => {
+  if (!res || !res.content) return
+  const datas = res.content
+  datas.survey && addSurvey(datas.survey)
+}
+
+/**
+ * 加载勘察图层中的所有数据
+ * @param object 勘察数据
+ */
+export const addSurvey = (object: any) => {
+  for (const key in object) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      if (key === 'tower') {
+        const datas = object[key]
+        let features: any = []
+        datas.forEach((data: any) => {
+          let feature: any = {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              // lineString类型的几何对象为2层数组，MultiLineString类型为3层数组
+              coordinates: [data.lon, data.lat],
+            },
+            properties: data,
+          }
+          features.push(feature)
+        })
+        addCircle(map, 'tower', features, 'red')
+      }
+    }
+  }
+}
