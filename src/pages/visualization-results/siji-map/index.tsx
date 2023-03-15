@@ -1,7 +1,7 @@
 import PageCommonWrap from '@/components/page-common-wrap'
 import { observer } from 'mobx-react-lite'
 import React, { useEffect } from 'react'
-import MapContainerShell from '../components/map-container-shell'
+import MapContainerShell from './components/map-container-shell'
 import { Provider, useContainer } from './mobx-store'
 
 const VisualizationResults: React.FC = observer(() => {
