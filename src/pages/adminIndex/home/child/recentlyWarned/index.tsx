@@ -14,7 +14,6 @@ const RecentlyWarned: React.FC = () => {
       }
     })
     setRecentlyWarnedList(arr)
-    console.log(arr)
   })
   return (
     <div className={styles.recentlyWarned}>

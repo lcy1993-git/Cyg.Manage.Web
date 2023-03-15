@@ -70,6 +70,7 @@ import {
   deletBoxFeature,
   getDrawLines,
   getDrawPoints,
+  getShowPoints,
   initMap,
   setDrawBox,
 } from './utils/initializeMap'
@@ -100,6 +101,7 @@ export interface pointType {
   lineId?: string
   capacity?: string
   isOverhead?: boolean
+  lineType?: string
   model?: string
   properties?: string
   lng?: string
@@ -130,7 +132,7 @@ const GridMap = () => {
     companyId,
     areaData,
     areaMap,
-    checkLineIds,
+    // checkLineIds,
   } = useMyContext()
   const ref = useRef<HTMLDivElement>(null)
   const [currentFeatureType, setcurrentFeatureType] = useState('')
@@ -142,7 +144,7 @@ const GridMap = () => {
   const [editModel, seteditModel] = useState(false)
   // 上传所有点位
   const { run: stationItemsHandle } = useRequest(uploadAllFeature, { manual: true })
-  const [selectLineType, setselectLineType] = useState('')
+  const [selectLineType, setSelectLineType] = useState('')
 
   //当前点击点位公司id
   const [clickCompanyId, setClickCompanyId] = useState<string | undefined>('')
@@ -172,10 +174,13 @@ const GridMap = () => {
   const uploadLocalData = async () => {
     const pointDatas = getDrawPoints()
     const lineDatas = getDrawLines()
+    // const datas = getShowPoints(mapRef.map)
+
     // 点位数据处理
     const pointData = dataHandle(pointDatas)
     // 线路数据处理
     const lineData = dataHandle(lineDatas)
+
     if ((pointData && pointData.length) || (lineData && lineData.length)) {
       const powerSupplyList = pointData.filter(
         (item: { featureType: string }) => item.featureType === POWERSUPPLY
@@ -216,7 +221,6 @@ const GridMap = () => {
           isOverhead: item.lineType === LINE,
         }
       })
-
       // const transformerIntervalList = transformerStationList.map((item: { id: any }) => {
       //   return {
       //     id: createFeatureId(),
@@ -256,9 +260,9 @@ const GridMap = () => {
       }
     }
   }
-
   /** 点位或者线路激活 */
   const isActiveFeature = (data: pointType | null) => {
+    let lineType
     setClickCompanyId(data?.companyId)
     if (data) {
       const featureData = { ...data }
@@ -275,12 +279,21 @@ const GridMap = () => {
       const geom = featureData.geom
         .substring(featureData.geom.indexOf('(') + 1, featureData.geom.indexOf(')'))
         .split(' ')
-      setselectLineType(featureData.isOverhead ? LINE : CABLECIRCUIT)
+
+      if (featureData.lineType) {
+        lineType = featureData.lineType === 'Line' ? LINE : CABLECIRCUIT
+      } else {
+        lineType = featureData.isOverhead ? LINE : CABLECIRCUIT
+      }
+
+      setSelectLineType(lineType)
+
       form.setFieldsValue({
         ...featureData,
         lat: geom[1],
         lng: geom[0],
-        lineType: featureData.featureType,
+        lineType: lineType,
+        lineId: featureData.lineId?.split(','),
         areas: transformAreaDataToArr(featureData),
       })
     } else {
@@ -307,7 +320,7 @@ const GridMap = () => {
   /** 编辑 **/
   const onFinish = async (value: any) => {
     let color
-    const currentThread = belongingLineData.find((item) => item.id === value.lineId) // 上传数据颜色处理
+    const currentThread = belongingLineData.find((item) => item.id === value.lineId[0]) // 上传数据颜色处理
     if (currentFeatureType === TRANSFORMERSUBSTATION) {
       // 如果是变电站就根据电压等级显示
       const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
@@ -329,7 +342,10 @@ const GridMap = () => {
       ...currentfeatureData,
       color,
       ...areaData,
+      lineId: value.lineId.join(),
+      isOverhead: value.lineType === 'Line' ? true : false,
     }
+
     try {
       switch (currentFeatureType) {
         case TOWER:
@@ -624,7 +640,14 @@ const GridMap = () => {
               label="所属线路"
               rules={[{ required: true, message: '请选择所属线路' }]}
             >
-              <Select dropdownStyle={{ zIndex: 3000 }}>
+              <Select
+                dropdownStyle={{ zIndex: 3000 }}
+                mode={
+                  currentFeatureType === TOWER || currentFeatureType === CABLEWELL
+                    ? 'multiple'
+                    : undefined
+                }
+              >
                 {belongingLineData.map((item) => (
                   <Option value={item.id} key={item.id}>
                     {item.name}
@@ -640,6 +663,21 @@ const GridMap = () => {
           >
             <Select dropdownStyle={{ zIndex: 3000 }}>{EditKvLevel()}</Select>
           </Form.Item>
+
+          {/* 杆塔 */}
+          {currentFeatureType === TOWER && (
+            <>
+              <Form.Item name="towerSpecification" label="杆塔规格">
+                <Input />
+              </Form.Item>
+              <Form.Item name="towerType" label="杆塔类型">
+                <Input />
+              </Form.Item>
+              <Form.Item name="towerMaterial" label="杆塔材质">
+                <Input />
+              </Form.Item>
+            </>
+          )}
           {/* 变电站 */}
           {currentFeatureType === TRANSFORMERSUBSTATION && (
             <>
@@ -714,7 +752,14 @@ const GridMap = () => {
           {currentFeatureType === CABLECIRCUIT || currentFeatureType === LINE ? (
             <>
               <Form.Item name="lineType" label="线路类型">
-                <Select allowClear dropdownStyle={{ zIndex: 3000 }} disabled>
+                <Select
+                  allowClear
+                  dropdownStyle={{ zIndex: 3000 }}
+                  onChange={(value: string) => {
+                    setSelectLineType(value)
+                    form.setFieldsValue({ lineModel: undefined })
+                  }}
+                >
                   {[
                     { label: '架空线路', value: 'Line' },
                     { label: '电缆线路', value: 'CableCircuit' },
@@ -740,6 +785,21 @@ const GridMap = () => {
                       ))}
                 </Select>
               </Form.Item>
+              {/* {currentLineKvLevel === 3 && (
+                <Form.Item
+                  name="color"
+                  label="线路颜色"
+                  rules={[{ required: true, message: '请选择线路颜色' }]}
+                >
+                  <Select allowClear>
+                    <Option value="#00FFFF">青</Option>
+                    <Option value="#1EB9FF">蓝</Option>
+                    <Option value="#F2DA00">黄</Option>
+                    <Option value="#FF3E3E">红</Option>
+                    <Option value="#FF5ECF">洋红</Option>
+                  </Select>
+                </Form.Item>
+              )} */}
             </>
           ) : (
             <>
@@ -748,6 +808,19 @@ const GridMap = () => {
               </Form.Item>
               <Form.Item name="lat" label="纬度" rules={[verificationLat]}>
                 <Input />
+              </Form.Item>
+            </>
+          )}
+          {selectLineType === CABLECIRCUIT && currentFeatureType === 'Line' && (
+            <>
+              <Form.Item name="channelType" label="通道类型">
+                <Input placeholder="请输入通道类型" />
+              </Form.Item>
+              <Form.Item name="channelModel" label="通道型号">
+                <Input placeholder="请输入通道型号" />
+              </Form.Item>
+              <Form.Item name="cableCapacity" label="电缆容量">
+                <Input placeholder="请输入电缆容量" />
               </Form.Item>
             </>
           )}

@@ -15,8 +15,6 @@ import { LEFTMENUWIDTH } from './tools'
 import { getCityAreas } from '@/services/project-management/all-project'
 import { useRequest } from 'ahooks'
 import { Spin } from 'antd'
-import { MyContext } from './Context'
-import { constant } from 'lodash'
 
 const GradManage: React.FC = () => {
   /** 网架绘制 手动绘制工具栏状态 **/

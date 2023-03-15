@@ -1,7 +1,7 @@
 import { Feature } from 'ol'
 import { Coordinate } from 'ol/coordinate'
 import WKT from 'ol/format/WKT'
-import { LineString, Point } from 'ol/geom'
+import { Circle, LineString, Point } from 'ol/geom'
 import Geometry from 'ol/geom/Geometry'
 import { Draw, Snap } from 'ol/interaction'
 import { transform } from 'ol/proj'
@@ -197,9 +197,8 @@ class DrawTool {
         let datas: any = pre.concat(feature_)
         if (datas.length > 1) {
           datas[datas.length - 2].get('data').endId = datas[datas.length - 1].get('data').startId
-          datas[datas.length - 2].get('data').endType = datas[datas.length - 1].get(
-            'data'
-          ).startType
+          datas[datas.length - 2].get('data').endType =
+            datas[datas.length - 1].get('data').startType
         }
         return datas
       }, [])
@@ -234,14 +233,38 @@ class DrawTool {
 
   handleLine_node = (lont: number, lat: number, lineData: any, isAdd: boolean) => {
     let node: any
-    const pixel = this.map.getPixelFromCoordinate([lont, lat])
-    this.map.forEachFeatureAtPixel(
-      pixel,
-      (feature: any, layer: any) => {
-        if (layer && layer.get('name') === 'pointLayer') node = feature
-      },
-      { hitTolerance: 10 }
-    )
+    // const pixel = this.map.getPixelFromCoordinate([lont, lat])
+
+    // const feature = this.map.forEachFeatureAtPixel(
+    //   pixel,
+    //   (feature: any) => {
+    //     return feature
+    //   },
+    //   {
+    //     hitTolerance: 10,
+    //     layerFilter: (layer: any) => {
+    //       return layer.get('name') === 'pointLayer'
+    //     },
+    //   }
+    // )
+    let pointLayer = getLayer(this.map, 'pointLayer', 3)
+    try {
+      pointLayer
+        .getSource()
+        .getFeatures()
+        .forEach((feature: any) => {
+          const result = this.handleLine_node_calculation(
+            [lont, lat],
+            feature.getGeometry().getCoordinates()
+          )
+          if (result) {
+            node = feature
+            throw new Error('stop')
+          }
+        })
+    } catch (e) {
+      // console.log(e)
+    }
 
     let lineIds: any = []
     lineData.data.forEach((element: any) => {
@@ -260,6 +283,7 @@ class DrawTool {
         if (lineIds.indexOf(item) === -1) lineIds.push(item)
       })
       node.get('data').lineId = lineIds.toString()
+      node.get('data').type_ = 'Point'
     }
 
     if (!node && isAdd) {
@@ -277,7 +301,6 @@ class DrawTool {
           lineType: LINE,
         }
       }
-      let pointLayer = getLayer(this.map, 'pointLayer', 3)
       let point = new Point([lont, lat])
       node = new Feature(point)
       const coordinates = point.getCoordinates()
@@ -299,6 +322,16 @@ class DrawTool {
       pointLayer.getSource().addFeature(node)
     }
     return node
+  }
+
+  handleLine_node_calculation = (oordinate1: number[], coordinate2: number[]) => {
+    let r = this.map.getView().getResolution()
+    const circle = new Circle(oordinate1, 5 * ((0.0254 / 72) * r * 10000))
+    // let f = new Feature(circle)
+    // let testLayer = getLayer(this.map, 'testLayer', 1)
+    // testLayer.getSource().addFeature(f)
+
+    return circle.intersectsCoordinate(coordinate2)
   }
 }
 

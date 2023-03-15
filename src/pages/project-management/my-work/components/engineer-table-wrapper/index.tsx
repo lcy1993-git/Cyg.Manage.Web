@@ -368,6 +368,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
           <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
         )}
+
+        {tableItemData.stateInfo.status !== 14 &&
+          buttonJurisdictionArray?.includes('all-project-merge') && (
+            <Menu.Item>
+              <a href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}`}>
+                打开设计端
+              </a>
+            </Menu.Item>
+          )}
       </Menu>
     )
   }

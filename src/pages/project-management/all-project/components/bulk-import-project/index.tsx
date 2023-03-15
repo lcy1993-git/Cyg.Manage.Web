@@ -56,7 +56,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   }
 
   const afterHandleData = useMemo(() => {
-    return city.map(mapHandleCityData)
+    return city?.map(mapHandleCityData)
   }, [JSON.stringify(city)])
 
   const { run: getInventoryOverviewSelectData } = useRequest(getCommonSelectData, { manual: true })

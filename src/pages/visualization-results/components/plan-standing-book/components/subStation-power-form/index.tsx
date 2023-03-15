@@ -165,7 +165,12 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
             required
             rules={[{ required: true, message: '请选择线路类型' }]}
           >
-            <Select allowClear dropdownStyle={{ zIndex: 3000 }} onChange={onChangeLineType}>
+            <Select
+              allowClear
+              dropdownStyle={{ zIndex: 3000 }}
+              onChange={onChangeLineType}
+              disabled
+            >
               <Option value="Line">架空线路</Option>
               <Option value="CableCircuit">电缆线路</Option>
             </Select>
@@ -177,7 +182,7 @@ const SubStationPowerForm: React.FC<SubStationPowerParams> = (props) => {
             required
             rules={[{ required: true, message: '请选择线路型号' }]}
           >
-            <Select dropdownStyle={{ zIndex: 3000 }}>
+            <Select dropdownStyle={{ zIndex: 3000 }} disabled>
               {selectLineType === 'Line' && selectLineType
                 ? LINEMODEL.map((item) => (
                     <Option key={item.value} value={item.value}>

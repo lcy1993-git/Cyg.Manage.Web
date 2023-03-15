@@ -1,4 +1,4 @@
-import { getProductServerList, getStopServerNotice } from '@/services/index'
+import { getStopServerNotice } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
 import moment from 'moment'
 
@@ -313,45 +313,46 @@ export const getStopServerList = (
   values: Login,
   stopLoginFuc?: CallableFunction
 ) => {
-  getProductServerList({
-    productCode,
-    category: 0,
-    status: 0,
-    province: '',
-  })
-    .then((res) => {
-      if (res?.code !== 200) {
-        loginFuc(values)
-        return
-      }
-      const { data } = res
-      const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
-      const currenServer = data?.find(
-        (item: { propertys: { webSite: string; host: string | null } }) => {
-          if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-            return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
-          } else if (item?.propertys?.webSite) {
-            if (item?.propertys?.host) {
-              return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
-            } else {
-              return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
-            }
-          } else {
-            return undefined
-          }
-        }
-      )
-      if (currenServer && currenServer?.code) {
-        // 是否查询到 服务器信息
-        localStorage.setItem('serverCode', currenServer?.code || '')
-        getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
-      } else {
-        loginFuc(values)
-      }
-    })
-    .catch(() => {
-      loginFuc(values)
-    })
+  // getProductServerList({
+  //   productCode,
+  //   category: 0,
+  //   status: 0,
+  //   province: '',
+  // })
+  //   .then((res) => {
+  //     if (res?.code !== 200) {
+  //       loginFuc(values)
+  //       return
+  //     }
+  //     const { data } = res
+  //     const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
+  //     const currenServer = data?.find(
+  //       (item: { propertys: { webSite: string; host: string | null } }) => {
+  //         if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+  //           return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
+  //         } else if (item?.propertys?.webSite) {
+  //           if (item?.propertys?.host) {
+  //             return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
+  //           } else {
+  //             return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
+  //           }
+  //         } else {
+  //           return undefined
+  //         }
+  //       }
+  //     )
+  //     if (currenServer && currenServer?.code) {
+  //       // 是否查询到 服务器信息
+  //       localStorage.setItem('serverCode', currenServer?.code || '')
+  //       getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
+  //     } else {
+  //       loginFuc(values)
+  //     }
+  //   })
+  //   .catch(() => {
+  //     loginFuc(values)
+  //   })
+  loginFuc(values)
 }
 const getNoticeReq = (
   code: string,
@@ -452,4 +453,53 @@ export const getDefaultStartEndDate = () => {
     endDate = [year, month, lastDate].join('-')
   }
   return { startDate, endDate }
+}
+
+//中台接入获取各服务地址
+export const getServiceIP = (api: string) => {
+  if (api.includes('bbgl.gczhyun.com')) {
+    return '172.2.48.22:31830'
+  }
+  if (api.includes('manage/v2')) {
+    return '172.2.48.22:31805'
+  }
+  if (api.includes('monitor')) {
+    return '172.2.48.22:31809'
+  }
+
+  if (api.includes('storage')) {
+    return '172.2.48.33:31811'
+  }
+  if (api.includes('design')) {
+    return '172.2.48.33:31817'
+  }
+  if (api.includes('review')) {
+    return '172.2.48.33:31810'
+  }
+  if (api.includes('manage')) {
+    return '172.2.48.22:31815'
+  }
+  if (api.includes('resourcemanage')) {
+    return '172.2.48.33:31808'
+  }
+  if (api.includes('gridremediation')) {
+    return '172.2.48.33:31803'
+  }
+  if (api.includes('quota')) {
+    return '172.2.48.33:31807'
+  }
+  if (api.includes('technicaleconomy')) {
+    return '172.2.48.244:31813'
+  }
+  if (api.includes('comment')) {
+    return '172.2.48.244:31806'
+  }
+  if (api.includes('gridpredesign')) {
+    return '172.2.48.244:31802'
+  }
+
+  if (api.includes('common')) {
+    return '172.2.48.22:31801'
+  }
+  return
 }

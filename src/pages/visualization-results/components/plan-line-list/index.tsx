@@ -466,6 +466,7 @@ const PlanLineList: React.FC<StandingBookProps> = (props) => {
       const geom = handleGeom(editData.geom)
       cableWellForm.setFieldsValue({
         ...editData,
+        lineId: editData.lineId.split(','),
         lng: geom[0],
         lat: geom[1],
       })
@@ -483,6 +484,7 @@ const PlanLineList: React.FC<StandingBookProps> = (props) => {
 
       towerForm.setFieldsValue({
         ...editData,
+        lineId: editData.lineId.split(','),
         lng: geom[0],
         lat: geom[1],
       })

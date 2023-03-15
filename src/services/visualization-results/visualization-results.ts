@@ -19,7 +19,7 @@ export interface ProjectList {
 
 // 获取地图资源
 export const getMapList = (params: any) => {
-  return noTokenRequest('https://bbgl.gczhyun.com/common/api/Map/GetList', {
+  return noTokenRequest('http://bbgl.gczhyun.com/common/api/Map/GetList', {
     method: 'POST',
     data: { ...params },
   })
@@ -27,7 +27,7 @@ export const getMapList = (params: any) => {
 
 // 获取地图资源
 export const getUseFulMapList = (params: any) => {
-  return noTokenRequest('https://bbgl.gczhyun.com/common/api/Map/getUseFulList', {
+  return noTokenRequest('http://bbgl.gczhyun.com/common/api/Map/getUseFulList', {
     method: 'POST',
     data: { ...params },
   })
