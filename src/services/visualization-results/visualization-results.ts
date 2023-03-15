@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 import JsonP from 'jsonp'
 import noTokenRequest from 'umi-request'
-import { cyRequest } from './../common'
 // import { webConfig } from '../../../public/config/request';
 import { baseUrl, geoServeUrl } from '../common'
+import { cyRequest } from './../common'
 // const ip = window.location.hostname;
 
 // const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;
@@ -19,7 +19,7 @@ export interface ProjectList {
 
 // 获取地图资源
 export const getMapList = (params: any) => {
-  return noTokenRequest('http://bbgl.gczhyun.com/common/api/Map/GetList', {
+  return noTokenRequest('https://bbgl.gczhyun.com/common/api/Map/GetList', {
     method: 'POST',
     data: { ...params },
   })
@@ -27,7 +27,7 @@ export const getMapList = (params: any) => {
 
 // 获取地图资源
 export const getUseFulMapList = (params: any) => {
-  return noTokenRequest('http://bbgl.gczhyun.com/common/api/Map/getUseFulList', {
+  return noTokenRequest('https://bbgl.gczhyun.com/common/api/Map/getUseFulList', {
     method: 'POST',
     data: { ...params },
   })
