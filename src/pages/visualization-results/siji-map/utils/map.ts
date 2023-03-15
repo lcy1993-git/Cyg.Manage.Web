@@ -1,4 +1,4 @@
-import { addCircle } from './addLayers'
+import { addPoint } from './addLayers'
 import { testData } from './localData/data'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
 var map: any = null // 地图对象
@@ -44,23 +44,7 @@ export const addDatas = (res: any) => {
 export const addSurvey = (object: any) => {
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
-      if (key === 'tower') {
-        const datas = object[key]
-        let features: any = []
-        datas.forEach((data: any) => {
-          let feature: any = {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              // lineString类型的几何对象为2层数组，MultiLineString类型为3层数组
-              coordinates: [data.lon, data.lat],
-            },
-            properties: data,
-          }
-          features.push(feature)
-        })
-        addCircle(map, 'tower', features, 'red')
-      }
+      addPoint(map, 'survey', key, object[key])
     }
   }
 }

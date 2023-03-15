@@ -1,78 +1,94 @@
 /**
+ * 获取样式
+ * @param type 类型
+ * @param value 值
+ */
+export const getStyle = (type: string, value: any) => {
+  switch (type) {
+    case 'tower':
+      getTowerStyle(value)
+      break
+
+    default:
+      break
+  }
+}
+
+/**
  * 获取杆塔样式
  * @param symbol_id 杆塔是根据symbolId来进行分类的
  */
-export const getTowerStyle = (symbol_id: any) => {
+const getTowerStyle = (symbol_id: any) => {
   let imgUrl: string = ''
   switch (symbol_id.toString()) {
     case '0':
-      imgUrl = ''
+      imgUrl = '#FF0000'
       break
     case '111':
-      imgUrl = ''
+      imgUrl = '#BA55D3'
       break
     case '112':
-      imgUrl = ''
+      imgUrl = '#DA70D6'
       break
     case '113':
-      imgUrl = ''
+      imgUrl = '#90EE90'
       break
     case '114':
-      imgUrl = ''
+      imgUrl = '#00FF00'
       break
     case '115':
-      imgUrl = ''
+      imgUrl = '#FFD700'
       break
 
     case '121':
-      imgUrl = ''
+      imgUrl = '#FFA500'
       break
     case '122':
-      imgUrl = ''
+      imgUrl = '#FFE4C4'
       break
     case '123':
-      imgUrl = ''
+      imgUrl = '#A0522D'
       break
     case '124':
-      imgUrl = ''
+      imgUrl = '#FF4500'
       break
     case '125':
-      imgUrl = ''
+      imgUrl = '#FA8072'
       break
 
     case '131':
-      imgUrl = ''
+      imgUrl = '#C71585'
       break
     case '132':
-      imgUrl = ''
+      imgUrl = '#DA70D6'
       break
     case '133':
-      imgUrl = ''
+      imgUrl = '#FF00FF'
       break
     case '134':
-      imgUrl = ''
+      imgUrl = '#4B0082'
       break
     case '135':
-      imgUrl = ''
+      imgUrl = '#483D8B'
       break
 
     case '141':
-      imgUrl = ''
+      imgUrl = '#1E90FF'
       break
     case '142':
-      imgUrl = ''
+      imgUrl = '#F0F8FF'
       break
     case '143':
-      imgUrl = ''
+      imgUrl = '#4682B4'
       break
     case '144':
-      imgUrl = ''
+      imgUrl = '#87CEFA'
       break
     case '145':
-      imgUrl = ''
+      imgUrl = '#00BFFF'
       break
     default:
-      imgUrl = ''
+      imgUrl = '#FF0000'
   }
   return imgUrl
 }
