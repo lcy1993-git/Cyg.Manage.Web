@@ -365,6 +365,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
           )}
+        {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
+          <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
+        )}
       </Menu>
     )
   }
@@ -374,6 +377,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       projectId: projectId,
     })
     setProjectMergeVisible(true)
+  }
+  const submitProjectToQGC = (projectId: string) => {
+    console.log('tijiao')
   }
 
   const checkProjectDetail = (projectId: string, judgmentMark: boolean) => {
