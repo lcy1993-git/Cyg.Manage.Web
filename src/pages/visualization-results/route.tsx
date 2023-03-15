@@ -2,7 +2,7 @@ import Loading from '@ant-design/pro-layout/es/PageLoading'
 import Loadable from 'react-loadable'
 
 const ResultPage = Loadable({
-  loader: () => import('@/pages/visualization-results/siji-map'),
+  loader: () => import('@/pages/visualization-results/result-page'),
   loading: Loading,
   delay: 150,
 })
@@ -31,6 +31,12 @@ const PlanManage = Loadable({
   delay: 150,
 })
 
+const SijiMap = Loadable({
+  loader: () => import('@/pages/visualization-results/siji-map'),
+  loading: Loading,
+  delay: 150,
+})
+
 /**
  * 注入projectId,接触新id生成时没有重新挂载的问题
  * @returns
@@ -43,7 +49,7 @@ const PlanManage = Loadable({
 const routes = [
   {
     title: '在建网架',
-    path: '/visualization-results/siji-map',
+    path: '/visualization-results/result-page',
     component: <ResultPage />,
   },
   // {
@@ -60,6 +66,11 @@ const routes = [
     title: '规划网架',
     path: '/visualization-results/plan-manage',
     component: <PlanManage />,
+  },
+  {
+    title: '思极测试',
+    path: '/visualization-results/siji-map',
+    component: <SijiMap />,
   },
 ]
 

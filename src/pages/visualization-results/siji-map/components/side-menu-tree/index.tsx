@@ -22,7 +22,7 @@ import { observer } from 'mobx-react-lite'
 import moment from 'moment'
 import React, { FC, useEffect, useRef, useState } from 'react'
 import { useContainer } from '../../mobx-store'
-import { flattenDeepToKey, getSelectKeyByKeyword, TreeNodeType } from '../../../utils/utils'
+import { flattenDeepToKey, getSelectKeyByKeyword, TreeNodeType } from '../../../utils/'
 import CommentModal from '../comment-modal'
 import ControlLayers from '../control-layers'
 import ExportMapPositionModal from '../export-map-position-modal'
@@ -34,6 +34,7 @@ import SiderMenuAreaButtons from '../side-menu-area-buttons'
 import SidePopup from '../side-popup'
 import MenuTree from './components/menu-tree'
 import styles from './index.less'
+import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
 
 const { RangePicker } = DatePicker
 
