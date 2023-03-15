@@ -1,0 +1,65 @@
+.wrap {
+  .toolBarWrap {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .cyGeneralTablePaging {
+    display: flex;
+    height: 50px;
+    padding-top: 8px;
+
+    .cyGeneralTablePagingLeft {
+      flex: 1;
+      color: @gray-color;
+      font-size: 12px;
+
+      .importantTip {
+        color: @primary-color;
+        font-weight: 500;
+      }
+    }
+  }
+
+  :global {
+    .ant-table {
+      .ant-table-container {
+        border-color: @table-line-color !important;
+        border-top: 1px solid #dbdbdb;
+
+        .ant-table-content {
+          td,
+          th {
+            border-color: @table-line-color !important;
+          }
+
+          thead {
+            th {
+              padding: 12px 4px 12px 10px;
+              color: @black-color;
+              font-weight: 500;
+              font-size: 13px;
+              line-height: 1;
+              background-color: @table-thead-color;
+            }
+          }
+
+          tbody {
+            td {
+              padding: 7px 4px 10px 7px;
+              color: @gray-color;
+              font-size: 13px;
+            }
+          }
+
+          .ant-table-row-selected {
+            td {
+              background-color: @table-select-color !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
