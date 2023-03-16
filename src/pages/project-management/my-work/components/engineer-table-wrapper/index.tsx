@@ -27,6 +27,7 @@ import {
   getColumnsConfig,
   getProjectInfo,
   modifyExportPowerState,
+  postSubmitProjectToQGC,
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import {
@@ -365,9 +366,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
           )}
-        {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
+        {/* {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
           <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
-        )}
+        )} */}
+        <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id)}>提交项目</Menu.Item>
 
         {tableItemData.stateInfo.status !== 14 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
@@ -388,7 +390,20 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     setProjectMergeVisible(true)
   }
   const submitProjectToQGC = (projectId: string) => {
-    console.log('tijiao')
+    Modal.confirm({
+      title: '项目提交',
+      icon: <ExclamationCircleOutlined />,
+      content: `确定将提交项目吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        handleSubmitProjectToQGC(projectId)
+      },
+    })
+  }
+  const handleSubmitProjectToQGC = async (projectId: string) => {
+    await postSubmitProjectToQGC({ projectId })
+    message.success('提交项目成功')
   }
 
   const checkProjectDetail = (projectId: string, judgmentMark: boolean) => {
