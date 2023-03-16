@@ -11,9 +11,11 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
 
   // let targetUrl = encodeURIComponent(`${protocol}//${host}${handleUrl}`) //目标接口转码
-  let handleUrl = url.includes('bbgl') ? url.slice(23) : url
+  // let handleUrl = url.includes('bbgl') ? url.slice(23) : url
   // let targetPort = getServiceIP(url)
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`) //目标接口转码
+  // console.log(url)
+
+  let targetUrl = encodeURIComponent(url.includes('bbgl') ? url : `http://172.2.48.22${url}`) //目标接口转码
   let isJson = url.includes('/json')
 
   const { headers } = options
