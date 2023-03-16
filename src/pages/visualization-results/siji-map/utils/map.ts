@@ -25,9 +25,7 @@ export const initMap = (mapDivId: string) => {
     })
     map.on('load', (e: any) => {
       addDatas(testData)
-      map.on('moveend', (evt: any) => {
-        console.log(1111)
-      })
+      map.on('moveend', (evt: any) => {})
     })
   })
 }
