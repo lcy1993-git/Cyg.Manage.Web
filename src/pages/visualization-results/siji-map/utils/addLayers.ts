@@ -99,27 +99,46 @@ export const addLine = (map: any, id: string, features: any, color: string) => {
  * @param datas 点位数据集合
  */
 export const addPoint = (map: any, layerType: string, type: string, datas: any) => {
-  let groups: any, field: string, style: any
-  if (type === 'tower') {
+  let groups = {},
+    field: string,
+    style: any
+  if (type === 'tower' || type === 'cable' || type === 'cableEquipment' || type === 'transformer') {
     field = 'symbol_id'
     groups = sortDatas(datas, field)
+  } else if (type === 'faultIndicator') {
+    field = 'state'
+    groups = sortDatas(datas, field)
+  } else if (type === 'mark' || type === 'pullLine') {
+    field = 'type'
+    groups = sortDatas(datas, field)
+  } else if (type === 'hole' || type === 'brace') {
+    groups[type] = datas
   }
 
-  Object.keys(groups).forEach((item: any) => {
-    const data = groups[item]
-    const features = data.map((element: any) => {
-      return {
-        type: 'Feature',
-        geometry: {
-          type: 'Point',
-          coordinates: [element.lon, element.lat],
-        },
-        properties: element,
+  groups &&
+    Object.keys(groups).forEach((item: any) => {
+      const data = groups[item]
+      const features = data.map((element: any) => {
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [element.lon, element.lat],
+          },
+          properties: element,
+        }
+      })
+      style = getStyle(type, item)
+
+      if (map.getLayer(`${layerType}_${type}_${item}`)) {
+        map.getSource(`${layerType}_${type}_${item}`).setData({
+          type: 'FeatureCollection',
+          features: features,
+        })
+      } else {
+        addCircle(map, `${layerType}_${type}_${item}`, features, style)
       }
     })
-    style = getStyle(type, item)
-    addCircle(map, `${layerType}_${type}_${type}`, features, style)
-  })
 }
 
 /**

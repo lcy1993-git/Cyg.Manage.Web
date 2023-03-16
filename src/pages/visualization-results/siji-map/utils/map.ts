@@ -1,8 +1,10 @@
+import { getData, getExtent } from '@/services/visualization-results/visualization-results'
 import { addPoint } from './addLayers'
-import { testData } from './localData/data'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
-var map: any = null // 地图对象
 
+var map: any = null
+var mapMovetimer: any
+var mapMoveEnds: any = []
 /**
  * 初始化地图
  * @param mapDivId 地图div的ID
@@ -23,15 +25,77 @@ export const initMap = (mapDivId: string) => {
     })
     map.on('load', (e: any) => {
       addDatas(testData)
+      map.on('moveend', (evt: any) => {
+        console.log(1111)
+      })
     })
   })
+}
+
+/**
+ * 刷新地图数据
+ * @param projects 勾选的项目数组
+ * @param layerTypes 勾选的图层类型数组
+ * @returns
+ */
+export const refreshMap = async (projects: any, layerTypes: any) => {
+  if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
+    return
+  }
+  await getExtent({ layerTypes, projects }).then((data: any) => {
+    if (data.content) {
+      const minX = data.content.minX
+      const minY = data.content.minY
+      const maxX = data.content.maxX
+      const maxY = data.content.maxY
+      map.fitBounds([
+        [minX, minY],
+        [maxX, maxY],
+      ])
+    }
+  })
+
+  const bounds = map.getBounds()
+  const extent = [bounds._sw.lng, bounds._sw.lat, bounds._ne.lng, bounds._ne.lat]
+
+  let ids: any = []
+  projects.forEach((item: any) => {
+    ids.push({ id: item.id })
+  })
+  const params = {
+    polygonCoordinates: [
+      [extent[0], extent[1]],
+      [extent[2], extent[1]],
+      [extent[2], extent[3]],
+      [extent[0], extent[3]],
+      [extent[0], extent[1]],
+    ],
+    zoomLevel: Math.round(map.getZoom()),
+    layerTypes: layerTypes,
+    projects: ids,
+  }
+
+  mapMoveEnds.push(new Date())
+  let startLength = mapMoveEnds.length
+  mapMovetimer && clearInterval(mapMovetimer)
+  mapMovetimer = setInterval(function () {
+    if (startLength === mapMoveEnds.length) {
+      const promise = getData(params)
+      promise.then(async (data: any) => {
+        addDatas(data)
+      })
+      mapMoveEnds = []
+    } else {
+      mapMovetimer && clearInterval(mapMovetimer)
+    }
+  }, 500)
 }
 
 /**
  * 加载勘察、设计、方案、拆除图层数据到地图中
  * @param res 接口返回的数据
  */
-export const addDatas = (res: any) => {
+const addDatas = (res: any) => {
   if (!res || !res.content) return
   const datas = res.content
   datas.survey && addSurvey(datas.survey)
@@ -41,10 +105,10 @@ export const addDatas = (res: any) => {
  * 加载勘察图层中的所有数据
  * @param object 勘察数据
  */
-export const addSurvey = (object: any) => {
+const addSurvey = (object: any) => {
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
-      addPoint(map, 'survey', key, object[key])
+      object[key] && addPoint(map, 'survey', key, object[key])
     }
   }
 }
