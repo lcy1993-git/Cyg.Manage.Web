@@ -24,7 +24,6 @@ export const initMap = (mapDivId: string) => {
       localIdeographFontFamily: 'Microsoft YoHei',
     })
     map.on('load', (e: any) => {
-      addDatas(testData)
       map.on('moveend', (evt: any) => {})
     })
   })
