@@ -37,6 +37,7 @@ export const initMap = (mapDivId: string) => {
  */
 export const refreshMap = async (projects: any, layerTypes: any) => {
   if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
+    clearDatas()
     return
   }
   await getExtent({ layerTypes, projects }).then((data: any) => {
@@ -106,6 +107,19 @@ const addSurvey = (object: any) => {
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
       object[key] && addPoint(map, 'survey', key, object[key])
+    }
+  }
+}
+
+/**
+ * 清空地图数据
+ */
+const clearDatas = () => {
+  const layers = map.getStyle().layers
+  for (let index = 0; index < layers.length; index++) {
+    const layer = layers[index]
+    if (layer.id.includes('survey')) {
+      map.removeLayer(layer.id)
     }
   }
 }
