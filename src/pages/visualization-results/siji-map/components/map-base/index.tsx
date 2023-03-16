@@ -19,6 +19,7 @@ import { TableDataType } from '../side-popup'
 import SurveyModal from '../survey-modal/'
 import SurveyTrack from '../survey-track'
 import styles from './index.less'
+import { refreshMap } from '@/pages/visualization-results/siji-map/utils/map'
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null)
@@ -75,7 +76,9 @@ const BaseMap = observer((props: BaseMapProps) => {
     loadEnums().then((data) => {
       localStorage.setItem('loadEnumsData', JSON.stringify(data.content))
     })
+
     initMap(mapElement.current!)
+
     // setMap(initialMap)
     // store.setMapRef(initialMap)
 
@@ -84,7 +87,8 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 动态刷新refreshMap
   useEffect(() => {
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    refreshMap(projects, [1])
   }, [JSON.stringify(projects)])
 
   // 动态刷新图层
