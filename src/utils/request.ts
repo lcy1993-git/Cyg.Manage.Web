@@ -19,7 +19,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   const { headers } = options
   if (c_token) {
     return {
-      url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
+      // url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
+      url: isJson ? url : `http://11.188.90.191:21524${accessUrl}?target_url=${targetUrl}`,
       // url: url,
       options: {
         ...options,
@@ -35,7 +36,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   return {
     // url: url,
-    url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
+    // url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
+    url: isJson ? url : `http://11.188.90.191:21524${accessUrl}?target_url=${targetUrl}`,
     options: {
       ...options,
       headers: {

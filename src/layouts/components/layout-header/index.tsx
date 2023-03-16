@@ -85,10 +85,11 @@ const LayoutHeader: React.FC = () => {
     history.push(path)
   }
   // TODO 获取menu需要根据权限进行处理一下，没权限的不用展示出来
-
+  console.log(menuData, 'menu')
   const menuContent = menuData
     ?.filter((item) => item.category === 1)
     .map((item, index) => {
+      console.log(item.children)
       return (
         <div key={uuid.v1()} style={{ height: '100%' }}>
           <LayoutHeaderMenu
