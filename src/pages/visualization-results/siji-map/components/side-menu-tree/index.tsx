@@ -34,6 +34,7 @@ import SiderMenuAreaButtons from '../side-menu-area-buttons'
 import SidePopup from '../side-popup'
 import MenuTree from './components/menu-tree'
 import styles from './index.less'
+import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
 
 const { RangePicker } = DatePicker
 
