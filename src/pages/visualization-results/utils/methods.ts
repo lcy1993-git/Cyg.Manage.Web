@@ -1038,6 +1038,7 @@ const changeLayerType = (type: number, visible: boolean) => {
       }
     })
   }
+  return layerTypes
 }
 
 // 获取比例尺

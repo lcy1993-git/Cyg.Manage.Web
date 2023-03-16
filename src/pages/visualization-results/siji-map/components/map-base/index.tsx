@@ -1,6 +1,10 @@
 import { bd09Towgs84 } from '@/pages/visualization-results/utils'
 import { BaseMapProps } from '@/pages/visualization-results/utils/init'
-import { clearHighlightLayer } from '@/pages/visualization-results/utils/methods'
+import {
+  changeLayerType,
+  clearHighlightLayer,
+  getLayerGroupByName,
+} from '@/pages/visualization-results/utils/methods'
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results'
 import { useMount, useSize, useUpdateEffect } from 'ahooks'
 import { observer } from 'mobx-react-lite'
@@ -78,10 +82,8 @@ const BaseMap = observer((props: BaseMapProps) => {
     })
 
     initMap(mapElement.current!)
-
     // setMap(initialMap)
     // store.setMapRef(initialMap)
-
     // 注册 点击事件
   })
 
@@ -149,35 +151,37 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 当勘察图层切换时
   useEffect(() => {
-    highlight(1, layersState)
-    // changeLayerType(1, surveyLayerVisible)
+    // highlight(1, layersState)
+    const layers = changeLayerType(1, surveyLayerVisible)
     // getLayerGroupByName('surveyLayer', layerGroups).setVisible(surveyLayerVisible)
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
-    // map && refreshMap(ops, projects!)
+    // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    refreshMap(projects!, layers)
   }, [surveyLayerVisible])
   // 当方案图层点击时
   useEffect(() => {
-    highlight(2, layersState)
-    // changeLayerType(2, planLayerVisible)
+    // highlight(2, layersState)
+    const layers = changeLayerType(2, planLayerVisible)
     // getLayerGroupByName('planLayer', layerGroups).setVisible(planLayerVisible)
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
-    // map && refreshMap(ops, projects!)
+    // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    refreshMap(projects!, layers)
   }, [planLayerVisible])
   // 当设计图层点击时
   useEffect(() => {
-    highlight(3, layersState)
-    // changeLayerType(4, designLayerVisible)
-    // getLayerGroupByName('designLayer', layerGroups).setVisible(designLayerVisible)
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
-    // map && refreshMap(ops, projects!)
+    // highlight(3, layersState)
+
+    const layers = changeLayerType(4, designLayerVisible)
+    // const layers = getLayerGroupByName('designLayer', layerGroups)
+
+    // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    refreshMap(projects!, layers)
   }, [designLayerVisible])
   // 当拆除图层点击时
   useEffect(() => {
-    highlight(4, layersState)
-    // changeLayerType(8, dismantleLayerVisible)
-    // getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
-    // map && refreshMap(ops, projects!)
+    // highlight(4, layersState)
+    const layers = changeLayerType(8, dismantleLayerVisible)
+    getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
+    // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    refreshMap(projects!, layers)
   }, [dismantleLayerVisible])
 
   const [street, setStreet] = useState(0)

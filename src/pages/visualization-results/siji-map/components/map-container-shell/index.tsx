@@ -6,7 +6,7 @@ import {
 import { useMount, useRequest } from 'ahooks'
 import MapContainer from '../map-container'
 
-const UrlMapContainerBox = (props: any) => {
+const SijiMapContainerBox = (props: any) => {
   const { data: mapData } = useRequest(() =>
     // getMapList({ sourceType: 0, layerType: 0, enableStatus: 1, availableStatus: 0 }),
     getUseFulMapList({
@@ -37,4 +37,4 @@ const UrlMapContainerBox = (props: any) => {
   )
 }
 
-export default UrlMapContainerBox
+export default SijiMapContainerBox
