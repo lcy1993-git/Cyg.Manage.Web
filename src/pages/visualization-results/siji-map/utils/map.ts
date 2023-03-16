@@ -3,6 +3,8 @@ import { addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
 
 var map: any = null
+var _projects: any = []
+var _layerTypes: any = []
 var mapMovetimer: any
 var mapMoveEnds: any = []
 /**
@@ -24,7 +26,15 @@ export const initMap = (mapDivId: string) => {
       localIdeographFontFamily: 'Microsoft YoHei',
     })
     map.on('load', (e: any) => {
-      map.on('moveend', (evt: any) => {})
+      let limitBounds = map.getBounds()
+      limitBounds._ne.lng = 148.0492565267187
+      limitBounds._ne.lat = 54.401713588856296
+      limitBounds._sw.lng = 67.54064736222216
+      limitBounds._sw.lat = 19.23799341212711
+      map.setMaxBounds(limitBounds)
+      map.on('moveend', (evt: any) => {
+        refreshMap(_projects, _layerTypes, false)
+      })
     })
   })
 }
@@ -35,22 +45,28 @@ export const initMap = (mapDivId: string) => {
  * @param layerTypes 勾选的图层类型数组
  * @returns
  */
-export const refreshMap = async (projects: any, layerTypes: any) => {
+export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean = true) => {
+  clearDatas()
   if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
     return
   }
-  await getExtent({ layerTypes, projects }).then((data: any) => {
-    if (data.content) {
-      const minX = data.content.minX
-      const minY = data.content.minY
-      const maxX = data.content.maxX
-      const maxY = data.content.maxY
-      map.fitBounds([
-        [minX, minY],
-        [maxX, maxY],
-      ])
-    }
-  })
+  _projects = projects
+  _layerTypes = layerTypes
+
+  if (isLoad) {
+    await getExtent({ layerTypes, projects }).then((data: any) => {
+      if (data.content) {
+        const minX = data.content.minX
+        const minY = data.content.minY
+        const maxX = data.content.maxX
+        const maxY = data.content.maxY
+        map.fitBounds([
+          [minX, minY],
+          [maxX, maxY],
+        ])
+      }
+    })
+  }
 
   const bounds = map.getBounds()
   const extent = [bounds._sw.lng, bounds._sw.lat, bounds._ne.lng, bounds._ne.lat]
@@ -96,6 +112,9 @@ const addDatas = (res: any) => {
   if (!res || !res.content) return
   const datas = res.content
   datas.survey && addSurvey(datas.survey)
+  datas.plan && addplan(datas.plan)
+  datas.design && addDesign(datas.design)
+  datas.dismantle && addDismantle(datas.dismantle)
 }
 
 /**
@@ -106,6 +125,63 @@ const addSurvey = (object: any) => {
   for (const key in object) {
     if (Object.prototype.hasOwnProperty.call(object, key)) {
       object[key] && addPoint(map, 'survey', key, object[key])
+    }
+  }
+}
+
+/**
+ * 加载方案图层中的所有数据
+ * @param object 勘察数据
+ */
+const addplan = (object: any) => {
+  for (const key in object) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      object[key] && addPoint(map, 'plan', key, object[key])
+    }
+  }
+}
+
+/**
+ * 加载勘察图层中的所有数据
+ * @param object 勘察数据
+ */
+const addDesign = (object: any) => {
+  for (const key in object) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      object[key] && addPoint(map, 'design', key, object[key])
+    }
+  }
+}
+
+/**
+ * 加载勘察图层中的所有数据
+ * @param object 勘察数据
+ */
+const addDismantle = (object: any) => {
+  for (const key in object) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      object[key] && addPoint(map, 'dismantle', key, object[key])
+    }
+  }
+}
+
+/**
+ * 清空地图数据
+ */
+const clearDatas = () => {
+  const layers = map ? map.getStyle().layers : []
+  for (let index = 0; index < layers.length; index++) {
+    const layer = layers[index]
+    if (
+      layer.id.includes('survey') ||
+      layer.id.includes('plan') ||
+      layer.id.includes('design') ||
+      layer.id.includes('dismantle')
+    ) {
+      map.getSource(layer.id).setData({
+        type: 'FeatureCollection',
+        features: [],
+      })
     }
   }
 }
