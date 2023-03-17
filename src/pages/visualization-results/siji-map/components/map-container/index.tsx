@@ -5,7 +5,7 @@ import LayerGroup from 'ol/layer/Group'
 import { initLayers, initOtherLayers, initTrackLayers, initView } from '../../../utils'
 import styles from './index.less'
 
-const MapContainer = (props: any) => {
+const SjMapContainer = (props: any) => {
   const { mapData } = props
 
   // 图层
@@ -33,4 +33,4 @@ const MapContainer = (props: any) => {
     </div>
   )
 }
-export default MapContainer
+export default SjMapContainer
