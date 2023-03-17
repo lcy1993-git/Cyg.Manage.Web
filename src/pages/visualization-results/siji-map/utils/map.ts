@@ -1,5 +1,5 @@
 import { getData, getExtent } from '@/services/visualization-results/visualization-results'
-import { addPoint } from './addLayers'
+import { addCircle, addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
 
 var map: any = null
@@ -46,8 +46,8 @@ export const initMap = (mapDivId: string) => {
  * @returns
  */
 export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean = true) => {
-  clearDatas()
   if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
+    clearDatas()
     return
   }
   _projects = projects
@@ -96,6 +96,7 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
       const promise = getData(params)
       promise.then(async (data: any) => {
         addDatas(data)
+        clickFeature()
       })
       mapMoveEnds = []
     } else {
@@ -165,6 +166,47 @@ const addDismantle = (object: any) => {
   }
 }
 
+/**
+ * 点击事件
+ */
+const clickFeature = () => {
+  const layers = map.getStyle().layers
+  for (let index = 0; index < layers.length; index++) {
+    const layer = layers[index]
+    if (
+      layer.id.includes('survey') ||
+      layer.id.includes('plan') ||
+      layer.id.includes('design') ||
+      layer.id.includes('dismantle')
+    ) {
+      // eslint-disable-next-line no-loop-func
+      map.on('click', layer.id, (e: any) => {
+        const features = e.features
+        const features_geojson = [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [features[0].properties.lon, features[0].properties.lat],
+            },
+            properties: features[0],
+          },
+        ]
+        if (map.getLayer('highlight')) {
+          // 设置小圆点数据
+          map.getSource('highlight').setData({
+            type: 'FeatureCollection',
+            features: features_geojson,
+          })
+          map.moveLayer('highlight')
+        } else {
+          addCircle(map, 'highlight', features_geojson, 'orange')
+          map.moveLayer('highlight')
+        }
+      })
+    }
+  }
+}
 /**
  * 清空地图数据
  */

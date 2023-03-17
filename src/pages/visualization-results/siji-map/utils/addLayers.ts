@@ -53,7 +53,7 @@ export const addCircle = (map: any, id: string, features: any[], color: string) 
     },
     paint: {
       // 圆半径
-      'circle-radius': 10,
+      'circle-radius': 15,
       // 圆颜色
       'circle-color': color,
       // 圆环颜色
@@ -157,6 +157,7 @@ export const addLineString = (map: any, layerType: string, type: string, datas: 
       case 'cableChannel':
         data['line-color'] = '#3A2E46'
         data['line-width'] = 6
+        data['line-dasharray'] = [1]
         break
       case 'subLine':
         data['line-color'] = '#00BFFF'
@@ -173,6 +174,7 @@ export const addLineString = (map: any, layerType: string, type: string, datas: 
       default:
         break
     }
+
     let obj: any = wktToGeometry(data.geom)
     let feature = {
       type: 'Feature',
