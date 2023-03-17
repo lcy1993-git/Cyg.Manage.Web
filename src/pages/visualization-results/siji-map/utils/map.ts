@@ -46,12 +46,12 @@ export const initMap = (mapDivId: string) => {
  * @returns
  */
 export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean = true) => {
+  _projects = projects
+  _layerTypes = layerTypes
   if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
     clearDatas()
     return
   }
-  _projects = projects
-  _layerTypes = layerTypes
 
   if (isLoad) {
     await getExtent({ layerTypes, projects }).then((data: any) => {
