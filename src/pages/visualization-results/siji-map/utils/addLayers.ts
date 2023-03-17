@@ -89,6 +89,7 @@ export const addLine = (map: any, id: string, features: any) => {
     paint: {
       'line-color': ['get', 'line-color'],
       'line-width': ['get', 'line-width'],
+      'line-dasharray': ['get', 'line-dasharray'],
     },
   })
 }
@@ -150,8 +151,6 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
 }
 
 export const addLineString = (map: any, layerType: string, type: string, datas: any) => {
-  let color: any, width: any
-
   let features: any = []
   datas.forEach((data: any) => {
     switch (type) {
@@ -162,10 +161,13 @@ export const addLineString = (map: any, layerType: string, type: string, datas: 
       case 'subLine':
         data['line-color'] = '#00BFFF'
         data['line-width'] = 2
+        data['line-dasharray'] = [2, 2]
         break
       case 'line':
+      case 'userLine':
         data['line-color'] = getLineColor(data.symbol_id)
         data['line-width'] = 4
+        data['line-dasharray'] = getLineDash(data.symbol_id)
         break
 
       default:
@@ -189,7 +191,7 @@ export const addLineString = (map: any, layerType: string, type: string, datas: 
       features: features,
     })
   } else {
-    addLine(map, `${layerType}_${type}`, features, color, width)
+    addLine(map, `${layerType}_${type}`, features)
   }
 }
 
@@ -265,4 +267,34 @@ const getLineColor = (symbol_id: number) => {
       break
   }
   return color
+}
+
+/**
+ * 获取是否虚线
+ * @param symbol_id
+ * @returns
+ */
+const getLineDash = (symbol_id: number) => {
+  let lineDash = [1]
+  if (
+    symbol_id === 1021 ||
+    symbol_id === 1022 ||
+    symbol_id === 1023 ||
+    symbol_id === 1024 ||
+    symbol_id === 1031 ||
+    symbol_id === 1033 ||
+    symbol_id === 1033 ||
+    symbol_id === 1034 ||
+    symbol_id === 1121 ||
+    symbol_id === 1123 ||
+    symbol_id === 1123 ||
+    symbol_id === 1124 ||
+    symbol_id === 1131 ||
+    symbol_id === 1133 ||
+    symbol_id === 1133 ||
+    symbol_id === 1134
+  ) {
+    lineDash = [2, 2]
+  }
+  return lineDash
 }
