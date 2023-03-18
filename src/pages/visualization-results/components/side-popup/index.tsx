@@ -205,6 +205,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         mediaRef.current!.innerHTML = '查看'
         mediaRef.current!.className = 'mapSideBarlinkBtn'
       } else {
+        console.log(mediaRef, '9999')
         mediaRef.current!.innerHTML = '暂无数据'
         mediaRef.current!.className = ''
       }

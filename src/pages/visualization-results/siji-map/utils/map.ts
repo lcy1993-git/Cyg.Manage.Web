@@ -242,6 +242,9 @@ const clearHighlight = () => {
     })
     map.moveLayer('highlight')
   }
+
+  _ops.setRightSidebarVisiviabel(false)
+  _ops.setSurveyModalVisible(false)
 }
 /**
  * 清空地图数据

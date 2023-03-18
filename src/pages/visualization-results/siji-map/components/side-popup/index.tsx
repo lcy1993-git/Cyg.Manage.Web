@@ -192,10 +192,16 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const setMmaterialRefNone = () => {
     if (materialRef?.current?.innerHTML) {
-      materialRef.current.innerHTML = '暂无数据'
-      materialRef.current.className = ''
+      materialRef.current!.innerHTML = '暂无数据'
+      materialRef.current!.className = ''
     }
   }
+
+  const tableData = useMemo(() => {
+    const title = dataSource.find((o) => o.propertyName === 'title')?.data
+
+    return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : '']
+  }, [JSON.stringify(dataSource)])
 
   const { data: mediaData, run: mediaDataRun } = useRequest(getMedium, {
     manual: true,
@@ -296,11 +302,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       // 多媒体数据请求
       const mediaParams = dataResource?.find((item: any) => item.propertyName === '多媒体')?.data
         ?.params
+
       if (mediaParams) {
         mediaDataRun(mediaParams)
       } else if (mediaRef.current) {
-        mediaRef.current.innerHTML = '暂无数据'
-        mediaRef.current.className = ''
+        mediaRef.current!.innerHTML = '暂无数据'
+        mediaRef.current!.className = ''
       }
 
       //入户线数据请求
@@ -320,8 +327,9 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       //附加材料表params 这次开发两个接口合并为一个
       const additionMaterialParams =
         dataResource?.find((item: any) => item.propertyName === '附加材料表')?.data?.params ?? {}
+
       if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
-        if (additionMaterialParams.getProperties.id_.includes('cable_head')) {
+        if (additionMaterialParams.getProperties.id.includes('cable_head')) {
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
             if (data.isSuccess) {
               const resourceLibID = data?.content
@@ -364,11 +372,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   const store = useContainer()
   // const { vState, setMediaListVisibel } = useContainer();
   const { checkedProjectIdList, mediaListVisibel, mediaListData } = store.vState
-
-  const data = useMemo(() => {
-    const title = dataSource.find((o) => o.propertyName === 'title')?.data
-    return [dataSource.filter((o) => o.propertyName !== 'title'), title ? title : '']
-  }, [JSON.stringify(dataSource)])
 
   const handlerMediaClick = () => {
     if (mediaRef.current?.innerHTML === '查看') {
@@ -574,7 +577,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   const onOpenAddCommentModal = (value: any) => {
     setActiveType('annotation&' + value.id)
 
-    const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature
+    const feature = tableData[0].find((item: any) => item.propertyName === '审阅')?.data.feature
 
     /**
      * 从feature这个对象里面取出关键信息，
@@ -774,9 +777,9 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       </Modal>
       {rightSidebarVisible ? (
         <div className={styles.sidePopupWrap}>
-          <div className={styles.title} title={'项目名称：' + data[1]}>
+          <div className={styles.title} title={'项目名称：' + tableData[1]}>
             <span className={styles.head}>项目名称：</span>
-            <span className={styles.body}>{data[1]}</span>
+            <span className={styles.body}>{tableData[1]}</span>
           </div>
           <div
             className={styles.drawerClose}
@@ -793,7 +796,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             style={{ height: 30 }}
             pagination={false}
             columns={columns}
-            dataSource={data[0]}
+            dataSource={tableData[0]}
             rowClassName={styles.row}
             scroll={{ y: height - 160 }}
             rowKey={(r) => r.propertyName}
