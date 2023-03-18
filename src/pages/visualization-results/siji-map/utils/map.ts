@@ -1,12 +1,15 @@
 import { getData, getExtent } from '@/services/visualization-results/visualization-results'
 import { addCircle, addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
+import { mapClick } from './mapClick'
 
 var map: any = null
 var _projects: any = []
 var _layerTypes: any = []
 var mapMovetimer: any
 var mapMoveEnds: any = []
+var currentFeature: any = null
+var listeners: any = []
 /**
  * 初始化地图
  * @param mapDivId 地图div的ID
@@ -50,10 +53,12 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
   _layerTypes = layerTypes
   if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
     clearDatas()
+    clearHighlight()
     return
   }
 
   if (isLoad) {
+    clearHighlight()
     await getExtent({ layerTypes, projects }).then((data: any) => {
       if (data.content) {
         const minX = data.content.minX
@@ -179,32 +184,63 @@ const clickFeature = () => {
       layer.id.includes('design') ||
       layer.id.includes('dismantle')
     ) {
-      // eslint-disable-next-line no-loop-func
-      map.on('click', layer.id, (e: any) => {
-        const features = e.features
-        const features_geojson = [
-          {
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [features[0].properties.lon, features[0].properties.lat],
-            },
-            properties: features[0],
-          },
-        ]
-        if (map.getLayer('highlight')) {
-          // 设置小圆点数据
-          map.getSource('highlight').setData({
-            type: 'FeatureCollection',
-            features: features_geojson,
-          })
-          map.moveLayer('highlight')
-        } else {
-          addCircle(map, 'highlight', features_geojson, 'orange')
-          map.moveLayer('highlight')
-        }
-      })
+      map.off('click', layer.id, clickFeatureHandler)
+      map.on('click', layer.id, clickFeatureHandler)
     }
+  }
+
+  map.off('click', clickMapHandler)
+  map.on('click', clickMapHandler)
+}
+
+const clickFeatureHandler = (e: any) => {
+  currentFeature = e
+  const features = e.features
+  const features_geojson = [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [features[0].properties.lon, features[0].properties.lat],
+      },
+      properties: features[0],
+    },
+  ]
+  if (map.getLayer('highlight')) {
+    // 设置小圆点数据
+    map.getSource('highlight').setData({
+      type: 'FeatureCollection',
+      features: features_geojson,
+    })
+    map.moveLayer('highlight')
+  } else {
+    addCircle(map, 'highlight', features_geojson, 'orange')
+    map.moveLayer('highlight')
+  }
+
+  mapClick(map, features[0])
+}
+
+const clickMapHandler = (e: any) => {
+  if (
+    currentFeature &&
+    (currentFeature.point.x !== e.point.x || currentFeature.point.y !== e.point.y)
+  ) {
+    clearHighlight()
+  }
+}
+
+/**
+ * 清除高亮图层
+ */
+const clearHighlight = () => {
+  if (map && map.getLayer('highlight')) {
+    // 设置小圆点数据
+    map.getSource('highlight').setData({
+      type: 'FeatureCollection',
+      features: [],
+    })
+    map.moveLayer('highlight')
   }
 }
 /**

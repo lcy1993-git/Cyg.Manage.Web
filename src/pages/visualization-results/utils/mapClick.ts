@@ -132,6 +132,8 @@ export const getMoveData = (map: any) => {
 }
 
 export const mapClick = (evt: any, map: any, ops: any) => {
+  console.log(1111)
+
   mapContent = map
 
   // 解决本地存储mappingTagsData的bug
