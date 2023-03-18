@@ -9,12 +9,13 @@ var _layerTypes: any = []
 var mapMovetimer: any
 var mapMoveEnds: any = []
 var currentFeature: any = null
-var listeners: any = []
+var _ops: any = null
 /**
  * 初始化地图
  * @param mapDivId 地图div的ID
  */
-export const initMap = (mapDivId: string) => {
+export const initMap = (mapDivId: string, ops: any) => {
+  _ops = ops
   SGMap.tokenTask.login(MAPAPPKEY, MAPAPPSECRET).then(() => {
     map = new SGMap.Map({
       // 地图绑定的DOM元素ID
@@ -217,7 +218,7 @@ const clickFeatureHandler = (e: any) => {
     map.moveLayer('highlight')
   }
 
-  mapClick(map, features[0])
+  mapClick(map, features[0], [e.point.x, e.point.y], _ops)
 }
 
 const clickMapHandler = (e: any) => {
