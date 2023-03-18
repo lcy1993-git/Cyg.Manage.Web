@@ -9,7 +9,6 @@ import { wktToGeometry } from './utils'
  */
 var layout = {}
 export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
-  console.log(id, '222')
   layout = {}
   const imageId = id + '_poi'
   //画图片点，需要先加载图片 图片路径在页面部署在服务上时可以用相对路径
@@ -48,7 +47,6 @@ export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
  * @params color: 点位颜色
  **/
 export const addCircle = (map: any, id: string, features: any[], color: string) => {
-  console.log(id, '333')
   map.addLayer({
     id,
     type: 'circle',
@@ -80,8 +78,6 @@ export const addCircle = (map: any, id: string, features: any[], color: string) 
  * @params color:
  * */
 export const addLine = (map: any, id: string, features: any) => {
-  console.log(id, '111')
-
   map.addLayer({
     id,
     type: 'line',
