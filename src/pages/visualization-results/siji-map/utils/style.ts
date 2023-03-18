@@ -145,6 +145,11 @@ const getBraceStyle = () => {
  * @param type
  */
 const getPullLine = (type: any) => {
-  let imgUrl = type && type === 1 ? 'blue' : 'red'
+  let imgUrl
+  try {
+    imgUrl = require(`./image/pullLine_${type}.png`)
+  } catch (error) {
+    imgUrl = require(`./image/pullLine.png`)
+  }
   return imgUrl
 }

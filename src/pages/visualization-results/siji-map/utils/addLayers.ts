@@ -7,12 +7,21 @@ import { wktToGeometry } from './utils'
  * @param id 图层ID
  * @param features 数据集合
  */
+const layout = {}
 export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
   const imageId = id + '_poi'
   //画图片点，需要先加载图片 图片路径在页面部署在服务上时可以用相对路径
   map.loadImage(imageUrl, (error: any, image: any) => {
     //添加图片到map，第一个参数为图片设置id
     map.addImage(imageId, image)
+
+    layout['icon-image'] = imageId
+    layout['icon-size'] = 0.5
+    layout['icon-ignore-placement'] = true
+    if (id.includes('pullLine')) {
+      layout['icon-offset'] = [0, 20]
+      layout['icon-size'] = 1
+    }
     map.addLayer({
       id: id,
       type: 'symbol',
@@ -23,12 +32,7 @@ export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
           features: features,
         },
       },
-      layout: {
-        // 为图层设置引用的图片ID
-        'icon-image': imageId,
-        'icon-size': 0.5,
-        'icon-ignore-placement': true,
-      },
+      layout,
     })
   })
 }
@@ -124,11 +128,12 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
     Object.keys(groups).forEach((item: any) => {
       const data = groups[item]
       const features = data.map((element: any) => {
+        const obj: any = wktToGeometry(element.geom)
         return {
           type: 'Feature',
           geometry: {
             type: 'Point',
-            coordinates: [element.lon, element.lat],
+            coordinates: obj.lngLats[0],
           },
           properties: element,
         }
@@ -141,11 +146,7 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
           features: features,
         })
       } else {
-        if (type === 'pullLine') {
-          addCircle(map, `${layerType}_${type}_${item}`, features, style)
-        } else {
-          addIcon(map, style, `${layerType}_${type}_${item}`, features)
-        }
+        addIcon(map, style, `${layerType}_${type}_${item}`, features)
       }
     })
 }
