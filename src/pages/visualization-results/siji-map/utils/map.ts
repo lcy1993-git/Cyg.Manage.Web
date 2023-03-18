@@ -56,7 +56,6 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
     clearHighlight()
     return
   }
-
   if (isLoad) {
     clearHighlight()
     await getExtent({ layerTypes, projects }).then((data: any) => {
