@@ -28,6 +28,7 @@ import { refreshMap } from '@/pages/visualization-results/siji-map/utils/map'
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null)
   const mapElement = useRef(null)
+  const [checkedLayers, setCheckedLayers] = useState<number[]>([1])
   const { layers, layerGroups, trackLayers, view, setView, setLayerGroups } = props
 
   // 图层控制层数据
@@ -90,7 +91,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 动态刷新refreshMap
   useEffect(() => {
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
-    refreshMap(projects, [1])
+    refreshMap(projects, checkedLayers)
   }, [JSON.stringify(projects)])
 
   // 动态刷新图层
@@ -153,6 +154,7 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     // highlight(1, layersState)
     const layers = changeLayerType(1, surveyLayerVisible)
+    setCheckedLayers(layers)
     // getLayerGroupByName('surveyLayer', layerGroups).setVisible(surveyLayerVisible)
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
     refreshMap(projects!, layers)
@@ -163,6 +165,7 @@ const BaseMap = observer((props: BaseMapProps) => {
     const layers = changeLayerType(2, planLayerVisible)
     // getLayerGroupByName('planLayer', layerGroups).setVisible(planLayerVisible)
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
+    setCheckedLayers(layers)
     refreshMap(projects!, layers)
   }, [planLayerVisible])
   // 当设计图层点击时
@@ -171,7 +174,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
     const layers = changeLayerType(4, designLayerVisible)
     // const layers = getLayerGroupByName('designLayer', layerGroups)
-
+    setCheckedLayers(layers)
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
     refreshMap(projects!, layers)
   }, [designLayerVisible])
@@ -179,7 +182,8 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     // highlight(4, layersState)
     const layers = changeLayerType(8, dismantleLayerVisible)
-    getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
+    // getLayerGroupByName('dismantleLayer', layerGroups).setVisible(dismantleLayerVisible)
+    setCheckedLayers(layers)
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
     refreshMap(projects!, layers)
   }, [dismantleLayerVisible])

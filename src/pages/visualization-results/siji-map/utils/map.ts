@@ -52,7 +52,6 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
     clearDatas()
     return
   }
-
   if (isLoad) {
     await getExtent({ layerTypes, projects }).then((data: any) => {
       if (data.content) {
