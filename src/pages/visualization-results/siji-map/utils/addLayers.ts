@@ -7,8 +7,9 @@ import { wktToGeometry } from './utils'
  * @param id 图层ID
  * @param features 数据集合
  */
-const layout = {}
+var layout = {}
 export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
+  layout = {}
   const imageId = id + '_poi'
   //画图片点，需要先加载图片 图片路径在页面部署在服务上时可以用相对路径
   map.loadImage(imageUrl, (error: any, image: any) => {
@@ -18,6 +19,7 @@ export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
     layout['icon-image'] = imageId
     layout['icon-size'] = 0.5
     layout['icon-ignore-placement'] = true
+    layout['icon-rotate'] = ['get', 'azimuth_']
     if (id.includes('pullLine')) {
       layout['icon-offset'] = [0, 20]
       layout['icon-size'] = 1
@@ -128,6 +130,11 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
     Object.keys(groups).forEach((item: any) => {
       const data = groups[item]
       const features = data.map((element: any) => {
+        if (element.azimuth) {
+          element.azimuth_ = (element.azimuth + 90) * -1
+        } else {
+          element.azimuth_ = 0
+        }
         const obj: any = wktToGeometry(element.geom)
         return {
           type: 'Feature',

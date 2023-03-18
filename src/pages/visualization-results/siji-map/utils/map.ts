@@ -1,7 +1,7 @@
 import { getData, getExtent } from '@/services/visualization-results/visualization-results'
-import { addCircle, addPoint } from './addLayers'
+import { addCircle, addLine, addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
-import { mapClick } from './mapClick'
+import { wktToGeometry } from './utils'
 
 var map: any = null
 var _projects: any = []
@@ -196,29 +196,41 @@ const clickFeature = () => {
 const clickFeatureHandler = (e: any) => {
   currentFeature = e
   const features = e.features
+  const obj: any = wktToGeometry(features[0].properties.geom)
+  if (obj.type.includes('Line')) {
+    features[0].properties['line-color'] = 'orange'
+    let dasharray = features[0].properties['line-dasharray']
+    if (typeof dasharray === 'string') {
+      dasharray = dasharray.substring(1, dasharray.length - 1).split(',')
+      dasharray = dasharray.map((item: any) => Number.parseInt(item))
+      features[0].properties['line-dasharray'] = dasharray
+    }
+  }
   const features_geojson = [
     {
       type: 'Feature',
       geometry: {
-        type: 'Point',
-        coordinates: [features[0].properties.lon, features[0].properties.lat],
+        type: obj.type,
+        coordinates: obj.type === 'Point' ? obj.lngLats[0] : obj.lngLats,
       },
-      properties: features[0],
+      properties: features[0].properties,
     },
   ]
   if (map.getLayer('highlight')) {
     // 设置小圆点数据
-    map.getSource('highlight').setData({
-      type: 'FeatureCollection',
-      features: features_geojson,
-    })
-    map.moveLayer('highlight')
-  } else {
-    addCircle(map, 'highlight', features_geojson, 'orange')
-    map.moveLayer('highlight')
+    // map.getSource('highlight').setData({
+    //   type: 'FeatureCollection',
+    //   features: features_geojson,
+    // })
+    // map.moveLayer('highlight')
+    map.removeLayer('highlight')
+    map.removeSource('highlight')
   }
+  if (obj.type === 'Point') addCircle(map, 'highlight', features_geojson, 'orange')
+  else addLine(map, 'highlight', features_geojson)
+  map.moveLayer('highlight')
 
-  mapClick(map, features[0], [e.point.x, e.point.y], _ops)
+  // mapClick(map, features[0], [e.point.x, e.point.y], _ops)
 }
 
 const clickMapHandler = (e: any) => {
