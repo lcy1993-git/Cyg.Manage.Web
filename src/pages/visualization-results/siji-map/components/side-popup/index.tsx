@@ -1,14 +1,4 @@
-import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
-import { Input, message, Modal, Table } from 'antd'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-
-import { useContainer } from '../../mobx-store'
-import CommentList from './components/comment-list'
-
-import { useRequest } from 'ahooks'
-import { observer } from 'mobx-react-lite'
-import moment from 'moment'
-
+import { findEnumKeyByCN } from '@/pages/visualization-results/utils/loadEnum'
 import {
   addComment,
   CommentRequestType,
@@ -22,12 +12,20 @@ import {
   getMedium,
 } from '@/services/visualization-results/visualization-results'
 import { translateMatDataToTree } from '@/utils/utils'
+import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Input, message, Modal, Table } from 'antd'
 import classnames from 'classnames'
+import { observer } from 'mobx-react-lite'
+import moment from 'moment'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useContainer } from '../../mobx-store'
 import { AdditionMaterialTable } from '../addition-material-table'
 import CableSection from '../cable-section'
 import { HouseholdTable } from '../household-table'
 import { MaterialTableNew } from '../material-table-new'
 import MediaModal from '../media-modal'
+import CommentList from './components/comment-list'
 import styles from './index.less'
 
 export interface TableDataType {
@@ -153,19 +151,19 @@ const modalTitle = {
 const DEVICE_TYPE: { [propertyName: string]: string } = {
   tower: '杆塔',
   cable: '电缆井',
-  cable_equipment: '电气设备',
+  cableEquipment: '电气设备',
   mark: '地物',
   transformer: '变压器',
-  over_head_device: '柱上设备',
+  overHeadDevice: '柱上设备',
   line: '线路' || '电缆',
-  cable_channel: '电缆通道',
-  electric_meter: '户表',
-  cross_arm: '横担',
-  user_line: '下户线',
-  fault_indicator: '故障指示器',
-  pull_line: '拉线',
-  Track: '轨迹点',
-  TrackLine: '轨迹线',
+  cableChannel: '电缆通道',
+  electricMeter: '户表',
+  crossArm: '横担',
+  userLine: '下户线',
+  faultIndicator: '故障指示器',
+  pullLine: '拉线',
+  track: '轨迹点',
+  trackLine: '轨迹线',
 }
 
 const LAYER_TYPE: { [propertyName: string]: string } = {
@@ -585,17 +583,15 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
      * 这里取出来的是英文，所以要根据中英文转换一下
      */
     if (feature) {
-      const { id_, project_id: projectId } = feature.values_
+      const { id, project_id: projectId } = feature.properties
       /**
        * "survey_tower.1386220338212147281" 切割该字符串获取图层type，设备类型，设备id
        * survey_device_type.1386220338212147281
        */
-      const split = id_?.split('.')
       // deviceId在审阅获取数据时拿不到id名称，这里的id有误故修改id获取方式
       // const deviceId = split[1];
-      const deviceId = feature.values_?.id
-
-      const deviceAndLayer = split && split[0].split('_')
+      const deviceId = id
+      const deviceAndLayer = feature.source.split('_')
 
       /**
        * 初始化请求body
@@ -606,10 +602,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
       let body = {
         layerType: findEnumKeyByCN(LAYER_TYPE[deviceAndLayer?.[0]], 'ProjectCommentLayer'),
-        deviceType: findEnumKeyByCN(
-          DEVICE_TYPE[deviceAndLayer?.slice(1).join('_')],
-          'ProjectCommentDevice'
-        ),
+        deviceType: findEnumKeyByCN(DEVICE_TYPE[deviceAndLayer?.[1]], 'ProjectCommentDevice'),
         deviceId,
         projectId,
         content: '',

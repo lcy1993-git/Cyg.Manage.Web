@@ -1,6 +1,7 @@
 import { getData, getExtent } from '@/services/visualization-results/visualization-results'
 import { addCircle, addLine, addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
+import { mapClick } from './mapClick'
 import { wktToGeometry } from './utils'
 
 var map: any = null
@@ -239,7 +240,7 @@ const clickFeatureHandler = (e: any) => {
   else addLine(map, 'highlight', features_geojson)
   map.moveLayer('highlight')
 
-  // mapClick(map, features[0], [e.point.x, e.point.y], _ops)
+  mapClick(map, features[0], [e.point.x, e.point.y], _ops)
 }
 
 const clickMapHandler = (e: any) => {
