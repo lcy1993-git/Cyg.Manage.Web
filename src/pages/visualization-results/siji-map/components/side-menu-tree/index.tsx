@@ -31,10 +31,11 @@ import MaterialModal from '../material-modal'
 import MigrateDataModal from '../migrate-data-modal'
 import ResultModal from '../result-modal'
 import SiderMenuAreaButtons from '../side-menu-area-buttons'
-import SidePopup from '../side-popup'
+
 import MenuTree from './components/menu-tree'
 import styles from './index.less'
 import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
+import SidePopup from '../side-popup'
 
 const { RangePicker } = DatePicker
 

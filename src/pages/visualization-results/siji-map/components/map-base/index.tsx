@@ -82,7 +82,13 @@ const BaseMap = observer((props: BaseMapProps) => {
       localStorage.setItem('loadEnumsData', JSON.stringify(data.content))
     })
 
-    initMap(mapElement.current!)
+    initMap(mapElement.current!, {
+      setRightSidebarVisiviabel,
+      setRightSidebarData,
+      setSurveyModalVisible,
+      setSurveyModalData,
+      addMediaData,
+    })
     // setMap(initialMap)
     // store.setMapRef(initialMap)
     // 注册 点击事件

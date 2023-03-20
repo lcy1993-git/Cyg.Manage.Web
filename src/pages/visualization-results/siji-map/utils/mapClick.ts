@@ -587,7 +587,7 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
     ops.setSurveyModalVisible(false)
   }
 
-  map.getTargetElement().style.cursor = 'default'
+  // map.getTargetElement().style.cursor = 'default'
 
   if (elementTypeEnum[layerName] === '水平拉线') {
     // 勿删，测试反馈的时候用
@@ -596,8 +596,8 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
   // chooseCurDayTrack('')
 
   // if(!setRightSidebarVisiviabelFlag) {
-  ops.setRightSidebarVisiviabel(false)
-  ops.setSurveyModalVisible(false)
+  // ops.setRightSidebarVisiviabel(false)
+  // ops.setSurveyModalVisible(false)
   // }
   // loadMediaSign(map)
 }
