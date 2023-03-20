@@ -36,6 +36,15 @@ export const getStyle = (type: string, value: any) => {
     case 'electricMeter':
       style = getElectricMeterStyle(value)
       break
+    case 'overHeadDevice':
+      style = getOverHeadDeviceStyle(value)
+      break
+    case 'cableHead':
+      style = getCableHeadStyle(value)
+      break
+    case 'crossArm':
+      style = getCrossArmStyle(value)
+      break
     default:
       break
   }
@@ -158,7 +167,8 @@ const getPullLineStyle = (type: any) => {
 }
 
 /**
- *
+ * 获取户表样式
+ * @param type
  */
 const getElectricMeterStyle = (typeAndState: any) => {
   let imgUrl
@@ -166,6 +176,59 @@ const getElectricMeterStyle = (typeAndState: any) => {
     imgUrl = require(`./image/electricMeter_${typeAndState}.png`)
   } catch (error) {
     imgUrl = require(`./image/electricMeter.png`)
+  }
+  return imgUrl
+}
+
+/**
+ * 获取杆上设备样式
+ * @param type
+ */
+const getOverHeadDeviceStyle = (typeAndState: any) => {
+  let imgUrl
+  try {
+    imgUrl = require(`./image/overHeadDevice_${typeAndState}.png`)
+  } catch (error) {
+    imgUrl = require(`./image/overHeadDevice.png`)
+  }
+  return imgUrl
+}
+
+/**
+ * 获取电缆头样式
+ * @param type
+ */
+const getCableHeadStyle = (value: any) => {
+  const arr = value.split('_')
+  const type = arr[0]
+  // const state = arr[1]
+  const kvLevle = arr[2]
+  let imgUrl
+  try {
+    if (type === '电缆终端') {
+      imgUrl = require(`./image/cableHead_${value}.png`)
+    } else {
+      imgUrl = require(`./image/cableHead_${type}_${kvLevle}.png`)
+    }
+  } catch (error) {
+    imgUrl = require(`./image/cableHead.png`)
+  }
+  return imgUrl
+}
+
+const getCrossArmStyle = (value: any) => {
+  const arr = value.split('_')
+  const type = arr[0]
+  const state = arr[1]
+  let imgUrl
+  try {
+    if (type === '两线墙装门型支架' || type === '四线墙装门型支架') {
+      imgUrl = require(`./image/crossArm_24_${state}.png`)
+    } else {
+      imgUrl = require(`./image/crossArm_not24_${state}.png`)
+    }
+  } catch (error) {
+    imgUrl = require(`./image/crossArm.png`)
   }
   return imgUrl
 }

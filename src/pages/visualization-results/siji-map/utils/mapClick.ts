@@ -457,9 +457,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
       pJSON[p] = {
         holeId: feature.properties.id,
         layerType: layerType === 'design' ? 1 : 2,
-        title: f.values_.mode,
-        layMode: f.values_.lay_mode,
-        arrangement: f.values_.arrangement,
+        title: f.properties.mode,
+        layMode: f.properties.lay_mode,
+        arrangement: f.properties.arrangement,
       }
     }
 

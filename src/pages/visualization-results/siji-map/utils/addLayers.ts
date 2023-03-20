@@ -120,8 +120,12 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
     groups = sortDatas(datas, field)
   } else if (type === 'hole' || type === 'brace') {
     groups[type] = datas
-  } else if (type === 'electricMeter') {
+  } else if (type === 'electricMeter' || type === 'crossArm') {
     groups = sortDatas_(datas, 'type', 'state')
+  } else if (type === 'overHeadDevice') {
+    groups = sortDatas_(datas, 'state', 'type')
+  } else if (type === 'cableHead') {
+    sortDatas__(datas, 'type', 'state', 'kv_level')
   } else if (type === 'cableChannel' || type === 'line' || type === 'userLine') {
     addLineString(map, layerType, type, datas)
     return
@@ -237,6 +241,26 @@ const sortDatas_ = (datas: any, field1: string, field2: string) => {
       groups[`${data[field1]}_${data[field2]}`].push(data)
     } else {
       groups[`${data[field1]}_${data[field2]}`] = [data]
+    }
+  }
+  return groups
+}
+
+/**
+ * 将数据集合进行分类
+ * @param datas 数据集合
+ * @param field1 分类字段1
+ * @param field2 分类字段2
+ * @param field3 分类字段3
+ * @returns
+ */
+const sortDatas__ = (datas: any, field1: string, field2: string, field3: string) => {
+  const groups = {}
+  for (const data of datas) {
+    if (groups[`${data[field1]}_${data[field2]}_${data[field3]}`]) {
+      groups[`${data[field1]}_${data[field2]}_${data[field3]}`].push(data)
+    } else {
+      groups[`${data[field1]}_${data[field2]}_${data[field3]}`] = [data]
     }
   }
   return groups
