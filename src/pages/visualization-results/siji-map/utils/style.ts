@@ -31,7 +31,10 @@ export const getStyle = (type: string, value: any) => {
       style = getBraceStyle()
       break
     case 'pullLine':
-      style = getPullLine(value)
+      style = getPullLineStyle(value)
+      break
+    case 'electricMeter':
+      style = getElectricMeterStyle(value)
       break
     default:
       break
@@ -144,12 +147,25 @@ const getBraceStyle = () => {
  * 获取水平拉线样式
  * @param type
  */
-const getPullLine = (type: any) => {
+const getPullLineStyle = (type: any) => {
   let imgUrl
   try {
     imgUrl = require(`./image/pullLine_${type}.png`)
   } catch (error) {
     imgUrl = require(`./image/pullLine.png`)
+  }
+  return imgUrl
+}
+
+/**
+ *
+ */
+const getElectricMeterStyle = (typeAndState: any) => {
+  let imgUrl
+  try {
+    imgUrl = require(`./image/electricMeter_${typeAndState}.png`)
+  } catch (error) {
+    imgUrl = require(`./image/electricMeter.png`)
   }
   return imgUrl
 }

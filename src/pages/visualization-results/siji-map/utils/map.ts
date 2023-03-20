@@ -49,6 +49,13 @@ export const initMap = (mapDivId: string, ops: any) => {
       map.on('moveend', (evt: any) => {
         refreshMap(_projects, _layerTypes, false)
       })
+
+      map.on('mousemove', (evt: any) => {
+        const x = document.getElementById('currentPositionX')
+        const y = document.getElementById('currentPositionY')
+        if (x !== null) x.innerHTML = evt.lngLat.lng.toFixed(4)
+        if (y !== null) y.innerHTML = evt.lngLat.lat.toFixed(4)
+      })
     })
   })
 }
