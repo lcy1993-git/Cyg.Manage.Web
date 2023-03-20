@@ -36,6 +36,15 @@ export const initMap = (mapDivId: string, ops: any) => {
       limitBounds._sw.lng = 67.54064736222216
       limitBounds._sw.lat = 19.23799341212711
       map.setMaxBounds(limitBounds)
+
+      map.addControl(
+        new SGMap.ScaleControl({
+          maxWidth: 80,
+          unit: 'metric',
+        }),
+        'bottom-right'
+      )
+
       map.on('moveend', (evt: any) => {
         refreshMap(_projects, _layerTypes, false)
       })

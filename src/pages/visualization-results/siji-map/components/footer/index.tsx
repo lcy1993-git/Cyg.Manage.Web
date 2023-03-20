@@ -1,8 +1,7 @@
-import React from 'react'
 import { MenuUnfoldOutlined } from '@ant-design/icons'
+import { observer } from 'mobx-react-lite'
 import { useContainer } from '../../mobx-store'
 import styles from './index.less'
-import { observer } from 'mobx-react-lite'
 interface Props {
   onlocationClick: () => void
 }
@@ -29,10 +28,6 @@ const Footer = observer((props: Props) => {
           纬度:
           <span id={'currentPositionY'}></span>
         </span>
-        <Divider />
-        <span>比例尺:</span>
-        <Divider />
-        <span id="currentScaleSize"></span>
       </div>
     </div>
   )
