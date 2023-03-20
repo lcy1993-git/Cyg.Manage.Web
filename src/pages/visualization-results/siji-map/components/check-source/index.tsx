@@ -15,7 +15,7 @@ interface CheckSourceProps {
   map: Map
   street: number
   satellite: number
-  setSourceType: Dispatch<SetStateAction<string>>
+  setSourceType: Dispatch<SetStateAction<string | number>>
   setStreet: Dispatch<SetStateAction<number>>
   setSatellite: Dispatch<SetStateAction<number>>
 }

@@ -8,22 +8,17 @@ interface MapDisplayProps {
 
 const MapDisplay: FC<MapDisplayProps> = (props) => {
   const { onSatelliteMapClick, onStreetMapClick, setSourceType } = props
-  const [isStreet, setIsStreet] = useState(false)
-  const [isCustom, setIsCustom] = useState<boolean>(false)
+  const [mapType, setMapType] = useState('street')
   const [active, setActive] = useState<boolean>(false)
 
   const onChange = (value: string) => {
+    if (mapType === value) return
     if (value === 'street') {
       onStreetMapClick()
-      setIsStreet(true)
-      setIsCustom(false)
-    } else if (value === 'custom') {
-      setIsStreet(false)
-      setIsCustom(true)
+      setMapType(value)
     } else {
       onSatelliteMapClick()
-      setIsStreet(false)
-      setIsCustom(false)
+      setMapType(value)
     }
   }
   return (
@@ -33,22 +28,8 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
         onMouseEnter={() => setActive(true)}
         onMouseLeave={() => setActive(false)}
       >
-        <div className={`${styles.icon2}  ${isCustom ? styles.streetActive : ''}`}>
-          <div className={styles.list}>
-            <img
-              className={styles.img}
-              src={require('@/assets/image/webgis/自定义.png')}
-              alt="自定义"
-              onClick={() => onChange('custom')}
-            />
-            <div className={styles.text}>自定义</div>
-            <div className={styles.moreSource} onClick={() => setSourceType(3)} title="切换图层源">
-              ···
-            </div>
-          </div>
-        </div>
         <div
-          className={`${styles.icon} ${isCustom || isStreet ? '' : styles.streetActive} ${
+          className={`${styles.icon} ${mapType === 'street' ? '' : styles.streetActive} ${
             active ? styles.iconActive : ''
           }`}
         >
@@ -60,14 +41,14 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
               onClick={() => onChange('satellite')}
             />
             <div className={styles.text}>卫星图</div>
-            <div className={styles.moreSource} onClick={() => setSourceType(1)} title="切换图层源">
+            {/* <div className={styles.moreSource} onClick={() => setSourceType(1)} title="切换图层源">
               ···
-            </div>
+            </div> */}
           </div>
         </div>
         <div
           className={`${styles.icon1} ${active ? styles.icon1Active : ''} ${
-            isStreet && active ? styles.streetActive : ''
+            mapType === 'street' && active ? styles.streetActive : ''
           }`}
         >
           <div className={styles.list}>
@@ -78,9 +59,9 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
               onClick={() => onChange('street')}
             />
             <div className={styles.text}>街道图</div>
-            <div className={styles.moreSource} onClick={() => setSourceType(2)} title="切换图层源">
+            {/* <div className={styles.moreSource} onClick={() => setSourceType(2)} title="切换图层源">
               ···
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
