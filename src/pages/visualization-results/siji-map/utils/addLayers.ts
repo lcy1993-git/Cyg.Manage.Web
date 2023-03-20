@@ -9,13 +9,12 @@ import { wktToGeometry } from './utils'
  */
 var layout = {}
 export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
-  layout = {}
   const imageId = id + '_poi'
   //画图片点，需要先加载图片 图片路径在页面部署在服务上时可以用相对路径
   map.loadImage(imageUrl, (error: any, image: any) => {
     //添加图片到map，第一个参数为图片设置id
     map.addImage(imageId, image)
-
+    layout = {}
     layout['icon-image'] = imageId
     layout['icon-size'] = 0.5
     layout['icon-ignore-placement'] = true
@@ -121,6 +120,8 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
     groups = sortDatas(datas, field)
   } else if (type === 'hole' || type === 'brace') {
     groups[type] = datas
+  } else if (type === 'electricMeter') {
+    groups = sortDatas_(datas, 'type', 'state')
   } else if (type === 'cableChannel' || type === 'line' || type === 'userLine') {
     addLineString(map, layerType, type, datas)
     return
@@ -217,6 +218,25 @@ const sortDatas = (datas: any, field: string) => {
       groups[data[field]].push(data)
     } else {
       groups[data[field]] = [data]
+    }
+  }
+  return groups
+}
+
+/**
+ * 将数据集合进行分类
+ * @param datas 数据集合
+ * @param field1 分类字段1
+ * @param field2 分类字段2
+ * @returns
+ */
+const sortDatas_ = (datas: any, field1: string, field2: string) => {
+  const groups = {}
+  for (const data of datas) {
+    if (groups[`${data[field1]}_${data[field2]}`]) {
+      groups[`${data[field1]}_${data[field2]}`].push(data)
+    } else {
+      groups[`${data[field1]}_${data[field2]}`] = [data]
     }
   }
   return groups

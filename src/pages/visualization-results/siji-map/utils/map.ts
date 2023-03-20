@@ -1,6 +1,7 @@
 import { getData, getExtent } from '@/services/visualization-results/visualization-results'
 import { addCircle, addLine, addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
+import { mapClick } from './mapClick'
 import { wktToGeometry } from './utils'
 
 var map: any = null
@@ -47,6 +48,13 @@ export const initMap = (mapDivId: string, ops: any) => {
 
       map.on('moveend', (evt: any) => {
         refreshMap(_projects, _layerTypes, false)
+      })
+
+      map.on('mousemove', (evt: any) => {
+        const x = document.getElementById('currentPositionX')
+        const y = document.getElementById('currentPositionY')
+        if (x !== null) x.innerHTML = evt.lngLat.lng.toFixed(4)
+        if (y !== null) y.innerHTML = evt.lngLat.lat.toFixed(4)
       })
     })
   })
@@ -239,7 +247,7 @@ const clickFeatureHandler = (e: any) => {
   else addLine(map, 'highlight', features_geojson)
   map.moveLayer('highlight')
 
-  // mapClick(map, features[0], [e.point.x, e.point.y], _ops)
+  mapClick(map, features[0], [e.point.x, e.point.y], _ops)
 }
 
 const clickMapHandler = (e: any) => {
