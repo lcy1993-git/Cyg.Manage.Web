@@ -76,16 +76,19 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
   }
   if (isLoad) {
     clearHighlight()
-    await getExtent({ layerTypes, projects }).then((data: any) => {
+    await getExtent({ layerTypes, projects, isSJ: true }).then((data: any) => {
       if (data.content) {
         const minX = data.content.minX
         const minY = data.content.minY
         const maxX = data.content.maxX
         const maxY = data.content.maxY
-        map.fitBounds([
-          [minX, minY],
-          [maxX, maxY],
-        ])
+        map.fitBounds(
+          [
+            [minX, minY],
+            [maxX, maxY],
+          ],
+          { linear: true }
+        )
       }
     })
   }
@@ -108,6 +111,7 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
     zoomLevel: Math.round(map.getZoom()),
     layerTypes: layerTypes,
     projects: ids,
+    isSJ: true,
   }
 
   mapMoveEnds.push(new Date())
@@ -294,4 +298,18 @@ const clearDatas = () => {
       })
     }
   }
+}
+
+/**
+ * 切换地图
+ * @param type 1 街道 2 影像
+ */
+export const changerLayer = (type: number) => {
+  if (type === 1) {
+    // 街道图
+    map.setStyle('aegis://styles/aegis/Streets-v2', { diff: false })
+  } else {
+    map.setStyle('aegis://styles/aegis/Satellite512', { diff: false })
+  }
+  refreshMap(_projects, _layerTypes, false)
 }
