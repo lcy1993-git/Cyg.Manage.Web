@@ -1,10 +1,8 @@
 import { editProject, getProjectInfo } from '@/services/project-management/all-project'
-import { useControllableValue } from 'ahooks'
-import { Button, Spin } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useRequest } from 'ahooks'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal, Spin } from 'antd'
 import moment, { Moment } from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import CreateProjectForm from '../create-project-form'
 
 interface EditProjectProps {
@@ -161,6 +159,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
             getWarehouseData={setWarehouseInfo}
             getLibData={setLibData}
             // onLoadingFinish={() => setLoading(true)}
+            isDisabled={true}
           />
         </Spin>
       </Form>

@@ -83,7 +83,7 @@ const LoginForm: React.FC<Props> = (props) => {
         const buttonArray = buttonModules
           .filter((item: any) => item.category === 3)
           .map((item: any) => item.authCode)
-
+        // console.log(userInfo,'userinfo')
         localStorage.setItem('functionModules', JSON.stringify(modules))
         localStorage.setItem('userInfo', JSON.stringify(userInfo))
         localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
