@@ -1,6 +1,11 @@
 import CyFormItem from '@/components/cy-form-item'
 import { useLayoutStore } from '@/layouts/context'
-import { getAuthorityModules, getUserInfoRequest, qgcLoginRequest } from '@/services/login'
+import {
+  getAuthorityModules,
+  getUserInfoRequest,
+  qgcLoginRequest,
+  userLoginRequest,
+} from '@/services/login'
 import { useGetUserInfo } from '@/utils/hooks'
 import { flatten, getStopServerList } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
@@ -41,7 +46,7 @@ const CutAccount = (props: EditPasswordProps) => {
   const sureCutAccount = async (value: { userName: any; pwd: any }) => {
     const { userName, pwd } = value
     // TODO 快捷切换
-    qgcLoginRequest({ userName, pwd })
+    userLoginRequest({ userName, pwd })
       .then(async (resData) => {
         // 如果这次登录的账号跟之前的不一样，那么就只到首页
 

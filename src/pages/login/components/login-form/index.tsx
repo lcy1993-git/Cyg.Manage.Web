@@ -6,6 +6,7 @@ import {
   compareVerifyCode,
   getAuthorityModules,
   getUserInfoRequest,
+  indexLoginRequest,
   PhoneLoginParams,
   qgcLoginRequest,
   UserLoginParams,
@@ -65,11 +66,11 @@ const LoginForm: React.FC<Props> = (props) => {
     try {
       let resData = null
       if (type === 'account') {
-        // resData = await indexLoginRequest(data as UserLoginParams)
-        resData = await qgcLoginRequest(data as UserLoginParams)
+        resData = await indexLoginRequest(data as UserLoginParams)
+        // resData = await qgcLoginRequest(data as UserLoginParams)
       } else {
-        // resData = await indexLoginRequest(data as UserLoginParams)
-        resData = await qgcLoginRequest(data as UserLoginParams)
+        resData = await indexLoginRequest(data as UserLoginParams)
+        // resData = await qgcLoginRequest(data as UserLoginParams)
       }
       if (resData.code === 200 && resData.isSuccess) {
         // @ts-ignore
