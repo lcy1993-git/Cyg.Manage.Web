@@ -148,7 +148,7 @@ const coordinatesFormat = (coordinates: any) => {
  */
 const getPointWkt = (coordinates: any) => {
   if (isArr(coordinates)) {
-    return `${coordinates[1]} ${coordinates[0]}`
+    return `${coordinates[0]} ${coordinates[1]}`
   }
 }
 

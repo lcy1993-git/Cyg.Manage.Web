@@ -140,7 +140,7 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
         } else {
           element.azimuth_ = 0
         }
-        const obj: any = wktToGeometry(element.geom)
+        const obj: any = wktToGeometry(element.sj_geom)
         return {
           type: 'Feature',
           geometry: {
@@ -188,7 +188,7 @@ export const addLineString = (map: any, layerType: string, type: string, datas: 
         break
     }
 
-    let obj: any = wktToGeometry(data.geom)
+    let obj: any = wktToGeometry(data.sj_geom)
     let feature = {
       type: 'Feature',
       geometry: {
