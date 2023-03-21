@@ -218,7 +218,7 @@ const clickFeatureHandler = (e: any) => {
   currentFeature = e
   const features = e.features
 
-  const obj: any = wktToGeometry(features[0].properties.geom)
+  const obj: any = wktToGeometry(features[0].properties.sj_geom)
   if (obj.type.includes('Line')) {
     features[0].properties['line-color'] = 'orange'
     let dasharray = features[0].properties['line-dasharray']
