@@ -1,8 +1,12 @@
 import bannerSrc from '@/assets/image/login/banner.png'
 import loginBg from '@/assets/image/login/bg.png'
 import LogoComponent from '@/components/logo-component'
+import { getAuthorityModules, getUserInfoRequest, qgcAutoLoginRequest } from '@/services/login'
+import { flatten } from '@/utils/utils'
 import { useMount } from 'ahooks'
-import React, { useState } from 'react'
+import { message, Spin } from 'antd'
+import React, { useLayoutEffect, useState } from 'react'
+import { history } from 'umi'
 import LoginForm from './components/login-form'
 import StopServer from './components/stop-server'
 import styles from './index.less'
@@ -18,6 +22,7 @@ export interface Stop {
 const Login: React.FC = () => {
   const [stopInfo, setStopInfo] = useState<Stop>({} as Stop)
   const [activeStop, setActiveStop] = useState<boolean>(false)
+  const [isAutoLogin, setIsAutoLogin] = useState<boolean>(false)
 
   const getServerList = async () => {}
   const loginStop = (res?: Stop) => {
@@ -30,28 +35,75 @@ const Login: React.FC = () => {
   useMount(async () => {
     await getServerList()
   })
+  useLayoutEffect(() => {
+    ;(async function () {
+      // console.log('sss')
+      let url = window.location.href
+      if (url.indexOf('userid') > -1) {
+        setIsAutoLogin(true)
+        var query = window.location.search.substring(1)
+        var vars = query.split('&')
+        const map = {}
+        for (let i = 0; i < vars.length; i++) {
+          let pair = vars[i].split('=')
+          map[pair[0]] = pair[1]
+        }
+        // @ts-ignore
+        let resData = await qgcAutoLoginRequest({ userId: map.userid })
+        if (resData.code === 200 && resData.isSuccess) {
+          // @ts-ignore
+          const { accessToken } = resData.content
+
+          localStorage.setItem('Authorization', accessToken)
+          let userInfo = await getUserInfoRequest()
+
+          const modules = await getAuthorityModules()
+
+          const buttonModules = flatten(modules)
+
+          const buttonArray = buttonModules
+            .filter((item: any) => item.category === 3)
+            .map((item: any) => item.authCode)
+          localStorage.setItem('functionModules', JSON.stringify(modules))
+          localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
+
+          message.success('登录成功', 1.5)
+          history.push('/index')
+        }
+      }
+    })()
+  }, [])
   return (
     <div className={styles.loginPage}>
-      <div className={styles.loginPageContent} style={{ backgroundImage: `url(${loginBg})` }}>
-        <div className={styles.loginFormContent}>
-          <div className={styles.loginFormBanner}>
-            <LogoComponent className={styles.loginImage} />
-            {/* UI切的图刚刚这么大的高度，所以logo只能定位上去 */}
-            <img className={styles.bannerImage} src={bannerSrc} alt="" />
+      {isAutoLogin ? (
+        <Spin tip="正在登录...">
+          <div className={styles.autoLogin}></div>
+        </Spin>
+      ) : (
+        <>
+          <div className={styles.loginPageContent} style={{ backgroundImage: `url(${loginBg})` }}>
+            <div className={styles.loginFormContent}>
+              <div className={styles.loginFormBanner}>
+                <LogoComponent className={styles.loginImage} />
+                {/* UI切的图刚刚这么大的高度，所以logo只能定位上去 */}
+                <img className={styles.bannerImage} src={bannerSrc} alt="" />
+              </div>
+              <div className={styles.loginForm}>
+                {activeStop ? <StopServer data={stopInfo} /> : <LoginForm stopLogin={loginStop} />}
+              </div>
+            </div>
           </div>
-          <div className={styles.loginForm}>
-            {activeStop ? <StopServer data={stopInfo} /> : <LoginForm stopLogin={loginStop} />}
+          <div className={styles.loginPageFooter}>
+            {/* <span>©2018- 四川长园工程勘察设计有限公司 版权所有 蜀ICP备18013772号</span> */}
+            <span className={styles.copyRightTip}>版权所有</span>
+            <span>©工程智慧云平台版权所有</span>
+            <a className={styles.linkToBeian} href="https://beian.miit.gov.cn/">
+              蜀ICP备2021026719号-1
+            </a>
           </div>
-        </div>
-      </div>
-      <div className={styles.loginPageFooter}>
-        {/* <span>©2018- 四川长园工程勘察设计有限公司 版权所有 蜀ICP备18013772号</span> */}
-        <span className={styles.copyRightTip}>版权所有</span>
-        <span>©工程智慧云平台版权所有</span>
-        <a className={styles.linkToBeian} href="https://beian.miit.gov.cn/">
-          蜀ICP备2021026719号-1
-        </a>
-      </div>
+        </>
+      )}
     </div>
   )
 }

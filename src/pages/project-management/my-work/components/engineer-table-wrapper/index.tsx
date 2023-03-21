@@ -70,6 +70,8 @@ interface JurisdictionInfo {
   canEdit: boolean
   canCopy: boolean
   canInherit: boolean
+  canEditQgc: boolean
+  canSubmitQgc: boolean
 }
 
 interface EngineerTableWrapperProps {
@@ -293,26 +295,28 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
     return (
       <Menu>
-        {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
-          <Menu.Item
-            key="editProject"
-            onClick={() => {
-              editProjectEvent({
-                projectId: tableItemData.id,
-                areaId: engineerInfo.province,
-                libId: engineerInfo.libId,
-                company: engineerInfo.company,
-                companyName: engineerInfo.company,
-                startTime: engineerInfo.startTime,
-                endTime: engineerInfo.endTime,
-                status: tableItemData.stateInfo.status,
-                inheritState: tableItemData.stateInfo.inheritStatus,
-              })
-            }}
-          >
-            编辑
-          </Menu.Item>
-        )}
+        {(jurisdictionInfo.canEdit || jurisdictionInfo.canEditQgc) &&
+          buttonJurisdictionArray?.includes('all-project-edit-project') && (
+            <Menu.Item
+              key="editProject"
+              onClick={() => {
+                editProjectEvent({
+                  projectId: tableItemData.id,
+                  areaId: engineerInfo.province,
+                  libId: engineerInfo.libId,
+                  company: engineerInfo.company,
+                  companyName: engineerInfo.company,
+                  startTime: engineerInfo.startTime,
+                  endTime: engineerInfo.endTime,
+                  status: tableItemData.stateInfo.status,
+                  inheritState: tableItemData.stateInfo.inheritStatus,
+                  canEditQgc: tableItemData.operationAuthority.canEditQgc,
+                })
+              }}
+            >
+              编辑
+            </Menu.Item>
+          )}
         {jurisdictionInfo.canCopy && buttonJurisdictionArray?.includes('all-project-copy-project') && (
           <Menu.Item
             key="copyProject"
@@ -371,7 +375,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         {/* {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
           <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
         )} */}
-        <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id)}>提交项目</Menu.Item>
+        {jurisdictionInfo.canSubmitQgc && (
+          <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id)}>提交项目</Menu.Item>
+        )}
 
         {tableItemData.stateInfo.status !== 14 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
