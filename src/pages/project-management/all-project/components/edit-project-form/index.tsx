@@ -6,7 +6,7 @@ import { useGetProjectEnum, useGetSelectData } from '@/utils/hooks'
 import { getDefaultStartEndDate } from '@/utils/utils'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useMount, useRequest, useUpdateEffect } from 'ahooks'
-import { DatePicker, Input, InputNumber, Select, Tooltip } from 'antd'
+import { DatePicker, Input, InputNumber, Tooltip } from 'antd'
 import { isEmpty, isNumber } from 'lodash'
 import moment, { Moment } from 'moment'
 import React, { memo, useEffect, useMemo, useState } from 'react'
@@ -289,14 +289,46 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
           <CyFormItem
             {...field}
             label="项目名称"
-            fieldKey={[field.fieldKey, 'name']}
-            name={isEmpty(field) ? 'name' : [field.name, 'name']}
+            fieldKey={[field.fieldKey, 'prjName']}
+            name={isEmpty(field) ? 'prjName' : [field.name, 'prjName']}
             labelWidth={120}
             align="right"
-            rules={Rule.name}
-            required
           >
             <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="项目编码"
+            fieldKey={[field.fieldKey, 'proCode']}
+            name={isEmpty(field) ? 'proCode' : [field.name, 'proCode']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="项目阶段"
+            initialValue={2}
+            fieldKey={[field.fieldKey, 'stage']}
+            name={isEmpty(field) ? 'stage' : [field.name, 'stage']}
+            labelWidth={120}
+            align="right"
+          >
+            <UrlSelect
+              defaultData={isInherit ? handleProjectStage : projectStage}
+              valuekey="value"
+              disabled={!canEditStage && !isInherit} //判断是否参与继承 && 是否开始继承 &&是否新增项目
+              titlekey="text"
+              placeholder="请选择"
+              // @ts-ignore
+              disabled={!!isDisabled}
+            />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
@@ -307,8 +339,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'kvLevel' : [field.name, 'kvLevel']}
             labelWidth={120}
             align="right"
-            rules={Rule.required}
-            required
           >
             <UrlSelect
               defaultData={projectKvLevel}
@@ -323,143 +353,368 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="项目阶段"
-            initialValue={2}
-            fieldKey={[field.fieldKey, 'stage']}
-            name={isEmpty(field) ? 'stage' : [field.name, 'stage']}
-            required
+            {...field}
+            label="项目大类"
+            fieldKey={[field.fieldKey, 'prjNature']}
+            name={isEmpty(field) ? 'prjNature' : [field.name, 'prjNature']}
             labelWidth={120}
             align="right"
-            rules={Rule.required}
           >
-            <UrlSelect
-              defaultData={isInherit ? handleProjectStage : projectStage}
-              valuekey="value"
-              disabled={!canEditStage && !isInherit} //判断是否参与继承 && 是否开始继承 &&是否新增项目
-              titlekey="text"
-              placeholder="请选择"
-              disabled={!!isDisabled}
-            />
+            <Input disabled={!!isDisabled} placeholder="请输入" />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
+            {...field}
             label="项目分类"
-            fieldKey={[field.fieldKey, 'category']}
-            initialValue={1}
-            name={isEmpty(field) ? 'category' : [field.name, 'category']}
+            fieldKey={[field.fieldKey, 'prjClassif']}
+            name={isEmpty(field) ? 'prjClassif' : [field.name, 'prjClassif']}
             labelWidth={120}
             align="right"
-            // rules={Rule.required}
-            // required
           >
-            <UrlSelect
-              defaultData={projectCategory}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
+            <Input disabled={!!isDisabled} placeholder="请输入" />
           </CyFormItem>
         </div>
       </div>
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="项目类型"
-            fieldKey={[field.fieldKey, 'pType']}
-            initialValue={1}
-            name={isEmpty(field) ? 'pType' : [field.name, 'pType']}
+            {...field}
+            label="项目级别"
+            fieldKey={[field.fieldKey, 'prjLevel']}
+            name={isEmpty(field) ? 'prjLevel' : [field.name, 'prjLevel']}
             labelWidth={120}
             align="right"
-            // rules={Rule.required}
-            // required
           >
-            <UrlSelect
-              defaultData={projectPType}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
+            <Input disabled={!!isDisabled} placeholder="请输入" />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="专业类别"
-            fieldKey={[field.fieldKey, 'majorCategory']}
-            initialValue={1}
-            name={isEmpty(field) ? 'majorCategory' : [field.name, 'majorCategory']}
+            {...field}
+            label="专业级别"
+            fieldKey={[field.fieldKey, 'speciClassif']}
+            name={isEmpty(field) ? 'speciClassif' : [field.name, 'speciClassif']}
             labelWidth={120}
             align="right"
-            // rules={Rule.required}
-            // required
           >
-            <UrlSelect
-              defaultData={projectMajorCategory}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
+            <Input disabled={!!isDisabled} placeholder="请输入" />
           </CyFormItem>
         </div>
       </div>
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="项目性质"
+            {...field}
+            label="建设改造目的"
+            fieldKey={[field.fieldKey, 'buidModifPopuse']}
+            name={isEmpty(field) ? 'buidModifPopuse' : [field.name, 'buidModifPopuse']}
             labelWidth={120}
             align="right"
-            // rules={Rule.natures}
-            fieldKey={[field.fieldKey, 'natures']}
-            name={isEmpty(field) ? 'natures' : [field.name, 'natures']}
-            // required
-            initialValue={[4096]}
           >
-            <UrlSelect
-              defaultData={projectNature}
-              mode="multiple"
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
+            <Input disabled={!!isDisabled} placeholder="请输入" />
           </CyFormItem>
         </div>
         <div className="flex1 flowHidden">
           <CyFormItem
-            label="资产性质"
-            fieldKey={[field.fieldKey, 'assetsNature']}
-            initialValue={1}
-            name={isEmpty(field) ? 'assetsNature' : [field.name, 'assetsNature']}
+            {...field}
+            label="改造原因"
+            fieldKey={[field.fieldKey, 'modifReason']}
+            name={isEmpty(field) ? 'modifReason' : [field.name, 'modifReason']}
             labelWidth={120}
             align="right"
-            // rules={Rule.required}
-            // required
           >
-            <UrlSelect
-              defaultData={projectAssetsNature}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
+            <Input disabled={!!isDisabled} placeholder="请输入" />
           </CyFormItem>
         </div>
       </div>
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
+            {...field}
             label="区域属性"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'regionAttribute']}
-            name={isEmpty(field) ? 'regionAttribute' : [field.name, 'regionAttribute']}
+            fieldKey={[field.fieldKey, 'regionAttr']}
+            name={isEmpty(field) ? 'regionAttr' : [field.name, 'regionAttr']}
             labelWidth={120}
             align="right"
-            // rules={Rule.required}
-            // required
           >
-            <UrlSelect
-              defaultData={projectRegionAttribute}
-              valuekey="value"
-              titlekey="text"
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="资产所属单位"
+            fieldKey={[field.fieldKey, 'assetOwnerPartm']}
+            name={isEmpty(field) ? 'assetOwnerPartm' : [field.name, 'assetOwnerPartm']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="需求年份"
+            fieldKey={[field.fieldKey, 'planYear']}
+            name={isEmpty(field) ? 'planYear' : [field.name, 'planYear']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="地市公司"
+            fieldKey={[field.fieldKey, 'cityName']}
+            name={isEmpty(field) ? 'cityName' : [field.name, 'cityName']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="供电所"
+            fieldKey={[field.fieldKey, 'adminPowSup']}
+            name={isEmpty(field) ? 'adminPowSup' : [field.name, 'adminPowSup']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="设计单位"
+            fieldKey={[field.fieldKey, 'proDesignerUnit']}
+            name={isEmpty(field) ? 'proDesignerUnit' : [field.name, 'proDesignerUnit']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="勘察人员"
+            fieldKey={[field.fieldKey, 'surveyor']}
+            name={isEmpty(field) ? 'surveyor' : [field.name, 'surveyor']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="设计人员"
+            fieldKey={[field.fieldKey, 'proDesigner']}
+            name={isEmpty(field) ? 'proDesigner' : [field.name, 'proDesigner']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="项目状态"
+            fieldKey={[field.fieldKey, 'projectStatus']}
+            name={isEmpty(field) ? 'projectStatus' : [field.name, 'projectStatus']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="编制部门名称"
+            fieldKey={[field.fieldKey, 'organUnit']}
+            name={isEmpty(field) ? 'organUnit' : [field.name, 'organUnit']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="编制时间"
+            fieldKey={[field.fieldKey, 'organTime']}
+            name={isEmpty(field) ? 'organTime' : [field.name, 'organTime']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="提交人员"
+            fieldKey={[field.fieldKey, 'submittedBy']}
+            name={isEmpty(field) ? 'submittedBy' : [field.name, 'submittedBy']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="审核人员"
+            fieldKey={[field.fieldKey, 'reviewerName']}
+            name={isEmpty(field) ? 'reviewerName' : [field.name, 'reviewerName']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="运行人员名称"
+            fieldKey={[field.fieldKey, 'runName']}
+            name={isEmpty(field) ? 'runName' : [field.name, 'runName']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="是否开启"
+            fieldKey={[field.fieldKey, 'proIsOpen']}
+            name={isEmpty(field) ? 'proIsOpen' : [field.name, 'proIsOpen']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            fieldKey={[field.fieldKey, 'libId']}
+            name={isEmpty(field) ? 'libId' : [field.name, 'libId']}
+            label="资源库"
+            labelWidth={120}
+            align="right"
+            required
+            rules={Rule.lib}
+          >
+            <DataSelect
               placeholder="请选择"
+              options={newLibSelectData}
+              onChange={(value: any) => {
+                setLibId(value)
+                if (field.fieldKey === undefined) {
+                  form.setFieldsValue({ inventoryOverviewId: undefined })
+                } else {
+                  // form.setFieldsValue( {'inventoryOverviewId'[field.fieldKey]: undefined })
+                  const projectInfo = form.getFieldValue('projects')
+                  const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+                    if (inx === index) {
+                      return { ...item, inventoryOverviewId: undefined }
+                    }
+                    return item
+                  })
+                  form.setFieldsValue({ projects: newProjectInfo })
+                }
+              }}
+            />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            fieldKey={[field.fieldKey, 'inventoryOverviewId']}
+            name={isEmpty(field) ? 'inventoryOverviewId' : [field.name, 'inventoryOverviewId']}
+            labelSlot={invSlot}
+            labelWidth={120}
+            align="right"
+            required
+            rules={Rule.inventory}
+          >
+            <DataSelect
+              options={
+                handleInventoryData.length !== 0
+                  ? handleInventoryData
+                  : [{ label: '无', value: 'none' }]
+              }
+              placeholder="请先选择资源库"
+            />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            fieldKey={[field.fieldKey, 'warehouseId']}
+            name={isEmpty(field) ? 'warehouseId' : [field.name, 'warehouseId']}
+            label="利旧库存协议"
+            initialValue="none"
+            labelWidth={120}
+            align="right"
+            required
+            rules={Rule.warehouse}
+          >
+            <DataSelect
+              options={
+                warehouseSelectData.length !== 0
+                  ? warehouseSelectData
+                  : [{ label: '无', value: 'none' }]
+              }
+              placeholder="请先选择区域"
+            />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="总投资(万元)"
+            labelWidth={120}
+            align="right"
+            fieldKey={[field.fieldKey, 'totalInvest']}
+            name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
+            rules={Rule.total}
+          >
+            <Input
+              type="number"
+              placeholder="请输入"
+              min={0}
+              defaultValue={0}
+              onKeyPress={keyPressEvent}
             />
           </CyFormItem>
         </div>
@@ -469,10 +724,10 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             initialValue={1}
             fieldKey={[field.fieldKey, 'batch']}
             name={isEmpty(field) ? 'batch' : [field.name, 'batch']}
-            // required
+            required
             labelWidth={120}
             align="right"
-            // rules={Rule.required}
+            rules={Rule.required}
           >
             <UrlSelect
               defaultData={projectBatch}
@@ -500,7 +755,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
               valuekey="value"
               titlekey="text"
               placeholder="请选择"
-              disabled={!!isDisabled}
             />
           </CyFormItem>
         </div>
@@ -566,7 +820,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
                 setStartDate(value)
               }}
               disabledDate={disableDate}
-              disabled={!!isDisabled}
             />
           </CyFormItem>
         </div>
@@ -633,267 +886,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
               onChange={(value: any) => {
                 setEndDate(value)
               }}
-              disabled={!!isDisabled}
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            // shouldUpdate={valueChangeEvent}
-            label="项目编码"
-            fieldKey={[field.fieldKey, 'code']}
-            name={isEmpty(field) ? 'code' : [field.name, 'code']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input placeholder="请输入项目编码" maxLength={64} />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            fieldKey={[field.fieldKey, 'libId']}
-            name={isEmpty(field) ? 'libId' : [field.name, 'libId']}
-            label="资源库"
-            labelWidth={120}
-            align="right"
-            required
-            rules={Rule.lib}
-          >
-            <DataSelect
-              placeholder="请选择"
-              options={newLibSelectData}
-              onChange={(value: any) => {
-                setLibId(value)
-                if (field.fieldKey === undefined) {
-                  form.setFieldsValue({ inventoryOverviewId: undefined })
-                } else {
-                  // form.setFieldsValue( {'inventoryOverviewId'[field.fieldKey]: undefined })
-                  const projectInfo = form.getFieldValue('projects')
-                  const newProjectInfo = projectInfo.map((item: any, inx: number) => {
-                    if (inx === index) {
-                      return { ...item, inventoryOverviewId: undefined }
-                    }
-                    return item
-                  })
-                  form.setFieldsValue({ projects: newProjectInfo })
-                }
-              }}
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            fieldKey={[field.fieldKey, 'inventoryOverviewId']}
-            name={isEmpty(field) ? 'inventoryOverviewId' : [field.name, 'inventoryOverviewId']}
-            labelSlot={invSlot}
-            labelWidth={120}
-            align="right"
-            required
-            rules={Rule.inventory}
-          >
-            <DataSelect
-              options={
-                handleInventoryData.length !== 0
-                  ? handleInventoryData
-                  : [{ label: '无', value: 'none' }]
-              }
-              placeholder="请先选择资源库"
-            />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            fieldKey={[field.fieldKey, 'warehouseId']}
-            name={isEmpty(field) ? 'warehouseId' : [field.name, 'warehouseId']}
-            label="利旧库存协议"
-            initialValue="none"
-            labelWidth={120}
-            align="right"
-            required
-            rules={Rule.warehouse}
-          >
-            <DataSelect
-              options={
-                warehouseSelectData.length !== 0
-                  ? warehouseSelectData
-                  : [{ label: '无', value: 'none' }]
-              }
-              placeholder="请先选择区域"
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="总投资(万元)"
-            labelWidth={120}
-            align="right"
-            fieldKey={[field.fieldKey, 'totalInvest']}
-            name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
-            rules={Rule.total}
-          >
-            <Input
-              type="number"
-              placeholder="请输入"
-              min={0}
-              defaultValue={0}
-              onKeyPress={keyPressEvent}
-            />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="是否跨年项目"
-            fieldKey={[field.fieldKey, 'isAcrossYear']}
-            initialValue={'false'}
-            name={isEmpty(field) ? 'isAcrossYear' : [field.name, 'isAcrossYear']}
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-            required
-          >
-            <Select placeholder="请选择">
-              <Select.Option value="true">是</Select.Option>
-              <Select.Option value="false">否</Select.Option>
-            </Select>
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="改造原因"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'reformCause']}
-            name={isEmpty(field) ? 'reformCause' : [field.name, 'reformCause']}
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-            required
-          >
-            <UrlSelect
-              defaultData={projectReformCause}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="建设改造目的"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'reformAim']}
-            name={isEmpty(field) ? 'reformAim' : [field.name, 'reformAim']}
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-            required
-          >
-            <UrlSelect
-              defaultData={projectReformAim}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="供电所/班组"
-            fieldKey={[field.fieldKey, 'powerSupply']}
-            name={isEmpty(field) ? 'powerSupply' : [field.name, 'powerSupply']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input placeholder="请输入供电所/班组" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="资产所属单位"
-            fieldKey={[field.fieldKey, 'assetsOrganization']}
-            name={isEmpty(field) ? 'assetsOrganization' : [field.name, 'assetsOrganization']}
-            labelWidth={120}
-            align="right"
-            // rules={Rule.assetsOrganization}
-            // required
-          >
-            <Input placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="所属市公司"
-            fieldKey={[field.fieldKey, 'cityCompany']}
-            name={isEmpty(field) ? 'cityCompany' : [field.name, 'cityCompany']}
-            labelWidth={120}
-            align="right"
-            // rules={[{ required: true, message: '所属市公司不能为空' }]}
-            // required
-          >
-            <Input placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="所属县公司"
-            fieldKey={[field.fieldKey, 'countyCompany']}
-            name={isEmpty(field) ? 'countyCompany' : [field.name, 'countyCompany']}
-            labelWidth={120}
-            align="right"
-            // required
-            // rules={[{ required: true, message: '所属县公司不能为空' }]}
-          >
-            <Input placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="建设类型"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'constructType']}
-            name={isEmpty(field) ? 'constructType' : [field.name, 'constructType']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-          >
-            <UrlSelect
-              defaultData={projectConstructType}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="项目类别"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'pCategory']}
-            name={isEmpty(field) ? 'pCategory' : [field.name, 'pCategory']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-          >
-            <UrlSelect
-              defaultData={projectClassification}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
             />
           </CyFormItem>
         </div>
@@ -910,25 +902,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
         </div>
       </div>
       <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="项目属性"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'pAttribute']}
-            name={isEmpty(field) ? 'pAttribute' : [field.name, 'pAttribute']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-          >
-            <UrlSelect
-              defaultData={projectAttribute}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
         <div className="flex1 flowHidden">
           <CyFormItem
             label="现场数据来源"
@@ -994,9 +967,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             )}
           </CyFormItem>
         </div>
-      </div>
-
-      <div className="flex">
         <div className="flex1 flowHidden">
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
@@ -1073,6 +1043,8 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             </CyFormItem>
           )}
         </div>
+      </div>
+      <div className="flex">
         <div className="flex1 flowHidden">
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
@@ -1165,10 +1137,10 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             </CyFormItem>
           )}
         </div>
+        <div className="flex1 flowHidden"></div>
       </div>
-
-      <div className="flex"></div>
       <div className="flex">
+        {' '}
         <div className="flex1 flowHidden">
           <CyFormItem
             label="备注"
@@ -1185,333 +1157,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             />
           </CyFormItem>
         </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="供电所名称"
-            fieldKey={[field.fieldKey, 'adminPowSup']}
-            name={isEmpty(field) ? 'adminPowSup' : [field.name, 'adminPowSup']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="资产所属单位"
-            fieldKey={[field.fieldKey, 'assetOwnerPartm']}
-            name={isEmpty(field) ? 'assetOwnerPartm' : [field.name, 'assetOwnerPartm']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="建设改造目的"
-            fieldKey={[field.fieldKey, 'buidModifPopuse']}
-            name={isEmpty(field) ? 'buidModifPopuse' : [field.name, 'buidModifPopuse']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="地市公司名称"
-            fieldKey={[field.fieldKey, 'cityName']}
-            name={isEmpty(field) ? 'cityName' : [field.name, 'cityName']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="改造原因"
-            fieldKey={[field.fieldKey, 'modifReason']}
-            name={isEmpty(field) ? 'modifReason' : [field.name, 'modifReason']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="编制时间"
-            fieldKey={[field.fieldKey, 'organTime']}
-            name={isEmpty(field) ? 'organTime' : [field.name, 'organTime']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="编制部门名称"
-            fieldKey={[field.fieldKey, 'organUnit']}
-            name={isEmpty(field) ? 'organUnit' : [field.name, 'organUnit']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="需求年份"
-            fieldKey={[field.fieldKey, 'planYear']}
-            name={isEmpty(field) ? 'planYear' : [field.name, 'planYear']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="编制部门名称"
-            fieldKey={[field.fieldKey, 'prjClassif']}
-            name={isEmpty(field) ? 'prjClassif' : [field.name, 'prjClassif']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="项目级别"
-            fieldKey={[field.fieldKey, 'prjLevel']}
-            name={isEmpty(field) ? 'prjLevel' : [field.name, 'prjLevel']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="项目名称"
-            fieldKey={[field.fieldKey, 'prjName']}
-            name={isEmpty(field) ? 'prjName' : [field.name, 'prjName']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="项目大类"
-            fieldKey={[field.fieldKey, 'prjNature']}
-            name={isEmpty(field) ? 'prjNature' : [field.name, 'prjNature']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="项目编码"
-            fieldKey={[field.fieldKey, 'proCode']}
-            name={isEmpty(field) ? 'proCode' : [field.name, 'proCode']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="设计人员"
-            fieldKey={[field.fieldKey, 'proDesigner']}
-            name={isEmpty(field) ? 'proDesigner' : [field.name, 'proDesigner']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="设计单位"
-            fieldKey={[field.fieldKey, 'proDesignerUnit']}
-            name={isEmpty(field) ? 'proDesignerUnit' : [field.name, 'proDesignerUnit']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="项目方案"
-            fieldKey={[field.fieldKey, 'projectPlan']}
-            name={isEmpty(field) ? 'projectPlan' : [field.name, 'projectPlan']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="项目状态"
-            fieldKey={[field.fieldKey, 'projectStatus']}
-            name={isEmpty(field) ? 'projectStatus' : [field.name, 'projectStatus']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="是否开启"
-            fieldKey={[field.fieldKey, 'proIsOpen']}
-            name={isEmpty(field) ? 'proIsOpen' : [field.name, 'proIsOpen']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="区域属性"
-            fieldKey={[field.fieldKey, 'regionAttr']}
-            name={isEmpty(field) ? 'regionAttr' : [field.name, 'regionAttr']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="审核人员"
-            fieldKey={[field.fieldKey, 'reviewerName']}
-            name={isEmpty(field) ? 'reviewerName' : [field.name, 'reviewerName']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="运行人员名称"
-            fieldKey={[field.fieldKey, 'runName']}
-            name={isEmpty(field) ? 'runName' : [field.name, 'runName']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="专业类别"
-            fieldKey={[field.fieldKey, 'speciClassif']}
-            name={isEmpty(field) ? 'speciClassif' : [field.name, 'speciClassif']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="提交人员"
-            fieldKey={[field.fieldKey, 'submittedBy']}
-            name={isEmpty(field) ? 'submittedBy' : [field.name, 'submittedBy']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="勘察人员"
-            fieldKey={[field.fieldKey, 'surveyor']}
-            name={isEmpty(field) ? 'surveyor' : [field.name, 'surveyor']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-      </div>
-      <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            {...field}
-            label="电压等级"
-            fieldKey={[field.fieldKey, 'voltClass']}
-            name={isEmpty(field) ? 'voltClass' : [field.name, 'voltClass']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden"></div>
       </div>
     </>
   )

@@ -5,7 +5,7 @@ import { getAuthorityModules, getUserInfoRequest, qgcAutoLoginRequest } from '@/
 import { flatten } from '@/utils/utils'
 import { useMount } from 'ahooks'
 import { message, Spin } from 'antd'
-import React, { useEffect, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import { history } from 'umi'
 import LoginForm from './components/login-form'
 import StopServer from './components/stop-server'
@@ -35,8 +35,9 @@ const Login: React.FC = () => {
   useMount(async () => {
     await getServerList()
   })
-  useEffect(() => {
+  useLayoutEffect(() => {
     ;(async function () {
+      // console.log('sss')
       let url = window.location.href
       if (url.indexOf('userid') > -1) {
         setIsAutoLogin(true)
