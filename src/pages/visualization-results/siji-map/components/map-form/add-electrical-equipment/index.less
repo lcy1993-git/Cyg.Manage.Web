@@ -1,0 +1,80 @@
+.formBox {
+  position: fixed;
+  background: white;
+  .header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    height: 36px;
+    padding: 0 10px;
+    font-size: 16px;
+    line-height: 36px;
+    border-bottom: 1px solid gainsboro;
+    .closeIcon {
+      position: absolute;
+      top: 11px;
+      right: 10px;
+      cursor: pointer;
+    }
+  }
+  :global .ant-form-item {
+    margin-bottom: 10px;
+  }
+  .lengthBox {
+    margin-bottom: 10px;
+  }
+  .form {
+    padding: 12px;
+    :global .ant-btn {
+      height: 28px;
+      padding: 0 10px !important;
+      line-height: 28px;
+    }
+    :global .ant-input-textarea-show-count {
+      margin-bottom: 16px;
+    }
+  }
+}
+.detailBox {
+  position: fixed;
+  user-select: none;
+  .detailHeader {
+    display: flex;
+    justify-content: space-between;
+    width: 180px;
+    height: 30px;
+    padding: 0 10px;
+    color: #1f1f1f;
+    font-weight: 400;
+    font-size: 14px;
+    font-family: Source Han Sans CN;
+    line-height: 31px;
+    background: #ffffff;
+    background: rgba(255, 255, 255, 0.9);
+    //border: 1px solid #707070;
+    opacity: 1;
+  }
+  .detailContent {
+    padding-left: 12px;
+    background: #dbdbdb;
+    opacity: 0.9;
+  }
+  .detailInfo {
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    margin: 0;
+    color: #505050;
+    font-size: 12px;
+    line-height: 24px;
+  }
+  .detailTitle {
+    display: inline-block;
+    width: 100px;
+    color: #1f1f1f;
+    font-size: 13px;
+    line-height: 24px;
+    white-space: break-spaces;
+    word-break: break-all;
+  }
+}
