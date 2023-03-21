@@ -9,7 +9,7 @@ import { CompanyGroupTreeData } from '@/services/operation-config/company-group'
 import { getClientCategorys } from '@/services/personnel-config/company-user'
 import { useRequest } from 'ahooks'
 import Spin from 'antd/es/spin'
-import FormSwitch from '@/components/form-switch'
+// import FormSwitch from '@/components/form-switch'
 import { noAutoCompletePassword } from '@/utils/utils'
 
 interface CompanyUserFormProps {
@@ -103,11 +103,11 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         <CyFormItem label="身份证号" name="idNumber" rules={rules.idNumber} required>
           <Input placeholder="请输入身份证号" />
         </CyFormItem>
-        {type === 'edit' && (
+        {/* {type === 'edit' && (
           <CyFormItem label="公司管理员" name="IsCompanyAdmin">
             <FormSwitch checkedChildren="开启" unCheckedChildren="关闭" />
           </CyFormItem>
-        )}
+        )} */}
 
         <CyFormItem label="授权端口" name="clientCategorys">
           <Select

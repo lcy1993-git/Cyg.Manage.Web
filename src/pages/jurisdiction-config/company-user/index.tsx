@@ -243,7 +243,7 @@ const CompanyUser: React.FC = () => {
       clientCategorys: (ManageUserData.authorizeClientList ?? [])
         .map((item: any) => item.value)
         .filter((item: any) => item > 1),
-      IsCompanyAdmin: ManageUserData.IsCompanyAdmin ? ManageUserData.IsCompanyAdmin : false,
+      // IsCompanyAdmin: ManageUserData.IsCompanyAdmin ? ManageUserData.IsCompanyAdmin : false,
     })
   }
 
@@ -537,7 +537,7 @@ const CompanyUser: React.FC = () => {
       >
         <Form form={editForm} preserve={false}>
           <Spin spinning={loading}>
-            <CompanyUserForm treeData={selectTreeData} type="edit" />
+            <CompanyUserForm treeData={selectTreeData} />
           </Spin>
         </Form>
       </Modal>
