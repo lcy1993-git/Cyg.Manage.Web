@@ -217,6 +217,7 @@ const clickFeature = () => {
 const clickFeatureHandler = (e: any) => {
   currentFeature = e
   const features = e.features
+
   const obj: any = wktToGeometry(features[0].properties.geom)
   if (obj.type.includes('Line')) {
     features[0].properties['line-color'] = 'orange'

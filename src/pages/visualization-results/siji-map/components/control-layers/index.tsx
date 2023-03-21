@@ -82,12 +82,12 @@ const ControlLayers = (props: Props) => {
     <div className={styles.container}>
       <div className={styles.icon}>
         <div className={styles.list}>
-          <ListItem
+          {/* <ListItem
             name="规划图层"
             sign="yushe"
             state={preDesignVisible}
             onChange={() => setPreDesignVisible(!preDesignVisible)}
-          />
+          /> */}
           <ListItem
             name="勘察图层"
             sign="kancha"

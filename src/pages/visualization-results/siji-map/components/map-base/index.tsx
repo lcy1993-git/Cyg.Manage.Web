@@ -13,7 +13,7 @@ import Map from 'ol/Map'
 import { transform } from 'ol/proj'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useContainer } from '../../mobx-store'
-import { initMap } from '../../utils/map'
+import { changerLayer, initMap } from '../../utils/map'
 
 import CheckSource from '../check-source'
 import Footer from '../footer'
@@ -225,12 +225,14 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   const onSatelliteMapClick = () => {
     // 卫星图点击时
+    changerLayer(2)
     // getLayerByName('imgLayer', layers)?.setVisible(true)
     // getLayerByName('vecLayer', layers)?.setVisible(false)
   }
 
   const onStreetMapClick = () => {
     // 街道图点击时
+    changerLayer(1)
     // getLayerByName('imgLayer', layers)?.setVisible(false)
     // getLayerByName('vecLayer', layers)?.setVisible(true)
   }
@@ -266,9 +268,9 @@ const BaseMap = observer((props: BaseMapProps) => {
         />
       </div>
 
-      <div className={`${styles.surveytrack} ${!sideMenuVisibel ? styles.surveytrackCloese : ''}`}>
+      {/* <div className={`${styles.surveytrack} ${!sideMenuVisibel ? styles.surveytrackCloese : ''}`}>
         <SurveyTrack />
-      </div>
+      </div> */}
       <div className={`${styles.mapDisplay} ${!sideMenuVisibel ? styles.mapDisplayCloese : ''}`}>
         <MapDisplay
           onSatelliteMapClick={onSatelliteMapClick}
