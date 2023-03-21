@@ -251,7 +251,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
       createWebSocket()
     }
     return () => {
-      ws.close()
+      ws && ws.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
