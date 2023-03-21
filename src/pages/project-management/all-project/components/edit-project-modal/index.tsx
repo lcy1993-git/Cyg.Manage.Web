@@ -46,7 +46,6 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     setInheritState,
     canEditQgc,
   } = props
-
   const {
     data: projectInfo,
     run,

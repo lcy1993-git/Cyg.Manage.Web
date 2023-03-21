@@ -36,7 +36,24 @@ export const userLoginRequest = (params: UserLoginParams) => {
     })
   )
 }
-
+// qgc登录
+export const qgcLoginRequest = (params: UserLoginParams) => {
+  return cyRequest<LoginSuccessInfo>(() =>
+    request(`${baseUrl.common}/myLoging/getUserInfo`, {
+      method: 'POST',
+      data: { ...params, clientType: 2 },
+    })
+  )
+}
+// qgc免登录
+export const qgcAutoLoginRequest = (params: any) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.common}/Users/SignInByUserId`, {
+      method: 'POST',
+      data: { ...params, clientType: 2 },
+    })
+  )
+}
 export interface PhoneLoginParams {
   phone: string
   code: string

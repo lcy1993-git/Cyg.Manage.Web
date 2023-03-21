@@ -6,9 +6,8 @@ import {
   compareVerifyCode,
   getAuthorityModules,
   getUserInfoRequest,
-  indexLoginRequest,
   PhoneLoginParams,
-  phoneLoginRequest,
+  qgcLoginRequest,
   UserLoginParams,
 } from '@/services/login'
 import { phoneNumberRule } from '@/utils/common-rule'
@@ -66,11 +65,12 @@ const LoginForm: React.FC<Props> = (props) => {
     try {
       let resData = null
       if (type === 'account') {
-        resData = await indexLoginRequest(data as UserLoginParams)
+        resData = await qgcLoginRequest(data as UserLoginParams)
       } else {
-        resData = await phoneLoginRequest(data as PhoneLoginParams)
+        resData = await qgcLoginRequest(data as UserLoginParams)
       }
       if (resData.code === 200 && resData.isSuccess) {
+        // @ts-ignore
         const { accessToken } = resData.content
 
         localStorage.setItem('Authorization', accessToken)
