@@ -1,0 +1,74 @@
+.imagWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  .overhidden {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    user-select: none;
+    .img {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      width: auto;
+      height: 100%;
+      margin: 0 auto;
+      cursor: pointer;
+    }
+    .imgUnsetPointer {
+      cursor: unset;
+    }
+    .imgSetMove {
+      cursor: move;
+    }
+  }
+
+  .AreaButtons {
+    position: absolute;
+    right: 0;
+    bottom: -42px;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 360px;
+    margin: auto;
+  }
+}
+
+.fullScreen {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  :global {
+    .ant-modal-body,
+    .ant-modal-content,
+    .ant-modal-wrap {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+    }
+  }
+  .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  .controls {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+    .left,
+    .right {
+      width: 50%;
+      height: 100%;
+    }
+  }
+}

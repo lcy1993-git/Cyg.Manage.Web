@@ -31,6 +31,12 @@ const PlanManage = Loadable({
   delay: 150,
 })
 
+const SijiMap = Loadable({
+  loader: () => import('@/pages/visualization-results/siji-map'),
+  loading: Loading,
+  delay: 150,
+})
+
 /**
  * 注入projectId,接触新id生成时没有重新挂载的问题
  * @returns
@@ -60,6 +66,11 @@ const routes = [
     title: '规划网架',
     path: '/visualization-results/plan-manage',
     component: <PlanManage />,
+  },
+  {
+    title: '思极测试',
+    path: '/visualization-results/siji-map',
+    component: <SijiMap />,
   },
 ]
 
