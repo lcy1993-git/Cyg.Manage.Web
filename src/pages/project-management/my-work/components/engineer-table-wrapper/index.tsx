@@ -120,6 +120,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     areaId: '',
     company: '',
     companyName: '',
+    canEditQgc: false,
   })
   const [externalStepData] = useState<any>()
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -246,6 +247,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       companyName: record.company,
       minStartTime,
       maxEndTime,
+      canEditQgc: record.canEditQgc,
     })
     setEditEngineerVisible(true)
   }
@@ -1395,6 +1397,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           setInheritState={setInheritState}
           onChange={setEditProjectVisible}
           changeFinishEvent={refreshEvent}
+          canEditQgc={modalNeedInfo.canEditQgc}
         />
       )}
       {copyProjectVisible && (

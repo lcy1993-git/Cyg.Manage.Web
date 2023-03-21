@@ -442,6 +442,7 @@ interface ProjectInfoParams {
   identitys: string[]
   allots: any[]
   operateLog: OperateLog[]
+  projectExt: string
 }
 
 // 获取项目详细信息接口
@@ -455,6 +456,12 @@ export const getProjectInfo = (projectId: string | undefined) => {
 export const editProject = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/Modify`, { method: 'POST', data: params })
+  )
+}
+// 编辑qgc项目信息
+export const editQGCProject = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ModifyQgc`, { method: 'POST', data: params })
   )
 }
 
