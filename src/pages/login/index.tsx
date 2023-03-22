@@ -37,8 +37,8 @@ const Login: React.FC = () => {
   })
   useLayoutEffect(() => {
     ;(async function () {
-      // console.log('sss')
       let url = window.location.href
+      url = url.toLocaleLowerCase()
       if (url.indexOf('userid') > -1) {
         setIsAutoLogin(true)
         var query = window.location.search.substring(1)
