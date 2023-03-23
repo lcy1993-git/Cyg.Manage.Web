@@ -39,7 +39,7 @@ const Login: React.FC = () => {
     ;(async function () {
       let url = window.location.href
       url = url.toLocaleLowerCase()
-      if (url.indexOf('userid') > -1) {
+      if (url.indexOf('ticket') > -1) {
         setIsAutoLogin(true)
         var query = window.location.search.substring(1)
         var vars = query.split('&')
@@ -49,7 +49,7 @@ const Login: React.FC = () => {
           map[pair[0]] = pair[1]
         }
         // @ts-ignore
-        let resData = await qgcAutoLoginRequest({ userId: map.userid })
+        let resData = await qgcAutoLoginRequest({ ticket: map.ticket })
         if (resData.code === 200 && resData.isSuccess) {
           // @ts-ignore
           const { accessToken } = resData.content

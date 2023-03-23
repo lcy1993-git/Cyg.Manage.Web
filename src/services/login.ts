@@ -48,9 +48,9 @@ export const qgcLoginRequest = (params: UserLoginParams) => {
 // qgc免登录
 export const qgcAutoLoginRequest = (params: any) => {
   return cyRequest<any>(() =>
-    request(`${baseUrl.common}/Users/SignInByUserId`, {
+    request(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
       method: 'POST',
-      data: { ...params, clientType: 2 },
+      data: { ...params, appType: 2 },
     })
   )
 }
