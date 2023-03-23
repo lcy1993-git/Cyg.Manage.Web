@@ -16,12 +16,13 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   let targetUrl = encodeURIComponent(url.includes('bbgl') ? url : `http://172.2.48.22${url}`) //目标接口转码
   let isJson = url.includes('/json')
-
+  let isBbgl = url.includes('bbgl')
+  const isNoGlzz = isJson || isBbgl
   const { headers } = options
   if (c_token) {
     return {
-      url: isJson ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
       // url: url,
+      url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
       options: {
         ...options,
         headers: {
@@ -36,7 +37,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   return {
     // url: url,
-    url: isJson ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
+    url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
     options: {
       ...options,
       headers: {
