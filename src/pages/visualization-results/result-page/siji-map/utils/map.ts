@@ -67,10 +67,10 @@ export const initMap = (mapDivId: string, ops: any) => {
  * @returns
  */
 export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean = true) => {
+  clearDatas()
   _projects = projects
   _layerTypes = layerTypes
   if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
-    clearDatas()
     clearHighlight()
     return
   }
@@ -285,6 +285,7 @@ const clearHighlight = () => {
  */
 const clearDatas = () => {
   const layers = map ? map.getStyle().layers : []
+
   for (let index = 0; index < layers.length; index++) {
     const layer = layers[index]
     if (

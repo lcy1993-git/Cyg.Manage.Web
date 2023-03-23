@@ -24,12 +24,13 @@ const VisualizationResults: React.FC = observer(() => {
         <SwapOutlined
           className={styles.changeMap}
           onClick={() => {
-            setSijiFlag(!sijiFlag)
+            // setSijiFlag(!sijiFlag)
+            store.setIsSj()
           }}
         />
       </Tooltip>
 
-      {sijiFlag ? <SijiMapContainerBox /> : <MapContainerShell />}
+      <MapContainerShell />
     </PageCommonWrap>
   )
 })

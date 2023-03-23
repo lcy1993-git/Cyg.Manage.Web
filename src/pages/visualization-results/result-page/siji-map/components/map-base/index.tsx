@@ -16,12 +16,10 @@ import { useContainer } from '../../../mobx-store'
 import { changerLayer, initMap, refreshMap } from '../../utils/map'
 
 import CheckSource from '../check-source'
-import Footer from '../footer'
+import Footer from '../../../../components/footer'
 import MapDisplay from '../map-display'
-import SideMenuTree from '../side-menu-tree'
+import SideMenuTree from '@/pages/visualization-results/components/side-menu-tree'
 import { TableDataType } from '../side-popup'
-import SurveyModal from '../survey-modal/'
-import SurveyTrack from '../survey-track'
 import styles from './index.less'
 
 const BaseMap = observer((props: BaseMapProps) => {
@@ -291,9 +289,9 @@ const BaseMap = observer((props: BaseMapProps) => {
       {/* <div className={styles.surveyModal}>
         {<SurveyModal resData={surveyModalData} hidden={() => setSurveyModalVisible(false)} /> }
       </div> */}
-      {surveyModalVisible && (
+      {/* {surveyModalVisible && (
         <SurveyModal resData={surveyModalData!} hidden={() => setSurveyModalVisible(false)} />
-      )}
+      )} */}
     </>
   )
 })

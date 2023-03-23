@@ -114,7 +114,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [engineerModalActiveId, setEngineerModalActiveId] = useState<string>('')
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
 
-  const [keyWord, setkeyWord] = useState('')
   // 筛选
   const [filterModalVisibel, setFilterModalVisibel] = useState<boolean>(false)
   // 成果管理
@@ -224,9 +223,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const store = useContainer()
   const { vState } = store
   const { checkedProjectIdList, checkedProjectDateList, filterCondition } = vState
+  const [keyWord, setkeyWord] = useState(filterCondition.keyWord ?? '')
   const [resultCondition, setResultCondition] = useState<any>(filterCondition)
-
-  console.log(filterCondition, '55555')
 
   /**
    * 根据用户实时选择的数据动态添加初始和截至时间
@@ -424,6 +422,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       // setTreeData([]);
       // clearState();
       // setSelectedKeys([]);
+      store.setFilterCondition(resultCondition)
       if (treeListReponseData?.length) {
         const data = generateProjectTree(treeListReponseData)
 
@@ -713,7 +712,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           onChange={(e) => {
             setkeyWord(e.target.value)
             setResultCondition({ ...resultCondition, keyWord: e.target.value })
-            store.setFilterCondition(resultCondition)
           }}
           style={{ width: '78%' }}
         />
