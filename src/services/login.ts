@@ -47,7 +47,7 @@ export const qgcLoginRequest = (params: UserLoginParams) => {
 }
 // qgc免登录
 export const qgcAutoLoginRequest = (params: any) => {
-  return request(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
+  return request<LoginSuccessInfo>(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
     method: 'POST',
     data: { ...params, appType: 2 },
   })
