@@ -17,7 +17,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let targetUrl = encodeURIComponent(url.includes('bbgl') ? url : `http://172.2.48.22${url}`) //目标接口转码
   let isJson = url.includes('/json')
   let isBbgl = url.includes('bbgl')
-  const isNoGlzz = isJson || isBbgl
+  let isNoGlzz = isJson || isBbgl
+
   const { headers } = options
   if (c_token) {
     return {

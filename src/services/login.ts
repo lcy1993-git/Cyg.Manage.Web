@@ -47,12 +47,10 @@ export const qgcLoginRequest = (params: UserLoginParams) => {
 }
 // qgc免登录
 export const qgcAutoLoginRequest = (params: any) => {
-  return cyRequest<any>(() =>
-    request(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
-      method: 'POST',
-      data: { ...params, appType: 2 },
-    })
-  )
+  return request(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
+    method: 'POST',
+    data: { ...params, appType: 2 },
+  })
 }
 export interface PhoneLoginParams {
   phone: string
