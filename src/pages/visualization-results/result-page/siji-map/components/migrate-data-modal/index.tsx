@@ -1,10 +1,11 @@
 import TableSearch from '@/components/table-search'
+import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
 import { getProjectTableList } from '@/services/project-management/all-project'
 import { copyMember, dataMigrate } from '@/services/visualization-results/side-tree'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Input, message, Modal, Pagination, Spin, Table } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import { useContainer } from '../../mobx-store'
+import { useContainer } from '../../../mobx-store'
 import styles from './index.less'
 const { Search } = Input
 

@@ -1,7 +1,7 @@
+import { getLayerByName } from '@/pages/visualization-results/utils/methods'
 import TileLayer from 'ol/layer/Tile'
 import Map from 'ol/Map'
 import XYZ from 'ol/source/XYZ'
-import { getLayerByName } from '../../../utils/methods'
 
 export const changBaseMap = (type: number | string, url: string, map: Map) => {
   let imgLayer = getLayerByName('imgLayer', map.getLayers().getArray())

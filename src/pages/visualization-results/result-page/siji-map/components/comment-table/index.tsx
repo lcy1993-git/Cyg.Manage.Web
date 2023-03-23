@@ -11,8 +11,8 @@ import {
 import CommentList from '../side-popup/components/comment-list'
 import { ColumnsType } from 'antd/es/table'
 import moment from 'moment'
-import { findEnumKeyByType } from '../../../utils/loadEnum'
 import { fetchCommentList } from '@/services/visualization-results/side-popup'
+import { findEnumKeyByType } from '@/pages/visualization-results/utils/loadEnum'
 
 const { Option } = Select
 

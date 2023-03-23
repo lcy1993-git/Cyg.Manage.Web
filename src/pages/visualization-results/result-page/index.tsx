@@ -2,11 +2,11 @@ import PageCommonWrap from '@/components/page-common-wrap'
 import { observer } from 'mobx-react-lite'
 import React, { useEffect, useState } from 'react'
 import MapContainerShell from '../components/map-container-shell'
-import SijiMapContainerBox from '../siji-map/components/map-container-shell'
 import { Provider, useContainer } from './mobx-store'
 import styles from './index.less'
 import { SwapOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
+import SijiMapContainerBox from './siji-map/components/map-container-shell'
 
 const VisualizationResults: React.FC = observer(() => {
   const store = useContainer()

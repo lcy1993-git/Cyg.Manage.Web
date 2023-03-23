@@ -4,7 +4,7 @@ import dmtLight from '@/assets/icon-image/menu-tree-icon/多媒体light.png'
 import dmtDark from '@/assets/icon-image/menu-tree-icon/多媒体.png'
 import surveyTrackPng from '@/assets/icon-image/survey-track.png'
 import surveyTrackLightPng from '@/assets/icon-image/survey-track-light.png'
-import { useContainer } from '../../mobx-store'
+import { useContainer } from '../../../mobx-store'
 import classNames from 'classnames'
 import styles from './index.less'
 

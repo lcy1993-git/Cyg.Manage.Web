@@ -4,7 +4,7 @@ import {
   getlibId_new,
   getMaterialItemData,
 } from '@/services/visualization-results/visualization-results'
-import { getTrackRecordDateArray } from '../../utils/methods'
+import { getTrackRecordDateArray } from '../../../utils/methods'
 import getMappingTagsDictionary, { findenumsValue } from './localData/mappingTagsDictionary'
 import { format } from './utils'
 

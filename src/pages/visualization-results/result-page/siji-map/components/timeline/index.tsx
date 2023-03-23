@@ -4,7 +4,7 @@ import styles from './index.less'
 import { TimelineProps } from './index.d'
 import TimelineItem from './components/TimelineItem'
 import Scrollbars from 'react-custom-scrollbars'
-import { useContainer } from '../../mobx-store'
+import { useContainer } from '../../../mobx-store'
 import { observer } from 'mobx-react-lite'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 

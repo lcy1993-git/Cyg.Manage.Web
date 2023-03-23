@@ -21,8 +21,6 @@ import _ from 'lodash'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
 import React, { FC, useEffect, useRef, useState } from 'react'
-import { useContainer } from '../../result-page/mobx-store'
-import { getMoveData } from '../../utils/mapClick'
 import { flattenDeepToKey, getSelectKeyByKeyword, TreeNodeType } from '../../utils/utils'
 import CommentModal from '../comment-modal'
 import ControlLayers from '../control-layers'
@@ -32,9 +30,12 @@ import MaterialModal from '../material-modal'
 import MigrateDataModal from '../migrate-data-modal'
 import ResultModal from '../result-modal'
 import SiderMenuAreaButtons from '../side-menu-area-buttons'
-import SidePopup from '../side-popup'
+
 import MenuTree from './components/menu-tree'
 import styles from './index.less'
+import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
+import SidePopup from '../side-popup'
+import { useContainer } from '../../result-page/mobx-store'
 
 const { RangePicker } = DatePicker
 
@@ -222,8 +223,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false)
   const store = useContainer()
   const { vState } = store
-  const { checkedProjectIdList, checkedProjectDateList } = vState
-  const [filterCondition, setfilterCondition] = useState<any>({ haveAnnotate: 0 })
+  const { checkedProjectIdList, checkedProjectDateList, filterCondition } = vState
+  const [resultCondition, setResultCondition] = useState<any>(filterCondition)
+
+  console.log(filterCondition, '55555')
+
   /**
    * 根据用户实时选择的数据动态添加初始和截至时间
    */
@@ -251,7 +255,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   useEffect(() => {
     clearState()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterCondition])
+  }, [resultCondition])
 
   const clearState = () => {
     setCheckedKeys([])
@@ -272,8 +276,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const whichTabToFetch = () =>
     tabActiveKey === '1'
-      ? fetchAreaEngineerProjectListByParams(filterCondition)
-      : fetchCompanyEngineerProjectListByParams(filterCondition)
+      ? fetchAreaEngineerProjectListByParams(resultCondition)
+      : fetchCompanyEngineerProjectListByParams(resultCondition)
 
   const initSideTree = (data: TreeNodeType[]) => {
     /**
@@ -414,7 +418,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(whichTabToFetch, {
     throttleInterval: 1000,
-    refreshDeps: [filterCondition, tabActiveKey],
+    refreshDeps: [resultCondition, tabActiveKey],
     throwOnError: true,
     onSuccess: () => {
       // setTreeData([]);
@@ -708,7 +712,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
           value={keyWord}
           onChange={(e) => {
             setkeyWord(e.target.value)
-            setfilterCondition({ ...filterCondition, keyWord: e.target.value })
+            setResultCondition({ ...resultCondition, keyWord: e.target.value })
+            store.setFilterCondition(resultCondition)
           }}
           style={{ width: '78%' }}
         />
@@ -874,10 +879,10 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         checkedProjectIdList={checkedProjectIdList}
       />
       <FilterModal
-        defaultData={filterCondition}
+        defaultData={resultCondition}
         visible={filterModalVisibel}
         onChange={setFilterModalVisibel}
-        onSure={(values) => setfilterCondition({ ...values, keyWord })}
+        onSure={(values) => setResultCondition({ ...values, keyWord })}
       />
     </div>
   )

@@ -12,8 +12,8 @@ import { observer } from 'mobx-react-lite'
 import Map from 'ol/Map'
 import { transform } from 'ol/proj'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useContainer } from '../../mobx-store'
-import { changerLayer, initMap } from '../../utils/map'
+import { useContainer } from '../../../mobx-store'
+import { changerLayer, initMap, refreshMap } from '../../utils/map'
 
 import CheckSource from '../check-source'
 import Footer from '../footer'
@@ -23,7 +23,6 @@ import { TableDataType } from '../side-popup'
 import SurveyModal from '../survey-modal/'
 import SurveyTrack from '../survey-track'
 import styles from './index.less'
-import { refreshMap } from '@/pages/visualization-results/siji-map/utils/map'
 
 const BaseMap = observer((props: BaseMapProps) => {
   const [map, setMap] = useState<Map | null>(null)
@@ -98,6 +97,8 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
     refreshMap(projects, checkedLayers)
+
+    console.log(projects, '11111')
   }, [JSON.stringify(projects)])
 
   // 动态刷新图层

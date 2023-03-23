@@ -2,7 +2,7 @@ import { useState } from 'react'
 import MapBase from '../map-base'
 import Layer from 'ol/layer/Layer'
 import LayerGroup from 'ol/layer/Group'
-import { initLayers, initOtherLayers, initTrackLayers, initView } from '../../../utils'
+import { initLayers, initOtherLayers, initTrackLayers, initView } from '../../../../utils'
 import styles from './index.less'
 
 const SjMapContainer = (props: any) => {

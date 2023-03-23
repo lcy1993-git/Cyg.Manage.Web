@@ -1,6 +1,6 @@
 import { MenuUnfoldOutlined } from '@ant-design/icons'
 import { observer } from 'mobx-react-lite'
-import { useContainer } from '../../mobx-store'
+import { useContainer } from '../../../mobx-store'
 import styles from './index.less'
 interface Props {
   onlocationClick: () => void
