@@ -176,6 +176,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   //获取用户身份
   // @ts-ignore
   const { userType } = JSON.parse(localStorage.getItem('userInfo'))
+  //获取免登录票据
+  const ticket = localStorage.getItem('LoginFreeTicket')
+
   const tableRef = useRef<HTMLDivElement>(null)
   const {
     currentClickTabChildActiveType,
@@ -382,7 +385,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         {tableItemData.stateInfo.status !== 14 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item>
-              <a href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}`}>
+              <a
+                href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}&ticket=${ticket}`}
+              >
                 打开设计端
               </a>
             </Menu.Item>

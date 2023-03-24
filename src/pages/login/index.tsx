@@ -49,6 +49,8 @@ const Login: React.FC = () => {
           map[pair[0]] = pair[1]
         }
         // @ts-ignore
+        localStorage.setItem('LoginFreeTicket', map.ticket)
+        // @ts-ignore
         let resData = await qgcAutoLoginRequest({ ticket: map.ticket })
         if (resData.code === 200 && resData.isSuccess) {
           // @ts-ignore

@@ -67,10 +67,10 @@ export const initMap = (mapDivId: string, ops: any) => {
  * @returns
  */
 export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean = true) => {
+  clearDatas()
   _projects = projects
   _layerTypes = layerTypes
   if (!projects || projects.length === 0 || !layerTypes || layerTypes.length === 0) {
-    clearDatas()
     clearHighlight()
     return
   }
