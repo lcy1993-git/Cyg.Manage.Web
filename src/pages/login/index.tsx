@@ -48,9 +48,7 @@ const Login: React.FC = () => {
           let pair = vars[i].split('=')
           map[pair[0]] = pair[1]
         }
-        // @ts-ignore
-        localStorage.setItem('LoginFreeTicket', map.ticket)
-        console.log(localStorage.getItem('LoginFreeTicket'))
+
         // @ts-ignore
         let resData = await qgcAutoLoginRequest({ ticket: map.ticket })
         if (resData.code === 200 && resData.isSuccess) {

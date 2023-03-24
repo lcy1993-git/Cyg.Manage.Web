@@ -52,6 +52,17 @@ export const qgcAutoLoginRequest = (params: any) => {
     data: { ...params, appType: 2 },
   })
 }
+
+//qgc获取ticket
+export const getTicketForDesign = (params: any) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.common}/Users/getSignInTicket`, {
+      method: 'POST',
+      data: { ...params, appType: 8, appKey: '186de47fa894297' },
+    })
+  )
+}
+
 export interface PhoneLoginParams {
   phone: string
   code: string

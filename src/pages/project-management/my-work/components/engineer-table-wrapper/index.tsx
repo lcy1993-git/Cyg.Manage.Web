@@ -20,6 +20,7 @@ import ProjectMergeModal from '@/pages/project-management/all-project/components
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ScreenModal from '@/pages/project-management/all-project/components/screen-modal'
 import FilterEntrustModal from '@/pages/project-management/project-entrust/components/filter-entrust-modal'
+import { getTicketForDesign } from '@/services/login'
 import {
   againInherit,
   applyKnot,
@@ -176,8 +177,6 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   //获取用户身份
   // @ts-ignore
   const { userType } = JSON.parse(localStorage.getItem('userInfo'))
-  //获取免登录票据
-  const ticket = localStorage.getItem('LoginFreeTicket')
 
   const tableRef = useRef<HTMLDivElement>(null)
   const {
@@ -195,6 +194,14 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       ?.children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
+
+  //@ts-ignore
+  const { id } = JSON.parse(window.localStorage.getItem('userInfo'))
+  // const [loginTicket, setLoginTicket] = useState<string>('')
+  //获取ticket
+  const { data: ticket, run } = useRequest(() => getTicketForDesign({ userId: id }), {
+    manual: true,
+  })
 
   const { data: columnsData } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
@@ -384,9 +391,11 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
         {tableItemData.stateInfo.status !== 14 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
-            <Menu.Item>
+            <Menu.Item onMouseEnter={run}>
               <a
-                href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}&ticket=${ticket}`}
+                href={`CygPowerDistributionDesign://open?projectId=${
+                  tableItemData.id
+                }&ticket=${ticket!}`}
               >
                 打开设计端
               </a>
