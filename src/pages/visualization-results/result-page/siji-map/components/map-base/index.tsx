@@ -22,18 +22,18 @@ import SideMenuTree from '@/pages/visualization-results/components/side-menu-tre
 import { TableDataType } from '../side-popup'
 import styles from './index.less'
 
-const BaseMap = observer((props: BaseMapProps) => {
+const SjBaseMap = observer((props: any) => {
   const [map, setMap] = useState<Map | null>(null)
   const mapElement = useRef(null)
   const [checkedLayers, setCheckedLayers] = useState<number[]>([1])
-  const { layers, layerGroups, trackLayers, view, setView, setLayerGroups } = props
+  const { view, setView } = props
 
   // 图层控制层数据
   const [preDesignVisible, setPreDesignVisible] = useState<boolean>(false)
-  const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(true)
-  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false)
-  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false)
-  const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false)
+  // const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(true)
+  // const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false)
+  // const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false)
+  // const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false)
   const [sideMenuVisibel, setSideMenuVisibel] = useState(true)
   // 从Vstate获取外部传入的数据
   const store = useContainer()
@@ -49,6 +49,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     checkedProjectIdList: projects,
     filterCondition,
     visibleLeftSidebar,
+    surveyLayerVisible,
+    planLayerVisible,
+    designLayerVisible,
+    dismantleLayerVisible,
     positionMap,
     observeTrack,
     mediaSign, // 多媒体标记开关
@@ -95,8 +99,6 @@ const BaseMap = observer((props: BaseMapProps) => {
   useEffect(() => {
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
     refreshMap(projects, checkedLayers)
-
-    console.log(projects, '11111')
   }, [JSON.stringify(projects)])
 
   // 动态刷新图层
@@ -104,17 +106,6 @@ const BaseMap = observer((props: BaseMapProps) => {
   //   const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
   //   map && refreshMap(ops, projects!, true, startDate, endDate)
   // }, [JSON.stringify(projects), startDate, endDate])
-
-  useEffect(() => {
-    // 加载勘察轨迹
-  }, [observeTrack, JSON.stringify(projects)])
-
-  useEffect(() => {
-    // 加载多媒体标记
-  }, [mediaSign])
-
-  // 地图定位
-  useEffect(() => {}, [JSON.stringify(positionMap)])
 
   // 左侧菜单伸缩时刷新地图尺寸
   useEffect(() => {
@@ -146,14 +137,14 @@ const BaseMap = observer((props: BaseMapProps) => {
     [map]
   )
 
-  const layersState = useMemo(() => {
-    return [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible]
-  }, [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible])
-  // 当预设图层切换时
-  useUpdateEffect(() => {
-    // 处理预设 // ! TODO
-    // getLayerGroupByName('preDesignLayer', layerGroups).setVisible(preDesignVisible)
-  }, [preDesignVisible])
+  // const layersState = useMemo(() => {
+  //   return [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible]
+  // }, [surveyLayerVisible, planLayerVisible, designLayerVisible, dismantleLayerVisible])
+  // // 当预设图层切换时
+  // useUpdateEffect(() => {
+  //   // 处理预设 // ! TODO
+  //   // getLayerGroupByName('preDesignLayer', layerGroups).setVisible(preDesignVisible)
+  // }, [preDesignVisible])
 
   // 当勘察图层切换时
   useEffect(() => {
@@ -192,11 +183,6 @@ const BaseMap = observer((props: BaseMapProps) => {
     // const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
     refreshMap(projects!, layers)
   }, [dismantleLayerVisible])
-
-  const [street, setStreet] = useState(0)
-  const [satellite, setSatellite] = useState(0)
-
-  const prop = { street, setStreet, satellite, setSatellite }
 
   const onlocationClick = () => {
     // 当点击定位按钮时
@@ -242,10 +228,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     dismantleLayerVisible: dismantleLayerVisible,
     preDesignVisible,
     setPreDesignVisible,
-    setSurveyLayerVisible: setSurveyLayerVisible,
-    setPlanLayerVisible: setPlanLayerVisible,
-    setDesignLayerVisible: setDesignLayerVisible,
-    setDismantleLayerVisible: setDismantleLayerVisible,
+    // setSurveyLayerVisible: setSurveyLayerVisible,
+    // setPlanLayerVisible: setPlanLayerVisible,
+    // setDesignLayerVisible: setDesignLayerVisible,
+    // setDismantleLayerVisible: setDismantleLayerVisible,
   }
 
   const sidePopupProps = {
@@ -277,12 +263,7 @@ const BaseMap = observer((props: BaseMapProps) => {
           setSourceType={setSourceType}
         />
       </div>
-      <CheckSource
-        type={sourceType}
-        map={map!}
-        setSourceType={setSourceType}
-        {...prop}
-      ></CheckSource>
+
       <div className={styles.footer}>
         <Footer onlocationClick={onlocationClick} />
       </div>
@@ -296,4 +277,4 @@ const BaseMap = observer((props: BaseMapProps) => {
   )
 })
 
-export default BaseMap
+export default SjBaseMap

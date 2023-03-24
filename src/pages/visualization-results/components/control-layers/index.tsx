@@ -1,4 +1,6 @@
 import classnames from 'classnames'
+import { observer } from 'mobx-react-lite'
+import { useContainer } from '../../result-page/mobx-store'
 import styles from './index.less'
 
 const imgResourse = {
@@ -64,58 +66,63 @@ const ListItem = (props: ListProps) => {
   )
 }
 
-const ControlLayers = (props: Props) => {
+const ControlLayers = observer((props: Props) => {
+  const { preDesignVisible, setPreDesignVisible } = props
+
+  const store = useContainer()
+  const { vState } = store
   const {
+    isSj,
+    currentLayers,
     surveyLayerVisible,
     planLayerVisible,
     designLayerVisible,
     dismantleLayerVisible,
-    preDesignVisible,
-    setPreDesignVisible,
-    setSurveyLayerVisible,
-    setPlanLayerVisible,
-    setDesignLayerVisible,
-    setDismantleLayerVisible,
-  } = props
+  } = vState
 
   return (
     <div className={styles.container}>
       <div className={styles.icon}>
-        <div className={styles.list}>
-          <ListItem
-            name="规划图层"
-            sign="yushe"
-            state={preDesignVisible}
-            onChange={() => setPreDesignVisible(!preDesignVisible)}
-          />
+        <div className={`${styles.list}  ${isSj ? styles.sjList : ''}`}>
+          {!isSj && (
+            <ListItem
+              name="规划图层"
+              sign="yushe"
+              state={preDesignVisible}
+              onChange={() => setPreDesignVisible(!preDesignVisible)}
+            />
+          )}
+
           <ListItem
             name="勘察图层"
             sign="kancha"
             state={surveyLayerVisible}
-            onChange={() => setSurveyLayerVisible(!surveyLayerVisible)}
+            onChange={() => {
+              store.setSurveyLayerVisible()
+            }}
           />
           <ListItem
             name="方案图层"
             sign="fangan"
             state={planLayerVisible}
-            onChange={() => setPlanLayerVisible(!planLayerVisible)}
+            onChange={() => store.setPlanLayerVisible()}
           />
           <ListItem
             name="设计图层"
             sign="sheji"
             state={designLayerVisible}
-            onChange={() => setDesignLayerVisible(!designLayerVisible)}
+            onChange={() => store.setDesignLayerVisible()}
           />
           <ListItem
             name="拆除图层"
             sign="chaichu"
             state={dismantleLayerVisible}
-            onChange={() => setDismantleLayerVisible(!dismantleLayerVisible)}
+            onChange={() => store.setDismantleLayerVisible()}
           />
         </div>
       </div>
     </div>
   )
-}
+})
 
 export default ControlLayers

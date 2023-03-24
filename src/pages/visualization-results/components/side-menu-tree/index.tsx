@@ -36,6 +36,7 @@ import styles from './index.less'
 import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
 import SidePopup from '../side-popup'
 import { useContainer } from '../../result-page/mobx-store'
+import SjSidePopup from '../../result-page/siji-map/components/side-popup'
 
 const { RangePicker } = DatePicker
 
@@ -222,7 +223,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false)
   const store = useContainer()
   const { vState } = store
-  const { checkedProjectIdList, checkedProjectDateList, filterCondition } = vState
+  const { checkedProjectIdList, checkedProjectDateList, filterCondition, isSj } = vState
   const [keyWord, setkeyWord] = useState(filterCondition.keyWord ?? '')
   const [resultCondition, setResultCondition] = useState<any>(filterCondition)
 
@@ -630,12 +631,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }
 
+  const haveCheckedKeys = checkedProjectIdList.map((i) => i.id)
+
   const treeProps = {
     onExpand: onExpand,
     onCheck: (checked: any, info: any) => onCheck(checked, info),
     // treeData: treeData,
     className: classNames(styles.sideMenu),
     onSelect: onSelect,
+    defaultCheckedKeys: haveCheckedKeys,
   }
 
   const handlerPositionClick = (flag: any) => {
@@ -848,7 +852,11 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         layerstype={getLayerstype()}
       />
       <div>
-        {sidePopupHeight && <SidePopup {...props.sidePopupProps} height={sidePopupHeight} />}
+        {sidePopupHeight && isSj ? (
+          <SjSidePopup {...props.sidePopupProps} height={sidePopupHeight} />
+        ) : (
+          <SidePopup {...props.sidePopupProps} height={sidePopupHeight} />
+        )}
       </div>
 
       {projectModalVisible && (

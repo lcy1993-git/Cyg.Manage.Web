@@ -6,7 +6,6 @@ import Map from 'ol/Map'
 import { transform } from 'ol/proj'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useContainer } from '../../result-page/mobx-store'
-import { initMap } from '../../result-page/siji-map/utils/map'
 import { bd09Towgs84 } from '../../utils'
 import { BaseMapProps } from '../../utils/init'
 import { mapClick, mapMoveend, mapPointermove } from '../../utils/mapClick'
@@ -41,10 +40,10 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 图层控制层数据
   const [preDesignVisible, setPreDesignVisible] = useState<boolean>(false)
-  const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(true)
-  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false)
-  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false)
-  const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false)
+  // const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(true)
+  // const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false)
+  // const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false)
+  // const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false)
   const [sideMenuVisibel, setSideMenuVisibel] = useState(true)
   // 从Vstate获取外部传入的数据
   const store = useContainer()
@@ -64,7 +63,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     observeTrack,
     mediaSign, // 多媒体标记开关
     rangeDate,
-    isSj,
+    surveyLayerVisible,
+    planLayerVisible,
+    designLayerVisible,
+    dismantleLayerVisible,
   } = vState
 
   const { startDate, endDate } = rangeDate
@@ -87,110 +89,83 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 勘察轨迹
   const [surveyModalVisible, setSurveyModalVisible] = useState(false)
   const [surveyModalData, setSurveyModalData] = useState(null)
-
   // 挂载
   useMount(() => {
-    console.log('000')
-
     loadEnums().then((data) => {
       localStorage.setItem('loadEnumsData', JSON.stringify(data.content))
     })
-
-    initMap(mapElement.current!, {
-      setRightSidebarVisiviabel,
-      setRightSidebarData,
-      setSurveyModalVisible,
-      setSurveyModalData,
-      addMediaData,
+    const initialMap = new Map({
+      target: mapElement.current!,
+      layers: [...layers],
+      view,
+      controls: [],
     })
-  })
 
-  useUpdateEffect(() => {
-    setMap(null)
-    console.log(isSj, '1111')
+    // 初始化勘察图层、方案图层、设计图层、删除图层、
+    layerGroups.forEach((item: LayerGroup) => {
+      initialMap.addLayer(item)
+    })
 
-    if (!isSj) {
-      const initialMap = new Map({
-        target: mapElement.current!,
-        layers: [...layers],
-        view,
-        controls: [],
-      })
+    // 初始化勘察轨迹图层、交底轨迹图层
+    trackLayers.forEach((item: LayerGroup) => {
+      initialMap.addLayer(item)
+    })
+    drawBox(initialMap, layerGroups)
 
-      // 初始化勘察图层、方案图层、设计图层、删除图层、
-      layerGroups.forEach((item: LayerGroup) => {
-        initialMap.addLayer(item)
-      })
+    const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel }
 
-      // 初始化勘察轨迹图层、交底轨迹图层
-      trackLayers.forEach((item: LayerGroup) => {
-        initialMap.addLayer(item)
-      })
-      drawBox(initialMap, layerGroups)
+    document.addEventListener('keydown', async (e) => {
+      if (e.keyCode === 16) {
+        setDrawBox(true)
+      }
 
-      const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel }
+      if (e.keyCode === 17) {
+        // Ctrl开启点选
+        initialMap.set('isCtrl', true)
+      }
 
-      document.addEventListener('keydown', async (e) => {
-        if (e.keyCode === 16) {
-          setDrawBox(true)
-        }
+      if (e.keyCode === 27) {
+        // esc清空迁移数据
+        // Ctrl开启点选
+        clearHighlightLayer(initialMap)
+      }
+    })
 
-        if (e.keyCode === 17) {
-          // Ctrl开启点选
-          initialMap.set('isCtrl', true)
-        }
+    document.addEventListener('keyup', async (e) => {
+      if (e.keyCode === 16) {
+        setDrawBox(false)
+      }
 
-        if (e.keyCode === 27) {
-          // esc清空迁移数据
-          // Ctrl开启点选
-          clearHighlightLayer(initialMap)
-        }
-      })
+      if (e.keyCode === 17) {
+        initialMap.set('isCtrl', false)
+      }
+    })
 
-      document.addEventListener('keyup', async (e) => {
-        if (e.keyCode === 16) {
-          setDrawBox(false)
-        }
-
-        if (e.keyCode === 17) {
-          initialMap.set('isCtrl', false)
-        }
-      })
-
-      // 地图点击事件
-      initialMap.on('click', (e: Event) =>
-        mapClick(e, initialMap, {
-          setRightSidebarVisiviabel,
-          setRightSidebarData,
-          setSurveyModalVisible,
-          setSurveyModalData,
-          addMediaData,
-        })
-      )
-      initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap))
-      initialMap.on('moveend', (e: Event) => {
-        refreshMap(ops, null)
-        mapMoveend(e, initialMap)
-      })
-
-      initialMap.getView().on('change:resolution', (e: Event) => {
-        checkZoom(e, initialMap)
-      })
-      refreshMap(ops, projects!)
-      setMap(initialMap)
-      store.setMapRef(initialMap)
-
-      // 注册 点击事件
-    } else {
-      initMap(mapElement.current!, {
+    // 地图点击事件
+    initialMap.on('click', (e: Event) =>
+      mapClick(e, initialMap, {
         setRightSidebarVisiviabel,
         setRightSidebarData,
         setSurveyModalVisible,
         setSurveyModalData,
         addMediaData,
       })
-    }
-  }, [isSj])
+    )
+    initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap))
+    initialMap.on('moveend', (e: Event) => {
+      refreshMap(ops, null)
+      mapMoveend(e, initialMap)
+    })
+
+    initialMap.getView().on('change:resolution', (e: Event) => {
+      checkZoom(e, initialMap)
+    })
+    refreshMap(ops, projects!)
+    setMap(initialMap)
+    store.setMapRef(initialMap)
+
+    // 注册 点击事件
+  })
 
   // 动态刷新refreshMap
   useEffect(() => {
@@ -204,7 +179,6 @@ const BaseMap = observer((props: BaseMapProps) => {
   //   const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
   //   map && refreshMap(ops, projects!, true, startDate, endDate)
   // }, [JSON.stringify(projects), startDate, endDate])
-
   useEffect(() => {
     // 加载勘察轨迹
     if (observeTrack) map && loadTrackLayers(map, trackLayers)
@@ -342,10 +316,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     dismantleLayerVisible: dismantleLayerVisible,
     preDesignVisible,
     setPreDesignVisible,
-    setSurveyLayerVisible: setSurveyLayerVisible,
-    setPlanLayerVisible: setPlanLayerVisible,
-    setDesignLayerVisible: setDesignLayerVisible,
-    setDismantleLayerVisible: setDismantleLayerVisible,
+    // setSurveyLayerVisible: setSurveyLayerVisible,
+    // setPlanLayerVisible: setPlanLayerVisible,
+    // setDesignLayerVisible: setDesignLayerVisible,
+    // setDismantleLayerVisible: setDismantleLayerVisible,
   }
 
   const sidePopupProps = {

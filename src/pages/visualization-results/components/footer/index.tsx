@@ -15,7 +15,7 @@ const Footer = observer((props: Props) => {
   const { onlocationClick } = props
   const store = useContainer()
   const { vState } = store
-  const { visibleLeftSidebar } = vState
+  const { visibleLeftSidebar, isSj } = vState
   return (
     <div className={`${styles.footerContainer} flex`}>
       <div className={styles.icon} onClick={() => store.setVisibleLeftSidebar()}>
@@ -26,13 +26,19 @@ const Footer = observer((props: Props) => {
         <span>
           经度:
           <span id={'currentPositionX'}></span>
+          <Divider />
           纬度:
           <span id={'currentPositionY'}></span>
         </span>
-        <Divider />
-        <span>比例尺:</span>
-        <Divider />
-        <span id="currentScaleSize"></span>
+
+        {!isSj && (
+          <>
+            <Divider />
+            <span>比例尺:</span>
+            <Divider />
+            <span id="currentScaleSize"></span>
+          </>
+        )}
       </div>
     </div>
   )

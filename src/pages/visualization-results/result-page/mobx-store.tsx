@@ -10,6 +10,11 @@ interface RangeDate {
 }
 
 export interface VisualizationResultsStateType {
+  surveyLayerVisible: boolean
+  planLayerVisible: boolean
+  designLayerVisible: boolean
+  dismantleLayerVisible: boolean
+
   isSj: boolean
   currentLayers: number[] //当前选中图层
   filterCondition: EngineerProjetListFilterParams //filter条件
@@ -38,6 +43,11 @@ export interface VisualizationResultsStateType {
 }
 
 const initState = {
+  surveyLayerVisible: true,
+  planLayerVisible: false,
+  designLayerVisible: false,
+  dismantleLayerVisible: false,
+
   isSj: true,
   filterCondition: { haveAnnotate: 0 },
   currentLayers: [1],
@@ -67,6 +77,18 @@ function Store(vState: VisualizationResultsStateType) {
     vState,
     setIsSj() {
       this.vState.isSj = !this.vState.isSj
+    },
+    setSurveyLayerVisible() {
+      this.vState.surveyLayerVisible = !this.vState.surveyLayerVisible
+    },
+    setPlanLayerVisible() {
+      this.vState.planLayerVisible = !this.vState.planLayerVisible
+    },
+    setDesignLayerVisible() {
+      this.vState.designLayerVisible = !this.vState.designLayerVisible
+    },
+    setDismantleLayerVisible() {
+      this.vState.dismantleLayerVisible = !this.vState.dismantleLayerVisible
     },
     setFilterCondition(filterCondition: EngineerProjetListFilterParams) {
       this.vState.filterCondition = filterCondition
