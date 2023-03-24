@@ -189,8 +189,8 @@ export const initTrackLayers = (): LayerGroup[] => {
 export const initView = new View({
   center: proj.transform([104.08537388, 30.58850819], 'EPSG:4326', 'EPSG:3857'),
   zoom: 5,
-  maxZoom: 25,
-  minZoom: 1,
+  maxZoom: 18,
+  minZoom: 0,
   projection: 'EPSG:3857',
 })
 
