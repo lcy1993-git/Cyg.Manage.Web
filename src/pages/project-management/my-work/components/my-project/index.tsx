@@ -15,6 +15,7 @@ import ProjectRemovalModal from '@/pages/project-management/all-project/componen
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
+import { getTicketForDesign } from '@/services/login'
 import {
   applyKnot,
   canEditArrange,
@@ -31,6 +32,7 @@ import {
 } from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
 import { uniq } from 'lodash'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
@@ -502,6 +504,24 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     setExternalArrangeModalVisible(true)
   }
 
+  //@ts-ignore
+  // const { id } = JSON.parse(window.localStorage.getItem('userInfo'))
+  // const [loginTicket, setLoginTicket] = useState<string>('')
+  //获取ticket
+  // const { run } = useRequest(() => getTicketForDesign({ userId: id }), {
+  //   manual: true,
+  //   onSuccess: (data) => {
+  //     if (data) {
+  //       setLoginTicket('11111')
+  //     }
+  //   },
+  //   onError: (err) => {
+  //     console.log(err)
+  //     setLoginTicket('5566')
+  //   },
+  // })
+  // console.log(loginTicket, '333')
+
   const batchButtonElement = () => {
     return sideVisible && favType === 3 ? (
       buttonJurisdictionArray?.includes('remove-favorite-project') && (
@@ -516,18 +536,27 @@ const MyProject: React.FC<ProjectParams> = (props) => {
         </Button>
       )
     ) : currentClickTabChildActiveType === 'my' ? (
-      <Button
-        type="primary"
-        onClick={() => {
-          if (tableSelectKeys.length === 0) {
-            message.info('您还未选择任何项目')
-            return
-          }
-          setExportPointVisible(true)
-        }}
-      >
-        导出坐标授权
-      </Button>
+      <>
+        {/* <Button type="primary" onClick={run}>
+          <a
+            href={`CygPowerDistributionDesign://open?projectId=${tableSelectKeys[0]}&ticket=${loginTicket}`}
+          >
+            打开设计端
+          </a>
+        </Button> */}
+        <Button
+          type="primary"
+          onClick={() => {
+            if (tableSelectKeys.length === 0) {
+              message.info('您还未选择任何项目')
+              return
+            }
+            setExportPointVisible(true)
+          }}
+        >
+          导出坐标授权
+        </Button>
+      </>
     ) : currentClickTabChildActiveType === 'awaitApprove' &&
       buttonJurisdictionArray?.includes('all-project-report-project') ? (
       <Button type="primary" onClick={() => reportApprove(tableSelectKeys)}>

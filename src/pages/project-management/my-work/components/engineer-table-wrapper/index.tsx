@@ -197,9 +197,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   //@ts-ignore
   const { id } = JSON.parse(window.localStorage.getItem('userInfo'))
-  // const [loginTicket, setLoginTicket] = useState<string>('')
   //获取ticket
-  const { data: ticket, run } = useRequest(() => getTicketForDesign({ userId: id }), {
+  const { run } = useRequest(() => getTicketForDesign({ userId: id }), {
     manual: true,
   })
 
@@ -293,6 +292,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       ...projectInfo,
     })
     setArchiveVisible(true)
+  }
+
+  const openDesign = async (id: string) => {
+    const resData = await run()
+    const a = document.createElement('a')
+    a.href = `CygPowerDistributionDesign://open?projectId=${id}&ticket=${resData}`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
   }
 
   const projectItemMenu = (
@@ -391,14 +399,12 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
         {tableItemData.stateInfo.status !== 14 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
-            <Menu.Item onMouseEnter={run}>
-              <a
-                href={`CygPowerDistributionDesign://open?projectId=${
-                  tableItemData.id
-                }&ticket=${ticket!}`}
-              >
-                打开设计端
-              </a>
+            <Menu.Item onClick={() => openDesign(tableItemData.id)}>
+              {/* <a
+                href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}&ticket=${loginTicket}`}
+              > */}
+              打开设计端
+              {/* </a> */}
             </Menu.Item>
           )}
       </Menu>
