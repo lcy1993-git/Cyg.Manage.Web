@@ -50,6 +50,7 @@ const Login: React.FC = () => {
         }
         // @ts-ignore
         localStorage.setItem('LoginFreeTicket', map.ticket)
+        console.log(localStorage.getItem('LoginFreeTicket'))
         // @ts-ignore
         let resData = await qgcAutoLoginRequest({ ticket: map.ticket })
         if (resData.code === 200 && resData.isSuccess) {
