@@ -352,6 +352,7 @@ export const getStopServerList = (
   //   .catch(() => {
   //     loginFuc(values)
   //   })
+  localStorage.setItem('serverCode', '39.99.251.67')
   loginFuc(values)
 }
 const getNoticeReq = (

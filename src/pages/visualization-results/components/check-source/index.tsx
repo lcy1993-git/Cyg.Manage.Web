@@ -72,7 +72,7 @@ const CheckSource: React.FC<CheckSourceProps> = ({
       }
       const server = localStorage.getItem('serverCode')
       if (!server || server === 'undefined') {
-        // history.push('/login')
+        history.push('/login')
       } else {
         getUseFulMapList({
           // serverCode: '171.223.214.154' || server,
