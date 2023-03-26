@@ -1,11 +1,11 @@
-import request from '@/utils/request'
-import ApiFileView from '../api-file-view'
-import { cyRequest, baseUrl } from '@/services/common'
-import type { FileType } from '../api-file-view/getStrategyComponent'
 // import FileDwgView from '../api-file-view/componnents/file-dwg-view';
 import PdfFileView from '@/components/pdf-file-view'
-import XlsxViewer from '../api-file-view/componnents/file-excel-view'
+import { baseUrl } from '@/services/common'
+import request from '@/utils/request'
 import React from 'react'
+import ApiFileView from '../api-file-view'
+import XlsxViewer from '../api-file-view/componnents/file-excel-view'
+import type { FileType } from '../api-file-view/getStrategyComponent'
 
 interface UrlFileViewProps {
   url?: string
@@ -24,6 +24,7 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   ...rest
 }) => {
   let api: any = null
+  let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=https://srthkf2.gczhyun.com:21530`
   if (fileType === 'pdf') {
     api = {
       url: `${baseUrl[requestSource]}${url}?path=${params.path}`,
@@ -31,6 +32,8 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
         Authorization: window.localStorage.getItem('Authorization'),
       },
     }
+    console.log(api.url)
+
     return <PdfFileView params={api} hasAuthorization={true} {...rest} />
   } else if (fileType === 'xlsx') {
     api = `${baseUrl[requestSource]}${url}?path=${params.path}&token=${window.localStorage.getItem(
