@@ -4,7 +4,7 @@ import LogoComponent from '@/components/logo-component'
 import { getAuthorityModules, getUserInfoRequest, qgcAutoLoginRequest } from '@/services/login'
 import { flatten } from '@/utils/utils'
 import { useMount } from 'ahooks'
-import { message, Spin } from 'antd'
+import { Spin } from 'antd'
 import React, { useLayoutEffect, useState } from 'react'
 import { history } from 'umi'
 import LoginForm from './components/login-form'
@@ -43,12 +43,11 @@ const Login: React.FC = () => {
         setIsAutoLogin(true)
         var query = window.location.search.substring(1)
         var vars = query.split('&')
-        const map = {}
+        const map: any = {}
         for (let i = 0; i < vars.length; i++) {
           let pair = vars[i].split('=')
           map[pair[0]] = pair[1]
         }
-
         // @ts-ignore
         let resData = await qgcAutoLoginRequest({ ticket: map.ticket })
         if (resData.code === 200 && resData.isSuccess) {
@@ -69,7 +68,6 @@ const Login: React.FC = () => {
           localStorage.setItem('userInfo', JSON.stringify(userInfo))
           localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
 
-          message.success('登录成功', 1.5)
           history.push('/index')
         }
       }
@@ -78,7 +76,7 @@ const Login: React.FC = () => {
   return (
     <div className={styles.loginPage}>
       {isAutoLogin ? (
-        <Spin tip="正在登录...">
+        <Spin tip="正在加载...">
           <div className={styles.autoLogin}></div>
         </Spin>
       ) : (
