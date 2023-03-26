@@ -9,8 +9,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let host = window.location.host
   let c_token = localStorage.getItem('Authorization')
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
-  let handleUrl = url.includes('bbgl') ? url.slice(23) : url
-  let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`) //目标接口转码
+  let handleUrl = url.includes('bbgl') ? url.slice(23) : url.slice(4)
+  let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530${handleUrl}`) //目标接口转码
 
   // let targetPort = getServiceIP(url)
 
@@ -24,9 +24,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
     return {
       // url: url,
       // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
-      url: isNoGlzz
-        ? url
-        : `https://srthkf1.gczhyun.com:21530/glzz${accessUrl}?target_url=${targetUrl}`,
+      url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
       options: {
         ...options,
         headers: {
@@ -42,9 +40,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   return {
     // url: url,
     // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
-    url: isNoGlzz
-      ? url
-      : `https://srthkf1.gczhyun.com:21530/glzz${accessUrl}?target_url=${targetUrl}`,
+    url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
     options: {
       ...options,
       headers: {

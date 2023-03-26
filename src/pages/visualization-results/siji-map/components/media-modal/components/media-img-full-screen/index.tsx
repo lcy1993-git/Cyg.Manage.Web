@@ -22,6 +22,10 @@ const MediaImgFullScreen: React.FC<MediaImgFullScreenProps> = ({
     setIsFullScreen(false)
   })
 
+  let handleUrl = `${baseUrl.upload}`.slice(4)
+  let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530${handleUrl}`)
+  let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=${targetUrl}`
+
   return isFullScreen ? (
     <div
       className={styles.fullScreen}
@@ -37,7 +41,7 @@ const MediaImgFullScreen: React.FC<MediaImgFullScreenProps> = ({
       <img
         className={styles.fullScreenImg}
         crossOrigin={''}
-        src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+        src={`${proxyUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
       />
     </div>
   ) : null
