@@ -10,7 +10,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let c_token = localStorage.getItem('Authorization')
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
   let handleUrl = url.includes('bbgl') ? url.slice(23) : url
-  let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530/glzz${handleUrl}`) //目标接口转码
+  let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530/glzz${handleUrl}`) //目标接口转码
 
   // let targetPort = getServiceIP(url)
 
