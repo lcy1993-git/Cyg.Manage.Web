@@ -24,6 +24,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
     return {
       // url: url,
       // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
+      // url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
       url: isNoGlzz
         ? url
         : `https://srthkf1.gczhyun.com:21530/glzz${accessUrl}?target_url=${targetUrl}`,
@@ -42,6 +43,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   return {
     // url: url,
     // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
+    // url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
     url: isNoGlzz
       ? url
       : `https://srthkf1.gczhyun.com:21530/glzz${accessUrl}?target_url=${targetUrl}`,

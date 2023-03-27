@@ -634,9 +634,9 @@ export const modifyMultipleProjectLib = (params: any) => {
 // 获取设计成果树状结构
 export const getResultTreeData = (projectId: string) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
+    request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory?projectId=${projectId}`, {
       method: 'GET',
-      params: { projectId },
+      // params: { projectId },
     })
   )
 }
