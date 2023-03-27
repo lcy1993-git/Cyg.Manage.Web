@@ -135,7 +135,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
               percent === 100 ? styles.imgUnsetPointer : styles.imgSetMove
             )}
             crossOrigin={''}
-            src={`${proxyUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+            src={`${proxyUrl}/Download/GetFileById&fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
         </div>
         <div className={styles.AreaButtons}>
