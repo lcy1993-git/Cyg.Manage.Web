@@ -76,7 +76,7 @@ const HealthPolling: React.FC = () => {
     if (serverCode && serverCode !== 'null' && serverCode !== 'undefined') {
       getStopNotice()
     }
-  }, 5000)
+  }, 30000)
   return <div></div>
 }
 

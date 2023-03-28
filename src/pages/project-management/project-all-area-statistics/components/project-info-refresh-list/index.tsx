@@ -1,22 +1,22 @@
-import EmptyTip from '@/components/empty-tip';
-import ScrollListQuee from '@/components/scroll-list-quee';
-import type { AreaInfo, projectOperationLogParams, RefreshDataType } from '@/services/index';
-import { getProjectOperateLogs } from '@/services/project-management/project-statistics-v2';
-import { useRequest } from 'ahooks';
-import { Spin } from 'antd';
-import moment from 'moment';
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
-import { useProjectAllAreaStatisticsStore } from '../../store';
-import ProjectItem from './components/project-Item';
+import EmptyTip from '@/components/empty-tip'
+import ScrollListQuee from '@/components/scroll-list-quee'
+import type { AreaInfo, projectOperationLogParams, RefreshDataType } from '@/services/index'
+import { getProjectOperateLogs } from '@/services/project-management/project-statistics-v2'
+import { useRequest } from 'ahooks'
+import { Spin } from 'antd'
+import moment from 'moment'
+import type { FC } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useProjectAllAreaStatisticsStore } from '../../store'
+import ProjectItem from './components/project-Item'
 
 export interface ProjectInfoRefreshListProps {
-  currentAreaInfo?: AreaInfo;
+  currentAreaInfo?: AreaInfo
 }
 
 const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
-  const [listData, setListData] = useState<RefreshDataType[]>([]);
-  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const [listData, setListData] = useState<RefreshDataType[]>([])
+  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore()
 
   // const [refreshData, setrefreshData] = useState<RefreshDataType[]>([]);
   // const ref = useRef<HTMLDivElement>(null);
@@ -29,18 +29,18 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
    */
   // const visebleCount = Math.floor(size.height ? size.height / 35 : 4);
 
-  const allCount = 30;
+  const allCount = 30
 
   const params: projectOperationLogParams = {
     limit: allCount,
     areaCode: currentAreaInfo?.areaId,
     areaType: currentAreaInfo?.areaLevel ?? '1',
-  };
+  }
 
   useEffect(() => {
-    setListData([]);
+    setListData([])
     // setrefreshData([]);
-  }, [currentAreaInfo]);
+  }, [currentAreaInfo])
 
   const { data, cancel, loading } = useRequest(
     () =>
@@ -51,7 +51,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
       }),
     {
       ready: !!projectShareCompanyId,
-      pollingInterval: 3000,
+      pollingInterval: 60000,
       refreshDeps: [JSON.stringify(currentAreaInfo)],
       onSuccess: () => {
         // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse
@@ -74,17 +74,17 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
         // }
         if (data && Array.isArray(data)) {
           if (data.length >= 30) {
-            setListData([...data.slice(-30)]);
+            setListData([...data.slice(-30)])
           } else {
-            setListData([...data]);
+            setListData([...data])
           }
         }
       },
       onError: () => {
-        cancel();
+        cancel()
       },
-    },
-  );
+    }
+  )
 
   // useEffect(() => {
   //   run();
@@ -121,12 +121,12 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
             operationCategory={item.operationCategory}
             date={moment(item.date).format('MM-DD HH:mm')}
           />
-        ));
+        ))
       }}
     </ScrollListQuee>
   ) : (
     <EmptyTip description="暂无实时数据" />
-  );
-};
+  )
+}
 
-export default ProjectInfoRefreshList;
+export default ProjectInfoRefreshList
