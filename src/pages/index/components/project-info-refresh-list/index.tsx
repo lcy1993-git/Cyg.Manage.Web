@@ -1,27 +1,27 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
-import styles from './index.less';
-import _ from 'lodash';
-import { useRequest, useSize, useInViewport, useMount } from 'ahooks';
-import ScrollListQuee from '@/components/scroll-list-quee';
-import ProjectItem from './components/project-Item';
+import React, { FC, useEffect, useRef, useState } from 'react'
+import styles from './index.less'
+import _ from 'lodash'
+import { useRequest, useSize, useInViewport, useMount } from 'ahooks'
+import ScrollListQuee from '@/components/scroll-list-quee'
+import ProjectItem from './components/project-Item'
 import {
   AreaInfo,
   fetchProjectOperationLog,
   projectOperationLogParams,
   RefreshDataType,
-} from '@/services/index';
-import moment from 'moment';
+} from '@/services/index'
+import moment from 'moment'
 export interface ProjectInfoRefreshListProps {
-  currentAreaInfo?: AreaInfo;
+  currentAreaInfo?: AreaInfo
 }
 
-const ddd = [];
+const ddd = []
 for (let i = 0; i < 30; i++) {
   ddd.push(i)
 }
 
 const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaInfo }) => {
-  const [listData, setListData] = useState<RefreshDataType[]>([]);
+  const [listData, setListData] = useState<RefreshDataType[]>([])
   // const [refreshData, setrefreshData] = useState<RefreshDataType[]>([]);
 
   /**
@@ -29,30 +29,30 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
    *
    */
 
-  const allCount = 30;
+  const allCount = 30
 
   const params: projectOperationLogParams = {
     limit: allCount,
     areaCode: currentAreaInfo?.areaId,
     areaType: currentAreaInfo?.areaLevel ?? '1',
-  };
+  }
 
   // useEffect(() => {
   //   setListData([]);
   //   setrefreshData([]);
   // }, [currentAreaInfo]);
 
-  const { data, run, cancel } = useRequest(() => fetchProjectOperationLog(params), {
-    pollingInterval: 3000,
+  const { data, cancel } = useRequest(() => fetchProjectOperationLog(params), {
+    pollingInterval: 60000,
     refreshDeps: [JSON.stringify(currentAreaInfo)],
     onSuccess: () => {
       // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse
       setListData(data)
     },
     onError: () => {
-      cancel();
+      cancel()
     },
-  });
+  })
 
   // useMount(() => {
   //   run();
@@ -78,30 +78,25 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
   //   }
   // }, [JSON.stringify(listData)]);
 
-
-
   return (
     <ScrollListQuee height={40} data={listData ?? []}>
-      {
-        (data1) => {
-          return data1.map((item, idx) => {
-            return (
-              <ProjectItem
-                name={item.projectName}
-                key={`${item.date}${idx}`}
-                id={item.projectId}
-                //content={`${item.operator}${item.operationCategory}`}
-                operator={item.operator}
-                operationCategory={item.operationCategory}
-                date={moment(item.date).format('MM-DD HH:mm')}
-              />
-            )
-          })
-        }
-      }
+      {(data1) => {
+        return data1.map((item, idx) => {
+          return (
+            <ProjectItem
+              name={item.projectName}
+              key={`${item.date}${idx}`}
+              id={item.projectId}
+              //content={`${item.operator}${item.operationCategory}`}
+              operator={item.operator}
+              operationCategory={item.operationCategory}
+              date={moment(item.date).format('MM-DD HH:mm')}
+            />
+          )
+        })
+      }}
     </ScrollListQuee>
-  );
-};
+  )
+}
 
-export default ProjectInfoRefreshList;
-
+export default ProjectInfoRefreshList
