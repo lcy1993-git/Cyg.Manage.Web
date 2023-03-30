@@ -393,9 +393,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         {/* {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
           <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
         )} */}
-        {jurisdictionInfo.canSubmitQgc && (
-          <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id)}>提交项目</Menu.Item>
-        )}
+        {/* {jurisdictionInfo.canSubmitQgc && ( */}
+        <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id)}>提交项目</Menu.Item>
+        {/* )} */}
 
         {tableItemData.stateInfo.status !== 14 &&
           buttonJurisdictionArray?.includes('all-project-merge') && (
