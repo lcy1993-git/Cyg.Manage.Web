@@ -21,7 +21,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   const { headers } = options
   if (c_token) {
     return {
-      url: url,
+      // url: url,
       // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
       // url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
       url: isNoGlzz
@@ -40,7 +40,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   }
 
   return {
-    url: url,
+    // url: url,
     // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
     // url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
     url: isNoGlzz
