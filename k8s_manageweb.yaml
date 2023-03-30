@@ -4,7 +4,6 @@ metadata:
   name: manageweb
   namespace: kube-<NAMESPACES>
 spec:
-  
   selector:
     matchLabels:
       app: manageweb
@@ -15,25 +14,32 @@ spec:
         app: manageweb
     spec:
       containers:
-      - image: 10.6.1.45:10242/cyg/manageweb:<BUILD_TAG>
-        imagePullPolicy: IfNotPresent
-        name: manageweb
-        env:
-        - name: branch
-          value: <BRANCH_NAME>
-        ports:
-        - containerPort: 80
-          protocol: TCP
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "100Mi"
-            ephemeral-storage: 100Mi
-          limits:
-            cpu: "0.2"
-            memory: "0.2Gi"
-            ephemeral-storage: 0.2Gi
-        
+        - image: 10.6.1.45:10242/cyg/manageweb:<BUILD_TAG>
+          imagePullPolicy: IfNotPresent
+          name: manageweb
+          env:
+            - name: branch
+              value: <BRANCH_NAME>
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: '/etc/localtime'
+              name: timezone
+          resources:
+            requests:
+              cpu: '100m'
+              memory: '100Mi'
+              ephemeral-storage: 100Mi
+            limits:
+              cpu: '0.2'
+              memory: '0.2Gi'
+              ephemeral-storage: 0.2Gi
+      volumes:
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
+
 ---
 kind: Service
 apiVersion: v1
@@ -45,7 +51,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 80
-    name: http
+    - port: 80
+      name: http
   selector:
     app: manageweb

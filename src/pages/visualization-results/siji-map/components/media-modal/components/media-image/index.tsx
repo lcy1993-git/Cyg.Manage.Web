@@ -53,11 +53,19 @@ const MediaImage: React.FC<MediaImageProps> = ({
     }
   }, [percent])
 
+  // let handleUrl = `${baseUrl.upload}`.slice(4)
+  let handleUrl = `${baseUrl.upload}`
+  // let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530${handleUrl}`)
+  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+  // let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
+
   const downLoad = () => {
     const a = document.createElement('a')
+
     a.setAttribute(
       'href',
-      `${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`
+      `${proxyUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`
     )
     a.setAttribute('download', 'preview')
     a.click()
@@ -128,7 +136,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
               percent === 100 ? styles.imgUnsetPointer : styles.imgSetMove
             )}
             crossOrigin={''}
-            src={`${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+            src={`${proxyUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
         </div>
         <div className={styles.AreaButtons}>
@@ -169,7 +177,7 @@ const MediaImage: React.FC<MediaImageProps> = ({
                 style={{ maxHeight: window.innerHeight, maxWidth: window.innerWidth }}
                 className={styles.fullScreenImg}
                 crossOrigin={''}
-                src={`${baseUrl.upload}/Download/GetFileById?fileId=${content[fsIndex].filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+                src={`${proxyUrl}/Download/GetFileById?fileId=${content[fsIndex].filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
               />
             )}
           </div>

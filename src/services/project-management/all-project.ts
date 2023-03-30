@@ -634,9 +634,9 @@ export const modifyMultipleProjectLib = (params: any) => {
 // 获取设计成果树状结构
 export const getResultTreeData = (projectId: string) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
+    request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory?projectId=${projectId}`, {
       method: 'GET',
-      params: { projectId },
+      // params: { projectId },
     })
   )
 }
@@ -1073,11 +1073,10 @@ export const sureRemoval = (params: { targetEngineerId: string; projectIds: stri
   )
 }
 // 提交项目至全过程
-export const postSubmitProjectToQGC = (params: { projectId: string }) => {
+export const postSubmitProjectToQGC = (projectId: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.comment}/Project/TransferNonStructured`, {
+    request(`${baseUrl.comment}/Project/TransferNonStructured?projectId=${projectId}`, {
       method: 'POST',
-      params: params,
     })
   )
 }

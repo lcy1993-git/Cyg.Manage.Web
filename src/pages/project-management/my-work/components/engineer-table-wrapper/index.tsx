@@ -430,7 +430,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     })
   }
   const handleSubmitProjectToQGC = async (projectId: string) => {
-    await postSubmitProjectToQGC({ projectId })
+    await postSubmitProjectToQGC(projectId)
     message.success('提交项目成功')
   }
 
