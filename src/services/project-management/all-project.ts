@@ -1073,11 +1073,11 @@ export const sureRemoval = (params: { targetEngineerId: string; projectIds: stri
   )
 }
 // 提交项目至全过程
-export const postSubmitProjectToQGC = (projectId: string) => {
+export const postSubmitProjectToQGC = (params: { projectId: string }) => {
   return cyRequest(() =>
     request(`${baseUrl.comment}/Project/TransferNonStructured`, {
       method: 'POST',
-      params: { projectId },
+      data: params,
     })
   )
 }
