@@ -1,8 +1,8 @@
-import React from 'react';
-import styles from './index.less';
+import React from 'react'
+import styles from './index.less'
 
 interface RankingComponentProps {
-  num: number;
+  num: number
 }
 
 const RankingComponent: React.FC<RankingComponentProps> = (props) => {
@@ -10,7 +10,7 @@ const RankingComponent: React.FC<RankingComponentProps> = (props) => {
     <div className={`${styles.rankingComponent} ${props.num > 3 ? '' : styles.active}`}>
       <span>{props.num}</span>
     </div>
-  );
-};
+  )
+}
 
-export default RankingComponent;
+export default RankingComponent

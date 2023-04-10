@@ -417,7 +417,6 @@ function getMappingTagsDictionary() {
         entry_type: findenumsValue('EntryMode'),
       },
     }
-
     mappingTagsDictionary.cross_arm = {
       mappingTags1: {
         project_id: 'title',

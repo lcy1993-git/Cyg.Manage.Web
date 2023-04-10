@@ -1,31 +1,29 @@
-import GeneralTable from '@/components/general-table';
-import TableStatus from '@/components/table-status';
-import TableSearch from '@/components/table-search';
-import { Input, Button, message } from 'antd';
-import React, { useRef, useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { addAuthorize, removeAuthorize } from '@/services/jurisdiction-config/project-permission';
-import { Popconfirm } from 'antd';
-import ModalConfirm from '@/components/modal-confirm';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input, Button, message } from 'antd'
+import React, { useRef, useState } from 'react'
+import { PlusOutlined } from '@ant-design/icons'
+import { addAuthorize, removeAuthorize } from '@/services/jurisdiction-config/project-permission'
+import ModalConfirm from '@/components/modal-confirm'
 
 interface ExtractParams {
-  groupId: string;
+  groupId: string
 }
 
 interface UserAuthorizationProps {
-  extractParams: ExtractParams;
-  onChange: () => void;
+  extractParams: ExtractParams
+  onChange: () => void
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const UserPermissionAccredit: React.FC<UserAuthorizationProps> = (props) => {
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const { extractParams, onChange } = props;
+  const { extractParams, onChange } = props
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [selectRows, setSelectRows] = useState<any[]>([]);
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [selectRows, setSelectRows] = useState<any[]>([])
 
   const columns = [
     {
@@ -54,27 +52,27 @@ const UserPermissionAccredit: React.FC<UserAuthorizationProps> = (props) => {
       width: 120,
       render: (text: string, record: any) => {
         if (record.isAuthorized) {
-          return <span className="colorPrimary">已授权</span>;
+          return <span className="colorPrimary">已授权</span>
         } else {
-          return <span className="colorRed">未授权</span>;
+          return <span className="colorRed">未授权</span>
         }
       },
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const refresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const tableLeftSlot = (
     <TableSearch width="248px">
@@ -86,31 +84,31 @@ const UserPermissionAccredit: React.FC<UserAuthorizationProps> = (props) => {
         placeholder="请输入用户信息"
       />
     </TableSearch>
-  );
+  )
 
   const batchRemoveAuthorizationEvent = async () => {
     if (selectRows.length === 0) {
-      message.error('请至少选中一条数据');
-      return;
+      message.error('请至少选中一条数据')
+      return
     }
 
     if (selectRows.find((item) => item.isAuthorized === true)) {
-      const batchObjectIds = selectRows.map((item) => item.id);
-      const { groupId } = extractParams;
+      const batchObjectIds = selectRows.map((item) => item.id)
+      const { groupId } = extractParams
 
       await removeAuthorize({
         groupId,
         objectIds: batchObjectIds,
-      });
-      message.success('授权移除成功');
-      reset();
-      refresh();
-      onChange?.();
+      })
+      message.success('授权移除成功')
+      reset()
+      refresh()
+      onChange?.()
     } else {
-      message.error('选中的用户尚未授权');
-      return;
+      message.error('选中的用户尚未授权')
+      return
     }
-  };
+  }
 
   const tableRightSlot = (
     <>
@@ -126,33 +124,33 @@ const UserPermissionAccredit: React.FC<UserAuthorizationProps> = (props) => {
         content="请选择要移除授权的数据"
       />
     </>
-  );
+  )
 
   const reset = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.reset();
+      tableRef.current.reset()
     }
-  };
+  }
 
   const batchAddAuthorizationEvent = async () => {
     if (selectRows && selectRows.length === 0) {
-      message.error('请至少选中一条数据');
-      return;
+      message.error('请至少选中一条数据')
+      return
     }
-    const batchObjectIds = selectRows.map((item) => item.id);
+    const batchObjectIds = selectRows.map((item) => item.id)
 
-    const { groupId } = extractParams;
+    const { groupId } = extractParams
 
     await addAuthorize({
       groupId,
       objectIds: batchObjectIds,
-    });
-    message.success('授权成功');
-    reset();
-    refresh();
-    onChange?.();
-  };
+    })
+    message.success('授权成功')
+    reset()
+    refresh()
+    onChange?.()
+  }
 
   return (
     <div>
@@ -167,7 +165,7 @@ const UserPermissionAccredit: React.FC<UserAuthorizationProps> = (props) => {
         extractParams={{ ...extractParams, keyWord: searchKeyWord }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default UserPermissionAccredit;
+export default UserPermissionAccredit

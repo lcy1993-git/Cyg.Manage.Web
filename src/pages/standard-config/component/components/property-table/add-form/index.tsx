@@ -1,12 +1,12 @@
-import React from 'react';
-import EditFormTable from '@/components/edit-form-table';
-import { Form, Input } from 'antd';
+import React from 'react'
+import EditFormTable from '@/components/edit-form-table'
+import { Form, Input } from 'antd'
 
 interface AddPropertyParams {
-  addForm: any;
+  addForm: any
 }
 const AddComponentProperty: React.FC<AddPropertyParams> = (props) => {
-  const { addForm } = props;
+  const { addForm } = props
 
   const columns = [
     {
@@ -20,7 +20,7 @@ const AddComponentProperty: React.FC<AddPropertyParams> = (props) => {
       index: 'propertyName',
       width: 320,
       render: () => {
-        return <Input placeholder="--请输入属性名称--" />;
+        return <Input placeholder="--请输入属性名称--" />
       },
       rules: [{ required: true, message: '属性名称不能为空' }],
     },
@@ -30,16 +30,16 @@ const AddComponentProperty: React.FC<AddPropertyParams> = (props) => {
       index: 'propertyValue',
       width: 320,
       render: () => {
-        return <Input placeholder="--请输入属性值--" />;
+        return <Input placeholder="--请输入属性值--" />
       },
     },
-  ];
+  ]
 
   return (
     <Form form={addForm}>
       <EditFormTable formName="items" columns={columns}></EditFormTable>
     </Form>
-  );
-};
+  )
+}
 
-export default AddComponentProperty;
+export default AddComponentProperty

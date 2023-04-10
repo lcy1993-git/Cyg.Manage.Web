@@ -29,7 +29,7 @@ const AdjustmentFileDetails: React.FC = () => {
       setPath(result[0].path)
     }
   }
-  const listDataElement = listData.map((item: any, index) => {
+  const listDataElement = listData.map((item: any) => {
     return (
       <div
         className={`${styles.listElementItem} ${
@@ -57,7 +57,6 @@ const AdjustmentFileDetails: React.FC = () => {
     }
     setApi(api)
   }
-
   return (
     <WrapperComponent>
       <div className={styles.allDiv}>

@@ -5,13 +5,12 @@ import {
   createCompileResult,
   downloadFileCompile,
   getCompileResultTreeData,
-  getAuditResultData,
   downloadAuditFile,
 } from '@/services/project-management/all-project'
 import { FileOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, Modal, Spin, message, Tabs } from 'antd'
-import React, { Dispatch, SetStateAction, useState, useEffect, useMemo } from 'react'
+import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import CompileResultTab from '../check-compile-result'
 import DesignResultTab from '../check-design-result'
 import pdfSvg from '@/assets/image/fileIcon/pdf.svg'
@@ -23,8 +22,9 @@ import jpgSvg from '@/assets/image/fileIcon/jpg.svg'
 import styles from './index.less'
 import UrlFileView from '@/components/url-file-view'
 import { FileType } from '@/components/api-file-view/getStrategyComponent'
-import AuditResultTab from '../check-audit-result'
 import ViewAuditFile from '../external-list-modal/components/viewFile'
+import { uploadAuditLog } from '@/utils/utils'
+import { baseUrl } from '@/services/common'
 
 const { TabPane } = Tabs
 
@@ -49,7 +49,7 @@ interface CheckResultModalProps {
 const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   // const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
-  const [auditKeys, setAuditKeys] = useState<React.Key[]>([])
+  const [auditKeys] = useState<React.Key[]>([])
   const [compileKeys, setCompileKeys] = useState<React.Key[]>([])
   const [currentTab, setCurrentTab] = useState<string>('design')
   const { projectInfo } = props
@@ -90,9 +90,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     manual: true,
   })
 
-  const { data: auditResultData, run: getAuditTree } = useRequest(getAuditResultData, {
-    manual: true,
-  })
+  // const { data: auditResultData, run: getAuditTree } = useRequest(getAuditResultData, {
+  //   manual: true,
+  // })
 
   // const closeEvent = () => {
   //   setState(false);
@@ -170,6 +170,16 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           window.URL.revokeObjectURL(link.href)
           document.body.removeChild(link)
         }
+        uploadAuditLog([
+          {
+            auditType: 1,
+            eventType: 5,
+            eventDetailType: '文件下载',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.upload}/Download/GetProjectOutcomeFile`,
+          },
+        ])
       } catch (error) {
         message.error({ error })
       } finally {
@@ -210,7 +220,27 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           window.URL.revokeObjectURL(link.href)
           document.body.removeChild(link)
         }
+        uploadAuditLog([
+          {
+            auditType: 1,
+            eventType: 5,
+            eventDetailType: '文件下载',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.upload}/Download/GetProjectCompilationResultFile`,
+          },
+        ])
       } catch (error) {
+        uploadAuditLog([
+          {
+            auditType: 1,
+            eventType: 5,
+            eventDetailType: '文件下载',
+            executionResult: '失败',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.upload}/Download/GetProjectCompilationResultFile`,
+          },
+        ])
       } finally {
         setRequestLoading(false)
       }
@@ -247,7 +277,27 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
           window.URL.revokeObjectURL(link.href)
           document.body.removeChild(link)
         }
+        uploadAuditLog([
+          {
+            auditType: 1,
+            eventType: 5,
+            eventDetailType: '文件下载',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.review}/ReviewOpinionFile/DownReivewFileTree`,
+          },
+        ])
       } catch (error) {
+        uploadAuditLog([
+          {
+            auditType: 1,
+            eventType: 5,
+            eventDetailType: '文件下载',
+            executionResult: '失败',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.review}/ReviewOpinionFile/DownReivewFileTree`,
+          },
+        ])
       } finally {
         setRequestLoading(false)
       }
@@ -268,46 +318,46 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
   }, [currentTab])
 
-  const mapAuditTree = (datas: any) => {
-    return {
-      title: datas.key,
-      icon: <img src={foldSvg} className={styles.svg} />,
-      value: datas.value.id,
-      category: 1,
-      key: datas.value.id,
-      children: [
-        {
-          title: datas.value.extend.file.name,
-          value: datas.value.extend.file.id,
-          key: datas.value.extend.file.id,
-          type: datas.value.extend.file.extension,
-          icon:
-            datas.value.extend.file.extension === '.doc' ||
-            datas.value.extend.file.extension === '.docx' ? (
-              <img src={wordSvg} className={styles.svg} />
-            ) : (
-              <img src={excelSvg} className={styles.svg} />
-            ),
-          category: 2,
-        },
-      ],
-    }
-  }
+  // const mapAuditTree = (datas: any) => {
+  //   return {
+  //     title: datas.key,
+  //     icon: <img src={foldSvg} className={styles.svg} />,
+  //     value: datas.value.id,
+  //     category: 1,
+  //     key: datas.value.id,
+  //     children: [
+  //       {
+  //         title: datas.value.extend.file.name,
+  //         value: datas.value.extend.file.id,
+  //         key: datas.value.extend.file.id,
+  //         type: datas.value.extend.file.extension,
+  //         icon:
+  //           datas.value.extend.file.extension === '.doc' ||
+  //           datas.value.extend.file.extension === '.docx' ? (
+  //             <img src={wordSvg} className={styles.svg} />
+  //           ) : (
+  //             <img src={excelSvg} className={styles.svg} />
+  //           ),
+  //         category: 2,
+  //       },
+  //     ],
+  //   }
+  // }
 
-  const handleAuditData = useMemo(() => {
-    if (auditResultData) {
-      return auditResultData.map((item) => {
-        return {
-          title: item.name,
-          key: item.name,
-          category: 1,
-          icon: <img src={foldSvg} className={styles.svg} />,
-          children: item.datas.map(mapAuditTree),
-        }
-      })
-    }
-    return
-  }, [auditResultData])
+  // const handleAuditData = useMemo(() => {
+  //   if (auditResultData) {
+  //     return auditResultData.map((item) => {
+  //       return {
+  //         title: item.name,
+  //         key: item.name,
+  //         category: 1,
+  //         icon: <img src={foldSvg} className={styles.svg} />,
+  //         children: item.datas.map(mapAuditTree),
+  //       }
+  //     })
+  //   }
+  //   return
+  // }, [auditResultData])
 
   return (
     <>

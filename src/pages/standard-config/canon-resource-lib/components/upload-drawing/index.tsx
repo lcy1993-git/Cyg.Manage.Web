@@ -1,5 +1,5 @@
 import CyFormItem from '@/components/cy-form-item'
-import FileUpload, { UploadStatus } from '@/components/file-upload'
+import FileUpload from '@/components/file-upload'
 import { uploadDrawing } from '@/services/resource-config/resource-lib'
 import { useBoolean, useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
@@ -18,10 +18,7 @@ interface UploadDrawingProps {
 const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { libId = '', securityKey = '', changeFinishEvent } = props
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const [requestLoading, setRequestLoading] = useState<boolean>(false)
   const [form] = Form.useForm()
 
@@ -30,7 +27,6 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
       .validateFields()
       .then((values) => {
         const { file } = values
-
         setRequestLoading(true)
         return uploadDrawing(file, { libId, securityKey })
       })
@@ -50,7 +46,7 @@ const UploadDrawing: React.FC<UploadDrawingProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (requestLoading) {
         setState(false)
         return

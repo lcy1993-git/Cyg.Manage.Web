@@ -1,39 +1,34 @@
-import DataSelect from '@/components/data-select';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { useGetSelectData } from '@/utils/hooks';
-import { Tooltip } from 'antd';
-import React, { useState } from 'react';
-import CompanyAndProjectTable from './components/company-and-project-table';
-import ComprehensiveProcessComponent from './components/comprehensive-process-component';
-import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component';
-import DailyChangeStatistics from './components/daily-change-statistics';
-import DailyChangeProjectStatistics from './components/daily-change-project-statistics';
-import OverdueComponent from './components/overdue-component';
-import OverdueProjectComponent from './components/overdue-project-component';
-import ProjectInfoRefreshList from './components/project-info-refresh-list';
-import ProjectInfoRefreshProjectList from './components/project-info-refresh-project-list';
-import ProjectProcessComponent from './components/project-process-component';
-import ProjectProcessListComponent from './components/project-process-list-component';
-import ProjectStatisticsComponent from './components/project-statistics-component';
-import ProjectStatisticsProjectComponent from './components/project-statistics-project-component';
-import TabsWindow from './components/tabs-window';
-import TitleWindow from './components/title-window';
-import styles from './index.less';
-import type { CompanyInfo, DataType } from './store';
-import { ProjectAllAreaStatisticsProvider } from './store';
-import { InfoCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import PageCommonWrap from '@/components/page-common-wrap'
+import { Tooltip } from 'antd'
+import React, { useState } from 'react'
+import CompanyAndProjectTable from './components/company-and-project-table'
+import ComprehensiveProcessListComponent from './components/comprehensive-process-list-component'
+import DailyChangeStatistics from './components/daily-change-statistics'
+import DailyChangeProjectStatistics from './components/daily-change-project-statistics'
+import OverdueComponent from './components/overdue-component'
+import OverdueProjectComponent from './components/overdue-project-component'
+import ProjectInfoRefreshList from './components/project-info-refresh-list'
+import ProjectInfoRefreshProjectList from './components/project-info-refresh-project-list'
+import ProjectProcessListComponent from './components/project-process-list-component'
+import ProjectStatisticsComponent from './components/project-statistics-component'
+import ProjectStatisticsProjectComponent from './components/project-statistics-project-component'
+import TitleWindow from './components/title-window'
+import styles from './index.less'
+import type { CompanyInfo, DataType } from './store'
+import { ProjectAllAreaStatisticsProvider } from './store'
+import { QuestionCircleOutlined } from '@ant-design/icons'
 
 const ProjectAllAreaStatistics: React.FC = () => {
-  const [processActiveTab, setProcessActiveTab] = useState<string>('project');
-  const [companyId, setCompanyId] = useState<string | undefined>(undefined);
+  // const [processActiveTab, setProcessActiveTab] = useState<string>('project')
+  // const [companyId, setCompanyId] = useState<string | undefined>(undefined)
 
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo>({
     companyName: '',
     companyId: '',
-  });
+  })
 
-  const [dataType, setDataType] = useState<DataType>('company');
-  const [projectShareCompanyId, setProjectShareCompanyId] = useState<string>('');
+  const [dataType, setDataType] = useState<DataType>('company')
+  const [projectShareCompanyId, setProjectShareCompanyId] = useState<string>('')
 
   // const { data: companySelectData = [] } = useGetSelectData({
   //   url: '/ProjectStatistics/GetCompanys',
@@ -96,7 +91,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
                           <QuestionCircleOutlined />
                         </Tooltip>
                       </div>
-                    );
+                    )
                   }}
                 >
                   {dataType === 'company' ? <OverdueComponent /> : <OverdueProjectComponent />}
@@ -145,7 +140,7 @@ const ProjectAllAreaStatistics: React.FC = () => {
         </div>
       </PageCommonWrap>
     </ProjectAllAreaStatisticsProvider>
-  );
-};
+  )
+}
 
-export default ProjectAllAreaStatistics;
+export default ProjectAllAreaStatistics

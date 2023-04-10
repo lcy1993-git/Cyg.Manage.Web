@@ -1,41 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
-import { getCommonlyTableLandRatio } from '@/services/technology-economic/usual-quota-table';
-import { Table } from 'antd';
-import TableImportButton from '@/components/table-import-button';
-import { generateUUID } from '@/utils/utils';
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
+import { getCommonlyTableLandRatio } from '@/services/technology-economic/usual-quota-table'
+import { Table } from 'antd'
+import { generateUUID } from '@/utils/utils'
 
 interface Props {
-  id: string;
+  id: string
 }
 interface TopographicIncreaseFactorRow {
-  commonlyTableId: string;
-  lineMajorType: number;
-  lineMajorTypeText: string;
-  flatLand: number;
-  hills: number;
-  mountainousRegion: number;
-  highMountain: number;
-  mire: number;
-  cityRegion: number;
-  desert: number;
+  commonlyTableId: string
+  lineMajorType: number
+  lineMajorTypeText: string
+  flatLand: number
+  hills: number
+  mountainousRegion: number
+  highMountain: number
+  mire: number
+  cityRegion: number
+  desert: number
 }
 
 const TopographicIncreaseFactor: React.FC<Props> = (props) => {
-  const { id } = props;
-  console.log(id);
+  const { id } = props
 
-  const [dataSource, setDataSource] = useState<TopographicIncreaseFactorRow[]>([]);
+  const [dataSource, setDataSource] = useState<TopographicIncreaseFactorRow[]>([])
   const getTableData = async () => {
-    if (!id) return;
-    let res = await getCommonlyTableLandRatio(id);
+    if (!id) return
+    let res = await getCommonlyTableLandRatio(id)
     res = res.map((item) => {
       // eslint-disable-next-line no-param-reassign
-      item.id = generateUUID();
-      return item;
-    });
-    setDataSource(res);
-  };
+      item.id = generateUUID()
+      return item
+    })
+    setDataSource(res)
+  }
 
   const columns = [
     {
@@ -45,55 +43,47 @@ const TopographicIncreaseFactor: React.FC<Props> = (props) => {
           title: '序号',
           width: 80,
           render: (text: string, record: any, index: number) => {
-            return <span>{index + 1}</span>;
+            return <span>{index + 1}</span>
           },
         },
         {
           title: '专业名称',
           dataIndex: 'lineMajorTypeText',
-          key: 'lineMajorTypeText',
         },
         {
           title: '平地',
           dataIndex: 'flatLand',
-          key: 'flatLand',
         },
         {
           title: '丘陵',
           dataIndex: 'hills',
-          key: 'hills',
         },
         {
           title: '山地',
           dataIndex: 'mountainousRegion',
-          key: 'mountainousRegion',
         },
         {
           title: '高山',
           dataIndex: 'highMountain',
-          key: 'highMountain',
         },
         {
           title: '泥沼',
           dataIndex: 'mire',
-          key: 'mire',
         },
         {
           title: '城区',
           dataIndex: 'cityRegion',
-          key: 'cityRegion',
         },
         {
           title: '沙漠',
           dataIndex: 'desert',
-          key: 'desert',
         },
       ],
     },
-  ];
+  ]
   useEffect(() => {
-    getTableData();
-  }, [id]);
+    getTableData()
+  }, [id])
   return (
     <div className={styles.topographicIncreaseFactor}>
       <div className={styles.topButton}></div>
@@ -132,7 +122,7 @@ const TopographicIncreaseFactor: React.FC<Props> = (props) => {
         <p> (4) 城市市区参考丘陵地形计算。</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TopographicIncreaseFactor;
+export default TopographicIncreaseFactor

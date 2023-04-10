@@ -84,6 +84,15 @@ const LayoutHeader: React.FC = () => {
   const menuSelectEvent = (name: string, path: string) => {
     history.push(path)
   }
+
+  const isAdminCategory = localStorage.getItem('isAdminCategory') === '0'
+  const AdminCategoryMenu = (
+    <div className={styles.adminCategorymenu}>
+      <div onClick={() => menuSelectEvent('首页', '/admin-index/home')}>首页</div>
+      <div onClick={() => menuSelectEvent('报表', '/admin-index/report/11')}>报表</div>
+    </div>
+  )
+
   // TODO 获取menu需要根据权限进行处理一下，没权限的不用展示出来
 
   const menuContent = menuData
@@ -108,7 +117,9 @@ const LayoutHeader: React.FC = () => {
         <div className={styles.layoutHeaderLogo}>
           <LogoComponent />
         </div>
-        <div className={styles.layoutHeaderContent}>{menuContent}</div>
+        <div className={styles.layoutHeaderContent}>
+          {isAdminCategory ? AdminCategoryMenu : menuContent}
+        </div>
 
         <div className={styles.layoutMyBaseInfo}>
           <div onClick={() => setVersionModalVisible(true)}>

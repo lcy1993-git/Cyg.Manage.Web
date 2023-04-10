@@ -1,19 +1,26 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './index.less'
 import { useMount } from 'ahooks'
 import moment from 'moment'
+import { getAuditPageList } from '@/services/security-audit'
 
 const RecentlyWarned: React.FC = () => {
   const [recentlyWarnedList, setRecentlyWarnedList] = useState<any[]>([])
-  useMount(() => {
-    let arr = Array.from({ length: 50 }, (item, index) => {
-      return {
-        id: index,
-        text: `警告内容警告内容警告内容警告内容容警`,
-        time: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-      }
+
+  const getWarnList = async () => {
+    const res = await getAuditPageList({
+      pageSize: 100,
+      pageIndex: 1,
+      levels: [3, 4],
+      sort: {
+        propertyName: 'executionTime',
+        isAsc: false,
+      },
     })
-    setRecentlyWarnedList(arr)
+    setRecentlyWarnedList(res.items)
+  }
+  useMount(() => {
+    getWarnList().then(() => {})
   })
   return (
     <div className={styles.recentlyWarned}>
@@ -22,8 +29,10 @@ const RecentlyWarned: React.FC = () => {
         {recentlyWarnedList.map((item) => {
           return (
             <div className={styles.warnItem}>
-              <p className={styles.warnText}>{item.text}</p>
-              <p className={styles.warnTime}>{item.time}</p>
+              <p className={styles.warnText}>{`${item.clientTypeText}${
+                item.executionUserName || ''
+              }${item.eventTypeText}${item.executionResult}`}</p>
+              <p className={styles.warnTime}>{moment(item.executionTime).format('MM-DD HH:mm')}</p>
             </div>
           )
         })}

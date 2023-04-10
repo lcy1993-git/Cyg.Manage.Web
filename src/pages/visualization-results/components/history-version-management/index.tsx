@@ -7,7 +7,7 @@ import { useGridMap } from '@/pages/visualization-results/history-grid/store/map
 import { useUpdateEffect } from 'ahooks'
 import { Timeline } from 'antd'
 import { Moment } from 'moment/moment'
-import { Ref, useState } from 'react'
+import { useState } from 'react'
 import { getHistoriesById } from '../../history-grid/service'
 import styles from './index.less'
 
@@ -30,13 +30,12 @@ interface Props {
   height?: string
 }
 
-const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
+const HistoryVersionManagement = (props: Props) => {
   const { height = '5vh' } = props
   const [state] = useGridMap()
   const [active, setActive] = useState<boolean>(true)
   const [showVersion, setShowVersion] = useState<boolean>(false)
   const [activeId, setActiveId] = useState<string>('')
-  const [show, setShow] = useState<boolean>(true)
   const { mode, dispatch, allHistoryGridData } = useHistoryGridContext()
   const activeList = () => {
     setActive(!active)
@@ -59,11 +58,11 @@ const HistoryVersionManagement = (props: Props, ref: Ref<any>) => {
     dispatch('refetch')
   }
   useUpdateEffect(() => {
-    if (mode === 'record') {
-      setShow(true)
-    } else {
-      setShow(false)
-    }
+    // if (mode === 'record') {
+    //   setShow(true)
+    // } else {
+    //   setShow(false)
+    // }
     if (allHistoryGridData?.length !== 0) {
       const isTemplate = allHistoryGridData?.find((item) => item.isTemplate)
       isTemplate && onItemClick(isTemplate)

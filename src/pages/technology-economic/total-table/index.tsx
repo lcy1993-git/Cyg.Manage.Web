@@ -1,67 +1,67 @@
-import { Table } from 'antd';
-import type { ColumnsType } from 'antd/lib/table/Table';
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
-import TableImportButton from '@/components/table-import-button';
-import { queryEngineeringInfoCostTotal } from '@/services/technology-economic/total-table';
-import WrapperComponent from '@/components/page-common-wrap';
-import qs from 'qs';
+import { Table } from 'antd'
+import type { ColumnsType } from 'antd/lib/table/Table'
+import React, { useCallback, useEffect, useState } from 'react'
+import styles from './index.less'
+import TableImportButton from '@/components/table-import-button'
+import { queryEngineeringInfoCostTotal } from '@/services/technology-economic/total-table'
+import WrapperComponent from '@/components/page-common-wrap'
+import qs from 'qs'
 
 interface Props {}
 
 interface TotalTableRow {
-  id: string;
-  engineeringTemplateId: string;
-  no: string;
-  name: string;
-  code: string;
-  constructionCostFormula: null | string;
-  deviceCostFormula: null | string;
-  installCostFormula: null | string;
-  otherCostFormula: null | string;
-  basicReserveCostFormula: null | string;
-  totalCostFormula: null | string;
-  staticInvestmentRatio: null | string;
-  unitInvestmentCountFormula: null | string;
-  unit: null | string;
-  unitInvestmentFormula: null | string;
-  costNo: null | string;
-  remark: null | string;
-  parentId: null | string;
-  isLeaf: boolean;
-  sort: number;
+  id: string
+  engineeringTemplateId: string
+  no: string
+  name: string
+  code: string
+  constructionCostFormula: null | string
+  deviceCostFormula: null | string
+  installCostFormula: null | string
+  otherCostFormula: null | string
+  basicReserveCostFormula: null | string
+  totalCostFormula: null | string
+  staticInvestmentRatio: null | string
+  unitInvestmentCountFormula: null | string
+  unit: null | string
+  unitInvestmentFormula: null | string
+  costNo: null | string
+  remark: null | string
+  parentId: null | string
+  isLeaf: boolean
+  sort: number
 }
 
 const TotalTable: React.FC<Props> = () => {
-  const [dataSource, setDataSource] = useState<TotalTableRow[]>([]);
-  const id = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
+  const [dataSource, setDataSource] = useState<TotalTableRow[]>([])
+  const id = (qs.parse(window.location.href.split('?')[1]).id as string) || ''
   const columns: ColumnsType<any> = [
     {
       title: '序号',
       width: 70,
-      align:'center',
-      dataIndex:'no',
+      align: 'center',
+      dataIndex: 'no',
       render: (text: string) => {
         return text?.includes(')') ? <span>&emsp;{text}</span> : <span>{text}</span>
       },
     },
     {
       dataIndex: 'name',
-      key: 'name',
+
       title: '名称',
       align: 'center',
       width: 220,
     },
     {
       dataIndex: 'code',
-      key: 'code',
+
       title: '代码',
       align: 'center',
       width: 80,
     },
     {
       dataIndex: 'constructionCostFormula',
-      key: 'constructionCostFormula',
+
       ellipsis: true,
       title: '建筑工程费(JZF)',
       align: 'center',
@@ -69,7 +69,7 @@ const TotalTable: React.FC<Props> = () => {
     },
     {
       dataIndex: 'deviceCostFormula',
-      key: 'deviceCostFormula',
+
       title: '设备购置费(SBF)',
       ellipsis: true,
       align: 'center',
@@ -77,7 +77,7 @@ const TotalTable: React.FC<Props> = () => {
     },
     {
       dataIndex: 'installCostFormula',
-      key: 'installCostFormula',
+
       title: '安装工程费(AZF)',
       align: 'center',
       ellipsis: true,
@@ -85,7 +85,7 @@ const TotalTable: React.FC<Props> = () => {
     },
     {
       dataIndex: 'otherCostFormula',
-      key: 'otherCostFormula',
+
       title: '其他费用(QTF)',
       align: 'center',
       ellipsis: true,
@@ -93,7 +93,7 @@ const TotalTable: React.FC<Props> = () => {
     },
     {
       dataIndex: 'basicReserveCostFormula',
-      key: 'basicReserveCostFormula',
+
       title: '基本预备费(JBYBF)',
       align: 'center',
       width: 220,
@@ -101,15 +101,15 @@ const TotalTable: React.FC<Props> = () => {
     },
     {
       dataIndex: 'totalCostFormula',
-      key: 'totalCostFormula',
+
       title: '合计费(HJF)',
       align: 'center',
       ellipsis: true,
-      width:200,
+      width: 200,
     },
     {
       dataIndex: 'staticInvestmentRatio',
-      key: 'staticInvestmentRatio',
+
       title: '静态投资比例(ZZJ)',
       width: 220,
       ellipsis: true,
@@ -117,7 +117,7 @@ const TotalTable: React.FC<Props> = () => {
     },
     {
       dataIndex: 'unitInvestmentCountFormula',
-      key: 'unitInvestmentCountFormula',
+
       title: '单位投资量',
       width: 200,
       ellipsis: true,
@@ -125,14 +125,14 @@ const TotalTable: React.FC<Props> = () => {
     },
     {
       dataIndex: 'unit',
-      key: 'unit',
+
       title: '单位',
       width: 80,
       align: 'center',
     },
     {
       dataIndex: 'unitInvestmentFormula',
-      key: 'unitInvestmentFormula',
+
       title: '单位投资(DWTZ)',
       width: 220,
       align: 'center',
@@ -147,39 +147,38 @@ const TotalTable: React.FC<Props> = () => {
     // },
     {
       dataIndex: 'remark',
-      key: 'remark',
+
       title: '备注',
       width: 220,
       ellipsis: true,
       align: 'center',
     },
-  ];
-  const getTableData = async () => {
-    let res = await queryEngineeringInfoCostTotal(id);
-    res = res?.map((item: { children: any[] | null; }) => {
+  ]
+  const getTableData = useCallback(async () => {
+    let res = await queryEngineeringInfoCostTotal(id)
+    res = res?.map((item: { children: any[] | null }) => {
       if (item.children?.length === 0) {
-        item.children = null;
+        item.children = null
       } else {
         item.children = item.children?.map((child) => {
-          child.children =
-            child.children?.length === 0 ? null : child.children;
+          child.children = child.children?.length === 0 ? null : child.children
           return child
-        });
+        })
       }
-      return item;
-    });
+      return item
+    })
     // @ts-ignore
-    setDataSource(res);
-  };
+    setDataSource(res)
+  }, [id])
   useEffect(() => {
-    getTableData();
-  }, []);
+    getTableData()
+  }, [getTableData])
   return (
     <WrapperComponent>
       <div className={styles.totalTable}>
         <div className={styles.topButton}>
           <TableImportButton
-            extraParams={{EngineeringTemplateId:id}}
+            extraParams={{ EngineeringTemplateId: id }}
             buttonTitle={'导入总算表'}
             requestSource={'tecEco1'}
             setSuccessful={getTableData}
@@ -190,14 +189,14 @@ const TotalTable: React.FC<Props> = () => {
           pagination={false}
           size={'small'}
           expandIconColumnIndex={1}
-          scroll={{ y: 720,x:2200 }}
+          scroll={{ y: 720, x: 2200 }}
           bordered
           dataSource={dataSource}
           columns={columns}
         />
       </div>
     </WrapperComponent>
-  );
-};
+  )
+}
 
-export default TotalTable;
+export default TotalTable

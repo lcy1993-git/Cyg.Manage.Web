@@ -82,7 +82,7 @@ export function drawEndByLineString({
     const id = k.get('id')
     const [start, end] = k.getGeometry()!.getCoordinates() as Coordinate[]
     if (v.length > 1) {
-      const { geometry, id, ...geometryData } = k.getProperties()
+      const { ...geometryData } = k.getProperties()
 
       v.sort(
         (a, b) =>

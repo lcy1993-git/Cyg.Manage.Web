@@ -1,16 +1,16 @@
-import CommonTitle from '@/components/common-title';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useMemo } from 'react';
-import { getHasChooseComponentsProps } from '../../utils';
-import HasCheckItem from '../has-check-item';
+import CommonTitle from '@/components/common-title'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import uuid from 'node-uuid'
+import React, { Dispatch, SetStateAction, useMemo } from 'react'
+import { getHasChooseComponentsProps } from '../../utils'
+import HasCheckItem from '../has-check-item'
 
 interface AddEngineerTypeStatistic {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
-  configArray: any[];
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: (componentProps: any) => void
+  configArray: any[]
 }
 
 const typeComponentPropsArray = [
@@ -19,22 +19,22 @@ const typeComponentPropsArray = [
   { code: 'stage', name: '项目阶段' },
   { code: 'buildType', name: '项目类型' },
   { code: 'level', name: '电压等级' },
-];
+]
 
 const caseComponentPropsArray = [
   { code: 'status', name: '项目状态' },
   { code: 'nature', name: '项目性质' },
-];
+]
 
 const AddEngineerTypeModal: React.FC<AddEngineerTypeStatistic> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, configArray } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, configArray } = props
+  const [form] = Form.useForm()
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      const { type, condition } = values;
-      const chooseComponent = [];
+      const { type, condition } = values
+      const chooseComponent = []
       if (type && type.length > 0) {
         chooseComponent.push({
           name: 'projectType',
@@ -44,7 +44,7 @@ const AddEngineerTypeModal: React.FC<AddEngineerTypeStatistic> = (props) => {
           w: 3,
           h: 11,
           componentProps: type,
-        });
+        })
       }
       if (condition && condition.length > 0) {
         chooseComponent.push({
@@ -55,66 +55,66 @@ const AddEngineerTypeModal: React.FC<AddEngineerTypeStatistic> = (props) => {
           w: 3,
           h: 11,
           componentProps: condition,
-        });
+        })
       }
-      setState(false);
-      form.resetFields();
+      setState(false)
+      form.resetFields()
 
-      changeFinishEvent?.(chooseComponent);
-    });
-  };
+      changeFinishEvent?.(chooseComponent)
+    })
+  }
 
   const typeCompoentProps = useMemo(() => {
-    const hasChooseMapComponentCodeArray = getHasChooseComponentsProps(configArray, 'projectType');
+    const hasChooseMapComponentCodeArray = getHasChooseComponentsProps(configArray, 'projectType')
     const unChooseMapComponentProps = typeComponentPropsArray.filter(
-      (item) => !hasChooseMapComponentCodeArray?.includes(item.code),
-    );
+      (item) => !hasChooseMapComponentCodeArray?.includes(item.code)
+    )
     const hasChooseMapComponentProps = typeComponentPropsArray.filter((item) =>
-      hasChooseMapComponentCodeArray?.includes(item.code),
-    );
+      hasChooseMapComponentCodeArray?.includes(item.code)
+    )
     return {
       hasChooseMapComponentProps,
       unChooseMapComponentProps,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
   const caseComponentProps = useMemo(() => {
-    const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, 'projectSchedule');
+    const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, 'projectSchedule')
     const unChooseProductionProps = caseComponentPropsArray.filter(
-      (item) => !hasChooseProductionCodeArray.includes(item.code),
-    );
+      (item) => !hasChooseProductionCodeArray.includes(item.code)
+    )
     const hasChooseProductionProps = caseComponentPropsArray.filter((item) =>
-      hasChooseProductionCodeArray.includes(item.code),
-    );
+      hasChooseProductionCodeArray.includes(item.code)
+    )
     return {
       hasChooseProductionProps,
       unChooseProductionProps,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
   const typeStatisticCheckbox = typeCompoentProps.unChooseMapComponentProps.map((item) => {
     return (
       <Checkbox key={item.code} value={item.code}>
         {item.name}
       </Checkbox>
-    );
-  });
+    )
+  })
 
   const caseStatisticCheckbox = caseComponentProps.unChooseProductionProps.map((item) => {
     return (
       <Checkbox key={item.code} value={item.code}>
         {item.name}
       </Checkbox>
-    );
-  });
+    )
+  })
 
   const typeStatisticHasCheck = typeCompoentProps.hasChooseMapComponentProps.map((item) => {
-    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
-  });
+    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
+  })
 
   const caseStatisticHasCheck = caseComponentProps.hasChooseProductionProps.map((item) => {
-    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
-  });
+    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
+  })
 
   return (
     <Modal
@@ -145,7 +145,7 @@ const AddEngineerTypeModal: React.FC<AddEngineerTypeStatistic> = (props) => {
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddEngineerTypeModal;
+export default AddEngineerTypeModal

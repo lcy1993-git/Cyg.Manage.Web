@@ -1,8 +1,8 @@
-import React from 'react';
-import { Input, DatePicker } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import rule from '../rule';
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import React from 'react'
+import { Input, DatePicker } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import rule from '../rule'
+import { noAutoCompletePassword } from '@/utils/utils'
 
 const MapFieldForm: React.FC = () => {
   return (
@@ -21,7 +21,7 @@ const MapFieldForm: React.FC = () => {
       </CyFormItem>
 
       <CyFormItem label="差分密码" name="differentialPwd" required rules={rule.differentialPwd}>
-        <Input type="password" placeholder="请输入密码" />
+        <Input type="password" {...noAutoCompletePassword} placeholder="请输入密码" />
       </CyFormItem>
 
       <CyFormItem label="到期时间" name="expiryTime" required rules={rule.expiryTime}>
@@ -48,7 +48,7 @@ const MapFieldForm: React.FC = () => {
         <Input placeholder="请输入备注" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default MapFieldForm;
+export default MapFieldForm

@@ -1,6 +1,6 @@
 import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
-import { exportMapTemp, importCustomMap } from '@/services/system-config/custom-map'
+import { importCustomMap } from '@/services/system-config/custom-map'
 import { useBoolean, useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal, Spin } from 'antd'
 import React, { useState } from 'react'
@@ -17,12 +17,9 @@ interface UploadDrawingProps {
 
 const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading] = useState<boolean>(false)
   const { changeFinishEvent } = props
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const [requestLoading, setRequestLoading] = useState<boolean>(false)
   const [form] = Form.useForm()
 
@@ -49,7 +46,7 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (requestLoading) {
         setState(false)
         return

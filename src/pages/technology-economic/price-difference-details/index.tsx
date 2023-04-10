@@ -68,7 +68,7 @@ const PriceDifferenceDetails: React.FC = () => {
   //   listDataRun();
   // });
 
-  const listDataElement = listData.map((item, index) => {
+  const listDataElement = listData.map((item) => {
     return (
       <div
         className={`${styles.listElementItem} ${

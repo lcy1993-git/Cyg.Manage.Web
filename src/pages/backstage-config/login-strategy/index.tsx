@@ -1,19 +1,19 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { PlusOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Form, message } from 'antd';
-import React, { useState } from 'react';
-import { createLoginStrategy, deleteLoginStrategy } from '@/services/system-config/login-strategy';
-import { isArray } from 'lodash';
-import EnumSelect from '@/components/enum-select';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { PlusOutlined } from '@ant-design/icons'
+import { Input, Button, Modal, Form, message } from 'antd'
+import React, { useState } from 'react'
+import { createLoginStrategy, deleteLoginStrategy } from '@/services/system-config/login-strategy'
+import { isArray } from 'lodash'
+import EnumSelect from '@/components/enum-select'
 
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import ModalConfirm from '@/components/modal-confirm';
-import AddLoginStrategyForm from './components/add-form';
-import moment from 'moment';
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import ModalConfirm from '@/components/modal-confirm'
+import AddLoginStrategyForm from './components/add-form'
+import moment from 'moment'
 
-const { Search } = Input;
+const { Search } = Input
 
 enum LoginEnum {
   '全部',
@@ -22,13 +22,13 @@ enum LoginEnum {
 }
 
 const LoginStrategy: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
-  const [addForm] = Form.useForm();
+  const [addForm] = Form.useForm()
 
   const searchComponent = () => {
     return (
@@ -51,8 +51,8 @@ const LoginStrategy: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   //选择省份onChange事件
   const searchByType = (value: any) => {
@@ -60,39 +60,39 @@ const LoginStrategy: React.FC = () => {
       // @ts-ignore
       tableRef.current.searchByParams({
         authorizeType: value,
-      });
+      })
     }
-  };
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteLoginStrategy(editDataId);
-    refresh();
-    setTableSelectRows([]);
-    message.success('删除成功');
-  };
+    await deleteLoginStrategy(editDataId)
+    refresh()
+    setTableSelectRows([])
+    message.success('删除成功')
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
@@ -107,7 +107,7 @@ const LoginStrategy: React.FC = () => {
       title: '类型',
       width: 150,
       render: (text: any, record: any) => {
-        return record.authorizeTypeText;
+        return record.authorizeTypeText
       },
     },
     {
@@ -128,12 +128,12 @@ const LoginStrategy: React.FC = () => {
       index: 'remark',
       title: '备注',
     },
-  ];
+  ]
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddLoginStrategy = () => {
     addForm.validateFields().then(async (value) => {
@@ -143,14 +143,14 @@ const LoginStrategy: React.FC = () => {
           authorizeType: 1,
           remark: '',
         },
-        value,
-      );
-      await createLoginStrategy(submitInfo);
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await createLoginStrategy(submitInfo)
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   const tableElement = () => {
     return (
@@ -165,8 +165,8 @@ const LoginStrategy: React.FC = () => {
           <ModalConfirm changeEvent={sureDeleteData} selectData={tableSelectRows} />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   //   const titleSlotElement = () => {
   //     return <div className={styles.routeComponent}></div>;
@@ -204,7 +204,7 @@ const LoginStrategy: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default LoginStrategy;
+export default LoginStrategy

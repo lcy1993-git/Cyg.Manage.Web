@@ -1,18 +1,18 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Checkbox } from 'antd';
-import Recevier from '../../../recevier/index';
-import EngineerTableList from '../../../engineer-table-list/index';
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { Checkbox } from 'antd'
+import Recevier from '../../../recevier/index'
+import EngineerTableList from '../../../engineer-table-list/index'
 
 interface ProsepectTableParams {
-  userId: string;
-  recevierId: string | undefined;
-  setReceiverName?: Dispatch<SetStateAction<string>>;
-  getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
-  isFresh?: boolean;
-  doneFlag?: boolean;
-  setIsFresh?: Dispatch<SetStateAction<boolean>>;
-  getEngineerData?: Dispatch<SetStateAction<any[]>>;
-  getProjectIds?: Dispatch<SetStateAction<string[]>>;
+  userId: string
+  recevierId: string | undefined
+  setReceiverName?: Dispatch<SetStateAction<string>>
+  getReceiverId?: Dispatch<SetStateAction<string | undefined>>
+  isFresh?: boolean
+  doneFlag?: boolean
+  setIsFresh?: Dispatch<SetStateAction<boolean>>
+  getEngineerData?: Dispatch<SetStateAction<any[]>>
+  getProjectIds?: Dispatch<SetStateAction<string[]>>
 }
 
 const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
@@ -26,9 +26,9 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
     doneFlag,
     setIsFresh,
     getProjectIds,
-  } = props;
-  const [checkAllisChecked, setCheckAllisChecked] = useState<boolean>(false);
-  const [checkAllisIndeterminate, setCheckAllisIndeterminate] = useState<boolean>(false);
+  } = props
+  const [checkAllisChecked, setCheckAllisChecked] = useState<boolean>(false)
+  const [checkAllisIndeterminate, setCheckAllisIndeterminate] = useState<boolean>(false)
   /**
    * @flag
    * 事件触发标识
@@ -40,14 +40,14 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
   const [emitAll, setEmitAll] = useState<{ flag: boolean; state: number }>({
     flag: false,
     state: 0,
-  });
+  })
 
   const onAllChange = () => {
     setEmitAll({
       flag: !emitAll?.flag,
       state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1,
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -85,7 +85,7 @@ const ProspectTable: React.FC<ProsepectTableParams> = (props) => {
       />
       {/* </div> */}
     </>
-  );
-};
+  )
+}
 
-export default ProspectTable;
+export default ProspectTable

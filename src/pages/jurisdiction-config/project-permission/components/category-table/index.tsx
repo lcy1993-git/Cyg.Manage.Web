@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Form, message, Popconfirm, Table } from 'antd';
-import CommonTitle from '@/components/common-title';
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
-import styles from './index.less';
-import PermissionTypeModal from '../type-select-modal';
-import CyTag from '@/components/cy-tag';
-import EditSelectModal from '../edit-select-modal';
-import ModalConfirm from '@/components/modal-confirm';
+import React, { useState, useEffect } from 'react'
+import { Button, Form, message, Table } from 'antd'
+import CommonTitle from '@/components/common-title'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import styles from './index.less'
+import PermissionTypeModal from '../type-select-modal'
+import CyTag from '@/components/cy-tag'
+import EditSelectModal from '../edit-select-modal'
+import ModalConfirm from '@/components/modal-confirm'
 
 export interface permissionItem {
-  category: string | undefined;
-  objectId: string | undefined;
-  projectTypes: number[] | undefined;
-  objectName: string | undefined;
+  category: string | undefined
+  objectId: string | undefined
+  projectTypes: number[] | undefined
+  objectName: string | undefined
 }
 
 interface TableParams {
-  getItems?: (value: permissionItem[]) => void;
-  editItems?: permissionItem[];
+  getItems?: (value: permissionItem[]) => void
+  editItems?: permissionItem[]
 }
 
 const colorMap = {
@@ -27,25 +27,25 @@ const colorMap = {
   8: 'green',
   16: 'blue',
   32: 'green',
-};
+}
 
 const CategoryTable: React.FC<TableParams> = (props) => {
-  const { getItems, editItems } = props;
-  const [typeSelectModalVisible, setTypeSelectModalVisible] = useState<boolean>(false);
-  const [tableSelectData, setTableSelectData] = useState<any[]>([]);
-  const [currentTableData, setCurrentTableData] = useState<permissionItem[]>(editItems ?? []);
-  const [editTypeSelectModal, setEditTypeSelectModal] = useState<boolean>(false);
-  const [clickKey, setClickKey] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { getItems, editItems } = props
+  const [typeSelectModalVisible, setTypeSelectModalVisible] = useState<boolean>(false)
+  const [tableSelectData, setTableSelectData] = useState<any[]>([])
+  const [currentTableData, setCurrentTableData] = useState<permissionItem[]>(editItems ?? [])
+  const [editTypeSelectModal, setEditTypeSelectModal] = useState<boolean>(false)
+  const [clickKey, setClickKey] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
   // const tableRef = React.useRef<HTMLDivElement>(null);
 
   //table数据改变则重新获取
   useEffect(() => {
-    getItems?.(currentTableData);
-  }, [currentTableData]);
+    getItems?.(currentTableData)
+  }, [currentTableData])
 
   const columns = [
     {
@@ -60,7 +60,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
           ? '公司'
           : record.category === '2'
           ? '部组'
-          : '公司用户';
+          : '公司用户'
       },
     },
     {
@@ -69,7 +69,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
       index: 'objectId',
       width: 280,
       render: (text: any, record: any) => {
-        return record.objectName;
+        return record.objectName
       },
     },
     {
@@ -96,43 +96,43 @@ const CategoryTable: React.FC<TableParams> = (props) => {
                 ? '被委托项目'
                 : '被共享项目'}
             </CyTag>
-          );
-        });
+          )
+        })
       },
     },
-  ];
+  ]
 
   const rowSelection = {
     onChange: (values: any[], selectedRows: any[]) => {
-      setClickKey(selectedRows.map((item) => item['objectId']));
-      setTableSelectData(selectedRows);
+      setClickKey(selectedRows.map((item) => item['objectId']))
+      setTableSelectData(selectedRows)
     },
-  };
+  }
 
   //条目删除
   const removeEvent = () => {
     if (tableSelectData && tableSelectData.length === 0) {
-      message.warning('请选择要移除的条目');
-      return;
+      message.warning('请选择要移除的条目')
+      return
     }
-    const deleteId = tableSelectData[0].objectId;
-    const copyData = [...currentTableData];
-    const hasDeleteData = copyData.filter((item) => item.objectId !== deleteId);
+    const deleteId = tableSelectData[0].objectId
+    const copyData = [...currentTableData]
+    const hasDeleteData = copyData.filter((item) => item.objectId !== deleteId)
 
-    setCurrentTableData(hasDeleteData);
-    setTableSelectData([]);
-    message.success('已移除');
-  };
+    setCurrentTableData(hasDeleteData)
+    setTableSelectData([])
+    message.success('已移除')
+  }
 
   //编辑条目信息
   const editPermissionItemEvent = () => {
     if (tableSelectData && tableSelectData.length === 0) {
-      message.warning('请选择你要编辑的条目');
-      return;
+      message.warning('请选择你要编辑的条目')
+      return
     }
 
-    const editItem = tableSelectData[0];
-    setLoading(true);
+    const editItem = tableSelectData[0]
+    setLoading(true)
     editForm.setFieldsValue({
       ...editItem,
       category: String(editItem.category),
@@ -151,9 +151,9 @@ const CategoryTable: React.FC<TableParams> = (props) => {
         String(editItem?.category) === '3'
           ? editItem.projectTypes?.map((item: any) => (item.value ? item.value : item))
           : undefined,
-    });
-    setEditTypeSelectModal(true);
-  };
+    })
+    setEditTypeSelectModal(true)
+  }
 
   return (
     <>
@@ -214,7 +214,7 @@ const CategoryTable: React.FC<TableParams> = (props) => {
         />
       )}
     </>
-  );
-};
+  )
+}
 
-export default CategoryTable;
+export default CategoryTable

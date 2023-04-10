@@ -27,7 +27,7 @@ const MyWork: React.FC = () => {
   const [currentClickTabChildActiveType, setCurrentClickTabChildActiveType] = useState('my')
   const [myWorkInitData, setMyWorkInitData] = useState<any[]>([])
   const [selectedFavId, setSelectedFavId] = useState<string>('')
-  const [statisticalCategory, setStatisticalCategory] = useState<string>('-1')
+  const [setStatisticalCategory] = useState<string>('-1')
   const [favName, setFavName] = useState<string>('')
   //保存工作台列表ref
   const [myRef, setMyRef] = useState<any>()

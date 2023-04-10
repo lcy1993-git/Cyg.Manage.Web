@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef } from 'react'
 export interface InifinityScrollListProps {
-  height: number;
-  isScroll?: boolean;
+  height: number
+  isScroll?: boolean
 }
 
 const InifinityScrollList: FC<InifinityScrollListProps> = ({
@@ -9,7 +9,7 @@ const InifinityScrollList: FC<InifinityScrollListProps> = ({
   height,
   isScroll = false,
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const style =
       '\
@@ -23,22 +23,22 @@ const InifinityScrollList: FC<InifinityScrollListProps> = ({
             transform: translate3d(0, A_DYNAMIC_VALUE, 0);\
         }\
       }\
-  ';
-    const tt = document.styleSheets[0];
+  '
+    const tt = document.styleSheets[0]
     if (height) {
-      tt.insertRule(style.replace(/A_DYNAMIC_VALUE/g, `${height}`));
+      tt.insertRule(style.replace(/A_DYNAMIC_VALUE/g, `${height}`))
     }
 
     if (ref.current) {
-      ref.current.style.animation = 'mymove 25s infinite linear';
+      ref.current.style.animation = 'mymove 25s infinite linear'
     }
-  }, [height]);
+  }, [height])
 
   if (isScroll) {
-    return <div ref={ref}>{children}</div>;
+    return <div ref={ref}>{children}</div>
   } else {
-    return <div>{children}</div>;
+    return <div>{children}</div>
   }
-};
+}
 
-export default InifinityScrollList;
+export default InifinityScrollList

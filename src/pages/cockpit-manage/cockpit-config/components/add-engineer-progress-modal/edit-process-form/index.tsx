@@ -1,25 +1,25 @@
-import CommonTitle from '@/components/common-title';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import CommonTitle from '@/components/common-title'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 
 interface EditEngineerProcessStatistic {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
-  currentRecord: any;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: (componentProps: any) => void
+  currentRecord: any
 }
 
 const EditEngineerProcessModal: React.FC<EditEngineerProcessStatistic> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, currentRecord } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, currentRecord } = props
+  const [form] = Form.useForm()
 
   const sureEditEvent = () => {
     form.validateFields().then((values) => {
-      const { type } = values;
+      const { type } = values
 
-      setState(false);
+      setState(false)
 
       changeFinishEvent?.({
         name: 'projectProgress',
@@ -29,19 +29,19 @@ const EditEngineerProcessModal: React.FC<EditEngineerProcessStatistic> = (props)
         w: 3,
         h: 11,
         componentProps: type,
-      });
-    });
-  };
+      })
+    })
+  }
 
   useEffect(() => {
     if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {
-      form.setFieldsValue({ type: currentRecord.componentProps });
+      form.setFieldsValue({ type: currentRecord.componentProps })
     }
-  }, [JSON.stringify(currentRecord.componentProps)]);
+  }, [JSON.stringify(currentRecord.componentProps)])
 
   return (
     <Modal
-    maskClosable={false}
+      maskClosable={false}
       title="工程进度统计配置"
       width={750}
       visible={state as boolean}
@@ -58,7 +58,7 @@ const EditEngineerProcessModal: React.FC<EditEngineerProcessStatistic> = (props)
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditEngineerProcessModal;
+export default EditEngineerProcessModal

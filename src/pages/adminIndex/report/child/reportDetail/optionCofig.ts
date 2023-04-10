@@ -1,6 +1,19 @@
 import * as echarts from 'echarts/lib/echarts'
 import 'echarts/lib/component/grid'
 import 'echarts/lib/component/tooltip'
+import {
+  ConnectTimeoutAllClient,
+  FileTransferStatisticsAllClient,
+  GetAccountChangeEventCount,
+  getAuditEventChartInfo,
+  GetLoinoutTrends,
+  getQtyByClientType,
+  PassWordRestRank,
+  ProjectChangeAllClient,
+  ProjectModifyAllClient,
+  ProjectProcessChangeAllClient,
+  ResourceLibChangeAllClient,
+} from '@/services/security-audit'
 
 export const optionConfig = {
   allAll: [
@@ -9,7 +22,14 @@ export const optionConfig = {
       key: 'event',
       options: {
         animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -17,15 +37,16 @@ export const optionConfig = {
         },
         xAxis: {
           type: 'value',
+          minInterval: 1,
           boundaryGap: [0, 0.01],
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '所有事件',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -34,7 +55,7 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 50,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#E2DE49' },
@@ -43,7 +64,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 110,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#50DFD4' },
@@ -52,7 +73,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 200,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: 'rgba(74, 191, 63, 1)' },
@@ -60,9 +81,31 @@ export const optionConfig = {
                   ]),
                 },
               },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EFC376' },
+                    { offset: 1, color: '#B88A39' },
+                  ]),
+                },
+              },
             ],
           },
         ],
+      },
+      getData: async () => {
+        return await getQtyByClientType({})
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { clientTypeText: any }) => item.clientTypeText)
+        options.series[0].data = options.series[0].data.map(
+          (item: { value: any }, index: string | number) => {
+            item.value = data[index]?.count
+            return item
+          }
+        )
+        return options
       },
     },
     {
@@ -72,15 +115,11 @@ export const optionConfig = {
         animation: false,
         tooltip: {
           trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: 'white',
-            },
-          },
+          axisPointer: false,
         },
         grid: {
-          left: '3%',
+          top: 30,
+          left: '4%',
           right: '4%',
           bottom: '3%',
           containLabel: true,
@@ -90,26 +129,12 @@ export const optionConfig = {
             type: 'category',
             boundaryGap: false,
             name: '时间',
-            nameGap: 40,
+            nameGap: 45,
             nameLocation: 'center',
             axisLabel: {
               rotate: 40,
             },
-            data: [
-              '00:00:00',
-              '02:00:00',
-              '04:00:00',
-              '06:00:00',
-              '08:00:00',
-              '10:00:00',
-              '12:00:00',
-              '14:00:00',
-              '16:00:00',
-              '18:00:00',
-              '20:00:00',
-              '22:00:00',
-              '24:00:00',
-            ],
+            data: [],
           },
         ],
         yAxis: [
@@ -130,7 +155,7 @@ export const optionConfig = {
             },
             axisLabel: {
               interval: 1000,
-              formatter: function (value: number, index: number) {
+              formatter: function (value: number) {
                 let val
                 if (value >= 10000) {
                   val = value / 10000 + 'w'
@@ -171,19 +196,34 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [1200, 1320, 11, 134, 590, 50, 2140, 20, 655, 2101, 4, 790, 1130, 210],
+            data: [],
           },
         ],
+      },
+      getData: async () => {
+        return await getAuditEventChartInfo({})
+      },
+      dealChartData: (data: any, options: any) => {
+        options.xAxis[0].data = data.map((item: any) => item.time.slice(11, 19))
+        options.series[0].data = data.map((item: any) => item.count)
+        return options
       },
     },
   ],
   allSystem: [
     {
-      tab: '所有事件',
+      tab: '系统事件',
       key: 'event',
       options: {
         animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -191,15 +231,16 @@ export const optionConfig = {
         },
         xAxis: {
           type: 'value',
+          minInterval: 1,
           boundaryGap: [0, 0.01],
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '系统事件',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -208,7 +249,7 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 2201,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#E2DE49' },
@@ -217,7 +258,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 437,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#50DFD4' },
@@ -226,7 +267,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 777,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: 'rgba(74, 191, 63, 1)' },
@@ -234,9 +275,232 @@ export const optionConfig = {
                   ]),
                 },
               },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EFC376' },
+                    { offset: 1, color: '#B88A39' },
+                  ]),
+                },
+              },
             ],
           },
         ],
+      },
+      getData: async () => {
+        return await getQtyByClientType({
+          auditType: 1,
+        })
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { clientTypeText: any }) => item.clientTypeText)
+        options.series[0].data = options.series[0].data.map(
+          (item: { value: any }, index: string | number) => {
+            item.value = data[index]?.count
+            return item
+          }
+        )
+        return options
+      },
+    },
+    {
+      tab: '时间',
+      key: 'time',
+      options: {
+        animation: false,
+
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: false,
+        },
+        grid: {
+          top: 30,
+          left: '4%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            name: '时间',
+            nameGap: 45,
+            nameLocation: 'center',
+            axisLabel: {
+              rotate: 40,
+            },
+            data: [],
+          },
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            name: '计数',
+            offset: 5,
+            splitLine: {
+              //网格线
+              lineStyle: {
+                type: 'dashed', //设置网格线类型 dotted：虚线   solid:实线
+                width: 1,
+              },
+              show: true, //隐藏或显示
+            },
+            nameStyle: {
+              fontWeight: 500,
+            },
+            axisLabel: {
+              interval: 1000,
+              formatter: function (value: number) {
+                let val
+                if (value >= 10000) {
+                  val = value / 10000 + 'w'
+                } else if (value >= 1000) {
+                  val = value / 1000 + 'k'
+                } else if (value < 1000) {
+                  val = value
+                }
+                return val
+              },
+            },
+            nameGap: 35,
+            nameRotate: 90,
+            nameLocation: 'center',
+          },
+        ],
+        series: [
+          {
+            lineStyle: {
+              color: 'rgba(77, 169, 68, 1)',
+            },
+            // symbol:'none',
+            showSymbol: false,
+            type: 'line',
+            stack: 'Total',
+            areaStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                {
+                  offset: 0,
+                  color: 'rgba(77, 169, 68, 0.9)',
+                },
+                {
+                  offset: 1,
+                  color: 'rgba(77, 169, 68, 0.3)',
+                },
+              ]),
+            },
+            emphasis: {
+              focus: 'series',
+            },
+            data: [],
+          },
+        ],
+      },
+      getData: async () => {
+        return await getAuditEventChartInfo({
+          auditType: 1,
+        })
+      },
+      dealChartData: (data: any, options: any) => {
+        options.xAxis[0].data = data.map((item: any) => item.time.slice(11, 19))
+        options.series[0].data = data.map((item: any) => item.count)
+        return options
+      },
+    },
+  ],
+  allBusiness: [
+    {
+      tab: '业务事件',
+      key: 'event',
+      options: {
+        animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
+        grid: {
+          top: 30,
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'value',
+          minInterval: 1,
+          boundaryGap: [0, 0.01],
+        },
+        yAxis: {
+          type: 'category',
+          data: [],
+        },
+        series: [
+          {
+            name: '业务事件',
+            type: 'bar',
+            barWidth: 24, //柱图宽度
+            label: {
+              show: true,
+              position: 'insideLeft',
+            },
+            data: [
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#E2DE49' },
+                    { offset: 1, color: '#667707' },
+                  ]),
+                },
+              },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#50DFD4' },
+                    { offset: 1, color: '#087070' },
+                  ]),
+                },
+              },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
+                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
+              },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EFC376' },
+                    { offset: 1, color: '#B88A39' },
+                  ]),
+                },
+              },
+            ],
+          },
+        ],
+      },
+      getData: async () => {
+        return await getQtyByClientType({
+          auditType: 2,
+        })
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { clientTypeText: any }) => item.clientTypeText)
+        options.series[0].data = options.series[0].data.map(
+          (item: { value: any }, index: string | number) => {
+            item.value = data[index]?.count
+            return item
+          }
+        )
+        return options
       },
     },
     {
@@ -248,14 +512,12 @@ export const optionConfig = {
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: 'white',
-            },
+            type: 'shadow',
           },
         },
         grid: {
-          left: '3%',
+          top: 30,
+          left: '4%',
           right: '4%',
           bottom: '3%',
           containLabel: true,
@@ -265,26 +527,12 @@ export const optionConfig = {
             type: 'category',
             boundaryGap: false,
             name: '时间',
-            nameGap: 40,
+            nameGap: 45,
             nameLocation: 'center',
             axisLabel: {
               rotate: 40,
             },
-            data: [
-              '00:00:00',
-              '02:00:00',
-              '04:00:00',
-              '06:00:00',
-              '08:00:00',
-              '10:00:00',
-              '12:00:00',
-              '14:00:00',
-              '16:00:00',
-              '18:00:00',
-              '20:00:00',
-              '22:00:00',
-              '24:00:00',
-            ],
+            data: [],
           },
         ],
         yAxis: [
@@ -305,7 +553,7 @@ export const optionConfig = {
             },
             axisLabel: {
               interval: 1000,
-              formatter: function (value: number, index: number) {
+              formatter: function (value: number) {
                 let val
                 if (value >= 10000) {
                   val = value / 10000 + 'w'
@@ -346,198 +594,19 @@ export const optionConfig = {
             emphasis: {
               focus: 'series',
             },
-            data: [10, 10, 101, 44, 55, 50, 2140, 10, 65, 21, 64, 70, 10, 2],
+            data: [],
           },
         ],
       },
-    },
-  ],
-  allBusiness: [
-    {
-      tab: '所有事件',
-      key: 'event',
-      options: {
-        animation: false,
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true,
-        },
-        xAxis: {
-          type: 'value',
-          boundaryGap: [0, 0.01],
-        },
-        yAxis: {
-          type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
-        },
-        series: [
-          {
-            name: '2011',
-            type: 'bar',
-            barWidth: 24, //柱图宽度
-            label: {
-              show: true,
-              position: 'insideLeft',
-            },
-            data: [
-              {
-                value: 221,
-                itemStyle: {
-                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    { offset: 0, color: '#E2DE49' },
-                    { offset: 1, color: '#667707' },
-                  ]),
-                },
-              },
-              {
-                value: 4447,
-                itemStyle: {
-                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    { offset: 0, color: '#50DFD4' },
-                    { offset: 1, color: '#087070' },
-                  ]),
-                },
-              },
-              {
-                value: 777,
-                itemStyle: {
-                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
-                    { offset: 0, color: 'rgba(74, 191, 63, 1)' },
-                    { offset: 1, color: 'rgba(14, 123, 59, 1)' },
-                  ]),
-                },
-              },
-            ],
-          },
-        ],
+      getData: async () => {
+        return await getAuditEventChartInfo({
+          auditType: 2,
+        })
       },
-    },
-    {
-      tab: '时间',
-      key: 'time',
-      options: {
-        animation: false,
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: 'white',
-            },
-          },
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true,
-        },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            name: '时间',
-            nameGap: 40,
-            nameLocation: 'center',
-            axisLabel: {
-              rotate: 40,
-            },
-            data: [
-              '00:00:00',
-              '02:00:00',
-              '04:00:00',
-              '06:00:00',
-              '08:00:00',
-              '10:00:00',
-              '12:00:00',
-              '14:00:00',
-              '16:00:00',
-              '18:00:00',
-              '20:00:00',
-              '22:00:00',
-              '24:00:00',
-            ],
-          },
-        ],
-        yAxis: [
-          {
-            type: 'value',
-            name: '计数',
-            offset: 5,
-            splitLine: {
-              //网格线
-              lineStyle: {
-                type: 'dashed', //设置网格线类型 dotted：虚线   solid:实线
-                width: 1,
-              },
-              show: true, //隐藏或显示
-            },
-            nameStyle: {
-              fontWeight: 500,
-            },
-            axisLabel: {
-              interval: 1000,
-              formatter: function (value: number, index: number) {
-                let val
-                if (value >= 10000) {
-                  val = value / 10000 + 'w'
-                } else if (value >= 1000) {
-                  val = value / 1000 + 'k'
-                } else if (value < 1000) {
-                  val = value
-                }
-                return val
-              },
-            },
-            nameGap: 35,
-            nameRotate: 90,
-            nameLocation: 'center',
-          },
-        ],
-        series: [
-          {
-            lineStyle: {
-              color: 'rgba(77, 169, 68, 1)',
-            },
-            // symbol:'none',
-            showSymbol: false,
-            type: 'line',
-            stack: 'Total',
-            areaStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: 'rgba(77, 169, 68, 0.9)',
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(77, 169, 68, 0.3)',
-                },
-              ]),
-            },
-            emphasis: {
-              focus: 'series',
-            },
-            data: [
-              12100,
-              1320,
-              10111,
-              41234,
-              5590,
-              23550,
-              2140,
-              1720,
-              6555,
-              27101,
-              6134,
-              77790,
-              1130,
-              210,
-            ],
-          },
-        ],
+      dealChartData: (data: any, options: any) => {
+        options.xAxis[0].data = data.map((item: any) => item.time.slice(11, 19))
+        options.series[0].data = data.map((item: any) => item.count)
+        return options
       },
     },
   ],
@@ -547,7 +616,14 @@ export const optionConfig = {
       key: 'login',
       options: {
         animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -555,15 +631,16 @@ export const optionConfig = {
         },
         xAxis: {
           type: 'value',
+          minInterval: 1,
           boundaryGap: [0, 0.01],
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '登录',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -572,7 +649,7 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 50,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#E2DE49' },
@@ -581,7 +658,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 110,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#50DFD4' },
@@ -590,7 +667,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 200,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: 'rgba(74, 191, 63, 1)' },
@@ -598,33 +675,55 @@ export const optionConfig = {
                   ]),
                 },
               },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EBBB68' },
+                    { offset: 1, color: '#B47D1E' },
+                  ]),
+                },
+              },
             ],
           },
         ],
       },
+      getData: async () => {
+        return await getQtyByClientType({
+          eventType: 1,
+        })
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { clientTypeText: any }) => item.clientTypeText)
+        options.series[0].data = options.series[0].data.map(
+          (item: { value: any }, index: string | number) => {
+            item.value = data[index]?.count
+            return item
+          }
+        )
+        return options
+      },
     },
     {
-      tab: '登陆趋势',
+      tab: '登录趋势',
       key: 'loginTrend',
       options: {
         animation: false,
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: 'white',
-            },
+            type: 'shadow',
           },
         },
         legend: {
-          data: ['管理端', '勘察端', '设计端'],
+          data: ['管理端', '勘察端', '设计端', '评审端'],
           orient: 'vertical',
           right: 'right',
           top: 60,
         },
         grid: {
-          left: '3%',
+          top: 30,
+          left: '4%',
           right: '6%',
           bottom: '3%',
           containLabel: true,
@@ -634,26 +733,12 @@ export const optionConfig = {
             type: 'category',
             boundaryGap: false,
             name: '时间',
-            nameGap: 40,
+            nameGap: 45,
             nameLocation: 'center',
             axisLabel: {
               rotate: 40,
             },
-            data: [
-              '00:00:00',
-              '02:00:00',
-              '04:00:00',
-              '06:00:00',
-              '08:00:00',
-              '10:00:00',
-              '12:00:00',
-              '14:00:00',
-              '16:00:00',
-              '18:00:00',
-              '20:00:00',
-              '22:00:00',
-              '24:00:00',
-            ],
+            data: [],
           },
         ],
         yAxis: [
@@ -674,7 +759,7 @@ export const optionConfig = {
             },
             axisLabel: {
               interval: 1000,
-              formatter: function (value: number, index: number) {
+              formatter: function (value: number) {
                 let val
                 if (value >= 10000) {
                   val = value / 10000 + 'w'
@@ -693,7 +778,6 @@ export const optionConfig = {
         ],
         series: [
           {
-            left: 200,
             name: '管理端',
             lineStyle: {
               color: '#2A9B3D',
@@ -708,11 +792,10 @@ export const optionConfig = {
             showSymbol: true,
             symbolSize: 8,
             type: 'line',
-            stack: 'Total',
             emphasis: {
               focus: 'series',
             },
-            data: [11, 22, 335, 44, 56, 66, 77, 828, 66, 55, 22, 959, 22, 445],
+            data: [],
           },
           {
             name: '勘察端',
@@ -729,11 +812,10 @@ export const optionConfig = {
             symbolSize: 8,
             showSymbol: true,
             type: 'line',
-            stack: 'Total',
             emphasis: {
               focus: 'series',
             },
-            data: [123, 223, 441, 226, 336, 124, 778, 542, 147, 455, 441, 112, 483, 453],
+            data: [],
           },
           {
             name: '设计端',
@@ -751,13 +833,49 @@ export const optionConfig = {
             showSymbol: true,
             symbolSize: 8,
             type: 'line',
-            stack: 'Total',
             emphasis: {
               focus: 'series',
             },
-            data: [737, 88, 11, 888, 590, 50, 77, 20, 2, 22, 444, 790, 453, 783],
+            data: [],
+          },
+          {
+            name: '评审端',
+            lineStyle: {
+              color: '#ffa726',
+              width: 3,
+            },
+            itemStyle: {
+              normal: {
+                color: '#ffa726',
+              },
+            },
+            symbol: 'circle',
+            symbolRotate: 45,
+            showSymbol: true,
+            symbolSize: 8,
+            type: 'line',
+            emphasis: {
+              focus: 'series',
+            },
+            data: [],
           },
         ],
+      },
+      getData: async () => {
+        return await GetLoinoutTrends({
+          isLogout: false,
+          // queryDate:date
+        })
+      },
+      dealChartData: (data: any, options: any) => {
+        options.xAxis[0].data = data[0].trendCharts.map((item: { time: string | any[] }) =>
+          item?.time?.slice(11, 19)
+        )
+        options.series = options.series.map((item: { data: any }, index: string | number) => {
+          item.data = data[index]?.trendCharts?.map((value: { count: any }) => value?.count)
+          return item
+        })
+        return options
       },
     },
   ],
@@ -766,8 +884,15 @@ export const optionConfig = {
       tab: '退出登录',
       key: 'exitLogin',
       options: {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         animation: false,
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -775,15 +900,16 @@ export const optionConfig = {
         },
         xAxis: {
           type: 'value',
+          minInterval: 1,
           boundaryGap: [0, 0.01],
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '退出登录',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -792,7 +918,7 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 50,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#E2DE49' },
@@ -801,7 +927,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 110,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#50DFD4' },
@@ -810,7 +936,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 200,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: 'rgba(74, 191, 63, 1)' },
@@ -818,33 +944,55 @@ export const optionConfig = {
                   ]),
                 },
               },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EBBB68' },
+                    { offset: 1, color: '#B47D1E' },
+                  ]),
+                },
+              },
             ],
           },
         ],
       },
+      getData: async () => {
+        return await getQtyByClientType({
+          eventType: 2,
+        })
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { clientTypeText: any }) => item.clientTypeText)
+        options.series[0].data = options.series[0].data.map(
+          (item: { value: any }, index: string | number) => {
+            item.value = data[index]?.count
+            return item
+          }
+        )
+        return options
+      },
     },
     {
-      tab: '登陆趋势',
+      tab: '退出登录趋势',
       key: 'exitLoginTrend',
       options: {
         animation: false,
         tooltip: {
           trigger: 'axis',
           axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: 'white',
-            },
+            type: 'shadow',
           },
         },
         legend: {
-          data: ['管理端', '勘察端', '设计端'],
+          data: ['管理端', '勘察端', '设计端', '评审端'],
           orient: 'vertical',
           right: 'right',
           top: 60,
         },
         grid: {
-          left: '3%',
+          top: 30,
+          left: '4%',
           right: '6%',
           bottom: '3%',
           containLabel: true,
@@ -854,7 +1002,7 @@ export const optionConfig = {
             type: 'category',
             boundaryGap: false,
             name: '时间',
-            nameGap: 40,
+            nameGap: 45,
             nameLocation: 'center',
             axisLabel: {
               rotate: 40,
@@ -894,7 +1042,7 @@ export const optionConfig = {
             },
             axisLabel: {
               interval: 1000,
-              formatter: function (value: number, index: number) {
+              formatter: function (value: number) {
                 let val
                 if (value >= 10000) {
                   val = value / 10000 + 'w'
@@ -913,7 +1061,6 @@ export const optionConfig = {
         ],
         series: [
           {
-            left: 200,
             name: '管理端',
             lineStyle: {
               color: '#2A9B3D',
@@ -928,7 +1075,6 @@ export const optionConfig = {
             showSymbol: true,
             symbolSize: 8,
             type: 'line',
-            stack: 'Total',
             emphasis: {
               focus: 'series',
             },
@@ -949,7 +1095,6 @@ export const optionConfig = {
             symbolSize: 8,
             showSymbol: true,
             type: 'line',
-            stack: 'Total',
             emphasis: {
               focus: 'series',
             },
@@ -971,13 +1116,48 @@ export const optionConfig = {
             showSymbol: true,
             symbolSize: 8,
             type: 'line',
-            stack: 'Total',
             emphasis: {
               focus: 'series',
             },
             data: [737, 88, 11, 888, 590, 50, 77, 20, 2, 22, 444, 790, 453, 783],
           },
+          {
+            name: '评审端',
+            lineStyle: {
+              color: '#ffa726',
+              width: 3,
+            },
+            itemStyle: {
+              normal: {
+                color: '#ffa726',
+              },
+            },
+            symbol: 'circle',
+            symbolRotate: 45,
+            showSymbol: true,
+            symbolSize: 8,
+            type: 'line',
+            emphasis: {
+              focus: 'series',
+            },
+            data: [],
+          },
         ],
+      },
+      getData: async () => {
+        return await GetLoinoutTrends({
+          isLogout: true,
+        })
+      },
+      dealChartData: (data: any, options: any) => {
+        options.xAxis[0].data = data[0].trendCharts.map((item: { time: string | any[] }) =>
+          item?.time?.slice(11, 19)
+        )
+        options.series = options.series.map((item: { data: any }, index: string | number) => {
+          item.data = data[index]?.trendCharts?.map((value: { count: any }) => value?.count)
+          return item
+        })
+        return options
       },
     },
   ],
@@ -986,9 +1166,21 @@ export const optionConfig = {
       tab: '账号状态修改报表',
       key: 'sysChangingAccountStatus',
       options: {
-        animation: false,
+        grid: {
+          top: 30,
+          left: '4%',
+          right: '6%',
+          bottom: '0%',
+          containLabel: true,
+        },
+        legend: {
+          orient: 'vertical',
+          itemWidth: 14,
+          right: '35%',
+        },
         tooltip: {
           trigger: 'item',
+          transitionDuration: 0,
         },
         color: ['#358FDE', '#8C8E9D', '#F67443', '#4DA944'],
         series: [
@@ -999,31 +1191,53 @@ export const optionConfig = {
               borderWidth: 1,
             },
             data: [
-              { value: 22, name: '启用' },
-              { value: 55, name: '注销' },
-              { value: 12, name: '禁用' },
-              { value: 43, name: '新建' },
+              { value: 0, name: '启用' },
+              { value: 0, name: '注销' },
+              { value: 0, name: '休眠' },
+              { value: 0, name: '新建' },
             ],
             emphasis: {
-              // itemStyle: {
-              //   shadowBlur: 10,
-              //   shadowOffsetX: 0,
-              //   shadowColor: 'rgba(0, 0, 0, 0.5)'
-              // }
+              itemStyle: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)',
+              },
             },
-            radius: ['15%', '75%'],
+            radius: ['15%', '70%'],
           },
         ],
+      },
+
+      getData: async () => {
+        return await GetAccountChangeEventCount()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.series[0].data = options.series[0].data.map(
+          (item: { name: string; value: any }) => {
+            if (item.name === '启用') {
+              item.value = data.enableAccountCount
+            } else if (item.name === '注销') {
+              item.value = data.cancelAccountCount
+            } else if (item.name === '休眠') {
+              item.value = data.dormancyAccountCount
+            } else if (item.name === '新建') {
+              item.value = data.newAccountCount
+            }
+            return item
+          }
+        )
+        return options
       },
     },
   ],
   sysChangingPasswordStatus: [
     {
-      tab: '账号密码修改报表',
+      tab: '密码重置排名',
       key: 'sysChangingAccountStatus',
       options: {
         animation: false,
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -1036,11 +1250,11 @@ export const optionConfig = {
         yAxis: {
           type: 'category',
           inverse: true,
-          data: ['张三', '李四', '周杰伦', '赵信', '艾克'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '密码重置排名',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -1050,31 +1264,31 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 10,
+                value: 0,
                 itemStyle: {
                   color: '#F17453',
                 },
               },
               {
-                value: 8,
+                value: 0,
                 itemStyle: {
                   color: '#EE9B48',
                 },
               },
               {
-                value: 7,
+                value: 0,
                 itemStyle: {
                   color: '#DEC72D',
                 },
               },
               {
-                value: 5,
+                value: 0,
                 itemStyle: {
                   color: '#A3CC4F',
                 },
               },
               {
-                value: 3,
+                value: 0,
                 itemStyle: {
                   color: '#61CB92',
                 },
@@ -1082,6 +1296,27 @@ export const optionConfig = {
             ],
           },
         ],
+      },
+      getData: async () => {
+        return await PassWordRestRank()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.xAxis[0].data = data[0].trendCharts.map((item: { time: string | any[] }) =>
+          item?.time?.slice(11, 19)
+        )
+        options.series[0].data = options.series[0].map((item: { name: string; value: any }) => {
+          if (item.name === '启用') {
+            item.value = data.enableAccountCount
+          } else if (item.name === '注销') {
+            item.value = data.cancelAccountCount
+          } else if (item.name === '休眠') {
+            item.value = data.dormancyAccountCount
+          } else if (item.name === '新建') {
+            item.value = data.newAccountCount
+          }
+          return item
+        })
+        return options
       },
     },
   ],
@@ -1091,8 +1326,15 @@ export const optionConfig = {
       key: 'sysFileTransfer',
       options: {
         animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         grid: {
-          left: '3%',
+          top: 30,
+          left: '4%',
           right: '8%',
           bottom: '6%',
           containLabel: true,
@@ -1105,8 +1347,7 @@ export const optionConfig = {
         },
         xAxis: {
           name: '计数',
-          // offset: 5,
-          // nameRotate: 90,
+          minInterval: 1,
           nameGap: 25,
           nameLocation: 'center',
           type: 'value',
@@ -1122,14 +1363,14 @@ export const optionConfig = {
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
             name: '文件上传',
             type: 'bar',
             barWidth: 14, //柱图宽度
-            data: [10, 20, 30],
+            data: [],
             itemStyle: {
               color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                 { offset: 0, color: '#5093DF' },
@@ -1141,7 +1382,7 @@ export const optionConfig = {
             name: '文件下载',
             type: 'bar',
             barWidth: 14, //柱图宽度
-            data: [12, 55, 65],
+            data: [],
             itemStyle: {
               color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                 { offset: 0, color: '#3FBF6E' },
@@ -1151,6 +1392,15 @@ export const optionConfig = {
           },
         ],
       },
+      getData: async () => {
+        return await FileTransferStatisticsAllClient()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { key: string }) => item.key)
+        options.series[0].data = data.map((item: any) => item.value['文件上传'])
+        options.series[1].data = data.map((item: any) => item.value['文件下载'])
+        return options
+      },
     },
   ],
   sysConnectionTimeout: [
@@ -1158,8 +1408,15 @@ export const optionConfig = {
       tab: '连接超时报表',
       key: 'sysConnectionTimeout',
       options: {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         animation: false,
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -1168,14 +1425,15 @@ export const optionConfig = {
         xAxis: {
           type: 'value',
           boundaryGap: [0, 0.01],
+          minInterval: 1,
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '连接超时报表',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -1184,7 +1442,7 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 50,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#E2DE49' },
@@ -1193,7 +1451,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 110,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#50DFD4' },
@@ -1202,7 +1460,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 200,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: 'rgba(74, 191, 63, 1)' },
@@ -1210,9 +1468,33 @@ export const optionConfig = {
                   ]),
                 },
               },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EBBB68' },
+                    { offset: 1, color: '#B47D1E' },
+                  ]),
+                },
+              },
             ],
           },
         ],
+      },
+      getData: async () => {
+        return await ConnectTimeoutAllClient()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { key: string }) => item.key)
+        options.series[0].data = options.series[0].data.map(
+          (item: { key: string }, index: number) => {
+            if (data?.[index]) {
+              item['value'] = data[index]['value']
+            }
+            return item
+          }
+        )
+        return options
       },
     },
   ],
@@ -1222,7 +1504,14 @@ export const optionConfig = {
       key: 'businessProjectDataChange',
       options: {
         animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
@@ -1230,15 +1519,16 @@ export const optionConfig = {
         },
         xAxis: {
           type: 'value',
+          minInterval: 1,
           boundaryGap: [0, 0.01],
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '项目数据修改报表',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -1247,7 +1537,7 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 50,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#E2DE49' },
@@ -1256,7 +1546,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 110,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#50DFD4' },
@@ -1265,11 +1555,20 @@ export const optionConfig = {
                 },
               },
               {
-                value: 200,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: 'rgba(74, 191, 63, 1)' },
                     { offset: 1, color: 'rgba(14, 123, 59, 1)' },
+                  ]),
+                },
+              },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EBBB68' },
+                    { offset: 1, color: '#B47D1E' },
                   ]),
                 },
               },
@@ -1277,31 +1576,60 @@ export const optionConfig = {
           },
         ],
       },
+      getData: async () => {
+        return await ProjectModifyAllClient()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { key: string }) => item.key)
+        options.series[0].data = options.series[0].data.map(
+          (
+            item: {
+              value: any
+              key: string
+            },
+            index: number
+          ) => {
+            if (data[index]) {
+              item.value = data[index]['value']
+            }
+            return item
+          }
+        )
+        return options
+      },
     },
   ],
-  businessProjectFlowChange: [
+  projectProcessChanges: [
     {
       tab: '项目流程变化报表',
-      key: 'businessProjectFlowChange',
+      key: 'projectProcessChanges',
       options: {
         animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
         grid: {
+          top: 30,
           left: '3%',
           right: '4%',
           bottom: '3%',
           containLabel: true,
         },
         xAxis: {
+          minInterval: 1,
           type: 'value',
           boundaryGap: [0, 0.01],
         },
         yAxis: {
           type: 'category',
-          data: ['管理端', '勘察端', '设计端'],
+          data: [],
         },
         series: [
           {
-            name: '2011',
+            name: '项目流程变化报表',
             type: 'bar',
             barWidth: 24, //柱图宽度
             label: {
@@ -1310,7 +1638,7 @@ export const optionConfig = {
             },
             data: [
               {
-                value: 50,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#E2DE49' },
@@ -1319,7 +1647,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 110,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: '#50DFD4' },
@@ -1328,7 +1656,7 @@ export const optionConfig = {
                 },
               },
               {
-                value: 200,
+                value: 0,
                 itemStyle: {
                   color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
                     { offset: 0, color: 'rgba(74, 191, 63, 1)' },
@@ -1336,9 +1664,205 @@ export const optionConfig = {
                   ]),
                 },
               },
+              {
+                value: 0,
+                itemStyle: {
+                  color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                    { offset: 0, color: '#EBBB68' },
+                    { offset: 1, color: '#B47D1E' },
+                  ]),
+                },
+              },
             ],
           },
         ],
+      },
+      getData: async () => {
+        return await ProjectProcessChangeAllClient()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { key: string }) => item.key)
+        options.series[0].data = options.series[0].data.map(
+          (
+            item: {
+              value: any
+              key: string
+            },
+            index: number
+          ) => {
+            if (data[index]) {
+              item.value = data[index]['value']
+            }
+            return item
+          }
+        )
+        return options
+      },
+    },
+  ],
+  projectChangeReport: [
+    {
+      tab: '项目变动报表',
+      key: 'projectProcessChanges',
+      options: {
+        animation: false,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
+        grid: {
+          top: 30,
+          left: '4%',
+          right: '8%',
+          bottom: '6%',
+          containLabel: true,
+        },
+        legend: {
+          data: ['成功', '失败'],
+          orient: 'vertical',
+          right: 'right',
+          top: 60,
+        },
+        xAxis: {
+          name: '计数',
+          minInterval: 1,
+          nameGap: 25,
+          nameLocation: 'center',
+          type: 'value',
+          boundaryGap: [0, 0.01],
+          splitLine: {
+            //网格线
+            lineStyle: {
+              type: 'dashed', //设置网格线类型 dotted：虚线   solid:实线
+              width: 1,
+            },
+            show: true, //隐藏或显示
+          },
+        },
+        yAxis: {
+          type: 'category',
+          data: [],
+        },
+        series: [
+          {
+            name: '成功',
+            type: 'bar',
+            barWidth: 14, //柱图宽度
+            data: [],
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                { offset: 0, color: '#5093DF' },
+                { offset: 1, color: '#105DCF' },
+              ]),
+            },
+          },
+          {
+            name: '失败',
+            type: 'bar',
+            barWidth: 14, //柱图宽度
+            data: [],
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                { offset: 0, color: '#F8924F' },
+                { offset: 1, color: '#F66A3E' },
+              ]),
+            },
+          },
+        ],
+      },
+      getData: async () => {
+        return await ProjectChangeAllClient()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { key: string }) => item.key)
+        options.series[0].data = data.map((item: any) => item.value['成功'])
+        options.series[1].data = data.map((item: any) => item.value['失败'])
+        return options
+      },
+    },
+  ],
+  resourceLibraryChange: [
+    {
+      tab: '资源库变动报表',
+      key: 'projectProcessChanges',
+      options: {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow',
+          },
+        },
+        animation: false,
+        grid: {
+          top: 30,
+          left: '4%',
+          right: '8%',
+          bottom: '6%',
+          containLabel: true,
+        },
+        legend: {
+          data: ['成功', '失败'],
+          orient: 'vertical',
+          right: 'right',
+          top: 60,
+        },
+        xAxis: {
+          name: '计数',
+          minInterval: 1,
+          nameGap: 25,
+          nameLocation: 'center',
+          type: 'value',
+          boundaryGap: [0, 0.01],
+          splitLine: {
+            //网格线
+            lineStyle: {
+              type: 'dashed', //设置网格线类型 dotted：虚线   solid:实线
+              width: 1,
+            },
+            show: true, //隐藏或显示
+          },
+        },
+        yAxis: {
+          type: 'category',
+          data: [],
+        },
+        series: [
+          {
+            name: '成功',
+            type: 'bar',
+            barWidth: 14, //柱图宽度
+            data: [],
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                { offset: 0, color: '#5093DF' },
+                { offset: 1, color: '#1245AB' },
+              ]),
+            },
+          },
+          {
+            name: '失败',
+            type: 'bar',
+            barWidth: 14, //柱图宽度
+            data: [],
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(1, 0, 0, 1, [
+                { offset: 0, color: '#3FBF6E' },
+                { offset: 1, color: '#0E7B56' },
+              ]),
+            },
+          },
+        ],
+      },
+      getData: async () => {
+        return await ResourceLibChangeAllClient()
+      },
+      dealChartData: (data: any, options: any) => {
+        options.yAxis.data = data.map((item: { key: string }) => item.key)
+        options.series[0].data = data.map((item: any) => item.value['成功'])
+        options.series[1].data = data.map((item: any) => item.value['失败'])
+        return options
       },
     },
   ],

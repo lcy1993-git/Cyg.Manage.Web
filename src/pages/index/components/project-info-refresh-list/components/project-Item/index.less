@@ -1,22 +1,23 @@
 .projectItem {
   display: flex;
   justify-content: space-between;
+  box-sizing: border-box;
+  height: 40px;
+  padding: 0 8px;
   color: white;
   font-weight: 500;
   font-size: 14px;
   text-align: left;
-  height: 40px;
-  box-sizing: border-box;
-  padding: 0 8px;
   .projectName {
     flex: 1;
     margin-right: 8px;
     margin-left: 13px;
     overflow: hidden;
+    color: #26f682;
     white-space: nowrap;
     text-align: left;
     text-overflow: ellipsis;
-    color: #26f682;
+    cursor: pointer;
     a {
       color: #26f682;
     }
@@ -24,7 +25,6 @@
 
   .date {
     width: 80px;
-    color: #FFFFFF;
+    color: #ffffff;
   }
-
 }

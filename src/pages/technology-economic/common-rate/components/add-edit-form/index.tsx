@@ -1,32 +1,33 @@
-import React, {useState} from 'react';
-import { Input, Col, Row, Select } from 'antd';
-import UrlSelect from '@/components/url-select';
-import FormSwitch from '@/components/form-switch';
-import CyFormItem from '@/components/cy-form-item';
-import DateFormItem from '@/components/date-from-item';
-import { getEnums } from '../../../utils';
-import {useMount} from "ahooks";
-import { queryRateFilePager } from '@/services/technology-economic/common-rate';
-getEnums('RateTableType');
+import React from 'react'
+import { Input, Col, Row } from 'antd'
+import UrlSelect from '@/components/url-select'
+import CyFormItem from '@/components/cy-form-item'
+import DateFormItem from '@/components/date-from-item'
+import { getEnums } from '../../../utils'
+getEnums('RateTableType')
 
-interface Props{
-  modalType :string
+interface Props {
+  modalType: string
 }
-const DictionaryForm: React.FC<Props> = ({modalType}) => {
-  const [list,setLsit ] = useState<{sourceFile:string}[]>([])
-  useMount( async ()=>{
-    const res = await queryRateFilePager({pageSize:1000,pageIndex:1})
-    console.log(res)
-    setLsit(res.items)
-  })
+const DictionaryForm: React.FC<Props> = () => {
   return (
     <>
       <Row>
         <Col span={11}>
-          <CyFormItem label="名称" name="name" required rules={[{required:true,message:'名称为必填项'}]}>
+          <CyFormItem
+            label="名称"
+            name="name"
+            required
+            rules={[{ required: true, message: '名称为必填项' }]}
+          >
             <Input placeholder="请输入名称" />
           </CyFormItem>
-          <CyFormItem label="来源文件" name="sourceFile" required rules={[{required:true,message:'来源文件为必填项'}]}>
+          <CyFormItem
+            label="来源文件"
+            name="sourceFile"
+            required
+            rules={[{ required: true, message: '来源文件为必填项' }]}
+          >
             <Input placeholder="请输入所属文件" />
           </CyFormItem>
           <CyFormItem label="发布机构" name="publishOrg">
@@ -55,7 +56,7 @@ const DictionaryForm: React.FC<Props> = ({modalType}) => {
         <Input.TextArea rows={3} />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default DictionaryForm;
+export default DictionaryForm

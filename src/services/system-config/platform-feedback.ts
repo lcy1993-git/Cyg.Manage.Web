@@ -1,5 +1,5 @@
-import request from '@/utils/request';
-import { cyRequest, baseUrl } from '../common';
+import request from '@/utils/request'
+import { cyRequest, baseUrl } from '../common'
 
 export enum SourceType {
   '全部',
@@ -28,45 +28,45 @@ export enum HandleStatus {
 
 interface SearchLogItemParams {
   //开始搜索日期
-  startDate: Date;
+  startDate: Date
 
-  endDate: Date;
+  endDate: Date
 }
 
 interface ItemDetailData extends SearchLogItemParams {
-  id: string;
-  category: number;
-  title: string;
-  lastProcessDate: Date;
-  processStatus: number;
-  remark: string;
-  createdOn: Date;
-  sourceType: number;
-  createdBy: string;
+  id: string
+  category: number
+  title: string
+  lastProcessDate: Date
+  processStatus: number
+  remark: string
+  createdOn: Date
+  sourceType: number
+  createdBy: string
 }
 
 interface HandleFeedbackParams {
-  feedbackId: string;
-  content: string;
-  processStatus: number;
+  feedbackId: string
+  content: string
+  processStatus: number
 }
 
 // 获取搜索结果列表
 export const getFeedbackList = (parmas: SearchLogItemParams) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Feedback/GetPagedList`, { method: 'POST', data: parmas }),
-  );
-};
+    request(`${baseUrl.project}/Feedback/GetPagedList`, { method: 'POST', data: parmas })
+  )
+}
 
 // 获取一条数据
 export const getFeedbackDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Feedback/GetDetailById`, { method: 'GET', params: { id } }),
-  );
-};
+    request(`${baseUrl.project}/Feedback/GetDetailById`, { method: 'GET', params: { id } })
+  )
+}
 // 保存反馈数据
 export const handleFeedback = (params: HandleFeedbackParams) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.project}/Feedback/Handle`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.project}/Feedback/Handle`, { method: 'POST', data: params })
+  )
+}

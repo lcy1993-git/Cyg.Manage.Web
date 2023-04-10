@@ -12,7 +12,7 @@ type ApiFileViewProps = {
   emptySlot?: () => ReactElement
 } & Record<string, unknown>
 
-const ApiFileView: React.FC<ApiFileViewProps> = ({ api, type, onError, emptySlot, ...rest }) => {
+const ApiFileView: React.FC<ApiFileViewProps> = ({ api, type, ...rest }) => {
   const [data, setData] = useState<ArrayBuffer | null>(null)
 
   useMount(async () => {

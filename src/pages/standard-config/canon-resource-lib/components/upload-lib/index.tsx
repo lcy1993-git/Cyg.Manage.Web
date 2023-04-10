@@ -19,22 +19,19 @@ interface SaveImportLibProps {
 const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { libId = '', requestSource, changeFinishEvent } = props
-  const [requestLoading, setRequestLoading] = useState(false)
+  // const [setRequestLoading] = useState(false)
   const [falseData, setFalseData] = useState<string>('')
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false)
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const saveImportLibEvent = () => {
     return form
       .validateFields()
       .then((values) => {
         const { file } = values
 
-        setRequestLoading(true)
+        // setRequestLoading(true)
         return newUploadLineStressSag(file, { libId }, requestSource, '/ResourceLib/SaveImport')
       })
 
@@ -62,12 +59,12 @@ const SaveImportLib: React.FC<SaveImportLibProps> = (props) => {
       .finally(() => {
         changeFinishEvent?.()
         setUploadFileFalse()
-        setRequestLoading(false)
+        // setRequestLoading(false)
       })
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         return

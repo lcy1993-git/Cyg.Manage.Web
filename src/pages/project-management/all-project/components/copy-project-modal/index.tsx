@@ -43,7 +43,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     run,
     loading,
   } = useRequest(() => getProjectInfo(projectId), {
-    onSuccess: (res) => {
+    onSuccess: () => {
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,

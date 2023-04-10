@@ -56,7 +56,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
   const [tableShowDataSource, setTableShowDataSource] = useState<any[]>([])
   const [allCheckValue, setAllCheckValue] = useState<boolean>(false)
   const [indeterminate, setIndeterminate] = useState<boolean>(false)
-  const { sideVisible, selectedFavId, currentClickTabType } = useMyWorkStore()
+  const { selectedFavId, currentClickTabType } = useMyWorkStore()
   const {
     data: tableData,
     run,
@@ -188,7 +188,7 @@ const EngineerTable = (props: EngineerTableProps, ref: Ref<any>) => {
       emptyTableSelect()
     },
     // 延时进行搜索
-    delayRefresh: async (ms: number) => {
+    delayRefresh: async () => {
       await delay(500)
       setPageInfo({
         ...pageInfo,

@@ -35,7 +35,7 @@ export function drawEndByPoint({
   const transformState = transform(currentState)
 
   if (isPointInLine) {
-    const { geometry, id, ...data } = currentFeature!.getProperties()
+    const { ...data } = currentFeature!.getProperties()
     const [start, end] = currentFeature!
       .getGeometry()!
       .getCoordinates()

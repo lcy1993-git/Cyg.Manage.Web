@@ -27,7 +27,7 @@ interface libParams {
   // libId: string
 }
 
-const LineStressSag: React.FC<libParams> = (props) => {
+const LineStressSag: React.FC<libParams> = () => {
   const { setLineStressSagFlag } = useLayoutStore()
 
   useMount(() => {

@@ -1,6 +1,12 @@
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
-import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons'
+import {
+  EditOutlined,
+  LoginOutlined,
+  PlusOutlined,
+  ReloadOutlined,
+  SwapOutlined,
+} from '@ant-design/icons'
 import { Button, Modal, Form, message, Input, Spin } from 'antd'
 import React, { useMemo, useRef, useState } from 'react'
 import CompanyUserForm from './components/add-edit-form'
@@ -13,6 +19,8 @@ import {
   resetItemPwd,
   // batchAddCompanyUserItem,
   getCurrentCompanyInfo,
+  verifyPwd,
+  companyUserDelete,
 } from '@/services/personnel-config/company-user'
 import { getTreeSelectData } from '@/services/operation-config/company-group'
 import { useRequest } from 'ahooks'
@@ -31,6 +39,8 @@ import CommonTitle from '@/components/common-title'
 import AccreditStatistic from './components/accredit-statistic'
 import { history } from 'umi'
 import { useLayoutStore } from '@/layouts/context'
+import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
+import { baseUrl } from '@/services/common'
 
 const { Search } = Input
 
@@ -51,6 +61,11 @@ const CompanyUser: React.FC = () => {
   const [status, setStatus] = useState<number>(0)
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [unableVisible, setUnableVisible] = useState<boolean>(false)
+  const [noticeVisible, setNoticeVisible] = useState<boolean>(false)
+  const [passwordConfirmation, setPasswordConfirmation] = useState<boolean>(false)
+  const [noticeMessage, setNoticeMessage] = useState<string>('账号注销后将无法恢复，请谨慎操作')
+  const [passwordValue, setPasswordValue] = useState<string>('')
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [resetFormVisible, setResetFormVisible] = useState<boolean>(false)
   const [isCurrentUser, setIsCurrentUser] = useState<boolean>(false)
@@ -76,7 +91,7 @@ const CompanyUser: React.FC = () => {
     return
   }, [accreditData])
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const buttonJurisdictionArray: string | any[] = useGetButtonJurisdictionArray()
   //@ts-ignore
   const { id } = JSON.parse(window.localStorage.getItem('userInfo'))
 
@@ -101,6 +116,12 @@ const CompanyUser: React.FC = () => {
           <Button className="mr7" onClick={() => editEvent()} disabled={isCurrentUser}>
             <EditOutlined />
             编辑
+          </Button>
+        )}
+        {buttonJurisdictionArray?.includes('company-user-cancellation') && (
+          <Button className="mr7" onClick={() => cancellation()} disabled={isCurrentUser}>
+            <LoginOutlined />
+            注销
           </Button>
         )}
         {buttonJurisdictionArray?.includes('company-user-reset-password') && (
@@ -168,9 +189,24 @@ const CompanyUser: React.FC = () => {
     editForm.validateFields().then(async (values) => {
       const editData = tableSelectRows[0]
       const editDataId = editData.id
-      const newPassword = Object.assign({ id: editDataId, pwd: values.pwd })
-
+      const newPassword = Object.assign({ id: editDataId, pwd: handleSM2Crypto(values.pwd) })
       await resetItemPwd(newPassword)
+      uploadAuditLog(
+        [
+          {
+            auditType: 1,
+            eventType: 4,
+            operationDataId: editData.userName,
+            operationDataName: editData.name,
+            eventDetailType: '账号密码修改',
+            executionResult: '成功',
+
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/CompanyUser/ResetPwd`,
+          },
+        ],
+        true
+      )
       refresh()
       message.success('更新成功')
       editForm.resetFields()
@@ -196,6 +232,18 @@ const CompanyUser: React.FC = () => {
         value
       )
       await addCompanyUserItem(submitInfo)
+
+      uploadAuditLog([
+        {
+          auditType: 1,
+          eventType: 3,
+          eventDetailType: '新建',
+          executionResult: '成功',
+
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/CompanyUser/Create`,
+        },
+      ])
       refresh()
       setAddFormVisible(false)
       addForm.resetFields()
@@ -206,7 +254,6 @@ const CompanyUser: React.FC = () => {
   //   await getSelectTreeData();
   //   setBatchAddFormVisible(true);
   // };
-
   // const sureBatchAddCompanyUser = () => {
   //   batchAddForm.validateFields().then(async (values) => {
   //     await batchAddCompanyUserItem({ ...values });
@@ -267,7 +314,31 @@ const CompanyUser: React.FC = () => {
 
   //数据改变状态
   const updateStatus = async (record: any) => {
-    await updateItemStatus(record)
+    await updateItemStatus(record.id)
+    if (record.userStatusText === '启用') {
+      uploadAuditLog([
+        {
+          auditType: 1,
+          eventType: 3,
+          eventDetailType: '休眠',
+          executionResult: '成功',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/CompanyUser/ChangeState`,
+        },
+      ])
+    } else if (record.userStatusText === '休眠') {
+      uploadAuditLog([
+        {
+          auditType: 1,
+          eventType: 3,
+          eventDetailType: '启用',
+          executionResult: '成功',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/CompanyUser/ChangeState`,
+        },
+      ])
+    }
+
     refresh()
     message.success('状态修改成功')
   }
@@ -333,29 +404,50 @@ const CompanyUser: React.FC = () => {
             !record.isCurrentUser ? (
               record.userStatus === 1 ? (
                 <>
+                  {/* <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} /> */}
                   <span
                     style={{ cursor: 'pointer' }}
                     className="colorPrimary"
-                    onClick={() => updateStatus(record.id)}
+                    onClick={() => updateStatus(record)}
                   >
                     启用
                   </span>
                 </>
-              ) : (
+              ) : record.userStatus === 2 ? (
                 <>
+                  {/* <Switch key={status} defaultChecked onChange={() => updateStatus(record.id)} /> */}
                   <span
                     style={{ cursor: 'pointer' }}
-                    onClick={() => updateStatus(record.id)}
+                    className="colorPrimary"
+                    onClick={() => updateStatus(record)}
+                  >
+                    休眠
+                  </span>
+                </>
+              ) : (
+                <>
+                  {/* <Switch
+                    checked={false}
+                    onChange={() => {
+                      updateStatus(record.id);
+                    }}
+                  /> */}
+                  <span
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => updateStatus(record)}
                     className="colorRed"
                   >
-                    禁用
+                    注销
                   </span>
                 </>
               )
+            ) : record.userStatus === 1 ? (
+              <span>已启用</span>
             ) : (
-              !buttonJurisdictionArray?.includes('company-user-start-using') &&
-              (record.userStatus === 1 ? <span>已启用</span> : <span>已禁用</span>)
+              <span>已禁用</span>
             )}
+            {!buttonJurisdictionArray?.includes('company-user-start-using') &&
+              (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
           </>
         )
       },
@@ -445,6 +537,58 @@ const CompanyUser: React.FC = () => {
     addForm.resetFields()
   }
 
+  // const batchAddCloseEvent = () => {
+  //   setBatchAddFormVisible(false)
+  //   batchAddForm.resetFields()
+  // }
+  // 注销按钮
+  const cancellation = () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('请选择需要注销的用户')
+      return
+    }
+    // TODO
+    const user = tableSelectRows[0]
+    if (user.userStatus === 3) {
+      message.warning('该用户已经被注销')
+      return
+    }
+    if (user.id === id) {
+      setIsCurrentUser(true)
+      message.error('没有对当前登录账号执行此操作的权限')
+      return
+    }
+    setNoticeVisible(true)
+  }
+  // 弹窗注销按钮
+  const toCancellation = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      return
+    }
+    const obj = { pwd: passwordValue }
+    const res = await verifyPwd(obj)
+    if (res) {
+      const id = tableSelectRows[0].id
+      await companyUserDelete(id)
+      uploadAuditLog([
+        {
+          auditType: 1,
+          eventType: 3,
+          eventDetailType: '注销',
+          executionResult: '成功',
+
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/CompanyUser/Delete`,
+        },
+      ])
+      setPasswordConfirmation(false)
+      message.success('注销成功')
+      refresh()
+    } else {
+      setPasswordValue('')
+      setNoticeMessage('密码输入有误，请重新输入')
+    }
+  }
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.companyUser}>
@@ -455,20 +599,20 @@ const CompanyUser: React.FC = () => {
             </div>
             <div className="flex">
               <div className={styles.accreditStatisticItem}>
-                <AccreditStatistic label="管理端" icon="manage" accreditData={handleData?.[0]} />
-              </div>
-              <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="勘察端" icon="prospect" accreditData={handleData?.[1]} />
               </div>
               <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="设计端" icon="design" accreditData={handleData?.[2]} />
               </div>
-              {/* <div className={styles.accreditStatisticItem}>
+              <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="技经端" icon="skillBy" accreditData={handleData?.[4]} />
               </div>
               <div className={styles.accreditStatisticItem}>
                 <AccreditStatistic label="评审端" icon="review" accreditData={handleData?.[3]} />
-              </div> */}
+              </div>
+              <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic label="管理端" icon="manage" accreditData={handleData?.[0]} />
+              </div>
             </div>
           </div>
         </div>
@@ -553,6 +697,95 @@ const CompanyUser: React.FC = () => {
         <Form form={editForm} preserve={false}>
           <ResetPasswordForm />
         </Form>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        title="提示"
+        width="680px"
+        visible={unableVisible}
+        footer={false}
+        onOk={() => resetPwd()}
+        onCancel={() => setUnableVisible(false)}
+        destroyOnClose
+      >
+        <div>!当前账号有未完成工作，无法注销</div>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        title="提示"
+        width="680px"
+        visible={noticeVisible}
+        footer={false}
+        onOk={() => resetPwd()}
+        onCancel={() => setUnableVisible(false)}
+        destroyOnClose
+      >
+        <div>
+          <div>注销账号前，请确认已完成工作交接</div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '30px' }}>
+            <Button key="cancle" onClick={() => setNoticeVisible(false)}>
+              取消
+            </Button>
+            <Button
+              key="save"
+              type="primary"
+              onClick={() => {
+                setNoticeVisible(false)
+                setPasswordConfirmation(true)
+              }}
+              style={{ marginLeft: '16px' }}
+            >
+              下一步
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        title="密码确认"
+        width="450px"
+        visible={passwordConfirmation}
+        footer={false}
+        onOk={() => resetPwd()}
+        onCancel={() => setPasswordConfirmation(false)}
+        destroyOnClose
+      >
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: '100px', fontSize: '14px' }}>请输入密码</div>
+            <Input
+              style={{ width: '300px' }}
+              value={passwordValue}
+              type="password"
+              onChange={(e) => {
+                setPasswordValue(e.target.value)
+              }}
+            />
+          </div>
+          <div
+            style={{
+              marginLeft: '100px',
+              marginTop: '16px',
+              fontSize: '12px',
+              color: '#e51515',
+            }}
+          >
+            {noticeMessage}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '30px' }}>
+            <Button key="cancle" onClick={() => setPasswordConfirmation(false)}>
+              取消
+            </Button>
+            <Button
+              key="save"
+              type="primary"
+              onClick={() => toCancellation()}
+              style={{ marginLeft: '16px' }}
+            >
+              注销
+            </Button>
+          </div>
+        </div>
       </Modal>
     </PageCommonWrap>
   )

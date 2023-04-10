@@ -41,7 +41,7 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, run, loading } = useRequest(getCableWellDetail, {
+  const { data, loading } = useRequest(getCableWellDetail, {
     manual: true,
   })
 

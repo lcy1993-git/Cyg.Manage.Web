@@ -1,29 +1,29 @@
-import React, { useMemo } from 'react';
-import { Input, InputNumber, TreeSelect } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import rules from '../rule';
-import { CompanyGroupTreeData } from '@/services/operation-config/company-group';
-import styles from './index.less';
-import UrlSelect from '@/components/url-select';
+import React, { useMemo } from 'react'
+import { Input, InputNumber, TreeSelect } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import rules from '../rule'
+import { CompanyGroupTreeData } from '@/services/operation-config/company-group'
+import styles from './index.less'
+import UrlSelect from '@/components/url-select'
 
 interface CompanyUserFormProps {
-  treeData: CompanyGroupTreeData[];
+  treeData: CompanyGroupTreeData[]
 }
 
 const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
-  const { treeData = [] } = props;
+  const { treeData = [] } = props
 
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
       value: data.id,
       children: data.children.map(mapTreeData),
-    };
-  };
+    }
+  }
 
   const handleData = useMemo(() => {
-    return treeData?.map(mapTreeData);
-  }, [JSON.stringify(treeData)]);
+    return treeData?.map(mapTreeData)
+  }, [JSON.stringify(treeData)])
   return (
     <>
       <CyFormItem
@@ -38,9 +38,9 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
           () => ({
             validator(_, value) {
               if (value <= 50 && value >= 1) {
-                return Promise.resolve();
+                return Promise.resolve()
               }
-              return Promise.reject('请填写1~50以内的整数');
+              return Promise.reject('请填写1~50以内的整数')
             },
           }),
           {
@@ -67,7 +67,12 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
       </CyFormItem>
 
       <CyFormItem label="密码" name="pwd" required rules={rules.pwd} hasFeedback>
-        <Input type="password" placeholder="请输入密码" onPaste={(e) => e.preventDefault()}/>
+        <Input
+          type="password"
+          autoComplete="new-password"
+          placeholder="请输入密码"
+          onPaste={(e) => e.preventDefault()}
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -84,14 +89,19 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value || getFieldValue('pwd') === value) {
-                return Promise.resolve();
+                return Promise.resolve()
               }
-              return Promise.reject('两次密码输入不一致，请确认');
+              return Promise.reject('两次密码输入不一致，请确认')
             },
           }),
         ]}
       >
-        <Input type="password" placeholder="请再次输入密码" onPaste={(e) => e.preventDefault()}/>
+        <Input
+          type="password"
+          autoComplete="new-password"
+          placeholder="请再次输入密码"
+          onPaste={(e) => e.preventDefault()}
+        />
       </CyFormItem>
       <CyFormItem label="授权端口" name="clientCategorys">
         <UrlSelect
@@ -105,7 +115,7 @@ const BatchAddCompanyUser: React.FC<CompanyUserFormProps> = (props) => {
         />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default BatchAddCompanyUser;
+export default BatchAddCompanyUser

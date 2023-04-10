@@ -5,16 +5,11 @@ import WrapperComponent from '@/components/page-common-wrap'
 import CommonTitle from '@/components/common-title'
 import { getRateTypeList } from '@/services/technology-economic/common-rate'
 import CommonRateTable from './components/common-rate-table'
-import {
-  downloadTemplate,
-  downloadDemolitionTemplate,
-  importRateTable,
-} from '@/services/technology-economic/common-rate'
+import { downloadTemplate, importRateTable } from '@/services/technology-economic/common-rate'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import styles from './index.less'
 import FileUpload from '@/components/file-upload'
 import { history } from '@@/core/history'
-import _ from '@umijs/deps/compiled/lodash'
 
 interface ListData {
   value: string | number

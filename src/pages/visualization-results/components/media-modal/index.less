@@ -2,18 +2,17 @@
   position: relative;
   font-size: 0;
   .mediaIconWrapLeft,
-  .mediaIconWrapRight
-  {
+  .mediaIconWrapRight {
+    z-index: 1000;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     width: 70px;
     height: 70px;
+    color: rgba(100, 100, 100);
+    background-color: rgba(200, 200, 200, 0.1);
     border-radius: 70px;
     cursor: pointer;
-    color: rgba(100,100,100);
-    background-color: rgba(200, 200, 200, 0.1);
-    z-index: 1000;
     &:hover {
       color: #0e7b3b;
     }
@@ -24,21 +23,21 @@
 
   .mediaIconWrapLeft {
     position: absolute;
-    left: 4px;
     top: 45%;
+    left: 4px;
     cursor: pointer;
   }
   .mediaIconWrapRight {
     position: absolute;
-    right: 4px;
     top: 45%;
+    right: 4px;
   }
   .meadiaView {
-    height: 600px;
-    width: 100%;
-    font-size: 40px;
     display: inline-flex !important;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 600px;
+    font-size: 40px;
   }
 }

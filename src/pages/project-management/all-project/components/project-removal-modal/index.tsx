@@ -112,7 +112,7 @@ const ProjectRemovalModal: React.FC<ProjectRemovalModalProps> = (props) => {
         closeEvent()
         finishEvent?.()
       })
-      .catch((err: string) => {})
+      .catch(() => {})
   }
 
   const closeEvent = () => {

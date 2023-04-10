@@ -22,10 +22,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
   const [falseData, setFalseData] = useState<string>('')
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false)
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const [form] = Form.useForm()
   // const map = new Map();
   const saveLineStreesSagEvent = () => {
@@ -62,7 +59,7 @@ const SaveImportMaterial: React.FC<SaveImportMaterialProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         changeFinishEvent?.()

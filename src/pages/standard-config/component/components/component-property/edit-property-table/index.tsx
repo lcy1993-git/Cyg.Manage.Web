@@ -24,7 +24,7 @@ const EditPropertyTable: React.FC<EditFormTableProps> = (props) => {
   return (
     <div className={styles.editFormTable}>
       <Form.List name={formName} initialValue={formData}>
-        {(fields, { remove, add, move }) => (
+        {(fields, { remove, add }) => (
           <>
             <div className={styles.addBtnWrap}>
               <Button

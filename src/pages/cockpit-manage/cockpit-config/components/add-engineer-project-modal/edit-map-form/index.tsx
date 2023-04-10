@@ -1,19 +1,19 @@
-import CommonTitle from '@/components/common-title';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import CommonTitle from '@/components/common-title'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 
 interface EditEngineerAndModalProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
-  currentRecord: any;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: (componentProps: any) => void
+  currentRecord: any
 }
 
 const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, currentRecord } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, currentRecord } = props
+  const [form] = Form.useForm()
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
@@ -27,10 +27,10 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
           w: 3,
           h: 11,
           componentProps: values[k],
-        });
+        })
       }
 
-      setState(false);
+      setState(false)
 
       // changeFinishEvent?.({
       //   name: 'mapComponent',
@@ -41,14 +41,14 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
       //   h: 11,
       //   componentProps: mapComponent,
       // });
-    });
-  };
+    })
+  }
 
   useEffect(() => {
     if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {
-      form.setFieldsValue({ area: currentRecord.componentProps });
+      form.setFieldsValue({ area: currentRecord.componentProps })
     }
-  }, [JSON.stringify(currentRecord.componentProps)]);
+  }, [JSON.stringify(currentRecord.componentProps)])
 
   return (
     <Modal
@@ -93,7 +93,7 @@ const EditEngineerAndMapModal: React.FC<EditEngineerAndModalProps> = (props) => 
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditEngineerAndMapModal;
+export default EditEngineerAndMapModal

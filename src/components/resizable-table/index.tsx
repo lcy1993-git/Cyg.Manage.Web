@@ -2,16 +2,16 @@
  * APPTAG常量
  * @type {string}
  */
-import { Resizable } from 'react-resizable';
-import './index.less';
+import { Resizable } from 'react-resizable'
+import './index.less'
 
-export const APP_TAG = 'INSURANCE_APP';
+export const APP_TAG = 'INSURANCE_APP'
 
 export const ResizableTitle = (props: any) => {
-  const { onResize, width, ...restProps } = props;
+  const { onResize, width, ...restProps } = props
 
   if (!width) {
-    return <th {...restProps} />;
+    return <th {...restProps} />
   }
 
   return (
@@ -22,7 +22,7 @@ export const ResizableTitle = (props: any) => {
         <span
           className="react-resizable-handle"
           onClick={(e) => {
-            e.stopPropagation();
+            e.stopPropagation()
           }}
         />
       }
@@ -31,22 +31,22 @@ export const ResizableTitle = (props: any) => {
     >
       <th {...restProps} />
     </Resizable>
-  );
-};
+  )
+}
 
 export const components = {
   header: {
     cell: ResizableTitle,
   },
-};
+}
 //@ts-ignore
 export const handleResize = ({ width, index, columns }) => {
   const res = columns.map((item: any, i: any) => {
     if (i == index) {
-      item.width = width;
+      item.width = width
     }
-    return item;
-  });
+    return item
+  })
 
-  return res;
-};
+  return res
+}

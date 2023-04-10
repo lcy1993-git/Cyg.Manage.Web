@@ -1,25 +1,25 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input } from 'antd';
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input } from 'antd'
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
 
 // import { useGetButtonJurisdictionArray } from '@/utils/hooks';
 
-const { Search } = Input;
+const { Search } = Input
 
 interface InventoryTableParams {
-  inventoryId: string;
-  versionNo?: string;
-  invName?: string;
+  inventoryId: string
+  versionNo?: string
+  invName?: string
 }
 
 const InventoryTable: React.FC<InventoryTableParams> = (props) => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [companyWord, setCompanyWord] = useState<string>('');
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [companyWord, setCompanyWord] = useState<string>('')
 
-  const { inventoryId, invName, versionNo } = props;
+  const { inventoryId, invName, versionNo } = props
 
   const searchComponent = () => {
     return (
@@ -43,8 +43,8 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   // 列表刷新
   // const refresh = () => {
@@ -58,15 +58,15 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   useEffect(() => {
     if (inventoryId) {
-      search();
+      search()
     }
-  }, [inventoryId]);
+  }, [inventoryId])
 
   const columns = [
     {
@@ -244,11 +244,11 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
       title: '物料组',
       width: 160,
     },
-  ];
+  ]
 
   const titleSlotElement = () => {
-    return <div style={{ paddingTop: '2px', fontSize: '13px' }}>{` -${invName}_${versionNo}`}</div>;
-  };
+    return <div style={{ paddingTop: '2px', fontSize: '13px' }}>{` -${invName}_${versionNo}`}</div>
+  }
 
   return (
     <GeneralTable
@@ -269,7 +269,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
         keyWord: searchKeyWord,
       }}
     />
-  );
-};
+  )
+}
 
-export default InventoryTable;
+export default InventoryTable

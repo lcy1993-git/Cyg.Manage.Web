@@ -1,18 +1,16 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import EnumRadio from '@/components/enum-radio';
-import { BelongModuleEnum } from '@/services/jurisdiction-config/role-manage';
-
-import rules from './rule';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import EnumRadio from '@/components/enum-radio'
+import { BelongModuleEnum } from '@/services/jurisdiction-config/role-manage'
 
 interface RoleManageForm {
-  type?: 'add' | 'edit';
+  type?: 'add' | 'edit'
 }
-const { TextArea } = Input;
+const { TextArea } = Input
 
 const RoleManageForm: React.FC<RoleManageForm> = (props) => {
-  const { type = 'edit' } = props;
+  const { type = 'edit' } = props
   return (
     <>
       <CyFormItem
@@ -37,7 +35,7 @@ const RoleManageForm: React.FC<RoleManageForm> = (props) => {
         <TextArea placeholder="请输入备注" showCount maxLength={100} />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default RoleManageForm;
+export default RoleManageForm

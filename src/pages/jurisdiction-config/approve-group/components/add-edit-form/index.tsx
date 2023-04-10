@@ -1,39 +1,34 @@
-import React, { useEffect, useMemo } from 'react'
-import { Input, TreeSelect } from 'antd'
+import React from 'react'
+import { Input } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import UrlSelect from '@/components/url-select'
-import { getGroupUser } from '@/services/jurisdiction-config/approve-group'
 
 import rules from './rule'
-import { useRequest } from 'ahooks'
-import uuid from 'node-uuid'
-import { flatten } from '@/utils/utils'
 
 interface CompanyGroupFormProps {
   id?: string
   groupId?: string
-  getPersonArray?: (array: any) => void
   personDefaultValue?: any
   editForm?: any
 }
 
 const ApproveGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
-  const { groupId, getPersonArray, personDefaultValue, editForm } = props
+  const { groupId } = props
   // const { data: approveUser = [] } = useRequest(() =>
   //   getGroupUser({ category: 1, groupId: groupId })
   // )
   // const { data: usersData = [] } = useRequest(() => getGroupUser({ category: 2, groupId: groupId }))
 
-  const mapTreeData = (data: any) => {
-    const keyValue = uuid.v1()
-    return {
-      title: data.text,
-      value: keyValue,
-      key: keyValue,
-      chooseValue: data.id,
-      children: data.children ? data.children.map(mapTreeData) : [],
-    }
-  }
+  // const mapTreeData = (data: any) => {
+  //   const keyValue = uuid.v1()
+  //   return {
+  //     title: data.text,
+  //     value: keyValue,
+  //     key: keyValue,
+  //     chooseValue: data.id,
+  //     children: data.children ? data.children.map(mapTreeData) : [],
+  //   }
+  // }
 
   // const getUserIds = (groupArray: any) => {
   //   let allIds: any[] = []

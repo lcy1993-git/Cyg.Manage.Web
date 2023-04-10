@@ -1,39 +1,39 @@
 .cockpitMenuItem {
-    padding-left: 8px;
-    .cockpitMenuItemTitle {
-        display: flex;
-        color: @black-color;
-        .cockpitMenuItemFoldIcon {
-            font-size: 16px;
-            width: 32px;
-            height: 32px;
-            cursor: pointer;
-            color: @primary-color;
-            text-align: center;
-            line-height: 32px;
-        }
-        .cockpitMenuTitleContent {
-            flex: 1;
-            line-height: 32px;
-            font-size: 14px;
-        }
-        .cockpitMenuAddButtonSlot {
-            padding-right: 6px;
-            :global {
-                .ant-btn-text {
-                    span {
-                        color: @can-click-color;
-                    }
-                }
-            }
-        }
+  padding-left: 8px;
+  .cockpitMenuItemTitle {
+    display: flex;
+    color: @black-color;
+    .cockpitMenuItemFoldIcon {
+      width: 32px;
+      height: 32px;
+      color: @primary-color;
+      font-size: 16px;
+      line-height: 32px;
+      text-align: center;
+      cursor: pointer;
     }
-    .cockpitMenuItemContent {
-        padding-left: 33px;
-        .cockpitMenuChildrenItem {
-            font-size: 13px;
-            padding: 6px 0px;
-            color: @gray-color;
-        }
+    .cockpitMenuTitleContent {
+      flex: 1;
+      font-size: 14px;
+      line-height: 32px;
     }
+    .cockpitMenuAddButtonSlot {
+      padding-right: 6px;
+      :global {
+        .ant-btn-text {
+          span {
+            color: @can-click-color;
+          }
+        }
+      }
+    }
+  }
+  .cockpitMenuItemContent {
+    padding-left: 33px;
+    .cockpitMenuChildrenItem {
+      padding: 6px 0px;
+      color: @gray-color;
+      font-size: 13px;
+    }
+  }
 }

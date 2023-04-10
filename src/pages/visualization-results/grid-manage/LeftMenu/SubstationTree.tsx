@@ -69,7 +69,7 @@ const SubstationTree = () => {
   }
 
   const transformTreeData = (tree: any) => {
-    return tree?.map((item: any, index: any) => {
+    return tree?.map((item: any) => {
       return {
         ...item,
         title:
@@ -210,7 +210,7 @@ const SubstationTree = () => {
   }
 
   // checkbox状态改变触发
-  const getSubstationTreeData = async (checkedKeys: any, e: any) => {
+  const getSubstationTreeData = async (checkedKeys: any) => {
     const SubstationIds: string[] = checkedKeys
       .map((item: string) => {
         const start = item.indexOf('_&Line')

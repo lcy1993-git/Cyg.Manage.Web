@@ -1,6 +1,6 @@
-import request from '@/utils/request';
-import { Moment } from 'moment';
-import { cyRequest, baseUrl } from '../common';
+import request from '@/utils/request'
+import { Moment } from 'moment'
+import { cyRequest, baseUrl } from '../common'
 
 export enum CategoryEnum {
   'Bug' = 1,
@@ -8,46 +8,46 @@ export enum CategoryEnum {
 }
 
 interface UserFeedBackItemParams {
-  sourceType: number;
-  category: number;
-  categoryText: string;
-  title: string;
-  lastProcessData: Moment;
-  processStatus: number;
-  processStatusText: number;
-  remark: string;
-  createdOn: Moment;
-  phone: string;
+  sourceType: number
+  category: number
+  categoryText: string
+  title: string
+  lastProcessData: Moment
+  processStatus: number
+  processStatusText: number
+  remark: string
+  createdOn: Moment
+  phone: string
 }
 
 interface AddUserFeedBackItem extends UserFeedBackItemParams {
-  sourceType: number;
+  sourceType: number
 }
 
 export interface ItemDetailData extends UserFeedBackItemParams {
-  id: string;
+  id: string
 }
 
 //获取选中数据
 export const getUserFeedBackDetail = (id: string) => {
   return cyRequest<ItemDetailData>(() =>
-    request(`${baseUrl.common}/Feedback/GetDetail`, { method: 'GET', params: { id } }),
-  );
-};
+    request(`${baseUrl.common}/Feedback/GetDetail`, { method: 'GET', params: { id } })
+  )
+}
 
 //新增用户反馈
 export const addUserFeedBackItem = (params: AddUserFeedBackItem) => {
   return cyRequest(() =>
-    request(`${baseUrl.common}/Feedback/Create`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.common}/Feedback/Create`, { method: 'POST', data: params })
+  )
+}
 
 export const getFeedBackList = () => {
-  return cyRequest(() => request(`${baseUrl.common}/Feedback/GetList`, { method: 'POST' }));
-};
+  return cyRequest(() => request(`${baseUrl.common}/Feedback/GetList`, { method: 'POST' }))
+}
 
 export const replyTheFeedback = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.common}/Feedback/Reply`, { method: 'POST', data: params }),
-  );
-};
+    request(`${baseUrl.common}/Feedback/Reply`, { method: 'POST', data: params })
+  )
+}

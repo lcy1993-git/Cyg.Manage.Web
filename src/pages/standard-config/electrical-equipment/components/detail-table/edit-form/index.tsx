@@ -90,7 +90,7 @@ const EditComponentDetail: React.FC<EditComponentDetailParams> = (props) => {
                 typeEnum={type}
                 componentSelectData={componentSelectData}
                 materialNameSelectData={materialNameSelectData}
-                onChange={(value: any, option: any) => {
+                onChange={(value: any) => {
                   setChangeName(value)
                   editForm.setFieldsValue({
                     itemId: undefined,

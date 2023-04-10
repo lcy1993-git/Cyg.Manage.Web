@@ -1,15 +1,15 @@
-import CyFormItem from '@/components/cy-form-item';
-import React from 'react';
-import { Input, Row, Col } from 'antd';
-import { useGetSelectData } from '@/utils/hooks';
-import DataSelect from '@/components/data-select';
+import CyFormItem from '@/components/cy-form-item'
+import React from 'react'
+import { Input, Row, Col } from 'antd'
+import { useGetSelectData } from '@/utils/hooks'
+import DataSelect from '@/components/data-select'
 
 interface DefaultOptionsParams {
-  groupId: string;
+  groupId: string
 }
 
 const DefaultParams: React.FC<DefaultOptionsParams> = (props) => {
-  const { groupId } = props;
+  const { groupId } = props
 
   const { data: templateData = [] } = useGetSelectData({
     url: '/CompanyFile/GetList',
@@ -17,14 +17,14 @@ const DefaultParams: React.FC<DefaultOptionsParams> = (props) => {
     titleKey: 'name',
     valueKey: 'id',
     extraParams: { fileCategory: 1, groupId: groupId },
-  });
+  })
   const { data: directoryData = [] } = useGetSelectData({
     url: '/CompanyFile/GetList',
     method: 'post',
     titleKey: 'name',
     valueKey: 'id',
     extraParams: { fileCategory: 3, groupId: groupId },
-  });
+  })
 
   const { data: descriptionData = [] } = useGetSelectData({
     url: '/CompanyFile/GetList',
@@ -32,7 +32,7 @@ const DefaultParams: React.FC<DefaultOptionsParams> = (props) => {
     titleKey: 'name',
     valueKey: 'id',
     extraParams: { fileCategory: 4, groupId: groupId },
-  });
+  })
 
   return (
     <>
@@ -86,7 +86,7 @@ const DefaultParams: React.FC<DefaultOptionsParams> = (props) => {
         </Col>
       </Row>
     </>
-  );
-};
+  )
+}
 
-export default DefaultParams;
+export default DefaultParams

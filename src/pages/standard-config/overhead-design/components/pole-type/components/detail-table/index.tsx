@@ -4,7 +4,6 @@ import TableSearch from '@/components/table-search'
 import UrlSelect from '@/components/url-select'
 import {
   addModuleDetailItem,
-  deleteModulesDetailItem,
   getModuleDetailItem,
   updateModulesDetailItem,
 } from '@/services/resource-config/modules-property'
@@ -26,7 +25,7 @@ interface ModuleDetailParams {
 const { Search } = Input
 
 const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
-  const { libId, moduleId, selectId } = props
+  const { libId, selectId } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
@@ -39,7 +38,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, run } = useRequest(getModuleDetailItem, {
+  const { data } = useRequest(getModuleDetailItem, {
     manual: true,
   })
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -253,7 +252,7 @@ const ModuleDetailTable: React.FC<ModuleDetailParams> = (props) => {
         columns={columns}
         type="radio"
         requestSource="resource"
-        getSelectData={(data) => setTableSelectRows(data)}
+        // getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
           moduleIds: selectId,

@@ -194,7 +194,7 @@ const HistoryMapBase = () => {
     mapRef.map.on('pointermove', (e) => pointermove(e, { mode }))
     // 地图拖动事件
     mapRef.map.on('moveend', (e: MapEvent) => moveend(e))
-    viewRef.view.on('change:resolution', (e) => {
+    viewRef.view.on('change:resolution', () => {
       if (viewRef.view.getZoom()! > 14.0) {
         setState((state) => {
           return {

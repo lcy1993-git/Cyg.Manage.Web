@@ -2,7 +2,7 @@ import { Form } from 'antd'
 import React from 'react'
 import styles from './index.less'
 import uuid from 'node-uuid'
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined } from '@ant-design/icons'
 
 interface EditFormTableProps {
   formName: string

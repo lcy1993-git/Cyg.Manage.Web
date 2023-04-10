@@ -620,7 +620,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
-
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem

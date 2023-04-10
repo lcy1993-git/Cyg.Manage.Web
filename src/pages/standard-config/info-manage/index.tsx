@@ -2,8 +2,8 @@ import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
 import { EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, Popconfirm, message, Switch } from 'antd'
-import React, { useMemo, useRef, useState } from 'react'
+import { Input, Button, Modal, Form, message } from 'antd'
+import React, { useState } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
 import { isArray } from 'lodash'
@@ -57,8 +57,6 @@ const InfoManage: React.FC = () => {
   const [editPersonUserIds, setEditPersonUserIds] = useState<any[]>([])
 
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
-  const editFormRef = useRef<HTMLDivElement>(null)
 
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const [addForm] = Form.useForm()

@@ -1,76 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import { Tabs, Button, Modal, Form, message } from 'antd';
-import styles from './index.less';
-import CommonTitle from '@/components/common-title';
-import Construction from './construction';
-import { FileSearchOutlined } from '@ant-design/icons';
-import ImportDirectory from './components/import-directory';
-import qs from 'qs';
-import { getEnums } from '../utils';
-import {
-  getEngineeringTemplateTreeData,
-  importProject,
-} from '@/services/technology-economic/project-list';
-const { TabPane } = Tabs;
+import React, { useEffect, useState } from 'react'
+import { Tabs, Button, Modal, Form, message } from 'antd'
+import styles from './index.less'
+import CommonTitle from '@/components/common-title'
+import Construction from './construction'
+import { FileSearchOutlined } from '@ant-design/icons'
+import ImportDirectory from './components/import-directory'
+import qs from 'qs'
+import { getEnums } from '../utils'
+import { getEngineeringTemplateTreeData } from '@/services/technology-economic/project-list'
+const { TabPane } = Tabs
 type DataSource = {
-  id: string;
-  [key: string]: string;
-};
+  id: string
+  [key: string]: string
+}
 const ProjectList: React.FC = () => {
-  const [importFormVisible, setImportFormVisible] = useState(false);
-  const engineeringTemplateId = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
-  const ProjectTypeList = getEnums('ProjectType')!;
-  const [dataSource, setDataSource] = useState<DataSource[] | Object>([]);
-  const [projectType, setProjectType] = useState<number>(1);
+  const [importFormVisible, setImportFormVisible] = useState(false)
+  const engineeringTemplateId = (qs.parse(window.location.href.split('?')[1]).id as string) || ''
+  const ProjectTypeList = getEnums('ProjectType')!
+  const [dataSource, setDataSource] = useState<DataSource[] | Object>([])
+  const [projectType, setProjectType] = useState<number>(1)
   // const [projectType, setProjectType] = useState<number>(
   //   ProjectTypeList && ProjectTypeList.length ? ProjectTypeList[0].value : 1
   // );
-  const [importForm] = Form.useForm();
+  const [importForm] = Form.useForm()
   // 切换tab
   const callback = (key: any) => {
-    setProjectType(key as number);
-    getList(key);
-  };
+    setProjectType(key as number)
+    getList(key)
+  }
   useEffect(() => {
-    getList(projectType);
-  }, []);
+    getList(projectType)
+  }, [])
   // 刷新
   const refresh = () => {
-    getList(projectType);
-  };
+    getList(projectType)
+  }
   // 获取树状列表
   const getList = async (projectType: number) => {
     const value: DataSource[] = await getEngineeringTemplateTreeData(
       engineeringTemplateId,
-      projectType,
-    );
-    const list = [];
-    list.push(value);
-    value ? setDataSource(list) : setDataSource([]);
-  };
+      projectType
+    )
+    const list = []
+    list.push(value)
+    value ? setDataSource(list) : setDataSource([])
+  }
 
   // 确认按钮
   const sureImportAuthorization = () => {
     importForm.validateFields().then(async (values: any) => {
-      const { file } = values;
+      const { file } = values
       if (file == undefined) {
-        message.warning('您还未上传模板文件');
-        return;
+        message.warning('您还未上传模板文件')
+        return
       }
-      const value: { file: File; engineeringTemplateId: string } = {
-        file,
-        engineeringTemplateId,
-      };
-      const res = await importProject(value);
+      // const value: { file: File; engineeringTemplateId: string } = {
+      //   file,
+      //   engineeringTemplateId,
+      // }
+      // const res = await importProject(value)
       // if (res.code === 5000) {
       //   message.error(res.message);
       //   return;
       // }
-      message.success('上传成功');
-      refresh();
-      setImportFormVisible(false);
-    });
-  };
+      message.success('上传成功')
+      refresh()
+      setImportFormVisible(false)
+    })
+  }
 
   return (
     <div className={styles.resourceManage}>
@@ -80,7 +77,7 @@ const ProjectList: React.FC = () => {
           className="mr7"
           type="primary"
           onClick={() => {
-            setImportFormVisible(true);
+            setImportFormVisible(true)
           }}
         >
           <FileSearchOutlined />
@@ -90,7 +87,7 @@ const ProjectList: React.FC = () => {
 
       <div className={styles.moduleTabs}>
         <Tabs onChange={callback} type="card">
-          {ProjectTypeList.map((item: any, index: number) => {
+          {ProjectTypeList.map((item: any) => {
             return (
               <TabPane tab={item.text} key={item.value}>
                 <div className={styles.pannelTable}>
@@ -101,7 +98,7 @@ const ProjectList: React.FC = () => {
                   />
                 </div>
               </TabPane>
-            );
+            )
           })}
         </Tabs>
         <Modal
@@ -121,7 +118,7 @@ const ProjectList: React.FC = () => {
         </Modal>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectList;
+export default ProjectList

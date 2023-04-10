@@ -32,7 +32,6 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     areaId,
     company,
     companyName,
-    status,
     startTime,
     endTime,
     engineerId,
@@ -41,7 +40,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
 
   const { data: projectInfo, run } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
-    onSuccess: (res) => {
+    onSuccess: () => {
       const { dataSourceType, disclosureRange, pileRange } = projectInfo!
       const handleDisclosureRange =
         dataSourceType === 2 ? '“免勘察”项目，免设置此条目' : disclosureRange

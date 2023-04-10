@@ -1,11 +1,9 @@
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { Input, Tooltip } from 'antd'
-import FileUpload, { UploadStatus } from '@/components/file-upload'
+import FileUpload from '@/components/file-upload'
 import CyFormItem from '@/components/cy-form-item'
 import UrlSelect from '@/components/url-select'
 import rules from './rule'
-import { getCompanyUserDetail } from '@/services/personnel-config/company-user'
-import { useRequest } from 'ahooks'
 import { useGetSelectData } from '@/utils/hooks'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 interface CompanyFileForm {

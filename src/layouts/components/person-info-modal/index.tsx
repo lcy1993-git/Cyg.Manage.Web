@@ -26,7 +26,6 @@ const PersonInfoModal: React.FC<PersonInfoModalProps> = (props) => {
   const [closeState, setCloseState] = useState<boolean>(false)
 
   const nameRef = useRef<Input>(null)
-  const emailRef = useRef<Input>(null)
 
   const [refreshPhone, setRefreshPhone] = useState<boolean>(false)
   const [refreshEmail, setRefreshEmail] = useState<boolean>(false)

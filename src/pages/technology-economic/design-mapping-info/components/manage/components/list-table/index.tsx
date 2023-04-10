@@ -1,20 +1,15 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input, Button } from 'antd';
-import React, {useState, useEffect} from 'react';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input, Button } from 'antd'
+import React, { useState, useEffect } from 'react'
 
-
-const { Search } = Input;
+const { Search } = Input
 
 interface Props {
   associated: () => void
-  catalogueId: string;
-  scrolly: number;
+  catalogueId: string
+  scrolly: number
 }
-
-
-
-
 
 // const reducer = (state: State, action: any) => {
 //   switch (action.code) {
@@ -38,45 +33,44 @@ const columns = [
     index: 'id',
     title: '编号',
     width: 180,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'name',
     index: 'name',
     title: '名称',
     width: 460,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '类型',
     width: 180,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'releaseDate',
     index: 'releaseDate',
     title: '发行日期',
     width: 80,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'remark',
     index: 'remark',
     title: '描述',
-    ellipsis: true
+    ellipsis: true,
   },
-];
+]
 
-const ListTable: React.FC<Props> = ({catalogueId, scrolly,associated}) => {
-
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+const ListTable: React.FC<Props> = ({ catalogueId, scrolly, associated }) => {
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const searchComponent = () => {
     return (
-      <div style={{display:'flex'}}>
+      <div style={{ display: 'flex' }}>
         <TableSearch label="搜索" width="203px">
           <Search
             value={searchKeyWord}
@@ -87,26 +81,27 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly,associated}) => {
           />
         </TableSearch>
         &emsp;
-        <Button type={'primary'} onClick={associated}>关联</Button>
+        <Button type={'primary'} onClick={associated}>
+          关联
+        </Button>
       </div>
-
-    );
-  };
+    )
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
-  useEffect(()=>{
+  }
+  useEffect(() => {
     search()
-  },[catalogueId])
+  }, [catalogueId])
   return (
     <>
       <GeneralTable
@@ -119,14 +114,14 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly,associated}) => {
         requestSource="tecEco"
         url="/QuotaManager/GetList"
         type="radio"
-        scroll={{y: scrolly}}
+        scroll={{ y: scrolly }}
         extractParams={{
           keyWord: searchKeyWord,
-          catalogueId
+          catalogueId,
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default ListTable;
+export default ListTable

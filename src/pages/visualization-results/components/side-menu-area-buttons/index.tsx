@@ -2,13 +2,13 @@ import { Button } from 'antd'
 import { useState } from 'react'
 import styles from './index.less'
 
-interface BtnProps {
-  title: string
-  dart: string
-  light: string
-  onClick: () => void
-  style?: any
-}
+// interface BtnProps {
+//   title: string
+//   dart: string
+//   light: string
+//   onClick: () => void
+//   style?: any
+// }
 
 interface SiderMenuAreaButtonsProps {
   buttonProps: any[]

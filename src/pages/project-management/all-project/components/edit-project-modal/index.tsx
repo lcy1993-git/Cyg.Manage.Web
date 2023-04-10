@@ -49,7 +49,7 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     loading,
   } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
-    onSuccess: (res) => {
+    onSuccess: () => {
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,

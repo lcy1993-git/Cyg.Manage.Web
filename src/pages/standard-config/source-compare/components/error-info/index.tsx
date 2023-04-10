@@ -1,12 +1,12 @@
-import ReadonlyItem from '@/components/readonly-item';
-import React from 'react';
+import ReadonlyItem from '@/components/readonly-item'
+import React from 'react'
 
 interface ErrorTabProps {
-  info: any;
+  info: any
 }
 
 const ErrorTab: React.FC<ErrorTabProps> = (props) => {
-  const { info } = props;
+  const { info } = props
 
   return (
     <>
@@ -16,7 +16,7 @@ const ErrorTab: React.FC<ErrorTabProps> = (props) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ErrorTab;
+export default ErrorTab

@@ -59,8 +59,6 @@ const ScreenModal: React.FC<ScreenModalProps> = (props) => {
   const [searchForm] = Form.useForm()
   // 更多条件
   const [showMoreFlag, setShowMoreFlag] = useState<boolean>(false)
-  //@ts-ignore
-  const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
 
   const [selectDefaultData, setSelectDefaultData] = useState({
     logicRelation: 2,

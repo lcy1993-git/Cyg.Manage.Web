@@ -163,7 +163,7 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({ params, hasAuthorization = fa
     }
   }
 
-  const onMouseUp = (e: React.MouseEvent) => {
+  const onMouseUp = () => {
     setIsDrag(false)
     if (wrapRef.current) {
       wrapRef.current!.style.cursor = 'unset'

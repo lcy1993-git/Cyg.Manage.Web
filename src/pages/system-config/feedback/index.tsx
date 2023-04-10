@@ -1,44 +1,48 @@
-import React, { useRef, useState } from 'react';
-import { Button, Modal, Form, message } from 'antd';
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
-import { useRequest } from 'ahooks';
-import PageCommonWrap from '@/components/page-common-wrap';
+import React, { useRef, useState } from 'react'
+import { Button, Modal, Form, message } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import PageCommonWrap from '@/components/page-common-wrap'
 import {
   getUserFeedBackDetail,
   addUserFeedBackItem,
   replyTheFeedback,
-} from '@/services/personnel-config/feedback';
-import UserFeedBackForm from './components/form';
-import GeneralTable from '@/components/general-table';
-import moment from 'moment';
-import { Spin } from 'antd';
-import FeedbackDetail from './components/detail';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import styles from './index.less';
+} from '@/services/personnel-config/feedback'
+import UserFeedBackForm from './components/form'
+import GeneralTable from '@/components/general-table'
+import moment from 'moment'
+import { Spin } from 'antd'
+import FeedbackDetail from './components/detail'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import styles from './index.less'
 
 const UserFeedBack: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [clickId, setClickId] = useState<string>('');
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [checkFormVisible, setCheckFormVisible] = useState<boolean>(false);
+  const tableRef = useRef<HTMLDivElement>(null)
+  // const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [clickId, setClickId] = useState<string>('')
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [checkFormVisible, setCheckFormVisible] = useState<boolean>(false)
 
-  const [addForm] = Form.useForm();
-  const [replyForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [replyForm] = Form.useForm()
 
-  const { data: detailData = {}, run: getDetailData, loading } = useRequest(getUserFeedBackDetail, {
+  const {
+    data: detailData = {},
+    run: getDetailData,
+    loading,
+  } = useRequest(getUserFeedBackDetail, {
     manual: true,
-  });
+  })
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   //数据修改，局部刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   const feedBackColumns = [
     {
@@ -64,7 +68,7 @@ const UserFeedBack: React.FC = () => {
               <span>{record.title}</span>
             )}
           </>
-        );
+        )
       },
     },
     {
@@ -72,7 +76,7 @@ const UserFeedBack: React.FC = () => {
       dataIndex: 'lastProcessDate',
       index: 'lastProcessDate',
       render: (text: string) => {
-        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>;
+        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>
       },
     },
     {
@@ -86,10 +90,10 @@ const UserFeedBack: React.FC = () => {
       dataIndex: 'createdOn',
       index: 'createdOn',
       render: (text: string) => {
-        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>;
+        return <span>{text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : ''}</span>
       },
     },
-  ];
+  ]
 
   const userFeedBackButton = () => {
     return (
@@ -107,51 +111,51 @@ const UserFeedBack: React.FC = () => {
           </Button>
         )} */}
       </>
-    );
-  };
+    )
+  }
 
   const checkEvent = async (id: string) => {
-    setClickId(id);
-    await getDetailData(id);
-    setCheckFormVisible(true);
-  };
+    setClickId(id)
+    await getDetailData(id)
+    setCheckFormVisible(true)
+  }
 
   const sureCheckFeedBack = () => {
-    const feedbackId = clickId;
+    const feedbackId = clickId
     replyForm.validateFields().then(async (values) => {
-      const { content } = values;
+      const { content } = values
 
-      await replyTheFeedback({ feedbackId, content });
+      await replyTheFeedback({ feedbackId, content })
 
-      message.success('回复成功');
-      setCheckFormVisible(false);
-      setClickId('');
-      tableFresh();
-    });
-  };
+      message.success('回复成功')
+      setCheckFormVisible(false)
+      setClickId('')
+      tableFresh()
+    })
+  }
 
   const addEvent = async () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddCompanyManageItem = () => {
     addForm.validateFields().then(async (value) => {
       const submitInfo = Object.assign(
         {
-          SourceType: 1,
+          SourceType: 3,
           category: '',
           title: '',
           phone: '',
           describe: '',
         },
-        value,
-      );
-      await addUserFeedBackItem(submitInfo);
-      tableFresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      await addUserFeedBackItem(submitInfo)
+      tableFresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   return (
     <PageCommonWrap>
@@ -161,7 +165,7 @@ const UserFeedBack: React.FC = () => {
         ref={tableRef}
         tableTitle="异常反馈"
         columns={feedBackColumns}
-        getSelectData={(data) => setTableSelectRows(data)}
+        // getSelectData={(data) => setTableSelectRows(data)}
         buttonRightContentSlot={userFeedBackButton}
         url="/Feedback/GetList"
       />
@@ -188,7 +192,7 @@ const UserFeedBack: React.FC = () => {
         okText="确认"
         onOk={() => sureCheckFeedBack()}
         onCancel={() => {
-          setCheckFormVisible(false);
+          setCheckFormVisible(false)
         }}
         cancelText="取消"
         destroyOnClose
@@ -201,7 +205,7 @@ const UserFeedBack: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default UserFeedBack;
+export default UserFeedBack

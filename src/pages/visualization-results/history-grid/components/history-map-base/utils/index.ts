@@ -69,7 +69,7 @@ export function addHightStyle(fs: Feature<Geometry>[], showText: boolean) {
 // 讲feature转为Data数组
 export function getDataByFeature(f: Feature<Geometry>[]) {
   return f.map((f) => {
-    const { geometry, ...props } = f.getProperties()
+    const { ...props } = f.getProperties()
     return props
   })
 }

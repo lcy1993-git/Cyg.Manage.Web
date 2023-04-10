@@ -19,7 +19,7 @@ interface ChartListFromLibParams {
 }
 
 const ElectricalEquipmentForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
+  const { resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const [updateName, setUpdateName] = useState<string>('水泥')
   const unitSlot = () => {

@@ -14,7 +14,7 @@ interface SelectCallbackOptions {
 
 export function toggleSelectCallback(
   e: SelectEvent,
-  { interActionRef, setState, showText, mode }: SelectCallbackOptions
+  { interActionRef, setState, showText }: SelectCallbackOptions
 ) {
   let flag = false // 是否需要set数据
   const hightFeatures = interActionRef.hightLightSource!.getFeatures()
@@ -71,7 +71,7 @@ export function pointSelectCallback(
   { interActionRef, setState, showText }: SelectCallbackOptions
 ) {
   const { selected, deselected } = e
-  selected.forEach((f) => {
+  selected.forEach(() => {
     interActionRef.hightLightSource!.addFeatures(addHightStyle(selected, showText))
   })
   deselected.forEach((f) => {

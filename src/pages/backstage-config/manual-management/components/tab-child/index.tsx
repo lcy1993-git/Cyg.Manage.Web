@@ -120,7 +120,6 @@ const ManualUpload: React.FC<Props> = (props) => {
   useMount(() => {
     getLastFile()
   })
-
   return (
     <Spin tip="请稍等... " spinning={isSpinning}>
       <div className={styles.content}>

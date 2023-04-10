@@ -42,7 +42,7 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, run, loading } = useRequest(getElectricalEquipmentDetail, {
+  const { data, loading } = useRequest(getElectricalEquipmentDetail, {
     manual: true,
   })
 
@@ -275,13 +275,13 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
     )
   }
 
-  const importElectricalEvent = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请选择资源库');
-    //   return;
-    // }
-    setImportElectricalVisible(true)
-  }
+  // const importElectricalEvent = () => {
+  //   // if (!resourceLibId) {
+  //   //   message.warning('请选择资源库');
+  //   //   return;
+  //   // }
+  //   setImportElectricalVisible(true)
+  // }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -340,7 +340,6 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
     editFormVisible && editForm.setFieldsValue(ResourceLibData)
   }
   return (
-    // <PageCommonWrap>
     <div className={styles.electrical}>
       <GeneralTable
         ref={tableRef}
@@ -436,7 +435,6 @@ const ElectricalEquipment: React.FC<libParams> = (props) => {
         changeFinishEvent={() => uploadFinishEvent()}
         onChange={setImportElectricalVisible}
       />
-      {/* </PageCommonWrap> */}
     </div>
   )
 }

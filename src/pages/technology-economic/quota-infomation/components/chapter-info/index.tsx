@@ -21,7 +21,6 @@ interface Props {
   fileId: string
   disabledDown: boolean
 }
-
 const ChapterInfo: React.FC<Props> = ({
   data,
   id,
@@ -36,10 +35,7 @@ const ChapterInfo: React.FC<Props> = ({
   const [html, setHtml] = useState<string>(data)
   const [file, setFile] = useState<any[]>([])
   const [docx, setDocx] = useState<any[]>([])
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, {}] = useBoolean(false)
 
   const saveData = () => {
     saveQuotaLibraryCatalogDescription({ id, chapterDescription: html })
@@ -93,6 +89,16 @@ const ChapterInfo: React.FC<Props> = ({
           // 释放掉blob对象
           window.URL.revokeObjectURL(href)
         }
+        uploadAuditLog([
+          {
+            auditType: 1,
+            eventType: 5,
+            eventDetailType: '文件下载',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.upload}/Download/GetFileById`,
+          },
+        ])
       } else {
         message.error('下载失败!')
         setDocx([])

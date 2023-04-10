@@ -1,26 +1,31 @@
-import { Fragment } from 'react';
-import CommonTitle from '@/components/common-title';
-import { Checkbox, Form } from 'antd';
-import { ChildrenData } from '../../utils';
+import { Fragment } from 'react'
+import CommonTitle from '@/components/common-title'
+import { Checkbox, Form } from 'antd'
+import { ChildrenData } from '../../utils'
 interface EditFormItemProps {
-  childrenData: ChildrenData[];
-  configArray: any[];
-  activeModal: string;
+  childrenData: ChildrenData[]
+  configArray: any[]
+  activeModal: string
 }
 
-const EditFormItem: React.FC<EditFormItemProps> = ({ childrenData, activeModal, configArray=[] }) => {
-  
+const EditFormItem: React.FC<EditFormItemProps> = ({ childrenData, activeModal }) => {
   const childrenDataDom = () => {
-    const item = childrenData.find((item) => item.name === activeModal) ?? {title: "", name: "", componentProps: []}
+    const item = childrenData.find((item) => item.name === activeModal) ?? {
+      title: '',
+      name: '',
+      componentProps: [],
+    }
     return (
       <>
         <CommonTitle key={item.title}>{item.title}</CommonTitle>
         <Form.Item name={item.name} key={item.name}>
           <Checkbox.Group>
-            {item.componentProps.map((v, i) => {              
+            {item.componentProps.map((v, i) => {
               return (
-                <Checkbox key={v} value={v}>{ item.componentTitles ? item.componentTitles[i] : item.title }</Checkbox>
-              );
+                <Checkbox key={v} value={v}>
+                  {item.componentTitles ? item.componentTitles[i] : item.title}
+                </Checkbox>
+              )
             })}
           </Checkbox.Group>
         </Form.Item>
@@ -28,14 +33,10 @@ const EditFormItem: React.FC<EditFormItemProps> = ({ childrenData, activeModal, 
     )
   }
 
-  return (
-    <Fragment>
-      { childrenDataDom() }
-    </Fragment>
-  )
+  return <Fragment>{childrenDataDom()}</Fragment>
 }
 
-export default EditFormItem;
+export default EditFormItem
 
 // {
 //   <CommonTitle>地图</CommonTitle>

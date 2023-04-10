@@ -1,49 +1,49 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd';
-import React, { useRef, useState } from 'react';
-import { isArray } from 'lodash';
-import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log';
-import { useRequest } from 'ahooks';
-import TableSearch from '@/components/table-search';
-import styles from './index.less';
-import moment, { Moment } from 'moment';
-import UrlSelect from '@/components/url-select';
-import ReactJson from 'react-json-view';
-import { useMemo } from 'react';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { EyeOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Button, Modal, message, Input, DatePicker, Popconfirm, Spin } from 'antd'
+import React, { useRef, useState } from 'react'
+import { isArray } from 'lodash'
+import { getFileLogDetail, deleteReportLog } from '@/services/system-config/report-log'
+import { useRequest } from 'ahooks'
+import TableSearch from '@/components/table-search'
+import styles from './index.less'
+import moment, { Moment } from 'moment'
+import UrlSelect from '@/components/url-select'
+import ReactJson from 'react-json-view'
+import { useMemo } from 'react'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
-const { Search } = Input;
+const { Search } = Input
 
 const ManageUser: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
-  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('');
-  const [beginDate, setBeginDate] = useState<Moment | null>();
-  const [endDate, setEndDate] = useState<Moment | null>();
-  const [applications, setApplications] = useState<string | undefined>();
-  const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
+  const [searchApiKeyWord, setSearchApiKeyWord] = useState<string>('')
+  const [beginDate, setBeginDate] = useState<Moment | null>()
+  const [endDate, setEndDate] = useState<Moment | null>()
+  const [applications, setApplications] = useState<string | undefined>()
+  const [logDetailVisible, setLogDetailVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const { data, run, loading } = useRequest(getFileLogDetail, {
     manual: true,
-  });
+  })
 
   const handleData = useMemo(() => {
-    let afterHandleData = {};
+    let afterHandleData = {}
     try {
-      const { content } = data!;
-      const handleContent = content.replace(/"\"/g, '');
+      const { content } = data!
+      const handleContent = content.replace(/"\"/g, '')
       afterHandleData = {
         ...data,
         content: JSON.parse(JSON.parse(handleContent)),
-      };
+      }
     } catch (msg) {
-      afterHandleData = data!;
+      afterHandleData = data!
     }
-    return afterHandleData;
-  }, [JSON.stringify(data)]);
+    return afterHandleData
+  }, [JSON.stringify(data)])
 
   const rightButton = () => {
     return (
@@ -68,47 +68,47 @@ const ManageUser: React.FC = () => {
           )}
         </Popconfirm>
       </div>
-    );
-  };
+    )
+  }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行删除');
-      return;
+      message.error('请选择一条数据进行删除')
+      return
     }
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    await deleteReportLog(editDataId);
-    tableFresh();
-    message.success('删除成功');
-  };
+    await deleteReportLog(editDataId)
+    tableFresh()
+    message.success('删除成功')
+  }
 
   const searchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据查看详情');
-      return;
+      message.error('请选择一条数据查看详情')
+      return
     }
-    setLogDetailVisible(true);
-    const checkId = tableSelectRows[0].id;
-    await run(checkId);
-  };
+    setLogDetailVisible(true)
+    const checkId = tableSelectRows[0].id
+    await run(checkId)
+  }
 
   //重置后，条件添加onChange事件重新获取value
   const handleBeginDate = (value: any) => {
-    setBeginDate(value);
-  };
+    setBeginDate(value)
+  }
   const handleEndDate = (value: any) => {
-    setEndDate(value);
-  };
+    setEndDate(value)
+  }
 
   const handleAppSelect = (value: any) => {
-    setApplications(value);
-  };
+    setApplications(value)
+  }
 
   const leftSearchElement = () => {
     return (
@@ -158,31 +158,31 @@ const ManageUser: React.FC = () => {
           </div>
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.search();
+      tableRef.current?.search()
     }
-  };
+  }
   //数据修改刷新
   const tableFresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current?.refresh();
+      tableRef.current?.refresh()
     }
-  };
+  }
 
   //重置搜索条件
   const resetEvent = () => {
-    setSearchApiKeyWord('');
-    setBeginDate(null);
-    setEndDate(null);
-    setApplications(undefined);
-    tableFresh();
-  };
+    setSearchApiKeyWord('')
+    setBeginDate(null)
+    setEndDate(null)
+    setApplications(undefined)
+    tableFresh()
+  }
 
   const columns = [
     {
@@ -215,10 +215,10 @@ const ManageUser: React.FC = () => {
       index: 'upTime',
       width: 240,
       render: (text: any, record: any) => {
-        return moment(record.upTime).format('YYYY-MM-DD');
+        return moment(record.upTime).format('YYYY-MM-DD')
       },
     },
-  ];
+  ]
 
   return (
     <PageCommonWrap>
@@ -262,7 +262,7 @@ const ManageUser: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default ManageUser;
+export default ManageUser

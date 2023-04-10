@@ -119,7 +119,7 @@ const LineStressSag: React.FC = () => {
         dataIndex: '',
         title: '操作',
         width: 100,
-        render: (text: any, record: any) => {
+        render: () => {
           return (
             <span
               className="canClick"

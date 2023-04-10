@@ -39,9 +39,6 @@ const RolePermissions: React.FC = () => {
     { setFalse: authorizationFormHide, setTrue: authorizationFormShow },
   ] = useBoolean(false)
 
-  //@ts-ignore
-  const { userType } = JSON.parse(localStorage.getItem('userInfo'))
-
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 

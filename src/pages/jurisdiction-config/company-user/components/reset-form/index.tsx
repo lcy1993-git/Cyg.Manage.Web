@@ -1,14 +1,19 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
 
-import rules from '../rule';
+import rules from '../rule'
 
 const ResetPasswordForm: React.FC = () => {
   return (
     <>
       <CyFormItem label="新密码" name="pwd" required rules={rules.pwd} hasFeedback>
-        <Input type="password" placeholder="请输入密码" onPaste={(e) => e.preventDefault()}/>
+        <Input
+          type="password"
+          autoComplete="new-password"
+          placeholder="请输入密码"
+          onPaste={(e) => e.preventDefault()}
+        />
       </CyFormItem>
 
       <CyFormItem
@@ -25,17 +30,22 @@ const ResetPasswordForm: React.FC = () => {
           ({ getFieldValue }) => ({
             validator(_, value) {
               if (!value || getFieldValue('pwd') === value) {
-                return Promise.resolve();
+                return Promise.resolve()
               }
-              return Promise.reject('两次密码输入不一致，请确认');
+              return Promise.reject('两次密码输入不一致，请确认')
             },
           }),
         ]}
       >
-        <Input type="password" placeholder="请再次输入密码" onPaste={(e) => e.preventDefault()}/>
+        <Input
+          type="password"
+          autoComplete="new-password"
+          placeholder="请再次输入密码"
+          onPaste={(e) => e.preventDefault()}
+        />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default ResetPasswordForm;
+export default ResetPasswordForm

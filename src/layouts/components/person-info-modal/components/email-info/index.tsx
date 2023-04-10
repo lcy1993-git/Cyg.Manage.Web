@@ -9,6 +9,7 @@ import styles from '../phone-info/index.less'
 interface EmailInfoProps {
   email: undefined | string
   refresh: () => void
+  cancelEmail: () => void
 }
 type Step = 0 | 1 | 2
 

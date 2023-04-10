@@ -16,7 +16,7 @@ interface TableImportButtonProps extends ButtonProps {
   labelTitle?: string
   buttonTitle?: string
   requestSource?: 'project' | 'resource' | 'upload' | 'tecEco1' | 'tecEco'
-  postType?: 'body' | 'query'
+  // postType?: 'body' | 'query'
   setSuccessful?: (e: boolean) => void
   setLoading?: (e: boolean) => void
   template?: boolean
@@ -35,7 +35,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     buttonTitle = '导入',
     extraParams,
     requestSource = 'project',
-    postType = 'body',
+    // postType = 'body',
     setSuccessful,
     setLoading,
     ...rest

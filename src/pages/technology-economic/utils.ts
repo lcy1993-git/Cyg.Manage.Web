@@ -1,20 +1,20 @@
-import { getTechnicalEconomyEnums } from '@/services/technology-economic';
+import { getTechnicalEconomyEnums } from '@/services/technology-economic'
 export interface EnumsType {
-  value: number | string;
-  text: string;
+  value: number | string
+  text: string
 }
 interface ResData {
-  name: string;
-  code: string;
+  name: string
+  code: string
   items: EnumsType[]
 }
 
-const findItems = (resData: ResData[], name: string, isChineseName=false) => {
+const findItems = (resData: ResData[], name: string, isChineseName = false) => {
   return resData.find((item: ResData) => {
-    if(isChineseName) {
-      return item.name === name;
+    if (isChineseName) {
+      return item.name === name
     }
-    return item.code === name;
+    return item.code === name
   })
 }
 
@@ -26,32 +26,28 @@ const findItems = (resData: ResData[], name: string, isChineseName=false) => {
  * @demo   (getEnums('地区类型', true));
  * @returns Map[]
  */
-export const getEnums  = (name: string, isChineseName?: boolean) => {
-  const technologyEconomicEnums = localStorage.getItem('technologyEconomicEnums');
-  if(technologyEconomicEnums) {
+export const getEnums = (name: string, isChineseName?: boolean) => {
+  const technologyEconomicEnums = localStorage.getItem('technologyEconomicEnums')
+  if (technologyEconomicEnums) {
+    const parse = JSON.parse(technologyEconomicEnums || '')
 
-    const parse = JSON.parse(technologyEconomicEnums || "");
-
-    if(typeof parse === 'object' && parse != null) {
-      return findItems(parse, name, isChineseName)?.items;
+    if (typeof parse === 'object' && parse != null) {
+      return findItems(parse, name, isChineseName)?.items
     }
   } else {
-      getTechnicalEconomyEnums().then((resData) => {
-        if(Array.isArray(resData)){
-          localStorage.setItem('technologyEconomicEnums', JSON.stringify(resData));
-          getEnums(name, isChineseName)
-        }
-    });
-
+    getTechnicalEconomyEnums().then((resData) => {
+      if (Array.isArray(resData)) {
+        localStorage.setItem('technologyEconomicEnums', JSON.stringify(resData))
+        getEnums(name, isChineseName)
+      }
+    })
   }
-  return;
+  return
 }
 
 export const getTypeByText = (text: string) => {
-  return Object(
-      Object(getEnums('RateTableType'))
-      ?.find((item: EnumsType) => item.text === text)
-    )?.value
+  return Object(Object(getEnums('RateTableType'))?.find((item: EnumsType) => item.text === text))
+    ?.value
 }
 /**
  * 创建唯一标识
@@ -59,12 +55,12 @@ export const getTypeByText = (text: string) => {
  * @param getProperties
  * @returns
  */
-export const generateUUID = ()=> {
-  let d = new Date().getTime();
-  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = (d + Math.random()*16)%16 | 0;
-    d = Math.floor(d/16);
-    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
-  });
-  return uuid;
-};
+export const generateUUID = () => {
+  let d = new Date().getTime()
+  const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = (d + Math.random() * 16) % 16 | 0
+    d = Math.floor(d / 16)
+    return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16)
+  })
+  return uuid
+}

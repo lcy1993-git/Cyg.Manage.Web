@@ -1,38 +1,38 @@
-import CommonTitle from '@/components/common-title';
-import _ from 'lodash';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useMemo } from 'react';
-import { getHasChooseComponentsProps } from '../../utils';
-import HasCheckItem from '../has-check-item';
+import CommonTitle from '@/components/common-title'
+import _ from 'lodash'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import uuid from 'node-uuid'
+import React, { Dispatch, SetStateAction, useMemo } from 'react'
+import { getHasChooseComponentsProps } from '../../utils'
+import HasCheckItem from '../has-check-item'
 
 interface AddEngineerAndProjectModalProps {
-  visible?: boolean;
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent?: (componentProps: any) => void;
-  configArray: any[];
+  visible?: boolean
+  onChange?: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent?: (componentProps: any) => void
+  configArray: any[]
 }
 
-const mapComponentPropsArray = [{ code: 'province', name: '项目数量（地图）' }];
+const mapComponentPropsArray = [{ code: 'province', name: '项目数量（地图）' }]
 
 const productionComponentPropsArray = [
   { code: 'person', name: '生产负荷(员工)' },
   { code: 'department', name: '生产负荷(部组)' },
   { code: 'company', name: '生产负荷(公司)' },
-];
+]
 
-const dynamicDataStatisticPropsArray = [{ code: 'projectRefreshData', name: '实时数据' }];
+const dynamicDataStatisticPropsArray = [{ code: 'projectRefreshData', name: '实时数据' }]
 
 const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, configArray } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, configArray } = props
+  const [form] = Form.useForm()
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      const { area, production, dynamicData } = values;
-      let chooseComponent = [];
+      const { area, production, dynamicData } = values
+      let chooseComponent = []
       if (area && area.length > 0) {
         chooseComponent.push({
           name: 'mapComponent',
@@ -42,7 +42,7 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
           w: 3,
           h: 11,
           componentProps: area,
-        });
+        })
       }
       if (production && production.length > 0) {
         chooseComponent.push({
@@ -53,7 +53,7 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
           w: 3,
           h: 11,
           componentProps: production,
-        });
+        })
       }
 
       if (dynamicData && dynamicData.length > 0) {
@@ -65,68 +65,68 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
           w: 3,
           h: 11,
           componentProps: dynamicData,
-        }));
+        }))
 
-        chooseComponent = _.union(chooseComponent, temp);
+        chooseComponent = _.union(chooseComponent, temp)
       }
 
-      setState(false);
-      form.resetFields();
-      changeFinishEvent?.(chooseComponent);
-    });
-  };
+      setState(false)
+      form.resetFields()
+      changeFinishEvent?.(chooseComponent)
+    })
+  }
 
   const mapCompoentProps = useMemo(() => {
-    const hasChooseMapComponentCodeArray = getHasChooseComponentsProps(configArray, 'mapComponent');
+    const hasChooseMapComponentCodeArray = getHasChooseComponentsProps(configArray, 'mapComponent')
     const unChooseMapComponentProps = mapComponentPropsArray.filter(
-      (item) => !hasChooseMapComponentCodeArray?.includes(item.code),
-    );
+      (item) => !hasChooseMapComponentCodeArray?.includes(item.code)
+    )
     const hasChooseMapComponentProps = mapComponentPropsArray.filter((item) =>
-      hasChooseMapComponentCodeArray?.includes(item.code),
-    );
+      hasChooseMapComponentCodeArray?.includes(item.code)
+    )
     return {
       hasChooseMapComponentProps,
       unChooseMapComponentProps,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
   const productionComponentProps = useMemo(() => {
-    const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, 'personLoad');
+    const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, 'personLoad')
     const unChooseProductionProps = productionComponentPropsArray.filter(
-      (item) => !hasChooseProductionCodeArray?.includes(item.code),
-    );
+      (item) => !hasChooseProductionCodeArray?.includes(item.code)
+    )
     const hasChooseProductionProps = productionComponentPropsArray.filter((item) =>
-      hasChooseProductionCodeArray?.includes(item.code),
-    );
+      hasChooseProductionCodeArray?.includes(item.code)
+    )
     return {
       hasChooseProductionProps,
       unChooseProductionProps,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
   const dynamicDataStatisticCheckboxPropsArray = useMemo(() => {
-    const hasChooseArray = getHasChooseComponentsProps(configArray, 'projectRefreshData');
+    const hasChooseArray = getHasChooseComponentsProps(configArray, 'projectRefreshData')
 
     const unChoose = dynamicDataStatisticPropsArray.filter(
-      (item) => !hasChooseArray?.includes(item.code),
-    );
+      (item) => !hasChooseArray?.includes(item.code)
+    )
     const hasChose = dynamicDataStatisticPropsArray.filter((item) =>
-      hasChooseArray?.includes(item.code),
-    );
+      hasChooseArray?.includes(item.code)
+    )
 
     return {
       hasChose,
       unChoose,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
   const mapStatisticCheckbox = mapCompoentProps.unChooseMapComponentProps.map((item) => {
     return (
       <Checkbox key={item.code} value={item.code}>
         {item.name}
       </Checkbox>
-    );
-  });
+    )
+  })
 
   const productionStatisticCheckbox = productionComponentProps.unChooseProductionProps.map(
     (item) => {
@@ -134,25 +134,25 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
         <Checkbox key={item.code} value={item.code}>
           {item.name}
         </Checkbox>
-      );
-    },
-  );
+      )
+    }
+  )
 
   const mapStatisticHasCheck = mapCompoentProps.hasChooseMapComponentProps.map((item) => {
-    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
-  });
+    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
+  })
 
   const productionStatisticHasCheck = productionComponentProps.hasChooseProductionProps.map(
     (item) => {
-      return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
-    },
-  );
+      return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
+    }
+  )
 
   const dynamicDataStatisticHasCheck = dynamicDataStatisticCheckboxPropsArray.hasChose.map(
     (item) => {
-      return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
-    },
-  );
+      return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
+    }
+  )
 
   const dynamicDataStatisticCheckbox = dynamicDataStatisticCheckboxPropsArray.unChoose.map(
     (item) => {
@@ -160,9 +160,9 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
         <Checkbox key={item.code} value={item.code}>
           {item.name}
         </Checkbox>
-      );
-    },
-  );
+      )
+    }
+  )
 
   return (
     <Modal
@@ -201,7 +201,7 @@ const AddEngineerAndProjectModal: React.FC<AddEngineerAndProjectModalProps> = (p
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddEngineerAndProjectModal;
+export default AddEngineerAndProjectModal

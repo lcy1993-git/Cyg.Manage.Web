@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import EditFormTable from '@/components/edit-form-table'
-import { InputNumber, Form, Input } from 'antd'
-import UrlSelect from '@/components/url-select'
+import { Input } from 'antd'
 import CascaderUrlSelect from '@/components/material-cascader-url-select'
 import Scrollbars from 'react-custom-scrollbars'
 
@@ -10,7 +9,7 @@ interface AddDetailParams {
   addForm: any
 }
 const AddCableChannelDetailTable: React.FC<AddDetailParams> = (props) => {
-  const { resourceLibId, addForm } = props
+  const { resourceLibId } = props
 
   const columns = [
     {

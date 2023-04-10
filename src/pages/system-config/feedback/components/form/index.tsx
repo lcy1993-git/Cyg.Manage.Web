@@ -1,9 +1,9 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import EnumSelect from '@/components/enum-select';
-import { CategoryEnum } from '@/services/personnel-config/feedback';
-import rules from './rule';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import EnumSelect from '@/components/enum-select'
+import { CategoryEnum } from '@/services/personnel-config/feedback'
+import rules from './rule'
 
 const UserFeedBackForm: React.FC = () => {
   return (
@@ -24,7 +24,7 @@ const UserFeedBackForm: React.FC = () => {
         <Input.TextArea placeholder="请输入问题描述" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default UserFeedBackForm;
+export default UserFeedBackForm

@@ -42,107 +42,6 @@ export interface SidePopupProps {
   height: number
 }
 
-const materiaColumns = [
-  {
-    title: '物料名称',
-    width: 180,
-    dataIndex: 'name',
-    key: 'name',
-    fixed: 'left',
-    ellipsis: true,
-  },
-  {
-    title: '物料类型',
-    width: 120,
-    dataIndex: 'type',
-    key: 'type',
-    ellipsis: true,
-  },
-  {
-    title: '物料编号',
-    width: 160,
-    dataIndex: 'code',
-    key: 'code',
-    ellipsis: true,
-  },
-  {
-    title: '物料单位',
-    width: 100,
-    dataIndex: 'unit',
-    key: 'unit',
-    ellipsis: true,
-  },
-  {
-    title: '数量',
-    width: 100,
-    dataIndex: 'itemNumber',
-    key: 'itemNumber',
-    ellipsis: true,
-    render(v: number) {
-      return v ? String(v) : ''
-    },
-  },
-
-  {
-    title: '单价(元)',
-    width: 100,
-    dataIndex: 'unitPrice',
-    key: 'unitPrice',
-    ellipsis: true,
-    render(v: number) {
-      return v ? String(v) : ''
-    },
-  },
-  {
-    title: '单重(kg)',
-    width: 100,
-    dataIndex: 'pieceWeight',
-    key: 'pieceWeight',
-    ellipsis: true,
-    render(v: number) {
-      return v ? String(v) : ''
-    },
-  },
-  {
-    title: '状态',
-    width: 100,
-    dataIndex: 'state',
-    key: 'state',
-    render(r: string | number) {
-      return r || ''
-    },
-    ellipsis: true,
-  },
-  {
-    title: '物料型号',
-    width: 140,
-    dataIndex: 'spec',
-    key: 'spec',
-    ellipsis: true,
-  },
-  {
-    title: '描述',
-    width: 100,
-    dataIndex: 'description',
-    key: 'description',
-    ellipsis: true,
-  },
-  {
-    title: '供给方',
-    width: 100,
-    dataIndex: 'supplySide',
-    key: 'supplySide',
-    ellipsis: true,
-  },
-  {
-    title: '备注',
-    width: 140,
-    dataIndex: 'remark',
-    key: 'remark',
-    ellipsis: true,
-  },
-]
-
 const modalTitle = {
   media: '查看多媒体文件',
   material: '查看材料表',
@@ -234,7 +133,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       // 材料表
       if (materialRef.current) {
         if (data?.content?.materialList?.length > 0) {
-          data.content.materialList.forEach((item: any) => {
+          data.content.materialList.forEach(() => {
             // if (item.unit === 'km') {
             //   item.itemNumber = item.itemNumber / 1000
             // }
@@ -250,7 +149,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       // 附加材料表
       if (additionMaterialRef.current) {
         if (data?.content?.additionalMaterialList?.length > 0) {
-          data.content.additionalMaterialList.forEach((item: any) => {
+          data.content.additionalMaterialList.forEach(() => {
             // if (item.unit === 'km') {
             //   item.itemNumber = item.itemNumber / 1000
             // }
@@ -640,7 +539,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     }
     // const materialParams = dataResource?.find((item: any) => item.propertyName === '材料表')?.data
     //   ?.params ?? {};
-
     // return materialData?.content && materialData?.content.length > 0
     //   ? generateMaterialTreeList(materialData?.content)
     //   : [];

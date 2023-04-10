@@ -1,25 +1,25 @@
-import request from '@/utils/request';
-import { cyRequest, baseUrl } from '../common';
+import request from '@/utils/request'
+import { cyRequest, baseUrl } from '../common'
 
 export interface CommentRequestType {
-  projectId: string;
-  deviceId: string;
-  deviceType: number;
-  layerType: number;
-  content: string;
-  title?: string;
+  projectId: string
+  deviceId: string
+  deviceType: number
+  layerType: number
+  content: string
+  title?: string
 }
 
 export interface fetchCommentListType {
-  projectId?: string;
-  layer?: number;
-  deviceId?: string;
+  projectId?: string
+  layer?: number
+  deviceId?: string
 }
 
 export interface CommentType {
-  content: string;
-  creator: string;
-  createdOn: string;
+  content: string
+  creator: string
+  createdOn: string
 }
 
 /**
@@ -33,26 +33,23 @@ export const addComment = (requestData: CommentRequestType) => {
     request(
       `${baseUrl.comment}/Comment/CreateProjectComment
     `,
-      { method: 'POST', data: requestData },
-    ),
-  );
-};
+      { method: 'POST', data: requestData }
+    )
+  )
+}
 
 export const fetchCommentList = (params: fetchCommentListType) => {
   return cyRequest<CommentType[]>(() =>
     request(
       `${baseUrl.comment}/Comment/GetProjectCommentItemList
     `,
-      { method: 'POST', data: params },
-    ),
-  );
-};
+      { method: 'POST', data: params }
+    )
+  )
+}
 
-export const porjectIsExecutor = (projectId : string) => {
+export const porjectIsExecutor = (projectId: string) => {
   return cyRequest<CommentType[]>(() =>
-    request(
-      `${baseUrl.project}/Porject/IsExecutor`,
-      { method: 'GET', params: {projectId } },
-    ),
-  );
-};
+    request(`${baseUrl.project}/Porject/IsExecutor`, { method: 'GET', params: { projectId } })
+  )
+}

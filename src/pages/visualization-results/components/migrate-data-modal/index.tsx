@@ -1,6 +1,6 @@
 import TableSearch from '@/components/table-search'
 import { getProjectTableList } from '@/services/project-management/all-project'
-import { copyMember, dataMigrate } from '@/services/visualization-results/side-tree'
+import { dataMigrate } from '@/services/visualization-results/side-tree'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Input, message, Modal, Pagination, Spin, Table } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
@@ -65,19 +65,19 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
       title: '项目',
     },
   ]
-  const sureCopyMemberAndChangeState = () => {
-    const id = tableSelectRows[0].id
-    copyMember(projectIds[0], id).then((res) => {
-      if (res.isSuccess) {
-        if (tableSelectRows[0].stateInfo?.status === 14) {
-          message.success('操作成功')
-          setState(false)
-        }
-      } else {
-        message.error(res.message)
-      }
-    })
-  }
+  // const sureCopyMemberAndChangeState = () => {
+  //   const id = tableSelectRows[0].id
+  //   copyMember(projectIds[0], id).then((res) => {
+  //     if (res.isSuccess) {
+  //       if (tableSelectRows[0].stateInfo?.status === 14) {
+  //         message.success('操作成功')
+  //         setState(false)
+  //       }
+  //     } else {
+  //       message.error(res.message)
+  //     }
+  //   })
+  // }
 
   const handleOK = async () => {
     if (tableSelectRows && tableSelectRows.length === 0) {

@@ -35,7 +35,6 @@ const CreateEngineer: React.FC<CreateEngineerProps> = (props) => {
 
     if (currentIndex > 0) {
       setActiveProjectKey(String(currentIndex - 1))
-
       const copyData = [...copyFlag]
       copyData.splice(currentIndex, 1)
       setCopyFlag(copyData)

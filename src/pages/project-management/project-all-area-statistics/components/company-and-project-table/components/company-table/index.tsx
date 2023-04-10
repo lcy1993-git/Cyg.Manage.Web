@@ -1,32 +1,32 @@
-import { useRequest } from 'ahooks';
-import { getStatisticsListByCompany } from '@/services/project-management/project-statistics-v2';
-import { useSize } from 'ahooks';
-import uuid from 'node-uuid';
-import React, { useMemo, useRef } from 'react';
-import ShowChangeComponent from '../show-change-component';
+import { useRequest } from 'ahooks'
+import { getStatisticsListByCompany } from '@/services/project-management/project-statistics-v2'
+import { useSize } from 'ahooks'
+import uuid from 'node-uuid'
+import React, { useMemo, useRef } from 'react'
+import ShowChangeComponent from '../show-change-component'
 
-import styles from './index.less';
-import RateComponent from '../../../rate-component';
-import moment from 'moment';
-import { isNumber } from 'lodash';
-import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
-import { Tooltip, Table } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons';
+import styles from './index.less'
+import RateComponent from '../../../rate-component'
+import moment from 'moment'
+import { isNumber } from 'lodash'
+import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store'
+import { Tooltip, Table } from 'antd'
+import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons'
 
 const CompanyTable: React.FC = () => {
-  const { projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const { projectShareCompanyId } = useProjectAllAreaStatisticsStore()
   const { data: dataSource = [], loading } = useRequest(
     () => getStatisticsListByCompany({ companyId: projectShareCompanyId }),
-    { ready: !!projectShareCompanyId, refreshDeps: [projectShareCompanyId] },
-  );
-  const { setCompanyInfo, setDataType } = useProjectAllAreaStatisticsStore();
+    { ready: !!projectShareCompanyId, refreshDeps: [projectShareCompanyId] }
+  )
+  const { setCompanyInfo, setDataType } = useProjectAllAreaStatisticsStore()
   const companyNameClickEvent = (id: string, name: string) => {
-    setDataType('project');
+    setDataType('project')
     setCompanyInfo({
       companyId: id,
       companyName: name,
-    });
-  };
+    })
+  }
 
   const tableColumns = [
     {
@@ -40,7 +40,7 @@ const CompanyTable: React.FC = () => {
           <span className="canClick" onClick={() => companyNameClickEvent(record.id, record.name)}>
             {record.name}
           </span>
-        );
+        )
       },
     },
     {
@@ -55,7 +55,7 @@ const CompanyTable: React.FC = () => {
           >
             {record.statusQtyModel1.todayQty}
           </ShowChangeComponent>
-        );
+        )
       },
     },
     {
@@ -70,7 +70,7 @@ const CompanyTable: React.FC = () => {
           >
             {record.statusQtyModel2.todayQty}
           </ShowChangeComponent>
-        );
+        )
       },
     },
     {
@@ -85,7 +85,7 @@ const CompanyTable: React.FC = () => {
           >
             {record.statusQtyModel3.todayQty}
           </ShowChangeComponent>
-        );
+        )
       },
     },
     {
@@ -100,7 +100,7 @@ const CompanyTable: React.FC = () => {
           >
             {record.statusQtyModel4.todayQty}
           </ShowChangeComponent>
-        );
+        )
       },
     },
     {
@@ -115,7 +115,7 @@ const CompanyTable: React.FC = () => {
           >
             {record.statusQtyModel5.todayQty}
           </ShowChangeComponent>
-        );
+        )
       },
     },
     {
@@ -130,7 +130,7 @@ const CompanyTable: React.FC = () => {
           >
             {record.statusQtyModel6.todayQty}
           </ShowChangeComponent>
-        );
+        )
       },
     },
     {
@@ -145,7 +145,7 @@ const CompanyTable: React.FC = () => {
           >
             {record.statusQtyModel7.todayQty}
           </ShowChangeComponent>
-        );
+        )
       },
     },
     {
@@ -157,14 +157,14 @@ const CompanyTable: React.FC = () => {
               <QuestionCircleOutlined />
             </Tooltip>
           </div>
-        );
+        )
       },
       dataIndex: 'companyName',
       index: 'companyName',
       ellipsis: true,
       width: 160,
       render: (text: string, record: any) => {
-        return <>{record.progressRate && <RateComponent rate={record.progressRate} />}</>;
+        return <>{record.progressRate && <RateComponent rate={record.progressRate} />}</>
       },
     },
     {
@@ -180,47 +180,47 @@ const CompanyTable: React.FC = () => {
               <span>{moment(record.lastOperationTime).format('YYYY-MM-DD')}</span>
             )}
           </>
-        );
+        )
       },
     },
-  ];
-  const contentRef = useRef<HTMLDivElement>(null);
-  const contentSize = useSize(contentRef);
+  ]
+  const contentRef = useRef<HTMLDivElement>(null)
+  const contentSize = useSize(contentRef)
 
   const currentPageSize = useMemo(() => {
-    if (!contentSize.height) return 0;
-    return Math.floor(contentSize.height / 38) - 2;
-  }, [contentSize.height]);
+    if (!contentSize.height) return 0
+    return Math.floor(contentSize.height / 38) - 2
+  }, [contentSize.height])
 
   // 拿到数据，如果不满当前高度，就设置很多空数据进去。让总计到最后
   const handleTheShowData = (data: any[]) => {
     // 需要补充空数据
     if (data && data.length > 0 && data.length < currentPageSize) {
-      let handleDataSource = [...data];
+      let handleDataSource = [...data]
 
       if (handleDataSource.length < currentPageSize) {
-        const copyObject = { ...handleDataSource[0] };
-        const emptyObject = { empty: true };
+        const copyObject = { ...handleDataSource[0] }
+        const emptyObject = { empty: true }
         Object.keys(copyObject).forEach((item) => {
-          emptyObject[item] = '';
-        });
+          emptyObject[item] = ''
+        })
         const emptyObjectArray = new Array(currentPageSize - handleDataSource.length).fill(
-          emptyObject,
-        );
+          emptyObject
+        )
 
-        handleDataSource = [...data, ...emptyObjectArray];
+        handleDataSource = [...data, ...emptyObjectArray]
       }
 
       const afterHanldeItems = handleDataSource.map((item) => {
         return {
           ...item,
           key: uuid.v1(),
-        };
-      });
-      return afterHanldeItems;
+        }
+      })
+      return afterHanldeItems
     }
-    return dataSource;
-  };
+    return dataSource
+  }
 
   // const sortData= (data: any[]) => {
   //   return data.sort((a, b) =>  false)
@@ -231,8 +231,8 @@ const CompanyTable: React.FC = () => {
       data: handleTheShowData(dataSource),
       isOverflow: dataSource && dataSource.length > currentPageSize,
       contentHeight: currentPageSize * 38,
-    };
-  }, [JSON.stringify(dataSource), currentPageSize]);
+    }
+  }, [JSON.stringify(dataSource), currentPageSize])
 
   return (
     <div className={styles.companyTable} ref={contentRef}>
@@ -248,31 +248,31 @@ const CompanyTable: React.FC = () => {
             const oneCellTotalData = finallyShowData.data
               .filter((item) => isNumber(item.statusQtyModel1.todayQty))
               .map((item) => item.statusQtyModel1.todayQty)
-              .reduce((sum, item) => sum + item);
+              .reduce((sum, item) => sum + item)
             const twoCellTotalData = finallyShowData.data
               .filter((item) => isNumber(item.statusQtyModel2.todayQty))
               .map((item) => item.statusQtyModel2.todayQty)
-              .reduce((sum, item) => sum + item);
+              .reduce((sum, item) => sum + item)
             const threeCellTotalData = finallyShowData.data
               .filter((item) => isNumber(item.statusQtyModel3.todayQty))
               .map((item) => item.statusQtyModel3.todayQty)
-              .reduce((sum, item) => sum + item);
+              .reduce((sum, item) => sum + item)
             const fourCellTotalData = finallyShowData.data
               .filter((item) => isNumber(item.statusQtyModel4.todayQty))
               .map((item) => item.statusQtyModel4.todayQty)
-              .reduce((sum, item) => sum + item);
+              .reduce((sum, item) => sum + item)
             const fiveCellTotalData = finallyShowData.data
               .filter((item) => isNumber(item.statusQtyModel5.todayQty))
               .map((item) => item.statusQtyModel5.todayQty)
-              .reduce((sum, item) => sum + item);
+              .reduce((sum, item) => sum + item)
             const sixCellTotalData = finallyShowData.data
               .filter((item) => isNumber(item.statusQtyModel6.todayQty))
               .map((item) => item.statusQtyModel6.todayQty)
-              .reduce((sum, item) => sum + item);
+              .reduce((sum, item) => sum + item)
             const sevenCellTotalData = finallyShowData.data
               .filter((item) => isNumber(item.statusQtyModel7.todayQty))
               .map((item) => item.statusQtyModel7.todayQty)
-              .reduce((sum, item) => sum + item);
+              .reduce((sum, item) => sum + item)
             return (
               <Table.Summary fixed>
                 <Table.Summary.Row>
@@ -288,13 +288,13 @@ const CompanyTable: React.FC = () => {
                   <Table.Summary.Cell index={9}>-</Table.Summary.Cell>
                 </Table.Summary.Row>
               </Table.Summary>
-            );
+            )
           }
-          return undefined;
+          return undefined
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default CompanyTable;
+export default CompanyTable

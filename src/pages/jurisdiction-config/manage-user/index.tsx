@@ -1,46 +1,47 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons';
-import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd';
-import React, { useRef, useState } from 'react';
-import ManageUserForm from './components/add-edit-form';
-import { isArray } from 'lodash';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { EditOutlined, PlusOutlined, ReloadOutlined } from '@ant-design/icons'
+import { Button, Modal, Form, message, Input, Switch, Spin } from 'antd'
+import React, { useRef, useState } from 'react'
+import ManageUserForm from './components/add-edit-form'
+import { isArray } from 'lodash'
 import {
   updateManageUserItem,
   addManageUserItem,
   getManageUserDetail,
   updateItemStatus,
   resetItemPwd,
-} from '@/services/personnel-config/manage-user';
-import { useRequest } from 'ahooks';
-import EnumSelect from '@/components/enum-select';
-import { BelongManageEnum } from '@/services/personnel-config/manage-user';
-import ResetPasswordForm from './components/reset-form';
-import moment from 'moment';
-import TableSearch from '@/components/table-search';
-import styles from './index.less';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/personnel-config/manage-user'
+import { useRequest } from 'ahooks'
+import EnumSelect from '@/components/enum-select'
+import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import ResetPasswordForm from './components/reset-form'
+import moment from 'moment'
+import TableSearch from '@/components/table-search'
+import styles from './index.less'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { handleSM2Crypto } from '@/utils/utils'
 
-const { Search } = Input;
+const { Search } = Input
 
 const ManageUser: React.FC = () => {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([]);
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [status, setStatus] = useState<number>(0);
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [status, setStatus] = useState<number>(0)
 
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false);
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [resetFormVisible, setResetFormVisible] = useState<boolean>(false);
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [resetFormVisible, setResetFormVisible] = useState<boolean>(false)
 
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
   const { data, run, loading } = useRequest(getManageUserDetail, {
     manual: true,
-  });
+  })
 
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const rightButton = () => {
     return (
@@ -64,43 +65,43 @@ const ManageUser: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   //数据修改刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const resetEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.warning('请选择一条数据进行编辑');
-      return;
+      message.warning('请选择一条数据进行编辑')
+      return
     }
-    setResetFormVisible(true);
-  };
+    setResetFormVisible(true)
+  }
 
   //重置密码
   const resetPwd = async () => {
     editForm.validateFields().then(async (values) => {
-      const editData = tableSelectRows[0];
-      const editDataId = editData.id;
-      const newPassword = Object.assign({ id: editDataId, pwd: values.newPwd });
+      const editData = tableSelectRows[0]
+      const editDataId = editData.id
+      const newPassword = Object.assign({ id: editDataId, pwd: handleSM2Crypto(values.newPwd) })
 
-      await resetItemPwd(newPassword);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setResetFormVisible(false);
-    });
-  };
+      await resetItemPwd(newPassword)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setResetFormVisible(false)
+    })
+  }
 
   const addEvent = () => {
-    setAddFormVisible(true);
-  };
+    setAddFormVisible(true)
+  }
 
   const sureAddManageUserItem = () => {
     addForm.validateFields().then(async (value) => {
@@ -112,35 +113,35 @@ const ManageUser: React.FC = () => {
           companyId: '',
           name: '',
         },
-        value,
-      );
-
-      await addManageUserItem(submitInfo);
-      message.success('添加成功');
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+        value
+      )
+      submitInfo.pwd = handleSM2Crypto(submitInfo.pwd)
+      await addManageUserItem(submitInfo)
+      message.success('添加成功')
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
 
   const editEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
-      return;
+      message.error('请选择一条数据进行编辑')
+      return
     }
 
-    const editData = tableSelectRows[0];
-    const editDataId = editData.id;
+    const editData = tableSelectRows[0]
+    const editDataId = editData.id
 
-    setEditFormVisible(true);
+    setEditFormVisible(true)
 
-    const ManageUserData = await run(editDataId);
+    const ManageUserData = await run(editDataId)
 
-    editForm.setFieldsValue({ ...ManageUserData, userStatus: String(ManageUserData.userStatus) });
-  };
+    editForm.setFieldsValue({ ...ManageUserData, userStatus: String(ManageUserData.userStatus) })
+  }
 
   const sureEditManageUser = () => {
-    const editData = data!;
+    const editData = data!
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {
@@ -149,22 +150,22 @@ const ManageUser: React.FC = () => {
           name: editData.name,
           phone: editData.phone,
         },
-        values,
-      );
-      await updateManageUserItem(submitInfo);
-      refresh();
-      message.success('更新成功');
-      editForm.resetFields();
-      setEditFormVisible(false);
-    });
-  };
+        values
+      )
+      await updateManageUserItem(submitInfo)
+      refresh()
+      message.success('更新成功')
+      editForm.resetFields()
+      setEditFormVisible(false)
+    })
+  }
 
   //数据改变状态
   const updateStatus = async (record: any) => {
-    await updateItemStatus(record);
-    refresh();
-    message.success('状态修改成功');
-  };
+    await updateItemStatus(record)
+    refresh()
+    message.success('状态修改成功')
+  }
 
   const columns = [
     {
@@ -214,7 +215,7 @@ const ManageUser: React.FC = () => {
             {!buttonJurisdictionArray?.includes('manage-user-state') &&
               (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
           </>
-        );
+        )
       },
     },
 
@@ -230,7 +231,7 @@ const ManageUser: React.FC = () => {
       index: 'lastLoginDate',
       width: 140,
       render: (text: any, record: any) => {
-        return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null;
+        return record.lastLoginDate ? moment(record.lastLoginDate).format('YYYY-MM-DD') : null
       },
     },
     {
@@ -239,17 +240,17 @@ const ManageUser: React.FC = () => {
       index: 'userType',
       width: 140,
       render: (text: any, record: any) => {
-        return record.userType ? record.userTypeText : record.userType;
+        return record.userType ? record.userTypeText : record.userType
       },
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const leftSearch = () => {
     return (
@@ -271,18 +272,18 @@ const ManageUser: React.FC = () => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const searchByStatus = (value: any) => {
-    setStatus(value);
+    setStatus(value)
     if (tableRef && tableRef.current) {
       // @ts-ignore
       tableRef.current.searchByParams({
         userStatus: value,
-      });
+      })
     }
-  };
+  }
 
   return (
     <PageCommonWrap>
@@ -347,7 +348,7 @@ const ManageUser: React.FC = () => {
         </Form>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default ManageUser;
+export default ManageUser

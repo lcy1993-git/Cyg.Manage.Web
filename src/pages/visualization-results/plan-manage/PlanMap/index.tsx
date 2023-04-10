@@ -512,7 +512,7 @@ const PlanMap = () => {
               deletFeatureByTable(mapRef.map, null, linesId as string[])
             }
           })
-          .catch((err) => {
+          .catch(() => {
             message.info('删除失败')
           })
       } catch (err) {}

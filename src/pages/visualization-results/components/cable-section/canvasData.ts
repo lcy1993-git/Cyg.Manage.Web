@@ -112,7 +112,7 @@ export const getMatrixDataDirectBurial: (
   col: number,
   hasRedHole?: boolean,
   width?: number
-) => any[] = (row = 1, col = 1, hasRedHole = false, width = 150) => {
+) => any[] = (row = 1, col = 1, width = 150) => {
   const unitX = width / col
   const unitY = width / row
   const r = Math.min(unitX / 5, unitY / 5)
@@ -177,7 +177,7 @@ export const getMatrixDataRowPipe: (
   col: number,
   hasRedHole?: boolean,
   width?: number
-) => any[] = (row = 1, col = 1, hasRedHole = false, width = 150) => {
+) => any[] = (row = 1, col = 1, width = 150) => {
   const unitX = (width - 1 * 20) / col
   const unitY = width / row
   const r = Math.min(unitX / 5, unitY / 5)
@@ -261,49 +261,44 @@ export const getMatrixDataRowPipe: (
  * @param width
  * @returns
  */
-export const getGrooveData: (
-  row: number,
-  col: number,
-  isDouble?: boolean,
-  width?: number
-) => any = (row = 1, col = 1, isDouble = false, width = 150) => {
-  const colNum = isDouble ? col * 2 : col
-  const circleArray = []
-  const lineArray = []
-  const maxWidth = isDouble ? (width - 10) / 2 : (width * 2) / 3
-  const unit = Math.min(maxWidth / col, width / row)
-  for (let i = row - 1; i >= 0; i--) {
-    for (let j = 0; j < colNum; j++) {
-      if (j < col) {
-        circleArray.push({
-          x: unit / 2 + unit * j,
-          y: unit / 2 + unit * i,
-          r: unit * 0.4,
-        })
-      } else {
-        circleArray.push({
-          x: unit / 2 + unit * (j - col) + maxWidth + 10,
-          y: unit / 2 + unit * i,
-          r: unit * 0.4,
+export const getGrooveData: (row: number, col: number, isDouble?: boolean, width?: number) => any =
+  (row = 1, col = 1, isDouble = false, width = 150) => {
+    const colNum = isDouble ? col * 2 : col
+    const circleArray = []
+    const lineArray = []
+    const maxWidth = isDouble ? (width - 10) / 2 : (width * 2) / 3
+    const unit = Math.min(maxWidth / col, width / row)
+    for (let i = row - 1; i >= 0; i--) {
+      for (let j = 0; j < colNum; j++) {
+        if (j < col) {
+          circleArray.push({
+            x: unit / 2 + unit * j,
+            y: unit / 2 + unit * i,
+            r: unit * 0.4,
+          })
+        } else {
+          circleArray.push({
+            x: unit / 2 + unit * (j - col) + maxWidth + 10,
+            y: unit / 2 + unit * i,
+            r: unit * 0.4,
+          })
+        }
+      }
+      lineArray.push({
+        start: [0, unit * (i + 1) - 1],
+        end: [maxWidth, unit * (i + 1) - 1],
+        stroke: 'red',
+      })
+      if (isDouble) {
+        lineArray.push({
+          start: [maxWidth + 10, unit * (i + 1) - 1],
+          end: [maxWidth + maxWidth + 10, unit * (i + 1) - 1],
+          stroke: 'red',
         })
       }
     }
-    lineArray.push({
-      start: [0, unit * (i + 1) - 1],
-      end: [maxWidth, unit * (i + 1) - 1],
-      stroke: 'red',
-    })
-    if (isDouble) {
-      lineArray.push({
-        start: [maxWidth + 10, unit * (i + 1) - 1],
-        end: [maxWidth + maxWidth + 10, unit * (i + 1) - 1],
-        stroke: 'red',
-      })
-    }
+    return [circleArray, lineArray]
   }
-
-  return [circleArray, lineArray]
-}
 
 const type2200 = () => {
   const circleArray = []

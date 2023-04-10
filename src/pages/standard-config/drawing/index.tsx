@@ -104,7 +104,7 @@ const Drawing: React.FC<libParams> = (props) => {
       index: 'category',
       title: '类别',
       width: 240,
-      render: (text: any, row: any) => {
+      render: (text: any) => {
         return mapCategory[text]
       },
     },
@@ -113,7 +113,7 @@ const Drawing: React.FC<libParams> = (props) => {
       index: 'type',
       title: '类型',
       width: 240,
-      render: (text: any, row: any) => {
+      render: (text: any) => {
         return mapType[text]
       },
     },
@@ -129,7 +129,6 @@ const Drawing: React.FC<libParams> = (props) => {
     //   message.warning('请先选择资源库');
     //   return;
     // }
-
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择需要删除的行')
       return

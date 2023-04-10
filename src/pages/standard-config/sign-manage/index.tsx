@@ -40,7 +40,7 @@ const SignManage: React.FC = () => {
   const designRef = React.useRef<HTMLDivElement>(null)
   const insRef = React.useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [searchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [defaultParamsVisible, setDefaultParamsVisible] = useState<boolean>(false)

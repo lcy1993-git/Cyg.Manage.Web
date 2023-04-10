@@ -9,10 +9,7 @@ interface Ops {
   sourceRef: SourceRef
 }
 
-export default function mapClick(
-  e: MapBrowserEvent<MouseEvent>,
-  { mapRef, setState, sourceRef }: Ops
-) {
+export default function mapClick(e: MapBrowserEvent<MouseEvent>, { setState }: Ops) {
   // var pixel = e.pixel;
   // console.log(pixel);
 
@@ -54,11 +51,11 @@ export default function mapClick(
   // console.log(sourceRef.highLightPointSource.getFeatures());
 
   // 获取被选中的元素
-  const highLightFeature = mapRef.map.getFeaturesAtPixel(e.pixel, {
-    layerFilter(f) {
-      return f.get('name') === 'highLightPointLayer' || f.get('name') === 'highLightLineLayer'
-    },
-  })[0]
+  // const highLightFeature = mapRef.map.getFeaturesAtPixel(e.pixel, {
+  //   layerFilter(f) {
+  //     return f.get('name') === 'highLightPointLayer' || f.get('name') === 'highLightLineLayer'
+  //   },
+  // })[0]
 
   // 点击时是否有高亮图层
   // if(highLightFeature) {

@@ -6,9 +6,7 @@ import TemplateLibImportModal from '@/components/template-lib-import'
 import {
   addModulesPropertyItem,
   deleteModulesPropertyItem,
-  getModuleAttribute,
   getModulesPropertyDetail,
-  saveModuleAttributeItem,
   updateModulesPropertyItem,
 } from '@/services/resource-config/modules-property'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
@@ -36,20 +34,13 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   const [templateLibImportModalVisible, setTemplateLibImportModalVisible] = useState<boolean>(false)
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const [editAttributeVisible, setEditAttributeVisible] = useState<boolean>(false)
-  const [detailVisible, setDetailVisible] = useState<boolean>(false)
   const [moduleDetailVisible, setModuleDetailVisible] = useState<boolean>(false)
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
-  const [editAttributeForm] = Form.useForm()
 
   const { data, run, loading } = useRequest(getModulesPropertyDetail, {
-    manual: true,
-  })
-
-  const { data: AttributeData, run: getAttribute } = useRequest(getModuleAttribute, {
     manual: true,
   })
 
@@ -344,15 +335,15 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   }
 
   //详情
-  const checkDetailEvent = async () => {
-    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据查看详情')
-      return
-    }
-    setDetailVisible(true)
+  // const checkDetailEvent = async () => {
+  //   if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+  //     message.error('请选择一条数据查看详情')
+  //     return
+  //   }
+  //   setDetailVisible(true)
 
-    await run(resourceLibId, tableSelectRows[0].id)
-  }
+  //   await run(resourceLibId, tableSelectRows[0].id)
+  // }
 
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
@@ -380,62 +371,62 @@ const ModulesProperty: React.FC<CableDesignParams> = (props) => {
   }
 
   //编辑杆型属性
-  const editAttributeEvent = async () => {
-    if (!resourceLibId) {
-      message.warning('请先选择资源库')
-      return
-    }
-    if (
-      (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
-      tableSelectRows.length > 1
-    ) {
-      message.error('请选择一条数据进行编辑')
-      return
-    }
-    setEditAttributeVisible(true)
-    const editData = tableSelectRows[0]
-    const editDataId = editData.id
+  // const editAttributeEvent = async () => {
+  //   if (!resourceLibId) {
+  //     message.warning('请先选择资源库')
+  //     return
+  //   }
+  //   if (
+  //     (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) ||
+  //     tableSelectRows.length > 1
+  //   ) {
+  //     message.error('请选择一条数据进行编辑')
+  //     return
+  //   }
+  //   // setEditAttributeVisible(true)
+  //   const editData = tableSelectRows[0]
+  //   const editDataId = editData.id
 
-    setEditAttributeVisible(true)
-    const AttributeData = await getAttribute(resourceLibId, editDataId)
+  //   // setEditAttributeVisible(true)
+  //   const AttributeData = await getAttribute(resourceLibId, editDataId)
 
-    editAttributeForm.setFieldsValue(AttributeData)
-  }
+  //   editAttributeForm.setFieldsValue(AttributeData)
+  // }
 
   //保存修改的杆型属性
-  const sureEditAttribute = () => {
-    const editData = AttributeData!
-    editAttributeForm.validateFields().then(async (values) => {
-      const submitInfo = Object.assign(
-        {
-          libId: libId,
-          moduleId: editData.moduleId,
-          height: editData.height,
-          depth: editData.depth,
-          nominalHeight: editData.nominalHeight,
-          steelStrength: editData.steelStrength,
-          poleStrength: editData.poleStrength,
-          rodDimaeter: editData.rodDiameter,
-          baseWeight: editData.baseWeight,
-          segmentMode: editData.segmentMode,
-          earthwork: editData.earthwork,
-          arrangement: editData.arrangement,
-          meteorologic: editData.meteorologic,
-          loopNumber: editData.loopNumber,
-          lineNumber: editData.lineNumber,
-          conductorType: editData.conductorType,
-          conductorSpec: editData.conductorSpec,
-        },
-        values
-      )
+  // const sureEditAttribute = () => {
+  //   const editData = AttributeData!
+  //   editAttributeForm.validateFields().then(async (values) => {
+  //     const submitInfo = Object.assign(
+  //       {
+  //         libId: libId,
+  //         moduleId: editData.moduleId,
+  //         height: editData.height,
+  //         depth: editData.depth,
+  //         nominalHeight: editData.nominalHeight,
+  //         steelStrength: editData.steelStrength,
+  //         poleStrength: editData.poleStrength,
+  //         rodDimaeter: editData.rodDiameter,
+  //         baseWeight: editData.baseWeight,
+  //         segmentMode: editData.segmentMode,
+  //         earthwork: editData.earthwork,
+  //         arrangement: editData.arrangement,
+  //         meteorologic: editData.meteorologic,
+  //         loopNumber: editData.loopNumber,
+  //         lineNumber: editData.lineNumber,
+  //         conductorType: editData.conductorType,
+  //         conductorSpec: editData.conductorSpec,
+  //       },
+  //       values
+  //     )
 
-      await saveModuleAttributeItem(submitInfo)
-      refresh()
-      message.success('更新成功')
-      editAttributeForm.resetFields()
-      setEditAttributeVisible(false)
-    })
-  }
+  //     await saveModuleAttributeItem(submitInfo)
+  //     refresh()
+  //     message.success('更新成功')
+  //     editAttributeForm.resetFields()
+  //     setEditAttributeVisible(false)
+  //   })
+  // }
   const temlateLibImportFinishEvent = async (resourceLibId: string, id: string) => {
     const ResourceLibData = await run(resourceLibId, id)
     editForm.setFieldsValue(ResourceLibData)

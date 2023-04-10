@@ -1,6 +1,5 @@
 import { getAllBelongingLineItem, uploadAllFeature } from '@/services/grid-manage/treeMenu'
-import { PlusOutlined } from '@ant-design/icons'
-import { useRequest, useUpdateEffect } from 'ahooks'
+import { useRequest } from 'ahooks'
 import {
   Button,
   Cascader,
@@ -13,11 +12,9 @@ import {
   RadioChangeEvent,
   Row,
   Select,
-  Space,
   Tabs,
 } from 'antd'
-import React, { useEffect, useRef, useState } from 'react'
-import { ModelType } from '../../plan-manage/DrawToolbar'
+import React, { useEffect, useState } from 'react'
 import { useMyContext } from '../Context'
 import {
   clear,
@@ -122,10 +119,7 @@ const DrawToolbar = () => {
 
   const [clickState, setClickState] = useState<boolean>(false)
 
-  const [modelItems, setModelItems] = useState<ModelType[]>(LINEMODEL)
-  const [name, setName] = useState('')
-
-  const inputRef = useRef<any>(null)
+  // const [setModelItems] = useState<ModelType[]>(LINEMODEL)
 
   const [kelevelOptions, setkelevelOptions] = useState([
     ...KVLEVELOPTIONS.filter((item: KVLEVELTYPES) =>
@@ -214,27 +208,27 @@ const DrawToolbar = () => {
     }
   }
 
-  let index = 0
-  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    e.preventDefault()
-    setModelItems([
-      name
-        ? { label: name, value: name }
-        : {
-            label: `自定义型号${index++}`,
-            value: `自定义型号${index++}`,
-          },
-      ...modelItems,
-    ])
-    setName('')
-    setTimeout(() => {
-      inputRef.current?.focus()
-    }, 0)
-  }
+  // let index = 0
+  // const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  //   e.preventDefault()
+  //   setModelItems([
+  //     name
+  //       ? { label: name, value: name }
+  //       : {
+  //           label: `自定义型号${index++}`,
+  //           value: `自定义型号${index++}`,
+  //         },
+  //     ...modelItems,
+  //   ])
+  //   setName('')
+  //   setTimeout(() => {
+  //     inputRef.current?.focus()
+  //   }, 0)
+  // }
 
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
+  // const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setName(event.target.value)
+  // }
 
   /** 线路回数个数改变渲染多个线路回路表单项 **/
   const renderLines = () => {
@@ -460,7 +454,6 @@ const DrawToolbar = () => {
       //     total: 0,
       //   }
       // })
-
       await stationItemsHandle({
         towerList,
         switchingStationList,
@@ -538,7 +531,6 @@ const DrawToolbar = () => {
   // useUpdateEffect(() => {
   //   setClickState(false)
   // }, [clickState])
-
   /** 绘制线路 **/
   const createLine = async () => {
     try {
@@ -571,7 +563,7 @@ const DrawToolbar = () => {
     run()
   }, [isRefresh, run])
 
-  const formChange = async (changeValues: any, allvalues: any) => {
+  const formChange = async () => {
     if (clickState) {
       await uploadLocalData()
       setClickState(false)
@@ -589,10 +581,10 @@ const DrawToolbar = () => {
 
     const handleData = copyData.filter((item: any) => {
       if (e.target.value === 'Line') {
-        setModelItems(LINEMODEL)
+        // setModelItems(LINEMODEL)
         return item.isOverhead
       }
-      setModelItems(CABLECIRCUITMODEL)
+      // setModelItems(CABLECIRCUITMODEL)
       return item.isOverhead === false
     })
 
@@ -602,7 +594,6 @@ const DrawToolbar = () => {
   // useUpdateEffect(() => {
   //   renderLines()
   // }, [drawLineArray])
-
   return (
     <Drawer
       title="手动绘制"

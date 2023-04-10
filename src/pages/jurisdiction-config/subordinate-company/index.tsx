@@ -49,7 +49,7 @@ const CompanyHierarchy: React.FC = () => {
         </div>
         <div className={styles.hierarchyTable}>
           <Tabs defaultActiveKey="superior" type="card">
-            <TabPane tab="上级公司" key="superior">
+            <TabPane tab="上级公司" {...getObject('superior')}>
               <GeneralTable
                 noPaging
                 needTitleLine={false}
@@ -61,7 +61,7 @@ const CompanyHierarchy: React.FC = () => {
                 url="/CompanyHierarchy/GetListByCurrent"
               />
             </TabPane>
-            <TabPane tab="下级公司" key="subordinate">
+            <TabPane tab="下级公司" {...getObject('subordinate')}>
               <div className={styles.leftTableContent}>
                 <GeneralTable
                   noPaging

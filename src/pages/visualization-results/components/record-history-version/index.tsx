@@ -1,14 +1,10 @@
-import {
-  getHistoriesById,
-  recordVersionData,
-} from '@/pages/visualization-results/history-grid/service'
+import { recordVersionData } from '@/pages/visualization-results/history-grid/service'
 import { useHistoryGridContext } from '@/pages/visualization-results/history-grid/store'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { Input, message, Modal } from 'antd'
 import _ from 'lodash'
 import React, { ChangeEventHandler, useEffect, useState } from 'react'
 import styles from './index.less'
-import { useMount } from 'ahooks'
 
 export interface ElectricalEquipmentForm {
   name: string

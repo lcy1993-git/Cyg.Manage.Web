@@ -3,6 +3,8 @@ import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
 import { useLayoutStore } from '@/layouts/context'
+import AuthorizationConfirmation from '@/pages/jurisdiction-config/role-permissions/components/authorization-confirmation'
+import { baseUrl } from '@/services/common'
 import { BelongManageEnum } from '@/services/personnel-config/manage-user'
 import { getUploadUrl } from '@/services/resource-config/drawing'
 import {
@@ -13,6 +15,7 @@ import {
   updateResourceLibItem,
 } from '@/services/resource-config/resource-lib'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { uploadAuditLog } from '@/utils/utils'
 import {
   EditOutlined,
   ImportOutlined,
@@ -23,7 +26,7 @@ import {
 import { useRequest } from 'ahooks'
 import { Button, Dropdown, Form, Input, Menu, message, Modal, Spin, Tooltip } from 'antd'
 import { isArray } from 'lodash'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { history } from 'umi'
 import ResourceLibForm from './components/add-edit-form'
 import ResourceLibraryManageModal from './components/resource-library-manage-modal'
@@ -41,15 +44,16 @@ const ResourceLib: React.FC = () => {
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [libVisible, setLibVisible] = useState(false)
-
+  const [authorizationConfirmation, setAuthorizationConfirmation] = useState<boolean>(false)
   const [uploadDrawingVisible, setUploadDrawingVisible] = useState<boolean>(false)
   const [uploadLibVisible, setUploadLibVisible] = useState<boolean>(false)
   const [uploadAllVisible, setUploadAllVisible] = useState<boolean>(false)
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const [status, setStatus] = useState<string>('0')
   const [libId, setLibId] = useState<string>('')
+  const [changeItem, setChangeItem] = useState<any>({ id: '', status: 1 })
   const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId) //当前管理 模块的资源库Id
-
+  const [ifSuccess, setIfSuccess] = useState<boolean>(false)
   const { data: keyData } = useRequest(() => getUploadUrl())
 
   const [addForm] = Form.useForm()
@@ -298,7 +302,7 @@ const ResourceLib: React.FC = () => {
         dataIndex: '',
         title: '操作',
         width: 100,
-        render: (text: any, record: any) => {
+        render: () => {
           return (
             <span
               className="canClick"
@@ -381,8 +385,9 @@ const ResourceLib: React.FC = () => {
 
   //重启资源服务
   const restartLib = async () => {
-    await restartResourceLib()
-    message.success('操作成功')
+    setAuthorizationConfirmation(true)
+    // await restartResourceLib()
+    // message.success('操作成功')
   }
 
   const uploadAllEvent = () => {
@@ -492,13 +497,56 @@ const ResourceLib: React.FC = () => {
   }
 
   const updateStatusEvent = async (id: string, status: number) => {
-    await changeLibStatus({ id: id, status: status })
-    message.success('操作成功')
-    refresh()
+    const obj = { id: id, status: status }
+    setChangeItem(obj)
+    setAuthorizationConfirmation(true)
   }
 
   const uploadFinishEvent = () => {
     refresh()
+  }
+  useEffect(() => {
+    if (ifSuccess) {
+      setAuthorizationConfirmation(false)
+      toUpdateStatusEvent()
+    }
+  }, [ifSuccess]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const toUpdateStatusEvent = async () => {
+    if (changeItem && changeItem.id) {
+      try {
+        await changeLibStatus(changeItem)
+        setChangeItem({ id: '', status: 1 })
+        setIfSuccess(false)
+        message.success('操作成功')
+        refresh()
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 10,
+            eventDetailType: changeItem.status === 2 ? '资源库禁用' : '资源库启用',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/Porject/UpdateStatus`,
+          },
+        ])
+      } catch (e) {
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 10,
+            eventDetailType: changeItem.status === 2 ? '资源库禁用' : '资源库启用',
+            executionResult: '失败',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/Porject/UpdateStatus`,
+          },
+        ])
+      }
+    } else {
+      await restartResourceLib()
+      setIfSuccess(false)
+      message.success('操作成功')
+    }
   }
 
   return (
@@ -580,6 +628,12 @@ const ResourceLib: React.FC = () => {
           changeFinishEvent={refresh}
         />
       )}
+      <AuthorizationConfirmation
+        changeItem={changeItem}
+        authorizationConfirmation={authorizationConfirmation}
+        setAuthorizationConfirmation={setAuthorizationConfirmation}
+        setIfSuccess={setIfSuccess}
+      />
     </PageCommonWrap>
   )
 }

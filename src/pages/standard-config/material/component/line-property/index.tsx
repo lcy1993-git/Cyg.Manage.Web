@@ -54,12 +54,12 @@ const LineProperty: React.FC<WareHouseDetailParams> = (props) => {
     }
   }
 
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.refresh()
-    }
-  }
+  // const refresh = () => {
+  //   if (tableRef && tableRef.current) {
+  //     //@ts-ignore
+  //     tableRef.current.refresh()
+  //   }
+  // }
 
   const tableLeftSlot = (
     <TableSearch width="248px">

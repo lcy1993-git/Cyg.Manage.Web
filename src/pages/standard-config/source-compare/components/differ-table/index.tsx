@@ -1,13 +1,13 @@
-import React, { useRef } from 'react';
-import GeneralTable from '@/components/general-table';
+import React, { useRef } from 'react'
+import GeneralTable from '@/components/general-table'
 
 interface DifferTableParams {
-  categoryId: string;
+  categoryId: string
 }
 
 const DifferTable: React.FC<DifferTableParams> = (props) => {
-  const { categoryId } = props;
-  const tableRef = useRef<HTMLDivElement>(null);
+  const { categoryId } = props
+  const tableRef = useRef<HTMLDivElement>(null)
   // const [tableSelectRows, setTableSelectRow] = useState<any[]>([]);
 
   const columns = [
@@ -53,7 +53,7 @@ const DifferTable: React.FC<DifferTableParams> = (props) => {
       index: 'wasAfter',
       width: 240,
     },
-  ];
+  ]
 
   return (
     <GeneralTable
@@ -70,7 +70,7 @@ const DifferTable: React.FC<DifferTableParams> = (props) => {
         categoryId: categoryId,
       }}
     />
-  );
-};
+  )
+}
 
-export default DifferTable;
+export default DifferTable

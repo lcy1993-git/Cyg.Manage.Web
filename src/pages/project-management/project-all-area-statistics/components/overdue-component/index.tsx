@@ -1,23 +1,23 @@
-import EmptyTip from '@/components/empty-tip';
-import { getCompanyOverdue } from '@/services/project-management/project-statistics-v2';
-import { useRequest } from 'ahooks';
-import uuid from 'node-uuid';
-import React from 'react';
-import ScrollView from 'react-custom-scrollbars';
-import { useProjectAllAreaStatisticsStore } from '../../store';
-import styles from './index.less';
-import OverdueItem from './overdue-item';
+import EmptyTip from '@/components/empty-tip'
+import { getCompanyOverdue } from '@/services/project-management/project-statistics-v2'
+import { useRequest } from 'ahooks'
+import uuid from 'node-uuid'
+import React from 'react'
+import ScrollView from 'react-custom-scrollbars'
+import { useProjectAllAreaStatisticsStore } from '../../store'
+import styles from './index.less'
+import OverdueItem from './overdue-item'
 
 const OverdueComponent: React.FC = () => {
-  const { projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const { projectShareCompanyId } = useProjectAllAreaStatisticsStore()
 
   const { data, loading } = useRequest(
     () => getCompanyOverdue({ companyId: projectShareCompanyId, limit: 9999 }),
     {
       ready: !!projectShareCompanyId,
       refreshDeps: [projectShareCompanyId],
-    },
-  );
+    }
+  )
 
   return (
     <div className={styles.overdueComponent}>
@@ -31,7 +31,7 @@ const OverdueComponent: React.FC = () => {
                 <OverdueItem key={uuid.v1()} overdueNumber={item.value}>
                   {item.key}
                 </OverdueItem>
-              );
+              )
             })}
           {(!data || data.length === 0) && !loading && (
             <EmptyTip description="当前暂无即将逾期或已逾期项目" />
@@ -39,7 +39,7 @@ const OverdueComponent: React.FC = () => {
         </div>
       </ScrollView>
     </div>
-  );
-};
+  )
+}
 
-export default OverdueComponent;
+export default OverdueComponent

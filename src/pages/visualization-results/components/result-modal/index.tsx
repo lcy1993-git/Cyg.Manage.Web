@@ -1,4 +1,4 @@
-import React, { Dispatch, memo, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 import { Modal } from 'antd'
 import CheckResultModal from '@/pages/project-management/all-project/components/check-result-modal'
 import { getProjectInfo } from '@/services/project-management/all-project'

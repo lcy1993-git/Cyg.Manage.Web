@@ -12,11 +12,6 @@ const CompanyResourceLib = Loadable({
   delay: 150,
 })
 
-const LineStressSag = Loadable({
-  loader: () => import('@/pages/standard-config/line-stress-sag'),
-  loading: Loading,
-  delay: 150,
-})
 const LineStressSagManage = Loadable({
   loader: () => import('@/pages/standard-config/line-stress-sag-manage'),
   loading: Loading,

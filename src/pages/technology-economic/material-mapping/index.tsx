@@ -5,7 +5,6 @@ import {
   Button,
   Modal,
   Form,
-  Switch,
   message,
   Space,
   Row,
@@ -34,7 +33,6 @@ import moment from 'moment'
 import {
   addSourceMaterialMappingQuota,
   deleteMaterialMappingQuota,
-  materialMappingQuotaModifyStatus,
 } from '@/services/technology-economic/material'
 // import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form";
 
@@ -75,14 +73,14 @@ const MaterialMapping: React.FC = () => {
   const columns: ColumnsType<any> = [
     {
       dataIndex: 'name',
-      key: 'name',
+
       title: '名称',
       align: 'center',
       width: 170,
     },
     {
       dataIndex: 'publishDate',
-      key: 'publishDate',
+
       title: '发布时间',
       align: 'center',
       width: 80,
@@ -92,7 +90,7 @@ const MaterialMapping: React.FC = () => {
     },
     {
       dataIndex: 'publishOrg',
-      key: 'publishOrg',
+
       ellipsis: true,
       title: '发布机构',
       align: 'center',
@@ -116,7 +114,7 @@ const MaterialMapping: React.FC = () => {
     // },
     {
       dataIndex: 'remark',
-      key: 'remark',
+
       title: '说明',
       align: 'center',
       ellipsis: true,
@@ -162,11 +160,6 @@ const MaterialMapping: React.FC = () => {
     getMaterialData()
     setAddFormVisible(true)
     form.resetFields()
-  }
-
-  const setStatus = async (status: boolean, record: any) => {
-    await materialMappingQuotaModifyStatus(record.id)
-    refresh()
   }
 
   const gotoMoreInfo = () => {

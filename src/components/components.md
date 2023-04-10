@@ -1,7 +1,8 @@
 ## 深瑞同华组件说明文档
 
 ### 1. annular-figure 组件
-#### 首页用环状图组件 
+
+#### 首页用环状图组件
 
 ```
 // @params options是环状图的配置
@@ -9,6 +10,7 @@
 ```
 
 ### 2. authortiy-export-item
+
 #### 导出系统的基本权限
 
 ```
@@ -19,8 +21,8 @@
 
 ```
 
-
 ### 3. bar-chart
+
 #### 柱状图带自动监听大小
 
 ```
@@ -30,7 +32,7 @@
 
 ### 4. checkbox-tree-table
 
-#### 根据树状数据生成一个checkbox树，主要用于分配授权功能
+#### 根据树状数据生成一个 checkbox 树，主要用于分配授权功能
 
 ```
 @params treeData 分配授权的树状数据
@@ -40,9 +42,9 @@
 
 ### 5. common-title
 
-#### 常用的title组件，带一个绿色前缀方块的那个
+#### 常用的 title 组件，带一个绿色前缀方块的那个
+
 ```
 
 <CommonTitle>公用title</CommonTitle>
 ```
-

@@ -6,7 +6,7 @@ import { useExpressionContainer } from './store'
 const Card = observer((props: { data: any[]; index: number; cInd: number; hIndex: string }) => {
   // cInd:卡片index
   // hIndex:选中index
-  const { data, index, cInd, hIndex } = props
+  const { data, cInd, hIndex } = props
   const background = { backgroundColor: '#E4F5EB' }
   const store = useExpressionContainer()
   //   const { currentRow } = store.state

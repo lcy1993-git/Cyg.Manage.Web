@@ -2,24 +2,16 @@ import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
 import { EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, Popconfirm, message } from 'antd'
-import React, { useRef, useState } from 'react'
+import { Input, Button, Modal, Form, message } from 'antd'
+import React, { useState } from 'react'
 import styles from './index.less'
 import { useRequest } from 'ahooks'
 import { isArray } from 'lodash'
 import '@/assets/icon/iconfont.css'
-import {
-  getNewsItemDetail,
-  updateNewsItem,
-  deleteNewsItem,
-  addNewsItem,
-  updateNewsState,
-} from '@/services/news-config/info-manage'
+
 // import DefaultParams from './components/default-params';
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
-import EnumSelect from '@/components/enum-select'
-import { BelongManageEnum } from '@/services/personnel-config/manage-user'
 import CyTag from '@/components/cy-tag'
 
 import ModalConfirm from '@/components/modal-confirm'
@@ -48,7 +40,7 @@ const VisualConfig: React.FC = () => {
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const [status, setStatus] = useState<number>(0)
+  const [status] = useState<number>(0)
 
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const [addForm] = Form.useForm()

@@ -1,17 +1,16 @@
-
-import type { FileType } from '../../getStrategyComponent';
+import type { FileType } from '../../getStrategyComponent'
 import getStrategyComponent from '../../getStrategyComponent'
 
-import { useMount } from "ahooks";
-import type { ReactElement } from "react";
-import { useState } from "react";
+import { useMount } from 'ahooks'
+import type { ReactElement } from 'react'
+import { useState } from 'react'
 
 export type FeatchFileViewProps = {
-  api: () => Promise<any>;
-  type: FileType;
-  onError?: () => void;
-  emptySlot?: () => ReactElement;
-} & Record<string, any>;
+  api: () => Promise<any>
+  type: FileType
+  onError?: () => void
+  emptySlot?: () => ReactElement
+} & Record<string, any>
 
 const FeatchFileView: React.FC<FeatchFileViewProps> = ({
   api,
@@ -20,20 +19,21 @@ const FeatchFileView: React.FC<FeatchFileViewProps> = ({
   emptySlot,
   ...rest
 }) => {
-
-  const [data, setData] = useState<ArrayBuffer | null>(null);
+  const [data, setData] = useState<ArrayBuffer | null>(null)
 
   useMount(() => {
-    api().then((res) => {
-      setData(res)
-    }).catch(() => {
-      onError?.()
-    })
+    api()
+      .then((res) => {
+        setData(res)
+      })
+      .catch(() => {
+        onError?.()
+      })
   })
-  if(!data) {
-    return emptySlot ? emptySlot() : <></>;
+  if (!data) {
+    return emptySlot ? emptySlot() : <></>
   }
-    return getStrategyComponent(type)!(rest)
+  return getStrategyComponent(type)!(rest)
 }
 
-export default FeatchFileView;
+export default FeatchFileView

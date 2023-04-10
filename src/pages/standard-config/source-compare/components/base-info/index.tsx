@@ -1,12 +1,12 @@
-import ReadonlyItem from '@/components/readonly-item';
-import React from 'react';
+import ReadonlyItem from '@/components/readonly-item'
+import React from 'react'
 
 interface BaseInfoProps {
-  baseInfo: any;
+  baseInfo: any
 }
 
 const BaseInfo: React.FC<BaseInfoProps> = (props) => {
-  const { baseInfo } = props;
+  const { baseInfo } = props
   return (
     <div>
       <div className="flex">
@@ -42,7 +42,7 @@ const BaseInfo: React.FC<BaseInfoProps> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BaseInfo;
+export default BaseInfo

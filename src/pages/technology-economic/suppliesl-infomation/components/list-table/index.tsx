@@ -1,33 +1,15 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { EditOutlined, PlusOutlined, DeleteOutlined, AccountBookOutlined } from '@ant-design/icons';
-import { Input, Button, Modal, Switch, Form, Popconfirm, message } from 'antd';
-import React, { useState, useMemo, useCallback, useReducer } from 'react';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input } from 'antd'
+import React, { useState } from 'react'
 // import DictionaryForm from '../add-edit-form';
 // import QuotaDetails from '../quota-details';
 
-
-import { useRequest } from 'ahooks';
-import {
-  getDictionaryDetail,
-} from '@/services/system-config/dictyionary-manage';
-
-import styles from './index.less';
-const { Search } = Input;
+const { Search } = Input
 
 interface Props {
-  catalogueId: string;
-  scrolly: number;
-}
-
-interface RouteListItem {
-  name: string;
-  id: string;
-}
-
-interface State {
-  routeList: RouteListItem[];
+  catalogueId: string
+  scrolly: number
 }
 
 // const reducer = (state: State, action: any) => {
@@ -52,41 +34,40 @@ const columns = [
     index: 'id',
     title: '编号',
     width: 180,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'name',
     index: 'name',
     title: '名称',
     width: 460,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'categoryText',
     index: 'categoryText',
     title: '类型',
     width: 180,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'releaseDate',
     index: 'releaseDate',
     title: '发行日期',
     width: 80,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'remark',
     index: 'remark',
     title: '描述',
-    ellipsis: true
+    ellipsis: true,
   },
-];
+]
 
-const ListTable: React.FC<Props> = ({catalogueId, scrolly}) => {
-
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+const ListTable: React.FC<Props> = ({ catalogueId, scrolly }) => {
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const searchComponent = () => {
     return (
@@ -99,20 +80,20 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly}) => {
           placeholder="请输入关键词"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   return (
     <>
@@ -126,14 +107,14 @@ const ListTable: React.FC<Props> = ({catalogueId, scrolly}) => {
         requestSource="tecEco"
         url="/QuotaManager/GetList"
         type="radio"
-        scroll={{y: scrolly}}
+        scroll={{ y: scrolly }}
         extractParams={{
           keyWord: searchKeyWord,
-          catalogueId
+          catalogueId,
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default ListTable;
+export default ListTable

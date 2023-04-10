@@ -231,7 +231,7 @@ const PowerSupplyTree = () => {
     }
   }
   // checkbox状态改变触发
-  const getPowerSupplyTreeData = (checkedKeys: any, e: any) => {
+  const getPowerSupplyTreeData = (checkedKeys: any) => {
     const PowerSupplyIds: string[] = checkedKeys
       .map((item: string) => {
         const start = item.indexOf('_&Line')

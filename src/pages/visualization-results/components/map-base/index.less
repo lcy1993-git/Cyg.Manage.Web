@@ -25,9 +25,10 @@
 }
 
 .sideMenuTree {
+  position: absolute;
   // height: calc(100% - 30px);
   height: 100%;
-  position: absolute;
+  transition: left ease-in-out 0.2s;
   // top: 20px;
   // left: -220px;
   // left: 0px;
@@ -42,7 +43,6 @@
   /* Internet Explorer/Edge */
   user-select: none;
   -webkit-touch-callout: none;
-  transition: left ease-in-out .2s;
 }
 .open {
   // left: 13px;
@@ -54,11 +54,11 @@
 
 .footer {
   position: absolute;
-  bottom: 0;
   right: 0;
+  bottom: 0;
 }
 
-.surveyModal{
+.surveyModal {
   position: absolute;
   width: 220px;
   height: 270px;
@@ -85,10 +85,10 @@
   // position: absolute;
   // border: 2px solid #fff;
   position: absolute;
-  overflow: hidden;
-  bottom: 35px;
   right: 23px;
-  transition: right linear .2s;
+  bottom: 35px;
+  overflow: hidden;
+  transition: right linear 0.2s;
   // // background-color: red;
   // /* iOS Safari */
   // -webkit-user-select: none;
@@ -107,9 +107,9 @@
 }
 .surveytrack {
   position: absolute;
-  bottom: 135px;
   right: 23px;
-  transition: right linear .2s;
+  bottom: 135px;
+  transition: right linear 0.2s;
 }
 
 .surveytrackCloese {

@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
-import { TimelineItemProps } from '../index.d';
-import styles from '../index.less';
-import Circle from './Circle';
+import React, { FC } from 'react'
+import { TimelineItemProps } from '../index.d'
+import styles from '../index.less'
+import Circle from './Circle'
 
 /**
  *
@@ -19,20 +19,20 @@ import Circle from './Circle';
  */
 const TimelineItem: FC<TimelineItemProps> = (props: TimelineItemProps) => {
   //length表示数组的长度
-  const { date, index, active, length, click, onClick } = props;
+  const { date, index, active, length, click, onClick } = props
   const activedStyle = {
     fontSize: '10px',
     fontWeight: 400,
     color: '#0E7B3B',
     textAlign: 'left',
-  };
+  }
 
   const unActivedStyle = {
     fontSize: '10px',
     fontWeight: 400,
     color: '#898B8D',
     textAlign: 'left',
-  };
+  }
 
   return (
     <div className={styles.timelineItem}>
@@ -115,7 +115,7 @@ const TimelineItem: FC<TimelineItemProps> = (props: TimelineItemProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TimelineItem;
+export default TimelineItem

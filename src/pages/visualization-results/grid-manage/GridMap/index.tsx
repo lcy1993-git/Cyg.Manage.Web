@@ -70,7 +70,6 @@ import {
   deletBoxFeature,
   getDrawLines,
   getDrawPoints,
-  getShowPoints,
   initMap,
   setDrawBox,
 } from './utils/initializeMap'
@@ -525,7 +524,7 @@ const GridMap = () => {
               deletFeatureByTable(mapRef.map, null, linesId as string[])
             }
           })
-          .catch((err) => {
+          .catch(() => {
             message.info('删除失败')
           })
       } catch (err) {}

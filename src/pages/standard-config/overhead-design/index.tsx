@@ -1,5 +1,4 @@
 import CommonTitle from '@/components/common-title'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import React, { useState } from 'react'
 import ImportOverheadModal from './components/import-form'
 import OverHeadDesignTab from './components/overHeadDesign-tab'
@@ -13,13 +12,8 @@ interface libParams {
 const OverheadDesign: React.FC<libParams> = (props) => {
   const { libId } = props
   const [importOverheadVisible, setImportOverheadVisible] = useState<boolean>(false)
-  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const [isRefresh, setIsRefresh] = useState<boolean>(false)
   // const { refresh } = useOverHeadStore()
-
-  const importOverheadDesignEvent = () => {
-    setImportOverheadVisible(true)
-  }
 
   return (
     // <PageCommonWrap noPadding={true}>

@@ -1,19 +1,20 @@
 import commonLess from '../common.less'
 
 interface EasyTableProps {
-  head: React.ReactNode;
-  data: any[];
-  type?: React.ReactNode;
+  head: React.ReactNode
+  data: any[]
+  type?: React.ReactNode
 }
 
-const EasyTable: React.FC<EasyTableProps> = ({head, data, type}) => {
-  
+const EasyTable: React.FC<EasyTableProps> = ({ head, data, type }) => {
   const foot = () => {
-    if(type === 1) {
+    if (type === 1) {
       return (
-        <tr><td colSpan={3}><pre>
-          注：架空线路工程中仅大跨越工程可计取此项费用。
-        </pre></td></tr>
+        <tr>
+          <td colSpan={3}>
+            <pre>注：架空线路工程中仅大跨越工程可计取此项费用。</pre>
+          </td>
+        </tr>
       )
     }
     return null
@@ -33,13 +34,13 @@ const EasyTable: React.FC<EasyTableProps> = ({head, data, type}) => {
         </tr>
         <tr>
           <td>费率(%)</td>
-          <td>{data?.find((item) => item.costRateType === 1)?.costRate ?? ""}</td>
-          <td>{data?.find((item) => item.costRateType === 2)?.costRate ?? ""}</td>
+          <td>{data?.find((item) => item.costRateType === 1)?.costRate ?? ''}</td>
+          <td>{data?.find((item) => item.costRateType === 2)?.costRate ?? ''}</td>
         </tr>
         {foot()}
       </tbody>
     </table>
-  );
+  )
 }
 
-export default EasyTable;
+export default EasyTable

@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import { LoginType } from '../login-form'
 
 interface VerifycodeImageProps {
-  userKey: string | undefined
+  userKey?: string | undefined
   needVerifycode: boolean
   onChange: (v: string) => void
   hasErr: boolean
@@ -17,7 +17,6 @@ interface VerifycodeImageProps {
 }
 
 const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
-  userKey,
   needVerifycode,
   onChange,
   hasErr,
@@ -30,14 +29,15 @@ const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
 
   return activeKey && needVerifycode ? (
     <div className={styles.verifycodeImageWrap}>
-      {/* <div className={styles.reload} onClick={refreshCode}><ReloadOutlined title="看不清？换一张" className={styles.icon}/></div> */}
       <div className={styles.InputWrap}>
         <div>
           <Input
             ref={codeRef}
             onFocus={() => hasErr && setHasErr(false)}
+            maxLength={4}
+            placeholder={'请输入右边的验证码'}
             onChange={(e) => onChange(e.target.value)}
-          ></Input>
+          />
         </div>
         <div className={styles.error}>{hasErr ? '验证码错误' : ''}</div>
       </div>
@@ -45,7 +45,7 @@ const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
         <img
           title="看不清？换一张"
           className={styles.img}
-          src={`${baseUrl.common}/VerifyCode/Get?key=${userKey}&codeLength=4&random=${reloadSign}`}
+          src={`${baseUrl.common}/VerifyCode/Get?category=1&codeType=1&codeLength=4&reloadSign=${reloadSign}`}
           alt="刷新"
         />
         <span className={classnames(styles.changeText, 'link')}>看不清？换一张</span>

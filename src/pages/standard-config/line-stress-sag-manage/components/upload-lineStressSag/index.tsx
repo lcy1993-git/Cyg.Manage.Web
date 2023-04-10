@@ -16,13 +16,10 @@ interface UploadLineStreeSagProps {
 
 const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const { libId = '', securityKey = '', requestSource = 'upload', changeFinishEvent } = props
+  const { securityKey = '', requestSource = 'upload', changeFinishEvent } = props
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const saveLineStreesSagEvent = () => {
     return form
       .validateFields()
@@ -53,7 +50,7 @@ const UploadLineStressSag: React.FC<UploadLineStreeSagProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         return

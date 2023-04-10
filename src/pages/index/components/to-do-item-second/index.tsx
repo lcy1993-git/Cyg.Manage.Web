@@ -2,7 +2,6 @@ import agentSrc from '@/assets/index/agent.png'
 import approveSrc from '@/assets/index/approve.png'
 import arrangeSrc from '@/assets/index/arrange.png'
 import knotSrc from '@/assets/index/knot.png'
-import reviewSrc from '@/assets/index/review.png'
 import React from 'react'
 import styles from './index.less'
 

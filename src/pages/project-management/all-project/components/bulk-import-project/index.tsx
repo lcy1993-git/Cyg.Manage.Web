@@ -111,7 +111,6 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         },
       }
     })
-
     setEngineerInfo(newData)
     setCurrentChooseEngineerInfo(newData[0])
   }, [JSON.stringify(excelModalData)])
@@ -419,7 +418,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
               style={{ width: '100%' }}
               value={provinceValue}
               allowClear={false}
-              onChange={(value) => areaChangeEvent(value, index)}
+              onChange={(value: any) => areaChangeEvent(value, index)}
               options={afterHandleData}
             />
           </td>
@@ -455,7 +454,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
             style={{ width: '100%' }}
             value={provinceValue}
             allowClear={false}
-            onChange={(value) => areaChangeEvent(value, index)}
+            onChange={(value: any) => areaChangeEvent(value, index)}
             options={afterHandleData}
             placeholder="同上"
           />
@@ -494,7 +493,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
     })
 
     const copyEngineerInfo = cloneDeep(engineerInfo)
-    const handleEngineerData = copyEngineerInfo.map((item: any, index: number) => {
+    const handleEngineerData = copyEngineerInfo.map((item: any) => {
       if (item.checked) {
         return {
           ...item,
@@ -644,7 +643,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       departmentNoChoose: [],
       inventoryOverviewNoChoose: [],
     }
-    copyEngineerInfo.forEach((item, index) => {
+    copyEngineerInfo.forEach((item) => {
       if (item.areaChange) {
         if (!item.engineer.warehouseId) {
           canSave = false
@@ -806,21 +805,21 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
     if (!judgeInfo.canSave) {
       let tipMessage = ''
       if (judgeInfo.errorInfo.wareHouseNoChoose.length > 0) {
-        judgeInfo.errorInfo.wareHouseNoChoose.forEach((item, index) => {
+        judgeInfo.errorInfo.wareHouseNoChoose.forEach((item) => {
           tipMessage = tipMessage + item.name
         })
         tipMessage += '未选择利旧协议库。'
       }
 
       if (judgeInfo.errorInfo.companyNoChoose.length > 0) {
-        judgeInfo.errorInfo.companyNoChoose.forEach((item, index) => {
+        judgeInfo.errorInfo.companyNoChoose.forEach((item) => {
           tipMessage = tipMessage + item.name
         })
         tipMessage += '未选择所属公司。'
       }
 
       if (judgeInfo.errorInfo.inventoryOverviewNoChoose.length > 0) {
-        judgeInfo.errorInfo.inventoryOverviewNoChoose.forEach((item, index) => {
+        judgeInfo.errorInfo.inventoryOverviewNoChoose.forEach((item) => {
           tipMessage = tipMessage + item.name
         })
         tipMessage += '未选择协议库。'

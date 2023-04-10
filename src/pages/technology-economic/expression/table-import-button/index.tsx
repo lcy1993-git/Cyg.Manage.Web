@@ -1,7 +1,6 @@
 import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
 import { commonUpload } from '@/services/common'
-import { downloadTemplate } from '@/services/technology-economic/common-rate'
 import { checkHasUploadFile } from '@/utils/common-rule'
 import { ExportOutlined } from '@ant-design/icons'
 import { Button, ButtonProps, Form, message, Modal, Spin } from 'antd'
@@ -26,15 +25,15 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
   const {
     importUrl = '',
     accept,
-    template,
-    downType,
+    // template,
+    // downType,
     modalTitle = '导入',
     labelTitle = '导入',
     name = 'file',
     buttonTitle = '导入',
     extraParams,
     requestSource = 'project',
-    postType = 'body',
+    // postType = 'body',
     setSuccessful,
     ...rest
   } = props
@@ -47,42 +46,42 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     form.resetFields()
     setImportModalVisible(false)
   }
-  const downLoad = async () => {
-    const res = await downloadTemplate(downType)
-    let blob = new Blob([res], {
-      type: `application/xlsx`,
-    })
-    let finallyFileName = `模板.xlsx`
-    //for IE
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
-    } else {
-      // for Non-IE
-      let objectUrl = URL.createObjectURL(blob)
-      let link = document.createElement('a')
-      link.href = objectUrl
-      link.setAttribute('download', finallyFileName)
-      document.body.appendChild(link)
-      link.click()
-      window.URL.revokeObjectURL(link.href)
-      document.body.removeChild(link)
-    }
-    message.success('下载成功')
-  }
+  // const downLoad = async () => {
+  //   const res = await downloadTemplate(downType)
+  //   let blob = new Blob([res], {
+  //     type: `application/xlsx`,
+  //   })
+  //   let finallyFileName = `模板.xlsx`
+  //   //for IE
+  //   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+  //     window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
+  //   } else {
+  //     // for Non-IE
+  //     let objectUrl = URL.createObjectURL(blob)
+  //     let link = document.createElement('a')
+  //     link.href = objectUrl
+  //     link.setAttribute('download', finallyFileName)
+  //     document.body.appendChild(link)
+  //     link.click()
+  //     window.URL.revokeObjectURL(link.href)
+  //     document.body.removeChild(link)
+  //   }
+  //   message.success('下载成功')
+  // }
   const sureImport = () => {
     form.validateFields().then(async (values) => {
       setLoading(true)
       const { file } = values
       // const res = await
       commonUpload(importUrl, file, name, requestSource, extraParams)
-        .then((res) => {
+        .then(() => {
           message.success('导入成功')
           setLoading(false)
           setSuccessful && setSuccessful(true)
           setImportModalVisible(false)
           form.resetFields()
         })
-        .catch((res) => {
+        .catch(() => {
           setLoading(false)
         })
     })

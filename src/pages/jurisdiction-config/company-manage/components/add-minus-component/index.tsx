@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import styles from './index.less';
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
-import { add, subtract, isNumber } from 'lodash';
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
+import { Input } from 'antd'
+import { add, subtract, isNumber } from 'lodash'
 
 interface AddMinusComponentProps {
-  limit?: number;
-  onChange?: (inputValue: number) => void;
-  canInput?: boolean;
-  maxNumber?: number;
-  minNumber?: number;
-  totalNum?: string;
-  availableNum?: string;
+  limit?: number
+  onChange?: (inputValue: number) => void
+  canInput?: boolean
+  maxNumber?: number
+  minNumber?: number
+  totalNum?: string
+  availableNum?: string
 }
 
 const AddMinusComponent: React.FC<AddMinusComponentProps> = (props) => {
@@ -23,36 +23,36 @@ const AddMinusComponent: React.FC<AddMinusComponentProps> = (props) => {
     minNumber,
     totalNum,
     availableNum,
-  } = props;
-  const [inputValue, setInputValue] = useState<number>(0);
+  } = props
+  const [inputValue, setInputValue] = useState<number>(0)
 
   const inputEvent = (e: any) => {
-    setInputValue(e.target.value);
-  };
+    setInputValue(e.target.value)
+  }
 
   const minusEvent = () => {
     if (isNumber(minNumber)) {
       if (subtract(inputValue, limit) >= minNumber) {
-        setInputValue(subtract(inputValue, limit));
+        setInputValue(subtract(inputValue, limit))
       }
-      return;
+      return
     }
-    setInputValue(subtract(inputValue, limit));
-  };
+    setInputValue(subtract(inputValue, limit))
+  }
 
   const addEvent = () => {
     if (isNumber(maxNumber)) {
       if (add(inputValue, limit) <= maxNumber) {
-        setInputValue(add(inputValue, limit));
+        setInputValue(add(inputValue, limit))
       }
-      return;
+      return
     }
-    setInputValue(add(inputValue, limit));
-  };
+    setInputValue(add(inputValue, limit))
+  }
 
   useEffect(() => {
-    onChange?.(inputValue);
-  }, [inputValue]);
+    onChange?.(inputValue)
+  }, [inputValue])
 
   return (
     <div className={styles.addMinus}>
@@ -71,7 +71,7 @@ const AddMinusComponent: React.FC<AddMinusComponentProps> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AddMinusComponent;
+export default AddMinusComponent

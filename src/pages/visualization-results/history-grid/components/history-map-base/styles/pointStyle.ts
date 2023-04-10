@@ -23,17 +23,17 @@ const whiteCircle = new ClassStyle({
 })
 
 // 高亮层
-const hightCircle = new ClassStyle({
-  text: new Text({
-    text: '\ue879',
-    // textAlign: "center",
-    placement: 'point',
-    font: 'Normal 26px iconfontHistoryGrid',
-    fill: new Fill({
-      color: SourceType.highLight,
-    }),
-  }),
-})
+// const hightCircle = new ClassStyle({
+//   text: new Text({
+//     text: '\ue879',
+//     // textAlign: "center",
+//     placement: 'point',
+//     font: 'Normal 26px iconfontHistoryGrid',
+//     fill: new Fill({
+//       color: SourceType.highLight,
+//     }),
+//   }),
+// })
 
 interface PointOps {
   color?: string

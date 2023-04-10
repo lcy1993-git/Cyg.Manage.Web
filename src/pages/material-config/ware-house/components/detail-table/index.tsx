@@ -1,20 +1,20 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input } from 'antd';
-import React, { useRef, useState } from 'react';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input } from 'antd'
+import React, { useRef, useState } from 'react'
 
 interface WareHouseDetailParams {
-  overviewId: string;
+  overviewId: string
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const WareHouseDetail: React.FC<WareHouseDetailParams> = (props) => {
-  const { overviewId } = props;
+  const { overviewId } = props
 
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const columns = [
     {
@@ -77,33 +77,26 @@ const WareHouseDetail: React.FC<WareHouseDetailParams> = (props) => {
       index: 'isUsed',
       width: 150,
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
-
-  const refresh = () => {
-    if (tableRef && tableRef.current) {
-      //@ts-ignore
-      tableRef.current.refresh();
-    }
-  };
+  }
 
   const tableLeftSlot = (
     <TableSearch width="230px">
       <Search
         value={searchKeyWord}
-        onChange={(e) => setSearchKeyWord(e.target.value)}
+        onChange={(e: any) => setSearchKeyWord(e.target.value)}
         onSearch={() => search()}
         enterButton
         placeholder="关键词"
       />
     </TableSearch>
-  );
+  )
 
   return (
     <div>
@@ -121,7 +114,7 @@ const WareHouseDetail: React.FC<WareHouseDetailParams> = (props) => {
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default WareHouseDetail;
+export default WareHouseDetail

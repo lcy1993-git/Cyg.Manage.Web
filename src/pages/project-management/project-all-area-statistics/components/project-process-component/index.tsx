@@ -1,14 +1,14 @@
-import React from 'react';
-import ProcessTable from '../process-table';
-import RateComponent from '../rate-component';
-import styles from './index.less';
+import React from 'react'
+import ProcessTable from '../process-table'
+import RateComponent from '../rate-component'
+import styles from './index.less'
 
 interface ProjectProcessComponentProps {
   companyId: string
 }
 
 const ProjectProcessComponent: React.FC<ProjectProcessComponentProps> = (props) => {
-  const {companyId} = props;
+  const { companyId } = props
   const tableColumns = [
     {
       title: '序号',
@@ -16,22 +16,22 @@ const ProjectProcessComponent: React.FC<ProjectProcessComponentProps> = (props) 
       dataIndex: 'index',
       index: 'index',
       render: (text: any, record: any) => {
-        if(!record.empty) {
-          return `${record.index}`;
+        if (!record.empty) {
+          return `${record.index}`
         }
-      }
+      },
     },
     {
       title: '项目名称',
       dataIndex: 'name',
       index: 'name',
-      ellipsis: true
+      ellipsis: true,
     },
     {
       title: '设计院',
       dataIndex: 'companyName',
       index: 'companyName',
-      ellipsis: true
+      ellipsis: true,
     },
     {
       title: '计划天数',
@@ -39,10 +39,10 @@ const ProjectProcessComponent: React.FC<ProjectProcessComponentProps> = (props) 
       index: 'planDays',
       width: 100,
       render: (text: any, record: any) => {
-        if(!record.empty) {
-          return `${record.planDays}天`;
+        if (!record.empty) {
+          return `${record.planDays}天`
         }
-      }
+      },
     },
     {
       title: '项目进度',
@@ -50,20 +50,22 @@ const ProjectProcessComponent: React.FC<ProjectProcessComponentProps> = (props) 
       index: 'value',
       width: 340,
       render: (text: any, record: any) => {
-        if(!record.empty) {
-          return (
-            <RateComponent rate={record.value} />
-          )
+        if (!record.empty) {
+          return <RateComponent rate={record.value} />
         }
-      }
+      },
     },
-  ];
+  ]
 
   return (
     <div className={styles.comprehensiveProcessComponent}>
-      <ProcessTable columns={tableColumns} extraParams={{companyId}} url="/ProjectStatistics/GetProgressRateByProject" />
+      <ProcessTable
+        columns={tableColumns}
+        extraParams={{ companyId }}
+        url="/ProjectStatistics/GetProgressRateByProject"
+      />
     </div>
-  );
-};
+  )
+}
 
-export default ProjectProcessComponent;
+export default ProjectProcessComponent

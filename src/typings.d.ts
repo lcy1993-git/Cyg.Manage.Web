@@ -31,6 +31,7 @@ declare module 'react-virtualized-auto-sizer' {
 
   export default function AutoSizer(props: Props): JSX.Element
 }
+declare module '*html2pdf.js'
 
 // google analytics interface
 interface GAFieldsObject {

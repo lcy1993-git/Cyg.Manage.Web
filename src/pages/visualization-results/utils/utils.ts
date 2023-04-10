@@ -147,7 +147,9 @@ export class LineCluster {
       for (let index = 0; index < this.lines.length; index++) {
         const line = this.lines[index]
         let targetTopCoords = (this.targetTopLine.getGeometry() as LineString).getCoordinates()
-        let targetBottomCoords = (this.targetBottomLine.getGeometry() as LineString).getCoordinates()
+        let targetBottomCoords = (
+          this.targetBottomLine.getGeometry() as LineString
+        ).getCoordinates()
         let lineCoords = (line.getGeometry() as LineString).getCoordinates()
         // 找到最顶部的线
         if (targetTopCoords[0][1] < lineCoords[0][1]) {
@@ -182,7 +184,9 @@ export class LineCluster {
       for (let index = 0; index < this.zero_guys.length; index++) {
         const line = this.zero_guys[index]
         let targetTopCoords = (this.targetTopLine.getGeometry() as LineString).getCoordinates()
-        let targetBottomCoords = (this.targetBottomLine.getGeometry() as LineString).getCoordinates()
+        let targetBottomCoords = (
+          this.targetBottomLine.getGeometry() as LineString
+        ).getCoordinates()
         let lineCoords = (line.getGeometry() as LineString).getCoordinates()
         // 找到最顶部的线
         if (targetTopCoords[0][1] < lineCoords[0][1]) {
@@ -475,4 +479,4 @@ export const getSelectKeyByKeyword = (data: TreeNodeType[], keyWord: string) => 
  * @param feature
  * @returns
  */
-export const getTextPositionOfLine = (feature: Feature) => {}
+export const getTextPositionOfLine = () => {}

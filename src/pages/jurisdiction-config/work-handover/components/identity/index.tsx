@@ -1,19 +1,19 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 // import { getCompanyGroups, getReceiver } from '@/services/personnel-config/work-handover';
-import Recevier from '../recevier/index';
-import TreeTable from '@/components/tree-table';
-import CyTag from '@/components/cy-tag';
-import styles from './index.less';
+import Recevier from '../recevier/index'
+import TreeTable from '@/components/tree-table'
+import CyTag from '@/components/cy-tag'
+import styles from './index.less'
 
 interface GroupIdentityParams {
-  userId: string;
-  receiverId: string | undefined;
-  getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
-  setReceiverName?: Dispatch<SetStateAction<string>>;
-  isFresh?: boolean;
-  doneFlag?: boolean;
-  setIsFresh?: Dispatch<SetStateAction<boolean>>;
-  getGroupIds?: Dispatch<SetStateAction<string[]>>;
+  userId: string
+  receiverId: string | undefined
+  getReceiverId?: Dispatch<SetStateAction<string | undefined>>
+  setReceiverName?: Dispatch<SetStateAction<string>>
+  isFresh?: boolean
+  doneFlag?: boolean
+  setIsFresh?: Dispatch<SetStateAction<boolean>>
+  getGroupIds?: Dispatch<SetStateAction<string[]>>
 }
 
 const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
@@ -26,19 +26,19 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
     receiverId,
     setReceiverName,
     doneFlag,
-  } = props;
+  } = props
 
-  const [tableSelectRows, setTableSelectRows] = useState<any>([]);
+  const [tableSelectRows, setTableSelectRows] = useState<any>([])
 
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (isFresh) {
-      refresh();
-      setTableSelectRows([]);
-      setIsFresh?.(false);
+      refresh()
+      setTableSelectRows([])
+      setIsFresh?.(false)
     }
-  }, [isFresh]);
+  }, [isFresh])
 
   const columns = [
     {
@@ -51,8 +51,8 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
       title: '当前身份',
       dataIndex: 'id',
       index: 'id',
-      render: (text: any, record: any) => {
-        return '部组管理员';
+      render: () => {
+        return '部组管理员'
       },
       width: 240,
     },
@@ -66,31 +66,31 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
             <CyTag key={item.value} className="mr7">
               {item.text}
             </CyTag>
-          );
-        });
+          )
+        })
       },
     },
-  ];
+  ]
 
   //交接刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   //处理获取部组Id
   const handleGroupIds = useMemo(() => {
     return tableSelectRows?.map((item: any) => {
-      return item.id;
-    });
-  }, [tableSelectRows]);
+      return item.id
+    })
+  }, [tableSelectRows])
 
   //传值
   useEffect(() => {
-    getGroupIds?.(handleGroupIds);
-  }, [tableSelectRows]);
+    getGroupIds?.(handleGroupIds)
+  }, [tableSelectRows])
 
   return (
     <>
@@ -119,7 +119,7 @@ const GroupIdentity: React.FC<GroupIdentityParams> = (props) => {
         />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default GroupIdentity;
+export default GroupIdentity

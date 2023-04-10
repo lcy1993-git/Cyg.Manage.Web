@@ -1,10 +1,4 @@
-import MapBrowserEvent from 'ol/MapBrowserEvent'
-
-interface Ops {
-  mode: string
-}
-
-export default function pointermove(evt: MapBrowserEvent<MouseEvent>, { mode }: Ops) {
+export default function pointermove() {
   // 当前经纬度
   // const coordinate = evt.coordinate
   // handlerGeographicInformation(mode, coordinate)

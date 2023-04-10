@@ -30,10 +30,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   const [versionName, setVersionName] = useState<string>('')
   const [city, setCity] = useState<any>([])
 
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const [inventoryName, setInventoryName] = useState<string>('')
   const { requestSource, changeFinishEvent } = props
   const [form] = Form.useForm()
@@ -73,7 +70,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
         )
       })
       .then(
-        (res) => {
+        () => {
           message.success('导入成功')
           setRequestLoading(true)
           return Promise.resolve()
@@ -96,7 +93,7 @@ const ImportInventory: React.FC<ImportInventoryProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (requestLoading) {
         setState(false)
         changeFinishEvent?.()

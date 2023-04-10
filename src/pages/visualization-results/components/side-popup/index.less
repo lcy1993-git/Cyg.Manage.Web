@@ -1,34 +1,34 @@
-.wrap{
+.wrap {
   .drawerClose {
-      position: absolute;
-      // top: 45%;
-      top: -20px;
-      right: 0;
-      z-index: 1004;
-      font-size: 18px;
-      padding: 0 6px;
-      cursor: pointer;
-      background-color: #fff;
-      &:hover {
-        color: #0e7b3b;
-      }
+    position: absolute;
+    // top: 45%;
+    top: -20px;
+    right: 0;
+    z-index: 1004;
+    padding: 0 6px;
+    font-size: 18px;
+    background-color: #fff;
+    cursor: pointer;
+    &:hover {
+      color: #0e7b3b;
+    }
   }
   .sidePopupWrap {
     position: absolute;
-    width: 250px;
     top: 80px;
     left: 240px;
-    background-color: #fff;
+    width: 250px;
     margin: 2px;
+    background-color: #fff;
     border-radius: 2px;
     :global {
       .ant-table-body {
         overflow-y: auto !important;
       }
     }
-    .title{
-      padding-left: 2px;
+    .title {
       height: 43px;
+      padding-left: 2px;
       line-height: 43px;
       .head {
         color: #555555;
@@ -49,20 +49,23 @@
       padding-right: 0;
     }
     .ant-table-thead .ant-table-cell {
-      font-size: 18px;
       font-weight: 550;
+      font-size: 18px;
     }
     .ant-drawer-header {
       padding-left: 12px;
       overflow: hidden;
-      text-overflow:ellipsis;
       white-space: nowrap;
+      text-overflow: ellipsis;
     }
-    .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
-      padding: 0;
+    .ant-table-thead > tr > th,
+    .ant-table-tbody > tr > td,
+    .ant-table tfoot > tr > th,
+    .ant-table tfoot > tr > td {
       height: 35px;
-      font-size: 12px;
+      padding: 0;
       padding-left: 6px;
+      font-size: 12px;
     }
   }
   .threeModalWrap {
@@ -73,17 +76,17 @@
     background-color: #fff;
     .closeButton {
       position: absolute;
-      left: 10px;
       top: 4px;
+      left: 10px;
     }
   }
 }
 .mediaItem {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   height: 600px;
   font-size: 40px;
-  display: inline-flex !important;
-  justify-content: center;
-  align-items: center;
   .img {
     width: auto;
     height: 100%;
@@ -97,8 +100,8 @@
 }
 
 .link {
-  cursor: pointer;
   color: #0e7b3b;
+  cursor: pointer;
   &:hover {
     text-decoration: underline;
   }
@@ -109,16 +112,16 @@
 
 .mediaIconWrapLeft,
 .mediaIconWrapRight {
+  z-index: 1000;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 70px;
   height: 70px;
+  color: rgba(100, 100, 100);
+  background-color: rgba(200, 200, 200, 0.1);
   border-radius: 70px;
   cursor: pointer;
-  color: rgba(100,100,100);
-  background-color: rgba(200, 200, 200, 0.1);
-  z-index: 1000;
   &:hover {
     color: #0e7b3b;
   }
@@ -129,14 +132,14 @@
 
 .mediaIconWrapLeft {
   position: absolute;
-  left: 4px;
   top: 45%;
+  left: 4px;
   cursor: pointer;
 }
 .mediaIconWrapRight {
   position: absolute;
-  right: 4px;
   top: 45%;
+  right: 4px;
 }
 
 .mediaModal {

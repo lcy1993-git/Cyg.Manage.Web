@@ -21,6 +21,7 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
 
   const onCheck = (checkedKeysValue: React.Key[], e: any) => {
     const checkedIds = e.checkedNodes
+      // eslint-disable-next-line array-callback-return
       .map((item: any) => {
         if (item.category === 1) {
           return item.value
@@ -71,11 +72,11 @@ const AuditResultTab: React.FC<AuditResultTabProps> = (props) => {
                 <span>{v.title}</span>
               )
             }}
-            checkable
+            checkable // @ts-ignore
             onCheck={onCheck}
             checkedKeys={checkedKeys}
             defaultExpandAll={true}
-            treeData={auditResultData}
+            treeData={auditResultData} // @ts-ignore
             onSelect={onSelect}
           />
         </div>

@@ -1,43 +1,44 @@
 import {
   createCompanyHierarchy,
   removeComoanyHierarchy,
-} from '@/services/jurisdiction-config/company-manage';
-import { useControllableValue } from 'ahooks';
-import { Modal, Input, Button, message, Tabs } from 'antd';
-import React, { useRef, useState, SetStateAction, Dispatch } from 'react';
-import styles from './index.less';
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+} from '@/services/jurisdiction-config/company-manage'
+import { useControllableValue } from 'ahooks'
+import { Modal, Input, Button, message, Tabs } from 'antd'
+import React, { useRef, useState, SetStateAction, Dispatch } from 'react'
+import styles from './index.less'
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
+import { getObject } from '@/utils/utils'
 
 interface UnitConfigProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  companyId: string;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  companyId: string
 }
 
-const { Search } = Input;
-const { TabPane } = Tabs;
+const { Search } = Input
+const { TabPane } = Tabs
 
 const UnitConfig: React.FC<UnitConfigProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const [addTableSelectRows, setAddTableSelectRows] = useState<any[]>([]);
-  const [superiorTableSelectRows, setSuperiorTableSelectRows] = useState<any[]>([]);
-  const [subordinateTableSelectRows, setSubordinateTableSelectRows] = useState<any[]>([]);
-  const [currentTab, setCurrentTab] = useState<string>('superior');
-  const [isAddSearch, setIsAddSearch] = useState<boolean>(false);
+  const [addTableSelectRows, setAddTableSelectRows] = useState<any[]>([])
+  const [superiorTableSelectRows, setSuperiorTableSelectRows] = useState<any[]>([])
+  const [subordinateTableSelectRows, setSubordinateTableSelectRows] = useState<any[]>([])
+  const [currentTab, setCurrentTab] = useState<string>('superior')
+  const [isAddSearch, setIsAddSearch] = useState<boolean>(false)
   // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
 
-  const [superiorKeyWord, setSuperiorKeyWord] = useState<string>('');
-  const [subordinateKeyWord, setSubordinateKeyWord] = useState<string>('');
-  const [addKeyWord, setAddKeyWord] = useState<string>('');
+  const [superiorKeyWord, setSuperiorKeyWord] = useState<string>('')
+  const [subordinateKeyWord, setSubordinateKeyWord] = useState<string>('')
+  const [addKeyWord, setAddKeyWord] = useState<string>('')
 
-  const addTableRef = useRef<HTMLDivElement>(null);
-  const superiorRef = useRef<HTMLDivElement>(null);
-  const subordinateRef = useRef<HTMLDivElement>(null);
+  const addTableRef = useRef<HTMLDivElement>(null)
+  const superiorRef = useRef<HTMLDivElement>(null)
+  const subordinateRef = useRef<HTMLDivElement>(null)
 
-  const { companyId } = props;
+  const { companyId } = props
 
   /**可伸缩配置 */
   // const tableComponents = components;
@@ -78,7 +79,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
       index: 'address',
       title: '详细地址',
     },
-  ];
+  ]
 
   const tableSearch = () => {
     return (
@@ -91,12 +92,12 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
           onChange={(e) => {
             currentTab === 'superior'
               ? setSuperiorKeyWord(e.target.value)
-              : setSubordinateKeyWord(e.target.value);
+              : setSubordinateKeyWord(e.target.value)
           }}
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const addTableSearch = () => {
     return (
@@ -111,111 +112,111 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
           onChange={(e) => setAddKeyWord(e.target.value)}
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const search = () => {
     if (isAddSearch) {
       if (addTableRef && addTableRef.current) {
         // @ts-ignore
-        addTableRef.current.search();
+        addTableRef.current.search()
       }
-      return;
+      return
     }
     if (currentTab === 'superior') {
       if (superiorRef && superiorRef.current) {
         // @ts-ignore
-        superiorRef.current.search();
+        superiorRef.current.search()
       }
-      return;
+      return
     }
     if (currentTab === 'subordinate') {
       if (subordinateRef && subordinateRef.current) {
         // @ts-ignore
-        subordinateRef.current.search();
+        subordinateRef.current.search()
       }
-      return;
+      return
     }
-  };
+  }
 
   const removeEvent = async () => {
     if (currentTab === 'superior') {
       if (superiorTableSelectRows && superiorTableSelectRows.length === 0) {
-        message.warning('请选择需要移除的上级公司');
-        return;
+        message.warning('请选择需要移除的上级公司')
+        return
       }
 
-      const hierarchyIds = superiorTableSelectRows.map((item) => item.id);
+      const hierarchyIds = superiorTableSelectRows.map((item) => item.id)
 
-      await removeComoanyHierarchy({ hierarchyIds: hierarchyIds });
-      setSuperiorTableSelectRows([]);
-      message.success('移除上级公司成功');
-      leftTableFresh();
+      await removeComoanyHierarchy({ hierarchyIds: hierarchyIds })
+      setSuperiorTableSelectRows([])
+      message.success('移除上级公司成功')
+      leftTableFresh()
     }
 
     if (currentTab === 'subordinate') {
       if (subordinateTableSelectRows && subordinateTableSelectRows.length === 0) {
-        message.warning('请选择需要移除的下级公司');
-        return;
+        message.warning('请选择需要移除的下级公司')
+        return
       }
 
-      const hierarchyIds = subordinateTableSelectRows.map((item) => item.id);
-      await removeComoanyHierarchy({ hierarchyIds: hierarchyIds });
-      setSubordinateTableSelectRows([]);
-      message.success('移除下级公司成功');
-      leftTableFresh();
+      const hierarchyIds = subordinateTableSelectRows.map((item) => item.id)
+      await removeComoanyHierarchy({ hierarchyIds: hierarchyIds })
+      setSubordinateTableSelectRows([])
+      message.success('移除下级公司成功')
+      leftTableFresh()
     }
-  };
+  }
 
   //刷新
   const leftTableFresh = () => {
     if (currentTab === 'superior') {
       if (superiorRef && superiorRef.current) {
         //@ts-ignore
-        superiorRef.current.refresh();
+        superiorRef.current.refresh()
       }
     }
 
     if (currentTab === 'subordinate') {
       if (subordinateRef && subordinateRef.current) {
         //@ts-ignore
-        subordinateRef.current.refresh();
+        subordinateRef.current.refresh()
       }
     }
     if (addTableRef && addTableRef.current) {
       //@ts-ignore
-      addTableRef.current.search();
+      addTableRef.current.search()
     }
-  };
+  }
 
   //添加协作公司
   const addEvent = async () => {
     if (currentTab === 'superior') {
       if (addTableSelectRows && addTableSelectRows.length === 0) {
-        message.warning('请选择需要添加的上级公司');
-        return;
+        message.warning('请选择需要添加的上级公司')
+        return
       }
 
-      const preCompanyIds = addTableSelectRows.map((item) => item.id);
-      await createCompanyHierarchy({ preCompanyIds: preCompanyIds, companyIds: [companyId] });
-      setAddTableSelectRows([]);
-      message.success('添加上级公司成功');
-      leftTableFresh();
+      const preCompanyIds = addTableSelectRows.map((item) => item.id)
+      await createCompanyHierarchy({ preCompanyIds: preCompanyIds, companyIds: [companyId] })
+      setAddTableSelectRows([])
+      message.success('添加上级公司成功')
+      leftTableFresh()
     }
 
     if (currentTab === 'subordinate') {
       if (addTableSelectRows && addTableSelectRows.length === 0) {
-        message.warning('请选择需要添加的下级公司');
-        return;
+        message.warning('请选择需要添加的下级公司')
+        return
       }
 
-      const preCompanyIds = addTableSelectRows.map((item) => item.id);
-      await createCompanyHierarchy({ preCompanyIds: [companyId], companyIds: preCompanyIds });
-      setAddTableSelectRows([]);
-      message.success('添加下级公司成功');
-      leftTableFresh();
+      const preCompanyIds = addTableSelectRows.map((item) => item.id)
+      await createCompanyHierarchy({ preCompanyIds: [companyId], companyIds: preCompanyIds })
+      setAddTableSelectRows([])
+      message.success('添加下级公司成功')
+      leftTableFresh()
     }
-  };
+  }
 
   //添加
   const tableElement = () => {
@@ -226,8 +227,8 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
           添加
         </Button>
       </div>
-    );
-  };
+    )
+  }
 
   //移除
   const leftTableButton = () => {
@@ -238,8 +239,8 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
           移除
         </Button>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -258,8 +259,8 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         destroyOnClose
         centered
         onCancel={() => {
-          setState(false);
-          setCurrentTab('superior');
+          setState(false)
+          setCurrentTab('superior')
         }}
       >
         <div className={styles.unitConfigTable}>
@@ -269,7 +270,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
               type="card"
               onChange={(value) => setCurrentTab(value)}
             >
-              <TabPane tab="上级公司" key="superior" style={{ height: '740px' }}>
+              <TabPane tab="上级公司" {...getObject('superior')} style={{ height: '740px' }}>
                 <div className={styles.leftTableContent}>
                   <GeneralTable
                     noPaging
@@ -290,7 +291,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
                   />
                 </div>
               </TabPane>
-              <TabPane tab="下级公司" key="subordinate" style={{ height: '740px' }}>
+              <TabPane tab="下级公司" {...getObject('subordinate')} style={{ height: '740px' }}>
                 <div className={styles.leftTableContent}>
                   <GeneralTable
                     noPaging
@@ -338,7 +339,7 @@ const UnitConfig: React.FC<UnitConfigProps> = (props) => {
         </div>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default UnitConfig;
+export default UnitConfig

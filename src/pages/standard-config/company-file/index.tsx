@@ -5,7 +5,7 @@ import { EditOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons'
 import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd'
 import React, { useMemo, useState } from 'react'
 import styles from './index.less'
-import { useRequest, useUpdateEffect } from 'ahooks'
+import { useRequest } from 'ahooks'
 import { isArray } from 'lodash'
 import '@/assets/icon/iconfont.css'
 import CompanyFileForm from './components/add-edit-form'
@@ -357,6 +357,7 @@ const CompanyFile: React.FC = () => {
     })
     let finallyFileName = `${tableSelectRows[0].name}.${suffix}`
     //for IE
+    //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {

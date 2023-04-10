@@ -22,8 +22,7 @@ interface GetGroupUserProps {
 const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]) //添加的外审人员列表
-  const [isPassArrangePeople, setIsPassArrangePeople] = useState<boolean>(false) //不安排外审status
-  const [isArrangePeople, setIsArrangePeople] = useState<boolean>(false) //不安排外审status
+  const [isArrangePeople] = useState<boolean>(false) //不安排外审status
 
   //提交loading提示
   const [loading, setLoading] = useState<boolean>(false)
@@ -135,7 +134,7 @@ const ExternalArrangeForm: React.FC<GetGroupUserProps> = (props) => {
           // projectName={proName}
           onChange={(people) => setArrangePeople(people)}
           notArrangeShow={isArrangePeople}
-          onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
+          // onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
         />
       </Form>
     </Modal>

@@ -1,9 +1,7 @@
-import React from "react";
+import React from 'react'
 
-const LayoutContent:React.FC = () => {
-    return (
-        <div />
-    )
+const LayoutContent: React.FC = () => {
+  return <div />
 }
 
-export default LayoutContent;
+export default LayoutContent

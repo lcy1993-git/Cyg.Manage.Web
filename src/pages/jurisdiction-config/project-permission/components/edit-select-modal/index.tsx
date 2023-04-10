@@ -1,26 +1,26 @@
-import { useControllableValue, useRequest } from 'ahooks';
-import { Col, Form, message, Modal, Row, Spin, TreeSelect } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import CyTip from '@/components/cy-tip';
-import EnumSelect from '@/components/enum-select';
-import { getCompany } from '@/services/jurisdiction-config/company-manage';
-import { useGetSelectData } from '@/utils/hooks';
-import { getTreeSelectData } from '@/services/operation-config/company-group';
-import { permissionItem } from '../category-table';
+import { useControllableValue, useRequest } from 'ahooks'
+import { Col, Form, message, Modal, Row, Spin, TreeSelect } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import CyTip from '@/components/cy-tip'
+import EnumSelect from '@/components/enum-select'
+import { getCompany } from '@/services/jurisdiction-config/company-manage'
+import { useGetSelectData } from '@/utils/hooks'
+import { getTreeSelectData } from '@/services/operation-config/company-group'
+import { permissionItem } from '../category-table'
 
 interface TypeModalParams {
-  visible?: boolean;
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  setLoading?: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: Dispatch<SetStateAction<any[]>>;
-  setEmpty?: Dispatch<SetStateAction<any[]>>;
-  changeTableEvent: (value: permissionItem[]) => void;
-  hasAddData: permissionItem[];
-  editData?: permissionItem;
-  editForm?: any;
-  loading?: boolean;
+  visible?: boolean
+  onChange?: Dispatch<SetStateAction<boolean>>
+  setLoading?: Dispatch<SetStateAction<boolean>>
+  finishEvent?: Dispatch<SetStateAction<any[]>>
+  setEmpty?: Dispatch<SetStateAction<any[]>>
+  changeTableEvent: (value: permissionItem[]) => void
+  hasAddData: permissionItem[]
+  editData?: permissionItem
+  editForm?: any
+  loading?: boolean
 }
 
 enum categoryEnum {
@@ -39,63 +39,63 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
     setLoading,
     setEmpty,
     loading,
-  } = props;
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [categorySelected, setCategorySelected] = useState<string>();
+  } = props
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [categorySelected, setCategorySelected] = useState<string>()
   const [projectTypes, setProjectTypes] = useState<number[] | undefined>(
-    editData?.projectTypes ?? [],
-  );
-  const [company, setCompany] = useState<any>();
-  const [selectedCompany, setSelectedCompany] = useState<any>();
-  const [selectedUser, setSelectedUser] = useState<any>();
-  const [selectedGroup, setSelectedGroup] = useState<any>();
-  const [objectName, setObjectName] = useState<string>(editData?.objectName ?? '');
+    editData?.projectTypes ?? []
+  )
+  const [company, setCompany] = useState<any>()
+  const [selectedCompany, setSelectedCompany] = useState<any>()
+  const [selectedUser, setSelectedUser] = useState<any>()
+  const [selectedGroup, setSelectedGroup] = useState<any>()
+  const [objectName, setObjectName] = useState<string>(editData?.objectName ?? '')
 
   const { data: companyData } = useRequest(() => getCompany(), {
     ready: categorySelected === '1',
     onSuccess: () => {
-      const company = [];
-      company.push(companyData);
-      setCompany(company);
+      const company = []
+      company.push(companyData)
+      setCompany(company)
     },
-  });
+  })
 
   //获取用户数据
   const { data: userData = [] } = useGetSelectData({
     url: '/CompanyUser/GetList?clientCategory=2',
-  });
+  })
 
   //获取并处理部组数据
   const { data: groupData = [] } = useRequest(() => getTreeSelectData(), {
     ready: categorySelected === '2',
-  });
+  })
 
   const { data: proTypeData = [] } = useGetSelectData({
     url: '/ProjectAuthorityGroup/GetProjectTypes',
-  });
+  })
 
   //处理不同对象的项目类型
-  const groupTypeData = proTypeData?.filter((item: any) => item.value != 32);
-  const userTypeData = proTypeData?.filter((item: any) => item.value != 32 && item.value != 16);
+  const groupTypeData = proTypeData?.filter((item: any) => item.value != 32)
+  const userTypeData = proTypeData?.filter((item: any) => item.value != 32 && item.value != 16)
 
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
       value: data.id,
       children: data.children?.map(mapTreeData),
-    };
-  };
+    }
+  }
 
   const handleGroupData = useMemo(() => {
-    return groupData.map(mapTreeData);
-  }, [JSON.stringify(groupData)]);
+    return groupData.map(mapTreeData)
+  }, [JSON.stringify(groupData)])
 
   const editProjectEntry = () => {
-    editForm.validateFields().then((values: any) => {
-      const copyHasAddData = [...hasAddData];
+    editForm.validateFields().then(() => {
+      const copyHasAddData = [...hasAddData]
       const editIndex = copyHasAddData.findIndex(
-        (item: any) => item.objectId === editData?.objectId,
-      );
+        (item: any) => item.objectId === editData?.objectId
+      )
 
       const currentItem = {
         category: categorySelected,
@@ -107,29 +107,29 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
             : selectedUser ?? editData?.objectId,
         projectTypes: projectTypes ?? editData?.projectTypes,
         objectName: objectName ?? editData?.objectName,
-      };
+      }
 
       if (
         copyHasAddData.findIndex((item: any) => item.objectId === currentItem?.objectId) === -1 ||
         currentItem.objectId === editData?.objectId
       ) {
-        copyHasAddData.splice(editIndex, 1, currentItem);
-        changeTableEvent?.(copyHasAddData);
-        finishEvent?.([]);
-        setEmpty?.([]);
-        message.success('修改成功');
-        setState(false);
-        editForm.resetFields();
-        return;
+        copyHasAddData.splice(editIndex, 1, currentItem)
+        changeTableEvent?.(copyHasAddData)
+        finishEvent?.([])
+        setEmpty?.([])
+        message.success('修改成功')
+        setState(false)
+        editForm.resetFields()
+        return
       }
-      message.error('所选对象已经存在，不可重复添加');
-    });
-  };
+      message.error('所选对象已经存在，不可重复添加')
+    })
+  }
 
   useEffect(() => {
-    setCategorySelected(String(editData?.category));
-    setLoading?.(false);
-  }, [editData]);
+    setCategorySelected(String(editData?.category))
+    setLoading?.(false)
+  }, [editData])
 
   return (
     <>
@@ -171,8 +171,8 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
                           'companyId',
                           'groupId',
                           'userId',
-                        ]);
-                        setCategorySelected(value);
+                        ])
+                        setCategorySelected(value)
                       }}
                       placeholder="请选择对象类型"
                     />
@@ -194,8 +194,8 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
                         defaultData={company}
                         value={selectedCompany}
                         onChange={(value: any, label: any) => {
-                          setSelectedCompany(value);
-                          setObjectName(label?.label);
+                          setSelectedCompany(value)
+                          setObjectName(label?.label)
                         }}
                         placeholder="请选择公司"
                         style={{ width: '350px' }}
@@ -218,8 +218,8 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
                         treeDefaultExpandAll
                         value={selectedGroup}
                         onChange={(value: any, label: any) => {
-                          setSelectedGroup(value);
-                          setObjectName(label);
+                          setSelectedGroup(value)
+                          setObjectName(label)
                         }}
                       />
                     </CyFormItem>
@@ -240,8 +240,8 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
                         valuekey="value"
                         style={{ width: '350px' }}
                         onChange={(value: any, label: any) => {
-                          setSelectedUser(value);
-                          setObjectName(label?.label);
+                          setSelectedUser(value)
+                          setObjectName(label?.label)
                         }}
                         placeholder="请选择公司用户"
                       />
@@ -337,7 +337,7 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
         </div>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default EditSelectModal;
+export default EditSelectModal

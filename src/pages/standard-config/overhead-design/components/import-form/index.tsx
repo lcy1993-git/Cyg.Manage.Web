@@ -23,10 +23,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
   const [form] = Form.useForm()
   const { setIsRefresh } = useOverHeadStore()
 
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const saveImportOverHeadEvent = () => {
     return form
       .validateFields()
@@ -42,7 +39,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
           return Promise.resolve()
         },
         (res) => {
-          const { code, isSuccess, message: msg } = res
+          const { message: msg } = res
 
           if (msg) {
             message.warn(msg)
@@ -58,7 +55,7 @@ const ImportOverheadModal: React.FC<ImportChartProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         setIsRefresh?.(false)

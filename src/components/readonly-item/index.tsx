@@ -1,24 +1,25 @@
-import React from "react";
-import styles from "./index.less";
+import React from 'react'
+import styles from './index.less'
 
 interface ReadonlyItemProps {
-    label?: string | React.ReactNode
-    labelWidth?: number
-    align?: "right" | "left" | "center"
+  label?: string | React.ReactNode
+  labelWidth?: number
+  align?: 'right' | 'left' | 'center'
 }
 
-const ReadonlyItem:React.FC<ReadonlyItemProps> = (props) => {
-    const {label, labelWidth = 78, align = "right"} = props;
-    return (
-        <div className={styles.readonlyItem}>
-            <div className={styles.readonlyItemLabel} style={{width: `${labelWidth}px`,textAlign: align}}>
-                {label}
-            </div>
-            <div className={styles.readonlyItemContent}>
-                {props.children}
-            </div>
-        </div>
-    )
+const ReadonlyItem: React.FC<ReadonlyItemProps> = (props) => {
+  const { label, labelWidth = 78, align = 'right' } = props
+  return (
+    <div className={styles.readonlyItem}>
+      <div
+        className={styles.readonlyItemLabel}
+        style={{ width: `${labelWidth}px`, textAlign: align }}
+      >
+        {label}
+      </div>
+      <div className={styles.readonlyItemContent}>{props.children}</div>
+    </div>
+  )
 }
 
 export default ReadonlyItem

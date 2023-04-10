@@ -1,19 +1,19 @@
-import { useMemo, memo, useRef } from 'react';
+import { useMemo, memo, useRef } from 'react'
 import type { FC } from 'react'
 import { Table, Select } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { chooseCurDayTrack } from '../../utils/mapClick'
 
 import styles from './index.less'
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react'
 
 interface ResData {
   evt: [number, number]
   resData: {
-    propertyName: string;
-    data: string;
+    propertyName: string
+    data: string
   }[]
-  select: string[];
+  select: string[]
 }
 
 interface SurveyModalProps {
@@ -22,45 +22,50 @@ interface SurveyModalProps {
 }
 
 const SurveyModal: FC<SurveyModalProps> = (props) => {
-
   const { hidden, resData } = props
 
-  const [pX, pY] = resData?.evt?.map((i: number) => parseInt(i)) || [0, 0];
+  const [pX, pY] = resData?.evt?.map((i: number) => parseInt(i)) || [0, 0]
 
   const ref = useRef<HTMLDivElement>(null)
 
   const data = useMemo(() => {
-    const title = resData?.resData?.find((o: any) => o.propertyName === 'title')?.data;
+    const title = resData?.resData?.find((o: any) => o.propertyName === 'title')?.data
     const selectAll = {
-      label: "全部",
-      value: ""
+      label: '全部',
+      value: '',
     }
     const select = resData?.select?.map((t: string) => {
       return {
         label: t,
-        value: t
+        value: t,
       }
     })
-    return [resData?.resData?.filter((o: any) => o.propertyName !== 'title' && o.propertyName !== '所有勘察日期'), title ? title : '', select ? [selectAll, ...select] : [selectAll]];
-  }, [JSON.stringify(resData)]);
+    return [
+      resData?.resData?.filter(
+        (o: any) => o.propertyName !== 'title' && o.propertyName !== '所有勘察日期'
+      ),
+      title ? title : '',
+      select ? [selectAll, ...select] : [selectAll],
+    ]
+  }, [JSON.stringify(resData)])
 
   const columns = [
     {
-      title: "属性名",
+      title: '属性名',
       dataIndex: 'propertyName',
       ellipsis: true,
-      width: 70
+      width: 70,
     },
     {
-      title: "属性值",
+      title: '属性值',
       dataIndex: 'data',
       ellipsis: true,
-    }
+    },
   ]
 
   useLayoutEffect(() => {
-    let x = pX + 10;
-    let y = pY - 135;
+    let x = pX + 10
+    let y = pY - 135
     if (pX > 1000) {
       x = pX - 230
     }
@@ -69,22 +74,22 @@ const SurveyModal: FC<SurveyModalProps> = (props) => {
     } else if (pY < 100) {
       y = pY
     }
-    ref.current!.style.position = "absolute"
-    ref.current!.style.top = y + "px";
-    ref.current!.style.left = x + "px";
+    ref.current!.style.position = 'absolute'
+    ref.current!.style.top = y + 'px'
+    ref.current!.style.left = x + 'px'
   }, [JSON.stringify(resData)])
 
   const closeModal = () => {
-    hidden();
-    chooseCurDayTrack("")
+    hidden()
+    chooseCurDayTrack('')
   }
 
   return (
     <div
-      title={'项目名称：' + data[1] || ""}
+      title={'项目名称：' + data[1] || ''}
       className={styles.wrap}
       ref={ref}
-    // style={{ position: 'absolute', width: 200, top: 100, left: 240,backgroundColor: "#fff" }}
+      // style={{ position: 'absolute', width: 200, top: 100, left: 240,backgroundColor: "#fff" }}
     >
       <div className={styles.title1}>
         {/* <span className={styles.head}>项目名称：</span> */}
@@ -97,12 +102,12 @@ const SurveyModal: FC<SurveyModalProps> = (props) => {
             size="small"
             defaultValue=""
             className={styles.select}
-            style={{ width: "100%" }}
-            options={(data[2] as any)}
+            style={{ width: '100%' }}
+            options={data[2] as any}
             onSelect={(e: string) => chooseCurDayTrack(e)}
-            placeholder='选择勘察日期' />
+            placeholder="选择勘察日期"
+          />
         </div>
-
       </div>
       <div className={styles.drawerClose}>
         <CloseOutlined onClick={closeModal} />
@@ -115,15 +120,11 @@ const SurveyModal: FC<SurveyModalProps> = (props) => {
         columns={columns}
         dataSource={data[0] ?? []}
         rowClassName={styles.row}
-      // scroll={{ y: height - 160 }}
-      // rowKey={(r) => r.propertyName}
+        // scroll={{ y: height - 160 }}
+        // rowKey={(r) => r.propertyName}
       />
     </div>
   )
 }
 
-export default memo(SurveyModal);
-
-
-
-
+export default memo(SurveyModal)

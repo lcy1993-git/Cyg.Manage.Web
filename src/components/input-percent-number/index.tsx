@@ -1,25 +1,25 @@
-import type { ReactElement } from 'react';
-import { Button, Input } from "antd";
-import styles from './index.less';
-import classnames from 'classnames';
+import type { ReactElement } from 'react'
+import { Button, Input } from 'antd'
+import styles from './index.less'
+import classnames from 'classnames'
 
 interface InputPercentNumberProps {
   // slot容器
-  preSlot?: () => ReactElement; 
-  nextSlot?: () => ReactElement;
+  preSlot?: () => ReactElement
+  nextSlot?: () => ReactElement
   // input宽度
-  width?: number;
+  width?: number
   // 范围 步长
-  max?: number;
-  min?: number;
-  step?: number;
-  value: number;
+  max?: number
+  min?: number
+  step?: number
+  value: number
   // 单位
-  unit?: string;
-  onChange: (percent: number) => void;
-  className?: string;
+  unit?: string
+  onChange: (percent: number) => void
+  className?: string
   // 格式化
-  format?: (percent: number) => number;
+  format?: (percent: number) => number
 }
 
 /**
@@ -32,15 +32,14 @@ const InputPercentNumber: React.FC<InputPercentNumberProps> = ({
   max = 1000,
   min = 100,
   step = 100,
-  unit = "%",
+  unit = '%',
   value,
   onChange,
   className,
   format = (n) => n,
 }) => {
-
   const increaseHandleClick = () => {
-    let current = value + step;
+    let current = value + step
     if (current > max) {
       current = max
     }
@@ -48,7 +47,7 @@ const InputPercentNumber: React.FC<InputPercentNumberProps> = ({
   }
 
   const minusHandleClick = () => {
-    let current = value - step;
+    let current = value - step
     if (current < min) {
       current = min
     }
@@ -58,26 +57,14 @@ const InputPercentNumber: React.FC<InputPercentNumberProps> = ({
   return (
     <div className={classnames(styles.inputPercentNumberWrap, className)}>
       <Button className={styles.preSlot} onClick={minusHandleClick}>
-        {
-          preSlot ?
-            preSlot() :
-            (
-              <span>-</span>
-            )
-        }
+        {preSlot ? preSlot() : <span>-</span>}
       </Button>
-      <Input style={{ width }} value={value + unit} className={styles.input}/>
+      <Input style={{ width }} value={value + unit} className={styles.input} />
       <Button className={styles.nextSlot} onClick={increaseHandleClick}>
-        {
-          nextSlot ?
-            nextSlot() :
-            (
-              <span>+</span>
-            )
-        }
+        {nextSlot ? nextSlot() : <span>+</span>}
       </Button>
     </div>
-  );
+  )
 }
 
-export default InputPercentNumber;
+export default InputPercentNumber

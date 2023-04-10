@@ -29,9 +29,8 @@ const ApproveGroup: React.FC = () => {
 
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
-  const [addPersonArray, setAddPersonArray] = useState([])
-  const [editPersonArray, setEditPersonArray] = useState([])
-  const [editPersonUserIds, setEditPersonUserIds] = useState<any>([])
+
+  const [editPersonUserIds] = useState<any>([])
   const [groupId, setGroupId] = useState<string>('')
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -289,7 +288,7 @@ const ApproveGroup: React.FC = () => {
       >
         <Spin spinning={loading}>
           <Form form={addForm} preserve={false}>
-            <ApproveGroupForm getPersonArray={(array) => setAddPersonArray(array)} />
+            <ApproveGroupForm />
           </Form>
         </Spin>
       </Modal>
@@ -309,7 +308,6 @@ const ApproveGroup: React.FC = () => {
             groupId={groupId}
             editForm={editForm}
             personDefaultValue={editPersonUserIds}
-            getPersonArray={(array) => setEditPersonArray(array)}
           />
         </Form>
       </Modal>

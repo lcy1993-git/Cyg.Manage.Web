@@ -1,31 +1,38 @@
-import React, { useMemo, useState } from 'react';
-import { Input, TreeSelect } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import EnumRadio from '@/components/enum-radio';
-import rules from '../rule';
-import UrlSelect from '@/components/url-select';
-import { getTreeSelectData } from '@/services/jurisdiction-config/company-manage';
-import { useRequest } from 'ahooks';
-import EnumSelect from '@/components/enum-select';
+import React, { useMemo, useState } from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import rules from '../rule'
+import UrlSelect from '@/components/url-select'
+import EnumSelect from '@/components/enum-select'
+import { noAutoCompletePassword } from '@/utils/utils'
 
-interface ManageUserForm {
-  type?: 'add' | 'edit';
+interface ManageUserFormProps {
+  type?: 'add' | 'edit'
 }
 
 export enum rootTypes {
   '公司管理员' = 3,
   '平台管理员' = 4,
 }
+export enum categoryTypes {
+  '无' = 0,
+  '审计' = 1,
+  '审核' = 2,
+}
 
 export enum platformTypes {
   '公司管理员' = 3,
 }
 
-const ManageUserForm: React.FC<ManageUserForm> = (props) => {
-  const { type = 'edit' } = props;
-  const { isSuperAdmin = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}');
+const ManageUserForm: React.FC<ManageUserFormProps> = (props) => {
+  const { type = 'edit' } = props
+  const { userType = '' } = JSON.parse(localStorage.getItem('userInfo') ?? '{}')
 
-  const [selectedUserType, setSelectedUserType] = useState<number>(0);
+  const isSuperAdmin = useMemo(() => {
+    return userType === 4
+  }, [userType])
+
+  const [selectedUserType, setSelectedUserType] = useState<number>(0)
 
   // const mapTreeData = (data: any) => {
   //   return {
@@ -45,7 +52,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
 
       {type === 'add' && (
         <CyFormItem label="密码" name="pwd" required hasFeedback rules={rules.pwd}>
-          <Input type="password" placeholder="请输入密码" />
+          <Input type="password" {...noAutoCompletePassword} placeholder="请输入密码" />
         </CyFormItem>
       )}
       {type === 'add' && (
@@ -63,20 +70,21 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue('pwd') === value) {
-                  return Promise.resolve();
+                  return Promise.resolve()
                 }
-                return Promise.reject('两次密码输入不一致，请确认');
+                return Promise.reject('两次密码输入不一致，请确认')
               },
             }),
           ]}
         >
-          <Input type="password" placeholder="请再次输入密码" />
+          <Input type="password" autoComplete="new-password" placeholder="请再次输入密码" />
         </CyFormItem>
       )}
       {type === 'add' && (
         <CyFormItem label="账号类型" name="userType" required rules={rules.userType}>
           <EnumSelect
             enumList={isSuperAdmin ? rootTypes : platformTypes}
+            // enumList={platformTypes}
             placeholder="请选择账号类型"
             onChange={(value: any) => setSelectedUserType(value)}
           />
@@ -92,6 +100,11 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
             valuekey="value"
             placeholder="请选择公司"
           />
+        </CyFormItem>
+      )}
+      {type === 'add' && Number(selectedUserType) === 4 && (
+        <CyFormItem label="类别" name="adminCategory" required rules={rules.adminCategory}>
+          <EnumSelect enumList={categoryTypes} placeholder="请选择类别" />
         </CyFormItem>
       )}
       {/* {type === 'add' && (
@@ -124,7 +137,7 @@ const ManageUserForm: React.FC<ManageUserForm> = (props) => {
         <EnumRadio enumList={BelongStatusEnum} />
       </CyFormItem> */}
     </>
-  );
-};
+  )
+}
 
-export default ManageUserForm;
+export default ManageUserForm

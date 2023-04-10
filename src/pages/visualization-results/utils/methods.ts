@@ -8,9 +8,7 @@ import {
 import Feature from 'ol/Feature'
 import GeoJSON from 'ol/format/GeoJSON'
 import WKT from 'ol/format/WKT'
-import LineString from 'ol/geom/LineString'
 import MultiLineString from 'ol/geom/MultiLineString'
-import Point from 'ol/geom/Point'
 import { Draw } from 'ol/interaction'
 import { createBox } from 'ol/interaction/Draw'
 import LayerGroup from 'ol/layer/Group'
@@ -20,8 +18,6 @@ import { getPointResolution, transform } from 'ol/proj'
 import ProjUnits from 'ol/proj/Units'
 import Cluster from 'ol/source/Cluster'
 import VectorSource from 'ol/source/Vector'
-import { getStyle } from '../history-grid/components/history-map-base/styles'
-import { getDataByProjectId } from '../history-grid/service'
 import { layerParams, LayerParams } from './localData/layerParamsData'
 import {
   cable_channel_styles,
@@ -59,14 +55,8 @@ const getTrackRecordDateArray = () => {
   return trackRecordDateArray
 }
 
-const refreshMap = async (
-  ops: any,
-  projects_: any,
-  location: boolean = false,
-  startDate?: string,
-  endDate?: string
-) => {
-  const { setLayerGroups, layerGroups: groupLayers, view, setView, map } = ops
+const refreshMap = async (ops: any, projects_: any, location: boolean = false) => {
+  const { layerGroups: groupLayers, view, setView, map } = ops
   let isLoad = false
   if (projects_) {
     isLoad = true
@@ -208,7 +198,7 @@ const checkZoom = (evt: any, map: any) => {
   // }
 }
 
-const loadSurveyLayers = async (data: any, groupLayers: LayerGroup[], map: any) => {
+const loadSurveyLayers = async (data: any, groupLayers: LayerGroup[]) => {
   layerParams.forEach((item: LayerParams) => {
     let layerName = item.layerName
     let layerNames_ = layerName.split('_')
@@ -229,7 +219,7 @@ const loadSurveyLayers = async (data: any, groupLayers: LayerGroup[], map: any) 
   })
 }
 
-const loadPlanLayers = async (data: any, groupLayers: LayerGroup[], map: any) => {
+const loadPlanLayers = async (data: any, groupLayers: LayerGroup[]) => {
   layerParams.forEach((item: LayerParams) => {
     let layerName = item.layerName
     let layerNames_ = layerName.split('_')
@@ -250,16 +240,7 @@ const loadPlanLayers = async (data: any, groupLayers: LayerGroup[], map: any) =>
   })
 }
 
-const loadDesignLayers = async (
-  data: any,
-  groupLayers: LayerGroup[],
-  view: any,
-  setView: any,
-  map: any,
-  location: boolean
-) => {
-  let layerParams_: any = layerParams
-
+const loadDesignLayers = async (data: any, groupLayers: LayerGroup[]) => {
   layerParams.forEach((item: LayerParams) => {
     let layerName = item.layerName
     let layerNames_ = layerName.split('_')
@@ -282,7 +263,7 @@ const loadDesignLayers = async (
   // relocateMap('', groupLayers, view, setView, map, location)
 }
 
-const loadDismantleLayers = async (data: any, groupLayers: LayerGroup[], map: any) => {
+const loadDismantleLayers = async (data: any, groupLayers: LayerGroup[]) => {
   layerParams.forEach((item: LayerParams) => {
     let layerName = item.layerName
     let layerNames_ = layerName.split('_')
@@ -303,79 +284,79 @@ const loadDismantleLayers = async (data: any, groupLayers: LayerGroup[], map: an
   })
 }
 
-const loadPreDesignLayers = async (groupLayers: LayerGroup[]) => {
-  let groupLayer = getLayerGroupByName('preDesignLayer', groupLayers)
-  let layerType = 'preDesign'
-  // 点位图层
-  if (groupLayers[layerType + '_point']) {
-    groupLayers[layerType + '_point'].getSource().clear()
-  } else {
-    let source = new VectorSource()
-    groupLayers[layerType + '_point'] = new Vector({
-      source,
-      zIndex: 6,
-    })
-    groupLayers[layerType + '_point'].set('name', layerType + '_point')
-    groupLayer.getLayers().push(groupLayers[layerType + '_point'])
-  }
+// const loadPreDesignLayers = async (groupLayers: LayerGroup[]) => {
+//   let groupLayer = getLayerGroupByName('preDesignLayer', groupLayers)
+//   let layerType = 'preDesign'
+//   // 点位图层
+//   if (groupLayers[layerType + '_point']) {
+//     groupLayers[layerType + '_point'].getSource().clear()
+//   } else {
+//     let source = new VectorSource()
+//     groupLayers[layerType + '_point'] = new Vector({
+//       source,
+//       zIndex: 6,
+//     })
+//     groupLayers[layerType + '_point'].set('name', layerType + '_point')
+//     groupLayer.getLayers().push(groupLayers[layerType + '_point'])
+//   }
 
-  // 线路图层
-  if (groupLayers[layerType + '_line']) {
-    groupLayers[layerType + '_line'].getSource().clear()
-  } else {
-    let sourceLine = new VectorSource()
-    groupLayers[layerType + '_line'] = new Vector({
-      source: sourceLine,
-      zIndex: 6,
-    })
-    groupLayers[layerType + '_line'].set('name', layerType + '_line')
-    groupLayer.getLayers().push(groupLayers[layerType + '_line'])
-  }
+//   // 线路图层
+//   if (groupLayers[layerType + '_line']) {
+//     groupLayers[layerType + '_line'].getSource().clear()
+//   } else {
+//     let sourceLine = new VectorSource()
+//     groupLayers[layerType + '_line'] = new Vector({
+//       source: sourceLine,
+//       zIndex: 6,
+//     })
+//     groupLayers[layerType + '_line'].set('name', layerType + '_line')
+//     groupLayer.getLayers().push(groupLayers[layerType + '_line'])
+//   }
 
-  let projectIds: any = []
-  projects.forEach((item: ProjectList) => {
-    projectIds.push(item.id)
-  })
-  await getDataByProjectId({ projectIds }).then((res) => {
-    res.content.forEach((data: any) => {
-      if (data.equipments) {
-        const points = data.equipments.map((p: any) => {
-          const feature = new Feature()
-          feature.setGeometry(new Point([p.lng!, p.lat!])?.transform('EPSG:4326', 'EPSG:3857'))
-          feature.setStyle(getStyle('Point')('design', p.typeStr || '无类型', p.name, true))
+//   let projectIds: any = []
+//   projects.forEach((item: ProjectList) => {
+//     projectIds.push(item.id)
+//   })
+//   await getDataByProjectId({ projectIds }).then((res) => {
+//     res.content.forEach((data: any) => {
+//       if (data.equipments) {
+//         const points = data.equipments.map((p: any) => {
+//           const feature = new Feature()
+//           feature.setGeometry(new Point([p.lng!, p.lat!])?.transform('EPSG:4326', 'EPSG:3857'))
+//           feature.setStyle(getStyle('Point')('design', p.typeStr || '无类型', p.name, true))
 
-          feature.setProperties(p)
-          feature.set('sourceType', layerType)
-          return feature
-        })
+//           feature.setProperties(p)
+//           feature.set('sourceType', layerType)
+//           return feature
+//         })
 
-        groupLayers[layerType + '_point'].getSource().addFeatures(points)
-      }
+//         groupLayers[layerType + '_point'].getSource().addFeatures(points)
+//       }
 
-      if (data.lines) {
-        const lines = data.lines.map((p: any) => {
-          const feature = new Feature()
-          feature.setGeometry(
-            new LineString([
-              [p.startLng!, p.startLat!],
-              [p.endLng!, p.endLat!],
-            ])?.transform('EPSG:4326', 'EPSG:3857')
-          )
+//       if (data.lines) {
+//         const lines = data.lines.map((p: any) => {
+//           const feature = new Feature()
+//           feature.setGeometry(
+//             new LineString([
+//               [p.startLng!, p.startLat!],
+//               [p.endLng!, p.endLat!],
+//             ])?.transform('EPSG:4326', 'EPSG:3857')
+//           )
 
-          feature.setStyle(getStyle('LineString')('design', p.typeStr || '无类型', p.name, true))
-          // feature.setStyle(lineStyle[p.type])
-          // Object.keys(p).forEach((key) => {
-          //   feature.set(key, p[key])
-          // })
-          feature.setProperties(p)
-          feature.set('sourceType', layerType)
-          return feature
-        })
-        groupLayers[layerType + '_line'].getSource().addFeatures(lines)
-      }
-    })
-  })
-}
+//           feature.setStyle(getStyle('LineString')('design', p.typeStr || '无类型', p.name, true))
+//           // feature.setStyle(lineStyle[p.type])
+//           // Object.keys(p).forEach((key) => {
+//           //   feature.set(key, p[key])
+//           // })
+//           feature.setProperties(p)
+//           feature.set('sourceType', layerType)
+//           return feature
+//         })
+//         groupLayers[layerType + '_line'].getSource().addFeatures(lines)
+//       }
+//     })
+//   })
+// }
 
 const loadWFSData = (
   data: any,
@@ -574,10 +555,10 @@ const loadWFSData = (
     }
     if (item.type === 'point') {
       //聚合标注数据源
-      var clusterSource = new Cluster({
-        distance: 40, //聚合的距离参数，即当标注间距离小于此值时进行聚合，单位是像素
-        source, //聚合的数据源，即矢量要素数据源对象
-      })
+      // var clusterSource = new Cluster({
+      //   distance: 40, //聚合的距离参数，即当标注间距离小于此值时进行聚合，单位是像素
+      //   source, //聚合的数据源，即矢量要素数据源对象
+      // })
       obj.source = source
       obj.style = (feature: any, resolution: any) => {
         // var size = feature.get('features').length; //获取该要素所在聚合群的要素数量
@@ -605,39 +586,39 @@ const loadWFSData = (
  * @param layerName
  * @param callBack
  */
-const loadWFS = async (postData: string, layerName: string, callBack: (o: any) => void) => {
-  const promise = loadLayer(postData, layerName)
-  await promise.then((data: any) => {
-    if (data.features && data.features.length > 0) {
-      // const flag = projects.some((project: any) => {
-      //   return project.id === data.features[0].properties.project_id;
-      // });
-      // data.features.forEach((feature: any) => {
-      //   let obj: LayerDatas;
-      //   const project = projects.find(
-      //     (project: any) => project.id === feature.properties.project_id,
-      //   );
-      //   if (project) {
-      //     let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
-      //     if (!ld) {
-      //       obj = {
-      //         projectID: project.id,
-      //         time: project.time,
-      //         data: [],
-      //       };
-      //       layerDatas.push(obj);
-      //     } else {
-      //       ld.data.push({
-      //         name: layerName,
-      //         data,
-      //       });
-      //     }
-      //   }
-      // });
-      callBack(data)
-    }
-  })
-}
+// const loadWFS = async (postData: string, layerName: string, callBack: (o: any) => void) => {
+//   const promise = loadLayer(postData, layerName)
+//   await promise.then((data: any) => {
+//     if (data.features && data.features.length > 0) {
+//       // const flag = projects.some((project: any) => {
+//       //   return project.id === data.features[0].properties.project_id;
+//       // });
+//       // data.features.forEach((feature: any) => {
+//       //   let obj: LayerDatas;
+//       //   const project = projects.find(
+//       //     (project: any) => project.id === feature.properties.project_id,
+//       //   );
+//       //   if (project) {
+//       //     let ld = layerDatas.find((layerData: LayerDatas) => project.id === layerData.projectID);
+//       //     if (!ld) {
+//       //       obj = {
+//       //         projectID: project.id,
+//       //         time: project.time,
+//       //         data: [],
+//       //       };
+//       //       layerDatas.push(obj);
+//       //     } else {
+//       //       ld.data.push({
+//       //         name: layerName,
+//       //         data,
+//       //       });
+//       //     }
+//       //   }
+//       // });
+//       callBack(data)
+//     }
+//   })
+// }
 
 // 加载勘察轨迹图层
 const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
@@ -645,7 +626,6 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
   const track = ['survey_Track', 'disclosure_Track']
   const trackLine = ['survey_TrackLine', 'disclosure_TrackLine']
   const groupLayer = clearTrackLayers(trackLayers, type)
-
   var postData = getXmlData(projects, undefined)
 
   // if (time) {
@@ -889,6 +869,7 @@ const loadMediaSignData = () => {
 // }
 
 // 根据名称获取图层
+// @ts-ignore
 const getLayerByName = (name: string, layers: Layer[]): any => {
   // let layer = null;
   // layers.forEach((item: Layer) => {

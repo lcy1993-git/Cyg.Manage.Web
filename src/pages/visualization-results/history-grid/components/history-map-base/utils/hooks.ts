@@ -52,10 +52,10 @@ export const useVecUrl = () => {
                 message.error('获取地图资源失败，请重试')
               }
             })
-            .catch((err) => {})
+            .catch(() => {})
         }
       })
-      .catch((err) => {})
+      .catch(() => {})
     // getMapList({ sourceType: 0, layerType: 0, enableStatus: 1, availableStatus: 0 }).then((res) => {
     //   if (res.code === 200 && res.isSuccess) {
     //     let vecUrl = '',

@@ -62,10 +62,7 @@ const BaseMap = observer((props: BaseMapProps) => {
     positionMap,
     observeTrack,
     mediaSign, // 多媒体标记开关
-    rangeDate,
   } = vState
-
-  const { startDate, endDate } = rangeDate
 
   const { kvLevel } = filterCondition
 

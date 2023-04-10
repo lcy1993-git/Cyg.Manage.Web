@@ -50,6 +50,7 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
       type: `application/${suffix}`,
     })
     // for IE
+    //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
       window.navigator.msSaveOrOpenBlob(blob, fileName)
     } else {

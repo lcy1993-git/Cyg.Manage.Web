@@ -122,7 +122,7 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
     return getCompanyNameByShare(jsonData) || getCompanyGroupName(jsonData)
   }, [content])
 
-  const getOperator = (data: JSONData[], category: number) => {
+  const getOperator = () => {
     return operator
   }
 

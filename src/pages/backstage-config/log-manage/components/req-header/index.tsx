@@ -1,18 +1,18 @@
-import React from 'react';
-import ReactJson from 'react-json-view';
+import React from 'react'
+import ReactJson from 'react-json-view'
 
 interface ReqHeaderProps {
-  info: any;
+  info: any
 }
 
 const ReqHeader: React.FC<ReqHeaderProps> = (props) => {
-  const { info } = props;
+  const { info } = props
 
   return (
-    <div style={{ width: '100%',wordBreak: "break-all",overflowY: "auto"}}>
+    <div style={{ width: '100%', wordBreak: 'break-all', overflowY: 'auto' }}>
       {info.reqHeader ? <ReactJson src={JSON.parse(info.reqHeader)} /> : null}
     </div>
-  );
-};
+  )
+}
 
-export default ReqHeader;
+export default ReqHeader

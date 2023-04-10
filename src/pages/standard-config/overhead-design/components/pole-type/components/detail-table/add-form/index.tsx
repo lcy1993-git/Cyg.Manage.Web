@@ -109,7 +109,7 @@ const AddModuleDetailTable: React.FC<AddDetailParams> = (props) => {
             typeEnum={addForm.getFieldValue('items')[index]?.itemType}
             componentSelectData={componentSelectData}
             materialNameSelectData={materialNameSelectData}
-            onChange={(value: any, option: any) => {
+            onChange={() => {
               const formValues = addForm.getFieldValue('items')
               if (isArray(formValues)) {
                 const thisValue = formValues[index]

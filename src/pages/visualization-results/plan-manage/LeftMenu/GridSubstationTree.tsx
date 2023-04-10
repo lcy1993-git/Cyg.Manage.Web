@@ -55,15 +55,8 @@ const GridSubstationTree = () => {
     }
   )
   const { isRefresh, setIsRefresh, companyId } = useMyContext()
-  const {
-    linesId,
-    setlinesId,
-    setsubStations,
-    settreeLoading,
-    kvLevels,
-    areasId,
-    isFilterTree,
-  } = useTreeContext()
+  const { linesId, setlinesId, setsubStations, settreeLoading, kvLevels, areasId, isFilterTree } =
+    useTreeContext()
   // 编辑线路模态框状态
   const [isModalVisible, setIsModalVisible] = useState(false)
 
@@ -80,7 +73,7 @@ const GridSubstationTree = () => {
   }
 
   const transformTreeData = (tree: any) => {
-    return tree?.map((item: any, index: any) => {
+    return tree?.map((item: any) => {
       return {
         ...item,
         title:
@@ -221,7 +214,7 @@ const GridSubstationTree = () => {
   }
 
   // checkbox状态改变触发
-  const getSubstationTreeData = async (checkedKeys: any, e: any) => {
+  const getSubstationTreeData = async (checkedKeys: any) => {
     const SubstationIds: string[] = checkedKeys
       .map((item: string) => {
         const start = item.indexOf('_&Line')

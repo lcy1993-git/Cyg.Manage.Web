@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { history } from 'umi'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { Input, Button, Modal, Form, Switch, message, Popconfirm, Spin, Space } from 'antd'
+import { Input, Button, Modal, Form, message, Popconfirm, Spin, Space } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import { isArray } from 'lodash'
@@ -14,7 +13,6 @@ import {
   createQuotaLibrary,
   CreateQuotaLibrary,
   deleteQuotaLibrary,
-  setQuotaLibraryStatus,
 } from '@/services/technology-economic'
 
 import styles from './index.less'
@@ -30,25 +28,25 @@ type DataSource = {
 const columns = [
   {
     dataIndex: 'name',
-    key: 'name',
+
     title: '名称',
     width: 300,
   },
   {
     dataIndex: 'materialMachineLibraryName',
-    key: 'materialMachineLibraryName',
+
     title: '使用材机库',
     width: 160,
   },
   {
     dataIndex: 'quotaScopeText',
-    key: 'quotaScopeText',
+
     title: '定额类别',
     width: 160,
   },
   {
     dataIndex: 'publishDate',
-    key: 'publishDate',
+
     title: '发布时间',
     width: 130,
     render: (text: any) => {
@@ -57,31 +55,31 @@ const columns = [
   },
   {
     dataIndex: 'publishOrg',
-    key: 'publishOrg',
+
     title: '发布机构',
     width: 150,
   },
   {
     dataIndex: 'year',
-    key: 'year',
+
     title: '价格年度',
     width: 100,
   },
   {
     dataIndex: 'industryTypeText',
-    key: 'industryTypeText',
+
     title: '行业类别',
     width: 150,
   },
   {
     dataIndex: 'majorType',
-    key: 'majorType',
+
     title: '适用专业',
     width: 150,
     render: (num: number) => {
-      if (num == 1) {
+      if (num === 1) {
         return '建筑'
-      } else if (num == 2) {
+      } else if (num === 2) {
         return '安装'
       } else {
         return ''
@@ -171,7 +169,7 @@ const QuotaLibrary: React.FC = () => {
           data[key] = values[key]
         }
       }
-      createQuotaLibrary(data)
+      createQuotaLibrary(data as CreateQuotaLibrary)
         .then(() => {
           refresh()
           setAddFormVisible(false)

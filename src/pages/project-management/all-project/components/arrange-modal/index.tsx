@@ -133,8 +133,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
       }}
     >
       <Form form={form} preserve={false}>
-        {/* <Tabs defaultActiveKey="1" onChange={(key) => setTabActiveKey(key)}> */}
-        {/* <TabPane tab="项目安排" key="1"> */}
         <ArrangeForm
           defaultType={defaultSelectType}
           allotCompanyId={allotCompanyId}
@@ -144,21 +142,6 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
           dataSourceType={dataSourceType}
           groupId={groupId}
         />
-        {/* </TabPane> */}
-        {/* {(selectType === '2' || selectType === '4') && (
-            <TabPane tab="外审安排" key="2">
-              {tabActiveKey === '2' ? (
-                <SelectAddListForm
-                  onSetPassArrangeStatus={(flag) => setIsPassArrangePeople(flag)}
-                  onChange={(people) => setArrangePeople(people)}
-                />
-              ) : null}
-            </TabPane>
-          )}
-          {(selectType === '1' || selectType === '3') && (
-            <TabPane tab="外审安排" disabled key="2"></TabPane>
-          )} */}
-        {/* </Tabs> */}
       </Form>
     </Modal>
   )

@@ -1,27 +1,27 @@
-import React, { useState, FC, useEffect, createRef } from 'react';
-import _ from 'lodash';
-import styles from './index.less';
-import { TimelineProps } from './index.d';
-import TimelineItem from './components/TimelineItem';
-import Scrollbars from 'react-custom-scrollbars';
-import { useContainer } from '../../result-page/mobx-store';
-import { observer } from 'mobx-react-lite';
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import React, { useState, FC, useEffect, createRef } from 'react'
+import _ from 'lodash'
+import styles from './index.less'
+import { TimelineProps } from './index.d'
+import TimelineItem from './components/TimelineItem'
+import Scrollbars from 'react-custom-scrollbars'
+import { useContainer } from '../../result-page/mobx-store'
+import { observer } from 'mobx-react-lite'
+import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 
 interface dataItem {
-  idx: number;
-  date: string;
-  active: boolean;
-  click: boolean;
+  idx: number
+  date: string
+  active: boolean
+  click: boolean
 }
 //容器组件初始化传进来的日期数组，对数组进行排序
 const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
-  const { dates, height, type } = props;
-  const store = useContainer();
-  const [activeList, setActiveList] = useState<dataItem[]>();
+  const { dates, height, type } = props
+  const store = useContainer()
+  const [activeList, setActiveList] = useState<dataItem[]>()
 
   //默认scroll到最右边
-  const scrollbars = createRef<Scrollbars>();
+  const scrollbars = createRef<Scrollbars>()
   useEffect(() => {
     setActiveList(
       dates.map((v: string, idx: number) => {
@@ -30,22 +30,22 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
           date: v,
           active: true,
           click: false,
-        };
-      }),
-    );
+        }
+      })
+    )
     if (dates.length > 1) {
-      scrollbars.current?.scrollToRight();
+      scrollbars.current?.scrollToRight()
     }
-  }, [dates]);
+  }, [dates])
   //点击scroll到右边
   const onClickScrollLeft = () => {
-    scrollbars.current?.scrollToLeft();
-  };
+    scrollbars.current?.scrollToLeft()
+  }
 
   //点击scroll到左边
   const onClickScrollRight = () => {
-    scrollbars.current?.scrollToRight();
-  };
+    scrollbars.current?.scrollToRight()
+  }
 
   /**
    *
@@ -61,36 +61,36 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
    * 最后深复制数组更新状态
    */
   const onClick = (clickIndex: number) => {
-    const newList = activeList?.map(({ idx, active, date }) => {
+    const newList = activeList?.map(({ idx, date }) => {
       if (clickIndex === idx) {
         return {
           idx: idx,
           date: date,
           active: true,
           click: true,
-        };
+        }
       } else if (clickIndex > idx) {
         return {
           idx: idx,
           active: true,
           date: date,
           click: false,
-        };
+        }
       } else {
         return {
           idx: idx,
           active: false,
           date: date,
           click: false,
-        };
+        }
       }
-    });
+    })
 
-    setActiveList(_.cloneDeep(newList));
+    setActiveList(_.cloneDeep(newList))
     if (newList) {
-      store.setClickDate(newList[clickIndex].date, type);
+      store.setClickDate(newList[clickIndex].date, type)
     }
-  };
+  }
 
   return (
     <div className={styles.container}>
@@ -131,12 +131,12 @@ const Timeline: FC<TimelineProps> = observer((props: TimelineProps) => {
                 onClick={onClick}
                 active={active}
               />
-            );
+            )
           })}
         </div>
       </Scrollbars>
     </div>
-  );
-});
+  )
+})
 
-export default Timeline;
+export default Timeline

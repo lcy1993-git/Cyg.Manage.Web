@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Spin } from 'antd'
+import { Input } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import UrlSelect from '@/components/url-select'
 

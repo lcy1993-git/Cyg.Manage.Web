@@ -59,7 +59,7 @@ const ProjectType: React.FC<Props> = (props) => {
   }, [JSON.stringify(componentProps)])
 
   const scrollBarRenderView = (params: any) => {
-    const { style, ...rest } = params
+    const { ...rest } = params
     const viewStyle = {
       backgroundColor: `#4DA944`,
       borderRadius: '6px',

@@ -16,10 +16,10 @@ const ModuleDetailTab: React.FC<ModuleDetailTabProps> = (props) => {
   return (
     <>
       <Tabs className="normalTabs" tabBarGutter={25}>
-        <TabPane tab="基本信息" key="1">
+        <TabPane tab="基本信息" {...getObject('1')}>
           <Modules baseInfo={detailData} />
         </TabPane>
-        <TabPane tab="内容" key="2">
+        <TabPane tab="内容" {...getObject('2')}>
           <Attribute info={detailData} />
         </TabPane>
       </Tabs>

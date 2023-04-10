@@ -1,19 +1,19 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Checkbox } from 'antd';
-import Recevier from '../recevier/index';
-import styles from './index.less';
-import EngineerTableList from '../engineer-table-list/index';
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import { Checkbox } from 'antd'
+import Recevier from '../recevier/index'
+import styles from './index.less'
+import EngineerTableList from '../engineer-table-list/index'
 
 interface ProjectManageParams {
-  userId: string;
-  recevierId: string | undefined;
-  setReceiverName?: Dispatch<SetStateAction<string>>;
-  setEngineerIds?: Dispatch<SetStateAction<string[]>>;
-  getReceiverId?: Dispatch<SetStateAction<string | undefined>>;
-  isFresh?: boolean;
-  doneFlag?: boolean;
-  setIsFresh?: Dispatch<SetStateAction<boolean>>;
-  getEngineerData?: Dispatch<SetStateAction<any[]>>;
+  userId: string
+  recevierId: string | undefined
+  setReceiverName?: Dispatch<SetStateAction<string>>
+  setEngineerIds?: Dispatch<SetStateAction<string[]>>
+  getReceiverId?: Dispatch<SetStateAction<string | undefined>>
+  isFresh?: boolean
+  doneFlag?: boolean
+  setIsFresh?: Dispatch<SetStateAction<boolean>>
+  getEngineerData?: Dispatch<SetStateAction<any[]>>
 }
 
 const ProjectManage: React.FC<ProjectManageParams> = (props) => {
@@ -27,10 +27,10 @@ const ProjectManage: React.FC<ProjectManageParams> = (props) => {
     doneFlag,
     setIsFresh,
     getEngineerData,
-  } = props;
+  } = props
 
-  const [checkAllisChecked, setCheckAllisChecked] = useState<boolean>(false);
-  const [checkAllisIndeterminate, setCheckAllisIndeterminate] = useState<boolean>(false);
+  const [checkAllisChecked, setCheckAllisChecked] = useState<boolean>(false)
+  const [checkAllisIndeterminate, setCheckAllisIndeterminate] = useState<boolean>(false)
   /**
    * @flag
    * 事件触发标识
@@ -42,14 +42,14 @@ const ProjectManage: React.FC<ProjectManageParams> = (props) => {
   const [emitAll, setEmitAll] = useState<{ flag: boolean; state: number }>({
     flag: false,
     state: 0,
-  });
+  })
 
   const onAllChange = () => {
     setEmitAll({
       flag: !emitAll?.flag,
       state: !checkAllisChecked || checkAllisIndeterminate ? 2 : 1,
-    });
-  };
+    })
+  }
 
   return (
     <>
@@ -85,7 +85,7 @@ const ProjectManage: React.FC<ProjectManageParams> = (props) => {
         />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default ProjectManage;
+export default ProjectManage

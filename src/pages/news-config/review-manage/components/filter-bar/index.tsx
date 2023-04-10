@@ -1,25 +1,25 @@
-import React, { FC, useRef, useState } from 'react';
-import TableSearch from '@/components/table-search';
-import UrlSelect from '@/components/url-select';
-import { Button, Input, Select } from 'antd';
-import { useGetProjectEnum } from '@/utils/hooks';
-import styles from './index.less';
-import { Moment } from 'moment';
-import { useContainer } from '../../store';
-import EnumSelect from '@/components/enum-select';
-import AreaSelect from '@/components/area-select';
-import { observer } from 'mobx-react-lite';
+import React, { FC, useRef, useState } from 'react'
+import TableSearch from '@/components/table-search'
+import UrlSelect from '@/components/url-select'
+import { Button, Input, Select } from 'antd'
+import { useGetProjectEnum } from '@/utils/hooks'
+import styles from './index.less'
+import { Moment } from 'moment'
+import { useContainer } from '../../store'
+import EnumSelect from '@/components/enum-select'
+import AreaSelect from '@/components/area-select'
+import { observer } from 'mobx-react-lite'
 import {
   ProjectIdentityType,
   ProjectSourceType,
   ProjectStatus,
-} from '@/services/project-management/all-project';
-import OverFlowHiddenComponent from '@/components/over-flow-hidden-component';
-const { Search } = Input;
-const { Option } = Select;
+} from '@/services/project-management/all-project'
+import OverFlowHiddenComponent from '@/components/over-flow-hidden-component'
+const { Search } = Input
+const { Option } = Select
 interface ProjectStatusOption {
-  key: string;
-  name: string;
+  key: string
+  name: string
 }
 const searchChildrenList = [
   {
@@ -52,23 +52,23 @@ const searchChildrenList = [
   {
     width: 111,
   },
-];
+]
 const FilterBar: FC = observer(() => {
-  const [keyWord, setKeyWord] = useState<string>(''); //搜索关键词
-  const [category, setCategory] = useState<number>(); //项目分类
-  const [pCategory, setPCategory] = useState<number>(); //项目类别
-  const [stage, setStage] = useState<number>(); //项目阶段
-  const [constructType, setConstructType] = useState<number>(); //建设性质
-  const [nature, setNature] = useState<number>(); //项目性质
-  const [kvLevel, setKvLevel] = useState<number>(); //电压等级
-  const [statuss, setStatuss] = useState<number[]>(); //状态
-  const [createdOn, setCreatedOn] = useState<Moment | null>(); //创建时间
-  const [modifyDate, setsModiyDate] = useState<Moment | null>(); //更新时间
-  const [sourceType, setSourceType] = useState<string>(); //项目来源
-  const [identityType, setIdentityType] = useState<string>(); //项目身份
-  const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' });
-  const areaRef = useRef<HTMLDivElement>(null);
-  const store = useContainer();
+  const [keyWord, setKeyWord] = useState<string>('') //搜索关键词
+  const [category, setCategory] = useState<number>() //项目分类
+  const [pCategory, setPCategory] = useState<number>() //项目类别
+  const [stage, setStage] = useState<number>() //项目阶段
+  const [constructType, setConstructType] = useState<number>() //建设性质
+  const [nature, setNature] = useState<number>() //项目性质
+  const [kvLevel, setKvLevel] = useState<number>() //电压等级
+  const [statuss, setStatuss] = useState<number[]>() //状态
+  const [createdOn, setCreatedOn] = useState<Moment | null>() //创建时间
+  const [modifyDate, setsModiyDate] = useState<Moment | null>() //更新时间
+  const [sourceType, setSourceType] = useState<string>() //项目来源
+  const [identityType, setIdentityType] = useState<string>() //项目身份
+  const [areaInfo, setAreaInfo] = useState({ areaType: '-1', areaId: '' })
+  const areaRef = useRef<HTMLDivElement>(null)
+  const store = useContainer()
 
   const {
     projectCategory,
@@ -77,69 +77,69 @@ const FilterBar: FC = observer(() => {
     projectConstructType,
     projectStage,
     projectKvLevel,
-  } = useGetProjectEnum();
+  } = useGetProjectEnum()
 
   const getProjectStatusOption = () => {
-    const arrayProjectStatus: ProjectStatusOption[] = [];
+    const arrayProjectStatus: ProjectStatusOption[] = []
     for (const [propertyKey, propertyValue] of Object.entries(ProjectStatus)) {
       if (!Number.isNaN(Number(propertyKey))) {
-        continue;
+        continue
       }
-      arrayProjectStatus.push({ key: propertyValue.toString(), name: propertyKey });
+      arrayProjectStatus.push({ key: propertyValue.toString(), name: propertyKey })
     }
 
     return arrayProjectStatus.map((v) => {
-      return <Option key={v.key} children={v.name} value={v.key} />;
-    });
-  };
+      return <Option key={v.key} children={v.name} value={v.key} />
+    })
+  }
   const areaChangeEvent = (params: any) => {
-    const { provinceId, cityId, areaId } = params;
+    const { provinceId, cityId, areaId } = params
     if (areaId) {
       setAreaInfo({
         areaType: '3',
         areaId: areaId,
-      });
-      return;
+      })
+      return
     }
     if (cityId) {
       setAreaInfo({
         areaType: '2',
         areaId: cityId,
-      });
-      return;
+      })
+      return
     }
     if (provinceId) {
       setAreaInfo({
         areaType: '1',
         areaId: provinceId,
-      });
-      return;
+      })
+      return
     }
     if (!provinceId && !cityId && !areaId) {
       setAreaInfo({
         areaType: '-1',
         areaId: '',
-      });
+      })
     }
-  };
+  }
 
   const reset = () => {
-    setKeyWord('');
-    setCategory(undefined);
-    setPCategory(undefined);
-    setStage(undefined);
-    setConstructType(undefined);
-    setNature(undefined);
-    setKvLevel(undefined);
-    setStatuss(undefined);
-    setCreatedOn(undefined);
-    setsModiyDate(undefined);
-    setSourceType(undefined);
-    setIdentityType(undefined);
+    setKeyWord('')
+    setCategory(undefined)
+    setPCategory(undefined)
+    setStage(undefined)
+    setConstructType(undefined)
+    setNature(undefined)
+    setKvLevel(undefined)
+    setStatuss(undefined)
+    setCreatedOn(undefined)
+    setsModiyDate(undefined)
+    setSourceType(undefined)
+    setIdentityType(undefined)
     setAreaInfo({
       areaType: '-1',
       areaId: '',
-    });
+    })
     const condition = {
       keyWord: '',
       category: -1,
@@ -153,10 +153,10 @@ const FilterBar: FC = observer(() => {
       modifyDate: '',
       sourceType: '-1',
       identityType: '-1',
-    };
+    }
 
-    store.setFilterCondition(condition);
-  };
+    store.setFilterCondition(condition)
+  }
 
   const search = () => {
     const condition = {
@@ -173,10 +173,10 @@ const FilterBar: FC = observer(() => {
       sourceType: sourceType ?? '-1',
       identityType: identityType ?? '-1',
       ...areaInfo,
-    };
+    }
 
-    store.setFilterCondition(condition);
-  };
+    store.setFilterCondition(condition)
+  }
 
   return (
     <div className={styles.filterbar}>
@@ -322,7 +322,7 @@ const FilterBar: FC = observer(() => {
         </Button>
       </div>
     </div>
-  );
-});
+  )
+})
 
-export default FilterBar;
+export default FilterBar

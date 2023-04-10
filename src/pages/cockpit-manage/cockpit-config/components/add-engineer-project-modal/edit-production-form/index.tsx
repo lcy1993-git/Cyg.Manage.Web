@@ -1,34 +1,34 @@
-import CommonTitle from '@/components/common-title';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react';
-import { getHasChooseComponentsProps } from '../../../utils';
-import HasCheckItem from '../../has-check-item';
+import CommonTitle from '@/components/common-title'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react'
+import { getHasChooseComponentsProps } from '../../../utils'
+import HasCheckItem from '../../has-check-item'
 
 interface EditEngineerAndProductionModalProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
-  currentRecord: any;
-  configArray: any[];
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: (componentProps: any) => void
+  currentRecord: any
+  configArray: any[]
 }
 
 const productionComponentPropsArray = [
   { code: 'person', name: '生产负荷(员工)' },
   { code: 'department', name: '生产负荷(部组)' },
   { code: 'company', name: '生产负荷(公司)' },
-];
+]
 
 const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, currentRecord, configArray } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, currentRecord, configArray } = props
+  const [form] = Form.useForm()
 
   const sureEditEvent = () => {
     form.validateFields().then((values) => {
-      const { production } = values;
+      const { production } = values
 
-      setState(false);
+      setState(false)
 
       changeFinishEvent?.({
         name: 'personLoad',
@@ -38,30 +38,30 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
         w: 3,
         h: 11,
         componentProps: production,
-      });
-    });
-  };
+      })
+    })
+  }
 
   useEffect(() => {
     if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {
-      form.setFieldsValue({ production: currentRecord.componentProps });
+      form.setFieldsValue({ production: currentRecord.componentProps })
     }
-  }, [JSON.stringify(currentRecord.componentProps)]);
+  }, [JSON.stringify(currentRecord.componentProps)])
 
   const productionComponentProps = useMemo(() => {
-    const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, 'personLoad');
+    const hasChooseProductionCodeArray = getHasChooseComponentsProps(configArray, 'personLoad')
     const currentProductionProps = productionComponentPropsArray.filter((item) =>
-      currentRecord.componentProps?.includes(item.code),
-    );
+      currentRecord.componentProps?.includes(item.code)
+    )
     const unChooseProductionProps = productionComponentPropsArray.filter(
-      (item) => !currentRecord.componentProps?.includes(item.code),
-    );
+      (item) => !currentRecord.componentProps?.includes(item.code)
+    )
     return {
       hasChooseProductionCodeArray,
       unChooseProductionProps,
       currentProductionProps,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
   const productionStatisticCheckbox = productionComponentProps.currentProductionProps.map(
     (item) => {
@@ -69,23 +69,23 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
         <Checkbox key={item.code} value={item.code}>
           {item.name}
         </Checkbox>
-      );
-    },
-  );
+      )
+    }
+  )
 
   const productionStatisticHasCheck = productionComponentProps.unChooseProductionProps.map(
     (item) => {
       if (productionComponentProps.hasChooseProductionCodeArray.includes(item.code)) {
-        return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
+        return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
       } else {
         return (
           <Checkbox value={item.code} key={item.code}>
             {item.name}
           </Checkbox>
-        );
+        )
       }
-    },
-  );
+    }
+  )
 
   return (
     <Modal
@@ -107,7 +107,7 @@ const EditEngineerAndProductionModal: React.FC<EditEngineerAndProductionModalPro
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditEngineerAndProductionModal;
+export default EditEngineerAndProductionModal

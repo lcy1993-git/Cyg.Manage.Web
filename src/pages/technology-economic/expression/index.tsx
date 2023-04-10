@@ -48,7 +48,7 @@ const Expression: React.FC = observer(() => {
     getTableData()
   }, [])
 
-  const listDataElement = leftList.map((item: any, index) => {
+  const listDataElement = leftList.map((item: any) => {
     return (
       <div
         className={`${styles.listElementItem} ${

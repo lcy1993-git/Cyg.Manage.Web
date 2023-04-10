@@ -1,6 +1,6 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
 
 const MapFieldForm: React.FC = () => {
   return (
@@ -29,7 +29,7 @@ const MapFieldForm: React.FC = () => {
         <Input placeholder="字段描述" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default MapFieldForm;
+export default MapFieldForm

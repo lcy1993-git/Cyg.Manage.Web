@@ -1,8 +1,8 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
 
-const { TextArea } = Input;
+const { TextArea } = Input
 
 const ProjectPermissionForm: React.FC = () => {
   return (
@@ -26,7 +26,7 @@ const ProjectPermissionForm: React.FC = () => {
         <TextArea placeholder="请输入备注" showCount maxLength={100} style={{ width: '1014px' }} />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default ProjectPermissionForm;
+export default ProjectPermissionForm

@@ -1,24 +1,23 @@
-import { Dispatch, SetStateAction } from 'react';
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input } from 'antd';
-import React, { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react'
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input } from 'antd'
+import React, { useState } from 'react'
 
-import styles from './index.less';
-const { Search } = Input;
+const { Search } = Input
 
 interface Props {
-  catalogueId: string;
-  scrolly: number;
-  setResourceItem: Dispatch<SetStateAction<any>>;
-  url: string;
-  rowKey: any;
+  catalogueId: string
+  scrolly: number
+  setResourceItem: Dispatch<SetStateAction<any>>
+  url: string
+  rowKey: any
 }
 
-interface RouteListItem {
-  name: string;
-  id: string;
-}
+// interface RouteListItem {
+//   name: string
+//   id: string
+// }
 
 const columns = [
   {
@@ -27,9 +26,9 @@ const columns = [
     title: '定额编号',
     width: 180,
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.id
-    }
+    },
   },
   {
     dataIndex: 'name',
@@ -37,9 +36,9 @@ const columns = [
     title: '定额名称',
     width: 460,
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.name
-    }
+    },
   },
   {
     dataIndex: 'unit',
@@ -47,9 +46,9 @@ const columns = [
     title: '单位',
     width: 60,
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.unit
-    }
+    },
   },
   {
     dataIndex: 'basePrice',
@@ -57,9 +56,9 @@ const columns = [
     title: '基价(元)',
     width: 100,
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.basePrice
-    }
+    },
   },
   {
     dataIndex: 'laborCost',
@@ -67,9 +66,9 @@ const columns = [
     title: '人工费(元)',
     width: 120,
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.laborCost
-    }
+    },
   },
   {
     dataIndex: 'materialCost',
@@ -77,9 +76,9 @@ const columns = [
     title: '材料费(元)',
     width: 120,
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.materialCost
-    }
+    },
   },
   {
     dataIndex: 'machineryCost',
@@ -87,28 +86,24 @@ const columns = [
     title: '机械费(元)',
     width: 120,
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.machineryCost
-    }
+    },
   },
   {
     dataIndex: 'scaffoldType',
     index: 'scaffoldType',
     title: '脚手架',
     ellipsis: true,
-    render(v: any, record: any){
+    render(v: any, record: any) {
       return record?.quotaItem?.scaffoldType
-    }
+    },
   },
-];
+]
 
-const QuotaLibrary: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, url, rowKey}) => {
-
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-
-
-
+const QuotaLibrary: React.FC<Props> = ({ catalogueId, scrolly, setResourceItem, url, rowKey }) => {
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const searchComponent = () => {
     return (
@@ -121,24 +116,24 @@ const QuotaLibrary: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, u
           placeholder="请输入关键词"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const tableSelectEvent = (data: any) => {
-    setResourceItem(Array.isArray(data) ? data[0] : {});
-  };
+    setResourceItem(Array.isArray(data) ? data[0] : {})
+  }
 
   return (
     <>
@@ -154,16 +149,16 @@ const QuotaLibrary: React.FC<Props> = ({catalogueId, scrolly, setResourceItem, u
         // tableTitle="定额库管理"
         getSelectData={tableSelectEvent}
         type="radio"
-        scroll={{y: scrolly}}
+        scroll={{ y: scrolly }}
         extractParams={{
           keyWord: searchKeyWord,
-          id: catalogueId
+          id: catalogueId,
         }}
         cruxKey="quotaItem"
         requestConditions={catalogueId}
       />
     </>
-  );
-};
+  )
+}
 
-export default QuotaLibrary;
+export default QuotaLibrary

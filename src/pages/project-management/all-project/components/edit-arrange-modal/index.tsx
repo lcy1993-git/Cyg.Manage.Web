@@ -5,12 +5,10 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import EditArrangeForm from '../edit-arrange-form'
 import {
   editArrange,
-  getAllotUsers,
+  // getAllotUsers,
   getProjectInfo,
 } from '@/services/project-management/all-project'
 import { useRequest } from 'ahooks'
-import { Tabs } from 'antd'
-import SelectAddListForm from '../select-add-list-form'
 import { UserInfo } from '@/services/project-management/select-add-list-form'
 
 interface EditArrangeProps {
@@ -23,15 +21,13 @@ interface EditArrangeProps {
   dataSourceType?: number
 }
 
-const { TabPane } = Tabs
-
 const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState(false)
   const [form] = Form.useForm()
 
-  const [arrangePeople, setArrangePeople] = useState<UserInfo[]>([]) //添加的外审人员列表
-  const [initPeople, setInitPeople] = useState<UserInfo[]>([])
+  const [arrangePeople] = useState<UserInfo[]>([]) //添加的外审人员列表
+  // const [initPeople, setInitPeople] = useState<UserInfo[]>([])
 
   const { projectIds, changeFinishEvent, allotCompanyId, canEdit, dataSourceType } = props
   const {
@@ -105,18 +101,18 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
     },
   })
 
-  const { run: getOuterPeople } = useRequest(getAllotUsers, {
-    manual: true,
-    onSuccess: (res) => {
-      const handleData = res?.map((item: any) => {
-        return {
-          value: item.userId,
-          text: item.userNameText,
-        }
-      })
-      setInitPeople(handleData ?? [])
-    },
-  })
+  // const { run: getOuterPeople } = useRequest(getAllotUsers, {
+  //   manual: true,
+  //   onSuccess: (res) => {
+  //     const handleData = res?.map((item: any) => {
+  //       return {
+  //         value: item.userId,
+  //         text: item.userNameText,
+  //       }
+  //     })
+  //     setInitPeople(handleData ?? [])
+  //   },
+  // })
 
   const edit = () => {
     form.validateFields().then(async (value) => {
@@ -187,7 +183,6 @@ const EditArrangeModal: React.FC<EditArrangeProps> = (props) => {
     if (projectIds.length === 1) {
       if (state) {
         run(projectIds[0])
-        getOuterPeople(projectIds[0], 6)
       }
     }
   }, [JSON.stringify(projectIds), state])

@@ -1,16 +1,16 @@
-import ScrollListQuee from '@/components/scroll-list-quee';
-import type { RefreshDataType } from '@/services/index';
-import { useRequest } from 'ahooks';
-import moment from 'moment';
-import { useState } from 'react';
-import ProjectItem from './components/project-Item';
-import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store';
-import { getProjectOperateLogs } from '@/services/project-management/project-statistics-v2';
+import ScrollListQuee from '@/components/scroll-list-quee'
+import type { RefreshDataType } from '@/services/index'
+import { useRequest } from 'ahooks'
+import moment from 'moment'
+import { useState } from 'react'
+import ProjectItem from './components/project-Item'
+import { useProjectAllAreaStatisticsStore } from '@/pages/project-management/project-all-area-statistics/store'
+import { getProjectOperateLogs } from '@/services/project-management/project-statistics-v2'
 
 const ProjectInfoRefreshList = () => {
-  const [listData, setListData] = useState<RefreshDataType[]>([]);
+  const [listData, setListData] = useState<RefreshDataType[]>([])
 
-  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const { companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore()
   // const [refreshData, setrefreshData] = useState<RefreshDataType[]>([]);
   // const ref = useRef<HTMLDivElement>(null);
   // const size = useSize(ref);
@@ -59,17 +59,17 @@ const ProjectInfoRefreshList = () => {
         // }
         if (data && Array.isArray(data)) {
           if (data.length >= 30) {
-            setListData([...data.slice(-30)]);
+            setListData([...data.slice(-30)])
           } else {
-            setListData([...data]);
+            setListData([...data])
           }
         }
       },
       onError: () => {
-        cancel();
+        cancel()
       },
-    },
-  );
+    }
+  )
 
   // useEffect(() => {
   //   run();
@@ -106,10 +106,10 @@ const ProjectInfoRefreshList = () => {
             operationCategory={item.operationCategory}
             date={moment(item.date).format('MM-DD HH:mm')}
           />
-        ));
+        ))
       }}
     </ScrollListQuee>
-  ) : null;
-};
+  ) : null
+}
 
-export default ProjectInfoRefreshList;
+export default ProjectInfoRefreshList

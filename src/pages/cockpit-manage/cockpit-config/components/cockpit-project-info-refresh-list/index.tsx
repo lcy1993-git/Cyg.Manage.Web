@@ -1,14 +1,14 @@
-import React, { useContext } from 'react';
-import { CockpitConfigContext } from '../../context';
-import ProjetctRefreshList from '@/pages/index/components/project-info-refresh-list';
-import ChartBox from '@/pages/index/components/chart-box';
+import React, { useContext } from 'react'
+import { CockpitConfigContext } from '../../context'
+import ProjetctRefreshList from '@/pages/index/components/project-info-refresh-list'
+import ChartBox from '@/pages/index/components/chart-box'
 
 interface CockpitProjectInfoFreshListProps {
-  componentProps?: string[];
+  componentProps?: string[]
 }
 
 const CockpitProjectInfoFreshList: React.FC<CockpitProjectInfoFreshListProps> = (props) => {
-  const { currentAreaInfo } = useContext(CockpitConfigContext);
+  const { currentAreaInfo } = useContext(CockpitConfigContext)
 
   return (
     <>
@@ -16,7 +16,7 @@ const CockpitProjectInfoFreshList: React.FC<CockpitProjectInfoFreshListProps> = 
         <ProjetctRefreshList currentAreaInfo={currentAreaInfo} {...props} />
       </ChartBox>
     </>
-  );
-};
+  )
+}
 
-export default CockpitProjectInfoFreshList;
+export default CockpitProjectInfoFreshList

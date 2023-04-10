@@ -1,18 +1,13 @@
-import React from 'react'
 import { MenuUnfoldOutlined } from '@ant-design/icons'
 import { useContainer } from '../../result-page/mobx-store'
 import styles from './index.less'
 import { observer } from 'mobx-react-lite'
-interface Props {
-  onlocationClick: () => void
-}
 
 const Divider = () => {
   return <span className={styles.divider}> | </span>
 }
 
-const Footer = observer((props: Props) => {
-  const { onlocationClick } = props
+const Footer = observer(() => {
   const store = useContainer()
   const { vState } = store
   const { visibleLeftSidebar } = vState

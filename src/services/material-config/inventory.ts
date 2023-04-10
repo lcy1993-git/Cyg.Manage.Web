@@ -1,19 +1,19 @@
 import request from '@/utils/request'
 import { cyRequest, baseUrl } from '../common'
 
-interface WareHouseParams {
-  province: string
-  name: string
-  version: string
-  remark: string
-  companyId: string
-}
+// interface WareHouseParams {
+//   province: string
+//   name: string
+//   version: string
+//   remark: string
+//   companyId: string
+// }
 
-interface ItemDetailData extends WareHouseParams {
-  //利库编号
-  id: string
-  overviewId: string
-}
+// interface ItemDetailData extends WareHouseParams {
+//   //利库编号
+//   id: string
+//   overviewId: string
+// }
 
 export enum CreateMethod {
   '自动' = 1,

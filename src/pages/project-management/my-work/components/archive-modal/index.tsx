@@ -16,7 +16,7 @@ interface ArchiveProps {
 
 const ArchiveModal: React.FC<ArchiveProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const [requestLoading, setRequestLoading] = useState(false)
+  const [requestLoading] = useState(false)
   const [lineId, setLineId] = useState<string>()
   const [layerType, setLayerType] = useState<number>()
 

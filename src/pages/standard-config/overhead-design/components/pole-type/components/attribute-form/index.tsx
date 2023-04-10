@@ -6,9 +6,7 @@ interface AttributeParams {
   resourceLibId: string
 }
 
-const ModuleAttributeForm: React.FC<AttributeParams> = (props) => {
-  const { resourceLibId } = props
-
+const ModuleAttributeForm: React.FC<AttributeParams> = () => {
   return (
     <>
       <CyFormItem label="高度(m)" name="height" labelWidth={111} align="right">

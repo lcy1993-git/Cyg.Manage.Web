@@ -6040,8 +6040,8 @@ exports.prepareContent = function(name, inputData, isBinary, isOptimizedBinarySt
 
     // if inputData is already a promise, this flatten it.
     var promise = external.Promise.resolve(inputData).then(function(data) {
-        
-        
+
+
         var isBlob = support.blob && (data instanceof Blob || ['[object File]', '[object Blob]'].indexOf(Object.prototype.toString.call(data)) !== -1);
 
         if (isBlob && typeof FileReader !== "undefined") {
@@ -18659,9 +18659,6 @@ function (_super) {
       }
 
       cy_n = cy_n + toRowOff - y_n;
-      console.log(defaultColWidth, colhidden, columnlen);
-      console.log(fromCol, this.columnWidthSet[fromCol], fromColOff);
-      console.log(toCol, this.columnWidthSet[toCol], toColOff, JSON.stringify(this.columnWidthSet));
       imageObject.originWidth = cx_n;
       imageObject.originHeight = cy_n;
       imageObject.crop.height = cy_n;
@@ -18671,8 +18668,6 @@ function (_super) {
       imageObject["default"].top = y_n;
       imageObject["default"].width = cx_n;
     }
-
-    console.log(this.columnWidthSet, this.rowHeightSet);
   };
   /**
   * @return drawing file string
@@ -20024,8 +20019,8 @@ function getColor(color, styles, type) {
           // }
           // else if((type=="t" || type=="b") && clrAttrList.val=="window"){
           //     bg = null;
-          // }                    
-          // else 
+          // }
+          // else
           if (clrAttrList.lastClr != null) {
             bg = "#" + clrAttrList.lastClr;
           } else if (clrAttrList.val != null) {
@@ -20623,8 +20618,8 @@ exports.UDOC.C = {
     var r = 255 + c * (-4.387332384609988 * c + 54.48615194189176 * m + 18.82290502165302 * y + 212.25662451639585 * k + -285.2331026137004) + m * (1.7149763477362134 * m - 5.6096736904047315 * y + -17.873870861415444 * k - 5.497006427196366) + y * (-2.5217340131683033 * y - 21.248923337353073 * k + 17.5119270841813) + k * (-21.86122147463605 * k - 189.48180835922747);
     var g = 255 + c * (8.841041422036149 * c + 60.118027045597366 * m + 6.871425592049007 * y + 31.159100130055922 * k + -79.2970844816548) + m * (-15.310361306967817 * m + 17.575251261109482 * y + 131.35250912493976 * k - 190.9453302588951) + y * (4.444339102852739 * y + 9.8632861493405 * k - 24.86741582555878) + k * (-20.737325471181034 * k - 187.80453709719578);
     var b = 255 + c * (0.8842522430003296 * c + 8.078677503112928 * m + 30.89978309703729 * y - 0.23883238689178934 * k + -14.183576799673286) + m * (10.49593273432072 * m + 63.02378494754052 * y + 50.606957656360734 * k - 112.23884253719248) + y * (0.03296041114873217 * y + 115.60384449646641 * k + -193.58209356861505) + k * (-22.33816807309886 * k - 180.12613974708367);
-    return [Math.max(0, Math.min(1, r / 255)), Math.max(0, Math.min(1, g / 255)), Math.max(0, Math.min(1, b / 255))]; //var iK = 1-c[3];  
-    //return [(1-c[0])*iK, (1-c[1])*iK, (1-c[2])*iK];  
+    return [Math.max(0, Math.min(1, r / 255)), Math.max(0, Math.min(1, g / 255)), Math.max(0, Math.min(1, b / 255))]; //var iK = 1-c[3];
+    //return [(1-c[0])*iK, (1-c[1])*iK, (1-c[2])*iK];
   },
   labToRgb: function labToRgb(lab) {
     var k = 903.3,
@@ -20870,7 +20865,7 @@ exports.FromEMF.Parse = function (buff, genv) {
             obj.stl = rU32(buff, loff);
             loff += 4;
             obj.wid = rU32(buff, loff);
-            loff += 4; //obj.stl = rU32(buff, loff);  
+            loff += 4; //obj.stl = rU32(buff, loff);
 
             loff += 4;
           } else {
@@ -21183,7 +21178,7 @@ exports.FromEMF.Parse = function (buff, genv) {
           genv.PutImage(gst, img, w, h);
           gst.ctm = ctm;
         } else {
-          console.log(fnm, siz);
+          console.error(fnm, siz);
         }
 
     if (obj != null) tab[oid] = obj;

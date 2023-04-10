@@ -14,20 +14,20 @@ export interface AdditionMaterialProps {
 
 //@ts-ignore
 const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
-const stateMenu = {
-  0: '无',
-  1: '原有',
-  2: '新建',
-  3: '利旧',
-  4: '拆除',
-}
+// const stateMenu = {
+//   0: '无',
+//   1: '原有',
+//   2: '新建',
+//   3: '利旧',
+//   4: '拆除',
+// }
 
-const kvEnum = {
-  0: '无',
-  1: '220V',
-  2: '380V',
-  3: '10kV',
-}
+// const kvEnum = {
+//   0: '无',
+//   1: '220V',
+//   2: '380V',
+//   3: '10kV',
+// }
 
 export const columns = [
   {

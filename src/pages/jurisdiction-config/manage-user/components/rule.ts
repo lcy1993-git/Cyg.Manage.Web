@@ -16,6 +16,7 @@ export default {
     },
   ],
   userType: [{ required: true, message: '请选择账号类型' }],
+  adminCategory: [{ required: true, message: '请选择类别' }],
   company: [{ required: true, message: '请选择公司' }],
   email: [
     {
@@ -30,4 +31,4 @@ export default {
       message: '请输入正确的手机号码',
     },
   ],
-};
+}

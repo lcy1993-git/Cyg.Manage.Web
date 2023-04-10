@@ -13,7 +13,6 @@ import {
 } from '@/services/resource-config/cable-well'
 import { useRequest } from 'ahooks'
 // import UrlSelect from '@/components/url-select';
-
 import ModalConfirm from '@/components/modal-confirm'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import AddComponentDetail from '@/pages/standard-config/component/components/detail-table/add-form'
@@ -46,7 +45,6 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
   // useEffect(() => {
   //   search();
   // }, [cableWellId]);
-
   const searchComponent = () => {
     return (
       <div>

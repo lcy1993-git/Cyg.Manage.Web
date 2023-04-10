@@ -1,38 +1,38 @@
 import { Tooltip } from 'antd'
-import Map from 'ol/Map'
-import { useCallback, useState } from 'react'
+// import Map from 'ol/Map'
+// import { useCallback, useState } from 'react'
 import Iconfont from '../../history-grid/components/iconfont'
-import { useHistoryGridContext } from '../../history-grid/store'
+// import { useHistoryGridContext } from '../../history-grid/store'
 import { useMyContext } from '../Context'
 import FlowLayer from './FlowLayer'
 const ChangMapUrl = () => {
-  const { UIStatus, dispatch, historyDataSource, preDesignDataSource } = useHistoryGridContext()
+  // const { UIStatus, dispatch, historyDataSource, preDesignDataSource } = useHistoryGridContext()
   // 图层切换模态框类型
-  const [sourceType, setSourceType] = useState<string | number>('')
-  const [map, setMap] = useState<Map | null>(null)
-  const [street, setStreet] = useState(0)
-  const [satellite, setSatellite] = useState(0)
+  // const [sourceType, setSourceType] = useState<string | number>('')
+  // const [map, setMap] = useState<Map | null>(null)
+  // const [street, setStreet] = useState(0)
+  // const [satellite, setSatellite] = useState(0)
 
-  const prop = { street, setStreet, satellite, setSatellite }
+  // const prop = { street, setStreet, satellite, setSatellite }
   const { drawToolbarVisible } = useMyContext()
 
-  const onClick = useCallback(
-    (key: string) => {
-      const payload = { ...UIStatus, [key]: !UIStatus[key] }
-      dispatch({ type: 'changeUIStatus', payload })
-    },
-    [dispatch, UIStatus]
-  )
+  // const onClick = useCallback(
+  //   (key: string) => {
+  //     const payload = { ...UIStatus, [key]: !UIStatus[key] }
+  //     dispatch({ type: 'changeUIStatus', payload })
+  //   },
+  //   [dispatch, UIStatus]
+  // )
 
-  const onMapTypeChange = useCallback(
-    (type) => {
-      dispatch({
-        type: 'changeUIStatus',
-        payload: { ...UIStatus, mapType: type },
-      })
-    },
-    [UIStatus, dispatch]
-  )
+  // const onMapTypeChange = useCallback(
+  //   (type) => {
+  //     dispatch({
+  //       type: 'changeUIStatus',
+  //       payload: { ...UIStatus, mapType: type },
+  //     })
+  //   },
+  //   [UIStatus, dispatch]
+  // )
 
   return (
     <FlowLayer className="select-none" bottom={0} right={15}>

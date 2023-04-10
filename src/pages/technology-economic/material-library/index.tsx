@@ -28,13 +28,13 @@ const { Search } = Input
 const columns = [
   {
     dataIndex: 'name',
-    key: 'name',
+
     title: '名称',
     width: 300,
   },
   {
     dataIndex: 'quotaLibrarys',
-    key: 'quotaLibrarys',
+
     title: '已关联定额库',
     render: (val: any[]) => {
       return val.join(' | ')
@@ -42,7 +42,7 @@ const columns = [
   },
   {
     dataIndex: 'publishDate',
-    key: 'publishDate',
+
     title: '发布时间',
     render: (text: any) => {
       return moment(text).format('YYYY/MM/DD')
@@ -50,17 +50,17 @@ const columns = [
   },
   {
     dataIndex: 'publishOrg',
-    key: 'publishOrg',
+
     title: '发布机构',
   },
   {
     dataIndex: 'year',
-    key: 'year',
+
     title: '价格年度',
   },
   {
     dataIndex: 'industryTypeText',
-    key: 'industryTypeText',
+
     title: '适用行业',
   },
   // {
@@ -80,7 +80,7 @@ const columns = [
   // },
   {
     dataIndex: 'remark',
-    key: 'remark',
+
     title: '备注',
     width: 400,
   },

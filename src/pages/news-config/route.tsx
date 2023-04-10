@@ -1,11 +1,11 @@
-import Loadable from 'react-loadable';
-import Loading from '@ant-design/pro-layout/es/PageLoading';
+import Loadable from 'react-loadable'
+import Loading from '@ant-design/pro-layout/es/PageLoading'
 
 const ReviewManage = Loadable({
   loader: () => import('@/pages/news-config/review-manage'),
   loading: Loading,
   delay: 150,
-});
+})
 
 export default [
   {
@@ -13,4 +13,4 @@ export default [
     path: '/news-config/review-manage',
     component: <ReviewManage />,
   },
-];
+]

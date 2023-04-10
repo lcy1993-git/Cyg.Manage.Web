@@ -2,19 +2,12 @@ import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import { ElementTypes, LayerTypes } from '@/services/backstage-config/visual-config'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { Col, Input, Row, Select, Tooltip } from 'antd'
-import React, { useState } from 'react'
+import { Col, Input, Row, Tooltip } from 'antd'
+import React from 'react'
 
 interface VisualConfigProps {
   form?: any
 }
-
-const { Option } = Select
-
-const OPTIONS = [
-  { label: '查询全部', value: '-1' },
-  { label: '不查询', value: '0' },
-]
 
 const VisualConfigForm: React.FC<VisualConfigProps> = (props) => {
   const { form } = props

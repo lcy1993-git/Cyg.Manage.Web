@@ -52,7 +52,6 @@ const ExternalListModal: React.FC<GetGroupUserProps> = (props) => {
   const [confirmLoading, setConfirmLoading] = useState<boolean>(false)
   const [backToLoading, setBackToLoading] = useState<boolean>(false)
   // const [requestLoading, setRequestLoading] = useState(false);
-
   const [newStepData, setNewStepData] = useState<any[]>([])
 
   const [form] = Form.useForm()

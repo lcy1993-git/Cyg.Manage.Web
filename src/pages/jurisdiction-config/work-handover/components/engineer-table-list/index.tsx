@@ -1,22 +1,21 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
-import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Spin, Tooltip } from 'antd';
-import { useBoolean, useRequest } from 'ahooks';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons'
+import { Checkbox, Spin, Tooltip } from 'antd'
+import { useRequest } from 'ahooks'
 
-import styles from './index.less';
-import moment from 'moment';
-import EmptyTip from '@/components/empty-tip';
+import styles from './index.less'
+import moment from 'moment'
+import EmptyTip from '@/components/empty-tip'
 
-import uuid from 'node-uuid';
-import CyTag from '@/components/cy-tag';
-import { getProjectsInfo } from '@/services/personnel-config/work-handover';
+import uuid from 'node-uuid'
+import CyTag from '@/components/cy-tag'
+import { getProjectsInfo } from '@/services/personnel-config/work-handover'
 
 export interface AddProjectValue {
-  engineerId: string;
-  areaId: string;
-  company: string;
-  companyName: string;
+  engineerId: string
+  areaId: string
+  company: string
+  companyName: string
 }
 
 const colorMap = {
@@ -24,38 +23,38 @@ const colorMap = {
   委托: 'blue',
   共享: 'yellow',
   执行: 'yellow',
-};
+}
 
 interface EngineerTableItemProps {
-  userId: string;
-  category: number;
-  onChange?: (checkedValue: TableItemCheckedInfo) => void;
-  setEngineerIds?: Dispatch<SetStateAction<string[]>>;
-  getClickProjectId?: (clickProjectId: string) => void;
-  left?: number;
-  isOverflow?: boolean;
-  getEngineerData?: Dispatch<SetStateAction<any[]>>;
-  checkboxSet?: boolean;
-  isFresh?: boolean;
-  setIsFresh?: Dispatch<SetStateAction<boolean>>;
-  fieldFlag?: boolean;
-  getProjectIds?: Dispatch<SetStateAction<string[]>>;
-  emitAll: { flag: boolean; state: number };
-  setCheckAllisChecked: any;
-  setCheckAllisIndeterminate: any;
-  doneFlag?: boolean;
+  userId: string
+  category: number
+  onChange?: (checkedValue: TableItemCheckedInfo) => void
+  setEngineerIds?: Dispatch<SetStateAction<string[]>>
+  getClickProjectId?: (clickProjectId: string) => void
+  left?: number
+  isOverflow?: boolean
+  getEngineerData?: Dispatch<SetStateAction<any[]>>
+  checkboxSet?: boolean
+  isFresh?: boolean
+  setIsFresh?: Dispatch<SetStateAction<boolean>>
+  fieldFlag?: boolean
+  getProjectIds?: Dispatch<SetStateAction<string[]>>
+  emitAll: { flag: boolean; state: number }
+  setCheckAllisChecked: any
+  setCheckAllisIndeterminate: any
+  doneFlag?: boolean
 }
 interface TableCheckedItemProjectInfo {
-  id: string;
-  isAllChecked: boolean;
-  status?: any;
-  name?: any;
-  dataSourceType?: number[];
+  id: string
+  isAllChecked: boolean
+  status?: any
+  name?: any
+  dataSourceType?: number[]
 }
 
 export interface TableItemCheckedInfo {
-  projectInfo: TableCheckedItemProjectInfo;
-  checkedArray: string[];
+  projectInfo: TableCheckedItemProjectInfo
+  checkedArray: string[]
 }
 
 const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
@@ -63,7 +62,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     userId,
     category,
     checkboxSet,
-    onChange,
     getClickProjectId,
     setEngineerIds,
     left,
@@ -77,166 +75,167 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
     emitAll,
     setCheckAllisChecked,
     setCheckAllisIndeterminate,
-  } = props;
+  } = props
 
-  const [checkedProjectList, setCheckedProjectList] = useState<any[]>([]);
+  const [checkedProjectList, setCheckedProjectList] = useState<any[]>([])
 
-  const [allNum, setAllNum] = React.useState(0);
-  const tableRef = useRef<HTMLDivElement>(null);
+  const [allNum, setAllNum] = React.useState(0)
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const [handleTableData, setHandleTableData] = useState([]);
+  const [handleTableData, setHandleTableData] = useState([])
 
-  const [checkedNewList, setCheckedNewList] = React.useState<any[]>([]);
+  const [checkedNewList, setCheckedNewList] = React.useState<any[]>([])
   // 选中所有项目id数组
 
   const allProjectList = useMemo(() => {
-    return handleTableData.map((item: any) => item.id);
-  }, [JSON.stringify(handleTableData)]);
+    return handleTableData.map((item: any) => item.id)
+  }, [JSON.stringify(handleTableData)])
 
   // 所有选中的Id数组
   const allOptions = useMemo(() => {
     return handleTableData.map((item) => {
       const checkedList = item?.projects?.map((e: any) => {
-        return e?.id;
-      });
-      return checkedList;
-    });
-  }, [handleTableData]);
+        return e?.id
+      })
+      return checkedList
+    })
+  }, [handleTableData])
 
   // 根据选中的列表变化动态改变全选状态
   useEffect(() => {
     if (category === 1) {
-      const projectLen = checkedProjectList.length;
+      const projectLen = checkedProjectList.length
 
       if (projectLen === 0) {
-        setCheckAllisIndeterminate(false);
-        setCheckAllisChecked(false);
+        setCheckAllisIndeterminate(false)
+        setCheckAllisChecked(false)
       } else if (projectLen < allProjectList.length) {
-        setCheckAllisChecked(false);
-        setCheckAllisIndeterminate(true);
+        setCheckAllisChecked(false)
+        setCheckAllisIndeterminate(true)
       } else if (projectLen === allProjectList.length) {
-        setCheckAllisChecked(true);
-        setCheckAllisIndeterminate(false);
+        setCheckAllisChecked(true)
+        setCheckAllisIndeterminate(false)
       }
     } else {
       const len = checkedNewList?.reduce((pre, val) => {
-        return pre + val?.checkedList?.length;
-      }, 0);
+        return pre + val?.checkedList?.length
+      }, 0)
 
       if (len === 0) {
-        setCheckAllisIndeterminate(false);
-        setCheckAllisChecked(false);
+        setCheckAllisIndeterminate(false)
+        setCheckAllisChecked(false)
       } else if (len < allNum) {
-        setCheckAllisChecked(false);
-        setCheckAllisIndeterminate(true);
+        setCheckAllisChecked(false)
+        setCheckAllisIndeterminate(true)
       } else if (len === allNum) {
-        setCheckAllisChecked(true);
-        setCheckAllisIndeterminate(false);
+        setCheckAllisChecked(true)
+        setCheckAllisIndeterminate(false)
       }
     }
-  }, [JSON.stringify(checkedNewList), JSON.stringify(checkedProjectList)]);
+  }, [JSON.stringify(checkedNewList), JSON.stringify(checkedProjectList)])
 
-  const { data: tableData, run, loading } = useRequest(
-    () => getProjectsInfo({ userId, category }),
-    {
-      ready: !!userId,
-      onSuccess: () => {
-        getEngineerData?.(tableData);
-        setHandleTableData(
-          tableData?.map((item: any) => {
-            const projects = JSON.parse(JSON.stringify(item.projects))?.map((ite: any) => {
-              return { ...ite, isChecked: false };
-            });
-            return (item = { ...item, isChecked: false, isFold: false, projects });
-          }) ?? [],
-        );
-        setCheckedNewList(
-          tableData.map((item: any) => {
-            return {
-              isChecked: false,
-              checkedList: [],
-              indeterminate: false,
-            };
-          }),
-        );
-        setAllNum(
-          tableData.reduce((pre: any, val: any) => {
-            return pre + val.projects.length;
-          }, 0),
-        );
-      },
+  const {
+    data: tableData,
+    run,
+    loading,
+  } = useRequest(() => getProjectsInfo({ userId, category }), {
+    ready: !!userId,
+    onSuccess: () => {
+      getEngineerData?.(tableData)
+      setHandleTableData(
+        tableData?.map((item: any) => {
+          const projects = JSON.parse(JSON.stringify(item.projects))?.map((ite: any) => {
+            return { ...ite, isChecked: false }
+          })
+          return (item = { ...item, isChecked: false, isFold: false, projects })
+        }) ?? []
+      )
+      setCheckedNewList(
+        tableData.map(() => {
+          return {
+            isChecked: false,
+            checkedList: [],
+            indeterminate: false,
+          }
+        })
+      )
+      setAllNum(
+        tableData.reduce((pre: any, val: any) => {
+          return pre + val.projects.length
+        }, 0)
+      )
     },
-  );
+  })
 
   useEffect(() => {
     if (isFresh) {
-      run();
-      setEngineerIds?.([]);
-      setCheckedProjectList([]);
-      setIsFresh?.(false);
+      run()
+      setEngineerIds?.([])
+      setCheckedProjectList([])
+      setIsFresh?.(false)
     }
-  }, [isFresh]);
+  }, [isFresh])
 
   // 当工程组复选框改变时
   const checkBigboxChange = (i: number, checked: boolean) => {
-    const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList));
-    cloneCheckedList[i].isChecked = checked;
-    cloneCheckedList[i].checkedList = checked ? allOptions[i] : [];
-    cloneCheckedList[i].indeterminate = false;
+    const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList))
+    cloneCheckedList[i].isChecked = checked
+    cloneCheckedList[i].checkedList = checked ? allOptions[i] : []
+    cloneCheckedList[i].indeterminate = false
 
-    setCheckedNewList(cloneCheckedList);
-  };
+    setCheckedNewList(cloneCheckedList)
+  }
 
   // 当项目复选框点击时
   const onCheckedChange = (i: number, id: string, checked: boolean) => {
-    const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList));
-    const list = [...cloneCheckedList[i].checkedList];
-    const allList = allOptions[i];
+    const cloneCheckedList = JSON.parse(JSON.stringify(checkedNewList))
+    const list = [...cloneCheckedList[i].checkedList]
+    const allList = allOptions[i]
     if (checked) {
-      list.push(id);
+      list.push(id)
       if (list.length === allList.length) {
-        cloneCheckedList[i].isChecked = true;
+        cloneCheckedList[i].isChecked = true
       }
     } else {
-      const index = list.findIndex((e) => e === id);
-      index >= 0 && list.splice(index, 1);
+      const index = list.findIndex((e) => e === id)
+      index >= 0 && list.splice(index, 1)
       if (list.length === 0) {
-        cloneCheckedList[i].isChecked = false;
+        cloneCheckedList[i].isChecked = false
       }
     }
     if (list.length > 0 && list.length < allList.length) {
-      cloneCheckedList[i].indeterminate = true;
+      cloneCheckedList[i].indeterminate = true
     } else {
-      cloneCheckedList[i].indeterminate = false;
+      cloneCheckedList[i].indeterminate = false
     }
 
-    cloneCheckedList[i].checkedList = list;
-    setCheckedNewList(cloneCheckedList);
-  };
+    cloneCheckedList[i].checkedList = list
+    setCheckedNewList(cloneCheckedList)
+  }
 
   // 获取选中的id
   const getCurrentCheckedIds = () => {
     return checkedNewList?.reduce((pre: any, val: any) => {
-      return [...pre, ...val?.checkedList];
-    }, []);
-  };
+      return [...pre, ...val?.checkedList]
+    }, [])
+  }
 
   // 根据状态修改全选状态
   useEffect(() => {
-    const flag = category === 1;
+    const flag = category === 1
 
     if (emitAll.state === 1) {
       flag
         ? setCheckedProjectList([])
         : setCheckedNewList(
-            tableData?.map((item: any) => {
+            tableData?.map(() => {
               return {
                 isChecked: false,
                 checkedList: [],
                 indeterminate: false,
-              };
-            }),
-          );
+              }
+            })
+          )
     } else if (emitAll.state === 2) {
       flag
         ? setCheckedProjectList(allProjectList)
@@ -246,19 +245,19 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                 isChecked: true,
                 checkedList: item,
                 indeterminate: false,
-              };
-            }),
-          );
+              }
+            })
+          )
     }
-  }, [JSON.stringify(emitAll)]);
+  }, [JSON.stringify(emitAll)])
 
   useEffect(() => {
-    getProjectIds?.(getCurrentCheckedIds());
-  }, [JSON.stringify(checkedNewList)]);
+    getProjectIds?.(getCurrentCheckedIds())
+  }, [JSON.stringify(checkedNewList)])
 
   useEffect(() => {
-    setEngineerIds?.(checkedProjectList);
-  }, [JSON.stringify(checkedProjectList)]);
+    setEngineerIds?.(checkedProjectList)
+  }, [JSON.stringify(checkedProjectList)])
 
   //列表字段
   const listColumns = fieldFlag
@@ -278,7 +277,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
               >
                 {record.name}
               </u>
-            );
+            )
           },
           ellipsis: true,
         },
@@ -288,19 +287,19 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 200,
           ellipsis: true,
           render: (record: any) => {
-            const { startTime, endTime } = record;
+            const { startTime, endTime } = record
             if (startTime && endTime) {
               return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-                'YYYY-MM-DD',
-              )}`;
+                'YYYY-MM-DD'
+              )}`
             }
             if (startTime && !endTime) {
-              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`
             }
             if (!startTime && endTime) {
-              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`
             }
-            return '未设置起止时间';
+            return '未设置起止时间'
           },
         },
         {
@@ -309,7 +308,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.majorCategoryText;
+            return record.majorCategoryText
           },
         },
         {
@@ -318,7 +317,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.stageText;
+            return record.stageText
           },
         },
         {
@@ -327,7 +326,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排'
           },
         },
         {
@@ -336,7 +335,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.designUser ? `${record.designUser.value}` : '';
+            return record.designUser ? `${record.designUser.value}` : ''
           },
         },
         {
@@ -344,7 +343,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           dataIndex: 'sources',
           width: 140,
           render: (record: any) => {
-            const { sources = [] } = record;
+            const { sources = [] } = record
             return sources?.map((item: any) => {
               return (
                 <span key={uuid.v1()}>
@@ -352,8 +351,8 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                     <span>{item}</span>
                   </CyTag>
                 </span>
-              );
-            });
+              )
+            })
           },
         },
         {
@@ -361,7 +360,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           dataIndex: 'identitys',
           width: 200,
           render: (record: any) => {
-            const { identitys = [] } = record;
+            const { identitys = [] } = record
             return identitys
               ?.filter((item: any) => item.text)
               .map((item: any) => {
@@ -371,8 +370,8 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                       {item.text}
                     </CyTag>
                   </span>
-                );
-              });
+                )
+              })
           },
         },
         {
@@ -380,19 +379,12 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           dataIndex: 'status',
           width: 180,
           render: (record: any) => {
-            const { stateInfo, allot, identitys } = record;
-            let arrangeType: any = null;
-            let allotCompanyId: any = null;
-
-            if (allot) {
-              arrangeType = allot.allotType;
-              allotCompanyId = allot.allotCompanyGroup;
-            }
+            const { stateInfo } = record
             return (
               <>
                 <span>{stateInfo?.statusText}</span>
               </>
-            );
+            )
           },
         },
       ]
@@ -412,7 +404,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
               >
                 {record.name}
               </u>
-            );
+            )
           },
           ellipsis: true,
         },
@@ -422,19 +414,19 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 200,
           ellipsis: true,
           render: (record: any) => {
-            const { startTime, endTime } = record;
+            const { startTime, endTime } = record
             if (startTime && endTime) {
               return `${moment(startTime).format('YYYY-MM-DD')} 至 ${moment(endTime).format(
-                'YYYY-MM-DD',
-              )}`;
+                'YYYY-MM-DD'
+              )}`
             }
             if (startTime && !endTime) {
-              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+              return `开始时间: ${moment(startTime).format('YYYY-MM-DD')}`
             }
             if (!startTime && endTime) {
-              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`;
+              return `截止时间: ${moment(startTime).format('YYYY-MM-DD')}`
             }
-            return '未设置起止时间';
+            return '未设置起止时间'
           },
         },
         {
@@ -443,7 +435,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.majorCategoryText;
+            return record.majorCategoryText
           },
         },
         {
@@ -452,7 +444,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.stageText;
+            return record.stageText
           },
         },
         {
@@ -461,7 +453,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排';
+            return record.surveyUser ? `${record.surveyUser.value}` : '无需安排'
           },
         },
         {
@@ -470,38 +462,18 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           width: 150,
           ellipsis: true,
           render: (record: any) => {
-            return record.designUser ? `${record.designUser.value}` : '';
+            return record.designUser ? `${record.designUser.value}` : ''
           },
         },
-        {
-          title: '项目状态',
-          dataIndex: 'status',
-          width: 180,
-          render: (record: any) => {
-            const { stateInfo, allot, identitys } = record;
-            let arrangeType: any = null;
-            let allotCompanyId: any = null;
-
-            if (allot) {
-              arrangeType = allot.allotType;
-              allotCompanyId = allot.allotCompanyGroup;
-            }
-            return (
-              <>
-                <span>{stateInfo?.statusText}</span>
-              </>
-            );
-          },
-        },
-      ];
+      ]
 
   const columnsWidth = listColumns.reduce((sum, item) => {
-    return sum + (item.width ? item.width : 100);
-  }, 0);
+    return sum + (item.width ? item.width : 100)
+  }, 0)
 
   const projectNameClickEvent = (projectId: string) => {
-    getClickProjectId?.(projectId);
-  };
+    getClickProjectId?.(projectId)
+  }
 
   const theadElement = useMemo(() => {
     return listColumns.map((item) => {
@@ -516,31 +488,31 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
         >
           {item.title}
         </div>
-      );
-    });
-  }, [JSON.stringify(tableData)]);
+      )
+    })
+  }, [JSON.stringify(tableData)])
 
   // 当项目工程点击时
   const checkProjectChange = (i: number, checked: boolean) => {
-    const cloneCheckedList = [...checkedProjectList];
+    const cloneCheckedList = [...checkedProjectList]
 
     if (checked) {
-      cloneCheckedList.push(allProjectList?.[i]);
+      cloneCheckedList.push(allProjectList?.[i])
     } else {
-      const index = cloneCheckedList.findIndex((item) => item === allProjectList?.[i]);
-      cloneCheckedList.splice(index, 1);
+      const index = cloneCheckedList.findIndex((item) => item === allProjectList?.[i])
+      cloneCheckedList.splice(index, 1)
     }
-    setCheckedProjectList(cloneCheckedList);
-  };
+    setCheckedProjectList(cloneCheckedList)
+  }
 
   const foldChangeEvent = (item: any) => {
-    const copyData = JSON.parse(JSON.stringify(handleTableData));
+    const copyData = JSON.parse(JSON.stringify(handleTableData))
 
-    const index = copyData.findIndex((ite: any) => ite.id === item.id);
+    const index = copyData.findIndex((ite: any) => ite.id === item.id)
 
-    copyData[index].isFold = !copyData[index].isFold;
-    setHandleTableData(copyData);
-  };
+    copyData[index].isFold = !copyData[index].isFold
+    setHandleTableData(copyData)
+  }
 
   const projectTable = handleTableData?.map((item: any, bigIndex: number) => {
     return (
@@ -606,7 +578,7 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                     {theadElement}
                   </div>
                   <div className={styles.engineerTableBody}>
-                    {(item.projects ?? []).map((pro: any, smallIndex: number) => {
+                    {(item.projects ?? []).map((pro: any) => {
                       return (
                         <div key={`${pro.id}Td`} className={styles.engineerTableTr}>
                           <div
@@ -653,10 +625,10 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
                                   </span>
                                 )}
                               </div>
-                            );
+                            )
                           })}
                         </div>
-                      );
+                      )
                     })}
                   </div>
                 </div>
@@ -670,8 +642,8 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
           )}
         </div>
       </div>
-    );
-  });
+    )
+  })
 
   return (
     <div className={styles.engineerTable} ref={tableRef}>
@@ -698,6 +670,6 @@ const EngineerTableList: React.FC<EngineerTableItemProps> = (props) => {
         {/* </ScrollView> */}
       </div>
     </div>
-  );
-};
-export default EngineerTableList;
+  )
+}
+export default EngineerTableList

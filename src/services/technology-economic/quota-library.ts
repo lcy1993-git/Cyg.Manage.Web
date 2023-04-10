@@ -62,7 +62,7 @@ export const importQuotaLibrary = (files: any[], libId: string) => {
     data: formData,
     requestType: 'form',
   }).then((res) => {
-    const { code, isSuccess, message: msg } = res
+    const { code, isSuccess } = res
     if (code === 6000) {
       return Promise.resolve(res)
     }
@@ -98,15 +98,13 @@ export const getCatalogueList = (libId: string) => {
   )
 }
 // 查询定额钢筋映射列表
-export const queryQuotaRebarMappingList = (libId: string) => {
+export const queryQuotaRebarMappingList = () => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/QuotaLibrary/QueryQuotaRebarMappingList`, { method: 'GET' })
   )
 }
 // 导入定额钢筋映射
 export const importQuotaRebarMapping = (data: any) => {
-  console.log(formData(data))
-
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/QuotaLibrary/ImportQuotaRebarMapping`, {
       method: 'POST',
@@ -115,7 +113,7 @@ export const importQuotaRebarMapping = (data: any) => {
   )
 }
 // 获取定额库目录详情-查看
-export const getCatalogueDetaile = (libId: string) => {
+export const getCatalogueDetaile = () => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/GetDetail`, {
       method: 'GET',
@@ -163,7 +161,7 @@ export const catalogueDel = (id: string) => {
 }
 
 // 获取定额目录树
-export const getTreeQuotaLibraryCatalogue = (libId: string) => {
+export const getTreeQuotaLibraryCatalogue = () => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco}/QuotaLibraryCatalogueManager/GetTree`, {
       method: 'GET',

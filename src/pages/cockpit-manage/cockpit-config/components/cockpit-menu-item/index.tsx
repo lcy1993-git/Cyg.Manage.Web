@@ -14,7 +14,6 @@ interface CockpitMenuItemProps {
 }
 
 const CockpitMenuItem: React.FC<CockpitMenuItemProps> = ({
-  type,
   name,
   icon,
   childrenData,

@@ -121,7 +121,7 @@ export default [
     component: <MapField />,
   },
   {
-    title: '登录策略',
+    title: '登录授权策略',
     path: '/backstage-config/login-strategy',
     component: <LoginStrategy />,
   },

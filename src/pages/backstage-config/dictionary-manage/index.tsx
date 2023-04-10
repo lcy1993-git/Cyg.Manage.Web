@@ -307,7 +307,7 @@ const DictionaryManage: React.FC = () => {
     )
   }
 
-  const routeItemClickEvent = (id: string, name: string) => {
+  const routeItemClickEvent = (id: string) => {
     dispatch({ code: 'edit', id })
     setSearchKeyWord('')
     searchByParams({

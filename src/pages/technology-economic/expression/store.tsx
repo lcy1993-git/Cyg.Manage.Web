@@ -22,7 +22,7 @@ const initState = {
 function createStore(state: any) {
   return makeAutoObservable({
     state,
-    async getTableData(projectType: number) {},
+    async getTableData() {},
     setActiveValue(item: any) {
       this.state.activeValue = item
     },
@@ -73,7 +73,7 @@ function createStore(state: any) {
       this.state.contentList = allList
     },
     reduceData(list: any[]) {
-      list.reduce((r, c) => {}, [])
+      list.reduce(() => {}, [])
     },
     treeToArray(tree: any[]) {
       let arr: any[] = []
@@ -103,7 +103,7 @@ function createStore(state: any) {
         this.state.cIndex = cInd
       }
     },
-    setCancelSelectRow(row: any, cInd: number, hIndex: number) {
+    setCancelSelectRow(row: any, cInd: number) {
       if (row.childs && row.childs.length > 0) {
         const nowList = JSON.parse(JSON.stringify(this.state.allList))
         nowList.splice(cInd + 1)
@@ -114,7 +114,7 @@ function createStore(state: any) {
         // 如果要点击取消选中 TODO
       }
     },
-    showBackground(row: any, cInd: number, hIndex: number) {
+    showBackground(row: any) {
       if (!row.childs.length) {
         const nowList = JSON.parse(JSON.stringify(this.state.allList))
         nowList.map((item: any) => {

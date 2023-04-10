@@ -63,7 +63,6 @@ const Index: React.FC = () => {
     areaId: '',
     areaLevel: '1',
   })
-
   const [configArray, setConfigArray] = useState<any[]>([])
   const [reloadLoading, setReloadLoading] = useState(false)
   const divRef = useRef<HTMLDivElement>(null)
@@ -74,7 +73,6 @@ const Index: React.FC = () => {
       initPage()
     },
   })
-
   const initPage = () => {
     const windowHeight = window.innerHeight - 115 > 828 ? window.innerHeight - 115 : 828
     if (data) {

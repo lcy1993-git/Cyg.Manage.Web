@@ -116,7 +116,7 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
 
   const initChart = () => {
     if (divRef && divRef.current) {
-      myChart = echarts.init((divRef.current as unknown) as HTMLDivElement)
+      myChart = echarts.init(divRef.current as unknown as HTMLDivElement)
       const options = getOptions()
       myChart.setOption(options)
     }
@@ -147,7 +147,6 @@ const ProjectNumber: React.FC<ProjectNumberProps> = (props) => {
         resize()
       }
     })
-
     return () => {
       window.removeEventListener('resize', resize)
     }

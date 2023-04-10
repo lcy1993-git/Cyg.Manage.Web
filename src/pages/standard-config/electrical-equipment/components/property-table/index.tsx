@@ -15,7 +15,6 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
   const { libId, componentId } = props
 
   const tableRef = React.useRef<HTMLDivElement>(null)
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [formData, setFormData] = useState<any>()
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
@@ -109,7 +108,6 @@ const ElectricProperty: React.FC<ModuleDetailParams> = (props) => {
         url="/ComponentProperty/GetList"
         columns={columns}
         requestSource="resource"
-        getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
           componentId: componentId[0],

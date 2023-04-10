@@ -1,19 +1,19 @@
-import React, { useContext } from "react";
-import {IndexContext} from "../../context"; 
-import ProjectSituation from "../project-schedule-status";
+import React, { useContext } from 'react'
+import { IndexContext } from '../../context'
+import ProjectSituation from '../project-schedule-status'
 
 interface IndexToDoComponentProps {
-    componentProps?: string[]
+  componentProps?: string[]
 }
 
-const IndexProjectSituationComponent:React.FC<IndexToDoComponentProps> = (props) => {
-    const {currentAreaInfo} = useContext(IndexContext);
+const IndexProjectSituationComponent: React.FC<IndexToDoComponentProps> = (props) => {
+  const { currentAreaInfo } = useContext(IndexContext)
 
-    return (
-        <>
-            <ProjectSituation currentAreaInfo={currentAreaInfo} {...props} />
-        </>
-    )
+  return (
+    <>
+      <ProjectSituation currentAreaInfo={currentAreaInfo} {...props} />
+    </>
+  )
 }
 
-export default IndexProjectSituationComponent;
+export default IndexProjectSituationComponent

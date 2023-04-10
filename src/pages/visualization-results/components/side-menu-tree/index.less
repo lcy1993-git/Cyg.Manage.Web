@@ -1,15 +1,15 @@
 .wrap {
   display: flex;
   flex-direction: column;
+  width: 220px;
+  height: 100%;
   padding: 4px;
   background-color: #ffffff;
-  width: 220px;
   // height: calc(100% - 30px);
   border: 1px solid #f5f5f5;
-  height: 100%;
   .searchWrap {
-    margin: 6px 2px;
     display: inline-flex;
+    margin: 6px 2px;
   }
   .menuTree {
     // height: calc(100% - 190px);
@@ -20,39 +20,39 @@
     }
   }
   .timeLine {
-    width: 100%;
-    height: 30px;
     display: inline-flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 100%;
+    height: 30px;
     margin: 5px 0;
     :global {
       .ant-picker {
         padding: 4px;
         font-size: 10px;
-      } 
+      }
     }
   }
 
   .buttonArea {
-    width: 100%;
     display: flex;
-    margin: 5px 0;
     justify-content: space-between;
+    width: 100%;
+    margin: 5px 0;
   }
   .handlerSideBarVisibelButton {
+    position: absolute;
+    top: 42%;
+    right: -10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 10px;
     height: 40px;
-    background-color: #fff;
-    position: absolute;
-    right: -10px;
-    top: 42%;
     overflow: hidden;
-    border-bottom-right-radius: 7px;
+    background-color: #fff;
     border-top-right-radius: 7px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+    border-bottom-right-radius: 7px;
     cursor: pointer;
     &:hover {
       color: seagreen;
@@ -71,17 +71,17 @@
     }
     .ant-tree-treenode {
       width: 100%;
-      border-bottom: 1px solid #9bacb6;
       min-height: 34px;
       line-height: 34px;
       vertical-align: middle;
+      border-bottom: 1px solid #9bacb6;
     }
     .ant-tree-treenode-selected {
       background-color: #0e7b3b;
     }
     .ant-tree-node-selected {
-      background-color: #0e7b3b !important;
       color: #fff;
+      background-color: #0e7b3b !important;
     }
     .ant-tree-switcher {
       line-height: 34px;
@@ -100,7 +100,7 @@
   justify-content: space-around;
   .buttonItem {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
   }
 }

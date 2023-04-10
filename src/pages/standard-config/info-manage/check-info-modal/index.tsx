@@ -28,7 +28,11 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { newsId } = props
 
-  const { data: newsInfo, run, loading } = useRequest(() => getNewsItemDetail(newsId), {
+  const {
+    data: newsInfo,
+    run,
+    loading,
+  } = useRequest(() => getNewsItemDetail(newsId), {
     ready: !!newsId,
     refreshDeps: [newsId],
   })
@@ -92,7 +96,7 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
         <div style={{ width: '100%' }}>
           <CyFormItem labelWidth={40} align="left" label="内容">
             {newsInfo?.content && (
-              <div dangerouslySetInnerHTML={{ __html: newsInfo?.content! }}></div>
+              <div dangerouslySetInnerHTML={{ __html: domStringPurify(newsInfo?.content!) }}></div>
             )}
           </CyFormItem>
         </div>

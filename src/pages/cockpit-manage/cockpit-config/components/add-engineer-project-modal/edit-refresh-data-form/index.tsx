@@ -1,25 +1,25 @@
-import CommonTitle from '@/components/common-title';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import CommonTitle from '@/components/common-title'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect } from 'react'
 
 interface EditRefreshDataFormProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
-  currentRecord: any;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: (componentProps: any) => void
+  currentRecord: any
 }
 
 const EditRefreshDataModal: React.FC<EditRefreshDataFormProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, currentRecord } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, currentRecord } = props
+  const [form] = Form.useForm()
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      const { data } = values;
+      const { data } = values
 
-      setState(false);
+      setState(false)
 
       changeFinishEvent?.({
         name: 'projectRefreshData',
@@ -29,15 +29,15 @@ const EditRefreshDataModal: React.FC<EditRefreshDataFormProps> = (props) => {
         w: 3,
         h: 11,
         componentProps: data,
-      });
-    });
-  };
+      })
+    })
+  }
 
   useEffect(() => {
     if (currentRecord.componentProps && currentRecord.componentProps.length > 0) {
-      form.setFieldsValue({ data: currentRecord.componentProps });
+      form.setFieldsValue({ data: currentRecord.componentProps })
     }
-  }, [JSON.stringify(currentRecord.componentProps)]);
+  }, [JSON.stringify(currentRecord.componentProps)])
 
   return (
     <Modal
@@ -58,7 +58,7 @@ const EditRefreshDataModal: React.FC<EditRefreshDataFormProps> = (props) => {
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default EditRefreshDataModal;
+export default EditRefreshDataModal

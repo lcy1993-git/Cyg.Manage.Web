@@ -1,6 +1,6 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
 
 const EditComponentProperty: React.FC = () => {
   return (
@@ -18,7 +18,7 @@ const EditComponentProperty: React.FC = () => {
         <Input placeholder="--请输入属性名称--" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default EditComponentProperty;
+export default EditComponentProperty

@@ -1,48 +1,48 @@
-import { Tabs } from 'antd';
+import { Tabs } from 'antd'
 
-import React, { useEffect, useState, useRef } from 'react';
-import styles from './index.less';
-import ConstructionFees from '@/pages/technology-economic/cost-template/components/construction-fees';
-import { getCostTableDirectory } from '@/services/technology-economic/cost-template';
-import qs from 'qs';
-import TableImportButton from '@/components/table-import-button';
+import React, { useEffect, useState, useRef } from 'react'
+import styles from './index.less'
+import ConstructionFees from '@/pages/technology-economic/cost-template/components/construction-fees'
+import { getCostTableDirectory } from '@/services/technology-economic/cost-template'
+import qs from 'qs'
+import TableImportButton from '@/components/table-import-button'
 
-const { TabPane } = Tabs;
+const { TabPane } = Tabs
 
 interface Props {}
 
 export interface CostMenus {
-  id: string;
-  name: string;
-  parentId: string;
+  id: string
+  name: string
+  parentId: string
 }
 
 const CostTemplate: React.FC<Props> = () => {
-  const [menus, setMenus] = useState<CostMenus[]>([]);
-  const [currentTabId, setCurrentTabId] = useState<string>('');
-  const [id, setId] = useState<string>('');
-  const childRef = useRef<HTMLDivElement>(null);
+  const [menus, setMenus] = useState<CostMenus[]>([])
+  const [currentTabId, setCurrentTabId] = useState<string>('')
+  const [id, setId] = useState<string>('')
+  const childRef = useRef<HTMLDivElement>(null)
   const getDirectory = async (fid: string) => {
-    const res = await getCostTableDirectory(fid);
+    const res = await getCostTableDirectory(fid)
     // @ts-ignore
-    setMenus(res);
-  };
+    setMenus(res)
+  }
   const onChange = (key: string) => {
-    setCurrentTabId(key);
-  };
+    setCurrentTabId(key)
+  }
   useEffect(() => {
-    const fid = (qs.parse(window.location.href.split('?')[1]).id as string) || '';
-    setId(fid);
-    getDirectory(fid);
-  }, []);
+    const fid = (qs.parse(window.location.href.split('?')[1]).id as string) || ''
+    setId(fid)
+    getDirectory(fid)
+  }, [])
   useEffect(() => {
     const parent = menus.filter((i) => {
-      return i.parentId == null;
-    });
+      return i.parentId == null
+    })
     if (parent.length !== 0) {
-      setCurrentTabId(parent[0].id);
+      setCurrentTabId(parent[0].id)
     }
-  }, [menus]);
+  }, [menus])
   return (
     <div className={styles.costTemplate}>
       <div className={styles.leftMenu}>
@@ -73,12 +73,12 @@ const CostTemplate: React.FC<Props> = () => {
                     <ConstructionFees ref={childRef} menus={menus} id={currentTabId} />
                   )}
                 </TabPane>
-              );
+              )
             })}
         </Tabs>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CostTemplate;
+export default CostTemplate

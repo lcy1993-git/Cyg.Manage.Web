@@ -19,10 +19,7 @@ const ImportBatchChartModal: React.FC<ImportChartProps> = (props) => {
   const { libId, securityKey, requestSource, changeFinishEvent } = props
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const saveImportChartEvent = () => {
     return form
       .validateFields()
@@ -37,7 +34,7 @@ const ImportBatchChartModal: React.FC<ImportChartProps> = (props) => {
           return Promise.resolve()
         },
         (res) => {
-          const { code, isSuccess, message: msg } = res
+          const { message: msg } = res
           if (msg) {
             message.warn(msg)
           }
@@ -51,7 +48,7 @@ const ImportBatchChartModal: React.FC<ImportChartProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         return

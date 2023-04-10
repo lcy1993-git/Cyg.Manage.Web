@@ -1,13 +1,13 @@
-import React, { useContext } from "react";
-import {IndexContext} from "../../context"; 
-import PersonelLoad from '../personnel-load';
+import React, { useContext } from 'react'
+import { IndexContext } from '../../context'
+import PersonelLoad from '../personnel-load'
 
 interface Props {
   componentProps?: string[]
 }
 
 const IndexPersonnelLoadComponents: React.FC<Props> = (props) => {
-  const { currentAreaInfo } = useContext(IndexContext);
+  const { currentAreaInfo } = useContext(IndexContext)
   return (
     <>
       <PersonelLoad currentAreaInfo={currentAreaInfo} {...props} />
@@ -15,4 +15,4 @@ const IndexPersonnelLoadComponents: React.FC<Props> = (props) => {
   )
 }
 
-export default IndexPersonnelLoadComponents;
+export default IndexPersonnelLoadComponents

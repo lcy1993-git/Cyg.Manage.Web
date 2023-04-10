@@ -1,30 +1,30 @@
-import React, { useMemo } from 'react';
-import { Input, TreeSelect } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import FormSwitch from '@/components/form-switch';
-import EnumSelect from '@/components/enum-select';
-import { BelongModuleEnum, FunctionModuleTreeData } from '@/services/system-config/function-module';
+import React, { useMemo } from 'react'
+import { Input, TreeSelect } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import FormSwitch from '@/components/form-switch'
+import EnumSelect from '@/components/enum-select'
+import { BelongModuleEnum, FunctionModuleTreeData } from '@/services/system-config/function-module'
 
-import rules from './rule';
+import rules from './rule'
 
 interface FunctionModuleFormProps {
-  treeData: FunctionModuleTreeData[];
+  treeData: FunctionModuleTreeData[]
 }
 
 const FunctionModuleForm: React.FC<FunctionModuleFormProps> = (props) => {
-  const { treeData = [] } = props;
+  const { treeData = [] } = props
 
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
       value: data.id,
       children: data.children.map(mapTreeData),
-    };
-  };
+    }
+  }
 
   const handleData = useMemo(() => {
-    return treeData.map(mapTreeData);
-  }, [JSON.stringify(treeData)]);
+    return treeData.map(mapTreeData)
+  }, [JSON.stringify(treeData)])
 
   return (
     <>
@@ -57,7 +57,7 @@ const FunctionModuleForm: React.FC<FunctionModuleFormProps> = (props) => {
         <FormSwitch />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default FunctionModuleForm;
+export default FunctionModuleForm

@@ -1,15 +1,15 @@
-import type {FC} from 'react';
-import {useState, useRef, useEffect} from 'react';
-import {Button, message} from 'antd';
-import PageCommonWrap from "@/components/page-common-wrap";
-import ListTable from '@/pages/technology-economic/components/list-table';
+import type { FC } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { Button, message } from 'antd'
+import PageCommonWrap from '@/components/page-common-wrap'
+import ListTable from '@/pages/technology-economic/components/list-table'
 import styles from './index.less'
-import { getMaterialLibraryTreeById} from '@/services/technology-economic/supplies-library';
-import {Tree} from 'antd';
-import {manageMaterialMappingDesignItem} from '@/services/technology-economic/material';
-import qs from "qs";
+import { getMaterialLibraryTreeById } from '@/services/technology-economic/supplies-library'
+import { Tree } from 'antd'
+import { manageMaterialMappingDesignItem } from '@/services/technology-economic/material'
+import qs from 'qs'
 
-const {DirectoryTree} = Tree;
+const { DirectoryTree } = Tree
 const columns = [
   {
     dataIndex: 'materialType',
@@ -19,49 +19,49 @@ const columns = [
     ellipsis: true,
     render(v: any) {
       return <span>{['设备', '主材'][v - 1]}</span>
-    }
+    },
   },
   {
     dataIndex: 'code',
     index: 'code',
     title: '编码',
     width: 100,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'name',
     index: 'name',
     title: '名称',
     // width: 200,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'standard',
     index: 'standard',
     title: '规格',
     width: 300,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'unit',
     index: 'unit',
     title: '单位',
     width: 100,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'taxPrice',
     index: 'taxPrice',
     title: '含税价',
     width: 120,
-    ellipsis: true
+    ellipsis: true,
   },
   {
     dataIndex: 'price',
     index: 'price',
     title: '不含税价',
     width: 120,
-    ellipsis: true
+    ellipsis: true,
   },
   // {
   //   dataIndex: 'supplyType',
@@ -157,8 +157,7 @@ const columns = [
   //     return record?.materialMachineItem?.valuationTypeText
   //   }
   // }
-];
-
+]
 
 interface Props {
   materialMappingDesignItemId: string
@@ -166,21 +165,21 @@ interface Props {
 }
 
 const MappingManage: FC<Props> = (props) => {
-  const {materialMappingDesignItemId,close} = props
-  const [materialLibraryId, setMaterialLibraryId] = useState<string>("");
-  const [resourceItem, setResourceItem] = useState<any>({});
+  const { materialMappingDesignItemId, close } = props
+  const [materialLibraryId, setMaterialLibraryId] = useState<string>('')
+  const [resourceItem, setResourceItem] = useState<any>({})
   const [materialLibList, setMaterialLibList] = useState([])
   // const [slectLsit, setSlectLsit] = useState<SelectIten[]>([])
   const [id, setId] = useState<string>('')
 
   const getTree = (arr: any[]) => {
-    return arr.map(item => {
+    return arr.map((item) => {
       // eslint-disable-next-line no-param-reassign
-      item.title = item.name;
+      item.title = item.name
       // eslint-disable-next-line no-param-reassign
-      item.value = item.id;
+      item.value = item.id
       // eslint-disable-next-line no-param-reassign
-      item.key = item.id;
+      item.key = item.id
       if (item.children && item.children.length !== 0) {
         getTree(item.children)
       }
@@ -196,58 +195,59 @@ const MappingManage: FC<Props> = (props) => {
   }
   useEffect(() => {
     getTreeList()
-  }, [id])
-  const ref = useRef(null);
+  }, [getTreeList, id])
+  const ref = useRef(null)
   const treeOnChange = (val: any) => {
     setMaterialLibraryId(val[0])
   }
 
   const associated = async () => {
-    if (!resourceItem?.id){
+    if (!resourceItem?.id) {
       message.warn('请选择关联对象')
       return
     }
     await manageMaterialMappingDesignItem({
       materialMappingDesignItemId,
       sourceMaterialLibraryId: id,
-      sourceMaterialItemId: resourceItem.id
+      sourceMaterialItemId: resourceItem.id,
     })
     close()
     message.success('关联成功!')
   }
-  useEffect(()=>{
-    if (materialLibList.length === 0) return
-    console.log('id',materialLibList[0].id)
-    setMaterialLibraryId(materialLibList[0].id)
-  },[materialLibList])
   useEffect(() => {
-    setId(qs.parse(window.location.href.split("?")[1])?.sourceMaterialLibraryId as string)
+    if (materialLibList.length === 0) return // @ts-ignore
+    setMaterialLibraryId(materialLibList[0].id)
+  }, [materialLibList])
+  useEffect(() => {
+    setId(qs.parse(window.location.href.split('?')[1])?.sourceMaterialLibraryId as string)
   }, [])
   return (
     <PageCommonWrap noPadding={true} className={styles.quotaProjectWrap}>
       <div className={styles.wrap} ref={ref}>
         <div className={styles.wrapLeftMenu}>
           <div className={styles.selectWrap}>
-              {qs.parse(window.location.href.split("?")[1])?.sourceMaterialLibraryName}
-            <br/>
-            <br/>
+            {qs.parse(window.location.href.split('?')[1])?.sourceMaterialLibraryName}
+            <br />
+            <br />
             <div className={styles.treeBox}>
-              {
-                materialLibList.length !== 0 && <DirectoryTree
+              {materialLibList.length !== 0 && (
+                <DirectoryTree
                   defaultExpandAll={false}
                   key={'id'}
                   onSelect={treeOnChange}
                   treeData={materialLibList}
                 />
-              }
+              )}
             </div>
           </div>
         </div>
-        <div className={styles.empty}/>
+        <div className={styles.empty} />
         <div className={styles.wrapRigntContent}>
           <div className={styles.tabPaneBox}>
             <div className={styles.listTable}>
-              <Button type={"primary"} onClick={associated} className={styles.moveButton}>关联</Button>
+              <Button type={'primary'} onClick={associated} className={styles.moveButton}>
+                关联
+              </Button>
               <ListTable
                 catalogueId={materialLibraryId}
                 scrolly={550}
@@ -257,15 +257,16 @@ const MappingManage: FC<Props> = (props) => {
                 columns={columns}
                 requestSource={'tecEco1'}
                 params={{
-                  'materialLibraryTreeId': materialLibraryId
+                  materialLibraryTreeId: materialLibraryId,
                 }}
-                cruxKey={null}/>
+                cruxKey={null}
+              />
             </div>
           </div>
         </div>
       </div>
     </PageCommonWrap>
-  );
+  )
 }
 
-export default MappingManage;
+export default MappingManage

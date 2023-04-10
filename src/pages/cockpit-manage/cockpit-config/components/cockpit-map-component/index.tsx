@@ -1,19 +1,24 @@
-import React, { useContext } from 'react';
-import { CockpitConfigContext } from '../../context';
-import MapChartComponent from '@/pages/index/components/map-chart-component';
+import React, { useContext } from 'react'
+import { CockpitConfigContext } from '../../context'
+import MapChartComponent from '@/pages/index/components/map-chart-component'
 
 interface CockpitConfigMapComponentProps {
-  componentProps?: string[];
+  componentProps?: string[]
 }
 
 const CockpitMapComponent: React.FC<CockpitConfigMapComponentProps> = (props) => {
-  const { currentAreaInfo,setCurrentAreaInfo } = useContext(CockpitConfigContext);
+  const { currentAreaInfo, setCurrentAreaInfo } = useContext(CockpitConfigContext)
 
   return (
     <>
-      <MapChartComponent isConfig={true} currentAreaInfo={currentAreaInfo} setCurrentAreaInfo={setCurrentAreaInfo} {...props} />
+      <MapChartComponent
+        isConfig={true}
+        currentAreaInfo={currentAreaInfo}
+        setCurrentAreaInfo={setCurrentAreaInfo}
+        {...props}
+      />
     </>
-  );
-};
+  )
+}
 
-export default CockpitMapComponent;
+export default CockpitMapComponent

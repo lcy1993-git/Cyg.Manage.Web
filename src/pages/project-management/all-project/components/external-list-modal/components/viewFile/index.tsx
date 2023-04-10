@@ -7,17 +7,14 @@ import React, { useEffect, useState } from 'react'
 interface UrlFileViewProps {
   url?: string
   params?: any
-  method?: 'POST' | 'GET'
+  // method?: 'POST' | 'GET'
   requestSource?: 'common' | 'project' | 'resource' | 'review'
 }
 
 const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   url = '/Download/GetFileById',
-  fileType,
   params = {},
-  method = 'GET',
   requestSource = 'upload',
-  ...rest
 }) => {
   const [data, setData] = useState(null)
 

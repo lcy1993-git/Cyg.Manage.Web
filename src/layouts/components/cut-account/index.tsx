@@ -1,12 +1,15 @@
 import CyFormItem from '@/components/cy-form-item'
-import { useLayoutStore } from '@/layouts/context'
-import { getAuthorityModules, getUserInfoRequest, userLoginRequest } from '@/services/login'
+import { getAuthorityModules, GetCommonUserInfo, userLoginRequest } from '@/services/login'
 import { useGetUserInfo } from '@/utils/hooks'
-import { flatten, getStopServerList } from '@/utils/utils'
+import { flatten, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
-import { Button, Form, Input, message, Modal, Space } from 'antd'
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Button, Form, Input, message, Modal } from 'antd'
+import { Dispatch, useState } from 'react'
+import { SetStateAction } from 'react'
+
 import { history } from 'umi'
+import VerifycodeImage from '@/pages/login/components/verifycode-image'
+import { baseUrl } from '@/services/common'
 
 interface EditPasswordProps {
   visible: boolean
@@ -16,71 +19,128 @@ interface EditPasswordProps {
 }
 
 const CutAccount = (props: EditPasswordProps) => {
-  const { clearWs } = useLayoutStore()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { againLogin = false, finishEvent } = props
   const [form] = Form.useForm()
   const [spinning, setSpinning] = useState<boolean>(false)
-  const lastAccount = useGetUserInfo()
-
-  const getStopInfo = () => {
+  const [imageCode, setImageCode] = useState<string>('')
+  // 刷新验证码的hash值
+  const random = () => Math.random().toString(36).slice(2)
+  const [reloadSign, setReloadSign] = useState(random())
+  const refreshCode = () => setReloadSign(random())
+  // 是否验证码错误
+  const [hasErr, setHasErr] = useState(false)
+  const sureCutAccount = () => {
     setSpinning(true)
-    form.validateFields().then((values) => {
-      getStopServerList(sureCutAccount, values, showStop)
-    })
-  }
-  const showStop = () => {
-    // message.warning('正在停服发版中,请稍等...')
-    setTimeout(() => {
-      // 非测试账号直接退出登录
-      history.push('/login')
-      localStorage.setItem('Authorization', '')
-    }, 1000)
-    setSpinning(false)
-  }
-  const sureCutAccount = async (value: { userName: any; pwd: any }) => {
-    const { userName, pwd } = value
-    // TODO 快捷切换
-    userLoginRequest({ userName, pwd })
-      .then(async (resData) => {
-        // 如果这次登录的账号跟之前的不一样，那么就只到首页
+    form
+      .validateFields()
+      .then(async (value) => {
+        const { userName } = value
+        value.code = imageCode
+        // TODO 快捷切换
+        const resData = await userLoginRequest(value)
+        if (resData.code === 200 && resData.isSuccess) {
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const lastAccount = useGetUserInfo()
 
-        const isLastAccount = lastAccount && lastAccount.userName === userName
+          const isLastAccount = lastAccount && lastAccount.userName === userName
 
-        const { accessToken } = resData
-        localStorage.setItem('Authorization', accessToken)
+          const { accessToken } = resData.content
+          localStorage.setItem('Authorization', accessToken)
 
-        const userInfo = await getUserInfoRequest()
-        const modules = await getAuthorityModules()
+          const userInfo = await GetCommonUserInfo()
+          const modules = await getAuthorityModules()
+          uploadAuditLog([
+            {
+              auditType: 1,
+              eventType: 1,
+              eventDetailType: '登录',
+              executionResult: '成功',
+              auditLevel: 2,
+              serviceAdress: `${baseUrl.common}/Users/SignIn`,
+            },
+          ])
+          const buttonModules = flatten(modules)
+          const buttonArray = buttonModules
+            .filter((item: any) => item.category === 3)
+            .map((item: any) => item.authCode)
 
-        const buttonModules = flatten(modules)
-        const buttonArray = buttonModules
-          .filter((item: any) => item.category === 3)
-          .map((item: any) => item.authCode)
+          localStorage.setItem('functionModules', JSON.stringify(modules))
+          localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
 
-        localStorage.setItem('functionModules', JSON.stringify(modules))
-        localStorage.setItem('userInfo', JSON.stringify(userInfo))
-        localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
-        setSpinning(false)
-        if (!againLogin || !isLastAccount) {
-          setState(false)
-          message.success('账户快捷登录成功')
+          if (!againLogin || !isLastAccount) {
+            setState(false)
+            message.success('账户快捷登录成功')
+            if (userInfo?.adminCategory === 1 && userInfo?.userType === 4) {
+              // 是审计管理员
+              localStorage.setItem('isAdminCategory', '0')
+              history.push('/admin-index/home')
+            } else {
+              history.push('/index')
+              localStorage.removeItem('isAdminCategory')
+            }
+            // eslint-disable-next-line no-restricted-globals
+            location.reload()
+            setSpinning(false)
+          } else {
+            finishEvent?.()
+            //history.go(-1);
+            setSpinning(false)
+            setState(false)
+          }
+        } else if (resData.code === 40100) {
+          // 临时关闭验证码，开启时，打开下行代码
+          // setNeedVerifycode(true);
+          message.error(resData.message)
+          loginField()
+          setSpinning(false)
+        } else if (resData.code === 40201) {
           history.push('/index')
-          window.location.reload()
+          message.error(resData.message)
+          setSpinning(false)
+        } else if (resData.code === 40202) {
+          message.error(resData.message)
+          loginField()
+          refreshCode()
+          setSpinning(false)
+        } else if (resData.code === 40200) {
+          refreshCode()
+          loginField()
+          message.warning('该用户未实名认证,请先进行实名认证!')
+          message.error(resData.message)
+          setSpinning(false)
         } else {
-          finishEvent?.()
-          //history.go(-1);
-          setState(false)
+          loginField()
+          refreshCode()
+          message.error(resData.message)
+          setSpinning(false)
         }
+        // 如果这次登录的账号跟之前的不一样，那么就只到首页
       })
       .catch(() => {
         setSpinning(false)
+        loginField()
       })
   }
-
+  const loginField = () => {
+    uploadAuditLog(
+      [
+        {
+          auditType: 1,
+          eventType: 1,
+          eventDetailType: '登录',
+          executionResult: '失败',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.common}/Users/SignIn`,
+        },
+      ],
+      true
+    )
+  }
   const onKeyDownLogin = (e: any) => {
-    if (e.keyCode == 13) {
-      getStopInfo()
+    if (e.keyCode === 13) {
+      sureCutAccount()
     }
   }
 
@@ -92,36 +152,42 @@ const CutAccount = (props: EditPasswordProps) => {
     }
   }
 
-  useEffect(() => {
-    clearWs?.()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   return (
     <Modal
       maskClosable={false}
       title="快捷登录"
       visible={state as boolean}
       destroyOnClose
-      okText="确定"
-      footer={null}
-      cancelText="取消"
       onCancel={() => cancelEvent()}
+      footer={[
+        <Button
+          key="cancle"
+          onClick={() => {
+            setState(false)
+            cancelEvent()
+          }}
+        >
+          取消
+        </Button>,
+        <Button key="save" type="primary" onClick={() => sureCutAccount()} loading={spinning}>
+          确定
+        </Button>,
+      ]}
     >
       <Form form={form} preserve={false} onKeyDown={(e) => onKeyDownLogin(e)}>
         <CyFormItem
           name="userName"
-          label="用户名"
+          label="账号"
           required
           labelWidth={100}
           rules={[
             {
               required: true,
-              message: '请输入用户名',
+              message: '请输入用户名/邮箱/手机号',
             },
           ]}
         >
-          <Input placeholder="请输入" />
+          <Input placeholder="请输入用户名/邮箱/手机号" />
         </CyFormItem>
         <CyFormItem
           name="pwd"
@@ -135,22 +201,19 @@ const CutAccount = (props: EditPasswordProps) => {
             },
           ]}
         >
-          <Input type="password" placeholder="请输入" />
+          <Input type="password" {...noAutoCompletePassword} placeholder="请输入密码" />
         </CyFormItem>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'end',
-            padding: '10px 0',
-          }}
-        >
-          <Space>
-            <Button onClick={() => cancelEvent()}>取消</Button>
-            <Button onClick={getStopInfo} type={'primary'} disabled={spinning}>
-              确定
-            </Button>
-          </Space>
-        </div>
+        <CyFormItem name="code" label="验证码" required labelWidth={100}>
+          <VerifycodeImage
+            activeKey={'account'}
+            needVerifycode={true}
+            onChange={setImageCode}
+            hasErr={hasErr}
+            setHasErr={setHasErr}
+            reloadSign={reloadSign}
+            refreshCode={refreshCode}
+          />
+        </CyFormItem>
       </Form>
     </Modal>
   )

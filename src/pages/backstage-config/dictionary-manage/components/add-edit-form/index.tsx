@@ -1,15 +1,15 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
 
-import FormSwitch from '@/components/form-switch';
+import FormSwitch from '@/components/form-switch'
 
 interface DictionaryFormItem {
-  parentName?: string;
+  parentName?: string
 }
 
 const DictionaryForm: React.FC<DictionaryFormItem> = (props) => {
-  const { parentName } = props;
+  const { parentName } = props
 
   return (
     <>
@@ -41,7 +41,7 @@ const DictionaryForm: React.FC<DictionaryFormItem> = (props) => {
         <Input placeholder="请输入备注信息" />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default DictionaryForm;
+export default DictionaryForm

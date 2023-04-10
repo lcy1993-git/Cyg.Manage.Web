@@ -7,7 +7,7 @@ interface InitDrawProps {
   sourceRef: SourceRef
 }
 
-export default function initDraw({ interActionRef, layerRef, sourceRef }: InitDrawProps) {
+export default function initDraw({ interActionRef, sourceRef }: InitDrawProps) {
   const point = new Draw({
     source: sourceRef.drawSource,
     type: 'Point',

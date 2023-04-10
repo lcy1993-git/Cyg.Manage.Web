@@ -58,7 +58,7 @@ interface Props {}
 //     text: 'cable-channel',
 //   },
 // ]
-const ApprovalList: React.FC<Props> = (props) => {
+const ApprovalList: React.FC<Props> = () => {
   const [tableData, setTableData] = useState<any[]>([])
   const [keyword, setKeyword] = useState<string>('')
   const { resourceLibApprovalListFlag } = useLayoutStore()

@@ -2,7 +2,6 @@ import { useRef } from 'react'
 import { useMount } from 'ahooks'
 import classNames from 'classnames'
 
-import { useRequest } from 'ahooks'
 import {
   findHoleDetails,
   CableSectionProps,

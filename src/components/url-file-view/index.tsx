@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 import ApiFileView from '../api-file-view'
-import { cyRequest, baseUrl } from '@/services/common'
+import { baseUrl } from '@/services/common'
 import type { FileType } from '../api-file-view/getStrategyComponent'
 // import FileDwgView from '../api-file-view/componnents/file-dwg-view';
 import PdfFileView from '@/components/pdf-file-view'

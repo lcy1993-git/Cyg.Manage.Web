@@ -1,34 +1,34 @@
-import CommonTitle from '@/components/common-title';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useMemo } from 'react';
-import { getHasChooseComponentsProps } from '../../utils';
-import HasCheckItem from '../has-check-item';
+import CommonTitle from '@/components/common-title'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import uuid from 'node-uuid'
+import React, { Dispatch, SetStateAction, useMemo } from 'react'
+import { getHasChooseComponentsProps } from '../../utils'
+import HasCheckItem from '../has-check-item'
 
 interface AddOtherStatistic {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
-  configArray: any[];
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: (componentProps: any) => void
+  configArray: any[]
 }
 
 const toDoComponentPropsArray = [
   { code: 'wait', name: '已结项' },
   { code: 'arrange', name: '待安排' },
   { code: 'other', name: '其他消息' },
-];
+]
 
 const AddOtherStatisticModal: React.FC<AddOtherStatistic> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, configArray } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, configArray } = props
+  const [form] = Form.useForm()
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      const { type } = values;
-      const componentProps = [...type];
-      setState(false);
+      const { type } = values
+      const componentProps = [...type]
+      setState(false)
       changeFinishEvent?.([
         {
           name: 'toDo',
@@ -40,36 +40,36 @@ const AddOtherStatisticModal: React.FC<AddOtherStatistic> = (props) => {
           componentProps: componentProps,
           fixHeight: true,
         },
-      ]);
-      form.resetFields();
-    });
-  };
+      ])
+      form.resetFields()
+    })
+  }
 
   const toDoCompoentProps = useMemo(() => {
-    const hasChoosetoDoComponentCodeArray = getHasChooseComponentsProps(configArray, 'toDo');
+    const hasChoosetoDoComponentCodeArray = getHasChooseComponentsProps(configArray, 'toDo')
     const unChoosetoDoComponentProps = toDoComponentPropsArray.filter(
-      (item) => !hasChoosetoDoComponentCodeArray?.includes(item.code),
-    );
+      (item) => !hasChoosetoDoComponentCodeArray?.includes(item.code)
+    )
     const hasChoosetoDoComponentProps = toDoComponentPropsArray.filter((item) =>
-      hasChoosetoDoComponentCodeArray?.includes(item.code),
-    );
+      hasChoosetoDoComponentCodeArray?.includes(item.code)
+    )
     return {
       unChoosetoDoComponentProps,
       hasChoosetoDoComponentProps,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
   const toDoStatisticCheckbox = toDoCompoentProps.unChoosetoDoComponentProps.map((item) => {
     return (
       <Checkbox key={item.code} value={item.code}>
         {item.name}
       </Checkbox>
-    );
-  });
+    )
+  })
 
   const toDoStatisticHasCheck = toDoCompoentProps.hasChoosetoDoComponentProps.map((item) => {
-    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
-  });
+    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
+  })
 
   return (
     <Modal
@@ -91,7 +91,7 @@ const AddOtherStatisticModal: React.FC<AddOtherStatistic> = (props) => {
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddOtherStatisticModal;
+export default AddOtherStatisticModal

@@ -1,14 +1,13 @@
-import commonLess from '../common.less';
-import classNames from 'classnames';
+import commonLess from '../common.less'
+import classNames from 'classnames'
 interface BasicTableProps {
-  head: React.ReactNode;
-  data: any[];
+  head: React.ReactNode
+  data: any[]
 }
 
-const BasicTable: React.FC<BasicTableProps> = ({head, data}) => {
+const BasicTable: React.FC<BasicTableProps> = ({ head, data }) => {
+  const getData = (type: number) => data.find((item) => item.designStageType === type) ?? {}
 
-  const getData = (type: number) => data.find((item) => item.designStageType === type) ?? {};
-  
   return (
     <>
       <table className={classNames(commonLess.table)}>
@@ -24,20 +23,20 @@ const BasicTable: React.FC<BasicTableProps> = ({head, data}) => {
           </tr>
           <tr>
             <td>投资估算</td>
-            <td>{ getData(1)?.costRate }</td>
+            <td>{getData(1)?.costRate}</td>
           </tr>
           <tr>
             <td>初步设计概算</td>
-            <td>{ getData(2)?.costRate }</td>
+            <td>{getData(2)?.costRate}</td>
           </tr>
           <tr>
             <td>施工图预算</td>
-            <td>{ getData(3)?.costRate }</td>
+            <td>{getData(3)?.costRate}</td>
           </tr>
         </tbody>
       </table>
     </>
-  );
+  )
 }
 
-export default BasicTable;
+export default BasicTable

@@ -9,7 +9,6 @@ import {
   queryPricingTemplatePager,
   setPricingTemplate,
 } from '@/services/technology-economic/pricing-template'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Form, Input, message, Modal, Popconfirm, Space, Spin, Switch } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
@@ -39,6 +38,7 @@ const engineeringTemplateTypeList = getEnums('EngineeringTemplateType')
 export const getTypeName = (no: number) => {
   let str = ''
   engineeringTemplateTypeList &&
+    // eslint-disable-next-line array-callback-return
     engineeringTemplateTypeList.map((item: any) => {
       if (no === item.value) {
         str = item.text
@@ -54,7 +54,7 @@ const PricingTemplates: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [spinning, setSpinning] = useState<boolean>(false)
   const [update, setUpdate] = useState<boolean>(true)
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  // const buttonJurisdictionArray = useGetButtonJurisdictionArray()
   const [selectList, setSelectList] = useState<number[]>([])
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -66,6 +66,7 @@ const PricingTemplates: React.FC = () => {
     const data: ResponseData = await queryPricingTemplatePager({ pageIndex: 1, pageSize: 3000 })
     if (data) {
       if (data.hasOwnProperty('items') && data.items?.length) {
+        // eslint-disable-next-line array-callback-return
         data.items.map((item) => {
           list.push(parseInt(item.engineeringTemplateType as string))
         })
@@ -76,13 +77,13 @@ const PricingTemplates: React.FC = () => {
   const columns = [
     {
       dataIndex: 'no',
-      key: 'no',
+
       title: '编号',
       width: 300,
     },
     {
       dataIndex: 'engineeringTemplateType',
-      key: 'engineeringTemplateType',
+
       title: '模板类型',
       render: (text: string, record: any) => {
         return getTypeName(record.engineeringTemplateType)
@@ -90,7 +91,7 @@ const PricingTemplates: React.FC = () => {
     },
     {
       dataIndex: 'publishDate',
-      key: 'publishDate',
+
       title: '发布时间',
       render: (text: string, record: any) => {
         return moment(record.publishDate).format('YYYY-MM-DD HH:mm ')
@@ -98,17 +99,17 @@ const PricingTemplates: React.FC = () => {
     },
     {
       dataIndex: 'version',
-      key: 'version',
+
       title: '版本',
     },
     {
       dataIndex: 'remark',
-      key: 'remark',
+
       title: '备注',
     },
     {
       dataIndex: 'enabled',
-      key: 'enabled',
+
       title: '状态',
       render(value: boolean, record: DataSource) {
         return (

@@ -26,10 +26,10 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
   const [type, setType] = useState<string>(form.getFieldValue('materialType'))
   const [updateName, setUpdateName] = useState<string>('')
 
-  const changeTypeHandle = (value: string, type: string) => {
+  const changeTypeHandle = (value: string) => {
     setType(value)
   }
-  const changeNameHandle = (value: string, type: string) => {
+  const changeNameHandle = (value: string) => {
     setUpdateName(value)
   }
   const changeSpecHandle = (value: string, type: string) => {

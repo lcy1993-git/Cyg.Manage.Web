@@ -23,7 +23,7 @@ interface ElementDiv extends Element {
 
 // export const routeListVal = createContext();
 
-const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, history, match }) => {
+const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
   const [activeKey, setActiveKey] = useState<string>('/index')
   const [newSocket, setNewSocket] = useState<WebSocket>()
   // const [allProjectSearchProjectId, setAllProjectSearchProjectId] = useState('')
@@ -41,11 +41,11 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     searchPerson: '',
     searchType: '',
   })
-
+  const isAdminCategory = localStorage.getItem('isAdminCategory') === '0'
   const [routeList, setRouteList] = useState<RouteListItem[]>([
     {
       title: '首页',
-      tabKey: '/index',
+      tabKey: isAdminCategory ? '/admin-index/home' : '/index',
     },
   ])
   const [layoutIsFold, setLayoutIsFold] = useState(false)
@@ -96,8 +96,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
   }
 
   const editTabsEvent = (
-    key: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>,
-    action: 'add' | 'remove'
+    key: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>
   ) => {
     const copyRouteList = routeList.map((item) => item)
     const keyIndex = copyRouteList.findIndex((item) => item.tabKey === key)
@@ -229,7 +228,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
         ws.send('PING')
       }, 10000)
     }
-    ws.onclose = (err) => {
+    ws.onclose = () => {
       const currentToken = localStorage.getItem('Authorization')
       //如果浏览器未操作自动断开，根据token判断是主动关闭还是被动断开，来重连websocket或清除心跳。
       if (!currentToken) {
@@ -239,7 +238,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
       reconnect()
     }
     ws.onmessage = () => {}
-    ws.onerror = (err) => {
+    ws.onerror = () => {
       clearInterval(heart)
       reconnect()
     }

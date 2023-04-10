@@ -1,7 +1,6 @@
 import React from 'react'
-import { Input, InputNumber } from 'antd'
+import { Input } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
 import CascaderUrlSelect from '@/components/material-cascader-url-select'
 import Scrollbars from 'react-custom-scrollbars'
 

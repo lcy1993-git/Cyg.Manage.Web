@@ -24,10 +24,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false)
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   // const [requestLoading, setRequestLoading] = useState(false);
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const [form] = Form.useForm()
 
   const saveLineStreesSagEvent = () => {
@@ -70,7 +67,7 @@ const SaveImportLineStressSag: React.FC<SaveImportLineStressSagProps> = (props) 
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         return

@@ -1,48 +1,48 @@
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { Input } from 'antd';
-import React, { memo, useState, useEffect } from 'react';
-import { add, isNumber, subtract } from 'lodash';
-import styles from './index.less';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons'
+import { Input } from 'antd'
+import React, { memo, useState, useEffect } from 'react'
+import { add, isNumber, subtract } from 'lodash'
+import styles from './index.less'
 
 interface InputNumberProps {
-  limit?: number;
-  onChange?: (inputValue: number) => void;
-  canInput?: boolean;
-  maxNumber?: number;
-  minNumber?: number;
+  limit?: number
+  onChange?: (inputValue: number) => void
+  canInput?: boolean
+  maxNumber?: number
+  minNumber?: number
 }
 
 const ClickInputNumber: React.FC<InputNumberProps> = (props) => {
-  const { limit = 1, onChange, canInput = false, maxNumber, minNumber } = props;
-  const [inputValue, setInputValue] = useState<number>(5);
+  const { limit = 1, onChange, canInput = false, maxNumber, minNumber } = props
+  const [inputValue, setInputValue] = useState<number>(5)
 
   const inputEvent = (e: any) => {
-    setInputValue(e.target.value);
-  };
+    setInputValue(e.target.value)
+  }
 
   const addEvent = () => {
     if (isNumber(maxNumber)) {
       if (add(inputValue, limit) <= maxNumber) {
-        setInputValue(add(inputValue, limit));
+        setInputValue(add(inputValue, limit))
       }
-      return;
+      return
     }
-    setInputValue(add(inputValue, limit));
-  };
+    setInputValue(add(inputValue, limit))
+  }
 
   const cutEvent = () => {
     if (isNumber(minNumber)) {
       if (subtract(inputValue, limit) >= minNumber) {
-        setInputValue(subtract(inputValue, limit));
+        setInputValue(subtract(inputValue, limit))
       }
-      return;
+      return
     }
-    setInputValue(subtract(inputValue, limit));
-  };
+    setInputValue(subtract(inputValue, limit))
+  }
 
   useEffect(() => {
-    onChange?.(inputValue);
-  }, [inputValue]); 
+    onChange?.(inputValue)
+  }, [inputValue])
 
   return (
     <div className={styles.inputNumber}>
@@ -59,7 +59,7 @@ const ClickInputNumber: React.FC<InputNumberProps> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default memo(ClickInputNumber);
+export default memo(ClickInputNumber)

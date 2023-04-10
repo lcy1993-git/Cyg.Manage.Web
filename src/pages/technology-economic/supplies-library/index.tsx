@@ -1,18 +1,6 @@
 import React, { useState } from 'react'
 import { history } from 'umi'
-import {
-  Input,
-  Button,
-  Modal,
-  Form,
-  Switch,
-  message,
-  Space,
-  Spin,
-  DatePicker,
-  Row,
-  Col,
-} from 'antd'
+import { Input, Button, Modal, Form, message, Space, Spin, DatePicker, Row, Col } from 'antd'
 import type { ColumnsType } from 'antd/lib/table'
 import {
   EyeOutlined,
@@ -62,14 +50,14 @@ const SuppliesLibrary: React.FC = () => {
   const columns: ColumnsType<any> = [
     {
       dataIndex: 'name',
-      key: 'name',
+
       title: '名称',
       align: 'center',
       width: 170,
     },
     {
       dataIndex: 'publishDate',
-      key: 'publishDate',
+
       title: '发布时间',
       align: 'center',
       width: 80,
@@ -79,7 +67,7 @@ const SuppliesLibrary: React.FC = () => {
     },
     {
       dataIndex: 'publishOrg',
-      key: 'publishOrg',
+
       ellipsis: true,
       title: '发布机构',
       align: 'center',
@@ -103,7 +91,7 @@ const SuppliesLibrary: React.FC = () => {
     // },
     {
       dataIndex: 'remark',
-      key: 'remark',
+
       title: '说明',
       align: 'center',
       ellipsis: true,

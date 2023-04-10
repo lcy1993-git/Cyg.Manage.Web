@@ -1,6 +1,6 @@
 import React from 'react'
 import EditFormTable from '@/components/edit-form-table'
-import { InputNumber, Form, Input } from 'antd'
+import { Form, Input } from 'antd'
 import CascaderUrlSelect from '@/components/material-cascader-url-select'
 import Scrollbars from 'react-custom-scrollbars'
 interface AddDetailParams {

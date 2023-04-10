@@ -1,26 +1,26 @@
-import { useControllableValue } from 'ahooks';
-import React, { SetStateAction, Dispatch } from 'react';
-import styles from './index.less';
+import { useControllableValue } from 'ahooks'
+import React, { SetStateAction, Dispatch } from 'react'
+import styles from './index.less'
 
 interface TabsItem {
-  value: string;
-  name: string;
+  value: string
+  name: string
 }
 
 interface TabsWindowProps {
-  value: string;
-  tabsArray: TabsItem[];
-  titleCustomSlot?: () => React.ReactNode;
-  onChange: Dispatch<SetStateAction<string>>;
+  value: string
+  tabsArray: TabsItem[]
+  titleCustomSlot?: () => React.ReactNode
+  onChange: Dispatch<SetStateAction<string>>
 }
 
 const TabsWindow: React.FC<TabsWindowProps> = (props) => {
-  const { tabsArray, titleCustomSlot } = props;
-  const [state, setState] = useControllableValue(props, { valuePropName: 'value' });
+  const { tabsArray, titleCustomSlot } = props
+  const [state, setState] = useControllableValue(props, { valuePropName: 'value' })
 
   const tabItemClickEvent = (value: string) => {
-    setState(value);
-  };
+    setState(value)
+  }
 
   const tabsElement = tabsArray.map((item) => {
     return (
@@ -31,8 +31,8 @@ const TabsWindow: React.FC<TabsWindowProps> = (props) => {
       >
         {item.name}
       </div>
-    );
-  });
+    )
+  })
 
   return (
     <div className={styles.tabsWindow}>
@@ -42,7 +42,7 @@ const TabsWindow: React.FC<TabsWindowProps> = (props) => {
       </div>
       <div className={styles.tabsWindowContent}>{props.children}</div>
     </div>
-  );
-};
+  )
+}
 
-export default TabsWindow;
+export default TabsWindow

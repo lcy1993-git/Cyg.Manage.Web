@@ -1,5 +1,4 @@
-import { getToDoStatistics, AreaInfo } from '@/services/index'
-import { useRequest } from 'ahooks'
+import { AreaInfo } from '@/services/index'
 import React from 'react'
 import ChartBox from '../chart-box'
 import ToDoItem from '../to-do-item'
@@ -10,7 +9,7 @@ interface ToDoProps {
 }
 
 const ToDo: React.FC<ToDoProps> = (props) => {
-  const { componentProps = ['wait', 'arrange', 'other'], currentAreaInfo } = props
+  const { componentProps = ['wait', 'arrange', 'other'] } = props
 
   // const { data: toDoStatisticsInfo } = useRequest(() => getToDoStatistics({areaCode: currentAreaInfo.areaId,areaType: currentAreaInfo.areaLevel}), {
   //     refreshDeps: [currentAreaInfo],

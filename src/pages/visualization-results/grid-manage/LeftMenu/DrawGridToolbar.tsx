@@ -5,7 +5,7 @@ import { useState } from 'react'
 import CityList from './CityList'
 import GridFilterModal from './grid-filter-modal'
 
-const DrawGridToolbar = (props: any) => {
+const DrawGridToolbar = () => {
   const [visible, setVisible] = useState(false)
   const [filterVisible, setFilterVisible] = useState(false)
   return (

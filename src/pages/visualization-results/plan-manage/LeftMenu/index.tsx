@@ -43,7 +43,7 @@ const lineformLayout = {
   wrapperCol: { span: 17 },
 }
 
-const LeftMenu = (props: any) => {
+const LeftMenu = () => {
   const [form] = useForm()
   const [visible, setVisible] = useState(false)
   const [currentLineKvLevel, setcurrentLineKvLevel] = useState<number>(1)

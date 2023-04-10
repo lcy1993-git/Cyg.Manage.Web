@@ -1,35 +1,35 @@
-import React, { useMemo } from 'react';
-import { Input, TreeSelect } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import { GetUserTreeByGroup } from '@/services/personnel-config/company-user';
+import React, { useMemo } from 'react'
+import { Input, TreeSelect } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import { GetUserTreeByGroup } from '@/services/personnel-config/company-user'
 
-import rules from './rule';
+import rules from './rule'
 
 interface CompanyGroupFormProps {
-  treeData: GetUserTreeByGroup[];
-  id?: string;
-  type?: 'add' | 'edit';
+  treeData: GetUserTreeByGroup[]
+  id?: string
+  type?: 'add' | 'edit'
 }
 
 const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
-  const { treeData = [], id, type = '' } = props;
+  const { treeData = [], id, type = '' } = props
 
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
       value: data.id,
       children: data.children.map(mapTreeData),
-    };
-  };
+    }
+  }
 
   const handleData = useMemo(() => {
     return treeData
-      ?.filter((item, index) => {
-        return item.id != id;
+      ?.filter((item) => {
+        return item.id != id
       })
-      .map(mapTreeData);
-  }, [JSON.stringify(treeData)]);
+      .map(mapTreeData)
+  }, [JSON.stringify(treeData)])
 
   return (
     <>
@@ -86,7 +86,7 @@ const CompanyGroupForm: React.FC<CompanyGroupFormProps> = (props) => {
         />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default CompanyGroupForm;
+export default CompanyGroupForm

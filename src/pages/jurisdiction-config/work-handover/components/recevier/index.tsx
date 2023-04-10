@@ -1,45 +1,39 @@
-import { Select } from 'antd';
-import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react';
-import { useRequest } from 'ahooks';
-import { getReceiver } from '@/services/personnel-config/work-handover';
+import { Select } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react'
+import { useRequest } from 'ahooks'
+import { getReceiver } from '@/services/personnel-config/work-handover'
 
 interface RecevierParams {
-  userId: string;
-  receiverId: string | undefined;
-  clientCategory?: number;
-  isCompanyGroupIdentity?: boolean;
-  setReceiverName?: Dispatch<SetStateAction<string>>;
-  changeVal?: Dispatch<SetStateAction<string | undefined>>;
+  userId: string
+  receiverId: string | undefined
+  clientCategory?: number
+  isCompanyGroupIdentity?: boolean
+  setReceiverName?: Dispatch<SetStateAction<string>>
+  changeVal?: Dispatch<SetStateAction<string | undefined>>
 }
 
 const Recevier: React.FC<RecevierParams> = (props) => {
-  const {
-    userId,
-    clientCategory,
-    isCompanyGroupIdentity,
-    changeVal,
-    receiverId,
-    setReceiverName,
-  } = props;
+  const { userId, clientCategory, isCompanyGroupIdentity, changeVal, receiverId, setReceiverName } =
+    props
   const { data: resData, run } = useRequest(
     () => getReceiver({ userId, clientCategory, isCompanyGroupIdentity }),
     {
       ready: !!userId,
-    },
-  );
+    }
+  )
 
   const handleData = useMemo(() => {
     if (resData) {
       return resData?.map((item: any) => {
-        return { label: item.text, value: item.value };
-      });
+        return { label: item.text, value: item.value }
+      })
     }
-    return [];
-  }, [JSON.stringify(resData)]);
+    return []
+  }, [JSON.stringify(resData)])
 
   useEffect(() => {
-    run();
-  }, [isCompanyGroupIdentity]);
+    run()
+  }, [isCompanyGroupIdentity])
 
   return (
     <>
@@ -52,13 +46,13 @@ const Recevier: React.FC<RecevierParams> = (props) => {
         style={{ width: '270px', paddingLeft: '20px' }}
         placeholder="请选择接收人员"
         onChange={(value: any, option: any) => {
-          setReceiverName?.(option.label);
-          changeVal?.(value);
+          setReceiverName?.(option.label)
+          changeVal?.(value)
         }}
         value={receiverId}
       />
     </>
-  );
-};
+  )
+}
 
-export default Recevier;
+export default Recevier

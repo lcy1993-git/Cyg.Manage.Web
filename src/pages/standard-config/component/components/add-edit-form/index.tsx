@@ -19,7 +19,7 @@ interface ChartListFromLibParams {
 }
 
 const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
-  const { type = 'edit', resourceLibId, onSetDefaultForm, form, formData } = props
+  const { resourceLibId, onSetDefaultForm, form, formData } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const [updateName, setUpdateName] = useState<string>('')
   const [deviceCategory, setDeviceCategory] = useState<string>(form.getFieldValue('deviceCategory'))
@@ -41,7 +41,7 @@ const ComponentForm: React.FC<ChartListFromLibParams> = (props) => {
       </>
     )
   }
-  const changeNameHandle = (value: string, type: string) => {
+  const changeNameHandle = (value: string) => {
     setUpdateName(value)
   }
   const changeSpecHandle = (value: string, type: string) => {

@@ -1,16 +1,13 @@
-import { Space, Tabs } from 'antd'
+import { Space } from 'antd'
 
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
 import TopographicIncreaseFactor from '../topographic-increase-factor'
 import AttritionRate from '../atrition-rate'
-import { getCommonlyTableTypeList } from '@/services/technology-economic/usual-quota-table'
 import TableImportButton from '@/components/table-import-button'
 import EarthworkParameters from '../earthwork-parameters'
 import PageCommonWrap from '@/components/page-common-wrap'
 import { useMount } from 'ahooks'
-
-const { TabPane } = Tabs
 
 interface Props {}
 

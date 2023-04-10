@@ -19,7 +19,7 @@ const UploadExistedLib: React.FC<UploadAllProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [keyWord, setKeyWord] = useState('')
   const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
-  const { libId = '', requestSource, changeFinishEvent } = props
+  const { libId = '', changeFinishEvent } = props
   const [tableData, setTableData] = useState<any>([])
   const [copyTableData, setCopyTableData] = useState<any>([])
   const [loading, setLoading] = useState(false)

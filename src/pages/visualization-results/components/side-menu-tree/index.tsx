@@ -15,7 +15,7 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { AlignLeftOutlined, LeftOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
 import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
-import { Button, DatePicker, Input, message, Modal, Tree } from 'antd'
+import { Button, DatePicker, Input, message, Modal } from 'antd'
 import classNames from 'classnames'
 import _ from 'lodash'
 import { observer } from 'mobx-react-lite'
@@ -209,15 +209,15 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   const [dateRange, setDateRange] = useState<[Moment, Moment]>([undefined, undefined])
 
   // 判断开始时间不能大于结束时间
-  const compareData = (start: Moment, end: Moment) => {
-    if (start && end) {
-      if (start.valueOf() > end.valueOf()) {
-        message.error('开始时间不能大于结束时间')
-        return false
-      }
-    }
-    return true
-  }
+  // const compareData = (start: Moment, end: Moment) => {
+  //   if (start && end) {
+  //     if (start.valueOf() > end.valueOf()) {
+  //       message.error('开始时间不能大于结束时间')
+  //       return false
+  //     }
+  //   }
+  //   return true
+  // }
 
   const [exportMapPositionLoading, setexportMapPositionLoading] = useState<boolean>(false)
   const store = useContainer()
@@ -470,24 +470,24 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     setButtonActive(index)
   }
 
-  const treeNodeRender = (data: any) => {
-    return data.map((item: any) => {
-      let rest = {}
-      if (item.children && Array.isArray(item.Children)) {
-        return (
-          <Tree.TreeNode
-            key={item.key}
-            title={item.title}
-            checkable
-            {...rest}
-            children={treeNodeRender(item.children)}
-          />
-        )
-      } else {
-        return <Tree.TreeNode key={item.key} title={item.title} checkable />
-      }
-    })
-  }
+  // const treeNodeRender = (data: any) => {
+  //   return data.map((item: any) => {
+  //     let rest = {}
+  //     if (item.children && Array.isArray(item.Children)) {
+  //       return (
+  //         <Tree.TreeNode
+  //           key={item.key}
+  //           title={item.title}
+  //           checkable
+  //           {...rest}
+  //           children={treeNodeRender(item.children)}
+  //         />
+  //       )
+  //     } else {
+  //       return <Tree.TreeNode key={item.key} title={item.title} checkable />
+  //     }
+  //   })
+  // }
 
   const { data: mapPosition, run: downloadMapPositonRequest } = useRequest(downloadMapPositon, {
     manual: true,
@@ -685,16 +685,16 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
     }
   }
 
-  const isClickAble = () => {
-    if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 1) {
-      return true
-    } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0) {
-      message.error('当前未选择项目')
-    } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length > 1) {
-      message.error('多选状态下不可操作')
-    }
-    return false
-  }
+  // const isClickAble = () => {
+  //   if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 1) {
+  //     return true
+  //   } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length === 0) {
+  //     message.error('当前未选择项目')
+  //   } else if (Array.isArray(checkedProjectIdList) && checkedProjectIdList?.length > 1) {
+  //     message.error('多选状态下不可操作')
+  //   }
+  //   return false
+  // }
 
   return (
     <div

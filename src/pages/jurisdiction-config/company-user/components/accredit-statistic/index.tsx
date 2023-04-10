@@ -1,16 +1,16 @@
-import React from 'react';
-import styles from './index.less';
+import React from 'react'
+import styles from './index.less'
 
 interface AccreditStatisticsProps {
-  label: string;
-  icon: string;
-  accreditData?: any;
+  label: string
+  icon: string
+  accreditData?: any
 }
 
 const AccreditStatistics: React.FC<AccreditStatisticsProps> = (props) => {
-  const { label = '', icon = 'prospect', accreditData } = props;
+  const { label = '', icon = 'prospect', accreditData } = props
 
-  const imgSrc = require('../../../../../assets/image/user-accredit/' + icon + '.png');
+  const imgSrc = require('../../../../../assets/image/user-accredit/' + icon + '.png')
 
   return (
     <div className={styles.accreditStatistics}>
@@ -32,7 +32,7 @@ const AccreditStatistics: React.FC<AccreditStatisticsProps> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AccreditStatistics;
+export default AccreditStatistics

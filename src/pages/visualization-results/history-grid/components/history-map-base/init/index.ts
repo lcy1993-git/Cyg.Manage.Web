@@ -57,7 +57,7 @@ function init({
           true
         )
       },
-      filter(feature, layer) {
+      filter(feature) {
         // @ts-ignore
         const f = this?.getFeatures()?.getArray()[0]
 

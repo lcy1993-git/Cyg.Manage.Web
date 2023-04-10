@@ -1,13 +1,12 @@
 import commonLess from '../common.less'
 
 interface DeEasyTableProps {
-  head: React.ReactNode;
-  data: any[];
-  type?: React.ReactNode;
+  head: React.ReactNode
+  data: any[]
+  type?: React.ReactNode
 }
 
-const DeEasyTable: React.FC<DeEasyTableProps> = ({head, data}) => {
-  
+const DeEasyTable: React.FC<DeEasyTableProps> = ({ head, data }) => {
   return (
     <table className={commonLess.table}>
       <thead>
@@ -17,26 +16,18 @@ const DeEasyTable: React.FC<DeEasyTableProps> = ({head, data}) => {
       </thead>
       <tbody>
         <tr>
-          {
-            data.map((item, index) => {
-              return (
-                <td key={item.demolitionMajorText + index}>{item.demolitionMajorText}</td>
-              )
-            })
-          }
+          {data.map((item, index) => {
+            return <td key={item.demolitionMajorText + index}>{item.demolitionMajorText}</td>
+          })}
         </tr>
         <tr>
-          {
-            data.map((item, index) => {
-              return (
-                <td key={item.demolitionMajorText + index}>{item.costRate}</td>
-              )
-            })
-          }
+          {data.map((item, index) => {
+            return <td key={item.demolitionMajorText + index}>{item.costRate}</td>
+          })}
         </tr>
       </tbody>
     </table>
-  );
+  )
 }
 
-export default DeEasyTable;
+export default DeEasyTable

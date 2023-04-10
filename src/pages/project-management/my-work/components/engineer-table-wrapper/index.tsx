@@ -944,15 +944,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     },
   ]
 
-  const approvalFileEvent = (record: any) => {
-    setModalInfo({
-      engineerId: record.id,
-      areaId: record.province,
-      company: record.company,
-      companyName: record.company,
-    })
-    setApprovalEngineerVisible(true)
-  }
+  // const approvalFileEvent = (record: any) => {
+  //   setModalInfo({
+  //     engineerId: record.id,
+  //     areaId: record.province,
+  //     company: record.company,
+  //     companyName: record.company,
+  //   })
+  //   setApprovalEngineerVisible(true)
+  // }
 
   //立项待审批模态框
   const reportApprove = (projectId: string[]) => {

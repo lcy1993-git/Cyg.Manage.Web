@@ -12,4 +12,4 @@ export default {
   ],
   users: [{ required: true, message: '对象不能为空' }],
   category: [{ required: true, message: '端口不能为空' }],
-};
+}

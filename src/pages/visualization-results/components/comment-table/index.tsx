@@ -153,11 +153,11 @@ const CommentTable: FC<CommentProps> = (props) => {
     fetchProjectCommentListRquest()
   }
 
-  const pagination = {
-    current: currentPage,
-    onChange: onPageChange,
-    pageSize: 10,
-  }
+  // const pagination = {
+  //   current: currentPage,
+  //   onChange: onPageChange,
+  //   pageSize: 10,
+  // }
 
   const {
     data: commentListResponseData,

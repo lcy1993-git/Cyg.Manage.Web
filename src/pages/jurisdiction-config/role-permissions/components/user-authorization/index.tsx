@@ -1,34 +1,36 @@
-import GeneralTable from '@/components/general-table';
-import TableStatus from '@/components/table-status';
-import TableSearch from '@/components/table-search';
-import { Input, Button, message } from 'antd';
-import React, { useRef, useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
+import GeneralTable from '@/components/general-table'
+import TableStatus from '@/components/table-status'
+import TableSearch from '@/components/table-search'
+import { Input, Button, message } from 'antd'
+import React, { useRef, useState, useEffect } from 'react'
+import { PlusOutlined } from '@ant-design/icons'
 import {
   batchAddAuthorization,
   batchRemoveAuthorization,
-} from '@/services/jurisdiction-config/role-permissions';
-import ModalConfirm from '@/components/modal-confirm';
+} from '@/services/jurisdiction-config/role-permissions'
+import ModalConfirm from '@/components/modal-confirm'
+import AuthorizationConfirmation from '../authorization-confirmation'
 
 interface ExtractParams {
-  templateId: string;
+  templateId: string
 }
 
 interface UserAuthorizationProps {
-  extractParams: ExtractParams;
-  onChange: () => void;
+  extractParams: ExtractParams
+  onChange: () => void
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const { extractParams, onChange } = props;
+  const { extractParams, onChange } = props
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [selectRows, setSelectRows] = useState<any[]>([]);
-
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [selectRows, setSelectRows] = useState<any[]>([])
+  const [authorizationConfirmation, setAuthorizationConfirmation] = useState<boolean>(false)
+  const [ifSuccess, setIfSuccess] = useState<boolean>(false)
   const columns = [
     {
       title: '用户名',
@@ -55,11 +57,11 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       render: (text: string, record: any) => {
         switch (record.userType) {
           case 1:
-            return <TableStatus color="gray">{record.userTypeText}</TableStatus>;
+            return <TableStatus color="gray">{record.userTypeText}</TableStatus>
           case 2:
-            return <TableStatus color="orange">{record.userTypeText}</TableStatus>;
+            return <TableStatus color="orange">{record.userTypeText}</TableStatus>
           default:
-            return <TableStatus color="gray">{record.userTypeText}</TableStatus>;
+            return <TableStatus color="gray">{record.userTypeText}</TableStatus>
         }
       },
       width: 120,
@@ -71,27 +73,27 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
       width: 120,
       render: (text: string, record: any) => {
         if (record.isAuthorized) {
-          return <span className="colorPrimary">已授权</span>;
+          return <span className="colorPrimary">已授权</span>
         } else {
-          return <span className="colorRed">未授权</span>;
+          return <span className="colorRed">未授权</span>
         }
       },
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const refresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const tableLeftSlot = (
     <TableSearch width="248px">
@@ -103,32 +105,32 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
         placeholder="请输入用户信息"
       />
     </TableSearch>
-  );
+  )
 
   const batchRemoveAuthorizationEvent = async () => {
     if (selectRows.length === 0) {
-      message.error('请至少选中一条数据');
-      return;
+      message.error('请至少选中一条数据')
+      return
     }
 
     if (selectRows.find((item) => item.isAuthorized === true)) {
-      const batchObjectIds = selectRows.map((item) => item.id);
-      const { templateId } = extractParams;
+      const batchObjectIds = selectRows.map((item) => item.id)
+      const { templateId } = extractParams
 
       await batchRemoveAuthorization({
         templateId,
         authorizeType: 2,
         objectIds: batchObjectIds,
-      });
-      message.success('授权移除成功');
-      reset();
-      refresh();
-      onChange?.();
+      })
+      message.success('授权移除成功')
+      reset()
+      refresh()
+      onChange?.()
     } else {
-      message.error('选中的用户尚未授权');
-      return;
+      message.error('选中的用户尚未授权')
+      return
     }
-  };
+  }
 
   const tableRightSlot = (
     <>
@@ -144,34 +146,57 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
         content="请选择要移除授权的数据"
       />
     </>
-  );
+  )
 
   const reset = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.reset();
+      tableRef.current.reset()
     }
-  };
+  }
 
   const batchAddAuthorizationEvent = async () => {
     if (selectRows && selectRows.length === 0) {
-      message.error('请至少选中一条数据');
-      return;
+      message.error('请至少选中一条数据')
+      return
     }
-    const batchObjectIds = selectRows.map((item) => item.id);
+    setAuthorizationConfirmation(true)
+    // const batchObjectIds = selectRows.map((item) => item.id)
 
-    const { templateId } = extractParams;
+    // const { templateId } = extractParams
+
+    // await batchAddAuthorization({
+    //   templateId,
+    //   authorizeType: 2,
+    //   objectIds: batchObjectIds,
+    // })
+    // message.success('授权成功')
+    // reset()
+    // refresh()
+    // onChange?.()
+  }
+  const toAddAuthorization = async () => {
+    const batchObjectIds = selectRows.map((item) => item.id)
+
+    const { templateId } = extractParams
 
     await batchAddAuthorization({
       templateId,
       authorizeType: 2,
       objectIds: batchObjectIds,
-    });
-    message.success('授权成功');
-    reset();
-    refresh();
-    onChange?.();
-  };
+    })
+    message.success('授权成功')
+    setIfSuccess(false)
+    reset()
+    refresh()
+    onChange?.()
+  }
+  useEffect(() => {
+    if (ifSuccess) {
+      setAuthorizationConfirmation(false)
+      toAddAuthorization()
+    }
+  }, [ifSuccess]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
@@ -185,8 +210,13 @@ const UserAuthorization: React.FC<UserAuthorizationProps> = (props) => {
         getSelectData={(data) => setSelectRows(data)}
         extractParams={{ ...extractParams, keyWord: searchKeyWord }}
       />
+      <AuthorizationConfirmation
+        authorizationConfirmation={authorizationConfirmation}
+        setAuthorizationConfirmation={setAuthorizationConfirmation}
+        setIfSuccess={setIfSuccess}
+      />
     </div>
-  );
-};
+  )
+}
 
-export default UserAuthorization;
+export default UserAuthorization

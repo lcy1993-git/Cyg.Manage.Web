@@ -166,21 +166,18 @@ const Material: React.FC<libParams> = (props) => {
     //   title: '单价(元)',
     //   width: 180,
     // },
-
     // {
     //   dataIndex: 'usage',
     //   index: 'usage',
     //   title: '用途',
     //   width: 320,
     // },
-
     // {
     //   dataIndex: 'inspection',
     //   index: 'inspection',
     //   title: '物料(运检)',
     //   width: 240,
     // },
-
     {
       dataIndex: 'supplySide',
       index: 'supplySide',
@@ -387,20 +384,19 @@ const Material: React.FC<libParams> = (props) => {
     )
   }
 
-  const importMaterialEvent = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请选择资源库');
-    //   return;
-    // }
-    setImportMaterialVisible(true)
-  }
+  // const importMaterialEvent = () => {
+  //   // if (!resourceLibId) {
+  //   //   message.warning('请选择资源库');
+  //   //   return;
+  //   // }
+  //   setImportMaterialVisible(true)
+  // }
 
   const sureDeleteData = async () => {
     // if (!resourceLibId) {
     //   message.warning('请先选择资源库');
     //   return;
     // }
-
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择需要删除的行')
       return

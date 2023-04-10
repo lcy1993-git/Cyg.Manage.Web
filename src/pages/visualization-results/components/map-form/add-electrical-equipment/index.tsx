@@ -1,5 +1,5 @@
 import { CloseOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-import { useMount, useMouse } from 'ahooks'
+import { useMount } from 'ahooks'
 import { Button, Form, Input, message, Modal, Select, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
@@ -189,7 +189,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
   }
   const getLength = () => {
     let len = 0
-    selectedData.map((item, index) => {
+    selectedData.map((item) => {
       len =
         len +
         getLineLength(
@@ -263,7 +263,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       }
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLength()
-        setLineLength(((l / 1000).toFixed(4) as unknown) as number)
+        setLineLength((l / 1000).toFixed(4) as unknown as number)
       }
       setTimeout(() => {
         form.setFieldsValue(val)
@@ -273,7 +273,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       form.setFieldsValue(getEqualData())
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLength()
-        setLineLength(((l / 1000).toFixed(4) as unknown) as number)
+        setLineLength((l / 1000).toFixed(4) as unknown as number)
       }
       if (mode === 'preDesigning' && selectedData.some((item) => item?.sourceType === 'history')) {
         setShowDetail(true)
@@ -299,7 +299,7 @@ const HistoryGirdForm: React.FC<Props> = (props) => {
       setPosition(currentMousePosition)
       if (Object.keys(selectedData[0]).includes('startLng')) {
         const l = getLength()
-        setLineLength(((l / 1000).toFixed(4) as unknown) as number)
+        setLineLength((l / 1000).toFixed(4) as unknown as number)
       }
     } else if (selectedData.length === 0) {
       setVisible(false)

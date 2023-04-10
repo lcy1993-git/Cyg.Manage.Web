@@ -127,7 +127,6 @@ const MappingInfomation = () => {
   const typeOnChange = (val: string) => {
     // eslint-disable-next-line @typescript-eslint/no-shadow
     const item = slectLsit.find((item) => item.id === val)
-    console.log(slectLsit, val, item)
     if (item) {
       setId(item.id)
       setSourceMaterialLibraryId(item.sourceMaterialLibraryId)

@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import EmptyTip from '@/components/empty-tip'
 import { getEntrustProjectList } from '@/services/project-management/project-entrust'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { useRequest, useSize, useUpdateEffect } from 'ahooks'
 import { Spin } from 'antd'
 import { Pagination } from 'antd'
@@ -41,16 +40,16 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
   const [engineerModalVisible, setEngineerModalVisible] = useState<boolean>(false)
   const [projectModalVisible, setProjectModalVisible] = useState<boolean>(false)
 
-  const { data: tableData, loading, run } = useRequest(() =>
-    getEntrustProjectList({ ...extractParams, pageIndex, pageSize })
-  )
+  const {
+    data: tableData,
+    loading,
+    run,
+  } = useRequest(() => getEntrustProjectList({ ...extractParams, pageIndex, pageSize }))
 
   const scrollbar = useRef<any>(null)
   const tableContentRef = useRef<HTMLDivElement>(null)
 
   const tableContentSize = useSize(tableContentRef)
-
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const projectNameClickEvent = (engineerId: string) => {
     setCurrentClickEngineerId(engineerId)
@@ -333,7 +332,7 @@ const EntrustTable = (props: EntrustTableProps, ref: Ref<any>) => {
     //   onSelect?.([]);
     // },
 
-    searchByParams: (params: object) => {
+    searchByParams: () => {
       setPageIndex(1)
       run()
       if (scrollbar && scrollbar.current) {

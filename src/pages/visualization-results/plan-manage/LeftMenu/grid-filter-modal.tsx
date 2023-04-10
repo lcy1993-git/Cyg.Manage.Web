@@ -12,7 +12,7 @@ interface Props {
   onChange: (arg0: boolean) => void
 }
 
-const GridFilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel }) => {
+const GridFilterModal: React.FC<Props> = ({ visible, onChange, onCancel }) => {
   const { setKvLevels, setAreasId, isFilterTree, setIsFilterTree } = useTreeContext()
   const { areaData } = useMyContext()
   const kvOps = [

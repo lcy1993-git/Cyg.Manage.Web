@@ -1,66 +1,60 @@
-import React, { useState } from 'react';
-import { Input, Select, Col, Row } from 'antd';
-import FormSwitch from '@/components/form-switch';
-import CyFormItem from '@/components/cy-form-item';
-import DateFormItem from '@/components/date-from-item';
-import FileUpload from '@/components/file-upload';
-import { useRequest, useMount } from 'ahooks';
+import React, { useState } from 'react'
+import { Input, Select, Col, Row } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import DateFormItem from '@/components/date-from-item'
+import FileUpload from '@/components/file-upload'
+import { useRequest, useMount } from 'ahooks'
 import {
   getQuotaScopeEnums,
   queryMaterialMachineLibraryPager,
   queryQuotaLibraryPager,
-} from '@/services/technology-economic';
-import UrlSelect from '@/components/url-select';
-import {
-  getMaterialLibraryAllList,
-  getMaterialLibraryList,
-} from '@/services/technology-economic/supplies-library';
+} from '@/services/technology-economic'
+import UrlSelect from '@/components/url-select'
+// import { getMaterialLibraryList } from '@/services/technology-economic/supplies-library'
 
-const { Option } = Select;
+const { Option } = Select
 interface ResponsData {
   items: {
-    enabled: boolean;
-    id: string;
-    name: string;
-  }[];
+    enabled: boolean
+    id: string
+    name: string
+  }[]
 }
 
 const DictionaryForm: React.FC<null> = () => {
   const { data: MaterialMachineLibraryData, run } = useRequest<ResponsData>(
     queryMaterialMachineLibraryPager,
-    { manual: true },
-  );
+    { manual: true }
+  )
 
-  const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? [];
-  const [materialList, setMaterialList] = useState<{ name: string; id: string }[]>([]);
-  const [library, setLibrary] = useState<{ quotaScope: number; id: string }[]>([]);
-  const [enums, setEnums] = useState<{ text: string; value: number }[]>([]);
+  const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? []
+  // const [materialList, setMaterialList] = useState<{ name: string; id: string }[]>([])
+  const [library, setLibrary] = useState<{ quotaScope: number; id: string }[]>([])
+  const [enums, setEnums] = useState<{ text: string; value: number }[]>([])
   useMount(() => {
-    getMaterialData();
-    run({ pageIndex: 1, pageSize: 3000 });
-  });
+    getMaterialData()
+    run({ pageIndex: 1, pageSize: 3000 })
+  })
   const getMaterialData = async () => {
-    const res = await getMaterialLibraryList({
-      pageIndex: 1,
-      pageSize: 10000,
-    });
-    setMaterialList(res.items);
-    const data = await queryQuotaLibraryPager({ pageIndex: 1, pageSize: 3000 });
-    console.log(data)
-    setLibrary(data.items as []);
-    const enumArr = await getQuotaScopeEnums();
-    console.log(enumArr)
-    setEnums(enumArr);
-  };
+    // const res = await getMaterialLibraryList({
+    //   pageIndex: 1,
+    //   pageSize: 10000,
+    // })
+    // setMaterialList(res.items)
+    const data = await queryQuotaLibraryPager({ pageIndex: 1, pageSize: 3000 })
+    setLibrary(data.items as [])
+    const enumArr = await getQuotaScopeEnums()
+    setEnums(enumArr)
+  }
   const MaterialMachineLibraryListFn = () => {
     return MaterialMachineLibraryList.map((item) => {
       return (
-        <Option key={item.id} value={item.id} >
+        <Option key={item.id} value={item.id}>
           {item.name}
         </Option>
-      );
-    });
-  };
+      )
+    })
+  }
 
   return (
     <>
@@ -84,10 +78,14 @@ const DictionaryForm: React.FC<null> = () => {
             <Select>
               {enums.map((item) => {
                 return (
-                  <Option key={item.value} value={item.value} disabled={library.filter(val=>val.quotaScope === item.value).length !== 0}>
+                  <Option
+                    key={item.value}
+                    value={item.value}
+                    disabled={library.filter((val) => val.quotaScope === item.value).length !== 0}
+                  >
                     {item.text}
                   </Option>
-                );
+                )
               })}
             </Select>
           </CyFormItem>
@@ -184,7 +182,7 @@ const DictionaryForm: React.FC<null> = () => {
         <FileUpload accept=".xls,.xlsx" maxCount={1} trigger={false} />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default DictionaryForm;
+export default DictionaryForm

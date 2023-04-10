@@ -132,7 +132,7 @@ const CompanyManage: React.FC = () => {
       dataIndex: 'authorityExpireDate',
       index: 'authorityExpireDate',
       width: 140,
-      render: (text: any, record: any) => {
+      render: (text: any) => {
         return text ? moment(text).format('YYYY-MM-DD') : '-'
       },
     },

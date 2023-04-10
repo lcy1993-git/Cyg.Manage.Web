@@ -1,24 +1,24 @@
-import { useControllableValue, useRequest } from 'ahooks';
-import { Col, Form, message, Modal, Row, TreeSelect } from 'antd';
-import React, { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import CyFormItem from '@/components/cy-form-item';
-import UrlSelect from '@/components/url-select';
-import CyTip from '@/components/cy-tip';
-import EnumSelect from '@/components/enum-select';
-import { getCompany } from '@/services/jurisdiction-config/company-manage';
-import { useGetSelectData } from '@/utils/hooks';
-import { getTreeSelectData } from '@/services/operation-config/company-group';
-import { permissionItem } from '../category-table';
+import { useControllableValue, useRequest } from 'ahooks'
+import { Col, Form, message, Modal, Row, TreeSelect } from 'antd'
+import React, { Dispatch, SetStateAction, useMemo, useState } from 'react'
+import CyFormItem from '@/components/cy-form-item'
+import UrlSelect from '@/components/url-select'
+import CyTip from '@/components/cy-tip'
+import EnumSelect from '@/components/enum-select'
+import { getCompany } from '@/services/jurisdiction-config/company-manage'
+import { useGetSelectData } from '@/utils/hooks'
+import { getTreeSelectData } from '@/services/operation-config/company-group'
+import { permissionItem } from '../category-table'
 
 interface TypeModalParams {
-  visible?: boolean;
-  onChange?: Dispatch<SetStateAction<boolean>>;
-  finishEvent?: () => void;
+  visible?: boolean
+  onChange?: Dispatch<SetStateAction<boolean>>
+  finishEvent?: () => void
   // addItem?: Dispatch<SetStateAction<permissionItem[] | undefined>>;
-  changeTableEvent: (value: permissionItem[]) => void;
-  hasAddData: permissionItem[];
-  editData?: permissionItem;
-  addForm?: any;
+  changeTableEvent: (value: permissionItem[]) => void
+  hasAddData: permissionItem[]
+  editData?: permissionItem
+  addForm?: any
 }
 
 enum categoryEnum {
@@ -28,59 +28,59 @@ enum categoryEnum {
 }
 
 const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
-  const { changeTableEvent, hasAddData, editData, addForm } = props;
+  const { changeTableEvent, hasAddData, addForm } = props
 
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [categorySelected, setCategorySelected] = useState<string>();
-  const [projectTypes, setProjectTypes] = useState<number[] | undefined>([]);
-  const [company, setCompany] = useState<any>();
-  const [selectedCompany, setSelectedCompany] = useState<any>();
-  const [selectedUser, setSelectedUser] = useState<any>();
-  const [selectedGroup, setSelectedGroup] = useState<any>();
-  const [objectName, setObjectName] = useState<string>();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [categorySelected, setCategorySelected] = useState<string>()
+  const [projectTypes, setProjectTypes] = useState<number[] | undefined>([])
+  const [company, setCompany] = useState<any>()
+  const [selectedCompany, setSelectedCompany] = useState<any>()
+  const [selectedUser, setSelectedUser] = useState<any>()
+  const [selectedGroup, setSelectedGroup] = useState<any>()
+  const [objectName, setObjectName] = useState<string>()
 
   const { data: companyData } = useRequest(() => getCompany(), {
     ready: categorySelected === '1',
     onSuccess: () => {
-      const company = [];
-      company.push(companyData);
-      setCompany(company);
+      const company = []
+      company.push(companyData)
+      setCompany(company)
     },
-  });
+  })
 
   //获取用户数据
   const { data: userData = [] } = useGetSelectData({
     url: '/CompanyUser/GetList?clientCategory=2',
-  });
+  })
 
   const { data: proTypeData = [] } = useGetSelectData({
     url: '/ProjectAuthorityGroup/GetProjectTypes',
-  });
+  })
 
   //处理不同对象的项目类型
-  const groupTypeData = proTypeData?.filter((item: any) => item.value != 32);
-  const userTypeData = proTypeData?.filter((item: any) => item.value != 32 && item.value != 16);
+  const groupTypeData = proTypeData?.filter((item: any) => item.value != 32)
+  const userTypeData = proTypeData?.filter((item: any) => item.value != 32 && item.value != 16)
 
   //获取并处理部组数据
   const { data: groupData = [] } = useRequest(() => getTreeSelectData(), {
     ready: categorySelected === '2',
-  });
+  })
 
   const mapTreeData = (data: any) => {
     return {
       title: data.text,
       value: data.id,
       children: data.children?.map(mapTreeData),
-    };
-  };
+    }
+  }
 
   const handleGroupData = useMemo(() => {
-    return groupData.map(mapTreeData);
-  }, [JSON.stringify(groupData)]);
+    return groupData.map(mapTreeData)
+  }, [JSON.stringify(groupData)])
 
   const addProjectEntry = () => {
-    addForm.validateFields().then((values: any) => {
-      const copyHasAddData = [...hasAddData];
+    addForm.validateFields().then(() => {
+      const copyHasAddData = [...hasAddData]
       const addData = {
         category: categorySelected,
         objectId:
@@ -91,20 +91,20 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
             : selectedUser,
         projectTypes: projectTypes,
         objectName: objectName,
-      };
-
-      if (copyHasAddData.findIndex((item) => item.objectId === addData.objectId) === -1) {
-        copyHasAddData.unshift(addData);
-        changeTableEvent?.(copyHasAddData);
-        message.success('添加成功');
-        setState(false);
-        addForm.resetFields();
-        return;
       }
 
-      message.error('所选对象已经存在，不可重复添加');
-    });
-  };
+      if (copyHasAddData.findIndex((item) => item.objectId === addData.objectId) === -1) {
+        copyHasAddData.unshift(addData)
+        changeTableEvent?.(copyHasAddData)
+        message.success('添加成功')
+        setState(false)
+        addForm.resetFields()
+        return
+      }
+
+      message.error('所选对象已经存在，不可重复添加')
+    })
+  }
 
   return (
     <>
@@ -119,8 +119,8 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
         cancelText="取消"
         bodyStyle={{ padding: 0 }}
         onCancel={() => {
-          addForm.resetFields();
-          setState(false);
+          addForm.resetFields()
+          setState(false)
         }}
         onOk={() => addProjectEntry()}
       >
@@ -148,8 +148,8 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                         'companyId',
                         'groupId',
                         'userId',
-                      ]);
-                      setCategorySelected(value);
+                      ])
+                      setCategorySelected(value)
                     }}
                     placeholder="请选择对象类型"
                   />
@@ -171,8 +171,8 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                       defaultData={company}
                       value={selectedCompany}
                       onChange={(value: any, label: any) => {
-                        setSelectedCompany(value);
-                        setObjectName(label?.label);
+                        setSelectedCompany(value)
+                        setObjectName(label?.label)
                       }}
                       placeholder="请选择公司"
                       style={{ width: '350px' }}
@@ -195,8 +195,8 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                       treeDefaultExpandAll
                       value={selectedGroup}
                       onChange={(value: any, label: any) => {
-                        setSelectedGroup(value);
-                        setObjectName(label);
+                        setSelectedGroup(value)
+                        setObjectName(label)
                       }}
                     />
                   </CyFormItem>
@@ -217,8 +217,8 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
                       valuekey="value"
                       style={{ width: '350px' }}
                       onChange={(value: any, label: any) => {
-                        setSelectedUser(value);
-                        setObjectName(label?.label);
+                        setSelectedUser(value)
+                        setObjectName(label?.label)
                       }}
                       placeholder="请选择公司用户"
                     />
@@ -314,7 +314,7 @@ const PermissionTypeModal: React.FC<TypeModalParams> = (props) => {
         </div>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default PermissionTypeModal;
+export default PermissionTypeModal

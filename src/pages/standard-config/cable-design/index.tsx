@@ -5,8 +5,6 @@ import CableDesignTab from './components/cableDesign-tab'
 import ImportCableModal from './components/import-form'
 import styles from './index.less'
 
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-
 interface libParams {
   libId: string
 }
@@ -14,7 +12,6 @@ interface libParams {
 const CableDesign: React.FC<libParams> = (props) => {
   const { libId } = props
   const [importCableVisible, setImportCableVisible] = useState<boolean>(false)
-  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const uploadRefresh = useRef()
 
   // 列表刷新
@@ -23,10 +20,6 @@ const CableDesign: React.FC<libParams> = (props) => {
       // @ts-ignore
       uploadRefresh.current.refresh()
     }
-  }
-
-  const importCableDesignEvent = () => {
-    setImportCableVisible(true)
   }
 
   return (

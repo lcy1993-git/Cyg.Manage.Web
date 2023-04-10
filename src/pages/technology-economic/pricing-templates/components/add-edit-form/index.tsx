@@ -13,14 +13,9 @@ interface IForm {
   type?: 'add' | 'edit'
   selectList?: number[]
 }
-type listType = {
-  value: string
-  text: string
-  disabled?: true
-}
+
 const DictionaryForm: React.FC<IForm> = (props) => {
   const { type, selectList } = props
-  console.log(engineeringTemplateTypeList)
 
   return (
     <>

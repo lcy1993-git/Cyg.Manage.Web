@@ -225,7 +225,6 @@ export function revokeCurrentModify({
   refreshModifyCallBack,
 }: RevokeCurrentModifyOptions) {
   // const ids = memoFeatures.map((f) => f.get('id'))
-
   features.forEach((f) => {
     sourceRef[`${mode + getTypeByGeometry(f)}Source`].removeFeature(f)
   })
@@ -268,7 +267,7 @@ export function saveOperation(
   // 遍历被修改的元素
   eventFeatures.forEach((f) => {
     const geometry = f.getGeometry() as LineString | Point
-    const { geometry: _, ...resData } = f.getProperties()
+    const { ...resData } = f.getProperties()
 
     if (geometry.getType() === 'Point') {
       const [lng, lat] = proj.transform(

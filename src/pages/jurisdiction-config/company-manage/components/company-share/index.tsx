@@ -1,38 +1,38 @@
 import {
   createCompanyShare,
   removeCompanyShare,
-} from '@/services/jurisdiction-config/company-manage';
-import { useControllableValue } from 'ahooks';
-import { Modal, Input, Button, message } from 'antd';
-import React, { useRef, useState, SetStateAction, Dispatch } from 'react';
-import styles from './index.less';
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+} from '@/services/jurisdiction-config/company-manage'
+import { useControllableValue } from 'ahooks'
+import { Modal, Input, Button, message } from 'antd'
+import React, { useRef, useState, SetStateAction, Dispatch } from 'react'
+import styles from './index.less'
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 
 interface CompanyShareProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  companyId: string;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  companyId: string
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const CompanyShare: React.FC<CompanyShareProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const [addTableSelectRows, setAddTableSelectRows] = useState<any[]>([]);
-  const [shareTableSelectRows, setShareTableSelectRows] = useState<any[]>([]);
-  const [isAddSearch, setIsAddSearch] = useState<boolean>(false);
+  const [addTableSelectRows, setAddTableSelectRows] = useState<any[]>([])
+  const [shareTableSelectRows, setShareTableSelectRows] = useState<any[]>([])
+  const [isAddSearch, setIsAddSearch] = useState<boolean>(false)
   // const [resizableColumns, setResizableColumns] = useState<object[]>([]);
 
-  const [shareKeyWord, setShareKeyWord] = useState<string>('');
-  const [addKeyWord, setAddKeyWord] = useState<string>('');
+  const [shareKeyWord, setShareKeyWord] = useState<string>('')
+  const [addKeyWord, setAddKeyWord] = useState<string>('')
 
-  const addTableRef = useRef<HTMLDivElement>(null);
-  const shareTableRef = useRef<HTMLDivElement>(null);
+  const addTableRef = useRef<HTMLDivElement>(null)
+  const shareTableRef = useRef<HTMLDivElement>(null)
 
-  const { companyId } = props;
+  const { companyId } = props
 
   /**可伸缩配置 */
   // const tableComponents = components;
@@ -73,7 +73,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
       index: 'address',
       title: '详细地址',
     },
-  ];
+  ]
 
   const tableSearch = () => {
     return (
@@ -86,8 +86,8 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
           onChange={(e) => setShareKeyWord(e.target.value)}
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const addTableSearch = () => {
     return (
@@ -102,62 +102,62 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
           onChange={(e) => setAddKeyWord(e.target.value)}
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const search = () => {
     if (!isAddSearch) {
       if (shareTableRef && shareTableRef.current) {
         // @ts-ignore
-        shareTableRef.current.search();
+        shareTableRef.current.search()
       }
-      return;
+      return
     }
     if (addTableRef && addTableRef.current) {
       // @ts-ignore
-      addTableRef.current.search();
+      addTableRef.current.search()
     }
-  };
+  }
 
   const removeEvent = async () => {
     if (shareTableSelectRows && shareTableSelectRows.length === 0) {
-      message.warning('请选择需要取消共享的公司');
-      return;
+      message.warning('请选择需要取消共享的公司')
+      return
     }
 
-    const shareIds = shareTableSelectRows.map((item) => item.id);
-    await removeCompanyShare({ shareIds: shareIds });
-    setShareTableSelectRows([]);
-    message.success('已移除');
-    leftTableFresh();
-  };
+    const shareIds = shareTableSelectRows.map((item) => item.id)
+    await removeCompanyShare({ shareIds: shareIds })
+    setShareTableSelectRows([])
+    message.success('已移除')
+    leftTableFresh()
+  }
 
   //刷新
   const leftTableFresh = () => {
     if (shareTableRef && shareTableRef.current) {
       //@ts-ignore
-      shareTableRef.current.refresh();
+      shareTableRef.current.refresh()
     }
     if (addTableRef && addTableRef.current) {
       //@ts-ignore
-      addTableRef.current.search();
+      addTableRef.current.search()
     }
-  };
+  }
 
   //添加共享公司
   const addEvent = async () => {
     if (addTableSelectRows && addTableSelectRows.length === 0) {
-      message.warning('请选择需要共享的公司');
-      return;
+      message.warning('请选择需要共享的公司')
+      return
     }
 
-    const shareCompanyId = addTableSelectRows.map((item) => item.id);
-    await createCompanyShare({ companyId: companyId, shareCompanyIds: shareCompanyId });
+    const shareCompanyId = addTableSelectRows.map((item) => item.id)
+    await createCompanyShare({ companyId: companyId, shareCompanyIds: shareCompanyId })
 
-    setAddTableSelectRows([]);
-    message.success('添加共享公司成功');
-    leftTableFresh();
-  };
+    setAddTableSelectRows([])
+    message.success('添加共享公司成功')
+    leftTableFresh()
+  }
 
   //添加
   const tableElement = () => {
@@ -168,8 +168,8 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
           添加
         </Button>
       </div>
-    );
-  };
+    )
+  }
 
   //移除
   const leftTableButton = () => {
@@ -180,8 +180,8 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
           移除
         </Button>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <>
@@ -246,7 +246,7 @@ const CompanyShare: React.FC<CompanyShareProps> = (props) => {
         </div>
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default CompanyShare;
+export default CompanyShare

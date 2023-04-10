@@ -1,20 +1,20 @@
-import CyFormItem from '@/components/cy-form-item';
-import ReadonlyItem from '@/components/readonly-item';
-import ReplyComponent from '@/components/reply-component';
-import { Input } from 'antd';
-import moment from 'moment';
-import React from 'react';
+import CyFormItem from '@/components/cy-form-item'
+import ReadonlyItem from '@/components/readonly-item'
+import ReplyComponent from '@/components/reply-component'
+import { Input } from 'antd'
+import moment from 'moment'
+import React from 'react'
 
-import styles from './index.less';
+import styles from './index.less'
 
 interface FeedbackDetailProps {
-  detailInfo: any;
+  detailInfo: any
 }
 
 const FeedbackDetail: React.FC<FeedbackDetailProps> = (props) => {
-  const { detailInfo = {} } = props;
+  const { detailInfo = {} } = props
 
-  const { replys } = detailInfo;
+  const { replys } = detailInfo
 
   const replyElement = replys.map((item: any, index: number) => {
     return (
@@ -26,8 +26,8 @@ const FeedbackDetail: React.FC<FeedbackDetailProps> = (props) => {
       >
         {item.content}
       </ReplyComponent>
-    );
-  });
+    )
+  })
 
   return (
     <div className={styles.feedbackDetail}>
@@ -59,7 +59,7 @@ const FeedbackDetail: React.FC<FeedbackDetailProps> = (props) => {
         </CyFormItem>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FeedbackDetail;
+export default FeedbackDetail

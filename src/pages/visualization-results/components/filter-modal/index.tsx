@@ -13,18 +13,12 @@ import { useEffect } from 'react'
 import styles from './index.less'
 
 const { Item } = Form
-const { Option } = Select
 interface Props {
   visible: boolean
   onSure?: (arg0: any) => void
   onCancel?: () => void
   onChange: (arg0: boolean) => void
   defaultData: any
-}
-
-interface ProjectStatusOption {
-  key: string
-  name: string
 }
 
 const FilterModal: React.FC<Props> = ({ visible, onSure, onChange, onCancel, defaultData }) => {

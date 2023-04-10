@@ -39,37 +39,36 @@
 }
 
 .fullScreen {
-  padding: 0;
   width: 100%;
   height: 100%;
+  padding: 0;
   :global {
     .ant-modal-body,
     .ant-modal-content,
     .ant-modal-wrap {
-      padding: 0;
-      height: 100%;
       width: 100%;
+      height: 100%;
+      padding: 0;
     }
   }
   .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
   .controls {
-    width: 100%;
-    height: 100%;
     position: absolute;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
     .left,
     .right {
       width: 50%;
       height: 100%;
-      
     }
   }
 }

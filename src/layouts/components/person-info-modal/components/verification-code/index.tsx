@@ -1,34 +1,38 @@
-import { Button, Input, message } from "antd";
-import React, { useState, useMemo, useEffect } from "react";
-import styles from "./index.less";
-import { useInterval } from "ahooks";
-import { SendSmsType, getSmsCode } from "@/services/common"
+import { Button, Input, message } from 'antd'
+import React, { useState, useMemo, useEffect } from 'react'
+import styles from './index.less'
+import { useInterval } from 'ahooks'
+import { SendSmsType, getSmsCode } from '@/services/common'
 
 interface PersonInfoModalVerificationCodeProps {
-  type: SendSmsType,
-  phoneNumber: string,
+  type: SendSmsType
+  phoneNumber: string
   onChange?: (value: string) => void
-  canSend?: boolean;
+  canSend?: boolean
   setCanOkClick?: (arg0: boolean) => void | false
 }
 
 const PersonInfoModalVerificationCode: React.FC<PersonInfoModalVerificationCodeProps> = (props) => {
-  const { onChange, type, phoneNumber, canSend = false, setCanOkClick = false } = props;
-  const [delayNumber, setDelayNumber] = useState<number>();
-  const [residueNumber, setResidueNumber] = useState<number>(0);
+  const { onChange, type, phoneNumber, canSend = false, setCanOkClick = false } = props
+  const [delayNumber, setDelayNumber] = useState<number>()
+  const [residueNumber, setResidueNumber] = useState<number>(0)
 
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>('')
 
-  useInterval(() => {
-    if (residueNumber > 0) {
-      setResidueNumber(residueNumber - 1)
-    }
-    if (residueNumber === 0) {
-      setDelayNumber(undefined);
-    }
-  }, delayNumber, { immediate: false })
+  useInterval(
+    () => {
+      if (residueNumber > 0) {
+        setResidueNumber(residueNumber - 1)
+      }
+      if (residueNumber === 0) {
+        setDelayNumber(undefined)
+      }
+    },
+    delayNumber,
+    { immediate: false }
+  )
 
-  const buttonShowWord = delayNumber ? `倒计时${residueNumber}秒` : "发送验证码";
+  const buttonShowWord = delayNumber ? `倒计时${residueNumber}秒` : '发送验证码'
 
   useEffect(() => {
     if (setCanOkClick) {
@@ -38,15 +42,15 @@ const PersonInfoModalVerificationCode: React.FC<PersonInfoModalVerificationCodeP
 
   // TODO 发送请求验证码请求
   const sendVerificationCode = async () => {
-    await getSmsCode({ phoneNum: phoneNumber, sendSmsType: type });
+    await getSmsCode({ phoneNum: phoneNumber, sendSmsType: type })
     setDelayNumber(1000)
     setResidueNumber(60)
-    message.success("验证码发送成功");
+    message.success('验证码发送成功')
   }
 
   const InputValueChangeEvent = (value: string) => {
-    setInputValue(value);
-    onChange?.(value);
+    setInputValue(value)
+    onChange?.(value)
   }
 
   const canSendSmsFlag = useMemo(() => {
@@ -64,14 +68,21 @@ const PersonInfoModalVerificationCode: React.FC<PersonInfoModalVerificationCodeP
 
   return (
     <div className={styles.verificationCodeComponent}>
-      <div>
-        验证码：
-      </div>
+      <div>验证码：</div>
       <div className={styles.verificationCodeComponentInputContent}>
-        <Input value={inputValue} onChange={(e) => InputValueChangeEvent(e.target.value)} placeholder="验证码" className={styles.verificationCodeComponentInput} />
+        <Input
+          value={inputValue}
+          onChange={(e) => InputValueChangeEvent(e.target.value)}
+          placeholder="验证码"
+          className={styles.verificationCodeComponentInput}
+        />
       </div>
       <div className={styles.verificationCodeComponentButtonContent}>
-        <Button onClick={() => sendVerificationCode()} disabled={!canSendSmsFlag} className={styles.verificationCodeComponentButton}>
+        <Button
+          onClick={() => sendVerificationCode()}
+          disabled={!canSendSmsFlag}
+          className={styles.verificationCodeComponentButton}
+        >
           {buttonShowWord}
         </Button>
       </div>
@@ -79,4 +90,4 @@ const PersonInfoModalVerificationCode: React.FC<PersonInfoModalVerificationCodeP
   )
 }
 
-export default PersonInfoModalVerificationCode;
+export default PersonInfoModalVerificationCode

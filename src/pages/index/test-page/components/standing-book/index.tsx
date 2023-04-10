@@ -1,7 +1,7 @@
 import { useControllableValue } from 'ahooks'
-import { Modal, RadioChangeEvent } from 'antd'
-import { Radio, Space, Tabs } from 'antd'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import { Modal } from 'antd'
+import { Tabs } from 'antd'
+import React, { Dispatch, SetStateAction } from 'react'
 
 const { TabPane } = Tabs
 

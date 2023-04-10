@@ -12,7 +12,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '编号',
     width: 100,
     dataIndex: 'index',
-    key: 'index',
+
     fixed: 'left',
     // render: (text, record, idx) => (record.children ? idx + 1 : null),
   },
@@ -20,7 +20,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '物料类型',
     width: 200,
     dataIndex: 'type',
-    key: 'type',
+
     fixed: 'left',
     render(value, record) {
       if (record.children) {
@@ -34,20 +34,18 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '物料名称',
     width: 200,
     dataIndex: 'name',
-    key: 'name',
+
     fixed: 'left',
   },
   {
     title: '物料型号',
     width: 500,
     dataIndex: 'spec',
-    key: 'spec',
   },
   {
     title: '物料编号',
     width: 150,
     dataIndex: 'code',
-    key: 'code',
   },
   // {
   //   title: '物料编号',
@@ -60,7 +58,6 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '物料单位',
     width: 80,
     dataIndex: 'unit',
-    key: 'unit',
   },
   {
     title: '数量',
@@ -94,7 +91,6 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '状态',
     width: 80,
     dataIndex: 'state',
-    key: 'state',
   },
   // {
   //   title: '物料 描述',
@@ -106,16 +102,13 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '供给方',
     width: 200,
     dataIndex: 'supplySide',
-    key: 'supplySide',
   },
   {
     title: '备注',
     width: 200,
     dataIndex: 'remark',
-    key: 'remark',
   },
 ]
-
 export const MaterialTableNew: FC<MaterialTableProps> = (props) => {
   const { data, loading } = props
   return (

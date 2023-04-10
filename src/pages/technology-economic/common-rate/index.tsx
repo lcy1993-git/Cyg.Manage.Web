@@ -1,42 +1,34 @@
-import React, { useState } from 'react';
-import { history } from 'umi';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Input, Button, Modal, Form, message, Spin, Space } from 'antd';
-import { ColumnsType } from 'antd/lib/table';
-import { EyeOutlined, EditOutlined } from '@ant-design/icons';
-import { isArray } from 'lodash';
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import AddDictionaryForm from './components/add-edit-form';
-import {
-  deleteRateTable,
-  addRateTable,
-  editRateTable,
-  ImportRateFileZip,
-} from '@/services/technology-economic/common-rate';
-import moment from 'moment';
-import TableImportButton from '@/components/table-import-button';
+import React, { useState } from 'react'
+import { history } from 'umi'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { Input, Button, Modal, Form, message, Spin, Space } from 'antd'
+import { ColumnsType } from 'antd/lib/table'
+import { EyeOutlined, EditOutlined } from '@ant-design/icons'
+import { isArray } from 'lodash'
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import AddDictionaryForm from './components/add-edit-form'
+import { addRateTable, editRateTable } from '@/services/technology-economic/common-rate'
+import moment from 'moment'
+import TableImportButton from '@/components/table-import-button'
 
-const { Search } = Input;
+const { Search } = Input
 
 type DataSource = {
-  id: string;
-  [key: string]: string;
-};
+  id: string
+  [key: string]: string
+}
 
 const ProjectList: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [modalType, setModalType] = useState<string>('');
-  const [formVisible, setFormVisible] = useState<boolean>(false);
-  const [updateTable, setUpdateTable] = useState<boolean>(true);
-  const [spinning, setSpinning] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-  const [fileList, setFileList] = useState<File[]>([]);
-  const [importVisibel, setImportVisibel] = useState<boolean>(false);
-  const [form] = Form.useForm();
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRow] = useState<DataSource[] | object>([])
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [modalType, setModalType] = useState<string>('')
+  const [formVisible, setFormVisible] = useState<boolean>(false)
+  const [spinning, setSpinning] = useState<boolean>(false)
+  const buttonJurisdictionArray = useGetButtonJurisdictionArray()
+  const [form] = Form.useForm()
 
   const initColumns = [
     // {
@@ -47,13 +39,13 @@ const ProjectList: React.FC = () => {
     // },
     {
       dataIndex: 'name',
-      key: 'name',
+
       title: '名称',
       width: 200,
     },
     {
       dataIndex: 'rateFileType',
-      key: 'rateFileType',
+
       title: '费率类型',
       width: 200,
       render(v: number): string {
@@ -64,40 +56,40 @@ const ProjectList: React.FC = () => {
           '未计价材料施工损耗率',
           '土方参数',
           '社保公积金费率',
-        ][v - 1];
+        ][v - 1]
       },
     },
 
     {
       dataIndex: 'sourceFile',
-      key: 'sourceFile',
+
       title: '来源文件',
       width: 300,
     },
     {
       dataIndex: 'publishDate',
-      key: 'publishDate',
+
       title: '发布时间',
       width: 130,
       render(v: string) {
-        return moment(v).format('YYYY-MM-DD');
+        return moment(v).format('YYYY-MM-DD')
       },
     },
     {
       dataIndex: 'publishOrg',
-      key: 'publishOrg',
+
       title: '发布机构',
       width: 150,
     },
     {
       dataIndex: 'year',
-      key: 'year',
+
       title: '费率年度',
       width: 100,
     },
     {
       dataIndex: 'majorType',
-      key: 'majorType',
+
       title: '适用专业',
       width: 150,
     },
@@ -107,7 +99,7 @@ const ProjectList: React.FC = () => {
       title: '备注',
       width: 220,
     },
-  ];
+  ]
 
   const searchComponent = () => {
     return (
@@ -120,28 +112,28 @@ const ProjectList: React.FC = () => {
           placeholder="关键词"
         />
       </TableSearch>
-    );
-  };
+    )
+  }
 
   const tableSearchEvent = () => {
-    search();
-  };
+    search()
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   // //添加
   // const addEvent = () => {
@@ -162,14 +154,14 @@ const ProjectList: React.FC = () => {
   // 编辑
   const editEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行编辑');
+      message.error('请选择一条数据进行编辑')
     } else {
-      const publishDate = moment(tableSelectRows[0].publishDate);
-      setModalType('edit');
-      setFormVisible(true);
-      form.setFieldsValue({ ...tableSelectRows[0], publishDate });
+      const publishDate = moment(tableSelectRows[0].publishDate)
+      setModalType('edit')
+      setFormVisible(true)
+      form.setFieldsValue({ ...tableSelectRows[0], publishDate })
     }
-  };
+  }
   //
   // // 查看详情
   // const sureDeleteData = async () => {
@@ -185,8 +177,8 @@ const ProjectList: React.FC = () => {
 
   const gotoMoreInfo = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择一条数据进行查看');
-      return;
+      message.error('请选择一条数据进行查看')
+      return
     }
     let name = [
       '建筑安装取费表费率',
@@ -195,21 +187,21 @@ const ProjectList: React.FC = () => {
       '未计价材料施工损耗率',
       '土方参数',
       '社保公积金费率',
-    ][tableSelectRows[0].rateFileType - 1];
-    let id = tableSelectRows[0].id;
+    ][tableSelectRows[0].rateFileType - 1]
+    let id = tableSelectRows[0].id
     if (['建筑安装取费表费率', '拆除取费表费率'].includes(name)) {
       history.push(
         `/technology-economic/common-rate-infomation?id=${
           tableSelectRows[0].id
-        }&name=${name}&isDemolition=${name === '拆除取费表费率'}`,
-      );
+        }&name=${name}&isDemolition=${name === '拆除取费表费率'}`
+      )
     } else if (['地形增加系数', '未计价材料施工损耗率', '土方参数'].includes(name)) {
-      history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`);
+      history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`)
     } else if (name === '社保公积金费率') {
-      history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`);
+      history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`)
     }
-  };
-  const setSuccessful = () => {};
+  }
+  const setSuccessful = () => {}
   const tableElement = () => {
     return (
       <div style={{ display: 'flex' }}>
@@ -254,12 +246,12 @@ const ProjectList: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const tableSelectEvent = (data: DataSource[] | object) => {
-    setTableSelectRow(data);
-  };
+    setTableSelectRow(data)
+  }
   // const onOK = () => {
   //   if (fileList.length === 0) {
   //     message.error('当前未上传文件');
@@ -271,41 +263,41 @@ const ProjectList: React.FC = () => {
   //   }
   // };
   const onModalOkClick = async () => {
-    const values = await form.validateFields();
-    setSpinning(true);
-    setUpdateTable(false);
+    const values = await form.validateFields()
+    setSpinning(true)
+
     if (modalType === 'add') {
       addRateTable({ ...values })
         .then(() => {
-          message.success('添加成功');
-          setFormVisible(false);
-          setSpinning(false);
-          form.resetFields();
-          tableRef.current.reset();
+          message.success('添加成功')
+          setFormVisible(false)
+          setSpinning(false)
+          form.resetFields()
+          tableRef.current.reset()
         })
         .finally(() => {
-          setSpinning(false);
-        });
+          setSpinning(false)
+        })
     } else if (modalType === 'edit') {
       editRateTable({ ...values, id: tableSelectRows[0].id })
         .then(() => {
-          message.success('编辑成功');
+          message.success('编辑成功')
           // tableRef.current.reset();
-          setFormVisible(false);
-          setTableSelectRow([]);
-          setSpinning(false);
+          setFormVisible(false)
+          setTableSelectRow([])
+          setSpinning(false)
 
-          tableRef.current.reset();
-          tableRef.current.refresh();
-          form.resetFields();
+          tableRef.current.reset()
+          tableRef.current.refresh()
+          form.resetFields()
         })
         .finally(() => {
-          setSpinning(false);
-        });
+          setSpinning(false)
+        })
     }
-    setUpdateTable(true);
-    refresh();
-  };
+
+    refresh()
+  }
 
   return (
     <PageCommonWrap>
@@ -368,7 +360,7 @@ const ProjectList: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default ProjectList;
+export default ProjectList

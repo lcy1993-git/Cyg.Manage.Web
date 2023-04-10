@@ -16,7 +16,7 @@ interface PoleTypeParams {
 }
 
 const CableChannelForm: React.FC<PoleTypeParams> = (props) => {
-  const { type = 'edit', resourceLibId, onSetDefaultForm } = props
+  const { resourceLibId, onSetDefaultForm } = props
   const [isHidden, setIsHidden] = useState<boolean>(true)
   const unitSlot = () => {
     return (

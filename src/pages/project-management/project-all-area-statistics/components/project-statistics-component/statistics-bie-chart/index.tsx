@@ -1,16 +1,16 @@
-import AnnularFighure from '@/components/annular-fighure';
-import type { StatusParams } from '@/services/project-management/project-all-area-statistics';
-import { useSize } from 'ahooks';
-import React, { useEffect, useMemo, useRef } from 'react';
-import styles from './index.less';
+import AnnularFighure from '@/components/annular-fighure'
+import type { StatusParams } from '@/services/project-management/project-all-area-statistics'
+import { useSize } from 'ahooks'
+import React, { useEffect, useMemo, useRef } from 'react'
+import styles from './index.less'
 
 interface statusDataParams {
-  statusData: StatusParams;
+  statusData: StatusParams
 }
 
 const StatisticsBieChart: React.FC<statusDataParams> = ({ statusData = {} }) => {
-  const windowContentRef = useRef<HTMLDivElement>(null);
-  const contentSize = useSize(windowContentRef);
+  const windowContentRef = useRef<HTMLDivElement>(null)
+  const contentSize = useSize(windowContentRef)
 
   const option = useMemo(() => {
     return {
@@ -24,25 +24,25 @@ const StatisticsBieChart: React.FC<statusDataParams> = ({ statusData = {} }) => 
           radius: ['50%', '70%'],
           avoidLabelOverlap: true,
           data: statusData?.items?.map((item: any) => {
-            return { value: item.value, name: item.key };
+            return { value: item.value, name: item.key }
           }),
         },
       ],
-    };
-  }, [statusData]);
+    }
+  }, [statusData])
 
   useEffect(() => {
     if (contentSize.width || contentSize.height) {
-      const myEvent = new Event('resize');
-      window.dispatchEvent(myEvent);
+      const myEvent = new Event('resize')
+      window.dispatchEvent(myEvent)
     }
-  }, [contentSize]);
+  }, [contentSize])
 
   return (
     <div className={styles.statisticsBieChart} ref={windowContentRef}>
       <AnnularFighure options={option} />
     </div>
-  );
-};
+  )
+}
 
-export default StatisticsBieChart;
+export default StatisticsBieChart

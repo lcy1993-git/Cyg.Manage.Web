@@ -1,32 +1,32 @@
-import CommonTitle from '@/components/common-title';
-import { useControllableValue } from 'ahooks';
-import { Modal, Checkbox, Form } from 'antd';
-import uuid from 'node-uuid';
-import React, { Dispatch, SetStateAction, useMemo } from 'react';
-import { getHasChooseComponentsProps } from '../../utils';
-import HasCheckItem from '../has-check-item';
+import CommonTitle from '@/components/common-title'
+import { useControllableValue } from 'ahooks'
+import { Modal, Checkbox, Form } from 'antd'
+import uuid from 'node-uuid'
+import React, { Dispatch, SetStateAction, useMemo } from 'react'
+import { getHasChooseComponentsProps } from '../../utils'
+import HasCheckItem from '../has-check-item'
 
 interface AddEngineerProcessStatistic {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: (componentProps: any) => void;
-  configArray: any[];
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: (componentProps: any) => void
+  configArray: any[]
 }
 
-const processComponentPropsArray = [{ code: 'gantt', name: '甘特图' }];
+const processComponentPropsArray = [{ code: 'gantt', name: '甘特图' }]
 
 const AddEngineerProcessModal: React.FC<AddEngineerProcessStatistic> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const { changeFinishEvent, configArray } = props;
-  const [form] = Form.useForm();
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const { changeFinishEvent, configArray } = props
+  const [form] = Form.useForm()
 
   const sureAddEvent = () => {
     form.validateFields().then((values) => {
-      const { type } = values;
-      const componentProps = [...type];
+      const { type } = values
+      const componentProps = [...type]
 
       if (type) {
-        setState(false);
+        setState(false)
 
         changeFinishEvent?.([
           {
@@ -38,40 +38,44 @@ const AddEngineerProcessModal: React.FC<AddEngineerProcessStatistic> = (props) =
             h: 11,
             componentProps: componentProps,
           },
-        ]);
-        form.resetFields();
+        ])
+        form.resetFields()
       }
-    });
-  };
+    })
+  }
 
   const processCompoentProps = useMemo(() => {
     const hasChooseProgressComponentCodeArray = getHasChooseComponentsProps(
       configArray,
-      'projectProgress',
-    );
+      'projectProgress'
+    )
     const unChooseProgressComponentProps = processComponentPropsArray.filter(
-      (item) => !hasChooseProgressComponentCodeArray?.includes(item.code),
-    );
+      (item) => !hasChooseProgressComponentCodeArray?.includes(item.code)
+    )
     const hasChooseProgressComponentProps = processComponentPropsArray.filter((item) =>
-    hasChooseProgressComponentCodeArray?.includes(item.code),
-    );
+      hasChooseProgressComponentCodeArray?.includes(item.code)
+    )
     return {
       hasChooseProgressComponentProps,
       unChooseProgressComponentProps,
-    };
-  }, [JSON.stringify(configArray)]);
+    }
+  }, [JSON.stringify(configArray)])
 
-  const processStatisticCheckbox = processCompoentProps.unChooseProgressComponentProps.map((item) => {
-    return (
-      <Checkbox key={item.code} value={item.code}>
-        {item.name}
-      </Checkbox>
-    );
-  });
+  const processStatisticCheckbox = processCompoentProps.unChooseProgressComponentProps.map(
+    (item) => {
+      return (
+        <Checkbox key={item.code} value={item.code}>
+          {item.name}
+        </Checkbox>
+      )
+    }
+  )
 
-  const processStatisticHasCheck = processCompoentProps.hasChooseProgressComponentProps.map((item) => {
-    return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>;
-  });
+  const processStatisticHasCheck = processCompoentProps.hasChooseProgressComponentProps.map(
+    (item) => {
+      return <HasCheckItem key={item.code}>{item.name}</HasCheckItem>
+    }
+  )
 
   return (
     <Modal
@@ -93,7 +97,7 @@ const AddEngineerProcessModal: React.FC<AddEngineerProcessStatistic> = (props) =
         </Form.Item>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default AddEngineerProcessModal;
+export default AddEngineerProcessModal

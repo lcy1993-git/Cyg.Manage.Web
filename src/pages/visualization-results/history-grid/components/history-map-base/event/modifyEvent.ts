@@ -94,7 +94,7 @@ function saveAdsorptionOperation(
       const lineCoordinates = f.getGeometry()!.getCoordinates()
       // 先判断操作的coordinate不是为线段的端点，则进行打断
       if (!checkSegmentLine(coordinate, lineCoordinates)) {
-        const { geometry, id, ...currentLineInfo } = f.getProperties()
+        const { id, ...currentLineInfo } = f.getProperties()
 
         const line1 = {
           ...currentLineInfo,

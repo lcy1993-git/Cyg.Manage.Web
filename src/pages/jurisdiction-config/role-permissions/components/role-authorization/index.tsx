@@ -1,33 +1,33 @@
-import GeneralTable from '@/components/general-table';
-import TableStatus from '@/components/table-status';
-import TableSearch from '@/components/table-search';
-import { Input, Button, message } from 'antd';
-import React, { useRef, useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
+import GeneralTable from '@/components/general-table'
+import TableStatus from '@/components/table-status'
+import TableSearch from '@/components/table-search'
+import { Input, Button, message } from 'antd'
+import React, { useRef, useState } from 'react'
+import { PlusOutlined } from '@ant-design/icons'
 import {
   batchAddAuthorization,
   batchRemoveAuthorization,
-} from '@/services/jurisdiction-config/role-permissions';
-import { Popconfirm } from 'antd';
+} from '@/services/jurisdiction-config/role-permissions'
+import { Popconfirm } from 'antd'
 
 interface ExtractParams {
-  templateId: string;
+  templateId: string
 }
 
 interface RoleAuthorizationProps {
-  extractParams: ExtractParams;
-  onChange: () => void;
+  extractParams: ExtractParams
+  onChange: () => void
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
-  const tableRef = useRef<HTMLDivElement>(null);
+  const tableRef = useRef<HTMLDivElement>(null)
 
-  const { extractParams, onChange } = props;
+  const { extractParams, onChange } = props
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [selectRows, setSelectRows] = useState<any[]>([]);
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [selectRows, setSelectRows] = useState<any[]>([])
 
   const columns = [
     {
@@ -42,11 +42,11 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
       render: (text: string, record: any) => {
         switch (record.roleType) {
           case 1:
-            return <TableStatus color="gray">{record.roleTypeText}</TableStatus>;
+            return <TableStatus color="gray">{record.roleTypeText}</TableStatus>
           case 2:
-            return <TableStatus color="orange">{record.roleTypeText}</TableStatus>;
+            return <TableStatus color="orange">{record.roleTypeText}</TableStatus>
           default:
-            return null;
+            return null
         }
       },
     },
@@ -57,34 +57,34 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
       width: 120,
       render: (text: string, record: any) => {
         if (record.isAuthorized) {
-          return <span className="colorPrimary">已授权</span>;
+          return <span className="colorPrimary">已授权</span>
         } else {
-          return <span className="colorRed">未授权</span>;
+          return <span className="colorRed">未授权</span>
         }
       },
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const refresh = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   const reset = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.reset();
+      tableRef.current.reset()
     }
-  };
+  }
 
   const tableLeftSlot = (
     <TableSearch label="关键词" width="230px">
@@ -96,7 +96,7 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
         placeholder="关键词"
       />
     </TableSearch>
-  );
+  )
 
   const tableRightSlot = (
     <>
@@ -114,47 +114,47 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
         <Button className="mr7">移除</Button>
       </Popconfirm>
     </>
-  );
+  )
 
   const batchAddAuthorizationEvent = async () => {
     if (selectRows.length === 0) {
-      message.error('请至少选中一条数据');
-      return;
+      message.error('请至少选中一条数据')
+      return
     }
-    const batchObjectIds = selectRows.map((item) => item.id);
+    const batchObjectIds = selectRows.map((item) => item.id)
 
-    const { templateId } = extractParams;
+    const { templateId } = extractParams
 
     await batchAddAuthorization({
       templateId,
       authorizeType: 1,
       objectIds: batchObjectIds,
-    });
-    refresh();
-    reset();
-    onChange?.();
-    message.success('授权成功');
-  };
+    })
+    refresh()
+    reset()
+    onChange?.()
+    message.success('授权成功')
+  }
 
   const batchRemoveAuthorizationEvent = async () => {
     if (selectRows.length === 0) {
-      message.error('请至少选中一条数据');
-      return;
+      message.error('请至少选中一条数据')
+      return
     }
-    const batchObjectIds = selectRows.map((item) => item.id);
+    const batchObjectIds = selectRows.map((item) => item.id)
 
-    const { templateId } = extractParams;
+    const { templateId } = extractParams
 
     await batchRemoveAuthorization({
       templateId,
       authorizeType: 1,
       objectIds: batchObjectIds,
-    });
-    refresh();
-    reset();
-    onChange?.();
-    message.success('授权移除成功');
-  };
+    })
+    refresh()
+    reset()
+    onChange?.()
+    message.success('授权移除成功')
+  }
 
   return (
     <div>
@@ -169,7 +169,7 @@ const RoleAuthorization: React.FC<RoleAuthorizationProps> = (props) => {
         extractParams={{ ...extractParams, keyWord: searchKeyWord }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default RoleAuthorization;
+export default RoleAuthorization

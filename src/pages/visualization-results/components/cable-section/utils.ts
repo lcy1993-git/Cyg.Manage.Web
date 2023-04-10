@@ -50,41 +50,41 @@ const simpleMixIn = (org, resRedData) => {
   }
 }
 
-const mixInArray = (org: any[], sortData: any[], layMode: number, row: number) => {
-  let redData1
-  let redData2
-  switch (layMode) {
-    case 2:
-      const sortDataClone = JSON.parse(JSON.stringify(sortData.filter((item) => item.col !== 0)))
-      redData1 = sortData.findIndex((item) => item.row === 1 && item.col === 0)
-      redData2 = sortData.findIndex((item) => item.row === 0 && item.col === 0)
+// const mixInArray = (org: any[], sortData: any[], layMode: number, row: number) => {
+//   let redData1
+//   let redData2
+//   switch (layMode) {
+//     case 2:
+//       const sortDataClone = JSON.parse(JSON.stringify(sortData.filter((item) => item.col !== 0)))
+//       redData1 = sortData.findIndex((item) => item.row === 1 && item.col === 0)
+//       redData2 = sortData.findIndex((item) => item.row === 0 && item.col === 0)
 
-      const resRedData = [...sortDataClone, redData1[0], redData2[0]]
+//       const resRedData = [...sortDataClone, redData1[0], redData2[0]]
 
-      return org.map((item, index) => {
-        if (resRedData[index]?.usageState === 1) {
-          item.fill = 'green'
-        } else if (resRedData[index]?.usageState === 2) {
-          item.fill = 'gray'
-        } else if (resRedData[index]?.usageState === 3) {
-          item.fill = '#fff'
-        } else {
-          item.fill = 'rgba(0,0,0,0)'
-        }
-        return item
-      })
-      break
-    case 4:
-      break
-    case 6:
-      break
+//       return org.map((item, index) => {
+//         if (resRedData[index]?.usageState === 1) {
+//           item.fill = 'green'
+//         } else if (resRedData[index]?.usageState === 2) {
+//           item.fill = 'gray'
+//         } else if (resRedData[index]?.usageState === 3) {
+//           item.fill = '#fff'
+//         } else {
+//           item.fill = 'rgba(0,0,0,0)'
+//         }
+//         return item
+//       })
+//       break
+//     case 4:
+//       break
+//     case 6:
+//       break
 
-    default:
-      break
-  }
+//     default:
+//       break
+//   }
 
-  return []
-}
+//   return []
+// }
 
 const drawCircular = (
   data: DataOptions[],
@@ -94,8 +94,7 @@ const drawCircular = (
   if (!ctx) return
   data.forEach((item) => {
     if (!item) return
-    const { x, y, r, stroke, fill, lineWidth } = item
-
+    const { x, y, r, stroke, fill } = item
     ctx.beginPath()
     ctx.lineWidth = 0.5
     if (stroke) {

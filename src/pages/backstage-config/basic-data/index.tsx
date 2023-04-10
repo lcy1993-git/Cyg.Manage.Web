@@ -1,37 +1,58 @@
-import React from 'react';
-import PageCommonWrap from '@/components/page-common-wrap';
-import CommonTitle from '@/components/common-title';
-import styles from './index.less';
-import FileUpLoad from '@/components/file-upload';
-import { Button, Form, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { commonUpload } from '@/services/common';
-import CyFormItem from '@/components/cy-form-item';
-import ExportAuthorityButton from '@/components/authortiy-export-button';
+import React from 'react'
+import PageCommonWrap from '@/components/page-common-wrap'
+import CommonTitle from '@/components/common-title'
+import styles from './index.less'
+import FileUpLoad from '@/components/file-upload'
+import { Button, Form, message } from 'antd'
+import { UploadOutlined } from '@ant-design/icons'
+import { baseUrl, commonUpload } from '@/services/common'
+import CyFormItem from '@/components/cy-form-item'
+import ExportAuthorityButton from '@/components/authortiy-export-button'
+import { uploadAuditLog } from '@/utils/utils'
 
 const BasicData: React.FC = () => {
-  const [assestsForm] = Form.useForm();
-  const [jurisdictionForm] = Form.useForm();
-  const [areaForm] = Form.useForm();
+  const [assestsForm] = Form.useForm()
+  const [areaForm] = Form.useForm()
   // const [assestsUploadLoading, setAssestsUploadLoading] = useState<boolean>(false);
   const uploadAssests = () => {
     assestsForm.validateFields().then(async (values) => {
-      const { assestsFile } = values;
-      await commonUpload('/Upload/StaticFile', assestsFile, 'file', 'upload');
-      message.success('上传成功');
-      assestsForm.resetFields();
-    });
-  };
+      const { assestsFile } = values
+      await commonUpload('/Upload/StaticFile', assestsFile, 'file', 'upload')
+      uploadAuditLog([
+        {
+          auditType: 1,
+          eventType: 5,
+          eventDetailType: '文件上传',
+          executionResult: '成功',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.upload}/Upload/StaticFile`,
+        },
+      ])
+      message.success('上传成功')
+
+      assestsForm.resetFields()
+    })
+  }
 
   //上传气象区文件
   const uploadAreaFile = async () => {
     areaForm.validateFields().then(async (values) => {
-      const { areaFile } = values;
-      await commonUpload('/Meteorological/Import', areaFile, 'file', 'project');
-      message.success('上传成功');
-      areaForm.resetFields();
-    });
-  };
+      const { areaFile } = values
+      await commonUpload('/Meteorological/Import', areaFile, 'file', 'project')
+      uploadAuditLog([
+        {
+          auditType: 1,
+          eventType: 5,
+          eventDetailType: '文件上传',
+          executionResult: '成功',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/Meteorological/Import`,
+        },
+      ])
+      message.success('上传成功')
+      areaForm.resetFields()
+    })
+  }
 
   return (
     <PageCommonWrap noPadding>
@@ -63,7 +84,22 @@ const BasicData: React.FC = () => {
             <Form form={areaForm}>
               <CyFormItem label="气象区文件模板" labelAlign="right" labelWidth={111}>
                 <Button type="primary" style={{ width: '80px' }}>
-                  <a href="/template/metareaTemp.xlsx" download="气象区文件模板.xlsx">
+                  <a
+                    href="/template/metareaTemp.xlsx"
+                    download="气象区文件模板.xlsx"
+                    onClick={() => {
+                      uploadAuditLog([
+                        {
+                          auditType: 1,
+                          eventType: 5,
+                          eventDetailType: '文件下载',
+                          executionResult: '成功',
+                          auditLevel: 2,
+                          serviceAdress: `/template/metareaTemp.xlsx`,
+                        },
+                      ])
+                    }}
+                  >
                     下载
                   </a>
                 </Button>
@@ -94,7 +130,7 @@ const BasicData: React.FC = () => {
         </div>
       </div>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default BasicData;
+export default BasicData

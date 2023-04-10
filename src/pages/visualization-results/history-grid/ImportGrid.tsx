@@ -10,13 +10,7 @@ const { useForm } = Form
 
 /** 导入 */
 const ImportGrid = () => {
-  const {
-    UIStatus,
-    mode,
-    preDesignItemData,
-    preDesignDataSource,
-    dispatch,
-  } = useHistoryGridContext()
+  const { UIStatus, mode, preDesignDataSource, dispatch } = useHistoryGridContext()
   const { importModalVisible } = UIStatus
 
   const [form] = useForm()

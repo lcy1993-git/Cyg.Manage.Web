@@ -1,41 +1,34 @@
-import React, { useRef, useState } from 'react';
-import { useControllableValue } from 'ahooks';
-import { Modal, Input, Button, Select, message } from 'antd';
-import { SetStateAction } from 'react';
-import { Dispatch } from 'react';
+import React, { useRef, useState } from 'react'
+import { useControllableValue } from 'ahooks'
+import { Modal, Input, Button, Select, message } from 'antd'
+import { SetStateAction } from 'react'
+import { Dispatch } from 'react'
 // import styles from './index.less';
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
 
-const { Search } = Input;
+const { Search } = Input
 
 interface InventoryTableParams {
-  areaOptions: { label: string; value: string }[];
-  inventoryOverviewId: string;
-  materialId: string;
-  mappingId?: string | undefined;
-  changeEvent: (value: object[]) => void;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  visible: boolean;
-  hasMapData: any[];
+  areaOptions: { label: string; value: string }[]
+  inventoryOverviewId: string
+  materialId: string
+  mappingId?: string | undefined
+  changeEvent: (value: object[]) => void
+  onChange: Dispatch<SetStateAction<boolean>>
+  visible: boolean
+  hasMapData: any[]
 }
 
 const InventoryTable: React.FC<InventoryTableParams> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
 
-  const {
-    areaOptions,
-    inventoryOverviewId,
-    materialId,
-    changeEvent,
-    hasMapData,
-    mappingId,
-  } = props;
-  const inventoryTableRef = useRef<HTMLDivElement>(null);
-  const [inventoryKeyWord, setInventoryKeyWord] = useState<string>('');
-  const [activeInventoryAreaId, setActiveInventoryAreaId] = useState<string>('-1');
+  const { areaOptions, inventoryOverviewId, materialId, changeEvent, hasMapData, mappingId } = props
+  const inventoryTableRef = useRef<HTMLDivElement>(null)
+  const [inventoryKeyWord, setInventoryKeyWord] = useState<string>('')
+  const [activeInventoryAreaId, setActiveInventoryAreaId] = useState<string>('-1')
 
-  const [inventorySelectArray, setInventorySelectArray] = useState<any[]>([]);
+  const [inventorySelectArray, setInventorySelectArray] = useState<any[]>([])
 
   const inventoryTableSearch = () => {
     return (
@@ -59,11 +52,11 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
           />
         </TableSearch>
       </div>
-    );
-  };
+    )
+  }
 
   const inventoryTableSelectChange = (value: string) => {
-    setActiveInventoryAreaId(value as string);
+    setActiveInventoryAreaId(value as string)
     if (inventoryTableRef && inventoryTableRef.current) {
       // @ts-ignore
       inventoryTableRef.current.searchByParams({
@@ -72,47 +65,47 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
         materialId: materialId,
         mappingId: mappingId,
         keyWord: inventoryKeyWord,
-      });
+      })
     }
-  };
+  }
 
   const inventorySearch = () => {
     if (inventoryTableRef && inventoryTableRef.current) {
       //@ts-ignore
-      inventoryTableRef.current.search();
+      inventoryTableRef.current.search()
     }
-  };
+  }
 
   const inventoryTableAddButton = () => {
     return (
       <Button type="primary" onClick={() => addEvent()}>
         确认添加
       </Button>
-    );
-  };
+    )
+  }
 
   const reset = () => {
     if (inventoryTableRef && inventoryTableRef.current) {
       //@ts-ignore
-      inventoryTableRef.current.reset();
+      inventoryTableRef.current.reset()
     }
-  };
+  }
 
   const addEvent = () => {
-    const copyData = [...inventorySelectArray];
-    const copyHasMapData = [...hasMapData];
+    const copyData = [...inventorySelectArray]
+    const copyHasMapData = [...hasMapData]
 
     copyData.forEach((item) => {
       if (copyHasMapData.findIndex((ite) => ite.id === item.id) === -1) {
-        copyHasMapData.unshift({ ...item, howToCreateText: '手动', type: 'add' });
+        copyHasMapData.unshift({ ...item, howToCreateText: '手动', type: 'add' })
       }
-    });
+    })
 
-    changeEvent(copyHasMapData);
-    message.success('导入成功');
-    setState(false);
-    reset();
-  };
+    changeEvent(copyHasMapData)
+    message.success('导入成功')
+    setState(false)
+    reset()
+  }
 
   const inventoryTableColumns = [
     {
@@ -151,7 +144,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
       title: '计量单位',
       width: 80,
     },
-  ];
+  ]
 
   return (
     <>
@@ -188,7 +181,7 @@ const InventoryTable: React.FC<InventoryTableParams> = (props) => {
         />
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default InventoryTable;
+export default InventoryTable

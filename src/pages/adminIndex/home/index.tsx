@@ -1,23 +1,76 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import WrapperComponent from '@/components/page-common-wrap'
 import EventNumber from '@/pages/adminIndex/home/child/eventsNumber'
 import styles from './index.less'
-import * as echarts from 'echarts/lib/echarts'
+import * as echarts from 'echarts'
 import 'echarts/lib/component/grid'
 import 'echarts/lib/component/tooltip'
-import { useMount, useSize } from 'ahooks'
+import { useMount } from 'ahooks'
 import RecentlyWarned from '@/pages/adminIndex/home/child/recentlyWarned'
-import { Button, Table } from 'antd'
+import { Button, Spin, Table } from 'antd'
 import { ColumnsType } from 'antd/lib/table'
 import { useHistory } from 'react-router-dom'
+import {
+  getAuditEventCategoryQty,
+  getAuditEventChartInfo,
+  getAuditEventQtyInfo,
+} from '@/services/security-audit'
 
 const AdminIndex: React.FC = () => {
   const lineRef = useRef<HTMLDivElement>(null)
   const circleRef = useRef<HTMLDivElement>(null)
+  const [spinning, setSpinning] = useState(false)
+  const [circleData, setCilcleData] = useState([
+    {
+      name: '业务事件',
+      value: 0,
+    },
+    {
+      name: '系统事件',
+      value: 0,
+    },
+  ])
+  const [lineDataArr, setLineDataArr] = useState<
+    {
+      time: string
+      count: number
+    }[]
+  >([])
+  const [tableData, setTableData] = useState([])
+  const getCountData = async () => {
+    const res = await getAuditEventQtyInfo()
+    const lineData = await getAuditEventChartInfo({
+      hour: 12,
+    })
+    setLineDataArr(lineData)
+    if (res) {
+      setCilcleData([
+        {
+          name: '业务事件',
+          value: res.businessQty,
+        },
+        {
+          name: '系统事件',
+          value: res.systemQty,
+        },
+      ])
+    }
+    setSpinning(false)
+    setTimeout(() => {
+      setSpinning(false)
+    }, 5000)
+  }
+  const getTableData = async () => {
+    const res = await getAuditEventCategoryQty()
+    setTableData(res)
+  }
+  useMount(() => {
+    setSpinning(true)
+    getCountData().then(() => {})
+    getTableData().then(() => {})
+  })
   let myChartLine: any = null
   let myChartCircle: any = null
-  const lineSize = useSize(lineRef)
-  const circleSize = useSize(lineRef)
   const history = useHistory()
   const lineOptions = {
     title: {
@@ -25,21 +78,20 @@ const AdminIndex: React.FC = () => {
       textStyle: {
         fontSize: 16,
         fontWeight: 500,
+        color: '#1f1f1f',
+        fontFamily: 'Source Han Sans CN',
       },
     },
     tooltip: {
       trigger: 'axis',
       axisPointer: {
-        type: 'cross',
-        label: {
-          backgroundColor: 'white',
-        },
+        type: 'line',
       },
     },
     grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
+      left: '4%',
+      right: '1%',
+      bottom: '5%',
       containLabel: true,
     },
     xAxis: [
@@ -47,26 +99,12 @@ const AdminIndex: React.FC = () => {
         type: 'category',
         boundaryGap: false,
         name: '时间',
-        nameGap: 40,
+        nameGap: 50,
         nameLocation: 'center',
         axisLabel: {
           rotate: 40,
         },
-        data: [
-          '00:00:00',
-          '02:00:00',
-          '04:00:00',
-          '06:00:00',
-          '08:00:00',
-          '10:00:00',
-          '12:00:00',
-          '14:00:00',
-          '16:00:00',
-          '18:00:00',
-          '20:00:00',
-          '22:00:00',
-          '24:00:00',
-        ],
+        data: lineDataArr.map((i) => i.time.slice(10, 20).replace(' ', '')),
       },
     ],
     yAxis: [
@@ -87,7 +125,7 @@ const AdminIndex: React.FC = () => {
         },
         axisLabel: {
           interval: 1000,
-          formatter: function (value: number, index: number) {
+          formatter: function (value: number) {
             let val
             if (value >= 10000) {
               val = value / 10000 + 'w'
@@ -128,7 +166,7 @@ const AdminIndex: React.FC = () => {
         emphasis: {
           focus: 'series',
         },
-        data: [1200, 1320, 10111, 4134, 5590, 2350, 2140, 1720, 6555, 2101, 6134, 7790, 1130, 210],
+        data: lineDataArr.map((i) => i.count),
       },
     ],
   }
@@ -143,108 +181,87 @@ const AdminIndex: React.FC = () => {
     },
     tooltip: {
       trigger: 'item',
+      transitionDuration: 0,
     },
     color: ['rgba(22, 147, 125, 1)', 'rgba(53, 131, 222, 1)'],
     series: [
       {
+        radius: ['20%', '70%'],
         type: 'pie',
         itemStyle: {
           borderColor: '#fff',
           borderWidth: 1,
         },
-        data: [
-          { value: 735, name: '业务事件' },
-          { value: 1048, name: '系统事件' },
-        ],
+        data: circleData,
         emphasis: {
-          // itemStyle: {
-          //   shadowBlur: 10,
-          //   shadowOffsetX: 0,
-          //   shadowColor: 'rgba(0, 0, 0, 0.5)'
-          // }
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)',
+          },
         },
-        radius: 100,
       },
     ],
   }
   const columns = [
     {
       title: '序号',
-      dataIndex: 'key',
-      key: 'name',
+      dataIndex: 'index',
+      index: 'index',
       width: 70,
-      align: 'center',
+      ellipsis: true,
+      render: (text: string, record: any, index: number) => {
+        return <span>{index + 1}</span>
+      },
     },
     {
       title: '报表名称',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'eventTypeText',
       width: '70%',
     },
     {
       title: '计数',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'count',
     },
     {
       title: '操作',
-      key: 'tags',
       dataIndex: 'tags',
-      render: (row: any) => {
+      render: (text: any, record: any) => {
         return (
-          <Button type={'link'} onClick={() => showReport()}>
-            查看报表
+          <Button
+            type={'link'}
+            onClick={() => showReport(record)}
+            style={{
+              color: '#0076FF',
+            }}
+          >
+            <span style={{ textDecoration: 'underline' }}>查看报表</span>
           </Button>
         )
       },
     },
   ]
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['nice', 'developer'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['loser'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['cool', 'teacher'],
-    },
-  ]
-  const showReport = () => {
-    history.push('/admin-index/report')
+  const showReport = (row: { eventType: number }) => {
+    history.push(`/admin-index/report/${row.eventType}`)
   }
-  const initChart = () => {
+  const initChart = useCallback(() => {
     if (lineRef && lineRef.current) {
-      myChartLine = echarts.init((lineRef.current as unknown) as HTMLDivElement)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      myChartLine = echarts.init(lineRef.current as unknown as HTMLDivElement)
       myChartLine.setOption(lineOptions)
     }
     if (circleRef && circleRef.current) {
-      myChartCircle = echarts.init((circleRef.current as unknown) as HTMLDivElement)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      myChartCircle = echarts.init(circleRef.current as unknown as HTMLDivElement)
       myChartCircle.setOption(circleOptions)
     }
-  }
+  }, [circleData])
   const resize = () => {
     if (myChartCircle) {
-      setTimeout(() => {
-        myChartCircle.resize()
-      }, 100)
+      myChartCircle.resize()
     }
     if (myChartLine) {
-      setTimeout(() => {
-        myChartLine.resize()
-      }, 100)
+      myChartLine.resize()
     }
   }
   useEffect(() => {
@@ -260,40 +277,49 @@ const AdminIndex: React.FC = () => {
     window.removeEventListener('resize', resize)
   })
   useEffect(() => {
-    if (lineOptions) {
-      initChart()
-    }
-  }, [JSON.stringify(lineOptions), JSON.stringify(lineSize), JSON.stringify(circleSize)])
+    initChart()
+  }, [circleData, initChart, lineDataArr])
   useMount(() => {
     initChart()
   })
   return (
     <WrapperComponent noColor={true} noPadding={true}>
-      <div className={styles.indexBack}>
-        <EventNumber system={22} business={55} />
-        <div className={styles.mainInfo}>
-          <div className={styles.leftContent}>
-            <div className={styles.leftContentTop}>
-              <div className={styles.lineChart}>
-                <div ref={lineRef} style={{ width: '100%', height: '100%' }} />
+      <Spin tip="加载中..." spinning={spinning}>
+        <div className={styles.indexBack}>
+          <EventNumber system={circleData[1].value} business={circleData[0].value} />
+          <div className={styles.mainInfo}>
+            <div className={styles.leftContent}>
+              <div className={styles.leftContentTop}>
+                <div className={styles.lineChart}>
+                  <div ref={lineRef} style={{ width: '100%', height: '100%' }} />
+                </div>
+                <div className={styles.circleChart}>
+                  <div ref={circleRef} style={{ width: '100%', height: '100%' }} />
+                </div>
               </div>
-              <div className={styles.circleChart}>
-                <div ref={circleRef} style={{ width: '100%', height: '100%' }} />
+              <div className={styles.leftTable}>
+                <div className={styles.tableTitle}>安全事件</div>
+                <div className={styles.tableBox}>
+                  <Table
+                    // @ts-ignore
+                    columns={columns as ColumnsType}
+                    bordered
+                    size={'small'}
+                    pagination={false}
+                    scroll={{
+                      y: '28vh',
+                    }}
+                    dataSource={tableData}
+                  />
+                </div>
               </div>
             </div>
-            <div className={styles.leftTable}>
-              <div className={styles.tableTitle}>安全事件</div>
-              <div className={styles.tableBox}>
-                {/*@ts-ignore*/}
-                <Table columns={columns as ColumnsType} bordered size={'small'} dataSource={data} />
-              </div>
+            <div className={styles.RightContent}>
+              <RecentlyWarned />
             </div>
-          </div>
-          <div className={styles.RightContent}>
-            <RecentlyWarned />
           </div>
         </div>
-      </div>
+      </Spin>
     </WrapperComponent>
   )
 }

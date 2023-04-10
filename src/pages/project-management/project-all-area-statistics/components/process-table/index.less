@@ -7,9 +7,9 @@
   }
 
   .processTablePaging {
+    display: flex;
     height: 32px;
     overflow: hidden;
-    display: flex;
 
     .processTablePagingLeft {
       flex: 1;
@@ -23,38 +23,37 @@
   :global {
     .ant-table {
       .ant-table-container {
-        border-color: @table-line-color  !important;
+        border-color: @table-line-color !important;
 
         .ant-table-content {
-
           td,
           th {
-            border-color: @table-line-color  !important;
+            border-color: @table-line-color !important;
           }
 
           thead {
             th {
-              font-size: 13px;
+              padding: 12px 4px 12px 10px;
               color: @black-color;
               font-weight: 500;
-              padding: 12px 4px 12px 10px;
-              background-color: @table-thead-color;
+              font-size: 13px;
               line-height: 1;
+              background-color: @table-thead-color;
             }
           }
 
           tbody {
             td {
-              font-size: 13px;
-              color: @gray-color;
-              padding: 7px 4px 10px 7px;
               height: 38px;
+              padding: 7px 4px 10px 7px;
+              color: @gray-color;
+              font-size: 13px;
             }
           }
 
           .ant-table-row-selected {
             td {
-              background-color: @table-select-color  !important;
+              background-color: @table-select-color !important;
             }
           }
         }
@@ -66,8 +65,8 @@
     }
 
     .ant-pagination.mini {
-      font-size: 12px;
       color: @gray-color;
+      font-size: 12px;
 
       .ant-pagination-options {
         .ant-select-selection-item {

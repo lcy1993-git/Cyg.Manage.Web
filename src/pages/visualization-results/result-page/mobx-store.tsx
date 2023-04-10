@@ -91,7 +91,7 @@ function Store(vState: VisualizationResultsStateType) {
       this.vState.checkedProjectIdList = checkedProjectIdList
     },
     //设置timeline点击的日期
-    setClickDate(clickDate: string, type: string) {
+    setClickDate(clickDate: string) {
       this.vState.normalClickDate = clickDate
     },
     // 设置开始日期

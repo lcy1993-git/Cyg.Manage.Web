@@ -228,7 +228,7 @@ const CableChannelDetail: React.FC<ModuleDetailParams> = (props) => {
         columns={columns}
         type="radio"
         requestSource="resource"
-        getSelectData={(data) => setTableSelectRows(data)}
+        // getSelectData={(data) => setTableSelectRows(data)}
         extractParams={{
           libId: libId,
           cableChannelIds: selectId,

@@ -1,6 +1,6 @@
-## 如何封装ant design 的Form.Item可以获取到值的组件
+## 如何封装 ant design 的 Form.Item 可以获取到值的组件
 
-### 1. 明白为什么antd的Form.Item可以获取到组件的值
+### 1. 明白为什么 antd 的 Form.Item 可以获取到组件的值
 
 ```
 antd 文档中说到
@@ -93,7 +93,7 @@ export default memo(InputNumber)
 ### 3. 如何使用
 
 ```
- 
+
 
 import CyFormItem from '@/components/cy-form-item';
 import InputNumber from '@/components/input-number';

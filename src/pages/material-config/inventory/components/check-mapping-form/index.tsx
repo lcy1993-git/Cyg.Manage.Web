@@ -1,26 +1,26 @@
-import GeneralTable from '@/components/general-table';
-import TableSearch from '@/components/table-search';
-import { Input } from 'antd';
-import React, { useRef, useState, useEffect } from 'react';
-import EnumSelect from '@/components/enum-select';
-import styles from './index.less';
-import { CreateMethod } from '@/services/material-config/inventory';
+import GeneralTable from '@/components/general-table'
+import TableSearch from '@/components/table-search'
+import { Input } from 'antd'
+import React, { useRef, useState } from 'react'
+import EnumSelect from '@/components/enum-select'
+import styles from './index.less'
+import { CreateMethod } from '@/services/material-config/inventory'
 
 interface CheckMappingParams {
-  inventoryOverviewId: string;
-  invName: string;
-  mappingId: string;
+  inventoryOverviewId: string
+  invName: string
+  mappingId: string
 }
 
-const { Search } = Input;
+const { Search } = Input
 
 const CheckMapping: React.FC<CheckMappingParams> = (props) => {
-  const { inventoryOverviewId, invName, mappingId } = props;
+  const { inventoryOverviewId, invName, mappingId } = props
 
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [createMethod, setCreateMethod] = useState<string>('');
+  const tableRef = useRef<HTMLDivElement>(null)
+  const [createMethod, setCreateMethod] = useState<string>('')
 
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
+  const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const columns = [
     {
@@ -89,17 +89,17 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
       index: 'howToCreate',
       width: 150,
       render: (text: any, record: any) => {
-        return record.howToCreateText;
+        return record.howToCreateText
       },
     },
-  ];
+  ]
 
   const search = () => {
     if (tableRef && tableRef.current) {
       //@ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   // const refresh = () => {
   //   if (tableRef && tableRef.current) {
@@ -109,16 +109,16 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
   // };
 
   const searchByMethod = (value: any) => {
-    setCreateMethod(value);
+    setCreateMethod(value)
     if (tableRef && tableRef.current) {
       //@ts-ignore
       tableRef.current.searchByParams({
         inventoryOverviewId: inventoryOverviewId,
         howToCreate: value,
         mappingId: mappingId,
-      });
+      })
     }
-  };
+  }
 
   // useEffect(() => {
   //   searchByMethod(createMethod);
@@ -153,7 +153,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
         <Input disabled value={invName} />
       </TableSearch>
     </div>
-  );
+  )
 
   return (
     <div>
@@ -173,7 +173,7 @@ const CheckMapping: React.FC<CheckMappingParams> = (props) => {
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default CheckMapping;
+export default CheckMapping

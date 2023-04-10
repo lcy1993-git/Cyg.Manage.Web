@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 // @ts-ignore
 import mammoth from 'mammoth'
@@ -25,7 +25,7 @@ const DocxFileViewer: React.FC<DocxFileViewerProps> = (props) => {
           }
           onSuccess?.(result.value)
         })
-        .catch((a: any) => {})
+        .catch(() => {})
         .done()
     } catch {
       message.warn('文件解析失败')

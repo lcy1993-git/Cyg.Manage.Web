@@ -6,6 +6,7 @@ import {
   MapStatisticsData,
 } from '@/services/index'
 import { exportHomeStatisticData } from '@/services/operation-config/cockpit'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { useMount, useRequest, useSize } from 'ahooks'
 import { Button, message } from 'antd'
 import * as echarts from 'echarts'
@@ -33,7 +34,7 @@ let mapStatus = {
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props
-
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false)
   const { setMapSelectCity } = useLayoutStore()
   const divRef = useRef<HTMLDivElement>(null)
@@ -80,7 +81,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         selected: false,
       }
     })
-
     return {
       tooltip: {
         trigger: 'item',
@@ -218,7 +218,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           })
         } else {
           initChart(statisticData[0].areaCode, provinceStatisticData, '2')
-
           setCurrentAreaInfo({
             areaId: statisticData[0].areaCode,
             cityId: statisticData[0].areaCode,
@@ -233,7 +232,6 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         areaCode: currentAreaInfo.areaId,
         areaType: currentAreaInfo.areaLevel,
       })
-
       initChart(currentAreaInfo.areaId!, provinceStatisticData, currentAreaInfo.areaLevel!)
     }
   }
@@ -286,7 +284,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         }
       })
 
-      myChart.on('mouseover', function (params: any) {
+      myChart.on('mouseover', function () {
         myChart.dispatchAction({
           type: 'downplay',
         })
@@ -428,13 +426,22 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <span>{projectTotalNumber}个</span>
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                  <Button
-                    loading={requestExportLoading}
-                    onClick={exportHomeStatisticEvent}
-                    className={styles.exportButton}
-                  >
-                    导出统计数据
-                  </Button>
+                  {buttonJurisdictionArray?.includes('index-export-data') ? (
+                    <Button
+                      loading={requestExportLoading}
+                      onClick={exportHomeStatisticEvent}
+                      className={styles.exportButton}
+                    >
+                      导出统计数据
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => message.info('暂无权限')}
+                      className={styles.exportButton}
+                    >
+                      导出统计数据
+                    </Button>
+                  )}
                 </div>
               </div>
 
@@ -444,7 +451,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <div>
                     <div style={{ textAlign: 'right' }}>{ohterProjectTotalNumber}个</div>
                     <div>
-                      {ohterProjectTotalNumber > 0 ? (
+                      {buttonJurisdictionArray?.includes('index-jump-visualization') ? (
                         <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
                           跳转在建网架
                         </span>

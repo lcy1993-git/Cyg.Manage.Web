@@ -1135,7 +1135,7 @@ const zero_guy_style = function (feature: Feature, select: boolean = false) {
 
 // 电缆通道样式
 const cable_channel_styles = function (feature: Feature, select: boolean = false) {
-  let { showLabel, showLengthLabel } = feature.getProperties()
+  let { showLabel } = feature.getProperties()
   let obj = Styles.line[feature.getProperties().symbol_id]
   let strokeOpts: Options = {
     color: obj.color,

@@ -1,14 +1,14 @@
-import React, { FC } from 'react';
-import { Modal } from 'antd';
+import React, { FC } from 'react'
+import { Modal } from 'antd'
 export interface ExportMapPositionModalProps {
-  visible: boolean;
-  onOk: () => void;
-  onCancel: () => void;
-  confirmLoading?: boolean;
+  visible: boolean
+  onOk: () => void
+  onCancel: () => void
+  confirmLoading?: boolean
 }
 
 const ExportMapPositionModal: FC<ExportMapPositionModalProps> = (props) => {
-  const { visible, onOk, onCancel, confirmLoading = false } = props;
+  const { visible, onOk, onCancel, confirmLoading = false } = props
 
   return (
     <Modal
@@ -22,7 +22,7 @@ const ExportMapPositionModal: FC<ExportMapPositionModalProps> = (props) => {
     >
       确认导出所选项目的点坐标
     </Modal>
-  );
-};
+  )
+}
 
-export default ExportMapPositionModal;
+export default ExportMapPositionModal

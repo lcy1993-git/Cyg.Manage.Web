@@ -1,14 +1,25 @@
-import { getProductServerList, getStopServerNotice } from '@/services/index'
+import { getProductServerList } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
-import moment from 'moment'
+
+// @ts-ignore
+import sm2 from 'sm-crypto/dist/sm2'
+import {
+  EventInfo,
+  UploadAuditEventInfo,
+  UploadAuditEventInfoWithoutToken,
+} from '@/services/security-audit'
+import { webConfig } from '@/global'
+import moment from 'moment/moment'
 
 const { NODE_ENV } = process.env
-
 /**
  *  @param treeData 需要平铺的树状数据
  *  @param childName 儿子数组的名称
+ *  @param parentId
+ *  @param parentIdName
  *  @returns 平铺的数据
  * */
+
 export const flatten = <P extends {}>(
   treeData: any,
   childName: string = 'children',
@@ -102,7 +113,6 @@ export interface TreeData {
   parentId: string | null
   children?: TreeData[]
   key: string
-
   [key: string]: unknown
 }
 
@@ -116,7 +126,6 @@ export const formatDataTree = (data: TreeData[]) => {
   const parents = data.filter((p) => p.parentId === null)
   const children = data.filter((p) => p.parentId !== null)
   dataToTree(parents, children)
-
   function dataToTree(parents: TreeData[], children: TreeData[]) {
     parents.forEach((p) => {
       children.forEach((c) => {
@@ -128,7 +137,6 @@ export const formatDataTree = (data: TreeData[]) => {
       })
     })
   }
-
   return parents
 }
 
@@ -159,10 +167,9 @@ export const delay = (ms: number) => {
 /**
  * 可视化成果多媒体材料数据格式化
  * @param content
- * @param getProperties
  * @returns
  */
-export const formDataMateral = (content: any, getProperties: any) => {
+export const formDataMateral = (content: any) => {
   const filterData = content.filter((item: any) => item.parentID !== -1)
   const data = filterData.map((item: any) => {
     return {
@@ -224,8 +231,6 @@ export const generateMaterialTreeList = (materialData: MaterialDataType[]): Mate
 
 /**
  * 创建唯一标识
- * @param content
- * @param getProperties
  * @returns
  */
 export const generateUUID = () => {
@@ -301,101 +306,170 @@ export const translateMatDataToTree = (soureceData: Data[]) => {
 /*
  * 获取停服公告信息
  * */
-type Login = {
-  userName: string
-  pwd: string
+// type Login = {
+//   userName: string
+//   pwd: string
+// }
+
+export const getObject = (value: string): any => {
+  const obj = {}
+  obj['key'] = value
+  return obj
 }
 
 export const productCode = '1301726010322214912'
 
-export const getStopServerList = (
-  loginFuc: CallableFunction,
-  values: Login,
-  stopLoginFuc?: CallableFunction
-) => {
+const SM2PublicKey =
+  '047981ed79b74289fd6e28fabe9002c07837892b20a919faecfedcaa1edfaf120031181d0fee61045323c010de4896a389c875baa882073125a4e97ab760bdfa74'
+// sm2加密密码
+export const handleSM2Crypto = (data: any) => {
+  const cipherMode = 0
+  // 加密结果
+  return '04' + sm2.doEncrypt(data, SM2PublicKey, cipherMode)
+}
+
+export const uploadAuditLog = (dataItem: Partial<EventInfo>[], needToken: boolean = false) => {
+  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '')
+  if (dataItem.length > 0) {
+    dataItem[0].clientType = 1
+    dataItem[0].clientVersion = webConfig?.version || ''
+    dataItem[0].executionTime = moment().format('YYYY-MM-DD HH:mm:ss')
+    dataItem[0].executionUserId = userInfo?.id || ''
+    dataItem[0].executionUserName = userInfo?.userName || ''
+  }
+  if (needToken) {
+    UploadAuditEventInfoWithoutToken({
+      data: dataItem,
+      reqId: generateUUID(),
+      timeStamp: new Date().valueOf(),
+    }).then()
+  } else {
+    UploadAuditEventInfo(dataItem)
+  }
+}
+
+export const getStopServerList = () => {
   getProductServerList({
-    productCode,
+    productCode: '1301726010322214912',
     category: 0,
     status: 0,
     province: '',
-  })
-    .then((res) => {
-      if (res?.code !== 200) {
-        loginFuc(values)
-        return
-      }
-      const { data } = res
-      const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
-      const currenServer = data?.find(
-        (item: { propertys: { webSite: string; host: string | null } }) => {
-          if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-            return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
-          } else if (item?.propertys?.webSite) {
-            if (item?.propertys?.host) {
-              return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
-            } else {
-              return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
-            }
+  }).then((res) => {
+    if (res?.code !== 200) {
+      return
+    }
+    const { data } = res
+    const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
+    const currenServer = data?.find(
+      (item: { propertys: { webSite: string; host: string | null } }) => {
+        if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+          return item?.propertys?.webSite === 'https://srthkf3.gczhyun.com:21530/'
+        } else if (item?.propertys?.webSite) {
+          if (item?.propertys?.host) {
+            return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
           } else {
-            return undefined
+            return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
           }
-        }
-      )
-      if (currenServer && currenServer?.code) {
-        // 是否查询到 服务器信息
-        localStorage.setItem('serverCode', currenServer?.code || '')
-        getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
-      } else {
-        loginFuc(values)
-      }
-    })
-    .catch(() => {
-      loginFuc(values)
-    })
-}
-const getNoticeReq = (
-  code: string,
-  loginFuc: CallableFunction,
-  values: Login,
-  stopLoginFuc?: CallableFunction
-) => {
-  getStopServerNotice({
-    serverCode: code,
-    kickOutSeconds: 605,
-  })
-    .then((res) => {
-      if (res?.code !== 200) {
-        loginFuc(values)
-        return
-      }
-      const { data } = res
-      const info = { ...values }
-      if (data !== null && typeof data !== 'string') {
-        if ([2, 3].includes(data?.stage) && info?.userName?.startsWith(data?.testerAccountPrefix)) {
-          // 测试账号
-          info.userName = info.userName.replace(data?.testerAccountPrefix, '') // 移除前缀
-          sessionStorage.setItem('isTestUser', 'true')
-          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
-          loginFuc(info)
-        } else if (data?.stage === 1) {
-          // 公告期
-          sessionStorage.setItem('isTestUser', 'false')
-          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
-          loginFuc(values)
         } else {
-          // 预停服期和发版期,非测试账号
-          stopLoginFuc?.(data)
-          localStorage.setItem('Authorization', '')
-          sessionStorage.setItem('isTestUser', 'false')
+          return undefined
         }
-      } else {
-        loginFuc(values)
       }
-    })
-    .catch(() => {
-      loginFuc(values)
-    })
+    )
+    if (currenServer && currenServer?.code) {
+      // 是否查询到 服务器信息
+      localStorage.setItem('serverCode', currenServer?.code || '')
+    }
+  })
 }
+
+// export const getStopServerList = (
+//   loginFuc: CallableFunction,
+//   values: Login,
+//   stopLoginFuc?: CallableFunction
+// ) => {
+//   getProductServerList({
+//     productCode,
+//     category: 0,
+//     status: 0,
+//     province: '',
+//   })
+//     .then((res) => {
+//       if (res?.code !== 200) {
+//         loginFuc(values)
+//         return
+//       }
+//       const { data } = res
+//       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
+//       const currenServer = data?.find(
+//         (item: { propertys: { webSite: string; host: string | null } }) => {
+//           if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+//             return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
+//           } else if (item?.propertys?.webSite) {
+//             if (item?.propertys?.host) {
+//               return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
+//             } else {
+//               return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
+//             }
+//           } else {
+//             return undefined
+//           }
+//         }
+//       )
+//       if (currenServer && currenServer?.code) {
+//         // 是否查询到 服务器信息
+//         localStorage.setItem('serverCode', currenServer?.code || '')
+//         getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
+//       } else {
+//         loginFuc(values)
+//       }
+//     })
+//     .catch(() => {
+//       loginFuc(values)
+//     })
+// }
+// const getNoticeReq = (
+//   code: string,
+//   loginFuc: CallableFunction,
+//   values: Login,
+//   stopLoginFuc?: CallableFunction
+// ) => {
+//   getStopServerNotice({
+//     serverCode: code,
+//     kickOutSeconds: 605,
+//   })
+//     .then((res) => {
+//       if (res?.code !== 200) {
+//         loginFuc(values)
+//         return
+//       }
+//       const { data } = res
+//       const info = { ...values }
+//       if (data !== null && typeof data !== 'string') {
+//         if ([2, 3].includes(data?.stage) && info?.userName?.startsWith(data?.testerAccountPrefix)) {
+//           // 测试账号
+//           info.userName = info.userName.replace(data?.testerAccountPrefix, '') // 移除前缀
+//           sessionStorage.setItem('isTestUser', 'true')
+//           sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
+//           loginFuc(info)
+//         } else if (data?.stage === 1) {
+//           // 公告期
+//           sessionStorage.setItem('isTestUser', 'false')
+//           sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
+//           loginFuc(values)
+//         } else {
+//           // 预停服期和发版期,非测试账号
+//           stopLoginFuc?.(data)
+//           localStorage.setItem('Authorization', '')
+//           sessionStorage.setItem('isTestUser', 'false')
+//         }
+//       } else {
+//         loginFuc(values)
+//       }
+//     })
+//     .catch(() => {
+//       loginFuc(values)
+//     })
+// }
 
 //移除自动填充
 export const noAutoCompletePassword = {

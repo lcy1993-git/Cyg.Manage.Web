@@ -1,24 +1,24 @@
-import { getProjectQtyOfDay } from '@/services/project-management/project-statistics-v2';
-import { useRequest } from 'ahooks';
-import 'echarts/lib/chart/line';
-import 'echarts/lib/component/grid';
-import 'echarts/lib/component/tooltip';
-import * as echarts from 'echarts/lib/echarts';
-import moment from 'moment';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useProjectAllAreaStatisticsStore } from '../../store';
-import { ProjectStatus } from '../daily-change-project-statistics';
-import TabsWindow from '../tabs-window';
+import { getProjectQtyOfDay } from '@/services/project-management/project-statistics-v2'
+import { useRequest } from 'ahooks'
+import 'echarts/lib/chart/line'
+import 'echarts/lib/component/grid'
+import 'echarts/lib/component/tooltip'
+import * as echarts from 'echarts/lib/echarts'
+import moment from 'moment'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useProjectAllAreaStatisticsStore } from '../../store'
+import { ProjectStatus } from '../daily-change-project-statistics'
+import TabsWindow from '../tabs-window'
 
-const tabs = ['合计', '待安排', '未勘察', '勘察中', '已勘察', '设计中', '已设计'] as const;
-type TabsUnion = typeof tabs[number];
+const tabs = ['合计', '待安排', '未勘察', '勘察中', '已勘察', '设计中', '已设计'] as const
+type TabsUnion = typeof tabs[number]
 
 const DailyChangeStatistics: React.FC = () => {
-  const [tab, setTab] = useState<TabsUnion | string>('合计');
+  const [tab, setTab] = useState<TabsUnion | string>('合计')
 
-  const { dataType, companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const { dataType, companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore()
 
-  const divRef = useRef<HTMLDivElement>(null);
+  const divRef = useRef<HTMLDivElement>(null)
 
   // ! 待完善
   const { data = [] } = useRequest(
@@ -32,22 +32,22 @@ const DailyChangeStatistics: React.FC = () => {
       ready: !!projectShareCompanyId,
       onSuccess: () => {
         // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        initChart();
+        initChart()
       },
 
       refreshDeps: [dataType, tab, projectShareCompanyId],
-    },
-  );
+    }
+  )
 
   const dateData = [...data].reverse().map((item: any) => {
-    return moment(item.key).format('M月D日');
-  });
+    return moment(item.key).format('M月D日')
+  })
 
   const numberData = [...data].reverse().map((item: any) => {
-    return item.value;
-  });
+    return item.value
+  })
 
-  let myChart: any = null;
+  let myChart: any = null
 
   const options = useMemo(
     () => ({
@@ -60,15 +60,15 @@ const DailyChangeStatistics: React.FC = () => {
       tooltip: {
         trigger: 'axis',
         formatter: (params: any) => {
-          const { dataIndex } = params[0];
-          const copyData = [...data].reverse();
-          const thisTime = moment(copyData[dataIndex].key).format('M月D日');
-          const thisNumber = copyData[dataIndex].value ?? 0;
+          const { dataIndex } = params[0]
+          const copyData = [...data].reverse()
+          const thisTime = moment(copyData[dataIndex].key).format('M月D日')
+          const thisNumber = copyData[dataIndex].value ?? 0
 
           return `
           <span style="font-size: 14px; font-weight: 600; color: #505050">${thisTime}</span><br />
           <span style="display: inline-block; width: 6px;height: 6px;border-radius: 50%; background: #4DA944;vertical-align: middle; margin-right: 6px;"></span><span style="color: #505050">数据：${thisNumber}</span><br />
-        `;
+        `
         },
       },
       xAxis: {
@@ -107,38 +107,38 @@ const DailyChangeStatistics: React.FC = () => {
         },
       ],
     }),
-    [data, numberData, dateData],
-  );
+    [data, numberData, dateData]
+  )
 
   const initChart = () => {
     if (divRef && divRef.current) {
-      myChart = echarts.init((divRef.current as unknown) as HTMLDivElement);
-      myChart.setOption(options);
+      myChart = echarts.init(divRef.current as unknown as HTMLDivElement)
+      myChart.setOption(options)
     }
-  };
+  }
 
   const resize = () => {
     if (myChart) {
       setTimeout(() => {
-        myChart.resize();
-      }, 100);
+        myChart.resize()
+      }, 100)
     }
-  };
+  }
 
   useEffect(() => {
     window.addEventListener('resize', () => {
       if (!divRef.current) {
         // 如果切换到其他页面，这里获取不到对象，删除监听。否则会报错
-        window.removeEventListener('resize', resize);
+        window.removeEventListener('resize', resize)
       } else {
-        resize();
+        resize()
       }
-    });
+    })
 
     return () => {
-      window.removeEventListener('resize', resize);
-    };
-  });
+      window.removeEventListener('resize', resize)
+    }
+  })
 
   return (
     <div style={{ height: '100%' }}>
@@ -150,7 +150,7 @@ const DailyChangeStatistics: React.FC = () => {
         <div style={{ height: '100%' }} ref={divRef}></div>
       </TabsWindow>
     </div>
-  );
-};
+  )
+}
 
-export default DailyChangeStatistics;
+export default DailyChangeStatistics

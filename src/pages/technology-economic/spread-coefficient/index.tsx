@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { history } from 'umi';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
-import { Button, Modal, Form, Switch, message, Popconfirm, Tabs, Spin, Space } from 'antd';
-import type { ColumnsType } from 'antd/lib/table';
-import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { isArray } from 'lodash';
+import React, { useEffect, useState } from 'react'
+import { history } from 'umi'
+import { Button, Modal, Form, Switch, message, Popconfirm, Tabs, Spin, Space } from 'antd'
+import type { ColumnsType } from 'antd/lib/table'
+import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
+import { isArray } from 'lodash'
 
-import GeneralTable from './components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
+import GeneralTable from './components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
 // import TableSearch from '@/components/table-search';
-import DictionaryForm from './components/add-edit-form';
+import DictionaryForm from './components/add-edit-form'
 
-import styles from './index.less';
-import moment from 'moment';
-import { getEnums } from '../utils';
-import CommonTitle from '@/components/common-title';
-import AdjustmentFileForm from './components/adjustment-file-form';
+import styles from './index.less'
+import moment from 'moment'
+import { getEnums } from '../utils'
+import CommonTitle from '@/components/common-title'
+import AdjustmentFileForm from './components/adjustment-file-form'
 import {
   createAdjustmentFile,
   createCatalogue,
@@ -26,82 +25,82 @@ import {
   updateAdjustmentFile,
   updateCatalogue,
   technicalEconomyFile,
-} from '@/services/technology-economic/spread-coefficient';
-import AddDictionaryForm from '@/pages/technology-economic/common-rate/components/add-edit-form';
+} from '@/services/technology-economic/spread-coefficient'
 
 type DataSource = {
-  id: string;
-  [key: string]: string;
-};
-const { TabPane } = Tabs;
-const engineeringTemplateTypeList = getEnums('EngineeringTemplateType');
+  id: string
+  [key: string]: string
+}
+const { TabPane } = Tabs
+const engineeringTemplateTypeList = getEnums('EngineeringTemplateType')
 
 export const getTypeName = (no: number) => {
-  let str = '';
+  let str = ''
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   engineeringTemplateTypeList &&
+    // eslint-disable-next-line array-callback-return
     engineeringTemplateTypeList.map((item: any) => {
       if (no === item.value) {
-        str = item.text;
+        str = item.text
       }
-    });
-  return str;
-};
+    })
+  return str
+}
 const ProjectTypeList = [
   { text: '价差目录', value: 1 },
   { text: '调整文件', value: 2 },
-];
+]
 const SpreadCoefficient: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const tableADRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRow] = useState<DataSource[]>([]); // 价差目录
-  const [tableSelectADRows, setTableSelectADRow] = useState<DataSource[] | Object>([]); // 调整文件
-  const [addFormVisible, setAddFormVisible] = useState<boolean>(false); // 价差目录
-  const [editFormVisible, setEditFormVisible] = useState<boolean>(false);
-  const [addADFormVisible, setAddADFormVisible] = useState<boolean>(false); // 调整文件
-  const [editADFormVisible, setEditADFormVisible] = useState<boolean>(false);
-  const [fileId, setFileId] = useState<string>('');
-  const [projectType, setProjectType] = useState<number>(1);
-  const [spinning, setSpinning] = useState<boolean>(false);
-  const [update, setUpdate] = useState<boolean>(true);
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const tableADRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRow] = useState<DataSource[]>([]) // 价差目录
+  const [tableSelectADRows, setTableSelectADRow] = useState<DataSource[] | Object>([]) // 调整文件
+  const [addFormVisible, setAddFormVisible] = useState<boolean>(false) // 价差目录
+  const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
+  const [addADFormVisible, setAddADFormVisible] = useState<boolean>(false) // 调整文件
+  const [editADFormVisible, setEditADFormVisible] = useState<boolean>(false)
+  const [fileId, setFileId] = useState<string>('')
+  const [projectType, setProjectType] = useState<number>(1)
+  const [spinning, setSpinning] = useState<boolean>(false)
+  const [update, setUpdate] = useState<boolean>(true)
   // const buttonJurisdictionArray = useGetButtonJurisdictionArray();
-  const [addForm] = Form.useForm();
-  const [editForm] = Form.useForm();
-  const [addADForm] = Form.useForm();
-  const [editADForm] = Form.useForm();
+  const [addForm] = Form.useForm()
+  const [editForm] = Form.useForm()
+  const [addADForm] = Form.useForm()
+  const [editADForm] = Form.useForm()
   const columns = [
     {
       dataIndex: 'no',
-      key: 'no',
+
       title: '编号',
       width: 300,
     },
     {
       dataIndex: 'name',
-      key: 'name',
+
       title: '模板名称',
     },
     {
       dataIndex: 'publishDate',
-      key: 'publishDate',
+
       title: '发布时间',
       render: (text: string, record: any) => {
-        return moment(record.publishDate).format('YYYY-MM-DD HH:mm ');
+        return moment(record.publishDate).format('YYYY-MM-DD HH:mm ')
       },
     },
     {
       dataIndex: 'publishedBy',
-      key: 'publishedBy',
+
       title: '发布单位',
     },
     {
       dataIndex: 'remark',
-      key: 'remark',
+
       title: '备注',
     },
     {
       dataIndex: 'enabled',
-      key: 'enabled',
+
       title: '状态',
       render: (value: boolean, record: DataSource) => {
         if (projectType === 1) {
@@ -112,31 +111,31 @@ const SpreadCoefficient: React.FC = () => {
             onClick={(checked) => {
               projectType === 1
                 ? setDefaultTemplateStatus(record.id, checked)
-                : setAdjustmentFileStatus(record.id, checked);
+                : setAdjustmentFileStatus(record.id, checked)
             }}
           />
-        );
+        )
       },
     },
-  ];
+  ]
   // 切换tab
   const callback = (key: any) => {
-    setProjectType(parseInt(key));
+    setProjectType(parseInt(key))
     // getList(key);
-  };
+  }
   // 列表刷新
   const refresh = () => {
-    const ref = projectType === 1 ? tableRef : tableADRef;
+    const ref = projectType === 1 ? tableRef : tableADRef
     if (ref && ref.current) {
       // @ts-ignore
-      ref.current.refresh();
+      ref.current.refresh()
     }
-  };
+  }
 
   // 创建按钮
   const addEvent = () => {
-    projectType === 1 ? setAddFormVisible(true) : setAddADFormVisible(true);
-  };
+    projectType === 1 ? setAddFormVisible(true) : setAddADFormVisible(true)
+  }
 
   // 删除
   const sureDeleteData = async () => {
@@ -144,95 +143,94 @@ const SpreadCoefficient: React.FC = () => {
       // 价差目录
 
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-        message.error('请选择一条数据进行编辑');
-        return;
+        message.error('请选择一条数据进行编辑')
+        return
       }
-      const ids = tableSelectRows?.map((item) => item.id);
-      console.log(ids);
-      await deleteTemplate(ids); // TODO
-      refresh();
-      message.success('删除成功');
-      setTableSelectRow([]);
+      const ids = tableSelectRows?.map((item) => item.id)
+      await deleteTemplate(ids) // TODO
+      refresh()
+      message.success('删除成功')
+      setTableSelectRow([])
     } else {
       // 调整文件
       if (tableSelectADRows && isArray(tableSelectADRows) && tableSelectADRows.length === 0) {
-        message.error('请选择一条数据进行编辑');
-        return;
+        message.error('请选择一条数据进行编辑')
+        return
       }
-      const { id } = tableSelectADRows[0];
-      await deleteAdjustmentFile(id); // TODO
-      refresh();
-      message.success('删除成功');
-      setTableSelectADRow([]);
+      const { id } = tableSelectADRows[0]
+      await deleteAdjustmentFile(id) // TODO
+      refresh()
+      message.success('删除成功')
+      setTableSelectADRow([])
     }
-  };
+  }
 
   // 编辑
   const editEvent = () => {
     if (projectType === 1) {
       // 价差目录
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-        message.warning('请选择要操作的行');
-        return;
+        message.warning('请选择要操作的行')
+        return
       }
-      setEditFormVisible(true);
+      setEditFormVisible(true)
       editForm.setFieldsValue({
         ...tableSelectRows[0],
-      });
+      })
     } else {
       // 调整文件
       if (tableSelectADRows && isArray(tableSelectADRows) && tableSelectADRows.length === 0) {
-        message.warning('请选择要操作的行');
-        return;
+        message.warning('请选择要操作的行')
+        return
       }
-      setEditADFormVisible(true);
+      setEditADFormVisible(true)
       editADForm.setFieldsValue({
         ...tableSelectADRows[0],
-      });
+      })
     }
-  };
+  }
   // 查看详情 TODO
   const lookDetail = () => {
     if (projectType === 1) {
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-        message.warning('请选择要操作的行');
-        return;
+        message.warning('请选择要操作的行')
+        return
       }
-      const { id } = tableSelectRows[0];
-      const { name } = tableSelectRows[0];
-      history.push(`/technology-economic/price-difference-details?id=${id}&name=${name}`);
+      const { id } = tableSelectRows[0]
+      const { name } = tableSelectRows[0]
+      history.push(`/technology-economic/price-difference-details?id=${id}&name=${name}`)
     } else {
-      history.push(`/technology-economic/adjustment-file-details`);
+      history.push(`/technology-economic/adjustment-file-details`)
     }
-  };
+  }
   // 价差目录新增确认按钮
   const sureAddAuthorization = () => {
     addForm.validateFields().then(async (values) => {
-      await createCatalogue(values); // TODO
-      refresh();
-      setAddFormVisible(false);
-      addForm.resetFields();
-    });
-  };
+      await createCatalogue(values) // TODO
+      refresh()
+      setAddFormVisible(false)
+      addForm.resetFields()
+    })
+  }
   // 价差目录编辑确认按钮
   const sureEditAuthorization = () => {
     editForm.validateFields().then((values) => {
-      setSpinning(true);
-      const { id } = tableSelectRows[0];
-      const value = values;
-      value.id = id;
+      setSpinning(true)
+      const { id } = tableSelectRows[0]
+      const value = values
+      value.id = id
       // TODO 编辑接口
       updateCatalogue(value)
         .then(() => {
-          refresh();
-          setEditFormVisible(false);
-          editForm.resetFields();
+          refresh()
+          setEditFormVisible(false)
+          editForm.resetFields()
         })
         .finally(() => {
-          setSpinning(false);
-        });
-    });
-  };
+          setSpinning(false)
+        })
+    })
+  }
   // 调整文件新增确认按钮
   const sureAddADAuthorization = () => {
     addADForm.validateFields().then(async (values) => {
@@ -240,60 +238,60 @@ const SpreadCoefficient: React.FC = () => {
         const submitInfo = {
           fileId,
           ...values,
-        };
-        await createAdjustmentFile(submitInfo); // TODO
-        refresh();
-        setAddADFormVisible(false);
-        addADForm.resetFields();
-        setFileId('');
+        }
+        await createAdjustmentFile(submitInfo) // TODO
+        refresh()
+        setAddADFormVisible(false)
+        addADForm.resetFields()
+        setFileId('')
       } else {
-        message.warn('文件未上传或上传失败');
+        message.warn('文件未上传或上传失败')
       }
-    });
-  };
+    })
+  }
   // 调整文件编辑确认按钮
   const sureEditADAuthorization = () => {
     editADForm.validateFields().then((values) => {
-      setSpinning(true);
-      const { id } = tableSelectADRows[0];
-      const value: any = {};
-      value.id = id;
-      value.publishedBy = values.publishedBy;
-      value.remark = values.remark;
-      value.publishDate = values.publishDate;
-      value.enabled = values.enabled;
-      value.name = values.name;
+      setSpinning(true)
+      const { id } = tableSelectADRows[0]
+      const value: any = {}
+      value.id = id
+      value.publishedBy = values.publishedBy
+      value.remark = values.remark
+      value.publishDate = values.publishDate
+      value.enabled = values.enabled
+      value.name = values.name
       if (fileId) {
-        value.fileId = value.fileId;
+        value.fileId = fileId
       }
       // TODO 编辑接口
       updateAdjustmentFile(value)
         .then(() => {
-          refresh();
-          setEditADFormVisible(false);
-          editForm.resetFields();
+          refresh()
+          setEditADFormVisible(false)
+          editForm.resetFields()
         })
         .finally(() => {
-          setSpinning(false);
-        });
-    });
-  };
+          setSpinning(false)
+        })
+    })
+  }
   const addUploadFile = async () => {
     const obj = {
       file: addADForm.getFieldValue('files'),
-    };
-    const securityKey = '1202531026526199123';
-    const id = await technicalEconomyFile(securityKey, obj);
-    setFileId(id as string);
-  };
+    }
+    const securityKey = '1202531026526199123'
+    const id = await technicalEconomyFile(securityKey, obj)
+    setFileId(id as string)
+  }
   const editUploadFile = async () => {
     const obj = {
       file: editADForm.getFieldValue('files'),
-    };
-    const securityKey = '1202531026526199123';
-    const id = await technicalEconomyFile(securityKey, obj);
-    setFileId(id as string);
-  };
+    }
+    const securityKey = '1202531026526199123'
+    const id = await technicalEconomyFile(securityKey, obj)
+    setFileId(id as string)
+  }
   const tableElement = () => {
     return (
       <div className={styles.topDiv}>
@@ -353,29 +351,30 @@ const SpreadCoefficient: React.FC = () => {
           </Button>
         </div>
       </div>
-    );
-  };
+    )
+  }
   // 价差目录
   const tableSelectEvent = (data: DataSource[] | Object) => {
-    setTableSelectRow(data);
-  };
+    // @ts-ignore
+    setTableSelectRow(data)
+  }
   // 调整文件
   const tableSelectADEvent = (data: DataSource[] | Object) => {
-    setTableSelectADRow(data);
-  };
+    setTableSelectADRow(data)
+  }
   useEffect(() => {
-    if (spinning) return;
-    setUpdate(false);
+    if (spinning) return
+    setUpdate(false)
     setTimeout(() => {
-      setUpdate(true);
-    }, 0);
-  }, [spinning]);
+      setUpdate(true)
+    }, 0)
+  }, [spinning])
   return (
     <PageCommonWrap>
       {tableElement()}
       <div className={styles.moduleTabs}>
         <Tabs onChange={callback} type="card">
-          {ProjectTypeList.map((item: any, index: number) => {
+          {ProjectTypeList.map((item: any) => {
             return (
               <TabPane tab={item.text} key={item.value}>
                 {update && (
@@ -408,7 +407,7 @@ const SpreadCoefficient: React.FC = () => {
                   </div>
                 )}
               </TabPane>
-            );
+            )
           })}
         </Tabs>
       </div>
@@ -515,7 +514,7 @@ const SpreadCoefficient: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default SpreadCoefficient;
+export default SpreadCoefficient

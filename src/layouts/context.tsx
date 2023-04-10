@@ -7,7 +7,6 @@ interface LayoutContextValue {
   workHandoverFlag?: boolean
   clearAgainLogin?: () => void
   mapSelectCity?: string
-
   allProjectSearchParams?: any
   setResourceManageFlag?: (value: boolean) => void
   setMapSelectCity?: (value: string) => void

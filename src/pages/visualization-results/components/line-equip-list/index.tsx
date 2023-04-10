@@ -8,28 +8,28 @@ import { FileSearchOutlined } from '@ant-design/icons'
 import TableSearch from '@/components/table-search'
 // import SubStationPowerForm from './components/subStation-power-form'
 import { isArray } from 'lodash'
-import {
-  deleteBoxTransformer,
-  deleteCableBranchBox,
-  deleteCableWell,
-  deleteColumnCircuitBreaker,
-  deleteColumnTransformer,
-  deleteElectricityDistributionRoom,
-  deleteLineRelations,
-  deleteRingNetworkCabinet,
-  deleteSwitchingStation,
-  deleteTower,
-  modifyBoxTransformer,
-  modifyCableBranchBox,
-  modifyCableWell,
-  modifyColumnCircuitBreaker,
-  modifyColumnTransformer,
-  modifyElectricityDistributionRoom,
-  modifyRelationLine,
-  modifyRingNetworkCabinet,
-  modifySwitchingStation,
-  modifyTower,
-} from '@/services/grid-manage/treeMenu'
+// import {
+//   deleteBoxTransformer,
+//   deleteCableBranchBox,
+//   deleteCableWell,
+//   deleteColumnCircuitBreaker,
+//   deleteColumnTransformer,
+//   deleteElectricityDistributionRoom,
+//   deleteLineRelations,
+//   deleteRingNetworkCabinet,
+//   deleteSwitchingStation,
+//   deleteTower,
+//   modifyBoxTransformer,
+//   modifyCableBranchBox,
+//   modifyCableWell,
+//   modifyColumnCircuitBreaker,
+//   modifyColumnTransformer,
+//   modifyElectricityDistributionRoom,
+//   modifyRelationLine,
+//   modifyRingNetworkCabinet,
+//   modifySwitchingStation,
+//   modifyTower,
+// } from '@/services/grid-manage/treeMenu'
 import { handleGeom } from '../../utils/methods'
 import EquipForm from './components/equip-form'
 import {
@@ -45,19 +45,19 @@ import {
   towerColumns,
 } from './components/equip-columns'
 import { useMyContext } from '../../grid-manage/Context'
-import { editFeature } from '../../grid-manage/GridMap/utils/select'
-import {
-  BOXTRANSFORMER,
-  CABLEBRANCHBOX,
-  CABLEWELL,
-  COLORU,
-  COLUMNCIRCUITBREAKER,
-  COLUMNTRANSFORMER,
-  ELECTRICITYDISTRIBUTIONROOM,
-  RINGNETWORKCABINET,
-  SWITCHINGSTATION,
-  TOWER,
-} from '../../grid-manage/DrawToolbar/GridUtils'
+// import { editFeature } from '../../grid-manage/GridMap/utils/select'
+// import {
+//   BOXTRANSFORMER,
+//   CABLEBRANCHBOX,
+//   CABLEWELL,
+//   COLORU,
+//   COLUMNCIRCUITBREAKER,
+//   COLUMNTRANSFORMER,
+//   ELECTRICITYDISTRIBUTIONROOM,
+//   RINGNETWORKCABINET,
+//   SWITCHINGSTATION,
+//   TOWER,
+// } from '../../grid-manage/DrawToolbar/GridUtils'
 
 const { TabPane } = Tabs
 
@@ -84,7 +84,7 @@ const tabTitle = {
 const { Search } = Input
 
 const EquipLineList: React.FC<StandingBookProps> = (props) => {
-  const { companyId, mapRef } = useMyContext()
+  const { companyId } = useMyContext()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { lineTitle, lineId } = props
 
@@ -144,134 +144,134 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
   //   manual: true,
   // })
 
-  const refresh = () => {
-    if (currentTab === 'line') {
-      if (lineRef && lineRef.current) {
-        // @ts-ignore
-        lineRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'cableWell') {
-      if (cableWellRef && cableWellRef.current) {
-        // @ts-ignore
-        cableWellRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'tower') {
-      if (towerRef && towerRef.current) {
-        // @ts-ignore
-        towerRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'boxTrans') {
-      if (boxTransRef && boxTransRef.current) {
-        // @ts-ignore
-        boxTransRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'cabinet') {
-      if (cabinetRef && cabinetRef.current) {
-        // @ts-ignore
-        cabinetRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'elecRoom') {
-      if (elecRoomRef && elecRoomRef.current) {
-        // @ts-ignore
-        elecRoomRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'switchStation') {
-      if (switchRef && switchRef.current) {
-        // @ts-ignore
-        switchRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'breaker') {
-      if (breakerRef && breakerRef.current) {
-        // @ts-ignore
-        breakerRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'columnTrans') {
-      if (columnTransRef && columnTransRef.current) {
-        // @ts-ignore
-        columnTransRef.current.refresh()
-      }
-      return
-    }
-    if (currentTab === 'cableBox') {
-      if (cableBoxRef && cableBoxRef.current) {
-        // @ts-ignore
-        cableBoxRef.current.refresh()
-      }
-    }
-  }
+  // const refresh = () => {
+  //   if (currentTab === 'line') {
+  //     if (lineRef && lineRef.current) {
+  //       // @ts-ignore
+  //       lineRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'cableWell') {
+  //     if (cableWellRef && cableWellRef.current) {
+  //       // @ts-ignore
+  //       cableWellRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'tower') {
+  //     if (towerRef && towerRef.current) {
+  //       // @ts-ignore
+  //       towerRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'boxTrans') {
+  //     if (boxTransRef && boxTransRef.current) {
+  //       // @ts-ignore
+  //       boxTransRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'cabinet') {
+  //     if (cabinetRef && cabinetRef.current) {
+  //       // @ts-ignore
+  //       cabinetRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'elecRoom') {
+  //     if (elecRoomRef && elecRoomRef.current) {
+  //       // @ts-ignore
+  //       elecRoomRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'switchStation') {
+  //     if (switchRef && switchRef.current) {
+  //       // @ts-ignore
+  //       switchRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'breaker') {
+  //     if (breakerRef && breakerRef.current) {
+  //       // @ts-ignore
+  //       breakerRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'columnTrans') {
+  //     if (columnTransRef && columnTransRef.current) {
+  //       // @ts-ignore
+  //       columnTransRef.current.refresh()
+  //     }
+  //     return
+  //   }
+  //   if (currentTab === 'cableBox') {
+  //     if (cableBoxRef && cableBoxRef.current) {
+  //       // @ts-ignore
+  //       cableBoxRef.current.refresh()
+  //     }
+  //   }
+  // }
 
-  const deleteEvent = async (currentTab: string) => {
-    switch (currentTab) {
-      case 'line':
-        await deleteLineRelations([lineRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'cableWell':
-        await deleteCableWell([cableWellRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'tower':
-        await deleteTower([towerRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'boxTrans':
-        await deleteBoxTransformer([boxTransRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'cabinet':
-        await deleteRingNetworkCabinet([cabinetRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'elecRoom':
-        await deleteElectricityDistributionRoom([elecRoomRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'switchStation':
-        await deleteSwitchingStation([switchRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'breaker':
-        await deleteColumnCircuitBreaker([breakerRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'columnTrans':
-        await deleteColumnTransformer([columnTransRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      case 'cableBox':
-        await deleteCableBranchBox([cableBoxRows[0].id])
-        message.success('删除成功')
-        refresh()
-        break
-      default:
-        return
-    }
-  }
+  // const deleteEvent = async (currentTab: string) => {
+  //   switch (currentTab) {
+  //     case 'line':
+  //       await deleteLineRelations([lineRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'cableWell':
+  //       await deleteCableWell([cableWellRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'tower':
+  //       await deleteTower([towerRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'boxTrans':
+  //       await deleteBoxTransformer([boxTransRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'cabinet':
+  //       await deleteRingNetworkCabinet([cabinetRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'elecRoom':
+  //       await deleteElectricityDistributionRoom([elecRoomRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'switchStation':
+  //       await deleteSwitchingStation([switchRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'breaker':
+  //       await deleteColumnCircuitBreaker([breakerRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'columnTrans':
+  //       await deleteColumnTransformer([columnTransRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     case 'cableBox':
+  //       await deleteCableBranchBox([cableBoxRows[0].id])
+  //       message.success('删除成功')
+  //       refresh()
+  //       break
+  //     default:
+  //       return
+  //   }
+  // }
 
   //坐标处理
   // const editEvent = async () => {
@@ -608,204 +608,204 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
   }
 
   //地图实时更新方法
-  const updateMapInfo = (data: any, type: string) => {
-    const currentLinesColor = COLORU.find((item) => item.label === data.color)
-    editFeature(mapRef.map, {
-      ...data,
-      color: currentLinesColor?.value,
-      featureType: type,
-    })
-  }
+  // const updateMapInfo = (data: any, type: string) => {
+  //   const currentLinesColor = COLORU.find((item) => item.label === data.color)
+  //   editFeature(mapRef.map, {
+  //     ...data,
+  //     color: currentLinesColor?.value,
+  //     featureType: type,
+  //   })
+  // }
 
-  const sureEditEvent = () => {
-    if (currentTab === 'line') {
-      const editData = lineRows[0]
+  // const sureEditEvent = () => {
+  //   if (currentTab === 'line') {
+  //     const editData = lineRows[0]
 
-      lineForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          ...values,
-          isOverhead: editData.isOverhead,
-          color: editData.color,
-        }
+  //     lineForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         ...values,
+  //         isOverhead: editData.isOverhead,
+  //         color: editData.color,
+  //       }
 
-        await modifyRelationLine(submitInfo)
-        lineForm.resetFields()
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-    //
-    if (currentTab === 'cableWell') {
-      const editData = cableWellRows[0]
-      cableWellForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyCableWell(submitInfo)
-        updateMapInfo(submitInfo, CABLEWELL)
-        cableWellForm.resetFields()
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
+  //       await modifyRelationLine(submitInfo)
+  //       lineForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  //   //
+  //   if (currentTab === 'cableWell') {
+  //     const editData = cableWellRows[0]
+  //     cableWellForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyCableWell(submitInfo)
+  //       updateMapInfo(submitInfo, CABLEWELL)
+  //       cableWellForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
 
-    if (currentTab === 'tower') {
-      const editData = towerRows[0]
-      towerForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyTower(submitInfo)
-        updateMapInfo(submitInfo, TOWER)
+  //   if (currentTab === 'tower') {
+  //     const editData = towerRows[0]
+  //     towerForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyTower(submitInfo)
+  //       updateMapInfo(submitInfo, TOWER)
 
-        towerForm.resetFields()
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-    if (currentTab === 'boxTrans') {
-      const editData = boxTransRows[0]
-      boxTransForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyBoxTransformer(submitInfo)
-        updateMapInfo(submitInfo, BOXTRANSFORMER)
-        boxTransForm.resetFields()
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-    if (currentTab === 'cabinet') {
-      const editData = cabinetRows[0]
-      cabinetForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyRingNetworkCabinet(submitInfo)
-        updateMapInfo(submitInfo, RINGNETWORKCABINET)
-        cabinetForm.resetFields()
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-    if (currentTab === 'elecRoom') {
-      const editData = elecRoomRows[0]
-      elecRoomForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyElectricityDistributionRoom(submitInfo)
-        updateMapInfo(submitInfo, ELECTRICITYDISTRIBUTIONROOM)
-        elecRoomForm.resetFields()
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
+  //       towerForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  //   if (currentTab === 'boxTrans') {
+  //     const editData = boxTransRows[0]
+  //     boxTransForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyBoxTransformer(submitInfo)
+  //       updateMapInfo(submitInfo, BOXTRANSFORMER)
+  //       boxTransForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  //   if (currentTab === 'cabinet') {
+  //     const editData = cabinetRows[0]
+  //     cabinetForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyRingNetworkCabinet(submitInfo)
+  //       updateMapInfo(submitInfo, RINGNETWORKCABINET)
+  //       cabinetForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  //   if (currentTab === 'elecRoom') {
+  //     const editData = elecRoomRows[0]
+  //     elecRoomForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyElectricityDistributionRoom(submitInfo)
+  //       updateMapInfo(submitInfo, ELECTRICITYDISTRIBUTIONROOM)
+  //       elecRoomForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
 
-    if (currentTab === 'switchStation') {
-      const editData = switchRows[0]
-      switchForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifySwitchingStation(submitInfo)
-        updateMapInfo(submitInfo, SWITCHINGSTATION)
+  //   if (currentTab === 'switchStation') {
+  //     const editData = switchRows[0]
+  //     switchForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifySwitchingStation(submitInfo)
+  //       updateMapInfo(submitInfo, SWITCHINGSTATION)
 
-        switchForm.resetFields()
+  //       switchForm.resetFields()
 
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-    if (currentTab === 'breaker') {
-      const editData = breakerRows[0]
-      breakerForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyColumnCircuitBreaker(submitInfo)
-        updateMapInfo(submitInfo, COLUMNCIRCUITBREAKER)
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-    if (currentTab === 'columnTrans') {
-      const editData = columnTransRows[0]
-      columnTransForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyColumnTransformer(submitInfo)
-        updateMapInfo(submitInfo, COLUMNTRANSFORMER)
-        columnTransForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  //   if (currentTab === 'breaker') {
+  //     const editData = breakerRows[0]
+  //     breakerForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyColumnCircuitBreaker(submitInfo)
+  //       updateMapInfo(submitInfo, COLUMNCIRCUITBREAKER)
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  //   if (currentTab === 'columnTrans') {
+  //     const editData = columnTransRows[0]
+  //     columnTransForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyColumnTransformer(submitInfo)
+  //       updateMapInfo(submitInfo, COLUMNTRANSFORMER)
+  //       columnTransForm.resetFields()
 
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-    if (currentTab === 'cableBox') {
-      const editData = cableBoxRows[0]
-      cableBoxForm.validateFields().then(async (values) => {
-        const submitInfo = {
-          id: editData.id,
-          geom: `POINT (${values.lng} ${values.lat})`,
-          ...values,
-          color: editData.color,
-        }
-        await modifyCableBranchBox(submitInfo)
-        updateMapInfo(submitInfo, CABLEBRANCHBOX)
-        cableBoxForm.resetFields()
-        refresh()
-        message.success('更新成功')
-        setFormVisible(false)
-      })
-      return
-    }
-  }
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  //   if (currentTab === 'cableBox') {
+  //     const editData = cableBoxRows[0]
+  //     cableBoxForm.validateFields().then(async (values) => {
+  //       const submitInfo = {
+  //         id: editData.id,
+  //         geom: `POINT (${values.lng} ${values.lat})`,
+  //         ...values,
+  //         color: editData.color,
+  //       }
+  //       await modifyCableBranchBox(submitInfo)
+  //       updateMapInfo(submitInfo, CABLEBRANCHBOX)
+  //       cableBoxForm.resetFields()
+  //       refresh()
+  //       message.success('更新成功')
+  //       setFormVisible(false)
+  //     })
+  //     return
+  //   }
+  // }
 
   //操作权限判断
   const canEdit = () => {
@@ -826,32 +826,32 @@ const EquipLineList: React.FC<StandingBookProps> = (props) => {
     return false
   }
 
-  const getCurrentRow = (currentTab: string) => {
-    switch (currentTab) {
-      case 'line':
-        return lineRows
-      case 'cableWell':
-        return cableWellRows
-      case 'boxTrans':
-        return boxTransRows
-      case 'cabinet':
-        return cabinetRows
-      case 'elecRoom':
-        return elecRoomRows
-      case 'switchStation':
-        return switchRows
-      case 'breaker':
-        return breakerRows
-      case 'columnTrans':
-        return columnTransRows
-      case 'cableBox':
-        return cableBoxRows
-      case 'tower':
-        return towerRows
-      default:
-        return
-    }
-  }
+  // const getCurrentRow = (currentTab: string) => {
+  //   switch (currentTab) {
+  //     case 'line':
+  //       return lineRows
+  //     case 'cableWell':
+  //       return cableWellRows
+  //     case 'boxTrans':
+  //       return boxTransRows
+  //     case 'cabinet':
+  //       return cabinetRows
+  //     case 'elecRoom':
+  //       return elecRoomRows
+  //     case 'switchStation':
+  //       return switchRows
+  //     case 'breaker':
+  //       return breakerRows
+  //     case 'columnTrans':
+  //       return columnTransRows
+  //     case 'cableBox':
+  //       return cableBoxRows
+  //     case 'tower':
+  //       return towerRows
+  //     default:
+  //       return
+  //   }
+  // }
 
   const tableButton = () => {
     return (

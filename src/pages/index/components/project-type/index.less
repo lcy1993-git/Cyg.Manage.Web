@@ -1,32 +1,32 @@
 .projectType {
-    height: 100%;
-    .projectTypeControl {
-        height: 16px;
-        display: flex;
-        margin-bottom: 10px;
-        .typeSelect {
-          :global {
-            .ant-select {
-              .ant-select-selector {
-                height: 16px;
-    
-                .ant-select-selection-item {
-                  color: @index-to-do-item-color;
-                  font-size: 10px;
-                  line-height: 16px;
-                }
-              }
-    
-              .ant-select-arrow {
-                color: @index-to-do-item-color;
-              }
+  height: 100%;
+  .projectTypeControl {
+    display: flex;
+    height: 16px;
+    margin-bottom: 10px;
+    .typeSelect {
+      :global {
+        .ant-select {
+          .ant-select-selector {
+            height: 16px;
+
+            .ant-select-selection-item {
+              color: @index-to-do-item-color;
+              font-size: 10px;
+              line-height: 16px;
             }
           }
+
+          .ant-select-arrow {
+            color: @index-to-do-item-color;
+          }
         }
+      }
     }
-    .projectTypeChart {
-        display: flex;
-        min-height: 108px;
-        height: calc(100% - 48px);
-    }
+  }
+  .projectTypeChart {
+    display: flex;
+    height: calc(100% - 48px);
+    min-height: 108px;
+  }
 }

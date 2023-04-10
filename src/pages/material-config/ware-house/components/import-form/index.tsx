@@ -1,12 +1,14 @@
-import CyFormItem from '@/components/cy-form-item';
-import FileUpload from '@/components/file-upload';
-import { uploadLineStressSag } from '@/services/resource-config/drawing';
-import { useBoolean, useControllableValue } from 'ahooks';
-import React, { useState } from 'react';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
-import { Input, Form, message, Row, Col, Modal, Button } from 'antd';
-import UrlSelect from '@/components/url-select';
+import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
+import { uploadLineStressSag } from '@/services/resource-config/drawing'
+import { useBoolean, useControllableValue } from 'ahooks'
+import React, { useState } from 'react'
+import { Dispatch } from 'react'
+import { SetStateAction } from 'react'
+import { Input, Form, message, Row, Col, Modal, Button } from 'antd'
+import UrlSelect from '@/components/url-select'
+import { uploadAuditLog } from '@/utils/utils'
+import { baseUrl } from '@/services/common'
 
 // interface CurrentDataParams {
 //   id?: string;
@@ -16,78 +18,95 @@ import UrlSelect from '@/components/url-select';
 // }
 
 interface ImportWareHouseProps {
-  visible: boolean;
-  onChange: Dispatch<SetStateAction<boolean>>;
-  changeFinishEvent: () => void;
-  libId?: string;
-  securityKey?: string;
-  requestSource: 'project' | 'resource' | 'upload';
-  province: string;
-  provinceName: string;
-  overviewId: string;
+  visible: boolean
+  onChange: Dispatch<SetStateAction<boolean>>
+  changeFinishEvent: () => void
+  libId?: string
+  securityKey?: string
+  requestSource: 'project' | 'resource' | 'upload'
+  province: string
+  provinceName: string
+  overviewId: string
 }
 
 const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
-  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' });
-  const [companyId, setCompanyId] = useState<string>('');
-  const [isImportFlag, setIsImportFlag] = useState<boolean>(false);
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false);
+  const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
+  const [companyId, setCompanyId] = useState<string>('')
+  const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const {
     province = '',
     provinceName = '',
     overviewId = '',
     requestSource,
     changeFinishEvent,
-  } = props;
-  const [form] = Form.useForm();
+  } = props
+  const [form] = Form.useForm()
 
   const saveLineStreesSagEvent = () => {
     return form
       .validateFields()
-      .then((values) => {
-        const { file } = values;
+      .then((values: any) => {
+        const { file } = values
         return uploadLineStressSag(
           file,
           { province, companyId, overviewId },
           requestSource,
-          '/WareHouse/SaveImport',
-        );
+          '/WareHouse/SaveImport'
+        )
       })
       .then(
         () => {
-          message.success('导入成功');
-          setIsImportFlag(true);
+          message.success('导入成功')
+          uploadAuditLog([
+            {
+              auditType: 1,
+              eventType: 5,
+              eventDetailType: '文件上传',
+              executionResult: '成功',
+              auditLevel: 2,
+              serviceAdress: `${baseUrl.upload}/Upload/File`,
+            },
+          ])
+          setIsImportFlag(true)
 
-          return Promise.resolve();
+          return Promise.resolve()
         },
-        (res) => {
-          const { code, isSuccess, message: msg } = res;
+        (res: any) => {
+          const { message: msg } = res
           if (message) {
-            message.warn(msg);
-            setIsImportFlag(false);
+            message.warn(msg)
+            setIsImportFlag(false)
           }
-          return Promise.reject('导入失败');
-        },
+          uploadAuditLog([
+            {
+              auditType: 1,
+              eventType: 5,
+              eventDetailType: '文件上传',
+              executionResult: '失败',
+              auditLevel: 2,
+              serviceAdress: `${baseUrl.upload}/Upload/File`,
+            },
+          ])
+          return Promise.reject('导入失败')
+        }
       )
       .finally(() => {
-        setUploadFileFalse();
-        changeFinishEvent?.();
-      });
-  };
+        setUploadFileFalse()
+        changeFinishEvent?.()
+      })
+  }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
-        setState(false);
-        setIsImportFlag(false);
-        return;
+        setState(false)
+        setIsImportFlag(false)
+        return
       }
-      message.info('您还未上传文件，点击“开始上传”上传文件');
-    });
-  };
+      message.info('您还未上传文件，点击“开始上传”上传文件')
+    })
+  }
 
   return (
     <Modal
@@ -146,7 +165,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         </CyFormItem>
       </Form>
     </Modal>
-  );
-};
+  )
+}
 
-export default ImportWareHouse;
+export default ImportWareHouse

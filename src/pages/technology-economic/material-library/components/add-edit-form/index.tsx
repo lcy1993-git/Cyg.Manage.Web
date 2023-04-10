@@ -1,7 +1,6 @@
 import React from 'react'
 import { Input, Col, Row } from 'antd'
 import UrlSelect from '@/components/url-select'
-import FormSwitch from '@/components/form-switch'
 import CyFormItem from '@/components/cy-form-item'
 import DateFormItem from '@/components/date-from-item'
 import FileUpload from '@/components/file-upload'

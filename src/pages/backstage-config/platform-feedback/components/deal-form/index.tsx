@@ -1,20 +1,20 @@
-import CyFormItem from '@/components/cy-form-item';
-import EnumSelect from '@/components/enum-select';
-import ReadonlyItem from '@/components/readonly-item';
-import ReplyComponent from '@/components/reply-component';
-import moment from 'moment';
-import React from 'react';
-import styles from './index.less';
-import { HandleStatus } from '@/services/system-config/platform-feedback';
-import { Input } from 'antd';
+import CyFormItem from '@/components/cy-form-item'
+import EnumSelect from '@/components/enum-select'
+import ReadonlyItem from '@/components/readonly-item'
+import ReplyComponent from '@/components/reply-component'
+import moment from 'moment'
+import React from 'react'
+import styles from './index.less'
+import { HandleStatus } from '@/services/system-config/platform-feedback'
+import { Input } from 'antd'
 interface FeedBackFormProps {
-  detailData: any;
+  detailData: any
 }
 
 const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
-  const { detailData = {} } = props;
+  const { detailData = {} } = props
 
-  const { replys = [] } = detailData;
+  const { replys = [] } = detailData
 
   const replyElement = replys.map((item: any, index: number) => {
     return (
@@ -26,8 +26,8 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
       >
         {item.content}
       </ReplyComponent>
-    );
-  });
+    )
+  })
 
   return (
     <div className={styles.feedBackForm}>
@@ -90,7 +90,7 @@ const FeedBackForm: React.FC<FeedBackFormProps> = (props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default FeedBackForm;
+export default FeedBackForm

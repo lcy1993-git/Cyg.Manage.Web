@@ -1,14 +1,14 @@
-import React from 'react';
-import styles from './index.less';
+import React from 'react'
+import styles from './index.less'
 
 interface NumberStatisticsComponentProps {
-  title: string;
-  num: number | string;
-  unit: string;
+  title: string
+  num: number | string
+  unit: string
 }
 
 const NumberStatisticsComponent: React.FC<NumberStatisticsComponentProps> = (props) => {
-  const { title, num, unit } = props;
+  const { title, num, unit } = props
   return (
     <div className={styles.numberStatisticsComponent}>
       <div className={styles.numberStatisticsComponentTitle}>{title}</div>
@@ -17,7 +17,7 @@ const NumberStatisticsComponent: React.FC<NumberStatisticsComponentProps> = (pro
         <span className={styles.unit}>{unit}</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NumberStatisticsComponent;
+export default NumberStatisticsComponent

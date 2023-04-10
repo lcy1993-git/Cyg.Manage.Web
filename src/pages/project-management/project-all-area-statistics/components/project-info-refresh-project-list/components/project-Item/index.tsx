@@ -1,16 +1,16 @@
-import React, { FC } from 'react';
-import styles from './index.less';
+import React, { FC } from 'react'
+import styles from './index.less'
 // import { Link } from 'umi';
-import User from '@/assets/image/project-management/user.svg';
-import { Tooltip } from 'antd';
+import User from '@/assets/image/project-management/user.svg'
+import { Tooltip } from 'antd'
 // import { useLayoutStore } from '@/layouts/context';
 export interface ProjectItemProps {
-  name: string;
-  id: string;
-  content?: string;
-  date: string;
-  operator: string;
-  operationCategory: string;
+  name: string
+  id: string
+  content?: string
+  date: string
+  operator: string
+  operationCategory: string
 }
 
 const ProjectItem: FC<ProjectItemProps> = ({ operator, name, operationCategory, date }) => {
@@ -26,6 +26,6 @@ const ProjectItem: FC<ProjectItemProps> = ({ operator, name, operationCategory, 
       <div className={styles.projectName}>{name}</div>
       <div className={styles.date}>{date}</div>
     </div>
-  );
-};
-export default ProjectItem;
+  )
+}
+export default ProjectItem

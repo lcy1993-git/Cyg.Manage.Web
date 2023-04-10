@@ -1,14 +1,14 @@
-import { getProjectStatisticsOfPie } from '@/services/project-management/project-statistics-v2';
-import { handleRate } from '@/utils/utils';
-import { useRequest } from 'ahooks';
-import React from 'react';
-import { useProjectAllAreaStatisticsStore } from '../../store';
-import styles from './index.less';
-import NumberStatisticsComponent from './number-statistics-component';
-import StatisticsBieChart from './statistics-bie-chart';
+import { getProjectStatisticsOfPie } from '@/services/project-management/project-statistics-v2'
+import { handleRate } from '@/utils/utils'
+import { useRequest } from 'ahooks'
+import React from 'react'
+import { useProjectAllAreaStatisticsStore } from '../../store'
+import styles from './index.less'
+import NumberStatisticsComponent from './number-statistics-component'
+import StatisticsBieChart from './statistics-bie-chart'
 
 const ProjectStatisticsComponent: React.FC = () => {
-  const { dataType, companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore();
+  const { dataType, companyInfo, projectShareCompanyId } = useProjectAllAreaStatisticsStore()
 
   // ! 待接口完善
   const { data } = useRequest<StatusParams>(
@@ -20,8 +20,8 @@ const ProjectStatisticsComponent: React.FC = () => {
     {
       refreshDeps: [dataType],
       ready: !!projectShareCompanyId,
-    },
-  );
+    }
+  )
 
   return (
     <div className={styles.projectStatisticsComponent}>
@@ -42,7 +42,7 @@ const ProjectStatisticsComponent: React.FC = () => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectStatisticsComponent;
+export default ProjectStatisticsComponent

@@ -5,7 +5,7 @@ interface FilePdfViewProps {
   data: ArrayBuffer
 }
 
-const FilePdfView: React.FC<FilePdfViewProps> = ({ data }) => {
+const FilePdfView: React.FC<FilePdfViewProps> = () => {
   useMount(() => {
     return pdfjs
   })

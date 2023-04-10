@@ -1,7 +1,7 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import EnumSelect from '@/components/enum-select';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import EnumSelect from '@/components/enum-select'
 
 export enum LoginEnum {
   '授权账号' = 1,
@@ -37,7 +37,7 @@ const AddLoginStrategyForm: React.FC = () => {
         <Input.TextArea placeholder="请输入备注" showCount />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default AddLoginStrategyForm;
+export default AddLoginStrategyForm

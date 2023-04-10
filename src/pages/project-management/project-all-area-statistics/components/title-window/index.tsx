@@ -1,12 +1,12 @@
-import React from 'react';
-import styles from './index.less';
+import React from 'react'
+import styles from './index.less'
 
 interface TitleWindowProps {
-  title: string | (() => JSX.Element);
+  title: string | (() => JSX.Element)
 }
 
 const TitleWindow: React.FC<TitleWindowProps> = (props) => {
-  const { title } = props;
+  const { title } = props
   return (
     <div className={styles.titleWindow}>
       <div className={styles.titleWindowHeader}>
@@ -14,7 +14,7 @@ const TitleWindow: React.FC<TitleWindowProps> = (props) => {
       </div>
       <div className={styles.titleWindowContent}>{props.children}</div>
     </div>
-  );
-};
+  )
+}
 
-export default TitleWindow;
+export default TitleWindow

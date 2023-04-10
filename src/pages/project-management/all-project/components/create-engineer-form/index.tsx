@@ -9,11 +9,10 @@ import {
 import { useGetSelectData } from '@/utils/hooks'
 import { getDefaultStartEndDate } from '@/utils/utils'
 import useRequest from '@ahooksjs/use-request'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { Cascader, DatePicker, Input, Tooltip } from 'antd'
+import { Cascader, DatePicker, Input } from 'antd'
 // import city from '@/assets/local-data/area'
 import moment from 'moment'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import Rule from './engineer-form-rule'
 
 interface CreateEngineerForm {
@@ -30,8 +29,7 @@ interface CreateEngineerForm {
 const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
   const {
     exportDataChange,
-    areaId: province,
-    libId: inputLibId,
+
     form,
     canChange = true,
     minStart,

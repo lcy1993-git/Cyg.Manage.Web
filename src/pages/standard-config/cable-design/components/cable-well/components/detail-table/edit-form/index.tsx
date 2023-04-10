@@ -1,15 +1,15 @@
-import React from 'react';
-import { Input } from 'antd';
-import CyFormItem from '@/components/cy-form-item';
-import CascaderUrlSelect from '@/components/material-cascader-url-select';
-import Scrollbars from 'react-custom-scrollbars';
+import React from 'react'
+import { Input } from 'antd'
+import CyFormItem from '@/components/cy-form-item'
+import CascaderUrlSelect from '@/components/material-cascader-url-select'
+import Scrollbars from 'react-custom-scrollbars'
 
 interface EditCableWellDetailParams {
-  resourceLibId: string;
+  resourceLibId: string
 }
 
 const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
-  const { resourceLibId } = props;
+  const { resourceLibId } = props
 
   return (
     <>
@@ -23,9 +23,9 @@ const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (getFieldValue('materialId') != undefined && value) {
-                  return Promise.reject('组件或物料选其一');
+                  return Promise.reject('组件或物料选其一')
                 }
-                return Promise.resolve();
+                return Promise.resolve()
               },
             }),
           ]}
@@ -42,9 +42,9 @@ const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (getFieldValue('componentId') != undefined && value) {
-                  return Promise.reject('组件或物料选其一');
+                  return Promise.reject('组件或物料选其一')
                 }
-                return Promise.resolve();
+                return Promise.resolve()
               },
             }),
           ]}
@@ -66,7 +66,7 @@ const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
         </CyFormItem>
       </Scrollbars>
     </>
-  );
-};
+  )
+}
 
-export default EditCableWellDetail;
+export default EditCableWellDetail

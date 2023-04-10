@@ -16,15 +16,12 @@ interface ImportLineStreeSagProps {
 
 const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
-  const { libId = '', requestSource, changeFinishEvent } = props
+  const { requestSource, changeFinishEvent } = props
   const [falseData, setFalseData] = useState<string>('')
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false)
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const saveLineStreesSagEvent = () => {
     return form
       .validateFields()
@@ -59,7 +56,7 @@ const ImportLineStressSag: React.FC<ImportLineStreeSagProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         return

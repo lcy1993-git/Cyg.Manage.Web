@@ -1,38 +1,38 @@
-import GeneralTable from '@/components/general-table';
-import PageCommonWrap from '@/components/page-common-wrap';
-import TableSearch from '@/components/table-search';
-import { Button, message, Modal, Spin } from 'antd';
-import React, { useState } from 'react';
+import GeneralTable from '@/components/general-table'
+import PageCommonWrap from '@/components/page-common-wrap'
+import TableSearch from '@/components/table-search'
+import { Button, message, Modal, Spin } from 'antd'
+import React, { useState } from 'react'
 // import ElectricCompanyForm from './components/add-edit-form';
-import styles from './index.less';
-import UrlSelect from '@/components/url-select';
-import { SearchOutlined, FileTextOutlined, PlusOutlined } from '@ant-design/icons';
-import { useRequest } from 'ahooks';
-import { isArray } from 'lodash';
-import SourceCompareDetailTab from './components/detail-tab';
+import styles from './index.less'
+import UrlSelect from '@/components/url-select'
+import { SearchOutlined, FileTextOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { isArray } from 'lodash'
+import SourceCompareDetailTab from './components/detail-tab'
 import {
   getSourceCompareDetail,
   addSourceCompareCategory,
-} from '@/services/resource-config/source-compare';
-import DifferTable from './components/differ-table';
-import { useGetButtonJurisdictionArray } from '@/utils/hooks';
+} from '@/services/resource-config/source-compare'
+import DifferTable from './components/differ-table'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 
 const SourceCompare: React.FC = () => {
-  const tableRef = React.useRef<HTMLDivElement>(null);
-  const [tableSelectRows, setTableSelectRows] = useState<any[]>([]);
-  const [searchKeyWord, setSearchKeyWord] = useState<string>('');
-  const [db1, setdb1] = useState<string | null>('');
-  const [db2, setdb2] = useState<string | null>('');
-  const [detailTabVisible, setDetailTabVisible] = useState<boolean>(false);
-  const [differTableVisible, setDifferTableVisible] = useState<boolean>(false);
-  const buttonJurisdictionArray = useGetButtonJurisdictionArray();
+  const tableRef = React.useRef<HTMLDivElement>(null)
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
+  const [searchKeyWord] = useState<string>('')
+  const [db1, setdb1] = useState<string | null>('')
+  const [db2, setdb2] = useState<string | null>('')
+  const [detailTabVisible, setDetailTabVisible] = useState<boolean>(false)
+  const [differTableVisible, setDifferTableVisible] = useState<boolean>(false)
+  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
   const { data, run, loading } = useRequest(getSourceCompareDetail, {
     manual: true,
-  });
+  })
 
   const { run: addCategory } = useRequest(addSourceCompareCategory, {
     manual: true,
-  });
+  })
 
   const searchComponent = () => {
     return (
@@ -72,38 +72,38 @@ const SourceCompare: React.FC = () => {
           </Button>
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const addCategoryEvent = async () => {
     if (db1 == '' || db2 == '') {
-      message.error('源资源库和目标资源库不能为空');
-      return;
+      message.error('源资源库和目标资源库不能为空')
+      return
     } else if (db1 == db2) {
-      message.error('源资源库不能和目标资源库一致');
-      return;
+      message.error('源资源库不能和目标资源库一致')
+      return
     } else {
-      await addCategory({ db1, db2 });
-      refresh();
-      message.success('添加成功');
+      await addCategory({ db1, db2 })
+      refresh()
+      message.success('添加成功')
     }
-  };
+  }
 
   // 列表刷新
   const refresh = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.refresh();
+      tableRef.current.refresh()
     }
-  };
+  }
 
   // 列表搜索
   const search = () => {
     if (tableRef && tableRef.current) {
       // @ts-ignore
-      tableRef.current.search();
+      tableRef.current.search()
     }
-  };
+  }
 
   const columns = [
     {
@@ -150,13 +150,13 @@ const SourceCompare: React.FC = () => {
             textOverflow: 'ellipsis',
             cursor: 'pointer',
           },
-        };
+        }
       },
       render: (text: string, record: any) => {
-        return record.error;
+        return record.error
       },
     },
-  ];
+  ]
 
   const tableElement = () => {
     return (
@@ -174,25 +174,25 @@ const SourceCompare: React.FC = () => {
           </Button>
         )}
       </>
-    );
-  };
+    )
+  }
 
   const checkDetailEvent = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
+      message.error('请选择要操作的行')
+      return
     }
-    setDetailTabVisible(true);
-    await run(tableSelectRows[0].id);
-  };
+    setDetailTabVisible(true)
+    await run(tableSelectRows[0].id)
+  }
 
   const checkDifferEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-      message.error('请选择要操作的行');
-      return;
+      message.error('请选择要操作的行')
+      return
     }
-    setDifferTableVisible(true);
-  };
+    setDifferTableVisible(true)
+  }
 
   return (
     <PageCommonWrap>
@@ -242,7 +242,7 @@ const SourceCompare: React.FC = () => {
         </Spin>
       </Modal>
     </PageCommonWrap>
-  );
-};
+  )
+}
 
-export default SourceCompare;
+export default SourceCompare

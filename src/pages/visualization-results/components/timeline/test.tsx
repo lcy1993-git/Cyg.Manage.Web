@@ -1,14 +1,13 @@
-import React, { FC } from 'react';
-import {  Modal } from 'antd';
+import React, { FC } from 'react'
+import { Modal } from 'antd'
 export interface TestModalProps {
-  visible: boolean;
-  onOk: () => void;
-  onCancel: () => void;
- 
+  visible: boolean
+  onOk: () => void
+  onCancel: () => void
 }
 
 const TestModal: FC<TestModalProps> = (props) => {
-  const { visible, onOk, onCancel } = props;
+  const { visible, onOk, onCancel } = props
 
   return (
     <Modal
@@ -19,9 +18,9 @@ const TestModal: FC<TestModalProps> = (props) => {
       onOk={onOk}
       onCancel={onCancel}
     >
-     Hello TestModal
+      Hello TestModal
     </Modal>
-  );
-};
+  )
+}
 
-export default TestModal;
+export default TestModal

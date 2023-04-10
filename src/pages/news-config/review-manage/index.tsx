@@ -1,12 +1,12 @@
-import React from 'react';
-import styles from './index.less';
-import classNames from 'classnames';
-import PageCommonWrap from '@/components/page-common-wrap';
-import SideTree from './components/side-menu';
-import Filterbar from './components/filter-bar';
-import { Provider, useContainer } from './store';
-import { observer } from 'mobx-react-lite';
-import ReviewTable from './components/review-table';
+import React from 'react'
+import styles from './index.less'
+import classNames from 'classnames'
+import PageCommonWrap from '@/components/page-common-wrap'
+import SideTree from './components/side-menu'
+import Filterbar from './components/filter-bar'
+import { Provider } from './store'
+import { observer } from 'mobx-react-lite'
+import ReviewTable from './components/review-table'
 
 const VisualizationResults: React.FC = observer(() => {
   return (
@@ -24,15 +24,15 @@ const VisualizationResults: React.FC = observer(() => {
         </main>
       </div>
     </PageCommonWrap>
-  );
-});
+  )
+})
 
 const StoreProvider: React.FC = () => {
   return (
     <Provider>
       <VisualizationResults />
     </Provider>
-  );
-};
+  )
+}
 
-export default StoreProvider;
+export default StoreProvider

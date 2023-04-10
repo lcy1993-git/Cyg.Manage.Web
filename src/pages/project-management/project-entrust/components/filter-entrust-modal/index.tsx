@@ -1,12 +1,11 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
-import { useControllableValue, useUpdateEffect } from 'ahooks'
+import { useControllableValue } from 'ahooks'
 import UrlSelect from '@/components/url-select'
 import { Button, Modal, Form, DatePicker, Tooltip } from 'antd'
 import { useGetProjectEnum } from '@/utils/hooks'
 import CyFormItem from '@/components/cy-form-item'
 import moment from 'moment'
 import AreaSelect from '@/components/area-select'
-import EnumSelect from '@/components/enum-select'
 
 import styles from './index.less'
 import { useEffect } from 'react'

@@ -111,7 +111,7 @@ const CorrespondingProvinces = ({ letter, provinces }: CorrespondingProvincesPro
 /**
  * 展示具体城市
  * */
-const CorrespondingCities = ({ cities, ...rest }: CorrespondingCitiesProps) => {
+const CorrespondingCities = ({ cities }: CorrespondingCitiesProps) => {
   // const store = useContainer();
   const { setselectCity, mapRef } = useMyContext()
   return (

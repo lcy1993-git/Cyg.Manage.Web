@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 
 export const Track1 = () => (
   <svg

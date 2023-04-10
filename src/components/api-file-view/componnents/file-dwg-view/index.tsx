@@ -8,7 +8,7 @@ import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry'
 import { PDFPageProxy } from 'pdfjs-dist/types/display/api'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './index.less'
-// import type { PDFWorker } from 'pdfjs-dist';
+import type { PDFWorker } from 'pdfjs-dist'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJSWorker
 
@@ -118,7 +118,7 @@ const FileDwgView: React.FC<FileDwgViewProps> = ({
   }
 
   // 加载canvas到ref
-  const loadCanvas = (ref: any, viewport: any, isMount = false) => {
+  const loadCanvas = (ref: any, viewport: any) => {
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
     canvas.height = viewport.height

@@ -392,7 +392,7 @@ export const upLoadPoint = async (
         localStorage.setItem('dragPointId', data.id)
         isDragPointend && isDragPointend(false)
       })
-      .catch((err) => {
+      .catch(() => {
         // console.log(err, '信息修改失败')
       })
   } catch (err) {}
@@ -459,7 +459,7 @@ export const deletFeatureByTable = (map: any, data: any, lineIds?: String[]) => 
   }
 }
 
-export const deleFeature = (map: any, feature: any, lineIds?: String[]) => {
+export const deleFeature = (map: any, feature: any) => {
   if (!feature) return
   let geomType = feature.getGeometry().getType()
   const pointLayer = getLayer(map, 'pointLayer')

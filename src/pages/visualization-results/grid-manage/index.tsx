@@ -1,5 +1,5 @@
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import ChangMapUrl from './ChangeMapUrl'
 import { MyContextType, MyWorkProvider, useMyContext } from './Context'
 import DrawToolbar from './DrawToolbar'

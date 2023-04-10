@@ -21,10 +21,7 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
   const { libId, requestSource, changeFinishEvent } = props
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
   const [form] = Form.useForm()
-  const [
-    triggerUploadFile,
-    { toggle: toggleUploadFile, setTrue: setUploadFileTrue, setFalse: setUploadFileFalse },
-  ] = useBoolean(false)
+  const [triggerUploadFile, { setFalse: setUploadFileFalse }] = useBoolean(false)
   const saveImportCableEvent = () => {
     return form
       .validateFields()
@@ -33,14 +30,14 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
         return uploadLineStressSag(file, { libId }, requestSource, '/CableWell/SaveImport')
       })
       .then(
-        (res) => {
+        () => {
           setIsImportFlag(true)
           message.success('导入成功')
 
           return Promise.resolve()
         },
         (res) => {
-          const { code, isSuccess, message: msg } = res
+          const { message: msg } = res
           if (msg) {
             message.warn(msg)
           }
@@ -54,7 +51,7 @@ const ImportCableModal: React.FC<ImportChartProps> = (props) => {
   }
 
   const onSave = () => {
-    form.validateFields().then((value) => {
+    form.validateFields().then(() => {
       if (isImportFlag) {
         setState(false)
         return

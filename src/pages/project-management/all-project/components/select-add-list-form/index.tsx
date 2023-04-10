@@ -24,7 +24,6 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
     // initPeople = [],
     // notArrangeShow = false,
     // onSetPassArrangeStatus,
-    projectName,
     isAdd,
     onChange,
   } = props
@@ -106,7 +105,7 @@ const SelectAddListForm: FC<SelectAddListFormProps> = (props) => {
   const AddPeople = () => {
     return (
       <div className={styles.people}>
-        {people.map((p, idx) => (
+        {people.map((p) => (
           <div className={styles.person} key={p?.value}>
             <div className={styles.itemText} style={{ paddingTop: '5px' }}>
               {p?.text}

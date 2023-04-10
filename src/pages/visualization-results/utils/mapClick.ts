@@ -187,7 +187,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     } else {
       feature = feature_
     }
-
     layerName = layer.getProperties().name
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length)
 
@@ -418,7 +417,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           case 'recorder':
             pJSON[mappingTag] = feature.getProperties()['recorderName']
             break
-
           case 'surveyor':
             if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员'
             pJSON[mappingTag] = feature.getProperties()['surveyorName']
@@ -903,7 +901,7 @@ export const mapPointermove = (evt: any, map: any) => {
   if (map.getTargetElement().style.cursor === 'wait') return
   map.getTargetElement().style.cursor = 'default'
   let allowed = true
-  map.forEachFeatureAtPixel(evt.pixel, function (feature: any, layer: any) {
+  map.forEachFeatureAtPixel(evt.pixel, function () {
     // if (layer.getSource() instanceof Cluster) {
     //   if (feature.get('features').length > 1) {
     //     let lont = feature.get('features')[0].getGeometry().getCoordinates()

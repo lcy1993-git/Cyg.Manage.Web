@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Input, DatePicker } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { TreeDataItem } from '@/services/jurisdiction-config/company-manage'
@@ -14,18 +14,14 @@ interface CompanyManageFormProps {
 }
 
 const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
-  const { treeData = [], form } = props
-  const mapTreeData = (data: any) => {
-    return {
-      title: data.text,
-      value: data.id,
-      children: data.children?.map(mapTreeData),
-    }
-  }
-
-  const handleData = useMemo(() => {
-    return treeData.map(mapTreeData)
-  }, [JSON.stringify(treeData)])
+  const { form } = props
+  // const mapTreeData = (data: any) => {
+  //   return {
+  //     title: data.text,
+  //     value: data.id,
+  //     children: data.children?.map(mapTreeData),
+  //   }
+  // }
 
   const reset = () => {
     form.resetFields(['authorityExpireDate'])
@@ -66,7 +62,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         <ClickInputNumber minNumber={0} maxNumber={50} />
       </CyFormItem>
 
-      {/* <CyFormItem
+      <CyFormItem
         labelWidth={100}
         align="right"
         label="技经端"
@@ -86,7 +82,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
         required
       >
         <ClickInputNumber minNumber={0} maxNumber={50} limit={5} />
-      </CyFormItem> */}
+      </CyFormItem>
 
       <CyFormItem
         labelWidth={100}

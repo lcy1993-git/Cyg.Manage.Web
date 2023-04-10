@@ -1,6 +1,9 @@
 module.exports = {
-  extends: ['react-app', 'plugin:react-hooks/recommended'],
+  extends: ['react-app'],
+  plugins: ['unused-imports'],
   rules: {
-    // 'no-console': ['error', { allow: ['warn', 'error'] }],
+    'no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'error',
+    'unused-imports/no-unused-vars': ['error', { vars: 'all', args: 'after-used' }],
   },
 }

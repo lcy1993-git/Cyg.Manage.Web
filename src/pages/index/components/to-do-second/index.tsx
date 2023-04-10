@@ -41,7 +41,6 @@ const ToDo: React.FC<ToDoProps> = (props) => {
   const { componentProps = ['agent', 'approve', 'arrange', 'knot'], currentAreaInfo } = props
 
   const { setAllProjectSearchParams } = useLayoutStore()
-
   const { data: toDoStatisticsInfo, loading } = useRequest(
     () => getMyWorkStatisticsData(areaTypeObj[currentAreaInfo.areaLevel!], currentAreaInfo.areaId),
     {
@@ -95,7 +94,7 @@ const ToDo: React.FC<ToDoProps> = (props) => {
 
   const componentShowElement = useMemo(() => {
     if (handleTheStatisticsData) {
-      return afterHandleComponentProps.map((item, index) => {
+      return afterHandleComponentProps.map((item) => {
         return (
           <div key={uuid.v1()} className={styles.projectManageRow}>
             {item[0] && (
@@ -117,7 +116,7 @@ const ToDo: React.FC<ToDoProps> = (props) => {
   }, [afterHandleComponentProps, handleTheStatisticsData])
 
   const scrollBarRenderView = (params: any) => {
-    const { style, ...rest } = params
+    const { ...rest } = params
     const viewStyle = {
       backgroundColor: `#4DA944`,
       borderRadius: '6px',

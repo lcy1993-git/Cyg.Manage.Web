@@ -22,6 +22,7 @@ export let webConfig = {
     geoserver: '/geoserver',
     design: '/design/api',
     grid: '/gridremediation/api',
+    securityAudit: '/securityaudit/api',
     geoServerUrl: '/geoserver/pdd/ows/',
     netFrameworkHistory: '/gridpredesign/api',
   },

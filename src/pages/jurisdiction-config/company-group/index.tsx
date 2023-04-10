@@ -9,7 +9,7 @@ import {
   updateCompanyGroupItem,
   getCompanyGroupDetail,
 } from '@/services/operation-config/company-group'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
 import CompanyGroupForm from './components/add-edit-form'
 
 import { isArray } from 'lodash'
@@ -31,7 +31,11 @@ const CompanyGroup: React.FC = () => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, run, loading: editDataLoading } = useRequest(getCompanyGroupDetail, {
+  const {
+    data,
+    run,
+    loading: editDataLoading,
+  } = useRequest(getCompanyGroupDetail, {
     manual: true,
   })
 

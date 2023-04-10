@@ -102,7 +102,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         />
       </CyFormItem>
 
-      {/* <CyFormItem
+      <CyFormItem
         className={styles.statistic}
         labelWidth={100}
         align="right"
@@ -115,17 +115,17 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           () => ({
             validator(_, value) {
               if (Number(value) + accreditNumber[4]?.value.availableQty >= 0 || isNaN(value)) {
-                return Promise.resolve();
+                return Promise.resolve()
               }
-              return Promise.reject('减少数不能低于剩余可用数量');
+              return Promise.reject('减少数不能低于剩余可用数量')
             },
           }),
           () => ({
             validator(_, value) {
               if (Number(value) + accreditNumber[4]?.value.totalQty <= 50 || isNaN(value)) {
-                return Promise.resolve();
+                return Promise.resolve()
               }
-              return Promise.reject('增加后总量不能超过50');
+              return Promise.reject('增加后总量不能超过50')
             },
           }),
         ]}
@@ -136,8 +136,8 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           maxNumber={50 - accreditNumber[4]?.value.totalQty}
           minNumber={-accreditNumber[4]?.value.availableQty}
         />
-      </CyFormItem> */}
-      {/* 
+      </CyFormItem>
+
       <CyFormItem
         className={styles.statistic}
         labelWidth={100}
@@ -151,17 +151,17 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           () => ({
             validator(_, value) {
               if (Number(value) + accreditNumber[3]?.value.availableQty >= 0 || isNaN(value)) {
-                return Promise.resolve();
+                return Promise.resolve()
               }
-              return Promise.reject('减少数不能低于剩余可用数量');
+              return Promise.reject('减少数不能低于剩余可用数量')
             },
           }),
           () => ({
             validator(_, value) {
               if (Number(value) + accreditNumber[3]?.value.totalQty <= 50 || isNaN(value)) {
-                return Promise.resolve();
+                return Promise.resolve()
               }
-              return Promise.reject('增加后总量不能超过50');
+              return Promise.reject('增加后总量不能超过50')
             },
           }),
         ]}
@@ -172,7 +172,7 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
           maxNumber={50 - accreditNumber[3]?.value.totalQty}
           minNumber={-accreditNumber[3]?.value.availableQty}
         />
-      </CyFormItem> */}
+      </CyFormItem>
 
       <CyFormItem
         className={styles.statistic}

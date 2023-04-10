@@ -1,9 +1,9 @@
-import { TableDataType } from '../../index'
+// import { TableDataType } from '../../index'
 
-const getValue = (data: TableDataType[], key: string) => {
-  const currentData = data.find(item => item.propertyName === key);
-  return currentData?.data
-}
+// const getValue = (data: TableDataType[], key: string) => {
+//   const currentData = data.find((item) => item.propertyName === key)
+//   return currentData?.data
+// }
 
 const mixinThreeData = (data: any) => {
   // let router: string = "";
@@ -33,9 +33,9 @@ const mixinThreeData = (data: any) => {
   //   case "电气设备":
   //     switch (getValue(data, "类型")) {
   //       case "环网箱":
-          
+
   //         break;
-      
+
   //       default:
   //         break;
   //     }
@@ -43,9 +43,9 @@ const mixinThreeData = (data: any) => {
   //   case "柱上设备":
   //     switch (getValue(data, "类型")) {
   //       case "柱上断路器":
-          
+
   //         break;
-      
+
   //       default:
   //         break;
   //     }
@@ -53,21 +53,21 @@ const mixinThreeData = (data: any) => {
   //   case "户表":
   //     switch (getValue(data, "类型")) {
   //       case "380V":
-          
+
   //         break;
-      
+
   //       default:
   //         break;
   //     }
   //     break;
   //   case "杆塔":
-      
+
   //     break;
-  
+
   //   default:
   //     break;
   // }
   return data
 }
 
-export default mixinThreeData;
+export default mixinThreeData

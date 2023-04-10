@@ -15,15 +15,24 @@ export interface EnumValue {
   value: number
   text: string
 }
-interface UrlSelectDataParams {
-  url: string
-  method?: 'post' | 'get'
-  extraParams?: any
-  titleKey?: string
-  valueKey?: string
-  requestSource?: 'project' | 'common' | 'resource'
-  ready?: boolean
-}
+// interface UrlSelectDataParams {
+//   url: string
+//   method?: 'post' | 'get'
+//   extraParams?: any
+//   titleKey?: string
+//   valueKey?: string
+//   requestSource?: 'project' | 'common' | 'resource'
+//   ready?: boolean
+// }
+// interface UrlSelectDataParams {
+//   url: string
+//   method?: 'post' | 'get'
+//   extraParams?: any
+//   titleKey?: string
+//   valueKey?: string
+//   requestSource?: 'project' | 'common' | 'resource'
+//   ready?: boolean
+// }
 
 interface GetSelectDataParams {
   url: string
@@ -48,7 +57,11 @@ export const useGetSelectData = (params: GetSelectDataParams, options?: any) => 
     otherKey = '',
   } = params
 
-  const { data: resData = [], loading, run } = useRequest(
+  const {
+    data: resData = [],
+    loading,
+    run,
+  } = useRequest(
     () => getCommonSelectData({ url, method, params: extraParams, requestSource, postType }),
     {
       ...options,

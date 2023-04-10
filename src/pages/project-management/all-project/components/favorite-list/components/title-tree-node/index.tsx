@@ -53,23 +53,23 @@ const TitleTreeNode: React.FC<TitleTreeNodeProps> = ({
         return
       }
       await modifyFavoriteName({ id: id, name: editName })
-        .then((res) => {
+        .then(() => {
           setIsEdit?.('')
           setFavName?.(editName)
           setEditFlag(false)
           message.success('修改成功')
           return
         })
-        .catch((err) => {})
+        .catch(() => {})
       return
     }
     creatFavorite({ name: editName, parentId: parentId })
-      .then((res) => {
+      .then(() => {
         setIsEdit?.('')
         setParentId?.('')
         message.success('创建成功')
       })
-      .catch((err) => {
+      .catch(() => {
         return
       })
   }

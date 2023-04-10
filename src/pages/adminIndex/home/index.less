@@ -6,14 +6,14 @@
     overflow: hidden;
     .leftContent {
       width: 75%;
-      height: 73vh;
+      //height: 100%;
       margin-right: 12px;
       //background: white;
       .leftContentTop {
         display: flex;
-        height: 320px;
         .lineChart {
           width: 70%;
+          height: 300px;
           margin-right: 12px;
           padding: 16px 24px;
           padding-bottom: 10px;
@@ -21,13 +21,15 @@
         }
         .circleChart {
           width: 30%;
+          height: 300px;
           padding: 16px 24px;
           padding-bottom: 10px;
+          overflow: hidden;
           background: white;
         }
       }
       .leftTable {
-        height: 100%;
+        height: 68%;
         margin-top: 12px;
         padding: 16px 24px;
         background: #fff;
@@ -48,9 +50,10 @@
       }
     }
     .RightContent {
-      width: 25%;
-      height: 73vh;
+      width: 24.5%;
+      height: 70%;
       padding: 16px 24px;
+      padding-bottom: 8px;
       background: white;
       //background: white ;
     }

@@ -1,8 +1,8 @@
-import { handleRate } from '@/utils/utils';
-import React from 'react';
-import ProcessTable from '../process-table';
-import RateComponent from '../rate-component';
-import styles from './index.less';
+import { handleRate } from '@/utils/utils'
+import React from 'react'
+import ProcessTable from '../process-table'
+import RateComponent from '../rate-component'
+import styles from './index.less'
 
 const ComprehensiveProcessComponent: React.FC = () => {
   const tableColumns = [
@@ -12,16 +12,16 @@ const ComprehensiveProcessComponent: React.FC = () => {
       dataIndex: 'index',
       index: 'index',
       render: (text: any, record: any) => {
-        if(!record.empty) {
-          return `${record.index}`;
+        if (!record.empty) {
+          return `${record.index}`
         }
-      }
+      },
     },
     {
       title: '设计院',
       dataIndex: 'companyName',
       index: 'companyName',
-      ellipsis: true
+      ellipsis: true,
     },
     {
       title: '项目数',
@@ -35,10 +35,10 @@ const ComprehensiveProcessComponent: React.FC = () => {
       index: 'surveyRate',
       width: 100,
       render: (text: any, record: any) => {
-        if(!record.empty) {
-          return `${handleRate(record.surveyRate)}%`;
+        if (!record.empty) {
+          return `${handleRate(record.surveyRate)}%`
         }
-      }
+      },
     },
     {
       title: '综合进度',
@@ -46,20 +46,18 @@ const ComprehensiveProcessComponent: React.FC = () => {
       index: 'value',
       width: 340,
       render: (text: any, record: any) => {
-        if(!record.empty) {
-          return (
-            <RateComponent rate={record.value} />
-          )
+        if (!record.empty) {
+          return <RateComponent rate={record.value} />
         }
-      }
+      },
     },
-  ];
+  ]
 
   return (
     <div className={styles.comprehensiveProcessComponent}>
       <ProcessTable columns={tableColumns} url="/ProjectStatistics/GetProgressRateByCompany" />
     </div>
-  );
-};
+  )
+}
 
-export default ComprehensiveProcessComponent;
+export default ComprehensiveProcessComponent

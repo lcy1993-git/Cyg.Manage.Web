@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Input, Col, Row, Select, Button, message } from 'antd';
-import FormSwitch from '@/components/form-switch';
-import CyFormItem from '@/components/cy-form-item';
-import DateFormItem from '@/components/date-from-item';
-import FileUpload from '@/components/file-upload';
+import React from 'react'
+import { Input } from 'antd'
+import FormSwitch from '@/components/form-switch'
+import CyFormItem from '@/components/cy-form-item'
+import DateFormItem from '@/components/date-from-item'
+import FileUpload from '@/components/file-upload'
 // import CompanyFileForm from '@/pages/operation-config/company-file/components/add-edit-form';
 interface IForm {
-  type?: 'add' | 'edit';
-  selectList?: number[];
-  addUploadFile: any;
+  type?: 'add' | 'edit'
+  selectList?: number[]
+  addUploadFile: any
 }
 const AdjustmentFileForm: React.FC<IForm> = ({ addUploadFile }) => {
   return (
@@ -33,7 +33,7 @@ const AdjustmentFileForm: React.FC<IForm> = ({ addUploadFile }) => {
         <FormSwitch />
       </CyFormItem>
     </>
-  );
-};
+  )
+}
 
-export default AdjustmentFileForm;
+export default AdjustmentFileForm

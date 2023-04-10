@@ -4,7 +4,6 @@ import { useRequest } from 'ahooks'
 import { message, Modal, Tree } from 'antd'
 import { EventDataNode } from 'antd/es/tree'
 import { Key, useEffect, useState } from 'react'
-import EquipLineList from '../../components/line-equip-list'
 import PlanLineList from '../../components/plan-line-list'
 import { useMyContext } from '../Context'
 import { LINE, POWERSUPPLY, TRANSFORMERSUBSTATION } from '../DrawToolbar/GridUtils'
@@ -232,7 +231,7 @@ const PlanPowerSupplyTree = () => {
     }
   }
   // checkbox状态改变触发
-  const getPowerSupplyTreeData = (checkedKeys: any, e: any) => {
+  const getPowerSupplyTreeData = (checkedKeys: any) => {
     const PowerSupplyIds: string[] = checkedKeys
       .map((item: string) => {
         const start = item.indexOf('_&Line')

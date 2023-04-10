@@ -45,7 +45,6 @@ const ElectricDetail: React.FC<ModuleDetailParams> = (props) => {
   // useEffect(() => {
   //   search();
   // }, [componentId]);
-
   const searchComponent = () => {
     return (
       <div>

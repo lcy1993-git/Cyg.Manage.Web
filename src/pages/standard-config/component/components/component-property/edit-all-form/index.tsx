@@ -12,7 +12,7 @@ interface EditAllPropertyParams {
   formData: PropertyParams[]
 }
 const EditAllPropertyForm: React.FC<EditAllPropertyParams> = (props) => {
-  const { editForm, formData } = props
+  const { formData } = props
   const columns = [
     {
       title: (

@@ -209,7 +209,6 @@ const SupplieslInfomation = () => {
   useMount(async () => {
     let val = qs.parse(window.location.href.split('?')[1])?.id
     val = val === 'undefined' ? '' : val
-    console.log(val)
     setId(val as string)
   })
   const getTreeList = async () => {

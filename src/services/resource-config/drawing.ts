@@ -49,7 +49,7 @@ export const uploadLineStressSag = (
     data: formData,
     requestType: 'form',
   }).then((res) => {
-    const { code, isSuccess, message: msg } = res
+    const { code, isSuccess } = res
     if (code === 6000) {
       return Promise.resolve(res)
     }
@@ -82,7 +82,7 @@ export const newUploadLineStressSag = (
     requestType: 'form',
     // signal,
   }).then((res) => {
-    const { code, isSuccess, message: msg } = res
+    const { code, isSuccess } = res
     if (code === 6000) {
       return Promise.resolve(res)
     }

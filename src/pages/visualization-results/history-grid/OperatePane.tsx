@@ -8,13 +8,8 @@ import { HistoryState, INITIAL_DATA_SOURCE, useHistoryGridContext } from './stor
 /** 左上方操作 */
 const OperationPane: FC = ({ children }) => {
   const [canDraw, setCanDraw] = useState(false)
-  const {
-    mode,
-    UIStatus,
-    dispatch,
-    preDesignItemData,
-    preDesignDataSource,
-  } = useHistoryGridContext()
+  const { mode, UIStatus, dispatch, preDesignItemData, preDesignDataSource } =
+    useHistoryGridContext()
 
   const changeMode = useCallback(
     (changedMode: HistoryState['mode']) => {
@@ -34,7 +29,7 @@ const OperationPane: FC = ({ children }) => {
               setCanDraw(false)
             }
           })
-          .catch((err) => {})
+          .catch(() => {})
       }
     } else {
       setCanDraw(true)

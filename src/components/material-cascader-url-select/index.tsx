@@ -1,8 +1,7 @@
 import { getDataByUrl } from '@/services/common'
-import { useBoolean, useRequest } from 'ahooks'
+import { useRequest } from 'ahooks'
 import { Select } from 'antd'
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import UrlSelect from '../url-select'
 import styles from './index.less'
 interface CascaderProps {
   onChange?: (spec?: string) => void
@@ -16,16 +15,7 @@ interface CascaderProps {
 }
 
 const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
-  const {
-    onChange,
-    libId,
-    requestSource = 'resource',
-    urlHead = '',
-    value,
-    type = '',
-    selectName,
-    setSelectName,
-  } = props
+  const { onChange, libId, requestSource = 'resource', urlHead = '', setSelectName } = props
 
   const [id, setId] = useState<string>()
   const [name, setName] = useState<string>()
@@ -65,14 +55,6 @@ const CascaderUrlSelect: FC<CascaderProps> = React.memo((props) => {
     // ready: !urlHead,
     refreshDeps: [urlHead],
   })
-
-  const onSpecChange = (value: string) => {
-    if (value) {
-      setId(value)
-    } else {
-      setId(undefined)
-    }
-  }
 
   const onNameChange = (v: string) => {
     if (v) {

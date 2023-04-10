@@ -1,13 +1,12 @@
 import commonLess from '../common.less'
 
 interface DeEasyTableProps {
-  head: React.ReactNode;
-  data: any[];
-  type?: React.ReactNode;
+  head: React.ReactNode
+  data: any[]
+  type?: React.ReactNode
 }
 
-const DeWinterTable: React.FC<DeEasyTableProps> = ({head, data}) => {
-
+const DeWinterTable: React.FC<DeEasyTableProps> = ({ head, data }) => {
   return (
     <table className={commonLess.table}>
       <thead>
@@ -24,23 +23,21 @@ const DeWinterTable: React.FC<DeEasyTableProps> = ({head, data}) => {
           <td>IV</td>
           <td>V</td>
         </tr>
-        {
-          data.map((item) => {
-            return (
-              <tr key={item.demolitionMajor}>
-                <td>{item?.demolitionMajorText}</td>
-                <td>{item?.costRateLevel_1}</td>
-                <td>{item?.costRateLevel_2}</td>
-                <td>{item?.costRateLevel_3}</td>
-                <td>{item?.costRateLevel_4}</td>
-                <td>{item?.costRateLevel_5}</td>
-              </tr>
-            )
-          })
-        }
+        {data.map((item) => {
+          return (
+            <tr key={item.demolitionMajor}>
+              <td>{item?.demolitionMajorText}</td>
+              <td>{item?.costRateLevel_1}</td>
+              <td>{item?.costRateLevel_2}</td>
+              <td>{item?.costRateLevel_3}</td>
+              <td>{item?.costRateLevel_4}</td>
+              <td>{item?.costRateLevel_5}</td>
+            </tr>
+          )
+        })}
       </tbody>
     </table>
-  );
+  )
 }
 
-export default DeWinterTable;
+export default DeWinterTable

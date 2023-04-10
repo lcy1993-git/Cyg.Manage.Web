@@ -24,4 +24,4 @@ export default {
       message: '请输入正确的身份证格式',
     },
   ],
-};
+}

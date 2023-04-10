@@ -1,14 +1,12 @@
 import type { MediaData } from '../../getComponentsByData'
-import { baseUrl } from '@/services/common';
-import styles from './index.less';
+import { baseUrl } from '@/services/common'
+import styles from './index.less'
 
 interface MediaAudioProps {
   data: MediaData
 }
 
-const MediaAudio: React.FC<MediaAudioProps> = ({
-  data
-}) => {
+const MediaAudio: React.FC<MediaAudioProps> = ({ data }) => {
   return (
     <div className={styles.audioWrap}>
       <audio
@@ -18,7 +16,7 @@ const MediaAudio: React.FC<MediaAudioProps> = ({
         controlsList="noremoteplayback"
       />
     </div>
-  );
+  )
 }
 
-export default MediaAudio;
+export default MediaAudio

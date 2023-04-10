@@ -325,14 +325,6 @@ const Component: React.FC<libParams> = (props) => {
     )
   }
 
-  const importComponentEvent = () => {
-    // if (!resourceLibId) {
-    //   message.warning('请选择资源库');
-    //   return;
-    // }
-    setImportComponentVisible(true)
-  }
-
   const sureDeleteData = async () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.error('请选择要删除的行')
