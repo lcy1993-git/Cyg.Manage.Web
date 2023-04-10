@@ -446,8 +446,8 @@ const CompanyUser: React.FC = () => {
             ) : (
               <span>已禁用</span>
             )}
-            {!buttonJurisdictionArray?.includes('company-user-start-using') &&
-              (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)}
+            {/* {!buttonJurisdictionArray?.includes('company-user-start-using') &&
+              (record.userStatus === 1 ? <span>启用</span> : <span>禁用</span>)} */}
           </>
         )
       },

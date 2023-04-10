@@ -16,6 +16,7 @@
         "resourceV1": "/resource/api",
         "manage": "/manage/api",
         "geoserver": "/geoserver",
+        "securityAudit": "/securityaudit/api",
         "design": "/design/api",
         "grid": "/gridremediation/api",
         "geoServerUrl": "/geoserver/pdd/ows/",
@@ -32,5 +33,5 @@
     },
     "areaStatisticsUrl": "/chart/index.html",
     "commonServer": "https://bbgl.gczhyun.com/common",
-    "version": "1.0.257"
+    "version": "1.0.258"
 }
