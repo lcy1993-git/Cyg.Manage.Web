@@ -2,8 +2,10 @@ import headPortraitSrc from '@/assets/image/head-portrait.jpg'
 import ImageIcon from '@/components/image-icon'
 import LogoComponent from '@/components/logo-component'
 import { Stop } from '@/pages/login'
+import { baseUrl } from '@/services/common'
 import { signOut } from '@/services/login'
 import { useGetFunctionModules, useGetUserInfo } from '@/utils/hooks'
+import { uploadAuditLog } from '@/utils/utils'
 import { BellOutlined } from '@ant-design/icons'
 import { useInterval } from 'ahooks'
 import { Badge, Dropdown, Menu } from 'antd'
@@ -29,6 +31,19 @@ const LayoutHeader: React.FC = () => {
 
   const loginOut = async () => {
     history.push('/login')
+    uploadAuditLog([
+      {
+        auditType: 1,
+        eventType: 2,
+        executionUserId: userInfo?.id,
+        executionUserName: userInfo?.userName,
+        executionResult: '成功',
+        eventDetailType: '退出登录',
+        serviceAdress: `${baseUrl.common}/Users/SignOut`,
+        auditLevel: 2,
+        clientVersion: '',
+      },
+    ])
     localStorage.setItem('Authorization', '')
     await signOut()
   }

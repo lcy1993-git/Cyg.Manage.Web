@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { TreeSelect, message, Input } from 'antd'
+import { TreeSelect, message, Input, Divider } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
 import {
@@ -13,8 +13,8 @@ import Search from 'antd/lib/input/Search'
 import ReadonlyItem from '@/components/readonly-item'
 import { getTreeSelectData } from '@/services/operation-config/company-group'
 import uuid from 'node-uuid'
-// import { DownOutlined, UpOutlined } from '@ant-design/icons'
-// import styles from './index.less'
+import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import styles from './index.less'
 
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void
@@ -44,15 +44,15 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   })
 
   const [checkedValue, setCheckedValue] = useState<string>('2')
-  // const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
+  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
 
   const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId))
 
   const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId))
 
-  // const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId))
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId))
 
-  // const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
+  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
 
   const { data: groupData = [] } = useRequest(() => getTreeSelectData({ pId: groupId }))
 
@@ -100,15 +100,15 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultType])
 
-  // const notChoose = (() => {
-  //   return [
-  //     {
-  //       value: '',
-  //       title: '无',
-  //       children: null ?? [],
-  //     },
-  //   ]
-  // })()
+  const notChoose = (() => {
+    return [
+      {
+        value: '',
+        title: '无',
+        children: null ?? [],
+      },
+    ]
+  })()
 
   return (
     <>
@@ -178,7 +178,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-          {/* <CyFormItem label="造价" name="costUser">
+          <CyFormItem label="造价" name="costUser">
             <TreeSelect
               key="costUser"
               style={{ width: '100%' }}
@@ -187,10 +187,9 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               treeDefaultExpandAll
               allowClear
             />
-          </CyFormItem> */}
-
+          </CyFormItem>
           {/* 继续安排审核 */}
-          {/* <div className={styles.continueAudit}>
+          <div className={styles.continueAudit}>
             <div
               className={styles.internalTitle}
               onClick={() => setIsInternalAudit(!isInternalAudit)}
@@ -201,9 +200,9 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               </div>
             </div>
           </div>
-          <div style={{ display: isInternalAudit ? 'block' : 'none' }}> */}
-          {/* 设计内审 */}
-          {/* <Divider>
+          <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
+            {/* 设计内审 */}
+            <Divider>
               <span className={styles.divider}>设计校审</span>
             </Divider>
             <CyFormItem label="校对" name="designAssessUser1">
@@ -245,10 +244,9 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 treeDefaultExpandAll
                 allowClear
               />
-            </CyFormItem> */}
-
-          {/* 造价内审 */}
-          {/* <Divider>
+            </CyFormItem>
+            {/* 造价内审 */}
+            {/* <Divider>
               <span className={styles.divider}>造价校审</span>
             </Divider>
             <CyFormItem label="校核" name="costAuditUser1">
@@ -281,7 +279,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 allowClear
               />
             </CyFormItem> */}
-          {/* </div> */}
+          </div>
         </>
       )}
       {checkedValue === '1' && (
