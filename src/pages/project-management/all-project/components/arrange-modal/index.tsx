@@ -5,6 +5,8 @@ import { Modal } from 'antd'
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import ArrangeForm from '../arrange-form'
 import { saveArrange } from '@/services/project-management/all-project'
+import { uploadAuditLog } from '@/utils/utils'
+import { baseUrl } from '@/services/common'
 interface ArrangeModalProps {
   projectIds: string[]
   visible: boolean
@@ -105,6 +107,16 @@ const ArrangeModal: React.FC<ArrangeModalProps> = (props) => {
         )
         await saveArrange(arrangeInfo)
       }
+      uploadAuditLog([
+        {
+          auditType: 2,
+          eventType: 8,
+          eventDetailType: '项目安排',
+          executionResult: '成功',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/Porject/AllotOuterAudit`,
+        },
+      ])
       message.success('操作成功！')
       finishEvent?.()
       form.resetFields()

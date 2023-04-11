@@ -162,7 +162,11 @@ const SignManage: React.FC = () => {
 
   //添加
   const addEvent = () => {
-    setAddFormVisible(true)
+    if (signGroupId) {
+      setAddFormVisible(true)
+      return
+    }
+    message.info('请先创建签批分组')
   }
 
   const addUploadFile = async () => {

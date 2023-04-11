@@ -295,6 +295,7 @@ const ResourceLib: React.FC = () => {
         },
         value
       )
+
       await creatCampanyResourceLib({ ...submitInfo, libType: 1, libSource: userInfo.companyId })
       refresh()
       setAddFormVisible(false)

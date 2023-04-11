@@ -8,6 +8,8 @@ import { message } from 'antd'
 import { useLayoutStore } from '@/layouts/context'
 import { relationProject } from '@/services/plan-manage/plan-manage'
 import { clearDragBoxDatas } from '@/pages/visualization-results/plan-manage/PlanMap/utils/initializeMap'
+import { uploadAuditLog } from '@/utils/utils'
+import { baseUrl } from '@/services/common'
 
 interface AddEngineerModalProps {
   visible: boolean
@@ -114,10 +116,30 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
           })
           await relationProject(finalData)
         }
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 9,
+            eventDetailType: '项目立项',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/Porject/CreateMultipleProject`,
+          },
+        ])
         message.success('立项成功')
         setState(false)
         finishEvent ? finishEvent?.() : refresh()
       } catch (msg) {
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 9,
+            eventDetailType: '项目立项',
+            executionResult: '失败',
+            auditLevel: 4,
+            serviceAdress: `${baseUrl.project}/Porject/CreateMultipleProject`,
+          },
+        ])
         console.error(msg)
       } finally {
         setSaveLoading(false)

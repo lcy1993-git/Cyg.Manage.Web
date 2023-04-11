@@ -92,13 +92,13 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
         rules={[
           { max: 12, message: '名称超出字符数限制，限制为12个字符' },
           {
-            pattern: /^[^\\\.^/:*?？！!@￥"<>《》#|;，。,；：'‘’“”、=\^\s]+$/,
+            pattern: /^[^\\\\.^/:*?？！!@￥"<>《》#|;，。,；：'‘’“”、=\\^\s]+$/,
             message: '文件名不能包含/:*?"<>|空格等特殊字符',
           },
           { required: true, message: '文件名不能为空' },
           () => ({
             validator(_, value) {
-              if (groupName.includes(value) && editingName != value) {
+              if (groupName.includes(value) && editingName !== value) {
                 return Promise.reject('文件名已存在')
               }
               return Promise.resolve()

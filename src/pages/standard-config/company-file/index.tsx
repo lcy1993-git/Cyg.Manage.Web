@@ -31,6 +31,8 @@ import { useGetSelectData } from '@/utils/hooks'
 import DataSelect from '@/components/data-select'
 import { TableRequestResult } from '@/services/table'
 import ModalConfirm from '@/components/modal-confirm'
+import { baseUrl } from '@/services/common'
+import { uploadAuditLog } from '@/utils/utils'
 
 const { Search } = Input
 
@@ -372,6 +374,16 @@ const CompanyFile: React.FC = () => {
       document.body.removeChild(link)
     }
     message.success('下载成功')
+    uploadAuditLog([
+      {
+        auditType: 1,
+        eventType: 5,
+        eventDetailType: '文件下载',
+        executionResult: '成功',
+        auditLevel: 2,
+        serviceAdress: `${baseUrl.project}/Download/GetFileById`,
+      },
+    ])
   }
 
   //公司文件组操作
