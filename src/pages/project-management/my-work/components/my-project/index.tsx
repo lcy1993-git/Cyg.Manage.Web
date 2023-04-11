@@ -15,6 +15,7 @@ import ProjectRemovalModal from '@/pages/project-management/all-project/componen
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ShareModal from '@/pages/project-management/all-project/components/share-modal'
 import UploadAddProjectModal from '@/pages/project-management/all-project/components/upload-batch-modal'
+import { baseUrl } from '@/services/common'
 import {
   applyKnot,
   canEditArrange,
@@ -30,6 +31,7 @@ import {
   removeCollectionEngineers,
 } from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
+import { uploadAuditLog } from '@/utils/utils'
 import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
 import { uniq } from 'lodash'
@@ -213,8 +215,32 @@ const MyProject: React.FC<ProjectParams> = (props) => {
 
   const sureDeleteProject = async () => {
     const projectIds = tableSelectKeys
-    await deleteProject(projectIds as string[])
-    message.success('删除成功')
+    try {
+      await deleteProject(projectIds as string[])
+      message.success('删除成功')
+      uploadAuditLog([
+        {
+          auditType: 2,
+          eventType: 9,
+          eventDetailType: '项目删除',
+          executionResult: '成功',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/Porject/Delete`,
+        },
+      ])
+    } catch (e) {
+      uploadAuditLog([
+        {
+          auditType: 2,
+          eventType: 9,
+          eventDetailType: '项目删除',
+          executionResult: '失败',
+          auditLevel: 2,
+          serviceAdress: `${baseUrl.project}/Porject/Delete`,
+        },
+      ])
+    }
+
     // search();
     delayRefresh()
   }
@@ -323,6 +349,16 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     }
     await revokeAllot(projectIds as string[])
     message.success('撤回安排成功')
+    uploadAuditLog([
+      {
+        auditType: 2,
+        eventType: 8,
+        eventDetailType: '撤回项目安排',
+        executionResult: '成功',
+        auditLevel: 2,
+        serviceAdress: `${baseUrl.project}/Porject/RevokeAllot`,
+      },
+    ])
     refresh()
   }
 

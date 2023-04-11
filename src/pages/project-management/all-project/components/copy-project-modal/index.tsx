@@ -1,4 +1,6 @@
+import { baseUrl } from '@/services/common'
 import { copyProject, getProjectInfo } from '@/services/project-management/all-project'
+import { uploadAuditLog } from '@/utils/utils'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Form, message, Modal, Spin } from 'antd'
 import moment, { Moment } from 'moment'
@@ -91,11 +93,31 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
           pileRange: value.pileRange ? value.pileRange : 0,
         })
         message.success('项目复制成功')
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 9,
+            eventDetailType: '项目复制',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/Porject/Copy`,
+          },
+        ])
         setState(false)
         form.resetFields()
         changeFinishEvent?.()
       } catch (msg) {
         console.error(msg)
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 9,
+            eventDetailType: '项目复制',
+            executionResult: '失败',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/Porject/Copy`,
+          },
+        ])
       } finally {
         setRequestLoading(false)
       }
