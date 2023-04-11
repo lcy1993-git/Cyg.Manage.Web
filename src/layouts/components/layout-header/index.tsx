@@ -44,8 +44,8 @@ const LayoutHeader: React.FC = () => {
         clientVersion: '',
       },
     ])
-    localStorage.setItem('Authorization', '')
     await signOut()
+    localStorage.setItem('Authorization', '')
   }
 
   const menuData: any[] = useGetFunctionModules()
