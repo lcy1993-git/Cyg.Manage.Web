@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { Tabs, Button, Modal, Form, message } from 'antd'
-import styles from './index.less'
 import CommonTitle from '@/components/common-title'
-import Construction from './construction'
+import {
+  getEngineeringTemplateTreeData,
+  importProject,
+} from '@/services/technology-economic/project-list'
 import { FileSearchOutlined } from '@ant-design/icons'
-import ImportDirectory from './components/import-directory'
+import { Button, Form, message, Modal, Tabs } from 'antd'
 import qs from 'qs'
+import React, { useEffect, useState } from 'react'
 import { getEnums } from '../utils'
-import { getEngineeringTemplateTreeData } from '@/services/technology-economic/project-list'
+import ImportDirectory from './components/import-directory'
+import Construction from './construction'
+import styles from './index.less'
 const { TabPane } = Tabs
 type DataSource = {
   id: string
@@ -54,11 +57,11 @@ const ProjectList: React.FC = () => {
         message.warning('您还未上传模板文件')
         return
       }
-      // const value: { file: File; engineeringTemplateId: string } = {
-      //   file,
-      //   engineeringTemplateId,
-      // }
-      // const res = await importProject(value)
+      const value: { file: File; engineeringTemplateId: string } = {
+        file,
+        engineeringTemplateId,
+      }
+      await importProject(value)
       // if (res.code === 5000) {
       //   message.error(res.message);
       //   return;
