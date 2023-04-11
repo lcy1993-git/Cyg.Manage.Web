@@ -1,15 +1,18 @@
-import { useState } from 'react'
-import { useMount, useRequest } from 'ahooks'
-import { Button, Modal, message, Spin, Space } from 'antd'
-import WrapperComponent from '@/components/page-common-wrap'
 import CommonTitle from '@/components/common-title'
-import { getRateTypeList } from '@/services/technology-economic/common-rate'
-import CommonRateTable from './components/common-rate-table'
-import { downloadTemplate, importRateTable } from '@/services/technology-economic/common-rate'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import styles from './index.less'
 import FileUpload from '@/components/file-upload'
+import WrapperComponent from '@/components/page-common-wrap'
+import {
+  downloadTemplate,
+  getRateTypeList,
+  importRateTable,
+} from '@/services/technology-economic/common-rate'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { history } from '@@/core/history'
+import { useMount, useRequest } from 'ahooks'
+import { Button, message, Modal, Space, Spin } from 'antd'
+import { useState } from 'react'
+import CommonRateTable from './components/common-rate-table'
+import styles from './index.less'
 
 interface ListData {
   value: string | number
@@ -104,7 +107,14 @@ const CommonRateInfomation: React.FC = () => {
 
   const downLoad = async () => {
     let res
-    let name = decodeURI(window.location.search.split('=')[2])
+    let query = window.location.search.substring(1)
+    let vars = query.split('&')
+    const map = {}
+    for (let i = 0; i < vars.length; i++) {
+      let pair = vars[i].split('=')
+      map[pair[0]] = pair[1]
+    }
+    let name = decodeURI(map['name'])
     if (name === '拆除取费表费率') {
       res = await downloadTemplate(2)
     } else if (name === '建筑安装取费表费率') {
