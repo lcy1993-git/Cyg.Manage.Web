@@ -17,7 +17,7 @@ interface UploadAllProps {
 const UploadAll: React.FC<UploadAllProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { libId = '', requestSource, changeFinishEvent } = props
-  const [setRequestLoading] = useState(false)
+  const [, setRequestLoading] = useState(false)
   const [falseData, setFalseData] = useState<string>('')
   const [importTipsVisible, setImportTipsVisible] = useState<boolean>(false)
   const [isImportFlag, setIsImportFlag] = useState<boolean>(false)
@@ -28,7 +28,6 @@ const UploadAll: React.FC<UploadAllProps> = (props) => {
       .validateFields()
       .then((values) => {
         const { file } = values
-
         setRequestLoading(true)
         return newUploadLineStressSag(
           file,
