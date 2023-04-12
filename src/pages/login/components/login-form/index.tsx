@@ -143,12 +143,11 @@ const LoginForm: React.FC<Props> = (props) => {
         } else if (resData.code === 40200) {
           uploadFailMsg()
           refreshCode()
-          message.warning('该用户未实名认证,请先进行实名认证!')
-          message.error(resData.message)
+          message.warning(resData.message)
         } else {
           uploadFailMsg()
           refreshCode()
-          message.error(resData.message)
+          message.warning(resData.message)
         }
       } catch (msg) {
         refreshCode()

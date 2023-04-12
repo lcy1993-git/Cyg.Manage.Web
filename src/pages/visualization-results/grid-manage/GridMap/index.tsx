@@ -319,7 +319,11 @@ const GridMap = () => {
   /** 编辑 **/
   const onFinish = async (value: any) => {
     let color
-    const currentThread = belongingLineData.find((item) => item.id === value.lineId[0]) // 上传数据颜色处理
+    const currentThread =
+      value.lineId &&
+      belongingLineData.find(
+        (item) => item.id === (Array.isArray(value.lineId) ? value.lineId[0] : value.lineId)
+      ) // 上传数据颜色处理
     if (currentFeatureType === TRANSFORMERSUBSTATION) {
       // 如果是变电站就根据电压等级显示
       const kv = KVLEVELOPTIONS.find((item) => item.kvLevel === value.kvLevel)
@@ -341,7 +345,7 @@ const GridMap = () => {
       ...currentfeatureData,
       color,
       ...areaData,
-      lineId: value.lineId.join(),
+      lineId: Array.isArray(value.lineId) ? value.lineId.join() : value.lineId,
       isOverhead: value.lineType === 'Line' ? true : false,
     }
 

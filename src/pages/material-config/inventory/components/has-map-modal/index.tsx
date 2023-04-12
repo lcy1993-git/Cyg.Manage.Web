@@ -74,6 +74,7 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
             await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
             message.success('删除映射成功')
             setTableSelectRows([])
+            setPassword('')
             setPasswordVisible(false)
             refresh()
             return

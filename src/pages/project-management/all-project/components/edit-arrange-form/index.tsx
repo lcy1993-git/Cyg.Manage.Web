@@ -1,10 +1,11 @@
-import React from 'react'
-import { TreeSelect } from 'antd'
+import React, { useState } from 'react'
+import { Divider, TreeSelect } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { getGroupInfo } from '@/services/project-management/all-project'
 import { useRequest } from 'ahooks'
 import uuid from 'node-uuid'
-// import styles from './index.less'
+import styles from './index.less'
+import { DownOutlined, UpOutlined } from '@ant-design/icons'
 
 interface EditArrangeFormProps {
   allotCompanyId?: string | undefined
@@ -17,16 +18,16 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
   const {
     canEditDesign,
     canEditSurvey,
-    // canEditCost,
-    // canEditDesignAssessUser1,
-    // canEditDesignAssessUser2,
-    // canEditDesignAssessUser3,
-    // canEditDesignAssessUser4,
+    canEditCost,
+    canEditDesignAssessUser1,
+    canEditDesignAssessUser2,
+    canEditDesignAssessUser3,
+    canEditDesignAssessUser4,
     // canEditCostAuditUser1,
     // canEditCostAuditUser2,
     // canEditCostAuditUser3,
   } = canEdit
-  // const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
+  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
 
   const notEdit = (function notChangeData() {
     return [
@@ -46,13 +47,13 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     refreshDeps: [allotCompanyId],
   })
 
-  // const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId), {
-  //   refreshDeps: [allotCompanyId],
-  // })
+  const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId), {
+    refreshDeps: [allotCompanyId],
+  })
 
-  // const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
-  //   refreshDeps: [allotCompanyId],
-  // })
+  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
+    refreshDeps: [allotCompanyId],
+  })
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0) {
@@ -147,7 +148,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         </CyFormItem>
       )}
 
-      {/* {canEditCost ? (
+      {canEditCost ? (
         <CyFormItem label="造价" name="costUser">
           <TreeSelect
             key="editCostUser"
@@ -170,21 +171,21 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             allowClear
           />
         </CyFormItem>
-      )} */}
+      )}
 
       {/* 继续安排审核 */}
-      {/* <div className={styles.continueAudit}>
+      <div className={styles.continueAudit}>
         <div className={styles.internalTitle} onClick={() => setIsInternalAudit(!isInternalAudit)}>
           继续修改审核人员
         </div>
         <div>{isInternalAudit ? <UpOutlined /> : <DownOutlined />}</div>
       </div>
-      <div style={{ display: isInternalAudit ? 'block' : 'none' }}> */}
-      {/* 设计内审 */}
-      {/* <Divider>
+      <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
+        {/* 设计内审 */}
+        <Divider>
           <span className={styles.divider}>设计校审</span>
-        </Divider> */}
-      {/* {canEditDesignAssessUser1 ? (
+        </Divider>
+        {canEditDesignAssessUser1 ? (
           <CyFormItem label="校对" name="designAssessUser1">
             <TreeSelect
               key="editDesignAssessUser1"
@@ -281,9 +282,9 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
               allowClear
             />
           </CyFormItem>
-        )} */}
-      {/* 造价内审 */}
-      {/* <Divider>
+        )}
+        {/* 造价内审 */}
+        {/* <Divider>
           <span className={styles.divider}>造价校审</span>
         </Divider>
         {canEditCostAuditUser1 ? (
@@ -359,7 +360,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             />
           </CyFormItem>
         )} */}
-      {/* </div> */}
+      </div>
     </>
   )
 }

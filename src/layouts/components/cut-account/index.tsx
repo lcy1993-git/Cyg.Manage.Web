@@ -107,13 +107,12 @@ const CutAccount = (props: EditPasswordProps) => {
         } else if (resData.code === 40200) {
           refreshCode()
           loginField()
-          message.warning('该用户未实名认证,请先进行实名认证!')
-          message.error(resData.message)
+          message.warning(resData.message)
           setSpinning(false)
         } else {
           loginField()
           refreshCode()
-          message.error(resData.message)
+          message.warning(resData.message)
           setSpinning(false)
         }
         // 如果这次登录的账号跟之前的不一样，那么就只到首页

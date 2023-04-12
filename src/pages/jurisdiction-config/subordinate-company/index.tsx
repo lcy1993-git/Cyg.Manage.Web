@@ -4,6 +4,7 @@ import styles from './index.less'
 import PageCommonWrap from '@/components/page-common-wrap'
 import { Tabs } from 'antd'
 import CommonTitle from '@/components/common-title'
+import { getObject } from '@/utils/utils'
 
 const { TabPane } = Tabs
 const CompanyHierarchy: React.FC = () => {

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { handleSM2Crypto } from '@/utils/utils'
 import { baseUrl, cyRequest } from '../common'
 
 interface EditPasswordParams {
@@ -94,5 +95,9 @@ export const unBindEmail = () => {
 
 //密码验证
 export const verifyPwd = (params: { pwd: string }) => {
-  return request(`${baseUrl.common}/Users/VerifyPwd`, { method: 'POST', data: params })
+  params['pwd'] = handleSM2Crypto(params.pwd)
+  return request(`${baseUrl.common}/Users/VerifyPwd`, {
+    method: 'POST',
+    data: params,
+  })
 }

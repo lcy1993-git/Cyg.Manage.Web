@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Form, Input, Modal } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
-import { handleSM2Crypto, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
+import { handleSM2Crypto, noAutoCompletePassword } from '@/utils/utils'
 import { verifyAuditAdminPwd } from '@/services/personnel-config/company-user'
-import { baseUrl } from '@/services/common'
+// import { baseUrl } from '@/services/common'
 type Props = {
   authorizationConfirmation: any
   setAuthorizationConfirmation: any
@@ -17,7 +17,7 @@ const AuthorizationConfirmation: React.FC<Props> = ({
   authorizationConfirmation,
   setAuthorizationConfirmation,
   setIfSuccess,
-  changeItem,
+  // changeItem,
 }) => {
   const [sureForm] = Form.useForm()
   const [verification, setVerification] = useState<boolean>(true)
@@ -39,28 +39,28 @@ const AuthorizationConfirmation: React.FC<Props> = ({
           setVerification(true)
         } else {
           setVerification(false)
-          uploadAuditLog([
-            {
-              auditType: 2,
-              eventType: 10,
-              eventDetailType: changeItem.status === 2 ? '资源库禁用' : '资源库启用',
-              executionResult: '失败',
-              auditLevel: 2,
-              serviceAdress: `${baseUrl.project}/Users/VerifyAuditAdminPwd`,
-            },
-          ])
+          // uploadAuditLog([
+          //   {
+          //     auditType: 2,
+          //     eventType: 10,
+          //     eventDetailType: changeItem.status === 2 ? '资源库禁用' : '资源库启用',
+          //     executionResult: '失败',
+          //     auditLevel: 2,
+          //     serviceAdress: `${baseUrl.project}/Users/VerifyAuditAdminPwd`,
+          //   },
+          // ])
         }
       } catch (e) {
-        uploadAuditLog([
-          {
-            auditType: 2,
-            eventType: 10,
-            eventDetailType: changeItem.status === 2 ? '资源库禁用' : '资源库启用',
-            executionResult: '失败',
-            auditLevel: 2,
-            serviceAdress: `${baseUrl.project}/Users/VerifyAuditAdminPwd`,
-          },
-        ])
+        // uploadAuditLog([
+        //   {
+        //     auditType: 2,
+        //     eventType: 10,
+        //     eventDetailType: changeItem.status === 2 ? '资源库禁用' : '资源库启用',
+        //     executionResult: '失败',
+        //     auditLevel: 2,
+        //     serviceAdress: `${baseUrl.project}/Users/VerifyAuditAdminPwd`,
+        //   },
+        // ])
       }
     })
   }

@@ -80,11 +80,11 @@ const GridFilterModal: React.FC<Props> = ({ visible, onChange, onCancel }) => {
             dropdownMatchSelectWidth={168}
             className="widthAll"
             placeholder="选择电压等级"
-            style={{ width: 200 }}
+            style={{ width: 300 }}
           />
         </CyFormItem>
         <CyFormItem name="areas" label="区域">
-          <Cascader options={areaData} style={{ width: 200 }} />
+          <Cascader options={areaData} style={{ width: 300 }} />
         </CyFormItem>
       </Form>
     </Modal>
