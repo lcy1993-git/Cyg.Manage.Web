@@ -6,6 +6,8 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useRequest } from 'ahooks'
 import moment, { Moment } from 'moment'
 import CreateProjectForm from '../create-project-form'
+import { uploadAuditLog } from '@/utils/utils'
+import { baseUrl } from '@/services/common'
 
 interface EditProjectProps {
   projectId: string
@@ -107,8 +109,28 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
         setState(false)
         form.resetFields()
         changeFinishEvent?.()
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 7,
+            eventDetailType: '项目数据修改',
+            executionResult: '成功',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/Porject/Modify`,
+          },
+        ])
       } catch (msg) {
         console.error(msg)
+        uploadAuditLog([
+          {
+            auditType: 2,
+            eventType: 7,
+            eventDetailType: '项目数据修改',
+            executionResult: '失败',
+            auditLevel: 2,
+            serviceAdress: `${baseUrl.project}/Porject/Modify`,
+          },
+        ])
       } finally {
         setRequestLoading(false)
       }
