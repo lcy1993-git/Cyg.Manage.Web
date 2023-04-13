@@ -37,6 +37,7 @@ const EditLineStressSag: React.FC<EditLineStressSagParams> = (props) => {
     })
   }
   const [form] = Form.useForm()
+
   useUpdateEffect(() => {
     form.setFieldsValue(row)
   }, [state])
