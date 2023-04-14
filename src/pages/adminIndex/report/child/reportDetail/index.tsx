@@ -357,6 +357,7 @@ const ReportDetail: React.FC<Props> = (props) => {
         }
         return item
       })
+
       // @ts-ignore
       setColumns(res)
     } else if (id === '6') {

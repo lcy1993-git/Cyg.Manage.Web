@@ -191,6 +191,7 @@ const CompanyUser: React.FC = () => {
       const editDataId = editData.id
       const newPassword = Object.assign({ id: editDataId, pwd: handleSM2Crypto(values.pwd) })
       await resetItemPwd(newPassword)
+
       uploadAuditLog(
         [
           {

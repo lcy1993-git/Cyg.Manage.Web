@@ -1,6 +1,4 @@
-import { baseUrl } from '@/services/common'
 import { addProject, getEngineerInfo } from '@/services/project-management/all-project'
-import { uploadAuditLog } from '@/utils/utils'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
 import moment from 'moment'
@@ -37,32 +35,13 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
           totalInvest: value.totalInvest ? value.totalInvest : 0,
           disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
         })
-        uploadAuditLog([
-          {
-            auditType: 2,
-            eventType: 9,
-            eventDetailType: '新增项目',
-            executionResult: '成功',
-            auditLevel: 4,
-            serviceAdress: `${baseUrl.project}/Porject/Create`,
-          },
-        ])
+
         message.success('项目新增成功')
         setState(false)
 
         form.resetFields()
         changeFinishEvent?.()
       } catch (msg) {
-        uploadAuditLog([
-          {
-            auditType: 2,
-            eventType: 9,
-            eventDetailType: '新增项目',
-            executionResult: '失败',
-            auditLevel: 4,
-            serviceAdress: `${baseUrl.project}/Porject/Create`,
-          },
-        ])
         console.error(msg)
       } finally {
         setRequestLoading(false)

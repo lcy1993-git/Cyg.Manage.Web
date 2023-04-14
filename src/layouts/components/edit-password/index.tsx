@@ -22,13 +22,14 @@ const EditPassword = (props: EditPasswordProps) => {
       const { pwd, newPwd } = value
       try {
         await editPassword({ oldPwd: handleSM2Crypto(pwd), newPwd: handleSM2Crypto(newPwd) })
+
         uploadAuditLog(
           [
             {
               auditType: 1,
               eventType: 4,
-              operationDataId: userInfo.id,
-              operationDataName: userInfo.userName,
+              operationDataId: userInfo.userName,
+              operationDataName: userInfo.name,
               eventDetailType: '账号密码修改',
               executionResult: '成功',
               auditLevel: 2,
