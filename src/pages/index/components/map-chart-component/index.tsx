@@ -426,22 +426,13 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <span>{projectTotalNumber}个</span>
                 </div>
                 <div style={{ textAlign: 'center' }}>
-                  {buttonJurisdictionArray?.includes('index-export-data') ? (
-                    <Button
-                      loading={requestExportLoading}
-                      onClick={exportHomeStatisticEvent}
-                      className={styles.exportButton}
-                    >
-                      导出统计数据
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => message.info('暂无权限')}
-                      className={styles.exportButton}
-                    >
-                      导出统计数据
-                    </Button>
-                  )}
+                  <Button
+                    loading={requestExportLoading}
+                    onClick={exportHomeStatisticEvent}
+                    className={styles.exportButton}
+                  >
+                    导出统计数据
+                  </Button>
                 </div>
               </div>
 
