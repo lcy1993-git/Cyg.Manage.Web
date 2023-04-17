@@ -6,7 +6,6 @@ import {
   MapStatisticsData,
 } from '@/services/index'
 import { exportHomeStatisticData } from '@/services/operation-config/cockpit'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { useMount, useRequest, useSize } from 'ahooks'
 import { Button, message } from 'antd'
 import * as echarts from 'echarts'
@@ -34,7 +33,7 @@ let mapStatus = {
 
 const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   const { setCurrentAreaInfo, currentAreaInfo, isConfig } = props
-  const buttonJurisdictionArray: any = useGetButtonJurisdictionArray()
+
   const [requestExportLoading, setRequestExportLoading] = useState<boolean>(false)
   const { setMapSelectCity } = useLayoutStore()
   const divRef = useRef<HTMLDivElement>(null)
@@ -81,6 +80,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         selected: false,
       }
     })
+
     return {
       tooltip: {
         trigger: 'item',
@@ -218,6 +218,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
           })
         } else {
           initChart(statisticData[0].areaCode, provinceStatisticData, '2')
+
           setCurrentAreaInfo({
             areaId: statisticData[0].areaCode,
             cityId: statisticData[0].areaCode,
@@ -232,6 +233,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
         areaCode: currentAreaInfo.areaId,
         areaType: currentAreaInfo.areaLevel,
       })
+
       initChart(currentAreaInfo.areaId!, provinceStatisticData, currentAreaInfo.areaLevel!)
     }
   }
@@ -442,7 +444,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <div>
                     <div style={{ textAlign: 'right' }}>{ohterProjectTotalNumber}个</div>
                     <div>
-                      {buttonJurisdictionArray?.includes('index-jump-visualization') ? (
+                      {ohterProjectTotalNumber > 0 ? (
                         <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
                           跳转在建网架
                         </span>
