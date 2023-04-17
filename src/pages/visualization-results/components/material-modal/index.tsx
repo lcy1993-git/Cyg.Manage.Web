@@ -1,18 +1,18 @@
 import {
   fetchMaterialListByProjectIdList,
   MaterialDataType,
-} from '@/services/visualization-results/list-menu';
-import { useRequest } from 'ahooks';
-import { message, Modal } from 'antd';
-import React, { FC, useEffect, useState } from 'react';
-import { MaterialTable } from '../material-table';
+} from '@/services/visualization-results/list-menu'
+import { useRequest } from 'ahooks'
+import { message, Modal } from 'antd'
+import React, { FC, useEffect, useState } from 'react'
+import { MaterialTable } from '../material-table'
 
 export interface MaterialModalProps {
-  visible?: boolean;
-  onOk: () => void;
-  onCancel: () => void;
-  checkedProjectIdList: string[];
-  layerstype: number;
+  visible?: boolean
+  onOk: () => void
+  onCancel: () => void
+  checkedProjectIdList: string[]
+  layerstype: number
 }
 
 const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDataType[] => {
@@ -21,32 +21,32 @@ const generateMaterialTreeList = (materialData: MaterialDataType[]): MaterialDat
    */
   const typeSet: Set<string> = new Set(
     materialData.map((v) => {
-      return v.type;
-    }),
-  );
+      return v.type
+    })
+  )
   /**
    * 先获取到所有的type
    */
 
-  const typeArr = [...typeSet];
+  const typeArr = [...typeSet]
   //创建第一层结构
   const parentArr: MaterialDataType[] = typeArr.map((type) => ({
     key: `type${Math.random()}`,
     type: type,
     children: undefined,
-  }));
+  }))
   parentArr.forEach((value) => {
     value.children = materialData.filter((materialItem) => {
-      materialItem.key = Math.random().toLocaleString();
-      return materialItem.type === value.type;
-    });
-  });
+      materialItem.key = Math.random().toLocaleString()
+      return materialItem.type === value.type
+    })
+  })
 
-  return parentArr;
-};
+  return parentArr
+}
 const MaterialModal: FC<MaterialModalProps> = (props) => {
-  const { checkedProjectIdList, visible = false, onOk, onCancel, layerstype = 0 } = props;
-  const [materialList, setMaterialList] = useState<MaterialDataType[]>();
+  const { checkedProjectIdList, visible = false, onOk, onCancel, layerstype = 0 } = props
+  const [materialList, setMaterialList] = useState<MaterialDataType[]>()
   const { data, loading, run } = useRequest(fetchMaterialListByProjectIdList, {
     manual: true,
     onSuccess: () => {
@@ -56,21 +56,21 @@ const MaterialModal: FC<MaterialModalProps> = (props) => {
        *    - 类型 ------------
        */
       if (data) {
-        setMaterialList(generateMaterialTreeList(data));
+        setMaterialList(generateMaterialTreeList(data))
       } else {
-        setMaterialList([]);
+        setMaterialList([])
       }
     },
     onError: () => {
-      message.warning('获取数据失败');
+      message.warning('获取数据失败')
     },
-  });
+  })
 
   useEffect(() => {
     if (visible) {
-      run(checkedProjectIdList, layerstype);
+      run(checkedProjectIdList, layerstype)
     }
-  }, [visible]);
+  }, [visible])
   return (
     <Modal
       title="材料表"
@@ -79,11 +79,12 @@ const MaterialModal: FC<MaterialModalProps> = (props) => {
       visible={visible}
       onOk={onOk}
       onCancel={onCancel}
-      width={2000}
+      width={1800}
+      bodyStyle={{ height: 800, overflowY: 'auto' }}
     >
-      <MaterialTable data={materialList} loading={loading} />
+      <MaterialTable data={materialList} loading={loading} exportParams={props} />
     </Modal>
-  );
-};
+  )
+}
 
-export default MaterialModal;
+export default MaterialModal
