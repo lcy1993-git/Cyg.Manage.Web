@@ -444,15 +444,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
                   <div>
                     <div style={{ textAlign: 'right' }}>{ohterProjectTotalNumber}个</div>
                     <div>
-                      {ohterProjectTotalNumber > 0 ? (
-                        <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
-                          跳转在建网架
-                        </span>
-                      ) : (
-                        <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
-                          跳转在建网架
-                        </span>
-                      )}
+                      <span onClick={handlerOtherClick} className={styles.toVisualBtn}>
+                        跳转在建网架
+                      </span>
                     </div>
                   </div>
                 </div>
