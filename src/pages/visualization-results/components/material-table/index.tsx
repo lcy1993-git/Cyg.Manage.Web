@@ -47,12 +47,6 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'code',
     key: 'code',
   },
-  {
-    title: '物料编号',
-    width: 150,
-    dataIndex: 'materialId',
-    key: 'materialId',
-  },
 
   {
     title: '物料单位',
