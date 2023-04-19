@@ -63,8 +63,7 @@ export const initMap = ({ mapRef, ref, isActiveFeature, isDragPointend }: InitOp
     layers: [
       new TileLayer({
         source: new XYZ({
-          url:
-            'https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA', //瓦片的地址，如果是自己搭建的地图服务
+          url: 'https://t{0-7}.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5', //瓦片的地址，如果是自己搭建的地图服务
         }),
       }),
     ],
