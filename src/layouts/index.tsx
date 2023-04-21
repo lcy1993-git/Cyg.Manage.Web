@@ -186,6 +186,10 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     ),
   }
 
+  const clearWs = () => {
+    newSocket?.close()
+  }
+
   const removeTab = (route: string) => {
     editTabsEvent(route, 'remove')
   }
@@ -206,10 +210,6 @@ const Layout: React.FC<IRouteComponentProps> = ({ children, location, route, his
     }
     setNewSocket(ws)
     initWebSocket()
-  }
-
-  const clearWs = () => {
-    newSocket?.close()
   }
 
   //断开重连

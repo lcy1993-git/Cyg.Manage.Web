@@ -14,7 +14,7 @@ import ImportLineStressSag from './components/import-lineStressSag'
 import UploadLineStressSag from './components/upload-lineStressSag'
 // import FileUploadOnline from '@/components/file-upload-online';
 // import CygFormItem from '@/components/cy-form-item';
-import CommonTitle from '@/components/common-title'
+// import CommonTitle from '@/components/common-title'
 import { useLayoutStore } from '@/layouts/context'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { EditOutlined, ImportOutlined } from '@ant-design/icons'
@@ -27,7 +27,7 @@ interface libParams {
   // libId: string
 }
 
-const LineStressSag: React.FC<libParams> = (props) => {
+const LineStressSag: React.FC<libParams> = () => {
   const { setLineStressSagFlag } = useLayoutStore()
 
   useMount(() => {
@@ -38,7 +38,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
     setLineStressSagFlag?.(false)
   })
   const libId = qs.parse(window.location.href.split('?')[1]).libId as string
-  const libName = qs.parse(window.location.href.split('?')[1]).libName as string
+  // const libName = qs.parse(window.location.href.split('?')[1]).libName as string
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [resourceLibId, setResourceLibId] = useState<string | undefined>('')
@@ -115,19 +115,19 @@ const LineStressSag: React.FC<libParams> = (props) => {
       dataIndex: 'stress',
       index: 'stress',
       title: '应力',
-      width: 80,
+      width: 100,
     },
     {
       dataIndex: 'comparativeLoad',
       index: 'comparativeLoad',
       title: '综合比值',
-      width: 80,
+      width: 100,
     },
     {
       dataIndex: 'kValue',
       index: 'kValue',
       title: 'K值',
-      width: 160,
+      width: 180,
     },
     {
       dataIndex: 'chartName',
@@ -145,6 +145,14 @@ const LineStressSag: React.FC<libParams> = (props) => {
 
   const uploadFinishEvent = () => {
     refresh()
+    resetTable()
+  }
+
+  const resetTable = () => {
+    if (tableRef && tableRef.current) {
+      // @ts-ignore
+      tableRef.current.resetSelectedRows()
+    }
   }
 
   // 列表刷新
@@ -206,9 +214,9 @@ const LineStressSag: React.FC<libParams> = (props) => {
   return (
     <>
       <PageCommonWrap>
-        <div className={styles.moduleTitle}>
+        {/* <div className={styles.moduleTitle}>
           <CommonTitle>{libName}</CommonTitle>
-        </div>
+        </div> */}
         <GeneralTable
           rowKey="id"
           ref={tableRef}
@@ -217,7 +225,7 @@ const LineStressSag: React.FC<libParams> = (props) => {
           columns={columns}
           requestSource="resource"
           url="/LineStressSag/GetLineStressSagMappingPageList"
-          // tableTitle="应力弧垂表"
+          tableTitle="应力弧垂表"
           type="radio"
           extractParams={{
             keyWord: searchKeyWord,

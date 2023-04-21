@@ -41,10 +41,13 @@ const ApproveModal: React.FC<ReportApproveParams> = (props) => {
         ...values,
       }
       await approveProject(submitInfo)
+        .then(() => {
+          message.success('审批完成')
+          finishEvent?.()
+          setState(false)
+        })
+        .catch(() => {})
     })
-    message.success('审批完成')
-    finishEvent?.()
-    setState(false)
   }
 
   return (
@@ -81,7 +84,7 @@ const ApproveModal: React.FC<ReportApproveParams> = (props) => {
           </>
         ) : (
           <div style={{ paddingTop: '20px' }}>
-            <CyFormItem label="备注" name="remark">
+            <CyFormItem label="备注" name="remark" required>
               <Input.TextArea maxLength={100} showCount />
             </CyFormItem>
           </div>
