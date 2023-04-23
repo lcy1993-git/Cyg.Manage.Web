@@ -97,6 +97,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
 
   const editTabsEvent = (
     key: string | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>
+    // action: 'add' | 'remove'
   ) => {
     const copyRouteList = routeList.map((item) => item)
     const keyIndex = copyRouteList.findIndex((item) => item.tabKey === key)
@@ -160,7 +161,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
   }
 
   const clearAgainLogin = () => {
-    editTabsEvent('/again-login', 'remove')
+    editTabsEvent('/again-login')
   }
 
   const OperationsSlot = {
@@ -186,7 +187,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
   }
 
   const removeTab = (route: string) => {
-    editTabsEvent(route, 'remove')
+    editTabsEvent(route)
   }
 
   //获取token
