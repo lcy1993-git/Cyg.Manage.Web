@@ -167,6 +167,7 @@ export const MaterialTable: FC<MaterialTableProps> = (props) => {
         onClick={() => exportEvent()}
         type="primary"
         style={{ marginBottom: '10px' }}
+        disabled={data && data.length === 0}
       >
         导出
       </Button>
