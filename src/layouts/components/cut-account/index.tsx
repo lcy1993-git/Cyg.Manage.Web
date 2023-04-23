@@ -4,12 +4,13 @@ import { useGetUserInfo } from '@/utils/hooks'
 import { flatten, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, Input, message, Modal } from 'antd'
-import { Dispatch, useState } from 'react'
+import { Dispatch, useEffect, useState } from 'react'
 import { SetStateAction } from 'react'
 
 import { history } from 'umi'
 import VerifycodeImage from '@/pages/login/components/verifycode-image'
 import { baseUrl } from '@/services/common'
+import { useLayoutStore } from '@/layouts/context'
 
 interface EditPasswordProps {
   visible: boolean
@@ -19,6 +20,7 @@ interface EditPasswordProps {
 }
 
 const CutAccount = (props: EditPasswordProps) => {
+  const { clearWs } = useLayoutStore()
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const { againLogin = false, finishEvent } = props
   const [form] = Form.useForm()
@@ -150,6 +152,11 @@ const CutAccount = (props: EditPasswordProps) => {
       history.push('/login')
     }
   }
+
+  useEffect(() => {
+    clearWs?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Modal

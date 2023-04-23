@@ -190,76 +190,15 @@ const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
     editTabsEvent(route)
   }
 
-  //获取token
-  const token = localStorage.getItem('Authorization')
-  const url =
-    window.location.hostname === 'localhost' ? 'srthkf2.gczhyun.com:21530' : window.location.host
-  /**webSocket */
-  let heart: any //心跳
-  var lockReconnect = false //避免重复连接
-  var ws: WebSocket
-
-  //创建websocket
-  const createWebSocket = () => {
-    if (window.WebSocket) {
-      ws = new WebSocket(`wss://${url}/usercenter-ws/?accessToken=${token}`)
-    }
-    setNewSocket(ws)
-    initWebSocket()
-  }
-
   const clearWs = () => {
     newSocket?.close()
   }
-
-  //断开重连
-  const reconnect = () => {
-    if (lockReconnect) return
-    lockReconnect = true
-    setTimeout(() => {
-      createWebSocket()
-      lockReconnect = false
-    }, 2000)
-  }
-
-  //ws事件初始化
-  const initWebSocket = () => {
-    ws.onopen = () => {
-      heart = setInterval(() => {
-        ws.send('PING')
-      }, 10000)
-    }
-    ws.onclose = () => {
-      const currentToken = localStorage.getItem('Authorization')
-      //如果浏览器未操作自动断开，根据token判断是主动关闭还是被动断开，来重连websocket或清除心跳。
-      if (!currentToken) {
-        clearInterval(heart)
-        return
-      }
-      reconnect()
-    }
-    ws.onmessage = () => {}
-    ws.onerror = () => {
-      clearInterval(heart)
-      reconnect()
-    }
-  }
-
-  //登录初始化连接webSocket，退出卸载
-  useEffect(() => {
-    if (token) {
-      createWebSocket()
-    }
-    return () => {
-      ws.close()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <ConfigProvider locale={zhCN}>
       <LayoutProvider
         value={{
+          setNewSocket,
           clearWs,
           clearAgainLogin,
           allProjectSearchParams,
