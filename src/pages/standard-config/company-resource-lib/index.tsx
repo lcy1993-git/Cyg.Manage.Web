@@ -458,23 +458,32 @@ const ResourceLib: React.FC = () => {
       let blob = new Blob([res], {
         type: 'application/zip',
       })
-      let finalyFileName = `资源库.zip`
-      // for IE
-      //@ts-ignore
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        //@ts-ignore
-        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
-      } else {
-        // for Non-IE
-        let objectUrl = URL.createObjectURL(blob)
-        let link = document.createElement('a')
-        link.href = objectUrl
-        link.setAttribute('download', finalyFileName)
-        document.body.appendChild(link)
-        link.click()
-        window.URL.revokeObjectURL(link.href)
+      let reader = new FileReader()
+      reader.readAsText(blob, 'utf-8')
+      reader.onload = () => {
+        let result = JSON.parse((reader.result as string) || '')
+        if (result.code === 5000 || result.message) {
+          message.error(result.message)
+        } else {
+          let finalyFileName = `资源库.zip`
+          // for IE
+          //@ts-ignore
+          if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            //@ts-ignore
+            window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+          } else {
+            // for Non-IE
+            let objectUrl = URL.createObjectURL(blob)
+            let link = document.createElement('a')
+            link.href = objectUrl
+            link.setAttribute('download', finalyFileName)
+            document.body.appendChild(link)
+            link.click()
+            window.URL.revokeObjectURL(link.href)
+          }
+          message.success('导出成功')
+        }
       }
-      message.success('导出成功')
     } catch (msg) {
       console.error(msg)
     } finally {
