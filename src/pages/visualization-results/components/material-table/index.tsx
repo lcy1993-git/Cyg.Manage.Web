@@ -1,11 +1,16 @@
-import { MaterialDataType } from '@/services/visualization-results/list-menu'
-import { Table } from 'antd'
+import {
+  exportMaterialListByProject,
+  MaterialDataType,
+} from '@/services/visualization-results/list-menu'
+import { Button, message, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import React, { FC } from 'react'
+import { FC } from 'react'
+import styles from './index.less'
 
 export interface MaterialTableProps {
   data?: MaterialDataType[]
   loading: boolean
+  exportParams: any
 }
 export const columns: ColumnsType<MaterialDataType> = [
   {
@@ -40,11 +45,6 @@ export const columns: ColumnsType<MaterialDataType> = [
     width: 150,
     dataIndex: 'code',
   },
-  {
-    title: '物料编号',
-    width: 150,
-    dataIndex: 'materialId',
-  },
 
   {
     title: '物料单位',
@@ -55,7 +55,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '数量',
     width: 80,
     dataIndex: 'itemNumber',
-
+    key: 'itemNumber',
     render(v: number) {
       return v ? String(v) : ''
     },
@@ -65,7 +65,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '单价(元)',
     width: 80,
     dataIndex: 'unitPrice',
-
+    key: 'unitPrice',
     render(v: number) {
       return v ? String(v) : ''
     },
@@ -74,7 +74,7 @@ export const columns: ColumnsType<MaterialDataType> = [
     title: '单重(kg)',
     width: 80,
     dataIndex: 'pieceWeight',
-
+    key: 'pieceWeight',
     render(v: number) {
       return v ? String(v) : ''
     },
@@ -100,18 +100,80 @@ export const columns: ColumnsType<MaterialDataType> = [
     dataIndex: 'remark',
   },
 ]
+
 export const MaterialTable: FC<MaterialTableProps> = (props) => {
-  const { data, loading } = props
+  const { data, loading, exportParams } = props
+  const { checkedProjectIdList, layerstype } = exportParams
+  const [messageApi, contextHolder] = message.useMessage()
+  const key = 'completeDownload'
+
+  const exportEvent = async () => {
+    messageApi.open({
+      key,
+      type: 'loading',
+      content: '导出中..',
+      duration: 0,
+    })
+    try {
+      const res = await exportMaterialListByProject({
+        projectIds: checkedProjectIdList,
+        designType: layerstype,
+      })
+      let blob = new Blob([res], {
+        type: 'application/vnd.ms-excel;charset=utf-8',
+      })
+      let finalyFileName = `材料汇总表.xlsx`
+      // for IE
+      //@ts-ignore
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        //@ts-ignore
+        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+      } else {
+        // for Non-IE
+        let objectUrl = URL.createObjectURL(blob)
+        let link = document.createElement('a')
+        link.href = objectUrl
+        link.setAttribute('download', finalyFileName)
+        document.body.appendChild(link)
+        link.click()
+        window.URL.revokeObjectURL(link.href)
+      }
+    } catch (msg) {
+      console.error(msg)
+    } finally {
+      setTimeout(() => {
+        messageApi.open({
+          key,
+          type: 'success',
+          content: '导出成功!',
+          duration: 2,
+        })
+      }, 500)
+    }
+  }
+
   return (
-    <Table
-      columns={columns}
-      bordered
-      size="middle"
-      loading={loading}
-      rowKey="key"
-      pagination={false}
-      dataSource={data}
-      scroll={{ x: 1400, y: 1000 }}
-    />
+    <div className={styles.materialTable}>
+      {contextHolder}
+      <Button
+        title="导出材料汇总表"
+        onClick={() => exportEvent()}
+        type="primary"
+        style={{ marginBottom: '10px' }}
+        disabled={data && data.length === 0}
+      >
+        导出
+      </Button>
+      <Table
+        columns={columns}
+        bordered
+        size="middle"
+        loading={loading}
+        rowKey="key"
+        pagination={false}
+        dataSource={data}
+        scroll={{ x: 1400, y: 670 }}
+      />
+    </div>
   )
 }

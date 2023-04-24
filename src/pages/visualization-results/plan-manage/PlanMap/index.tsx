@@ -219,7 +219,6 @@ const PlanMap = () => {
       //     total: 0,
       //   }
       // })
-
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(true)
         setIsRefresh(true)

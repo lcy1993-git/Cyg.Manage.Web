@@ -79,9 +79,10 @@ const MaterialModal: FC<MaterialModalProps> = (props) => {
       visible={visible}
       onOk={onOk}
       onCancel={onCancel}
-      width={2000}
+      width={1800}
+      bodyStyle={{ height: 800, overflowY: 'auto' }}
     >
-      <MaterialTable data={materialList} loading={loading} />
+      <MaterialTable data={materialList} loading={loading} exportParams={props} />
     </Modal>
   )
 }

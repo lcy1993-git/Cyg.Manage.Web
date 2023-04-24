@@ -84,6 +84,16 @@ export const fetchMaterialListByProjectIdList = (projectIdList: string[], design
     )
   )
 }
+export const exportMaterialListByProject = (params: {
+  projectIds: string[]
+  designType: number
+}) => {
+  return request(`${baseUrl.manage}/WebGis/ExportBatchProjectMaterials`, {
+    method: 'POST',
+    data: params,
+    responseType: 'blob',
+  })
+}
 
 export const fetchCommentListByParams = (params: CommentListParams) => {
   return cyRequest<ProjectCommentListItemType[]>(() =>

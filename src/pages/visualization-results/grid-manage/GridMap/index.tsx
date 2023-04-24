@@ -174,7 +174,6 @@ const GridMap = () => {
     const pointDatas = getDrawPoints()
     const lineDatas = getDrawLines()
     // const datas = getShowPoints(mapRef.map)
-
     // 点位数据处理
     const pointData = dataHandle(pointDatas)
     // 线路数据处理
@@ -230,7 +229,6 @@ const GridMap = () => {
       //     total: 0,
       //   }
       // })
-
       if (powerSupplyList.length || transformerStationList.length) {
         setlineAssemble(true)
         setIsRefresh(true)
