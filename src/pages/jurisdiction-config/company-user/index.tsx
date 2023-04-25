@@ -291,11 +291,13 @@ const CompanyUser: React.FC = () => {
       clientCategorys: (ManageUserData.authorizeClientList ?? [])
         .map((item: any) => item.value)
         .filter((item: any) => item > 1),
+      // IsCompanyAdmin: ManageUserData.IsCompanyAdmin ? ManageUserData.IsCompanyAdmin : false,
     })
   }
 
   const sureEditCompanyUser = () => {
     const editData = data!
+
     editForm.validateFields().then(async (values) => {
       const submitInfo = Object.assign(
         {

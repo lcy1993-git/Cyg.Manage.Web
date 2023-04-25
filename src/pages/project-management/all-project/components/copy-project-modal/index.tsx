@@ -126,7 +126,9 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
 
   useEffect(() => {
     if (state && warehouseInfo && libData) {
-      run()
+      if (warehouseInfo.length && libData.length) {
+        run()
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, warehouseInfo, libData])

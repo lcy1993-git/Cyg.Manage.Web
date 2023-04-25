@@ -23,6 +23,9 @@ spec:
           ports:
             - containerPort: 80
               protocol: TCP
+          volumeMounts:
+            - mountPath: '/etc/localtime'
+              name: timezone
           resources:
             requests:
               cpu: '100m'
@@ -32,6 +35,10 @@ spec:
               cpu: '0.2'
               memory: '0.2Gi'
               ephemeral-storage: 0.2Gi
+      volumes:
+        - name: timezone
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
 
 ---
 kind: Service

@@ -1,5 +1,11 @@
 import CyFormItem from '@/components/cy-form-item'
-import { getAuthorityModules, GetCommonUserInfo, userLoginRequest } from '@/services/login'
+import {
+  getAuthorityModules,
+  GetCommonUserInfo,
+  // getUserInfoRequest,
+  // qgcLoginRequest,
+  userLoginRequest,
+} from '@/services/login'
 import { useGetUserInfo } from '@/utils/hooks'
 import { flatten, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
@@ -46,8 +52,8 @@ const CutAccount = (props: EditPasswordProps) => {
           const lastAccount = useGetUserInfo()
 
           const isLastAccount = lastAccount && lastAccount.userName === userName
-
-          const { accessToken } = resData.content
+          // @ts-ignore
+          const { accessToken } = resData
           localStorage.setItem('Authorization', accessToken)
 
           const userInfo = await GetCommonUserInfo()

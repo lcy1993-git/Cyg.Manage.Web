@@ -63,6 +63,7 @@ const refreshMap = async (ops: any, projects_: any, location: boolean = false) =
     projects = projects_
     clearHighlightLayer(map)
   }
+
   // if(currentLevel && currentLevel === Math.round(map.getView().getZoom())){
   //   if(projects_ === null){
   //     return false;
@@ -1019,6 +1020,8 @@ const changeLayerType = (type: number, visible: boolean) => {
       }
     })
   }
+
+  return Array.from(new Set(layerTypes))
 }
 
 // 获取比例尺

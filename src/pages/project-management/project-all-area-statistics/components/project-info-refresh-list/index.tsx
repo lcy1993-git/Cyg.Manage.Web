@@ -50,7 +50,7 @@ const ProjectInfoRefreshList: FC<ProjectInfoRefreshListProps> = ({ currentAreaIn
       }),
     {
       ready: !!projectShareCompanyId,
-      pollingInterval: 3000,
+      pollingInterval: 60000,
       refreshDeps: [JSON.stringify(currentAreaInfo)],
       onSuccess: () => {
         // 最近的日期是从第一个开始的，所以要把最新放在最下面，使用reverse

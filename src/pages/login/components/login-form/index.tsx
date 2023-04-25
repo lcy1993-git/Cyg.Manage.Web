@@ -1,19 +1,26 @@
+import ImageIcon from '@/components/image-icon'
+import VerificationCode from '@/components/verification-code'
+import { loginRules } from '@/pages/login/components/login-form/rule'
+import {
+  // compareVerifyCode,
+  getAuthorityModules,
+  GetCommonUserInfo,
+  // getUserInfoRequest,
+  indexLoginRequest,
+  // PhoneLoginParams,
+  phoneLoginRequest,
+  // qgcLoginRequest,
+  // UserLoginParams,
+} from '@/services/login'
+import { phoneNumberRule } from '@/utils/common-rule'
+
 import { history } from 'umi'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { Button, Form, Input, message, Tabs } from 'antd'
-import ImageIcon from '@/components/image-icon'
+
 import VerifycodeImage from '../verifycode-image'
 
-import { loginRules } from '@/pages/login/components/login-form/rule'
-import VerificationCode from '@/components/verification-code'
-import { phoneNumberRule } from '@/utils/common-rule'
 import { flatten, getStopServerList, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
-import {
-  phoneLoginRequest,
-  indexLoginRequest,
-  getAuthorityModules,
-  GetCommonUserInfo,
-} from '@/services/login'
 
 import styles from './index.less'
 import { baseUrl } from '@/services/common'

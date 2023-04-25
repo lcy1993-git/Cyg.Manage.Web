@@ -116,3 +116,13 @@ export const removeCompanyShare = (params: { shareIds: string[] }) => {
     })
   )
 }
+
+//全平台设置公司管理员
+export const setAdminUser = (params: { companyId: string; userId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Company/SetupAdminUser`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}

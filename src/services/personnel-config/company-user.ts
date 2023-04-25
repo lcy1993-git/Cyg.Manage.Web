@@ -23,6 +23,7 @@ interface CompanyUserItemParams {
   authorizeClientList: any[]
   pwd: string
   confirmPwd?: string
+  IsCompanyAdmin?: boolean
 }
 
 export interface ItemDetailData extends CompanyUserItemParams {

@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 import JsonP from 'jsonp'
 import noTokenRequest from 'umi-request'
-import { cyRequest } from './../common'
 // import { webConfig } from '../../../public/config/request';
 import { baseUrl, geoServeUrl } from '../common'
+import { cyRequest } from './../common'
 // const ip = window.location.hostname;
 
 // const wfsBaseURL = `http://${webConfig.geoServerIP}${webConfig.geoServerPort}/geoserver/pdd/ows`;

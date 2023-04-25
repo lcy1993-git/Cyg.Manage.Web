@@ -78,7 +78,13 @@ const MapDisplay: FC<MapDisplayProps> = (props) => {
               onClick={() => onChange('street')}
             />
             <div className={styles.text}>街道图</div>
-            <div className={styles.moreSource} onClick={() => setSourceType(2)} title="切换图层源">
+            <div
+              className={styles.moreSource}
+              onClick={() => {
+                setSourceType(2)
+              }}
+              title="切换图层源"
+            >
               ···
             </div>
           </div>

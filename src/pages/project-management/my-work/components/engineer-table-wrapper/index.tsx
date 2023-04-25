@@ -20,6 +20,7 @@ import ProjectMergeModal from '@/pages/project-management/all-project/components
 import ReportApproveModal from '@/pages/project-management/all-project/components/report-approve-modal'
 import ScreenModal from '@/pages/project-management/all-project/components/screen-modal'
 import FilterEntrustModal from '@/pages/project-management/project-entrust/components/filter-entrust-modal'
+import { getTicketForDesign } from '@/services/login'
 import {
   againInherit,
   applyKnot,
@@ -27,6 +28,7 @@ import {
   getColumnsConfig,
   getProjectInfo,
   modifyExportPowerState,
+  postSubmitProjectToQGC,
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import {
@@ -69,6 +71,8 @@ interface JurisdictionInfo {
   canEdit: boolean
   canCopy: boolean
   canInherit: boolean
+  canEditQgc: boolean
+  canSubmitQgc: boolean
 }
 
 interface EngineerTableWrapperProps {
@@ -119,6 +123,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     areaId: '',
     company: '',
     companyName: '',
+    canEditQgc: false,
   })
   const [externalStepData] = useState<any>()
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
@@ -172,6 +177,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   //获取用户身份
   // @ts-ignore
   const { userType } = JSON.parse(localStorage.getItem('userInfo'))
+
   const tableRef = useRef<HTMLDivElement>(null)
   const {
     currentClickTabChildActiveType,
@@ -188,6 +194,13 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       ?.children.find((item: any) => item.id === currentClickTabChildActiveType).typeColumns
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(myWorkInitData), currentClickTabChildActiveType, currentClickTabType])
+
+  //@ts-ignore
+  const { id } = JSON.parse(window.localStorage.getItem('userInfo'))
+  //获取ticket
+  const { run } = useRequest(() => getTicketForDesign({ userId: id }), {
+    manual: true,
+  })
 
   const { data: columnsData } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
@@ -245,6 +258,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       companyName: record.company,
       minStartTime,
       maxEndTime,
+      canEditQgc: record.canEditQgc,
     })
     setEditEngineerVisible(true)
   }
@@ -280,6 +294,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     setArchiveVisible(true)
   }
 
+  const openDesign = async (id: string) => {
+    const resData = await run()
+    const a = document.createElement('a')
+    a.href = `CygPowerDistributionDesign://open?projectId=${id}&ticket=${resData}`
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+  }
+
   const projectItemMenu = (
     jurisdictionInfo: JurisdictionInfo,
     tableItemData: any,
@@ -290,26 +313,28 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
     return (
       <Menu>
-        {jurisdictionInfo.canEdit && buttonJurisdictionArray?.includes('all-project-edit-project') && (
-          <Menu.Item
-            key="editProject"
-            onClick={() => {
-              editProjectEvent({
-                projectId: tableItemData.id,
-                areaId: engineerInfo.province,
-                libId: engineerInfo.libId,
-                company: engineerInfo.company,
-                companyName: engineerInfo.company,
-                startTime: engineerInfo.startTime,
-                endTime: engineerInfo.endTime,
-                status: tableItemData.stateInfo.status,
-                inheritState: tableItemData.stateInfo.inheritStatus,
-              })
-            }}
-          >
-            编辑
-          </Menu.Item>
-        )}
+        {(jurisdictionInfo.canEdit || jurisdictionInfo.canEditQgc) &&
+          buttonJurisdictionArray?.includes('all-project-edit-project') && (
+            <Menu.Item
+              key="editProject"
+              onClick={() => {
+                editProjectEvent({
+                  projectId: tableItemData.id,
+                  areaId: engineerInfo.province,
+                  libId: engineerInfo.libId,
+                  company: engineerInfo.company,
+                  companyName: engineerInfo.company,
+                  startTime: engineerInfo.startTime,
+                  endTime: engineerInfo.endTime,
+                  status: tableItemData.stateInfo.status,
+                  inheritState: tableItemData.stateInfo.inheritStatus,
+                  canEditQgc: tableItemData.operationAuthority.canEditQgc,
+                })
+              }}
+            >
+              编辑
+            </Menu.Item>
+          )}
         {jurisdictionInfo.canCopy && buttonJurisdictionArray?.includes('all-project-copy-project') && (
           <Menu.Item
             key="copyProject"
@@ -365,6 +390,23 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           buttonJurisdictionArray?.includes('all-project-merge') && (
             <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>项目合并</Menu.Item>
           )}
+        {/* {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
+          <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
+        )} */}
+        {/* {jurisdictionInfo.canSubmitQgc && ( */}
+        <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id)}>提交项目</Menu.Item>
+        {/* )} */}
+
+        {tableItemData.stateInfo.status !== 14 &&
+          buttonJurisdictionArray?.includes('all-project-merge') && (
+            <Menu.Item onClick={() => openDesign(tableItemData.id)}>
+              {/* <a
+                href={`CygPowerDistributionDesign://open?projectId=${tableItemData.id}&ticket=${loginTicket}`}
+              > */}
+              打开设计端
+              {/* </a> */}
+            </Menu.Item>
+          )}
       </Menu>
     )
   }
@@ -374,6 +416,22 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       projectId: projectId,
     })
     setProjectMergeVisible(true)
+  }
+  const submitProjectToQGC = (projectId: string) => {
+    Modal.confirm({
+      title: '项目提交',
+      icon: <ExclamationCircleOutlined />,
+      content: `确定将提交项目吗？`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: () => {
+        handleSubmitProjectToQGC(projectId)
+      },
+    })
+  }
+  const handleSubmitProjectToQGC = async (projectId: string) => {
+    await postSubmitProjectToQGC({ projectId: projectId })
+    message.success('提交项目成功')
   }
 
   const checkProjectDetail = (projectId: string, judgmentMark: boolean) => {
@@ -1365,6 +1423,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           setInheritState={setInheritState}
           onChange={setEditProjectVisible}
           changeFinishEvent={refreshEvent}
+          canEditQgc={modalNeedInfo.canEditQgc}
         />
       )}
       {copyProjectVisible && (

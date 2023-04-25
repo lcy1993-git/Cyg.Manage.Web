@@ -1,6 +1,12 @@
 import React, { useRef, useState } from 'react'
-import { Button, Modal, Form, message, Switch, Input } from 'antd'
-import { ApartmentOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from '@ant-design/icons'
+import { Button, Modal, Form, message, Switch, Input, Tooltip } from 'antd'
+import {
+  ApartmentOutlined,
+  EditOutlined,
+  PlusOutlined,
+  ShareAltOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import PageCommonWrap from '@/components/page-common-wrap'
 import {
@@ -9,6 +15,7 @@ import {
   getCompanyManageDetail,
   getTreeSelectData,
   changeCompanyStatus,
+  setAdminUser,
 } from '@/services/jurisdiction-config/company-manage'
 import { isArray } from 'lodash'
 import CompanyManageForm from './components/add-form'
@@ -21,6 +28,7 @@ import UnitConfig from './components/unit-config'
 import GeneralTable from '@/components/general-table'
 import CompanyShare from './components/company-share'
 import TableSearch from '@/components/table-search'
+import AddAdminForm from './components/add-admin'
 
 const { Search } = Input
 
@@ -41,12 +49,15 @@ const CompanyManage: React.FC = () => {
   const [editFormVisible, setEditFormVisible] = useState<boolean>(false)
   const [unitConfigVisible, setUnitConfigVisible] = useState<boolean>(false)
   const [companyShareVisible, setCompanyShareVisible] = useState<boolean>(false)
+  const [addAdminVisible, setAddAdminVisible] = useState<boolean>(false)
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  const [companyId, setCompanyId] = useState<string>('')
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
+  const [adminForm] = Form.useForm()
 
   const { data: selectTreeData = [] } = useRequest(getTreeSelectData, {
     manual: true,
@@ -77,7 +88,21 @@ const CompanyManage: React.FC = () => {
       index: 'adminUserName',
       width: 180,
       render: (text: any, record: any) => {
-        return record.adminUserName ? record.adminUserName : '-'
+        return record.adminUserName ? (
+          record.adminUserName
+        ) : (
+          <>
+            <Tooltip title="设置公司管理员" placement="left">
+              <UserAddOutlined
+                style={{ cursor: 'pointer', color: '#0e7b3b' }}
+                onClick={() => {
+                  setCompanyId(record.id)
+                  setAddAdminVisible(true)
+                }}
+              />
+            </Tooltip>
+          </>
+        )
       },
     },
     {
@@ -241,6 +266,21 @@ const CompanyManage: React.FC = () => {
     setAddFormVisible(true)
   }
 
+  const sureAddAdminEvent = () => {
+    adminForm.validateFields().then(async (values) => {
+      const submitInfo = {
+        companyId: companyId,
+        userId: values.userId,
+      }
+
+      await setAdminUser(submitInfo)
+      setAddAdminVisible(false)
+      message.success('设置成功')
+      adminForm.resetFields()
+      tableFresh()
+    })
+  }
+
   const sureAddCompanyManageItem = () => {
     addForm.validateFields().then(async (value) => {
       const userSkuQtys = [
@@ -262,7 +302,6 @@ const CompanyManage: React.FC = () => {
       }
 
       await addCompanyManageItem(submitInfo)
-      tableFresh()
       setAddFormVisible(false)
       message.success('添加成功')
       addForm.resetFields()
@@ -352,6 +391,7 @@ const CompanyManage: React.FC = () => {
           <CompanyManageForm treeData={selectTreeData} form={addForm} />
         </Form>
       </Modal>
+
       <Modal
         maskClosable={false}
         title="编辑-公司"
@@ -367,6 +407,23 @@ const CompanyManage: React.FC = () => {
           <EditCompanyManageForm accreditNumber={currentCompanyData} form={editForm} />
         </Form>
       </Modal>
+
+      <Modal
+        maskClosable={false}
+        title="设置-公司管理员"
+        width="650px"
+        visible={addAdminVisible}
+        okText="确认"
+        onOk={() => sureAddAdminEvent()}
+        onCancel={() => setAddAdminVisible(false)}
+        cancelText="取消"
+        destroyOnClose
+      >
+        <Form form={adminForm} preserve={false}>
+          <AddAdminForm companyId={companyId} />
+        </Form>
+      </Modal>
+
       <UnitConfig
         visible={unitConfigVisible}
         onChange={setUnitConfigVisible}

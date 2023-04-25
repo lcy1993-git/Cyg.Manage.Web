@@ -407,7 +407,7 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
         okText="确认"
         onOk={() => sureAddMaterial()}
         onCancel={() => {
-          setEditFormVisible(false)
+          setAddFormVisible(false)
           refresh()
         }}
         cancelText="取消"

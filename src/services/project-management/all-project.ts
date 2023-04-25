@@ -442,6 +442,7 @@ interface ProjectInfoParams {
   identitys: string[]
   allots: any[]
   operateLog: OperateLog[]
+  projectExt: string
 }
 
 // 获取项目详细信息接口
@@ -455,6 +456,12 @@ export const getProjectInfo = (projectId: string | undefined) => {
 export const editProject = (params: any) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/Porject/Modify`, { method: 'POST', data: params })
+  )
+}
+// 编辑qgc项目信息
+export const editQGCProject = (params: any) => {
+  return cyRequest(() =>
+    request(`${baseUrl.project}/Porject/ModifyQgc`, { method: 'POST', data: params })
   )
 }
 
@@ -627,9 +634,9 @@ export const modifyMultipleProjectLib = (params: any) => {
 // 获取设计成果树状结构
 export const getResultTreeData = (projectId: string) => {
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory`, {
+    request(`${baseUrl.upload}/Find/ProjectOutcomeFileDirectory?projectId=${projectId}`, {
       method: 'GET',
-      params: { projectId },
+      // params: { projectId },
     })
   )
 }
@@ -1060,6 +1067,15 @@ export const checkCanRemoval = (params: { projectIds: string[] }) => {
 export const sureRemoval = (params: { targetEngineerId: string; projectIds: string[] }) => {
   return cyRequest(() =>
     request(`${baseUrl.project}/PorjectMigrate/Migrate`, {
+      method: 'POST',
+      data: params,
+    })
+  )
+}
+// 提交项目至全过程
+export const postSubmitProjectToQGC = (params: { projectId: string }) => {
+  return cyRequest(() =>
+    request(`${baseUrl.comment}/Project/TransferNonStructured`, {
       method: 'POST',
       data: params,
     })

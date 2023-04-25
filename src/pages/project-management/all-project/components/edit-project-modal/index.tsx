@@ -1,14 +1,17 @@
-import { editProject, getProjectInfo } from '@/services/project-management/all-project'
-import { useControllableValue } from 'ahooks'
-import { Button, Spin } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { useRequest } from 'ahooks'
+import {
+  editProject,
+  editQGCProject,
+  getProjectInfo,
+} from '@/services/project-management/all-project'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal, Spin } from 'antd'
 import moment, { Moment } from 'moment'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import CreateProjectForm from '../create-project-form'
 import { uploadAuditLog } from '@/utils/utils'
 import { baseUrl } from '@/services/common'
 
+import EditProjectForm from '../edit-project-form'
 interface EditProjectProps {
   projectId: string
   visible: boolean
@@ -22,6 +25,7 @@ interface EditProjectProps {
   status: number
   startTime?: Moment
   endTime?: Moment
+  canEditQgc?: boolean
 }
 
 const EditProjectModal: React.FC<EditProjectProps> = (props) => {
@@ -43,8 +47,8 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     endTime,
     pointVisible,
     setInheritState,
+    canEditQgc,
   } = props
-
   const {
     data: projectInfo,
     run,
@@ -52,8 +56,14 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   } = useRequest(() => getProjectInfo(projectId), {
     manual: true,
     onSuccess: () => {
+      let obj = {}
+      try {
+        //@ts-ignore
+        obj = JSON.parse(projectInfo?.projectExt)
+      } catch (error) {}
       form.setFieldsValue({
         ...projectInfo,
+        ...obj,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
         endTime: projectInfo?.endTime ? moment(projectInfo?.endTime) : null,
         deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
@@ -98,13 +108,26 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
   const edit = () => {
     form.validateFields().then(async (value) => {
       try {
-        await editProject({
-          id: projectId,
-          ...value,
-          totalInvest: value.totalInvest ? value.totalInvest : 0,
-          disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
-          pileRange: value.pileRange ? value.pileRange : 0,
-        })
+        // console.log(canEditQgc, '全过程')
+        if (canEditQgc) {
+          // qgc项目
+
+          await editQGCProject({
+            id: projectId,
+            ...value,
+            totalInvest: value.totalInvest ? value.totalInvest : 0,
+            disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
+            pileRange: value.pileRange ? value.pileRange : 0,
+          })
+        } else {
+          await editProject({
+            id: projectId,
+            ...value,
+            totalInvest: value.totalInvest ? value.totalInvest : 0,
+            disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
+            pileRange: value.pileRange ? value.pileRange : 0,
+          })
+        }
         message.success('项目信息更新成功')
         setState(false)
         form.resetFields()
@@ -168,22 +191,42 @@ const EditProjectModal: React.FC<EditProjectProps> = (props) => {
     >
       <Form form={form} preserve={false}>
         <Spin spinning={loading}>
-          <CreateProjectForm
-            pointVisible={pointVisible}
-            areaId={areaId}
-            company={company}
-            companyName={companyName}
-            status={status}
-            projectId={projectId}
-            engineerStart={startTime}
-            canEditStage={projectInfo?.canEditStage}
-            isEdit={true}
-            engineerEnd={endTime}
-            form={form}
-            getWarehouseData={setWarehouseInfo}
-            getLibData={setLibData}
-            // onLoadingFinish={() => setLoading(true)}
-          />
+          {canEditQgc ? (
+            <EditProjectForm
+              pointVisible={pointVisible}
+              areaId={areaId}
+              company={company}
+              companyName={companyName}
+              status={status}
+              projectId={projectId}
+              engineerStart={startTime}
+              canEditStage={projectInfo?.canEditStage}
+              isEdit={true}
+              engineerEnd={endTime}
+              form={form}
+              getWarehouseData={setWarehouseInfo}
+              getLibData={setLibData}
+              isDisabled={true}
+              // onLoadingFinish={() => setLoading(true)}
+            />
+          ) : (
+            <CreateProjectForm
+              pointVisible={pointVisible}
+              areaId={areaId}
+              company={company}
+              companyName={companyName}
+              status={status}
+              projectId={projectId}
+              engineerStart={startTime}
+              canEditStage={projectInfo?.canEditStage}
+              isEdit={true}
+              engineerEnd={endTime}
+              form={form}
+              getWarehouseData={setWarehouseInfo}
+              getLibData={setLibData}
+              // onLoadingFinish={() => setLoading(true)}
+            />
+          )}
         </Spin>
       </Form>
     </Modal>

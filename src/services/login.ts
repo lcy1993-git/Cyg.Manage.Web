@@ -52,6 +52,33 @@ export const userLoginRequest = (params: UserLoginParams) => {
   })
 }
 
+// qgc登录
+export const qgcLoginRequest = (params: UserLoginParams) => {
+  return cyRequest<LoginSuccessInfo>(() =>
+    request(`${baseUrl.common}/myLoging/getUserInfo`, {
+      method: 'POST',
+      data: { ...params, clientType: 2 },
+    })
+  )
+}
+// qgc免登录
+export const qgcAutoLoginRequest = (params: any) => {
+  return request<LoginSuccessInfo>(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
+    method: 'POST',
+    data: { ...params, appType: 2 },
+  })
+}
+
+//qgc获取ticket
+export const getTicketForDesign = (params: any) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.common}/Users/getSignInTicket`, {
+      method: 'POST',
+      data: { ...params, appType: 8, appKey: '186de47fa894297' },
+    })
+  )
+}
+
 export interface PhoneLoginParams {
   phone: string
   code: string
