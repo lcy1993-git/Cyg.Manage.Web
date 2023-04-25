@@ -136,3 +136,10 @@ export const modifyPwdByUserName = (value: {
     })
   )
 }
+
+// 获取配置开关
+export const getConfigSwitch = (key: string) => {
+  return cyRequest<any>(() =>
+    request(`${baseUrl.common}/System/GetDictionary`, { method: 'POST', params: { key } })
+  )
+}
