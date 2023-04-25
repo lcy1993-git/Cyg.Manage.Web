@@ -453,8 +453,8 @@ const ResourceLib: React.FC = () => {
       let reader = new FileReader()
       reader.readAsText(blob, 'utf-8')
       reader.onload = () => {
-        let result = JSON.parse((reader.result as string) || '')
-        if (result.code === 5000 || result.message) {
+        if (String(reader.result).includes(`"isSuccess":false`)) {
+          let result = JSON.parse((reader.result as string) || '')
           message.error(result.message)
         } else {
           let finalyFileName = `资源库.zip`
