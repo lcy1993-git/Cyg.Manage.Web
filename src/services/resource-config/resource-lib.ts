@@ -128,10 +128,10 @@ export const getChartPath = (libId: string) => {
 }
 
 //导出图纸
-export const exportChartByPath = (fileDir: string) => {
-  return request(`${baseUrl.upload}/Download/DownloadFileByDirPath`, {
+export const exportChartByPath = (libId: string) => {
+  return request(`${baseUrl.upload}/Download/DownloadChartByLibId`, {
     method: 'POST',
-    params: { fileDir },
+    params: { libId },
     responseType: 'blob',
   })
 }

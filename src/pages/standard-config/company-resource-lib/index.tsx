@@ -9,7 +9,6 @@ import {
   exportChartByPath,
   exportCompanyLib,
   getCampanyResourceLibListsWithBackUpInfo,
-  getChartPath,
   getResourceLibDetail,
   restartResourceLib,
   restoreResourceLib,
@@ -87,12 +86,6 @@ const ResourceLib: React.FC = () => {
       },
     }
   )
-
-  /**获取图纸路径 */
-  const { data: chartPath } = useRequest(() => getChartPath(clickKey[0]), {
-    ready: !!clickKey.length,
-    refreshDeps: [clickKey[0]],
-  })
 
   const { resourceManageFlag } = useLayoutStore()
 
@@ -411,13 +404,13 @@ const ResourceLib: React.FC = () => {
 
   /**导出图纸 */
   const exportDrawingEvent = async () => {
-    if (!chartPath) {
-      message.warning('未选择公司库或导出路径不存在')
+    if (!clickKey.length) {
+      message.warning('未选择公司资源库')
       return
     }
     try {
       setExportLoading(true)
-      const res = await exportChartByPath(chartPath)
+      const res = await exportChartByPath(clickKey[0])
       let blob = new Blob([res], {
         type: 'application/zip',
       })
