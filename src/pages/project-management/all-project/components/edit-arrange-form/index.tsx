@@ -28,7 +28,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     // canEditCostAuditUser3,
   } = canEdit
   const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
-
+  const isOpenReview = localStorage.getItem('isOpenReview')
   const notEdit = (function notChangeData() {
     return [
       {
@@ -147,144 +147,153 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
           />
         </CyFormItem>
       )}
-
-      {canEditCost ? (
-        <CyFormItem label="造价" name="costUser">
-          <TreeSelect
-            key="editCostUser"
-            style={{ width: '100%' }}
-            treeData={notEdit.concat(costUserData.map(mapTreeData))}
-            placeholder="请选择"
-            treeDefaultExpandAll
-            allowClear
-          />
-        </CyFormItem>
-      ) : (
-        <CyFormItem label="造价" name="costUser">
-          <TreeSelect
-            disabled
-            key="editCostUser"
-            style={{ width: '100%' }}
-            treeData={costUserData.map(mapTreeData)}
-            placeholder="请选择"
-            treeDefaultExpandAll
-            allowClear
-          />
-        </CyFormItem>
+      {Number(isOpenReview) === 1 && (
+        <>
+          {canEditCost ? (
+            <CyFormItem label="造价" name="costUser">
+              <TreeSelect
+                key="editCostUser"
+                style={{ width: '100%' }}
+                treeData={notEdit.concat(costUserData.map(mapTreeData))}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+          ) : (
+            <CyFormItem label="造价" name="costUser">
+              <TreeSelect
+                disabled
+                key="editCostUser"
+                style={{ width: '100%' }}
+                treeData={costUserData.map(mapTreeData)}
+                placeholder="请选择"
+                treeDefaultExpandAll
+                allowClear
+              />
+            </CyFormItem>
+          )}
+        </>
       )}
 
       {/* 继续安排审核 */}
-      <div className={styles.continueAudit}>
-        <div className={styles.internalTitle} onClick={() => setIsInternalAudit(!isInternalAudit)}>
-          继续修改审核人员
-        </div>
-        <div>{isInternalAudit ? <UpOutlined /> : <DownOutlined />}</div>
-      </div>
-      <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
-        {/* 设计内审 */}
-        <Divider>
-          <span className={styles.divider}>设计校审</span>
-        </Divider>
-        {canEditDesignAssessUser1 ? (
-          <CyFormItem label="校对" name="designAssessUser1">
-            <TreeSelect
-              key="editDesignAssessUser1"
-              style={{ width: '100%' }}
-              treeData={notEdit.concat(auditData.map(mapTreeData))}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        ) : (
-          <CyFormItem label="校对" name="designAssessUser1">
-            <TreeSelect
-              disabled
-              key="editDesignAssessUser1"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        )}
+      {Number(isOpenReview) === 1 && (
+        <>
+          {' '}
+          <div className={styles.continueAudit}>
+            <div
+              className={styles.internalTitle}
+              onClick={() => setIsInternalAudit(!isInternalAudit)}
+            >
+              继续修改审核人员
+            </div>
+            <div>{isInternalAudit ? <UpOutlined /> : <DownOutlined />}</div>
+          </div>
+          <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
+            {/* 设计内审 */}
+            <Divider>
+              <span className={styles.divider}>设计校审</span>
+            </Divider>
+            {canEditDesignAssessUser1 ? (
+              <CyFormItem label="校对" name="designAssessUser1">
+                <TreeSelect
+                  key="editDesignAssessUser1"
+                  style={{ width: '100%' }}
+                  treeData={notEdit.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            ) : (
+              <CyFormItem label="校对" name="designAssessUser1">
+                <TreeSelect
+                  disabled
+                  key="editDesignAssessUser1"
+                  style={{ width: '100%' }}
+                  treeData={auditData.map(mapTreeData)}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            )}
 
-        {canEditDesignAssessUser2 ? (
-          <CyFormItem label="校核" name="designAssessUser2">
-            <TreeSelect
-              key="editDesignAssessUser2"
-              style={{ width: '100%' }}
-              treeData={notEdit.concat(auditData.map(mapTreeData))}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        ) : (
-          <CyFormItem label="校核" name="designAssessUser2">
-            <TreeSelect
-              disabled
-              key="editDesignAssessUser2"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        )}
-        {canEditDesignAssessUser3 ? (
-          <CyFormItem label="审核" name="designAssessUser3">
-            <TreeSelect
-              key="editDesignAssessUser3"
-              style={{ width: '100%' }}
-              treeData={notEdit.concat(auditData.map(mapTreeData))}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        ) : (
-          <CyFormItem label="审核" name="designAssessUser3">
-            <TreeSelect
-              disabled
-              key="editDesignAssessUser3"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        )}
+            {canEditDesignAssessUser2 ? (
+              <CyFormItem label="校核" name="designAssessUser2">
+                <TreeSelect
+                  key="editDesignAssessUser2"
+                  style={{ width: '100%' }}
+                  treeData={notEdit.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            ) : (
+              <CyFormItem label="校核" name="designAssessUser2">
+                <TreeSelect
+                  disabled
+                  key="editDesignAssessUser2"
+                  style={{ width: '100%' }}
+                  treeData={auditData.map(mapTreeData)}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            )}
+            {canEditDesignAssessUser3 ? (
+              <CyFormItem label="审核" name="designAssessUser3">
+                <TreeSelect
+                  key="editDesignAssessUser3"
+                  style={{ width: '100%' }}
+                  treeData={notEdit.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            ) : (
+              <CyFormItem label="审核" name="designAssessUser3">
+                <TreeSelect
+                  disabled
+                  key="editDesignAssessUser3"
+                  style={{ width: '100%' }}
+                  treeData={auditData.map(mapTreeData)}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            )}
 
-        {canEditDesignAssessUser4 ? (
-          <CyFormItem label="审定" name="designAssessUser4">
-            <TreeSelect
-              key="editDesignAssessUser4"
-              style={{ width: '100%' }}
-              treeData={notEdit.concat(auditData.map(mapTreeData))}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        ) : (
-          <CyFormItem label="审定" name="designAssessUser4">
-            <TreeSelect
-              disabled
-              key="editDesignAssessUser4"
-              style={{ width: '100%' }}
-              treeData={auditData.map(mapTreeData)}
-              placeholder="请选择"
-              treeDefaultExpandAll
-              allowClear
-            />
-          </CyFormItem>
-        )}
-        {/* 造价内审 */}
-        {/* <Divider>
+            {canEditDesignAssessUser4 ? (
+              <CyFormItem label="审定" name="designAssessUser4">
+                <TreeSelect
+                  key="editDesignAssessUser4"
+                  style={{ width: '100%' }}
+                  treeData={notEdit.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            ) : (
+              <CyFormItem label="审定" name="designAssessUser4">
+                <TreeSelect
+                  disabled
+                  key="editDesignAssessUser4"
+                  style={{ width: '100%' }}
+                  treeData={auditData.map(mapTreeData)}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                />
+              </CyFormItem>
+            )}
+            {/* 造价内审 */}
+            {/* <Divider>
           <span className={styles.divider}>造价校审</span>
         </Divider>
         {canEditCostAuditUser1 ? (
@@ -360,7 +369,9 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             />
           </CyFormItem>
         )} */}
-      </div>
+          </div>
+        </>
+      )}
     </>
   )
 }

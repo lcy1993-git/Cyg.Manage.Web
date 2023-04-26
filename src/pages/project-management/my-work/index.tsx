@@ -34,6 +34,7 @@ const MyWork: React.FC = () => {
   const { setRef } = useLayoutStore()
 
   const [favType, setFavType] = useState<number>(0)
+  const isOpenReview = localStorage.getItem('isOpenReview')
   const [indexToPageSearchParams, setIndexToPageSearchParams] = useState({
     requestUrl: '/ProjectList/GetAlls',
   })
@@ -44,144 +45,267 @@ const MyWork: React.FC = () => {
     loading,
   } = useRequest(() => getMyWorkStatisticsData(), {
     onSuccess: () => {
-      setMyWorkInitData([
-        {
-          label: '我的项目',
-          id: 'allpro',
-          number: data.all.total,
-          children: [
-            {
-              label: '我的项目',
-              id: 'my',
-              number: data.all.my,
-              url: '/ProjectList/GetAlls',
-            },
-          ],
-        },
-        {
-          label: '项目获取',
-          id: 'agent',
-          number: data.agent,
-          children: [
-            {
-              label: '项目获取',
-              id: 'agent',
-              number: data.agent,
-              url: '/ProjectList/GetAgents',
-              typeColumns: [
-                'name',
-                'dataSourceTypeText',
-                'categoryText',
-                'pTypeText',
-                'kvLevelText',
-                'natureTexts',
-                'projectTime',
-                'majorCategoryText',
-                'reformAimText',
-                'cityCompany',
-                'countyCompany',
-                'constructTypeText',
-                'pCategoryText',
-                'stageText',
-                'pAttributeText',
-                'disclosureRange',
-                'pileRange',
-                'batchText',
-              ],
-            },
-          ],
-        },
-        {
-          label: '立项审批',
-          id: 'approve',
-          number: data.approve.total,
-          children: [
-            {
-              label: '立项待审批',
-              id: 'awaitApprove',
-              number: data.approve.awaitApprove,
-              url: '/ProjectList/GetAwaitApproves',
-            },
-            {
-              label: '立项审批中',
-              id: 'approveing',
-              number: data.approve.approveing,
-              url: '/ProjectList/GetApproveings',
-              typeColumns: [
-                'name',
-                'dataSourceTypeText',
-                'categoryText',
-                'pTypeText',
-                'kvLevelText',
-                'natureTexts',
-                'projectTime',
-                'majorCategoryText',
-                'reformAimText',
-                'cityCompany',
-                'countyCompany',
-                'constructTypeText',
-                'pCategoryText',
-                'stageText',
-                'pAttributeText',
-                'disclosureRange',
-                'pileRange',
-                'batchText',
-              ],
-            },
-          ],
-        },
-        {
-          label: '任务安排',
-          id: 'arrange',
-          number: data.arrange.total,
-          children: [
-            {
-              label: '待安排',
-              id: 'awaitAllot',
-              number: data.arrange.awaitAllot,
-              url: '/ProjectList/GetAwaitAllots',
-            },
-            {
-              label: '待安排评审',
-              id: 'waitArrangAudit',
-              number: data.arrange.awaitAllotExternalReview,
-              url: '/ProjectList/GetAwaitAllotExternalReviews',
-            },
-          ],
-        },
-        {
-          label: '评审管理',
-          id: 'review',
-          number: data.review.total,
-          children: [
-            {
-              label: '外审中',
-              id: 'externalReviewing',
-              number: data.review.externalReviewing,
-              url: '/ProjectList/GetExternalReviewings',
-            },
-          ],
-        },
-        {
-          label: '结项管理',
-          id: 'knot',
-          number: data.knot.total,
-          children: [
-            {
-              label: '待结项',
-              id: 'awaitApplyKnot',
-              number: data.knot.awaitApplyKnot,
-              url: '/ProjectList/GetAwaitApplyKnots',
-            },
-            {
-              label: '结项审批',
-              id: 'approveKnot',
-              number: data.knot.approveKnot,
-              url: '/ProjectList/GetApproveKnots',
-            },
-          ],
-        },
-      ])
+      setMyWorkInitData(
+        Number(isOpenReview) === 1
+          ? [
+              {
+                label: '我的项目',
+                id: 'allpro',
+                number: data.all.total,
+                children: [
+                  {
+                    label: '我的项目',
+                    id: 'my',
+                    number: data.all.my,
+                    url: '/ProjectList/GetAlls',
+                  },
+                ],
+              },
+              {
+                label: '项目获取',
+                id: 'agent',
+                number: data.agent,
+                children: [
+                  {
+                    label: '项目获取',
+                    id: 'agent',
+                    number: data.agent,
+                    url: '/ProjectList/GetAgents',
+                    typeColumns: [
+                      'name',
+                      'dataSourceTypeText',
+                      'categoryText',
+                      'pTypeText',
+                      'kvLevelText',
+                      'natureTexts',
+                      'projectTime',
+                      'majorCategoryText',
+                      'reformAimText',
+                      'cityCompany',
+                      'countyCompany',
+                      'constructTypeText',
+                      'pCategoryText',
+                      'stageText',
+                      'pAttributeText',
+                      'disclosureRange',
+                      'pileRange',
+                      'batchText',
+                    ],
+                  },
+                ],
+              },
+              {
+                label: '立项审批',
+                id: 'approve',
+                number: data.approve.total,
+                children: [
+                  {
+                    label: '立项待审批',
+                    id: 'awaitApprove',
+                    number: data.approve.awaitApprove,
+                    url: '/ProjectList/GetAwaitApproves',
+                  },
+                  {
+                    label: '立项审批中',
+                    id: 'approveing',
+                    number: data.approve.approveing,
+                    url: '/ProjectList/GetApproveings',
+                    typeColumns: [
+                      'name',
+                      'dataSourceTypeText',
+                      'categoryText',
+                      'pTypeText',
+                      'kvLevelText',
+                      'natureTexts',
+                      'projectTime',
+                      'majorCategoryText',
+                      'reformAimText',
+                      'cityCompany',
+                      'countyCompany',
+                      'constructTypeText',
+                      'pCategoryText',
+                      'stageText',
+                      'pAttributeText',
+                      'disclosureRange',
+                      'pileRange',
+                      'batchText',
+                    ],
+                  },
+                ],
+              },
+              {
+                label: '任务安排',
+                id: 'arrange',
+                number: data.arrange.total,
+                children: [
+                  {
+                    label: '待安排',
+                    id: 'awaitAllot',
+                    number: data.arrange.awaitAllot,
+                    url: '/ProjectList/GetAwaitAllots',
+                  },
+                  {
+                    label: '待安排评审',
+                    id: 'waitArrangAudit',
+                    number: data.arrange.awaitAllotExternalReview,
+                    url: '/ProjectList/GetAwaitAllotExternalReviews',
+                  },
+                ],
+              },
+              {
+                label: '评审管理',
+                id: 'review',
+                number: data.review.total,
+                children: [
+                  {
+                    label: '外审中',
+                    id: 'externalReviewing',
+                    number: data.review.externalReviewing,
+                    url: '/ProjectList/GetExternalReviewings',
+                  },
+                ],
+              },
+              {
+                label: '结项管理',
+                id: 'knot',
+                number: data.knot.total,
+                children: [
+                  {
+                    label: '待结项',
+                    id: 'awaitApplyKnot',
+                    number: data.knot.awaitApplyKnot,
+                    url: '/ProjectList/GetAwaitApplyKnots',
+                  },
+                  {
+                    label: '结项审批',
+                    id: 'approveKnot',
+                    number: data.knot.approveKnot,
+                    url: '/ProjectList/GetApproveKnots',
+                  },
+                ],
+              },
+            ]
+          : [
+              {
+                label: '我的项目',
+                id: 'allpro',
+                number: data.all.total,
+                children: [
+                  {
+                    label: '我的项目',
+                    id: 'my',
+                    number: data.all.my,
+                    url: '/ProjectList/GetAlls',
+                  },
+                ],
+              },
+              {
+                label: '项目获取',
+                id: 'agent',
+                number: data.agent,
+                children: [
+                  {
+                    label: '项目获取',
+                    id: 'agent',
+                    number: data.agent,
+                    url: '/ProjectList/GetAgents',
+                    typeColumns: [
+                      'name',
+                      'dataSourceTypeText',
+                      'categoryText',
+                      'pTypeText',
+                      'kvLevelText',
+                      'natureTexts',
+                      'projectTime',
+                      'majorCategoryText',
+                      'reformAimText',
+                      'cityCompany',
+                      'countyCompany',
+                      'constructTypeText',
+                      'pCategoryText',
+                      'stageText',
+                      'pAttributeText',
+                      'disclosureRange',
+                      'pileRange',
+                      'batchText',
+                    ],
+                  },
+                ],
+              },
+              {
+                label: '立项审批',
+                id: 'approve',
+                number: data.approve.total,
+                children: [
+                  {
+                    label: '立项待审批',
+                    id: 'awaitApprove',
+                    number: data.approve.awaitApprove,
+                    url: '/ProjectList/GetAwaitApproves',
+                  },
+                  {
+                    label: '立项审批中',
+                    id: 'approveing',
+                    number: data.approve.approveing,
+                    url: '/ProjectList/GetApproveings',
+                    typeColumns: [
+                      'name',
+                      'dataSourceTypeText',
+                      'categoryText',
+                      'pTypeText',
+                      'kvLevelText',
+                      'natureTexts',
+                      'projectTime',
+                      'majorCategoryText',
+                      'reformAimText',
+                      'cityCompany',
+                      'countyCompany',
+                      'constructTypeText',
+                      'pCategoryText',
+                      'stageText',
+                      'pAttributeText',
+                      'disclosureRange',
+                      'pileRange',
+                      'batchText',
+                    ],
+                  },
+                ],
+              },
+              {
+                label: '任务安排',
+                id: 'arrange',
+                number: data.arrange.total,
+                children: [
+                  {
+                    label: '待安排',
+                    id: 'awaitAllot',
+                    number: data.arrange.awaitAllot,
+                    url: '/ProjectList/GetAwaitAllots',
+                  },
+                ],
+              },
+
+              {
+                label: '结项管理',
+                id: 'knot',
+                number: data.knot.total,
+                children: [
+                  {
+                    label: '待结项',
+                    id: 'awaitApplyKnot',
+                    number: data.knot.awaitApplyKnot,
+                    url: '/ProjectList/GetAwaitApplyKnots',
+                  },
+                  {
+                    label: '结项审批',
+                    id: 'approveKnot',
+                    number: data.knot.approveKnot,
+                    url: '/ProjectList/GetApproveKnots',
+                  },
+                ],
+              },
+            ]
+      )
     },
   })
 
