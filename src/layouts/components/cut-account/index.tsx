@@ -53,7 +53,8 @@ const CutAccount = (props: EditPasswordProps) => {
 
           const isLastAccount = lastAccount && lastAccount.userName === userName
           // @ts-ignore
-          const { accessToken } = resData
+          const { accessToken } = resData.content
+
           localStorage.setItem('Authorization', accessToken)
 
           const userInfo = await GetCommonUserInfo()
