@@ -88,10 +88,13 @@ const LoginForm: React.FC<Props> = (props) => {
         if (resData.code === 200 && resData.isSuccess) {
           const { accessToken } = resData.content
           localStorage.setItem('Authorization', accessToken)
+
           const config = await getConfigSwitch('isOpenReview')
-          localStorage.setItem('isOpenReview', config.value)
+          config && localStorage.setItem('isOpenReview', config.value)
+
           const userInfo = await GetCommonUserInfo()
           localStorage.setItem('userInfo', JSON.stringify(userInfo))
+
           getStopServerList()
           const modules = await getAuthorityModules()
           if (type === 'account') {

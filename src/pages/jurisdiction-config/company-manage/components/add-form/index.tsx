@@ -23,6 +23,7 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
   //   }
   // }
 
+  const isOpenReview = localStorage.getItem('isOpenReview')
   const reset = () => {
     form.resetFields(['authorityExpireDate'])
   }
@@ -61,28 +62,31 @@ const CompanyManageForm: React.FC<CompanyManageFormProps> = (props) => {
       >
         <ClickInputNumber minNumber={0} maxNumber={50} />
       </CyFormItem>
+      {Number(isOpenReview) === 1 && (
+        <>
+          <CyFormItem
+            labelWidth={100}
+            align="right"
+            label="技经端"
+            initialValue={5}
+            name="skillBy"
+            required
+          >
+            <ClickInputNumber minNumber={0} maxNumber={50} />
+          </CyFormItem>
 
-      <CyFormItem
-        labelWidth={100}
-        align="right"
-        label="技经端"
-        initialValue={5}
-        name="skillBy"
-        required
-      >
-        <ClickInputNumber minNumber={0} maxNumber={50} />
-      </CyFormItem>
-
-      <CyFormItem
-        labelWidth={100}
-        align="right"
-        label="评审端"
-        initialValue={5}
-        name="review"
-        required
-      >
-        <ClickInputNumber minNumber={0} maxNumber={50} limit={5} />
-      </CyFormItem>
+          <CyFormItem
+            labelWidth={100}
+            align="right"
+            label="评审端"
+            initialValue={5}
+            name="review"
+            required
+          >
+            <ClickInputNumber minNumber={0} maxNumber={50} limit={5} />
+          </CyFormItem>
+        </>
+      )}
 
       <CyFormItem
         labelWidth={100}

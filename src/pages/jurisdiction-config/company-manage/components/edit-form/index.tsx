@@ -12,7 +12,7 @@ interface EditCompanyProps {
 
 const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
   const { accreditNumber, form } = props
-
+  const isOpenReview = localStorage.getItem('isOpenReview')
   const reset = () => {
     form.resetFields(['authorityExpireDate'])
   }
@@ -102,77 +102,81 @@ const EditCompanyManageForm: React.FC<EditCompanyProps> = (props) => {
         />
       </CyFormItem>
 
-      <CyFormItem
-        className={styles.statistic}
-        labelWidth={100}
-        align="right"
-        label="技经端"
-        required
-        // initialValue={0}
-        name="skillBy"
-        rules={[
-          { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
-          () => ({
-            validator(_, value) {
-              if (Number(value) + accreditNumber[4]?.value.availableQty >= 0 || isNaN(value)) {
-                return Promise.resolve()
-              }
-              return Promise.reject('减少数不能低于剩余可用数量')
-            },
-          }),
-          () => ({
-            validator(_, value) {
-              if (Number(value) + accreditNumber[4]?.value.totalQty <= 50 || isNaN(value)) {
-                return Promise.resolve()
-              }
-              return Promise.reject('增加后总量不能超过50')
-            },
-          }),
-        ]}
-      >
-        <AddMinusComponent
-          totalNum={accreditNumber[4]?.value.totalQty}
-          availableNum={accreditNumber[4]?.value.availableQty}
-          maxNumber={50 - accreditNumber[4]?.value.totalQty}
-          minNumber={-accreditNumber[4]?.value.availableQty}
-        />
-      </CyFormItem>
-
-      <CyFormItem
-        className={styles.statistic}
-        labelWidth={100}
-        align="right"
-        label="评审端"
-        required
-        name="review"
-        // initialValue={0}
-        rules={[
-          { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
-          () => ({
-            validator(_, value) {
-              if (Number(value) + accreditNumber[3]?.value.availableQty >= 0 || isNaN(value)) {
-                return Promise.resolve()
-              }
-              return Promise.reject('减少数不能低于剩余可用数量')
-            },
-          }),
-          () => ({
-            validator(_, value) {
-              if (Number(value) + accreditNumber[3]?.value.totalQty <= 50 || isNaN(value)) {
-                return Promise.resolve()
-              }
-              return Promise.reject('增加后总量不能超过50')
-            },
-          }),
-        ]}
-      >
-        <AddMinusComponent
-          totalNum={accreditNumber[3]?.value.totalQty}
-          availableNum={accreditNumber[3]?.value.availableQty}
-          maxNumber={50 - accreditNumber[3]?.value.totalQty}
-          minNumber={-accreditNumber[3]?.value.availableQty}
-        />
-      </CyFormItem>
+      {Number(isOpenReview) === 1 && (
+        <>
+          {' '}
+          <CyFormItem
+            className={styles.statistic}
+            labelWidth={100}
+            align="right"
+            label="技经端"
+            required
+            // initialValue={0}
+            name="skillBy"
+            rules={[
+              { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
+              () => ({
+                validator(_, value) {
+                  if (Number(value) + accreditNumber[4]?.value.availableQty >= 0 || isNaN(value)) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject('减少数不能低于剩余可用数量')
+                },
+              }),
+              () => ({
+                validator(_, value) {
+                  if (Number(value) + accreditNumber[4]?.value.totalQty <= 50 || isNaN(value)) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject('增加后总量不能超过50')
+                },
+              }),
+            ]}
+          >
+            <AddMinusComponent
+              totalNum={accreditNumber[4]?.value.totalQty}
+              availableNum={accreditNumber[4]?.value.availableQty}
+              maxNumber={50 - accreditNumber[4]?.value.totalQty}
+              minNumber={-accreditNumber[4]?.value.availableQty}
+            />
+          </CyFormItem>
+          <CyFormItem
+            className={styles.statistic}
+            labelWidth={100}
+            align="right"
+            label="评审端"
+            required
+            name="review"
+            // initialValue={0}
+            rules={[
+              { pattern: /^-?[0-9]\d*$/, message: '请输入正确的数量' },
+              () => ({
+                validator(_, value) {
+                  if (Number(value) + accreditNumber[3]?.value.availableQty >= 0 || isNaN(value)) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject('减少数不能低于剩余可用数量')
+                },
+              }),
+              () => ({
+                validator(_, value) {
+                  if (Number(value) + accreditNumber[3]?.value.totalQty <= 50 || isNaN(value)) {
+                    return Promise.resolve()
+                  }
+                  return Promise.reject('增加后总量不能超过50')
+                },
+              }),
+            ]}
+          >
+            <AddMinusComponent
+              totalNum={accreditNumber[3]?.value.totalQty}
+              availableNum={accreditNumber[3]?.value.availableQty}
+              maxNumber={50 - accreditNumber[3]?.value.totalQty}
+              minNumber={-accreditNumber[3]?.value.availableQty}
+            />
+          </CyFormItem>
+        </>
+      )}
 
       <CyFormItem
         className={styles.statistic}
