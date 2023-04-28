@@ -1,5 +1,6 @@
 import {
   getDesignMaterialModifyList,
+  getDynamicDetail,
   getGisDetail,
   getlibId_new,
   getMaterialItemData,
@@ -187,6 +188,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     } else {
       feature = feature_
     }
+
     layerName = layer.getProperties().name
     layerName = layerName.substring(layerName.split('_')[0].length + 1, layerName.length)
 
@@ -417,20 +419,28 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           case 'recorder':
             pJSON[mappingTag] = feature.getProperties()['recorderName']
             break
+
           case 'surveyor':
             if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员'
             pJSON[mappingTag] = feature.getProperties()['surveyorName']
             break
           case 'main_id':
-            await loadLayer(
-              getCustomXmlData('id', feature.getProperties()['main_id']),
-              `pdd:${layerType}_tower`
-            ).then((data: any) => {
-              if (data.features && data.features.length === 1) {
-                pJSON[mappingTag] = data.features[0].properties.code
-              } else {
-                pJSON[mappingTag] = ''
-              }
+            // await loadLayer(
+            //   getCustomXmlData('id', feature.getProperties()['main_id']),
+            //   `pdd:${layerType}_tower`
+            // ).then((data: any) => {
+            //   if (data.features && data.features.length === 1) {
+            //     pJSON[mappingTag] = data.features[0].properties.code
+            //   } else {
+            //     pJSON[mappingTag] = ''
+            //   }
+            // })
+            const params = {
+              id: feature.getProperties()['main_id'],
+              tableName: `${layerType}_tower`,
+            }
+            await getDynamicDetail(params).then((data: any) => {
+              console.log(data, 1111)
             })
             break
           case 'sub_id':
