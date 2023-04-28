@@ -18,7 +18,7 @@ export let webConfig = {
     component: '/component/api',
     material: '/material/api/',
     resourceV1: '/resource/api',
-    manage: '/webgis/api',
+    manage: '/manage/api',
     geoserver: '/geoserver',
     design: '/design/api',
     grid: '/gridremediation/api',
