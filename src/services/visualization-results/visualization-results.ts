@@ -253,7 +253,7 @@ export const getExtent = (params: any = {}) => {
 
 // 根据id获取要素
 export const getDynamicDetail = (params: any = {}) => {
-  return request(`${baseUrl.manage}/WebGis/GetDynamicDetai`, {
+  return request(`${baseUrl.manage}/WebGis/GetDynamicDetail`, {
     method: 'GET',
     params,
   })

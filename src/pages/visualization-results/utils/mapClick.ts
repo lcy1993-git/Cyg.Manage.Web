@@ -5,7 +5,6 @@ import {
   getlibId_new,
   getMaterialItemData,
   getMedium,
-  loadLayer,
 } from '@/services/visualization-results/visualization-results'
 import { message } from 'antd'
 import Vector from 'ol/layer/Vector'
@@ -29,7 +28,7 @@ import {
   loadMediaSign,
 } from './methods'
 import { getMode } from './threeMode'
-import { format, getCustomXmlData } from './utils'
+import { format } from './utils'
 
 var removeData: any = [] // 迁移数据
 const LevelEnmu = ['无', '220V', '380V', '10kV']
@@ -425,31 +424,24 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON[mappingTag] = feature.getProperties()['surveyorName']
             break
           case 'main_id':
-            // await loadLayer(
-            //   getCustomXmlData('id', feature.getProperties()['main_id']),
-            //   `pdd:${layerType}_tower`
-            // ).then((data: any) => {
-            //   if (data.features && data.features.length === 1) {
-            //     pJSON[mappingTag] = data.features[0].properties.code
-            //   } else {
-            //     pJSON[mappingTag] = ''
-            //   }
-            // })
-            const params = {
+            await getDynamicDetail({
               id: feature.getProperties()['main_id'],
               tableName: `${layerType}_tower`,
-            }
-            await getDynamicDetail(params).then((data: any) => {
-              console.log(data, 1111)
+            }).then((data: any) => {
+              if (data.content) {
+                pJSON[mappingTag] = data.content.code
+              } else {
+                pJSON[mappingTag] = ''
+              }
             })
             break
           case 'sub_id':
-            await loadLayer(
-              getCustomXmlData('id', feature.getProperties()['sub_id']),
-              `pdd:${layerType}_tower`
-            ).then((data: any) => {
-              if (data.features && data.features.length === 1) {
-                pJSON[mappingTag] = data.features[0].properties.code
+            await getDynamicDetail({
+              id: feature.getProperties()['sub_id'],
+              tableName: `${layerType}_tower`,
+            }).then((data: any) => {
+              if (data.content) {
+                pJSON[mappingTag] = data.content.code
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -459,12 +451,12 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             let startItem = lineTowerType.find(
               (item) => item.key === feature.getProperties().start_node_type
             )
-            await loadLayer(
-              getCustomXmlData('id', feature.getProperties()['start_id']),
-              `pdd:${layerType}_${startItem?.value}`
-            ).then((data: any) => {
-              if (data.features && data.features.length === 1) {
-                pJSON[mappingTag] = data.features[0].properties.code
+            await getDynamicDetail({
+              id: feature.getProperties()['start_id'],
+              tableName: `${layerType}_${startItem?.value}`,
+            }).then((data: any) => {
+              if (data.content) {
+                pJSON[mappingTag] = data.content.code
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -474,16 +466,17 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             let endItem = lineTowerType.find(
               (item) => item.key === feature.getProperties().end_node_type
             )
-            await loadLayer(
-              getCustomXmlData('id', feature.getProperties()['end_id']),
-              `pdd:${layerType}_${endItem?.value}`
-            ).then((data: any) => {
-              if (data.features && data.features.length === 1) {
-                pJSON[mappingTag] = data.features[0].properties.code
+            await getDynamicDetail({
+              id: feature.getProperties()['end_id'],
+              tableName: `${layerType}_${endItem?.value}`,
+            }).then((data: any) => {
+              if (data.content) {
+                pJSON[mappingTag] = data.content.code
               } else {
                 pJSON[mappingTag] = ''
               }
             })
+
             break
           case 'parent_id':
             let parentLayer = 'tower'
@@ -493,26 +486,26 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             } else if (parentName?.startsWith('CableDevice')) {
               parentLayer = 'cable_equipment'
             }
-            await loadLayer(
-              getCustomXmlData('id', feature.getProperties()['parent_id']),
-              `pdd:${layerType}_${parentLayer}`
-            ).then((data: any) => {
-              if (data.features && data.features.length === 1) {
+            await getDynamicDetail({
+              id: feature.getProperties()['parent_id'],
+              tableName: `${layerType}_${parentLayer}`,
+            }).then((data: any) => {
+              if (data.content) {
                 parentLayer === 'electric_meter'
-                  ? (pJSON[mappingTag] = data.features[0].properties.name)
-                  : (pJSON[mappingTag] = data.features[0].properties.code)
+                  ? (pJSON[mappingTag] = data.content.name)
+                  : (pJSON[mappingTag] = data.content.code)
               } else {
                 pJSON[mappingTag] = ''
               }
             })
             break
           case 'parent_line_id':
-            await loadLayer(
-              getCustomXmlData('id', feature.getProperties()['parent_id']),
-              `pdd:${layerType}_line`
-            ).then((data: any) => {
-              if (data.features && data.features.length === 1) {
-                pJSON[mappingTag] = data.features[0].properties.name
+            await getDynamicDetail({
+              id: feature.getProperties()['parent_id'],
+              tableName: `${layerType}_line`,
+            }).then((data: any) => {
+              if (data.content) {
+                pJSON[mappingTag] = data.content.name
               } else {
                 pJSON[mappingTag] = ''
               }
