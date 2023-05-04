@@ -42,6 +42,15 @@ export let webConfig = {
 
 const initConfig = async () => {
   const configInfo = await request('/config/config.json', { method: 'GET' })
+
+  //新增是否使用隔离装置中转开关判断
+  const host = window.location.host
+  if (host.includes('11.188.90.191:21525')) {
+    localStorage.setItem('isTransfer', '1')
+  } else {
+    localStorage.removeItem('isTransfer')
+  }
+
   if (NODE_ENV === 'development') {
     // 如果是开发环境，那么将webConfig.requestUrl 中的每一个数据前面加上 /api
     const copyConfig = cloneDeep(configInfo)

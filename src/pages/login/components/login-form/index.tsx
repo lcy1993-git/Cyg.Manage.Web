@@ -160,11 +160,11 @@ const LoginForm: React.FC<Props> = (props) => {
         } else if (resData.code === 40200) {
           uploadFailMsg()
           refreshCode()
-          message.warning(resData.message)
+          message.info(resData.message)
         } else {
           uploadFailMsg()
           refreshCode()
-          message.warning(resData.message)
+          message.info(resData.message)
         }
       } catch (msg) {
         refreshCode()

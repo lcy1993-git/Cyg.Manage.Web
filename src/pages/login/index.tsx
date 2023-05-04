@@ -24,6 +24,7 @@ export interface Stop {
 
 const Login: React.FC = () => {
   // const [stopInfo, setStopInfo] = useState<Stop>({} as Stop)
+  const isTrans = localStorage.getItem('isTransfer')
   const [userName, setUserName] = useState('')
   const [updatePwd, setUpdatePwd] = useState(false)
   // const [activeStop, setActiveStop] = useState<boolean>(false)
@@ -44,7 +45,7 @@ const Login: React.FC = () => {
     ;(async function () {
       let url = window.location.href
       url = url.toLocaleLowerCase()
-      if (url.indexOf('ticket') > -1) {
+      if (url.indexOf('ticket') > -1 && Number(isTrans) === 1) {
         setIsAutoLogin(true)
         var query = window.location.search.substring(1)
         var vars = query.split('&')
