@@ -40,10 +40,10 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 图层控制层数据
   const [preDesignVisible, setPreDesignVisible] = useState<boolean>(false)
-  const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(true)
-  const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false)
-  const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false)
-  const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false)
+  // const [surveyLayerVisible, setSurveyLayerVisible] = useState<boolean>(true)
+  // const [planLayerVisible, setPlanLayerVisible] = useState<boolean>(false)
+  // const [designLayerVisible, setDesignLayerVisible] = useState<boolean>(false)
+  // const [dismantleLayerVisible, setDismantleLayerVisible] = useState<boolean>(false)
   const [sideMenuVisibel, setSideMenuVisibel] = useState(true)
   // 从Vstate获取外部传入的数据
   const store = useContainer()
@@ -62,6 +62,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     positionMap,
     observeTrack,
     mediaSign, // 多媒体标记开关
+    surveyLayerVisible,
+    planLayerVisible,
+    designLayerVisible,
+    dismantleLayerVisible,
   } = vState
 
   const { kvLevel } = filterCondition
@@ -172,7 +176,6 @@ const BaseMap = observer((props: BaseMapProps) => {
   //   const ops = { layers, layerGroups, view, setView, setLayerGroups, map, kvLevel }
   //   map && refreshMap(ops, projects!, true, startDate, endDate)
   // }, [JSON.stringify(projects), startDate, endDate])
-
   useEffect(() => {
     // 加载勘察轨迹
     if (observeTrack) map && loadTrackLayers(map, trackLayers)
@@ -310,10 +313,10 @@ const BaseMap = observer((props: BaseMapProps) => {
     dismantleLayerVisible: dismantleLayerVisible,
     preDesignVisible,
     setPreDesignVisible,
-    setSurveyLayerVisible: setSurveyLayerVisible,
-    setPlanLayerVisible: setPlanLayerVisible,
-    setDesignLayerVisible: setDesignLayerVisible,
-    setDismantleLayerVisible: setDismantleLayerVisible,
+    // setSurveyLayerVisible: setSurveyLayerVisible,
+    // setPlanLayerVisible: setPlanLayerVisible,
+    // setDesignLayerVisible: setDesignLayerVisible,
+    // setDismantleLayerVisible: setDismantleLayerVisible,
   }
 
   const sidePopupProps = {

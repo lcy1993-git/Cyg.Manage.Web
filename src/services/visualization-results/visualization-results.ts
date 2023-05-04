@@ -162,12 +162,12 @@ function format(that: any, ...args: any) {
     return result
   }
   var data = arguments
-  if (args.length == 1 && typeof args[0] === 'object') {
+  if (args.length === 1 && typeof args[0] === 'object') {
     data = args[0]
   }
   for (var key in data) {
     var value = data[key]
-    if (undefined != value) {
+    if (undefined !== value) {
       result = result.replace('{' + key + '}', value)
     }
   }

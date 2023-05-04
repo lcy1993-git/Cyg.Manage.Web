@@ -89,8 +89,13 @@ const LoginForm: React.FC<Props> = (props) => {
           const { accessToken } = resData.content
           localStorage.setItem('Authorization', accessToken)
 
+          //存储评审、技能开关
           const config = await getConfigSwitch('isOpenReview')
           config && localStorage.setItem('isOpenReview', config.value)
+
+          //存储思极地图开关
+          const sjConfig = await getConfigSwitch('useSjMap')
+          config && localStorage.setItem('useSjMap', sjConfig.value)
 
           const userInfo = await GetCommonUserInfo()
           localStorage.setItem('userInfo', JSON.stringify(userInfo))

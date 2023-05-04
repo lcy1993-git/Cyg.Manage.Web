@@ -10,6 +10,13 @@ interface RangeDate {
 }
 
 export interface VisualizationResultsStateType {
+  surveyLayerVisible: boolean
+  planLayerVisible: boolean
+  designLayerVisible: boolean
+  dismantleLayerVisible: boolean
+
+  isSj: boolean
+  currentLayers: number[] //当前选中图层
   filterCondition: EngineerProjetListFilterParams //filter条件
   checkedProjectIdList: ProjectList[] //选中的project id数组
   checkedProjectDateList?: string[] //选中的project 日期数组
@@ -36,7 +43,14 @@ export interface VisualizationResultsStateType {
 }
 
 const initState = {
+  surveyLayerVisible: true,
+  planLayerVisible: false,
+  designLayerVisible: false,
+  dismantleLayerVisible: false,
+
+  isSj: true,
   filterCondition: { haveAnnotate: 0 },
+  currentLayers: [1],
   propertySidePopupShow: false,
   projectDetailModalShow: false,
   materialModalShow: false,
@@ -61,6 +75,21 @@ const initState = {
 function Store(vState: VisualizationResultsStateType) {
   return makeAutoObservable({
     vState,
+    setIsSj() {
+      this.vState.isSj = !this.vState.isSj
+    },
+    setSurveyLayerVisible() {
+      this.vState.surveyLayerVisible = !this.vState.surveyLayerVisible
+    },
+    setPlanLayerVisible() {
+      this.vState.planLayerVisible = !this.vState.planLayerVisible
+    },
+    setDesignLayerVisible() {
+      this.vState.designLayerVisible = !this.vState.designLayerVisible
+    },
+    setDismantleLayerVisible() {
+      this.vState.dismantleLayerVisible = !this.vState.dismantleLayerVisible
+    },
     setFilterCondition(filterCondition: EngineerProjetListFilterParams) {
       this.vState.filterCondition = filterCondition
       this.setIsFilter(true)
@@ -76,6 +105,9 @@ function Store(vState: VisualizationResultsStateType) {
     },
     setMediaListVisibel(flag: boolean) {
       this.vState.mediaListVisibel = flag
+    },
+    setCurrentLayers(layer: number[]) {
+      this.vState.currentLayers = layer
     },
     setMediaListData(data: any[]) {
       this.vState.mediaListData = data

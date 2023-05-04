@@ -38,12 +38,8 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   const { headers } = options
   if (c_token) {
     return {
+      // url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
       url: url,
-      // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
-      // url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
-      // url: isNoGlzz
-      //   ? url
-      //   : `https://srthkf1.gczhyun.com:21530/glzz${accessUrl}?target_url=${targetUrl}`,
       options: {
         ...options,
         headers: {
@@ -59,11 +55,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   return {
     url: url,
-    // url: isNoGlzz ? url : `http://11.188.90.191:21525${accessUrl}?target_url=${targetUrl}`,
-    // url: isNoGlzz ? url : `http://10.6.1.111:8082${accessUrl}?target_url=${targetUrl}`,
-    // url: isNoGlzz
-    //   ? url
-    //   : `https://srthkf1.gczhyun.com:21530/glzz${accessUrl}?target_url=${targetUrl}`,
+    // url: isJson ? url : `http://11.188.130.19:31840${accessUrl}?target_url=${targetUrl}`,
     options: {
       ...options,
       headers: {
