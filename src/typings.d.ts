@@ -12,6 +12,7 @@ declare module '*.bmp'
 declare module '*.tiff'
 declare module 'omit.js'
 declare module '*.docx'
+declare module 'jsonp'
 
 declare module 'react-virtualized-auto-sizer' {
   /**
