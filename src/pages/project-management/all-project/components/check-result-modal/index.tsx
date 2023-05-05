@@ -313,9 +313,9 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     if (currentTab === 'compile') {
       getCompileTree(projectInfo.projectId)
     }
-    if (currentTab === 'audit') {
-      getAuditTree(projectInfo.projectId)
-    }
+    // if (currentTab === 'audit') {
+    //   getAuditTree(projectInfo.projectId)
+    // }
   }, [currentTab])
 
   // const mapAuditTree = (datas: any) => {

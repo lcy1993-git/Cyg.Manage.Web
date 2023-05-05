@@ -23,17 +23,23 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   requestSource = 'upload',
   ...rest
 }) => {
+  let isTrans = localStorage.getItem('isTransfer')
   let api: any = null
+
+  //场内测试代码
   // let handleUrl = `${baseUrl.upload}`.slice(4)
-  let handleUrl = `${baseUrl[requestSource]}${url}`
   // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`)
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
+  let handleUrl = `${baseUrl[requestSource]}${url}`
+  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
   let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
+
   if (fileType === 'pdf') {
     api = {
-      // url: `${baseUrl[requestSource]}${url}?path=${params.path}`,
-      url: `${proxyUrl}?path=${params.path}`,
+      url:
+        Number(isTrans) === 1
+          ? `${proxyUrl}?path=${params.path}`
+          : `${baseUrl[requestSource]}${url}?path=${params.path}`,
       httpHeaders: {
         Authorization: window.localStorage.getItem('Authorization'),
       },
@@ -41,7 +47,9 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
 
     return <PdfFileView params={api} hasAuthorization={true} {...rest} />
   } else if (fileType === 'xlsx') {
-    api = `${proxyUrl}?path=${params.path}&token=${window.localStorage.getItem('Authorization')}`
+    const excelUrl = Number(isTrans) === 1 ? `${proxyUrl}` : `${baseUrl[requestSource]}${url}`
+    api = `${excelUrl}?path=${params.path}&token=${window.localStorage.getItem('Authorization')}`
+
     return <XlsxViewer url={api} />
   } else {
     api = () => {

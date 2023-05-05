@@ -22,6 +22,8 @@ interface MediaImageProps {
 }
 
 const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
+  const isTrans = localStorage.getItem('isTransfer')
+
   const [currentPosition, setCurrentPosition] = useState([0, 0])
 
   const [downPosition, setDownPosition] = useState([0, 0])
@@ -48,18 +50,24 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
     }
   }, [percent])
 
+  //场内测试
   // let handleUrl = `${baseUrl.upload}`.slice(4)
-  let handleUrl = `${baseUrl.upload}`
   // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`)
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
   // let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=${targetUrl}`
-  let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
+  let handleUrl = `${baseUrl.upload}`
+
+  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+
+  let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
+
+  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+
   const downLoad = () => {
     const a = document.createElement('a')
     a.setAttribute(
       'href',
-      `${baseUrl.upload}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`
+      `${finalUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`
     )
     // a.setAttribute(
     //   'href',
@@ -144,7 +152,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
               percent === 100 ? styles.imgUnsetPointer : styles.imgSetMove
             )}
             crossOrigin={''}
-            src={`${proxyUrl}/Download/GetFileById&fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+            src={`${finalUrl}/Download/GetFileById&fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
         </div>
         <div className={styles.AreaButtons}>
@@ -185,7 +193,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
                 style={{ maxHeight: window.innerHeight, maxWidth: window.innerWidth }}
                 className={styles.fullScreenImg}
                 crossOrigin={''}
-                src={`${proxyUrl}/Download/GetFileById?fileId=${content[fsIndex].filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+                src={`${finalUrl}/Download/GetFileById?fileId=${content[fsIndex].filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
               />
             )}
           </div>

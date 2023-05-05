@@ -37,6 +37,7 @@ const ManualUpload: React.FC<Props> = () => {
   const [current, setCurrent] = useState<number>(0)
   const [file, setFile] = useState([])
   const [isMobile, setisMobile] = useState(false)
+  const isTrans = localStorage.getItem('isTransfer')
 
   useMount(() => {
     let url = window.location.pathname
@@ -53,9 +54,18 @@ const ManualUpload: React.FC<Props> = () => {
       setisMobile(false)
     }
   })
+
+  let handleUrl = `${baseUrl.upload}`
+
+  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+
+  let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
+
+  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+
   const downFile = (id: string, token: string) => {
     var xhr = new XMLHttpRequest()
-    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${id}&token=${token}`, true) // 也可以使用POST方式，根据接口
+    xhr.open('GET', `${finalUrl}/Download/GetFileById?fileId=${id}&token=${token}`, true) // 也可以使用POST方式，根据接口
     xhr.responseType = 'blob' // 返回类型blob
     xhr.setRequestHeader('Authorization', token as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
