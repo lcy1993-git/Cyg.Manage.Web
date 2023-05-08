@@ -47,13 +47,13 @@ const CutAccount = (props: EditPasswordProps) => {
         value.code = imageCode
         // TODO 快捷切换
         const resData = await userLoginRequest(value)
-        if (resData.code === 200 && resData.isSuccess) {
+        if (resData && resData.accessToken) {
           // eslint-disable-next-line react-hooks/rules-of-hooks
           const lastAccount = useGetUserInfo()
 
           const isLastAccount = lastAccount && lastAccount.userName === userName
           // @ts-ignore
-          const { accessToken } = resData.content
+          const { accessToken } = resData
 
           localStorage.setItem('Authorization', accessToken)
 

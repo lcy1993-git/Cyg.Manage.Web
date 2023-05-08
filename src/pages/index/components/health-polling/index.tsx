@@ -139,7 +139,7 @@ const HealthPolling: React.FC = () => {
       createWebSocket()
     }
     return () => {
-      ws.close()
+      ws?.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

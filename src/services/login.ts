@@ -28,13 +28,15 @@ export const indexLoginRequest = (params: UserLoginParams) => {
   params['clientType'] = '2'
   params['timestamp'] = `${Date.parse(`${new Date()}`)}`
 
-  return request<LoginSuccessInfo>(`${baseUrl.common}/Users/SignIn`, {
-    method: 'POST',
-    data: handleSM2Crypto(JSON.stringify(params)),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  return cyRequest<any>(() =>
+    request<LoginSuccessInfo>(`${baseUrl.common}/Users/SignIn`, {
+      method: 'POST',
+      data: handleSM2Crypto(JSON.stringify(params)),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  )
 }
 
 // ---
@@ -43,13 +45,15 @@ export const userLoginRequest = (params: UserLoginParams) => {
   params['pwd'] = handleSM2Crypto(params.pwd)
   params['clientType'] = '2'
   params['timestamp'] = `${Date.parse(`${new Date()}`)}`
-  return request(`${baseUrl.common}/Users/SignIn`, {
-    method: 'POST',
-    data: handleSM2Crypto(JSON.stringify(params)),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.common}/Users/SignIn`, {
+      method: 'POST',
+      data: handleSM2Crypto(JSON.stringify(params)),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  )
 }
 
 // qgc登录

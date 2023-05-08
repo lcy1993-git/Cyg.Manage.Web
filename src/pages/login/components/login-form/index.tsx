@@ -1,6 +1,7 @@
 import ImageIcon from '@/components/image-icon'
 import VerificationCode from '@/components/verification-code'
 import { loginRules } from '@/pages/login/components/login-form/rule'
+import { baseUrl } from '@/services/common'
 import {
   // compareVerifyCode,
   getAuthorityModules,
@@ -10,22 +11,17 @@ import {
   indexLoginRequest,
   // PhoneLoginParams,
   phoneLoginRequest,
-  // qgcLoginRequest,
-  // UserLoginParams,
 } from '@/services/login'
+import { getClientCategorys } from '@/services/personnel-config/company-user'
 import { phoneNumberRule } from '@/utils/common-rule'
-
-import { history } from 'umi'
-import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
-import { Button, Form, Input, message, Tabs } from 'antd'
-
-import VerifycodeImage from '../verifycode-image'
-
 import { flatten, getStopServerList, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
-
+import { useMount, useRequest } from 'ahooks'
+import { Button, Form, Input, message, Tabs } from 'antd'
+import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
+import { history } from 'umi'
+import VerifycodeImage from '../verifycode-image'
 import styles from './index.less'
-import { baseUrl } from '@/services/common'
-import { useMount } from 'ahooks'
+
 const { TabPane } = Tabs
 
 export type LoginType = 'account' | 'phone'
@@ -56,6 +52,10 @@ const LoginForm: React.FC<Props> = (props) => {
   const userNameRef = useRef<Input>(null)
   const phoneRef = useRef<Input>(null)
 
+  const { run: getClientList } = useRequest(() => getClientCategorys(), {
+    manual: true,
+  })
+
   const tabChangeEvent = (activeKey: string) => {
     setActiveKey(activeKey as LoginType)
     // 根据不同的type,设置不同的校验规则
@@ -84,12 +84,16 @@ const LoginForm: React.FC<Props> = (props) => {
         } else {
           resData = await phoneLoginRequest(values)
         }
-
-        if (resData.code === 200 && resData.isSuccess) {
-          const { accessToken } = resData.content
+        if (resData && resData.accessToken) {
+          const { accessToken } = resData
           localStorage.setItem('Authorization', accessToken)
 
           //存储评审、技能开关
+          const category = await getClientList()
+          const handleList = category.map((item) => item.value)
+
+          localStorage.setItem('categoryList', JSON.stringify(handleList))
+
           const config = await getConfigSwitch('isOpenReview')
           config && localStorage.setItem('isOpenReview', config.value)
 
@@ -164,7 +168,7 @@ const LoginForm: React.FC<Props> = (props) => {
         } else {
           uploadFailMsg()
           refreshCode()
-          message.info(resData.message)
+          // message.info(resData.message)
         }
       } catch (msg) {
         refreshCode()

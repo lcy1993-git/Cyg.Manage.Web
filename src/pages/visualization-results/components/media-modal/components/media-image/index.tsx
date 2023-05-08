@@ -141,6 +141,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
       <div className={styles.imagWrap}>
         <div className={styles.overhidden}>
           <img
+            alt=""
             draggable={false}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
@@ -152,7 +153,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
               percent === 100 ? styles.imgUnsetPointer : styles.imgSetMove
             )}
             crossOrigin={''}
-            src={`${finalUrl}/Download/GetFileById&fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+            src={`${finalUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
           />
         </div>
         <div className={styles.AreaButtons}>
@@ -189,6 +190,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
           <div className={styles.content}>
             {data.type === 1 && (
               <img
+                alt=""
                 key={uuid.v1()}
                 style={{ maxHeight: window.innerHeight, maxWidth: window.innerWidth }}
                 className={styles.fullScreenImg}

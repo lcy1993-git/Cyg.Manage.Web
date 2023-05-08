@@ -1,6 +1,7 @@
 .addMinus {
   display: flex;
   align-items: baseline;
+
   .totalNumber {
     display: inline-block;
     width: 80px;
@@ -8,24 +9,28 @@
 
   .canUseNumber {
     display: inline-block;
-    width: 250px;
+    width: 244px;
   }
+
   .clickArea {
     display: flex;
     width: 132px;
     height: 33px;
     border: 1px solid #e5e5e5;
+
     .minusBtn {
       width: 32px;
       line-height: 33px;
       text-align: center;
       cursor: pointer;
     }
+
     .numberArea {
       display: flex;
       flex: 1;
       align-items: center;
       justify-content: center;
+
       :global {
         .ant-input {
           height: 33px;
@@ -33,6 +38,7 @@
         }
       }
     }
+
     .addBtn {
       width: 32px;
       line-height: 33px;

@@ -287,6 +287,7 @@ const CompanyManage: React.FC = () => {
         { key: 4, value: value.prospect },
         { key: 8, value: value.design },
         { key: 32, value: value.skillBy },
+        { key: 64, value: value.phone },
         { key: 16, value: value.review },
         { key: 2, value: value.manage },
       ]
@@ -340,6 +341,7 @@ const CompanyManage: React.FC = () => {
         { key: 4, value: value.prospect },
         { key: 8, value: value.design },
         { key: 32, value: value.skillBy },
+        { key: 64, value: value.phone },
         { key: 16, value: value.review },
         { key: 2, value: value.manage },
       ]
