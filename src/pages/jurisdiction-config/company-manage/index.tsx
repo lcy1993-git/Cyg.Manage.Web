@@ -39,6 +39,7 @@ const mapColor = {
   评审端: 'greenThree',
   技经端: 'greenFour',
   设计端: 'greenFive',
+  '勘察端(手机版)': 'greenSix',
 }
 
 const CompanyManage: React.FC = () => {

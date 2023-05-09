@@ -127,7 +127,7 @@ const TextEditorModal = (props: EditorParams) => {
     if (data) {
       return data
         .map((item: any) => {
-          if (item.value === 4 || item.value === 8) {
+          if (item.value === 4 || item.value === 8 || item.value === 64) {
             return {
               value: item.value,
               text: item.text,
@@ -169,6 +169,9 @@ const TextEditorModal = (props: EditorParams) => {
   const allUserIds = getUserIds(groupData)
 
   const handleData = useMemo(() => {
+    if (groupData && groupData.length === 0) {
+      return []
+    }
     const copyOptions = JSON.parse(JSON.stringify(groupData))?.map(mapTreeData)
     copyOptions?.unshift({ title: '所有人', value: allUserIds, children: groupData })
     return copyOptions

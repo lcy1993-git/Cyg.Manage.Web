@@ -19,6 +19,10 @@ export default {
   organization: [
     { required: true, message: '编制单位不能为空' },
     { max: 32, message: '此项不能超过32个字符' },
+    {
+      pattern: /^[^\\^\s]+$/,
+      message: '编制单位不能包含空格',
+    },
   ],
   plannedYear: [
     { required: true, message: '计划年度不能为空' },

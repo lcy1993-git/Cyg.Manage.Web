@@ -1,9 +1,9 @@
-import { Input } from 'antd'
 import { baseUrl } from '@/services/common'
-import styles from './index.less'
-import { useRef } from 'react'
+import { Input } from 'antd'
 import classnames from 'classnames'
+import { useRef } from 'react'
 import { LoginType } from '../login-form'
+import styles from './index.less'
 
 interface VerifycodeImageProps {
   userKey?: string | undefined

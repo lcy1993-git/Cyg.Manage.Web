@@ -181,6 +181,7 @@ export interface CommentListItemDataType {
 }
 const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
   const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props
+
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>()
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [activeType, setActiveType] = useState<string | undefined>(undefined)
@@ -296,8 +297,15 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
   }
 
   useEffect(() => {
+    const handleNull = dataResource.map((item: any) => {
+      if (item.data === 'null') {
+        return { propertyName: item.propertyName, data: '无' }
+      }
+      return item
+    })
+
     if (rightSidebarVisible) {
-      setDataSource(dataResource)
+      setDataSource(handleNull)
       // 多媒体数据请求
       const mediaParams = dataResource?.find((item: any) => item.propertyName === '多媒体')?.data
         ?.params

@@ -171,6 +171,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   //项目归档模态框
   const [archiveVisible, setArchiveVisible] = useState<boolean>(false)
+
+  const isOpenReview = localStorage.getItem('isOpenReview')
   // 预设计
   // const { setPreDesignItem } = useLayoutStore()
 
@@ -1112,7 +1114,8 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
                   </Button>
                 )}
               {record?.operationAuthority?.canEdit &&
-                buttonJurisdictionArray?.includes('all-project-file-engineer') && (
+                buttonJurisdictionArray?.includes('all-project-file-engineer') &&
+                Number(isOpenReview) === 1 && (
                   <Button onClick={() => approvalFileEvent(record)}>批复文件</Button>
                 )}
             </div>

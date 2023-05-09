@@ -8,6 +8,7 @@ import ReadonlyItem from '@/components/readonly-item'
 import CyTag from '@/components/cy-tag'
 import uuid from 'node-uuid'
 import CyFormItem from '@/components/cy-form-item'
+import { domStringPurify } from '@/utils/dom-string-purify'
 
 interface CheckInfoModalProps {
   visible: boolean
@@ -43,7 +44,7 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
     }
   }, [state])
 
-  const userShowInfo = newsInfo?.users.map((item) => {
+  const userShowInfo = newsInfo?.users?.map((item) => {
     return (
       <CyTag key={uuid.v1()} className="mr7 mb7">
         {item.text}
@@ -94,7 +95,7 @@ const CheckInfoModal: React.FC<CheckInfoModalProps> = (props) => {
           {clientCategorysInfo}
         </ReadonlyItem>
         <div style={{ width: '100%' }}>
-          <CyFormItem labelWidth={40} align="left" label="内容">
+          <CyFormItem labelWidth={60} align="left" label="内容">
             {newsInfo?.content && (
               <div dangerouslySetInnerHTML={{ __html: domStringPurify(newsInfo?.content!) }}></div>
             )}

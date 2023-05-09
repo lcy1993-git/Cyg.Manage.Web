@@ -138,11 +138,12 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   const saveCurrentProject = () => {
     form.validateFields().then((values) => {
       const { projects } = currentChooseEngineerInfo
-
       const newProjectInfo = {
         ...projectInfo,
         ...values,
+        inventoryOverviewSelectData: handleInventoryData,
         disclosureRange: values.disclosureRange ? values.disclosureRange : 0,
+        warehouseId: values.warehouseId !== 'none' ? values.warehouseId : 'none',
         powerSupply,
       }
 
@@ -153,6 +154,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
         }
         return item
       })
+
       const projectSaveInfo = {
         ...currentChooseEngineerInfo,
         projects: handleProjects,
@@ -468,7 +470,34 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
           </div>
           <div className="flex">
             <div className="flex1 flowHidden">
-              <CyFormItem label="总投资(万元)" labelWidth={120} align="right" name="totalInvest">
+              <CyFormItem
+                label="总投资(万元)"
+                labelWidth={120}
+                align="right"
+                name="totalInvest"
+                rules={[
+                  () => ({
+                    validator(_, value) {
+                      if (value <= 100000 && value > -1) {
+                        return Promise.resolve()
+                      }
+                      if (value > 100000) {
+                        return Promise.reject('请填写0~100000以内的整数')
+                      }
+                      return Promise.resolve()
+                    },
+                  }),
+
+                  {
+                    pattern: /^(([1-9]\d+)|[0-9])/, //匹配正整数
+                    message: '该项不能为负数',
+                  },
+                  {
+                    pattern: /^([\\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+                    message: '最多保留三位小数',
+                  },
+                ]}
+              >
                 <Input placeholder="请输入" />
               </CyFormItem>
             </div>

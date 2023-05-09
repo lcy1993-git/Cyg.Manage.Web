@@ -588,7 +588,28 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             align="right"
             fieldKey={[field.fieldKey, 'totalInvest']}
             name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
-            rules={Rule.total}
+            rules={[
+              () => ({
+                validator(_, value) {
+                  if (value <= 100000 && value > -1) {
+                    return Promise.resolve()
+                  }
+                  if (value > 100000) {
+                    return Promise.reject('请填写0~100000以内的整数')
+                  }
+                  return Promise.resolve()
+                },
+              }),
+
+              {
+                pattern: /^(([1-9]\d+)|[0-9])/, //匹配正整数
+                message: '该项不能为负数',
+              },
+              {
+                pattern: /^([\\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+                message: '最多保留三位小数',
+              },
+            ]}
           >
             <Input
               type="number"

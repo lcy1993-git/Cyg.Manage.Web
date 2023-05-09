@@ -39,7 +39,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     ]
   })()
 
-  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId), {
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('68', allotCompanyId), {
     refreshDeps: [allotCompanyId],
   })
 

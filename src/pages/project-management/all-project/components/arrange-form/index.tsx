@@ -47,7 +47,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
   const isOpenReview = localStorage.getItem('isOpenReview')
 
-  const { data: surveyData = [] } = useRequest(() => getGroupInfo('4', allotCompanyId))
+  const { data: surveyData = [] } = useRequest(() => getGroupInfo('68', allotCompanyId))
 
   const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId))
 

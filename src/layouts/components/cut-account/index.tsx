@@ -6,6 +6,7 @@ import {
   // qgcLoginRequest,
   userLoginRequest,
 } from '@/services/login'
+import { isArray } from 'lodash'
 import { useGetUserInfo } from '@/utils/hooks'
 import { flatten, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
@@ -47,13 +48,13 @@ const CutAccount = (props: EditPasswordProps) => {
         value.code = imageCode
         // TODO 快捷切换
         const resData = await userLoginRequest(value)
-        if (resData && resData.accessToken) {
+        if (resData.code === 200 && resData.isSuccess) {
           // eslint-disable-next-line react-hooks/rules-of-hooks
           const lastAccount = useGetUserInfo()
 
           const isLastAccount = lastAccount && lastAccount.userName === userName
           // @ts-ignore
-          const { accessToken } = resData
+          const { accessToken } = resData.content
 
           localStorage.setItem('Authorization', accessToken)
 
@@ -98,6 +99,22 @@ const CutAccount = (props: EditPasswordProps) => {
             setSpinning(false)
             setState(false)
           }
+        } else if (resData.code === 2002) {
+          if (resData.content && isArray(resData.content) && resData.content.length > 0) {
+            const errorMsgArray = resData.content.map((item: any) => item.errorMessages).flat()
+            const filterErrorMsg = errorMsgArray.filter((item: any, index: any, arr: any) => {
+              return arr.indexOf(item) === index
+            })
+            const showErrorMsg = filterErrorMsg.join('\n')
+            message.error(showErrorMsg)
+            setSpinning(false)
+          } else {
+            message.error(resData.message)
+            setSpinning(false)
+          }
+        } else if (resData.code === 5000) {
+          message.error(resData.message)
+          setSpinning(false)
         } else if (resData.code === 40100) {
           // 临时关闭验证码，开启时，打开下行代码
           // setNeedVerifycode(true);

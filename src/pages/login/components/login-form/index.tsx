@@ -17,6 +17,7 @@ import { phoneNumberRule } from '@/utils/common-rule'
 import { flatten, getStopServerList, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
 import { useMount, useRequest } from 'ahooks'
 import { Button, Form, Input, message, Tabs } from 'antd'
+import { isArray } from 'lodash'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { history } from 'umi'
 import VerifycodeImage from '../verifycode-image'
@@ -84,8 +85,9 @@ const LoginForm: React.FC<Props> = (props) => {
         } else {
           resData = await phoneLoginRequest(values)
         }
-        if (resData && resData.accessToken) {
-          const { accessToken } = resData
+
+        if (resData.code === 200 && resData.isSuccess) {
+          const { accessToken } = resData.content
           localStorage.setItem('Authorization', accessToken)
 
           //存储评审、技能开关
@@ -147,10 +149,23 @@ const LoginForm: React.FC<Props> = (props) => {
             history.push('/index')
             localStorage.removeItem('isAdminCategory')
           }
+        } else if (resData.code === 2002) {
+          if (resData.content && isArray(resData.content) && resData.content.length > 0) {
+            const errorMsgArray = resData.content.map((item: any) => item.errorMessages).flat()
+            const filterErrorMsg = errorMsgArray.filter((item: any, index: any, arr: any) => {
+              return arr.indexOf(item) === index
+            })
+            const showErrorMsg = filterErrorMsg.join('\n')
+            message.error(showErrorMsg)
+          } else {
+            message.error(resData.message)
+          }
         } else if (resData.code === 40100) {
           uploadFailMsg()
           // 临时关闭验证码，开启时，打开下行代码
           // setNeedVerifycode(true);
+          message.error(resData.message)
+        } else if (resData.code === 5000) {
           message.error(resData.message)
         } else if (resData.code === 40201) {
           uploadFailMsg()

@@ -43,6 +43,7 @@ const mapColor = {
   评审端: 'greenThree',
   技经端: 'greenFour',
   设计端: 'greenFive',
+  '勘察端(手机版)': 'greenSix',
 }
 
 const CompanyUser: React.FC = () => {
@@ -73,7 +74,7 @@ const CompanyUser: React.FC = () => {
   const handleData = useMemo(() => {
     if (accreditData) {
       return accreditData.skus.map((item: any) => {
-        return item.value
+        return { key: item.key.value, value: item.value }
       })
     }
     return
@@ -494,6 +495,11 @@ const CompanyUser: React.FC = () => {
   //   batchAddForm.resetFields()
   // }
 
+  //判断当前数据
+  const singleValues = (value: number) => {
+    return handleData && handleData.filter((item: any) => item.key === value)[0].value
+  }
+
   return (
     <PageCommonWrap noPadding={true}>
       <div className={styles.companyUser}>
@@ -504,10 +510,10 @@ const CompanyUser: React.FC = () => {
             </div>
             <div className="flex">
               <div className={styles.accreditStatisticItem}>
-                <AccreditStatistic label="勘察端" icon="prospect" accreditData={handleData?.[1]} />
+                <AccreditStatistic label="勘察端" icon="prospect" accreditData={singleValues(4)} />
               </div>
               <div className={styles.accreditStatisticItem}>
-                <AccreditStatistic label="设计端" icon="design" accreditData={handleData?.[2]} />
+                <AccreditStatistic label="设计端" icon="design" accreditData={singleValues(8)} />
               </div>
               {Number(isOpenReview) === 1 && (
                 <>
@@ -515,21 +521,29 @@ const CompanyUser: React.FC = () => {
                     <AccreditStatistic
                       label="技经端"
                       icon="skillBy"
-                      accreditData={handleData?.[4]}
+                      accreditData={singleValues(32)}
                     />
                   </div>
                   <div className={styles.accreditStatisticItem}>
                     <AccreditStatistic
                       label="评审端"
                       icon="review"
-                      accreditData={handleData?.[3]}
+                      accreditData={singleValues(16)}
                     />
                   </div>
                 </>
               )}
 
               <div className={styles.accreditStatisticItem}>
-                <AccreditStatistic label="管理端" icon="manage" accreditData={handleData?.[0]} />
+                <AccreditStatistic label="管理端" icon="manage" accreditData={singleValues(2)} />
+              </div>
+
+              <div className={styles.accreditStatisticItem}>
+                <AccreditStatistic
+                  label="勘察端(手机版)"
+                  icon="prospect"
+                  accreditData={singleValues(64)}
+                />
               </div>
             </div>
           </div>
