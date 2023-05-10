@@ -52,6 +52,32 @@ export const getStyle = (type: string, value: any) => {
 }
 
 /**
+ * 获取方位角
+ * @param type azimuth
+ */
+export const getAzimuth = (type: string, azimuth: any) => {
+  var azimuth_: any = azimuth ? azimuth : 0
+  switch (type) {
+    case 'pullLine':
+      azimuth_ = (azimuth_ + 90) * -1
+      break
+    // case 'electricMeter':
+    //   azimuth_ = azimuth_ * -1
+    //   break
+    // case 'overHeadDevice':
+    //   azimuth_ = (azimuth_ - 45) * -1
+    //   break
+    // case 'cableHead':
+    //   azimuth_ = azimuth_ * -1
+    // break
+    default:
+      azimuth_ = azimuth_ * -1
+      break
+  }
+  return azimuth_
+}
+
+/**
  * 获取杆塔样式
  * @param symbol_id 杆塔是根据symbolId来进行分类的
  */

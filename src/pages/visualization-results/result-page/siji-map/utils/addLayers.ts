@@ -1,4 +1,4 @@
-import { getStyle } from './style'
+import { getAzimuth, getStyle } from './style'
 import { wktToGeometry } from './utils'
 /**
  * 加载点位，自定义样式
@@ -135,11 +135,12 @@ export const addPoint = (map: any, layerType: string, type: string, datas: any) 
     Object.keys(groups).forEach((item: any) => {
       const data = groups[item]
       const features = data.map((element: any) => {
-        if (element.azimuth) {
-          element.azimuth_ = (element.azimuth + 90) * -1
-        } else {
-          element.azimuth_ = 0
-        }
+        // if (element.azimuth) {
+        //   element.azimuth_ = (element.azimuth + 90) * -1
+        // } else {
+        //   element.azimuth_ = 0
+        // }
+        element.azimuth_ = getAzimuth(type, element.azimuth)
         const obj: any = wktToGeometry(element.sj_geom)
         return {
           type: 'Feature',
