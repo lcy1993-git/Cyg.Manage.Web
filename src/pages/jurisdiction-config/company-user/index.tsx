@@ -497,7 +497,7 @@ const CompanyUser: React.FC = () => {
 
   //判断当前数据
   const singleValues = (value: number) => {
-    return handleData && handleData.filter((item: any) => item.key === value)[0].value
+    return handleData && handleData.filter((item: any) => item.key === value)[0]?.value
   }
 
   return (
