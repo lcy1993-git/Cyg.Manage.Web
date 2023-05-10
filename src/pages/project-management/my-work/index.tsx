@@ -274,7 +274,7 @@ const MyWork: React.FC = () => {
               {
                 label: '任务安排',
                 id: 'arrange',
-                number: data.arrange.total,
+                number: data.arrange.awaitAllot,
                 children: [
                   {
                     label: '待安排',
