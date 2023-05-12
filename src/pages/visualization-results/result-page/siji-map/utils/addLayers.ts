@@ -23,6 +23,11 @@ export const addIcon = (map: any, imageUrl: any, id: string, features: any) => {
       layout['icon-offset'] = [0, 20]
       layout['icon-size'] = 1
     }
+    if (id.includes('electricMeter')) {
+      layout['text-field'] = '{box_count}'
+      layout['text-offset'] = [0.5, 0]
+      // layout['text-justify'] = 'right'
+    }
     map.addLayer({
       id: id,
       type: 'symbol',
