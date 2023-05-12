@@ -127,7 +127,7 @@ const TextEditorModal = (props: EditorParams) => {
     if (data) {
       return data
         .map((item: any) => {
-          if (item.value === 4 || item.value === 8 || item.value === 64) {
+          if (item.value === 4 || item.value === 8) {
             return {
               value: item.value,
               text: item.text,
