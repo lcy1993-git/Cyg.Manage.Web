@@ -420,7 +420,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             break
 
           case 'surveyor':
-            if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员'
+            if (layerType === 'design' || layerType === 'dismantle') mappingTag = '设计人员'
             pJSON[mappingTag] = feature.getProperties()['surveyorName']
             break
           case 'main_id':
