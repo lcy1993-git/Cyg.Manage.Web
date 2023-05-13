@@ -114,7 +114,7 @@ function getMappingTagsDictionary() {
         },
       ],
     })
-    mappingTagsDictionary.pull_line = {
+    mappingTagsDictionary.pullLine = {
       mappingTags: {
         id: '拉线ID',
         mode_id: '拉线型号',
@@ -224,7 +224,7 @@ function getMappingTagsDictionary() {
         loop_level: findenumsValue('LoopLevel'),
       },
     }
-    mappingTagsDictionary.user_line = {
+    mappingTagsDictionary.userLine = {
       mappingTags1: {
         kv_level: '电压等级',
         parent_id: '所属杆塔',
@@ -253,7 +253,7 @@ function getMappingTagsDictionary() {
         kv_level: findenumsValue('KVLevel'),
       },
     }
-    mappingTagsDictionary.cable_channel = {
+    mappingTagsDictionary.cableChannel = {
       mappingTags1: {
         length: '长度(m)',
         lay_mode: '敷设方式',
@@ -313,7 +313,7 @@ function getMappingTagsDictionary() {
         fix_mode: findenumsValue('OverheadEquipmentFixMode'),
       },
     }
-    mappingTagsDictionary.cable_equipment = {
+    mappingTagsDictionary.cableEquipment = {
       mappingTags1: {
         code: '名称',
         type: '类型',
@@ -373,7 +373,7 @@ function getMappingTagsDictionary() {
       },
     }
 
-    mappingTagsDictionary.electric_meter = {
+    mappingTagsDictionary.electricMeter = {
       mappingTags1: {
         kv_level: '电压等级',
         parent_id: '所属节点',
@@ -418,7 +418,7 @@ function getMappingTagsDictionary() {
       },
     }
 
-    mappingTagsDictionary.cross_arm = {
+    mappingTagsDictionary.crossArm = {
       mappingTags1: {
         project_id: 'title',
       },
@@ -495,7 +495,7 @@ function getMappingTagsDictionary() {
         },
       ],
     })
-    mappingTagsDictionary.over_head_device = {
+    mappingTagsDictionary.overHeadDevice = {
       mappingTags1: {
         type: '类型',
         name: '设备名称',
@@ -537,7 +537,7 @@ function getMappingTagsDictionary() {
         },
       ],
     })
-    mappingTagsDictionary.fault_indicator = {
+    mappingTagsDictionary.faultIndicator = {
       mappingTags: {
         is_cable: '类型',
         parent_line_id: '所属线段',
@@ -568,7 +568,7 @@ function getMappingTagsDictionary() {
       },
     }
 
-    mappingTagsDictionary.zero_guy = {
+    mappingTagsDictionary.zeroGuy = {
       mappingTags: {
         name: '名称',
         start_id: '主杆编号',
@@ -584,7 +584,7 @@ function getMappingTagsDictionary() {
       },
     }
 
-    mappingTagsDictionary.cable_head = {
+    mappingTagsDictionary.cableHead = {
       mappingTags: {
         mode: '型号',
         azimuth: '方位角',

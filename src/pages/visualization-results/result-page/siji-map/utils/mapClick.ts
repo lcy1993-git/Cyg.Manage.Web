@@ -1,5 +1,6 @@
 import {
   getDesignMaterialModifyList,
+  getDynamicDetail,
   getGisDetail,
   getlibId_new,
   getMaterialItemData,
@@ -43,6 +44,28 @@ const elementTypeEnum = {
   TrackLine: '轨迹线',
   cableHead: '电缆中间头',
 }
+const lineTowerType = [
+  {
+    key: 1,
+    value: 'tower',
+  },
+  {
+    key: 2,
+    value: 'cable',
+  },
+  {
+    key: 3,
+    value: 'cable_equipment',
+  },
+  {
+    key: 4,
+    value: 'electric_meter',
+  },
+  {
+    key: 9,
+    value: 'cross_arm',
+  },
+]
 const householdLayers = ['electricMeter']
 const mediaLayers = ['tower', 'cable', 'cableEquipment', 'electricMeter', 'mark']
 const materiaLayers = [
@@ -126,7 +149,7 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
   var pJSON = {}
   for (var p in mappingTags) {
     var mappingTag = mappingTags[p]
-    if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
+    if (mappingTagValues !== undefined && mappingTagValues[p] !== undefined) {
       pJSON[mappingTag] = mappingTagValues[p][feature.properties[p]]
     } else {
       switch (p) {
@@ -150,96 +173,95 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
           break
 
         case 'surveyor':
-          if (layerType == 'design' || layerType == 'dismantle') mappingTag = '设计人员'
+          if (layerType === 'design' || layerType === 'dismantle') mappingTag = '设计人员'
           pJSON[mappingTag] = feature.properties['surveyorName']
           break
-        // case 'main_id':
-        //   await loadLayer(
-        //     getCustomXmlData('id', feature.properties['main_id']),
-        //     `pdd:${layerType}_tower`
-        //   ).then((data: any) => {
-        //     if (data.features && data.features.length === 1) {
-        //       pJSON[mappingTag] = data.features[0].properties.code
-        //     } else {
-        //       pJSON[mappingTag] = ''
-        //     }
-        //   })
-        //   break
-        // case 'sub_id':
-        //   await loadLayer(
-        //     getCustomXmlData('id', feature.properties['sub_id']),
-        //     `pdd:${layerType}_tower`
-        //   ).then((data: any) => {
-        //     if (data.features && data.features.length === 1) {
-        //       pJSON[mappingTag] = data.features[0].properties.code
-        //     } else {
-        //       pJSON[mappingTag] = ''
-        //     }
-        //   })
-        // break
-        // case 'start_id':
-        //   let startItem = lineTowerType.find(
-        //     (item) => item.key === feature.properties.start_node_type
-        //   )
-        //   await loadLayer(
-        //     getCustomXmlData('id', feature.properties['start_id']),
-        //     `pdd:${layerType}_${startItem?.value}`
-        //   ).then((data: any) => {
-        //     if (data.features && data.features.length === 1) {
-        //       pJSON[mappingTag] = data.features[0].properties.code
-        //     } else {
-        //       pJSON[mappingTag] = ''
-        //     }
-        //   })
-        //   break
-        // case 'end_id':
-        //   let endItem = lineTowerType.find(
-        //     (item) => item.key === feature.properties.end_node_type
-        //   )
-        //   await loadLayer(
-        //     getCustomXmlData('id', feature.properties['end_id']),
-        //     `pdd:${layerType}_${endItem?.value}`
-        //   ).then((data: any) => {
-        //     if (data.features && data.features.length === 1) {
-        //       pJSON[mappingTag] = data.features[0].properties.code
-        //     } else {
-        //       pJSON[mappingTag] = ''
-        //     }
-        //   })
-        //   break
-        // case 'parent_id':
-        //   let parentLayer = 'tower'
-        //   let parentName = feature.properties['parent_name']
-        //   if (parentName?.startsWith('ElectricMeter')) {
-        //     parentLayer = 'electric_meter'
-        //   } else if (parentName?.startsWith('CableDevice')) {
-        //     parentLayer = 'cable_equipment'
-        //   }
-        //   await loadLayer(
-        //     getCustomXmlData('id', feature.properties['parent_id']),
-        //     `pdd:${layerType}_${parentLayer}`
-        //   ).then((data: any) => {
-        //     if (data.features && data.features.length === 1) {
-        //       parentLayer === 'electric_meter'
-        //         ? (pJSON[mappingTag] = data.features[0].properties.name)
-        //         : (pJSON[mappingTag] = data.features[0].properties.code)
-        //     } else {
-        //       pJSON[mappingTag] = ''
-        //     }
-        //   })
-        //   break
-        // case 'parent_line_id':
-        //   await loadLayer(
-        //     getCustomXmlData('id', feature.properties['parent_id']),
-        //     `pdd:${layerType}_line`
-        //   ).then((data: any) => {
-        //     if (data.features && data.features.length === 1) {
-        //       pJSON[mappingTag] = data.features[0].properties.name
-        //     } else {
-        //       pJSON[mappingTag] = ''
-        //     }
-        //   })
-        //   break
+        case 'main_id':
+          await getDynamicDetail({
+            id: feature.properties.id,
+            tableName: `${layerType}_tower`,
+          }).then((data: any) => {
+            if (data.content) {
+              pJSON[mappingTag] = data.content.code
+            } else {
+              pJSON[mappingTag] = ''
+            }
+          })
+          break
+        case 'sub_id':
+          await getDynamicDetail({
+            id: feature.properties['sub_id'],
+            tableName: `${layerType}_tower`,
+          }).then((data: any) => {
+            if (data.content) {
+              pJSON[mappingTag] = data.content.code
+            } else {
+              pJSON[mappingTag] = ''
+            }
+          })
+          break
+        case 'start_id':
+          let startItem = lineTowerType.find(
+            (item: any) => item.key === feature.properties.start_node_type
+          )
+          await getDynamicDetail({
+            id: feature.properties['start_id'],
+            tableName: `${layerType}_${startItem?.value}`,
+          }).then((data: any) => {
+            if (data.content) {
+              pJSON[mappingTag] = data.content.code
+            } else {
+              pJSON[mappingTag] = ''
+            }
+          })
+          break
+        case 'end_id':
+          let endItem = lineTowerType.find((item) => item.key === feature.properties.end_node_type)
+          await getDynamicDetail({
+            id: feature.properties['end_id'],
+            tableName: `${layerType}_${endItem?.value}`,
+          }).then((data: any) => {
+            if (data.content) {
+              pJSON[mappingTag] = data.content.code
+            } else {
+              pJSON[mappingTag] = ''
+            }
+          })
+
+          break
+        case 'parent_id':
+          let parentLayer = 'tower'
+          let parentName = feature.properties['parent_name']
+          if (parentName?.startsWith('ElectricMeter')) {
+            parentLayer = 'electric_meter'
+          } else if (parentName?.startsWith('CableDevice')) {
+            parentLayer = 'cable_equipment'
+          }
+          await getDynamicDetail({
+            id: feature.properties['parent_id'],
+            tableName: `${layerType}_${parentLayer}`,
+          }).then((data: any) => {
+            if (data.content) {
+              parentLayer === 'electric_meter'
+                ? (pJSON[mappingTag] = data.content.name)
+                : (pJSON[mappingTag] = data.content.code)
+            } else {
+              pJSON[mappingTag] = ''
+            }
+          })
+          break
+        case 'parent_line_id':
+          await getDynamicDetail({
+            id: feature.properties['parent_id'],
+            tableName: `${layerType}_line`,
+          }).then((data: any) => {
+            if (data.content) {
+              pJSON[mappingTag] = data.content.name
+            } else {
+              pJSON[mappingTag] = ''
+            }
+          })
+          break
         case 'mode_id':
           pJSON[mappingTag] = feature.properties['modeName']
           break
@@ -370,7 +392,7 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
         KV10: 3,
       }
       if (feature.properties.voltage)
-        feature.set('kv_level', voltagelevel[feature.properties.voltage])
+        feature.properties.kv_level = voltagelevel[feature.properties.voltage]
 
       pJSON['材料表'] = {
         params: {
