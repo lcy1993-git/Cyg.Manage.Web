@@ -141,6 +141,8 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
 
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
 
+  const useSjMap = localStorage.getItem('useSjMap')
+
   //  卸载清楚请求次数
   useMount(() => {
     setExpandedKeys(['-1'])
@@ -852,7 +854,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
         layerstype={getLayerstype()}
       />
       <div>
-        {sidePopupHeight && isSj ? (
+        {sidePopupHeight && isSj && Number(useSjMap) === 1 ? (
           <SjSidePopup {...props.sidePopupProps} height={sidePopupHeight} />
         ) : (
           <SidePopup {...props.sidePopupProps} height={sidePopupHeight} />
