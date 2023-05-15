@@ -1,7 +1,8 @@
 import { getStopServerNotice } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
 import moment from 'moment'
-
+// @ts-ignore
+import sm2 from 'sm-crypto/dist/sm2'
 const { NODE_ENV } = process.env
 
 /**
@@ -304,6 +305,15 @@ export const translateMatDataToTree = (soureceData: Data[]) => {
 type Login = {
   userName: string
   pwd: string
+}
+
+const SM2PublicKey =
+  '047981ed79b74289fd6e28fabe9002c07837892b20a919faecfedcaa1edfaf120031181d0fee61045323c010de4896a389c875baa882073125a4e97ab760bdfa74'
+// sm2加密密码
+export const handleSM2Crypto = (data: any) => {
+  const cipherMode = 0
+  // 加密结果
+  return '04' + sm2.doEncrypt(data, SM2PublicKey, cipherMode)
 }
 
 export const productCode = '1301726010322214912'

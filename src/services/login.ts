@@ -1,5 +1,6 @@
 import { baseUrl, cyRequest } from '@/services/common'
 import request from '@/utils/request'
+import { generateUUID, handleSM2Crypto } from '@/utils/utils'
 import { ModulesItem, UserInfo } from './common.d'
 export interface UserLoginParams {
   userName: string
@@ -21,20 +22,33 @@ interface LoginSuccessInfo {
 }
 
 export const indexLoginRequest = (params: UserLoginParams) => {
+  params['reqid'] = generateUUID()
+  params['pwd'] = handleSM2Crypto(params.pwd)
+  params['clientType'] = '2'
+  params['timestamp'] = `${Date.parse(`${new Date()}`)}`
+
   return request<LoginSuccessInfo>(`${baseUrl.common}/Users/SignIn`, {
     method: 'POST',
-    data: { ...params, clientType: 2 },
+    data: handleSM2Crypto(JSON.stringify(params)),
+    headers: {
+      'Content-Type': 'application/json',
+    },
   })
 }
 
 // ---
 export const userLoginRequest = (params: UserLoginParams) => {
-  return cyRequest<LoginSuccessContent>(() =>
-    request(`${baseUrl.common}/Users/SignIn`, {
-      method: 'POST',
-      data: { ...params, clientType: 2 },
-    })
-  )
+  params['reqid'] = generateUUID()
+  params['pwd'] = handleSM2Crypto(params.pwd)
+  params['clientType'] = '2'
+  params['timestamp'] = `${Date.parse(`${new Date()}`)}`
+  return request(`${baseUrl.common}/Users/SignIn`, {
+    method: 'POST',
+    data: handleSM2Crypto(JSON.stringify(params)),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
 }
 // qgc登录
 export const qgcLoginRequest = (params: UserLoginParams) => {
