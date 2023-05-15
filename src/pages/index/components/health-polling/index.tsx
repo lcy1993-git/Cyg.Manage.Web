@@ -10,6 +10,8 @@ const HealthPolling: React.FC = () => {
   const [requestFlag, setRequestFlag] = useState(true)
   const [serverCode, setServerCode] = useState('')
   const location = useLocation()
+
+  const isTrans = localStorage.getItem('isTransfer')
   //轮询
   const { run } = useRequest(() => pollingHealth(), {
     manual: true,
@@ -135,7 +137,7 @@ const HealthPolling: React.FC = () => {
 
   //登录初始化连接webSocket，退出卸载
   useEffect(() => {
-    if (token) {
+    if (token && Number(isTrans) === 1) {
       createWebSocket()
     }
     return () => {
