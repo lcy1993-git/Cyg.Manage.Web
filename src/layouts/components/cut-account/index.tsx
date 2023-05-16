@@ -8,7 +8,7 @@ import {
 } from '@/services/login'
 import { isArray } from 'lodash'
 import { useGetUserInfo } from '@/utils/hooks'
-import { flatten, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
+import { flatten, getStopServerList, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, Input, message, Modal } from 'antd'
 import { Dispatch, useEffect, useState } from 'react'
@@ -39,7 +39,25 @@ const CutAccount = (props: EditPasswordProps) => {
   const refreshCode = () => setReloadSign(random())
   // 是否验证码错误
   const [hasErr, setHasErr] = useState(false)
-  const sureCutAccount = () => {
+
+  const getStopInfo = () => {
+    setSpinning(true)
+    form.validateFields().then((values) => {
+      getStopServerList(sureCutAccount, values, showStop)
+    })
+  }
+
+  const showStop = () => {
+    // message.warning('正在停服发版中,请稍等...')
+    setTimeout(() => {
+      // 非测试账号直接退出登录
+      history.push('/login')
+      localStorage.setItem('Authorization', '')
+    }, 1000)
+    setSpinning(false)
+  }
+
+  const sureCutAccount = async (data: { userName: any; pwd: any }) => {
     setSpinning(true)
     form
       .validateFields()
@@ -47,7 +65,10 @@ const CutAccount = (props: EditPasswordProps) => {
         const { userName } = value
         value.code = imageCode
         // TODO 快捷切换
-        const resData = await userLoginRequest(value)
+
+        const requestData = Object.assign({ ...value }, data)
+
+        const resData = await userLoginRequest(requestData)
         if (resData.code === 200 && resData.isSuccess) {
           // eslint-disable-next-line react-hooks/rules-of-hooks
           const lastAccount = useGetUserInfo()
@@ -165,7 +186,7 @@ const CutAccount = (props: EditPasswordProps) => {
   }
   const onKeyDownLogin = (e: any) => {
     if (e.keyCode === 13) {
-      sureCutAccount()
+      getStopInfo()
     }
   }
 
@@ -199,7 +220,7 @@ const CutAccount = (props: EditPasswordProps) => {
         >
           取消
         </Button>,
-        <Button key="save" type="primary" onClick={() => sureCutAccount()} loading={spinning}>
+        <Button key="save" type="primary" onClick={getStopInfo} loading={spinning}>
           确定
         </Button>,
       ]}
