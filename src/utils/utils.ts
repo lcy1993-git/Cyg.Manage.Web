@@ -1,4 +1,4 @@
-import { getProductServerList } from '@/services/index'
+import { getProductServerList, getStopServerNotice } from '@/services/index'
 import { MaterialDataType } from '@/services/visualization-results/list-menu'
 
 // @ts-ignore
@@ -10,6 +10,7 @@ import {
 } from '@/services/security-audit'
 import { webConfig } from '@/global'
 import moment from 'moment/moment'
+import Login from '@/pages/login'
 
 const { NODE_ENV } = process.env
 /**
@@ -306,10 +307,10 @@ export const translateMatDataToTree = (soureceData: Data[]) => {
 /*
  * 获取停服公告信息
  * */
-// type Login = {
-//   userName: string
-//   pwd: string
-// }
+type Login = {
+  userName: string
+  pwd: string
+}
 
 export const getObject = (value: string): any => {
   const obj = {}
@@ -348,128 +349,128 @@ export const uploadAuditLog = (dataItem: Partial<EventInfo>[], needToken: boolea
   }
 }
 
-export const getStopServerList = () => {
-  getProductServerList({
-    productCode: '1301726010322214912',
-    category: 0,
-    status: 0,
-    province: '',
-  }).then((res) => {
-    if (res?.code !== 200) {
-      return
-    }
-    const { data } = res
-    const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
-    const currenServer = data?.find(
-      (item: { propertys: { webSite: string; host: string | null } }) => {
-        if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-          return item?.propertys?.webSite === 'https://srthkf3.gczhyun.com:21530/'
-        } else if (item?.propertys?.webSite) {
-          if (item?.propertys?.host) {
-            return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
-          } else {
-            return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
-          }
-        } else {
-          return undefined
-        }
-      }
-    )
-    if (currenServer && currenServer?.code) {
-      // 是否查询到 服务器信息
-      localStorage.setItem('serverCode', currenServer?.code || '')
-    }
-  })
-}
-
-// export const getStopServerList = (
-//   loginFuc: CallableFunction,
-//   values: Login,
-//   stopLoginFuc?: CallableFunction
-// ) => {
+// export const getStopServerList = () => {
 //   getProductServerList({
-//     productCode,
+//     productCode: '1301726010322214912',
 //     category: 0,
 //     status: 0,
 //     province: '',
-//   })
-//     .then((res) => {
-//       if (res?.code !== 200) {
-//         loginFuc(values)
-//         return
-//       }
-//       const { data } = res
-//       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
-//       const currenServer = data?.find(
-//         (item: { propertys: { webSite: string; host: string | null } }) => {
-//           if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-//             return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
-//           } else if (item?.propertys?.webSite) {
-//             if (item?.propertys?.host) {
-//               return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
-//             } else {
-//               return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
-//             }
+//   }).then((res) => {
+//     if (res?.code !== 200) {
+//       return
+//     }
+//     const { data } = res
+//     const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
+//     const currenServer = data?.find(
+//       (item: { propertys: { webSite: string; host: string | null } }) => {
+//         if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+//           return item?.propertys?.webSite === 'https://srthkf3.gczhyun.com:21530/'
+//         } else if (item?.propertys?.webSite) {
+//           if (item?.propertys?.host) {
+//             return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
 //           } else {
-//             return undefined
+//             return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
 //           }
-//         }
-//       )
-//       if (currenServer && currenServer?.code) {
-//         // 是否查询到 服务器信息
-//         localStorage.setItem('serverCode', currenServer?.code || '')
-//         getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
-//       } else {
-//         loginFuc(values)
-//       }
-//     })
-//     .catch(() => {
-//       loginFuc(values)
-//     })
-// }
-// const getNoticeReq = (
-//   code: string,
-//   loginFuc: CallableFunction,
-//   values: Login,
-//   stopLoginFuc?: CallableFunction
-// ) => {
-//   getStopServerNotice({
-//     serverCode: code,
-//     kickOutSeconds: 605,
-//   })
-//     .then((res) => {
-//       if (res?.code !== 200) {
-//         loginFuc(values)
-//         return
-//       }
-//       const { data } = res
-//       const info = { ...values }
-//       if (data !== null && typeof data !== 'string') {
-//         if ([2, 3].includes(data?.stage) && info?.userName?.startsWith(data?.testerAccountPrefix)) {
-//           // 测试账号
-//           info.userName = info.userName.replace(data?.testerAccountPrefix, '') // 移除前缀
-//           sessionStorage.setItem('isTestUser', 'true')
-//           sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
-//           loginFuc(info)
-//         } else if (data?.stage === 1) {
-//           // 公告期
-//           sessionStorage.setItem('isTestUser', 'false')
-//           sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
-//           loginFuc(values)
 //         } else {
-//           // 预停服期和发版期,非测试账号
-//           stopLoginFuc?.(data)
-//           localStorage.setItem('Authorization', '')
-//           sessionStorage.setItem('isTestUser', 'false')
+//           return undefined
 //         }
-//       } else {
-//         loginFuc(values)
 //       }
-//     })
-//     .catch(() => {
-//       loginFuc(values)
-//     })
+//     )
+//     if (currenServer && currenServer?.code) {
+//       // 是否查询到 服务器信息
+//       localStorage.setItem('serverCode', currenServer?.code || '')
+//     }
+//   })
 // }
+
+export const getStopServerList = (
+  loginFuc: CallableFunction,
+  values: Login,
+  stopLoginFuc?: CallableFunction
+) => {
+  getProductServerList({
+    productCode,
+    category: 0,
+    status: 0,
+    province: '',
+  })
+    .then((res) => {
+      if (res?.code !== 200) {
+        loginFuc(values)
+        return
+      }
+      const { data } = res
+      const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
+      const currenServer = data?.find(
+        (item: { propertys: { webSite: string; host: string | null } }) => {
+          if (NODE_ENV === 'development' && item?.propertys?.webSite) {
+            return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
+          } else if (item?.propertys?.webSite) {
+            if (item?.propertys?.host) {
+              return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
+            } else {
+              return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
+            }
+          } else {
+            return undefined
+          }
+        }
+      )
+      if (currenServer && currenServer?.code) {
+        // 是否查询到 服务器信息
+        localStorage.setItem('serverCode', currenServer?.code || '')
+        getNoticeReq(currenServer?.code, loginFuc, values, stopLoginFuc)
+      } else {
+        loginFuc(values)
+      }
+    })
+    .catch(() => {
+      loginFuc(values)
+    })
+}
+const getNoticeReq = (
+  code: string,
+  loginFuc: CallableFunction,
+  values: Login,
+  stopLoginFuc?: CallableFunction
+) => {
+  getStopServerNotice({
+    serverCode: code,
+    kickOutSeconds: 605,
+  })
+    .then((res) => {
+      if (res?.code !== 200) {
+        loginFuc(values)
+        return
+      }
+      const { data } = res
+      const info = { ...values }
+      if (data !== null && typeof data !== 'string') {
+        if ([2, 3].includes(data?.stage) && info?.userName?.startsWith(data?.testerAccountPrefix)) {
+          // 测试账号
+          info.userName = info.userName.replace(data?.testerAccountPrefix, '') // 移除前缀
+          sessionStorage.setItem('isTestUser', 'true')
+          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
+          loginFuc(info)
+        } else if (data?.stage === 1) {
+          // 公告期
+          sessionStorage.setItem('isTestUser', 'false')
+          sessionStorage.setItem('stopServerInfo', JSON.stringify(data))
+          loginFuc(values)
+        } else {
+          // 预停服期和发版期,非测试账号
+          stopLoginFuc?.(data)
+          localStorage.setItem('Authorization', '')
+          sessionStorage.setItem('isTestUser', 'false')
+        }
+      } else {
+        loginFuc(values)
+      }
+    })
+    .catch(() => {
+      loginFuc(values)
+    })
+}
 
 //移除自动填充
 export const noAutoCompletePassword = {

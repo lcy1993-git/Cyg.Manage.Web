@@ -12,6 +12,7 @@ import LoginForm from './components/login-form'
 import styles from './index.less'
 
 import UpdatePassword from '@/pages/login/components/updatePassword'
+import StopServer from './components/stop-server'
 
 export interface Stop {
   content: string
@@ -23,20 +24,20 @@ export interface Stop {
 }
 
 const Login: React.FC = () => {
-  // const [stopInfo, setStopInfo] = useState<Stop>({} as Stop)
+  const [stopInfo, setStopInfo] = useState<Stop>({} as Stop)
   const isTrans = localStorage.getItem('isTransfer')
   const [userName, setUserName] = useState('')
   const [updatePwd, setUpdatePwd] = useState(false)
-  // const [activeStop, setActiveStop] = useState<boolean>(false)
+  const [activeStop, setActiveStop] = useState<boolean>(false)
   const [isAutoLogin, setIsAutoLogin] = useState<boolean>(false)
 
   const getServerList = async () => {}
-  // const loginStop = (res?: Stop) => {
-  //   setActiveStop(true)
-  //   if (res) {
-  //     setStopInfo(res)
-  //   }
-  // }
+  const loginStop = (res?: Stop) => {
+    setActiveStop(true)
+    if (res) {
+      setStopInfo(res)
+    }
+  }
 
   useMount(async () => {
     await getServerList()
@@ -96,12 +97,18 @@ const Login: React.FC = () => {
                 <img className={styles.bannerImage} src={bannerSrc} alt="" />
               </div>
               <div className={styles.loginForm}>
-                {updatePwd ? (
+                {activeStop ? (
+                  <StopServer data={stopInfo} />
+                ) : updatePwd ? (
                   <div>
                     <UpdatePassword updatePwd={setUpdatePwd} userName={userName} />
                   </div>
                 ) : (
-                  <LoginForm updatePwd={setUpdatePwd} updateUserName={setUserName} />
+                  <LoginForm
+                    updatePwd={setUpdatePwd}
+                    updateUserName={setUserName}
+                    stopLogin={loginStop}
+                  />
                 )}
               </div>
             </div>

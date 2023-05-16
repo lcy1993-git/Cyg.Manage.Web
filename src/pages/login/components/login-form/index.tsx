@@ -20,6 +20,7 @@ import { Button, Form, Input, message, Tabs } from 'antd'
 import { isArray } from 'lodash'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { history } from 'umi'
+import { Stop } from '@/pages/login'
 import VerifycodeImage from '../verifycode-image'
 import styles from './index.less'
 
@@ -29,8 +30,10 @@ export type LoginType = 'account' | 'phone'
 interface Props {
   updatePwd: Dispatch<SetStateAction<boolean>>
   updateUserName: Dispatch<SetStateAction<string>>
+  stopLogin: (data?: Stop) => void
 }
 const LoginForm: React.FC<Props> = (props) => {
+  const { stopLogin } = props
   const { updatePwd, updateUserName } = props
   const [needVerifycode, setNeedVerifycode] = useState<boolean>(true)
   const [imageCode, setImageCode] = useState<string>('')
@@ -106,7 +109,6 @@ const LoginForm: React.FC<Props> = (props) => {
           const userInfo = await GetCommonUserInfo()
           localStorage.setItem('userInfo', JSON.stringify(userInfo))
 
-          getStopServerList()
           const modules = await getAuthorityModules()
           if (type === 'account') {
             uploadAuditLog([
@@ -208,6 +210,20 @@ const LoginForm: React.FC<Props> = (props) => {
       true
     )
   }
+
+  const getStopInfo = () => {
+    if (form.getFieldValue(['userName']) && form.getFieldValue(['pwd'])) {
+      setRequestLoading(true)
+    }
+    form.validateFields().then((values) => {
+      getStopServerList(loginButtonClick, values, stopLogin)
+    })
+  }
+
+  const loginButtonClick = () => {
+    login(activeKey)
+  }
+
   const formChangeEvent = (changedValues: object) => {
     if (changedValues.hasOwnProperty('phone')) {
       setPhoneNumber(changedValues['phone'])
@@ -218,14 +234,14 @@ const LoginForm: React.FC<Props> = (props) => {
 
   const onKeyDownLogin = (e: any) => {
     if (e.keyCode === 13) {
-      login('account')
+      getStopInfo()
     }
   }
+
   useMount(() => {
     localStorage.removeItem('isAdminCategory')
   })
 
-  console.log('111')
   return (
     <Form form={form} onValuesChange={formChangeEvent} onKeyDown={(e) => onKeyDownLogin(e)}>
       <div className={styles.loginFormTitle}>
@@ -269,7 +285,7 @@ const LoginForm: React.FC<Props> = (props) => {
             <div>
               <Button
                 className={styles.loginButton}
-                onClick={() => login(activeKey)}
+                onClick={getStopInfo}
                 loading={requestLoading}
                 type="primary"
               >
@@ -315,11 +331,7 @@ const LoginForm: React.FC<Props> = (props) => {
               refreshCode={refreshCode}
             />
             <div>
-              <Button
-                className={styles.loginButton}
-                onClick={() => login(activeKey)}
-                type="primary"
-              >
+              <Button className={styles.loginButton} onClick={getStopInfo} type="primary">
                 立即登录
               </Button>
             </div>
