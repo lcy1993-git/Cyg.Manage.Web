@@ -44,6 +44,7 @@ export const initLayers = (resData: any): Layer[] => {
     source: new XYZ({
       url: decodeURI(imgUrl),
     }),
+    // maxZoom: 18,
     preload: 18,
   })
   imgLayer.set('name', 'imgLayer')
@@ -189,7 +190,7 @@ export const initTrackLayers = (): LayerGroup[] => {
 export const initView = new View({
   center: proj.transform([104.08537388, 30.58850819], 'EPSG:4326', 'EPSG:3857'),
   zoom: 5,
-  maxZoom: 18,
+  maxZoom: 25,
   minZoom: 0,
   projection: 'EPSG:3857',
 })
