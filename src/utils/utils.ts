@@ -400,6 +400,7 @@ export const getStopServerList = (
         return
       }
       const { data } = res
+
       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
       const currenServer = data?.find(
         (item: { propertys: { webSite: string; host: string | null } }) => {

@@ -9,8 +9,10 @@ import {
   getConfigSwitch,
   // getUserInfoRequest,
   indexLoginRequest,
+  PhoneLoginParams,
   // PhoneLoginParams,
   phoneLoginRequest,
+  UserLoginParams,
 } from '@/services/login'
 import { getClientCategorys } from '@/services/personnel-config/company-user'
 import { phoneNumberRule } from '@/utils/common-rule'
@@ -75,18 +77,19 @@ const LoginForm: React.FC<Props> = (props) => {
     }
   }
 
-  const login = (type: LoginType) => {
+  const login = (type: LoginType, data: UserLoginParams | PhoneLoginParams) => {
     // TODO  校验通过之后进行保存
     form.validateFields().then(async (values) => {
       try {
         values.clientType = 2
         values.code = imageCode
         setRequestLoading(true)
+        const requestData = Object.assign({ ...values }, data)
         let resData: any
         if (type === 'account') {
-          resData = await indexLoginRequest(values)
+          resData = await indexLoginRequest(requestData)
         } else {
-          resData = await phoneLoginRequest(values)
+          resData = await phoneLoginRequest(requestData)
         }
 
         if (resData.code === 200 && resData.isSuccess) {
@@ -220,8 +223,8 @@ const LoginForm: React.FC<Props> = (props) => {
     })
   }
 
-  const loginButtonClick = () => {
-    login(activeKey)
+  const loginButtonClick = (data: UserLoginParams | PhoneLoginParams) => {
+    login(activeKey, data)
   }
 
   const formChangeEvent = (changedValues: object) => {
