@@ -224,6 +224,8 @@ const LoginForm: React.FC<Props> = (props) => {
   useMount(() => {
     localStorage.removeItem('isAdminCategory')
   })
+
+  console.log('111')
   return (
     <Form form={form} onValuesChange={formChangeEvent} onKeyDown={(e) => onKeyDownLogin(e)}>
       <div className={styles.loginFormTitle}>
