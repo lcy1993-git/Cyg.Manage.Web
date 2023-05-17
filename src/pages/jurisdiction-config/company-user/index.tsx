@@ -399,7 +399,7 @@ const CompanyUser: React.FC = () => {
                 </span>
               </>
             ) : (
-              record.userStatus === 1 && <span>{record.userStatusText}</span>
+              <span>{record.userStatusText}</span>
             )}
           </>
         )
