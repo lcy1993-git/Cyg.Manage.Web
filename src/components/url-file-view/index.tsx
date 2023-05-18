@@ -29,7 +29,7 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`)
   let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
-  let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
   if (fileType === 'pdf') {
     api = {
       // url: `${baseUrl[requestSource]}${url}?path=${params.path}`,
