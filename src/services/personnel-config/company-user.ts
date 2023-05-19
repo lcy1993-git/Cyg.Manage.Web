@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { handleSM2Crypto } from '@/utils/utils'
 import { cyRequest, baseUrl } from '../common'
 
 export enum CompanyUserEnum {
@@ -59,6 +60,7 @@ export const updateCompanyUserItem = (params: ItemDetailData) => {
 
 //修改（重置）密码
 export const resetItemPwd = (params: ItemDetailData) => {
+  params['pwd'] = handleSM2Crypto(params.pwd)
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyUser/ResetPwd`, { method: 'POST', data: params })
   )
