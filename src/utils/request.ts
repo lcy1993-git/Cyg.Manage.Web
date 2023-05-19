@@ -19,6 +19,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   let isNoGlzz = isJson || isBbgl
 
   const { headers } = options
+
   if (c_token) {
     return {
       // url: url,
