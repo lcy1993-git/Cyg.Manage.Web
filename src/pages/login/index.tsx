@@ -32,6 +32,7 @@ const Login: React.FC = () => {
   const [isAutoLogin, setIsAutoLogin] = useState<boolean>(false)
 
   const getServerList = async () => {}
+
   const loginStop = (res?: Stop) => {
     setActiveStop(true)
     if (res) {

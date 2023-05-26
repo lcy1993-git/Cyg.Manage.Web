@@ -330,7 +330,7 @@ export const handleSM2Crypto = (data: any) => {
 }
 
 export const uploadAuditLog = (dataItem: Partial<EventInfo>[], needToken: boolean = false) => {
-  const userInfo = JSON.parse(localStorage.getItem('userInfo') || '')
+  const userInfo = JSON.parse(JSON.stringify(localStorage.getItem('userInfo') || ''))
   if (dataItem.length > 0) {
     dataItem[0].clientType = 1
     dataItem[0].clientVersion = webConfig?.version || ''
