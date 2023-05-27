@@ -1,6 +1,6 @@
-import React from 'react'
-import { useKeyPress } from 'ahooks'
 import { baseUrl } from '@/services/common'
+import { useKeyPress } from 'ahooks'
+import React from 'react'
 import styles from './index.less'
 
 interface MediaImgFullScreenProps {
@@ -31,7 +31,7 @@ const MediaImgFullScreen: React.FC<MediaImgFullScreenProps> = ({
 
   let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

@@ -59,7 +59,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
 
   let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://11.188.90.191:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 
