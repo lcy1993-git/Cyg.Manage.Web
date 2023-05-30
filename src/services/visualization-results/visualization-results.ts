@@ -258,3 +258,11 @@ export const getDynamicDetail = (params: any = {}) => {
     data: { ...params },
   })
 }
+
+// 获取勘察轨迹
+export const getDynamicTrackDetail = (params: any = {}) => {
+  return request(`${baseUrl.manage}/WebGis/GetDynamicTrackDetail`, {
+    method: 'POST',
+    data: { ...params },
+  })
+}
