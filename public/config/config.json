@@ -12,7 +12,7 @@
         "component": "/component/api",
         "material": "/material/api/",
         "resourceV1": "/resource/api",
-        "manage": "/manage/api",
+        "manage": "/webgis/api",
         "geoserver": "/geoserver",
         "securityAudit": "/securityaudit/api",
         "design": "/design/api",
