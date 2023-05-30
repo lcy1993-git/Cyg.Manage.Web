@@ -1,12 +1,11 @@
 import {
   getData,
+  getDynamicTrackDetail,
   getExtent,
   getMediaSign,
-  loadLayer,
   ProjectList,
 } from '@/services/visualization-results/visualization-results'
 import Feature from 'ol/Feature'
-import GeoJSON from 'ol/format/GeoJSON'
 import WKT from 'ol/format/WKT'
 import MultiLineString from 'ol/geom/MultiLineString'
 import { Draw } from 'ol/interaction'
@@ -27,7 +26,7 @@ import {
   trackStyle,
   zero_guy_style,
 } from './localData/pointStyle'
-import { getXmlData, LineCluster, sortByTime } from './utils'
+import { LineCluster, sortByTime } from './utils'
 
 var projects: any
 var layerGroups: LayerGroup[]
@@ -623,38 +622,18 @@ const loadWFSData = (
 
 // 加载勘察轨迹图层
 const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
-  const trackType = ['survey_track', 'disclosure_track']
   const track = ['survey_Track', 'disclosure_Track']
   const trackLine = ['survey_TrackLine', 'disclosure_TrackLine']
   const groupLayer = clearTrackLayers(trackLayers, type)
-  var postData = getXmlData(projects, undefined)
-
-  // if (time) {
-  //   time = time.replaceAll('/', '-');
-  //   var startDate = new Date(time);
-  //   var endDate = new Date(time);
-  //   endDate.setDate(endDate.getDate() + 1);
-  //   var postDataStart = postData.substr(0, 418);
-  //   var postDataEnd = postData.substr(postData.length - 29, 29);
-  //   postData =
-  //     postDataStart +
-  //     '<ogc:Filter><And>' +
-  //     '<PropertyIsEqualTo><PropertyName>project_id</PropertyName><Literal>' +
-  //     id +
-  //     '</Literal></PropertyIsEqualTo>' +
-  //     '<PropertyIsLessThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>' +
-  //     endDate.toISOString() +
-  //     '</Literal></PropertyIsLessThanOrEqualTo><PropertyIsGreaterThanOrEqualTo><PropertyName>record_date</PropertyName><Literal>' +
-  //     startDate.toISOString() +
-  //     '</Literal></PropertyIsGreaterThanOrEqualTo></And></ogc:Filter>' +
-  //     postDataEnd;
-  // }
-  const promise = loadLayer(postData, 'pdd:' + trackType[type])
-  promise.then((data: any) => {
+  const projectIds = projects.map((project: any) => {
+    return project.id
+  })
+  getDynamicTrackDetail({ projectIds, trackType: type + 1 }).then((data: any) => {
+    if (data.code !== 200) return
     // 筛选轨迹记录日期
-    let recordSet = new Set()
-    data.features.forEach((feature) => {
-      recordSet.add(feature.properties.record_date.substr(0, 10))
+    let recordSet: any = new Set()
+    data.content.forEach((feature: any) => {
+      recordSet.add(feature.recordDate)
     })
     trackRecordDateArray = Array.from(recordSet)
     let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray())
@@ -677,13 +656,14 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
       surveyTrackLineLayer.set('name', trackLine[type])
       groupLayer.getLayers().push(surveyTrackLineLayer)
     }
+    const wktFormat: any = new WKT()
     let obj = {}
-    for (let i = 0; i < data.features.length; i++) {
-      let ai = data.features[i]
-      if (!obj[ai.properties.project_id]) {
-        obj[ai.properties.project_id] = [ai]
+    for (let i = 0; i < data.content.length; i++) {
+      let ai = data.content[i]
+      if (!obj[ai.projectId]) {
+        obj[ai.projectId] = [ai]
       } else {
-        obj[ai.properties.project_id].push(ai)
+        obj[ai.projectId].push(ai)
       }
     }
     let res: any = []
@@ -695,40 +675,39 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
     })
 
     res.forEach((re: any) => {
-      let geojson = { type: 'FeatureCollection', features: [] }
-      geojson.features = re.data
-      geojson.features.forEach((feature: any) => {
-        feature.geometry.coordinates = transform(
-          feature.geometry.coordinates,
-          'EPSG:4326',
-          'EPSG:3857'
-        )
-      })
-      const pJSON = new GeoJSON().readFeatures(geojson)
-      pJSON.forEach((feature: any) => {
-        let s = trackStyle()
+      re.data.forEach((item: any) => {
+        const feature = wktFormat.readFeature(item.geom, {
+          dataProjection: 'EPSG:4326',
+          featureProjection: 'EPSG:3857',
+        })
+        feature.setProperties(item)
+        const s = trackStyle()
         feature.setStyle(s)
+        surveyTrackLayer.getSource().addFeature(feature)
       })
-      surveyTrackLayer.getSource().addFeatures(pJSON)
 
       let lineFeatures: any = []
       let lineLatlngsSegement: any = []
       let segementFirstDate: Date = new Date()
       let segementFirstDateString: string = ''
-      let sortedFeatures = sortByTime(geojson.features)
+      let sortedFeatures = sortByTime(re.data)
       // let sortedFeatures = data.features.sort(sortFeaturesFunc);
 
       for (let i = 0; i < sortedFeatures.length; i++) {
         const feature = sortedFeatures[i]
-        if (lineLatlngsSegement.length == 0) {
-          segementFirstDate = new Date(feature.properties.record_date)
-          segementFirstDateString = feature.properties.record_date
+        if (lineLatlngsSegement.length === 0) {
+          segementFirstDate = new Date(feature.recordDate)
+          segementFirstDateString = feature.recordDate
         }
 
-        let tempDate = new Date(feature.properties.record_date)
+        let tempDate = new Date(feature.recordDate)
         // 记录属于同一日的勘察轨迹
-        if (tempDate.getDay() == segementFirstDate.getDay()) {
-          lineLatlngsSegement.push(feature.geometry.coordinates)
+        if (tempDate.getDay() === segementFirstDate.getDay()) {
+          const point = wktFormat.readGeometry(feature.geom, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857',
+          })
+          lineLatlngsSegement.push(point.getCoordinates())
         } else {
           // 完成本日期的勘察轨迹记录
           let lineGeom = new MultiLineString([lineLatlngsSegement])
@@ -741,9 +720,13 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
           lineFeatures.push(lineFeature)
           // 开始记录下一日期的勘察轨迹
           lineLatlngsSegement = []
-          lineLatlngsSegement.push(feature.geometry.coordinates)
-          segementFirstDate = new Date(feature.properties.record_date)
-          segementFirstDateString = feature.properties.record_date
+          const point = wktFormat.readGeometry(feature.geom, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857',
+          })
+          lineLatlngsSegement.push(point.getCoordinates())
+          segementFirstDate = new Date(feature.recordDate)
+          segementFirstDateString = feature.recordDate
         }
       }
 
