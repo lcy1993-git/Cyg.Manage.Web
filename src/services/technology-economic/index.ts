@@ -1,5 +1,5 @@
-import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import request, { transformUrlParams } from '@/utils/request'
+import { baseUrl, cyRequest } from '../common'
 
 /**
  * 将对象传参formData格式化
@@ -20,16 +20,16 @@ const formData = (params: Object) => {
 
 // ***定额库***
 export interface CreateQuotaLibrary {
-  materialMachineLibraryId: string
-  name: string
-  quotaScope: 1 | 2
-  publishDate: string
-  publishOrg: string
-  year: number | string
-  industryType: 1 | 2 | 3
-  majorType: 1 | 2
-  remark: string
-  enabled: boolean
+  // materialMachineLibraryId: string
+  // name: string
+  // quotaScope: 1 | 2
+  // publishDate: string
+  // publishOrg: string
+  // year: number | string
+  // industryType: 1 | 2 | 3
+  // majorType: 1 | 2
+  // remark: string
+  // enabled: boolean
   file: File
 }
 
@@ -56,9 +56,10 @@ export const queryQuotaLibraryCatalogList = (id: string) => {
 }
 
 // 创建定额库
-export const createQuotaLibrary = (params: CreateQuotaLibrary) => {
+export const createQuotaLibrary = (params: CreateQuotaLibrary, urlParams: object) => {
+  let url = transformUrlParams(`${baseUrl.tecEco}/QuotaLibrary/CreateQuotaLibrary`, urlParams)
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/QuotaLibrary/CreateQuotaLibrary`, {
+    request(url, {
       method: 'POST',
       data: formData(params),
     })
@@ -94,13 +95,13 @@ interface GetPage {
 }
 
 interface CreateMaterialMachineLibrary {
-  name: string
-  publishDate: string
-  publishOrg: string
-  year: number
-  IndustryType: 1 | 2 | 3
-  remark: string
-  enabled: boolean
+  // name: string
+  // publishDate: string
+  // publishOrg: string
+  // year: number
+  // IndustryType: 1 | 2 | 3
+  // remark: string
+  // enabled: boolean
   file: File
 }
 
@@ -115,9 +116,16 @@ export const queryMaterialMachineLibraryPager = (data: GetPage) => {
 }
 
 // 创建人材机库
-export const createMaterialMachineLibrary = (data: CreateMaterialMachineLibrary) => {
+export const createMaterialMachineLibrary = (
+  data: CreateMaterialMachineLibrary,
+  urlParams: object
+) => {
+  let url = transformUrlParams(
+    `${baseUrl.tecEco}/MaterialMachineLibrary/CreateMaterialMachineLibrary`,
+    urlParams
+  )
   return cyRequest(() =>
-    request(`${baseUrl.tecEco}/MaterialMachineLibrary/CreateMaterialMachineLibrary`, {
+    request(url, {
       method: 'POST',
       data: formData(data),
     })

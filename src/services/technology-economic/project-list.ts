@@ -1,8 +1,8 @@
-import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import request, { transformUrlParams } from '@/utils/request'
+import { baseUrl, cyRequest } from '../common'
 
 interface ImportProject {
-  engineeringTemplateId: string
+  // engineeringTemplateId: string
   file: File
 }
 /**
@@ -34,9 +34,13 @@ export const getEngineeringTemplateTreeData = (
   )
 }
 // 导入目录
-export const importProject = (data: ImportProject) => {
+export const importProject = (data: ImportProject, urlParams: object) => {
+  const url = transformUrlParams(
+    `${baseUrl.tecEco1}/EngineeringTemplateCatalog/ImportEngineeringTemplateCatalog`,
+    urlParams
+  )
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/EngineeringTemplateCatalog/ImportEngineeringTemplateCatalog`, {
+    request(url, {
       method: 'POST',
       data: formData(data),
     })

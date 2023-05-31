@@ -1,7 +1,7 @@
-import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
-import type { QueryData } from '@/services/technology-economic/usual-quota-table'
 import type { SuppliesLibraryData } from '@/pages/technology-economic/supplies-library'
+import type { QueryData } from '@/services/technology-economic/usual-quota-table'
+import request, { transformUrlParams } from '@/utils/request'
+import { baseUrl, cyRequest } from '../common'
 
 /**
  * 将对象传参formData格式化
@@ -68,9 +68,10 @@ export const GetMaterialLibraryAllListNoUsed = () => {
 }
 
 // 新增物料库
-export const addMaterialLibrary = (data: SuppliesLibraryData) => {
+export const addMaterialLibrary = (data: SuppliesLibraryData, urlParams: object) => {
+  const url = transformUrlParams(`${baseUrl.tecEco1}/MaterialLibrary/AddMaterialLibrary`, urlParams)
   return cyRequest<any>(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/AddMaterialLibrary`, {
+    request(url, {
       method: 'POST',
       data: formData(data),
     })

@@ -1,15 +1,14 @@
+import CommonTitle from '@/components/common-title'
+import WrapperComponent from '@/components/page-common-wrap'
+import TableImportButton from '@/components/table-import-button'
+import { querySocialSecurityHouseFundTree } from '@/services/technology-economic/social-security-fund'
+import { DownOutlined } from '@ant-design/icons'
+import { useMount } from 'ahooks'
+import type { TreeDataNode } from 'antd'
+import { Spin, Table, Tree } from 'antd'
 import type { Key } from 'react'
 import React, { useState } from 'react'
 import styles from './index.less'
-import CommonTitle from '@/components/common-title'
-import type { TreeDataNode } from 'antd'
-import { Table } from 'antd'
-import { Spin, Tree } from 'antd'
-import { useMount } from 'ahooks'
-import { querySocialSecurityHouseFundTree } from '@/services/technology-economic/social-security-fund'
-import { DownOutlined } from '@ant-design/icons'
-import WrapperComponent from '@/components/page-common-wrap'
-import TableImportButton from '@/components/table-import-button'
 
 type DirectoryNode = TreeDataNode & {
   id: string
@@ -103,16 +102,20 @@ const SocialSecurityFund: React.FC = () => {
             </div>
             <div className={styles.importButton}>
               <TableImportButton
-                extraParams={{
-                  // commonlyTableType: active,
-                  RateFileId: window.location.search.split('=')[1],
-                }}
+                extraParams={
+                  {
+                    // commonlyTableType: active,
+                    // RateFileId: window.location.search.split('=')[1],
+                  }
+                }
                 modalTitle={'导入费率'}
                 buttonTitle={'导入费率'}
                 // style={{ zIndex: 99 }}
                 template={true}
                 requestSource={'tecEco1'}
-                importUrl={'/RateTable/ImportRateTable'}
+                importUrl={`/RateTable/ImportRateTable?RateFileId=${
+                  window.location.search.split('=')[1]
+                }`}
                 setSuccessful={getTableList}
               />
             </div>
