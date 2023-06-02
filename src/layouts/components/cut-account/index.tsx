@@ -18,6 +18,7 @@ import { history } from 'umi'
 import VerifycodeImage from '@/pages/login/components/verifycode-image'
 import { baseUrl } from '@/services/common'
 import { useLayoutStore } from '@/layouts/context'
+import uuid from 'node-uuid'
 
 interface EditPasswordProps {
   visible: boolean
@@ -33,6 +34,9 @@ const CutAccount = (props: EditPasswordProps) => {
   const [form] = Form.useForm()
   const [spinning, setSpinning] = useState<boolean>(false)
   const [imageCode, setImageCode] = useState<string>('')
+
+  //cookie
+  const [key] = useState<string>(uuid.v1())
   // 刷新验证码的hash值
   const random = () => Math.random().toString(36).slice(2)
   const [reloadSign, setReloadSign] = useState(random())
@@ -64,6 +68,7 @@ const CutAccount = (props: EditPasswordProps) => {
       .then(async (value) => {
         const { userName } = value
         value.code = imageCode
+        value.sessionKey = key
         // TODO 快捷切换
 
         const requestData = Object.assign({ ...value }, data)
@@ -256,6 +261,7 @@ const CutAccount = (props: EditPasswordProps) => {
         </CyFormItem>
         <CyFormItem name="code" label="验证码" required labelWidth={100}>
           <VerifycodeImage
+            loginKey={key}
             activeKey={'account'}
             needVerifycode={true}
             onChange={setImageCode}

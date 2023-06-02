@@ -14,6 +14,7 @@ interface VerifycodeImageProps {
   reloadSign: string
   refreshCode: () => void
   activeKey?: LoginType
+  loginKey?: string
 }
 
 const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
@@ -24,6 +25,7 @@ const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
   reloadSign,
   refreshCode,
   activeKey,
+  loginKey,
 }) => {
   const codeRef = useRef<Input>(null)
 
@@ -58,7 +60,7 @@ const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
         <img
           title="看不清？换一张"
           className={styles.img}
-          src={`${finalUrl}/VerifyCode/Get?category=1&codeType=1&codeLength=4&reloadSign=${reloadSign}`}
+          src={`${finalUrl}/VerifyCode/Get?category=1&codeType=1&codeLength=4&reloadSign=${reloadSign}&sessionKey=${loginKey}`}
           alt="刷新"
         />
         <span className={classnames(styles.changeText, 'link')}>看不清？换一张</span>

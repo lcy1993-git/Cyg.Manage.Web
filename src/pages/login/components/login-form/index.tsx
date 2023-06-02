@@ -25,6 +25,7 @@ import { history } from 'umi'
 import { Stop } from '@/pages/login'
 import VerifycodeImage from '../verifycode-image'
 import styles from './index.less'
+import uuid from 'node-uuid'
 
 const { TabPane } = Tabs
 
@@ -58,6 +59,9 @@ const LoginForm: React.FC<Props> = (props) => {
   const userNameRef = useRef<Input>(null)
   const phoneRef = useRef<Input>(null)
 
+  //cookie
+  const [key] = useState<string>(uuid.v1())
+
   const { run: getClientList } = useRequest(() => getClientCategorys(), {
     manual: true,
   })
@@ -79,10 +83,12 @@ const LoginForm: React.FC<Props> = (props) => {
 
   const login = (type: LoginType, data: UserLoginParams | PhoneLoginParams) => {
     // TODO  校验通过之后进行保存
+
     form.validateFields().then(async (values) => {
       try {
         values.clientType = 2
         values.code = imageCode
+        values.sessionKey = key
         setRequestLoading(true)
         const requestData = Object.assign({ ...values }, data)
         let resData: any
@@ -276,6 +282,7 @@ const LoginForm: React.FC<Props> = (props) => {
               />
             </Form.Item>
             <VerifycodeImage
+              loginKey={key}
               userKey={getkey(activeKey)}
               activeKey={activeKey}
               needVerifycode={needVerifycode}
