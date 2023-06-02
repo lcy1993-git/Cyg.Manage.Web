@@ -1,34 +1,33 @@
-import React, { useState } from 'react'
-import { history } from 'umi'
-import { Input, Button, Modal, Form, message, Space, Spin, DatePicker, Row, Col } from 'antd'
-import type { ColumnsType } from 'antd/lib/table'
 import {
-  EyeOutlined,
-  PlusOutlined,
   DeleteOutlined,
   ExclamationCircleOutlined,
+  EyeOutlined,
+  PlusOutlined,
 } from '@ant-design/icons'
+import { Button, Col, DatePicker, Form, Input, message, Modal, Row, Space, Spin } from 'antd'
+import type { ColumnsType } from 'antd/lib/table'
 import { isArray } from 'lodash'
+import React, { useState } from 'react'
+import { history } from 'umi'
 
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
 
+import FileUpload from '@/components/file-upload'
 import {
-  // modifyMaterialLibraryStatus,
   addMaterialLibrary,
   deleteMaterialLibraryById,
 } from '@/services/technology-economic/supplies-library'
 import useBoolean from 'ahooks/lib/useBoolean'
 import moment from 'moment'
-import FileUpload from '@/components/file-upload'
 
 export interface SuppliesLibraryData {
-  id?: string
-  name: string
-  publishOrg: string
-  publishDate: string | moment.Moment
-  remark: string
+  // id?: string
+  // name: string
+  // publishOrg: string
+  // publishDate: string | moment.Moment
+  // remark: string
   // "enabled": boolean
   file: any
 }
@@ -162,7 +161,9 @@ const SuppliesLibrary: React.FC = () => {
       return
     }
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
-    addMaterialLibrary(data)
+    let urlParams = JSON.parse(JSON.stringify(data))
+    delete urlParams.file
+    addMaterialLibrary({ file: data.file }, urlParams)
       .then(() => {
         setSpinning(false)
         setAddFormVisible(false)

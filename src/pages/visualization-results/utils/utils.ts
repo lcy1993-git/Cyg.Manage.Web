@@ -4,8 +4,8 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 
 import { Properties } from '@/services/visualization-results/side-tree'
 
-import { line_style, zero_guy_style } from './localData/pointStyle'
 import LineString from 'ol/geom/LineString'
+import { line_style, zero_guy_style } from './localData/pointStyle'
 
 /**
  * 用于描述两个点位之间由多条线组成的线簇
@@ -351,16 +351,14 @@ export const sortByTime = (arr: any[]) => {
   if (arr.length < 5) {
     return arr.sort((a: any, b: any) => {
       // @ts-ignore
-      return (
-        new Date(a.properties.record_date).getTime() - new Date(b.properties.record_date).getTime()
-      )
+      return new Date(a.recordDate).getTime() - new Date(b.recordDate).getTime()
     })
   } else {
     return (
       arr
         .map((item: Feature | any) => {
           return {
-            t: new Date(item.properties.record_date).getTime(),
+            t: new Date(item.recordDate).getTime(),
             v: item,
           }
         })

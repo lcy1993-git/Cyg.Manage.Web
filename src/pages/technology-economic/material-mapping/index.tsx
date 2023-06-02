@@ -1,39 +1,39 @@
-import React, { useEffect, useState } from 'react'
-import { history } from 'umi'
 import {
-  Input,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
+  EyeOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
+import {
   Button,
-  Modal,
-  Form,
-  message,
-  Space,
-  Row,
   Col,
   DatePicker,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
   Select,
+  Space,
   Spin,
 } from 'antd'
 import type { ColumnsType } from 'antd/lib/table'
-import {
-  EyeOutlined,
-  PlusOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-} from '@ant-design/icons'
 import { isArray } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { history } from 'umi'
 
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
 
-import { GetMaterialLibraryAllListNoUsed } from '@/services/technology-economic/supplies-library'
 import FileUpload from '@/components/file-upload'
-import useBoolean from 'ahooks/lib/useBoolean'
-import moment from 'moment'
 import {
   addSourceMaterialMappingQuota,
   deleteMaterialMappingQuota,
 } from '@/services/technology-economic/material'
+import { GetMaterialLibraryAllListNoUsed } from '@/services/technology-economic/supplies-library'
+import useBoolean from 'ahooks/lib/useBoolean'
+import moment from 'moment'
 // import AdjustmentFileForm from "@/pages/technology-economic/spread-coefficient/components/adjustment-file-form";
 
 export interface SuppliesLibraryData {
@@ -179,7 +179,9 @@ const MaterialMapping: React.FC = () => {
     // data.enabled = !!data.enabled
     data.file = val.file
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
-    addSourceMaterialMappingQuota(data)
+    let urlParams = JSON.parse(JSON.stringify(data))
+    delete urlParams.file
+    addSourceMaterialMappingQuota({ file: data.file }, urlParams)
       .then(() => {
         setAddFormVisible(false)
         refresh()

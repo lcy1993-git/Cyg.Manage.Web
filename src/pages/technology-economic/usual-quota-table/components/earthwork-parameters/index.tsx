@@ -38,9 +38,19 @@ const EarthworkParameters: React.FC<Props> = (props) => {
     setDataSource1(res1)
     setDataSource2(res2)
   }
+
+  const isTrans = localStorage.getItem('isTransfer')
+  let handleUrl = `${baseUrl.upload}`
+
+  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+
+  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+
   const downImage = (row: AttritionRateRow) => {
     var xhr = new XMLHttpRequest()
-    xhr.open('GET', `${baseUrl.upload}/Download/GetFileById?fileId=${row.picPath}`, true) // 也可以使用POST方式，根据接口
+    xhr.open('GET', `${finalUrl}/Download/GetFileById?fileId=${row.picPath}`, true) // 也可以使用POST方式，根据接口
     xhr.responseType = 'blob' // 返回类型blob
     xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑

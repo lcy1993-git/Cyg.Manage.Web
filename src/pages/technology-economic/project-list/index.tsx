@@ -61,7 +61,10 @@ const ProjectList: React.FC = () => {
         file,
         engineeringTemplateId,
       }
-      await importProject(value)
+      await importProject(
+        { file: value.file },
+        { engineeringTemplateId: value.engineeringTemplateId }
+      )
       // if (res.code === 5000) {
       //   message.error(res.message);
       //   return;

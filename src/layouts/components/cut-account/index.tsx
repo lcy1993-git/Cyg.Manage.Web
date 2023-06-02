@@ -45,7 +45,6 @@ const CutAccount = (props: EditPasswordProps) => {
   const [hasErr, setHasErr] = useState(false)
 
   const getStopInfo = () => {
-    setSpinning(true)
     form.validateFields().then((values) => {
       getStopServerList(sureCutAccount, values, showStop)
     })

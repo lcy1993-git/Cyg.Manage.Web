@@ -1,11 +1,11 @@
-import { Table } from 'antd'
-import type { ColumnsType } from 'antd/lib/table/Table'
-import React, { useCallback, useEffect, useState } from 'react'
-import styles from './index.less'
+import WrapperComponent from '@/components/page-common-wrap'
 import TableImportButton from '@/components/table-import-button'
 import { queryEngineeringInfoCostTotal } from '@/services/technology-economic/total-table'
-import WrapperComponent from '@/components/page-common-wrap'
+import { Table } from 'antd'
+import type { ColumnsType } from 'antd/lib/table/Table'
 import qs from 'qs'
+import React, { useCallback, useEffect, useState } from 'react'
+import styles from './index.less'
 
 interface Props {}
 
@@ -178,11 +178,11 @@ const TotalTable: React.FC<Props> = () => {
       <div className={styles.totalTable}>
         <div className={styles.topButton}>
           <TableImportButton
-            extraParams={{ EngineeringTemplateId: id }}
+            extraParams={{}}
             buttonTitle={'导入总算表'}
             requestSource={'tecEco1'}
             setSuccessful={getTableData}
-            importUrl={'/EngineeringTotal/ImportEngineeringInfoCostTotal'}
+            importUrl={`/EngineeringTotal/ImportEngineeringInfoCostTotal?EngineeringTemplateId=${id}`}
           />
         </div>
         <Table

@@ -1,12 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Button, Modal, message, Popconfirm, Form } from 'antd'
-import WrapperComponent from '@/components/page-common-wrap'
 import CommonTitle from '@/components/common-title'
-import styles from './index.less'
-import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
-import RightComponent from './components/right-component'
-import AddOrEditForm from './components/add-edit-form'
-import ImportTemplateForm from './components/import-template/inex'
+import WrapperComponent from '@/components/page-common-wrap'
 import {
   addArea,
   defaultPriceDifferenceTemplate,
@@ -15,7 +8,14 @@ import {
   importDefaultTemplateData,
   updateArea,
 } from '@/services/technology-economic/spread-coefficient'
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form, message, Modal, Popconfirm } from 'antd'
 import qs from 'qs'
+import { useEffect, useState } from 'react'
+import AddOrEditForm from './components/add-edit-form'
+import ImportTemplateForm from './components/import-template/inex'
+import RightComponent from './components/right-component'
+import styles from './index.less'
 
 interface ListData {
   item1: string
@@ -121,7 +121,9 @@ const PriceDifferenceDetails: React.FC = () => {
       value.area = values.item1 ? values.item1 : ''
       value.files = values.file
       value.templateId = id
-      await addArea(value)
+      let urlParams = JSON.parse(JSON.stringify(value))
+      delete urlParams.files
+      await addArea({ files: value.files }, urlParams)
       refresh()
       setAddFormVisible(false)
       addForm.resetFields()
@@ -134,8 +136,10 @@ const PriceDifferenceDetails: React.FC = () => {
       value.area = values.item1 ? values.item1 : ''
       value.templateId = id
       value.templateItemId = activeValue.item2
+      let urlParams = JSON.parse(JSON.stringify(value))
+      delete urlParams.file
       // TODO 编辑接口
-      await updateArea(value)
+      await updateArea({ file: value.file }, urlParams)
       refresh()
       setEditFormVisible(false)
       editForm.resetFields()
@@ -145,7 +149,9 @@ const PriceDifferenceDetails: React.FC = () => {
   const sureImportTemplate = () => {
     importForm.validateFields().then(async (values) => {
       values.templateId = id
-      await importDefaultTemplateData(values) // TODO
+      const urlParams = JSON.parse(JSON.stringify(values))
+      delete urlParams.files
+      await importDefaultTemplateData({ files: values?.files }, urlParams) // TODO
       refresh()
       setImportFormVisible(false)
       importForm.resetFields()
