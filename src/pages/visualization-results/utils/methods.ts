@@ -633,7 +633,8 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
     // 筛选轨迹记录日期
     let recordSet: any = new Set()
     data.content.forEach((feature: any) => {
-      recordSet.add(feature.recordDate)
+      feature.record_date = feature.recordDate
+      recordSet.add(new Date(feature.recordDate).toLocaleDateString())
     })
     trackRecordDateArray = Array.from(recordSet)
     let surveyTrackLayer = getLayerByName(track[type], groupLayer.getLayers().getArray())
@@ -697,7 +698,7 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
         const feature = sortedFeatures[i]
         if (lineLatlngsSegement.length === 0) {
           segementFirstDate = new Date(feature.recordDate)
-          segementFirstDateString = feature.recordDate
+          segementFirstDateString = segementFirstDate.toLocaleDateString()
         }
 
         let tempDate = new Date(feature.recordDate)
@@ -726,7 +727,7 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
           })
           lineLatlngsSegement.push(point.getCoordinates())
           segementFirstDate = new Date(feature.recordDate)
-          segementFirstDateString = feature.recordDate
+          segementFirstDateString = segementFirstDate.toLocaleDateString()
         }
       }
 
