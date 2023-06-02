@@ -165,7 +165,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     if (selected) return
     selected = true
 
-    if (layer.getProperties().name == 'highlightLayer') {
+    if (layer.getProperties().name === 'highlightLayer') {
       if (isCtrl) {
         layer.getSource().removeFeature(feature_)
       } else {
@@ -286,7 +286,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     let highlightFeatures = []
     let totalLength = 0
-    if (layerName == 'line' || layerName == 'user_line' || layerName == 'zero_guy') {
+    if (layerName === 'line' || layerName === 'user_line' || layerName === 'zero_guy') {
       let layerTypeValue = feature.getProperties().layerType
       if (feature.getProperties().polyline_id && feature.getProperties().is_cable) {
         map
@@ -305,13 +305,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                     layerName_.length
                   )
                   if (
-                    layerType_ == layerType &&
-                    (layerName_ == layerName || layerName_ == 'subline')
+                    layerType_ === layerType &&
+                    (layerName_ === layerName || layerName_ === 'subline')
                   ) {
                     v.getSource()
                       .getFeatures()
                       .forEach(function (f: any) {
-                        if (f.getProperties().polyline_id == feature.getProperties().polyline_id) {
+                        if (f.getProperties().polyline_id === feature.getProperties().polyline_id) {
                           f.set('layerType', layerTypeValue)
                           if (f.getProperties().length) {
                             let l = Number(f.getProperties().length) || 0
@@ -587,7 +587,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
 
     if (
-      layerType == 'survey' ||
+      layerType === 'survey' ||
       layerType === 'plan' ||
       layerType === 'design' ||
       layerType === 'dismantle'
@@ -678,7 +678,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     //杆塔和电缆中间头显示附加材料表
     if (
-      layerType == 'survey' ||
+      layerType === 'survey' ||
       layerType === 'plan' ||
       layerType === 'design' ||
       layerType === 'dismantle'
@@ -825,7 +825,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                 pJSON[p] = currentItem.spec || '' // 材料表中的‘下户线型号’
                 // const crlenth = (currentItem.itemNumber ?? 0) + currentItem.unit;
                 const crlenth =
-                  currentItem.itemNumber == undefined ? '' : currentItem.itemNumber + 'm'
+                  currentItem.itemNumber === undefined ? '' : currentItem.itemNumber + 'm'
 
                 pJSON['下户线长度'] = crlenth // 材料表中的‘下户线长度’
               } else {
@@ -846,7 +846,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否')
       }
-      resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] == 0 ? pJSON[p] : '' })
+      resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] === 0 ? pJSON[p] : '' })
     }
 
     // 下户线长度字段为空时不显示
@@ -945,19 +945,19 @@ export const mapPointermove = (evt: any, map: any) => {
           // 为该点设置选中样式
           feature.setStyle(trackStyle(isCurDayTrack(feature), true, true))
           // 为整条轨迹线设置选中样式
-          item
-            .getLayers()
-            .item(1)
-            ?.getSource()
-            .getFeatures()
-            .forEach((item) => {
-              if (
-                item.getProperties().record_date.substr(0, 10) ===
-                feature.getProperties().record_date.substr(0, 10)
-              ) {
-                item.setStyle(trackLineStyle(item, isCurDayTrack(item), true, true))
-              }
-            })
+          // item
+          //   .getLayers()
+          //   .item(1)
+          //   ?.getSource()
+          //   .getFeatures()
+          //   .forEach((item) => {
+          //     if (
+          //       item.getProperties().record_date.substr(0, 10) ===
+          //       feature.getProperties().record_date.substr(0, 10)
+          //     ) {
+          //       item.setStyle(trackLineStyle(item, isCurDayTrack(item), true, true))
+          //     }
+          //   })
         }
       })
     }
@@ -1051,7 +1051,7 @@ function setTrackLayerDefaultStyle(map: any, locked: boolean = false) {
 }
 function isCurDayTrack(feature: any) {
   if (trackRecordDate?.length > 0) {
-    return feature.get('record_date')?.substr(0, 10) === trackRecordDate
+    return new Date(feature.get('record_date')).toLocaleDateString() === trackRecordDate
   } else {
     return true
   }
