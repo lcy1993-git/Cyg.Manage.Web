@@ -1,22 +1,22 @@
+import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form, Input, message, Modal, Popconfirm, Space, Spin } from 'antd'
+import { ColumnsType } from 'antd/lib/table'
+import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { history } from 'umi'
-import { Input, Button, Modal, Form, message, Popconfirm, Spin, Space } from 'antd'
-import { ColumnsType } from 'antd/lib/table'
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { isArray } from 'lodash'
 
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import DictionaryForm from './components/add-edit-form'
 import {
   createQuotaLibrary,
   CreateQuotaLibrary,
   deleteQuotaLibrary,
 } from '@/services/technology-economic'
+import DictionaryForm from './components/add-edit-form'
 
-import styles from './index.less'
 import moment from 'moment'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -169,7 +169,9 @@ const QuotaLibrary: React.FC = () => {
           data[key] = values[key]
         }
       }
-      createQuotaLibrary(data as CreateQuotaLibrary)
+      const urlParams = JSON.parse(JSON.stringify(data))
+      delete urlParams.file
+      createQuotaLibrary({ file: data?.file } as CreateQuotaLibrary, urlParams)
         .then(() => {
           refresh()
           setAddFormVisible(false)

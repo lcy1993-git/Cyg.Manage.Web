@@ -1,10 +1,10 @@
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form, Input, message, Modal, Popconfirm, Space, Spin } from 'antd'
+import type { ColumnsType } from 'antd/lib/table'
+import { isArray } from 'lodash'
 import React, { useState } from 'react'
 import { history } from 'umi'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { Input, Button, Modal, Form, message, Popconfirm, Spin, Space } from 'antd'
-import type { ColumnsType } from 'antd/lib/table'
-import { EyeOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { isArray } from 'lodash'
 
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
@@ -15,8 +15,8 @@ import {
   createMaterialMachineLibrary,
   deleteMaterialMachineLibrary,
 } from '@/services/technology-economic'
-import styles from './index.less'
 import moment from 'moment'
+import styles from './index.less'
 
 type DataSource = {
   id: string
@@ -140,10 +140,12 @@ const QuotaLibrary: React.FC = () => {
     addForm.validateFields().then((values) => {
       setSpinning(true)
       const data = JSON.parse(JSON.stringify(values))
-      data.file = values.file
+      // data.file = values.file
       data.publishDate = moment(values.publishDate).format('YYYY-MM-DD')
       data.year = moment(values.year).format('YYYY')
-      createMaterialMachineLibrary(data)
+      let params = JSON.parse(JSON.stringify(data))
+      delete params.file
+      createMaterialMachineLibrary({ file: values.file }, params)
         .then(() => {
           refresh()
           setAddFormVisible(false)

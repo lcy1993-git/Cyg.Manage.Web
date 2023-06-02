@@ -6,7 +6,7 @@ import {
 import { PlusOutlined } from '@ant-design/icons'
 import { useBoolean, useRequest } from 'ahooks'
 import { Button, message, Modal, Table } from 'antd'
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 const columns = [
   {
     dataIndex: 'quotaNo',
@@ -25,15 +25,17 @@ const ReinforcementQuota = () => {
   const [uploadModalVisible, setUploadModalVisible] = useState<boolean>(false)
   const [triggerUploadFile] = useBoolean(false)
   const [file, setFile] = useState<any[]>([])
-  const { data: catalogueList, loading, run: catalogueListRun } = useRequest<any[]>(
-    queryQuotaRebarMappingList
-  )
+  const {
+    data: catalogueList,
+    loading,
+    run: catalogueListRun,
+  } = useRequest<any[]>(queryQuotaRebarMappingList)
   //添加
   const addEvent = () => {
     setUploadModalVisible(true)
   }
   const uploadFile = async () => {
-    await importQuotaRebarMapping({ file: file })
+    await importQuotaRebarMapping({ file: file }, {})
     message.success('上传成功')
     setUploadModalVisible(false)
     catalogueListRun()

@@ -1,5 +1,5 @@
-import { extend, RequestOptionsInit } from 'umi-request'
 import { uploadAuditLog } from '@/utils/utils'
+import { extend, RequestOptionsInit } from 'umi-request'
 
 const request = extend({
   timeout: 1000 * 60 * 3,
@@ -93,5 +93,17 @@ request.interceptors.response.use((response) => {
   }
   return response
 })
+// 隔离装置上传文件把其他参数拼在url上
+export const transformUrlParams = (url: string, data: object) => {
+  let newUrl = url + ''
+  Object.keys(data).forEach((key) => {
+    if (newUrl.indexOf('?') !== -1) {
+      newUrl += `&${key}=${data[key]}`
+    } else {
+      newUrl += `?${key}=${data[key]}`
+    }
+  })
+  return newUrl
+}
 
 export default request

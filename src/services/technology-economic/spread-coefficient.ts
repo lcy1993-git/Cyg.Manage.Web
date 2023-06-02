@@ -1,17 +1,17 @@
-import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import request, { transformUrlParams } from '@/utils/request'
+import { baseUrl, cyRequest } from '../common'
 
 interface ImportProject {
-  engineeringTemplateId: string
-  file: File
+  // engineeringTemplateId: string
+  files: File
 }
 interface catalogueParams {
-  name: string
-  enabled: boolean
-  publishedBy: string
-  publishDate: string
-  remark: string
-  id?: string
+  // name: string
+  // enabled: boolean
+  // publishedBy: string
+  // publishDate: string
+  // remark: string
+  // id?: string
 }
 /**
  * 将对象传参formData格式化
@@ -66,9 +66,13 @@ export const uploadTemplates = (data: ImportProject) => {
   )
 }
 // 导入默认模板数据
-export const importDefaultTemplateData = (data: ImportProject) => {
+export const importDefaultTemplateData = (data: ImportProject, urlParams: object) => {
+  const url = transformUrlParams(
+    `${baseUrl.tecEco1}/PriceDifference/ImportDefaultTemplateData`,
+    urlParams
+  )
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/PriceDifference/ImportDefaultTemplateData`, {
+    request(url, {
       method: 'POST',
       data: formData(data),
     })
@@ -140,18 +144,20 @@ export const createAdjustmentFile = (params: catalogueParams) => {
   )
 }
 // 添加价差地区
-export const addArea = (params: catalogueParams) => {
+export const addArea = (params: catalogueParams, urlParams: any) => {
+  const url = transformUrlParams(`${baseUrl.tecEco1}/PriceDifference/AddArea`, urlParams)
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.tecEco1}/PriceDifference/AddArea`, {
+    request(url, {
       method: 'POST',
       data: formData(params),
     })
   )
 }
 // 编辑价差地区
-export const updateArea = (params: catalogueParams) => {
+export const updateArea = (params: catalogueParams, urlParams: object) => {
+  const url = transformUrlParams(`${baseUrl.tecEco1}/PriceDifference/UpdateArea`, urlParams)
   return cyRequest<any[]>(() =>
-    request(`${baseUrl.tecEco1}/PriceDifference/UpdateArea`, {
+    request(url, {
       method: 'POST',
       data: formData(params),
     })

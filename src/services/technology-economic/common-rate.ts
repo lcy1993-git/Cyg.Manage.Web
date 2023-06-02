@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 // 创建定额库
 export interface AddRateTable {
@@ -111,9 +111,12 @@ export const getBasicReserveRate = (rateFileId: string) => {
 export const importRateTable = (rateFileId: string, file: File) => {
   const data = new FormData()
   data.append('file', file)
-  data.append('rateFileId', rateFileId)
+  // data.append('rateFileId', rateFileId)
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable`, { method: 'POST', data })
+    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable?rateFileId=${rateFileId}`, {
+      method: 'POST',
+      data,
+    })
   )
 }
 // 导入费率zip
