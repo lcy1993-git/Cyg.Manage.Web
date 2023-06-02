@@ -27,8 +27,10 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
       }
     } else {
       if (code === 401) {
+        if (history.location.pathname === '/again-login') {
+          return
+        }
         history.push('/again-login')
-
         // message.error('会话超时，已自动跳转到登录界面');
       } else {
         // eslint-disable-next-line no-lonely-if
