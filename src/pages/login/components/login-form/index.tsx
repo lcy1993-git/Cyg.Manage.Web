@@ -101,7 +101,6 @@ const LoginForm: React.FC<Props> = (props) => {
         if (resData.code === 200 && resData.isSuccess) {
           const { accessToken } = resData.content
           localStorage.setItem('Authorization', accessToken)
-
           //存储评审、技能开关
           const category = await getClientList()
           const handleList = category.map((item) => item.value)
@@ -113,10 +112,10 @@ const LoginForm: React.FC<Props> = (props) => {
 
           //存储思极地图开关
           const sjConfig = await getConfigSwitch('useSjMap')
-          config && localStorage.setItem('useSjMap', sjConfig.value)
+          sjConfig && localStorage.setItem('useSjMap', sjConfig.value)
 
           const userInfo = await GetCommonUserInfo()
-          localStorage.setItem('userInfo', JSON.stringify(userInfo))
+          userInfo && localStorage.setItem('userInfo', JSON.stringify(userInfo))
 
           const modules = await getAuthorityModules()
           if (type === 'account') {

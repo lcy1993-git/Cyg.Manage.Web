@@ -13,11 +13,11 @@ export default {
       // 171.223.214.154:21573
       // target: 'http://10.6.1.40:21529',
       // target: 'https://srthkf3.gczhyun.com:21530',
-      target: 'https://srthcs7.gczhyun.com:21700',
+      // target: 'https://srthcs7.gczhyun.com:21700',
       // target: 'https://srthcs3.gczhyun.com:21564',
       // target: 'https://srthk8scs3.gczhyun.com:21530',
 
-      // target: 'https://srthkf1.gczhyun.com:21530',
+      target: 'https://srthkf1.gczhyun.com:21530',
       // target: 'http://10.6.211.96:8080',
       // target: 'https://ys.gczhyun.com/',
       // target: 'https://xj.gczhyun.com/',
