@@ -461,7 +461,7 @@ export const editProject = (params: any) => {
 // 编辑qgc项目信息
 export const editQGCProject = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/ModifyQgc`, { method: 'POST', data: params })
+    request(`${baseUrl.project}/QgcPorject/ModifyQgc`, { method: 'POST', data: params })
   )
 }
 
