@@ -43,7 +43,6 @@ export const userLoginRequest = (params: UserLoginParams) => {
   params['pwd'] = handleSM2Crypto(params.pwd)
   params['clientType'] = '2'
   params['timestamp'] = `${Date.parse(`${new Date()}`)}`
-
   return request(`${baseUrl.common}/Users/SignIn`, {
     method: 'POST',
     data: handleSM2Crypto(JSON.stringify(params)),

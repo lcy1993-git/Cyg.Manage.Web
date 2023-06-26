@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
 import { handleSM2Crypto } from '@/utils/utils'
+import { baseUrl, cyRequest } from '../common'
 
 export enum CompanyUserEnum {
   '启用' = 1,
@@ -40,7 +40,8 @@ export const getCompanyUserDetail = (id: string) => {
 
 //新增公司用户
 export const addCompanyUserItem = (params: CompanyUserItemParams) => {
-  params.pwd = handleSM2Crypto(params.pwd)
+  params['pwd'] = handleSM2Crypto(params.pwd)
+  params['confirmPwd'] = handleSM2Crypto(params.confirmPwd)
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyUser/Create`, { method: 'POST', data: params })
   )
@@ -62,6 +63,7 @@ export const updateCompanyUserItem = (params: ItemDetailData) => {
 
 //修改（重置）密码
 export const resetItemPwd = (params: ItemDetailData) => {
+  params['pwd'] = handleSM2Crypto(params.pwd)
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyUser/ResetPwd`, { method: 'POST', data: params })
   )
