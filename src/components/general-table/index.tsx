@@ -226,6 +226,8 @@ const withGeneralTable =
     }, [pageSize, currentPage, requestConditions])
 
     useImperativeHandle(ref, () => ({
+      currentPage: currentPage,
+      pageSize: pageSize,
       getCurrentPageLsit: () => {
         return
       },

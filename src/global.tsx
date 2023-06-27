@@ -49,7 +49,7 @@ const initConfig = async () => {
   if (host.includes('117.191.93.63')) {
     localStorage.setItem('isTransfer', '1')
   } else {
-    localStorage.removeItem('isTransfer')
+    localStorage.setItem('isTransfer', '0')
   }
 
   if (NODE_ENV === 'development') {

@@ -138,7 +138,7 @@ const HealthPolling: React.FC = () => {
 
   //登录初始化连接webSocket，退出卸载
   useEffect(() => {
-    if (isTrans && token && Number(isTrans) !== 1) {
+    if (token && Number(isTrans) !== 1) {
       createWebSocket()
     }
     return () => {

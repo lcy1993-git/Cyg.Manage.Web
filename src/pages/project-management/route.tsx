@@ -25,6 +25,12 @@ const ProjectAllAreaStatistics = Loadable({
   delay: 150,
 })
 
+const ProjectDetail = Loadable({
+  loader: () => import('@/pages/project-management/project-detail'),
+  loading: () => <Loading />,
+  delay: 150,
+})
+
 export default [
   {
     title: '我的工作台',
@@ -45,5 +51,10 @@ export default [
     title: '项目一览表',
     path: '/project-management/project-all-area-statistics',
     component: <ProjectAllAreaStatistics />,
+  },
+  {
+    title: '项目明细表',
+    path: '/project-management/project-detail',
+    component: <ProjectDetail />,
   },
 ]
