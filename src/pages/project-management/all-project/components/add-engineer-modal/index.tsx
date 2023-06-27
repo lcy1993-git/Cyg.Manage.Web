@@ -1,15 +1,13 @@
-import React, { useState, Dispatch, SetStateAction } from 'react'
-import { useControllableValue } from 'ahooks'
-import { Modal, Button } from 'antd'
-import { Form } from 'antd'
-import CreateEngineer from '../create-engineer'
-import { addEngineer, getProjectTableList } from '@/services/project-management/all-project'
-import { message } from 'antd'
 import { useLayoutStore } from '@/layouts/context'
-import { relationProject } from '@/services/plan-manage/plan-manage'
 import { clearDragBoxDatas } from '@/pages/visualization-results/plan-manage/PlanMap/utils/initializeMap'
-import { uploadAuditLog } from '@/utils/utils'
 import { baseUrl } from '@/services/common'
+import { relationProject } from '@/services/plan-manage/plan-manage'
+import { addEngineer, getProjectTableList } from '@/services/project-management/all-project'
+import { uploadAuditLog } from '@/utils/utils'
+import { useControllableValue } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import CreateEngineer from '../create-engineer'
 
 interface AddEngineerModalProps {
   visible: boolean
@@ -153,7 +151,7 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
       centered
       visible={state}
       bodyStyle={{
-        height: current > 0 ? 800 : 450,
+        height: current > 0 ? 600 : 450,
         overflowY: 'auto',
         padding: current > 0 ? '0 24px' : '',
       }}
