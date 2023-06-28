@@ -1081,3 +1081,11 @@ export const postSubmitProjectToQGC = (projectId: string) => {
     })
   )
 }
+// 全过程变更项目关联关系
+export const postBatchSyncProject = () => {
+  return cyRequest(() =>
+    request(`${baseUrl.comment}/QgcProject/BatchSyncProject`, {
+      method: 'POST',
+    })
+  )
+}
