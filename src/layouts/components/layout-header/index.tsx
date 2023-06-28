@@ -62,7 +62,7 @@ const LayoutHeader: React.FC = () => {
       setCount(0)
       setStopServerInfo({} as Stop)
     }
-  }, 10000)
+  }, 30000)
   // TODO 点击个人信息对应的一些方法都还么写
   const myBaseInfoMenu = (
     <Menu>
