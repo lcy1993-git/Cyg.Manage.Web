@@ -13,8 +13,6 @@ interface ChangeUserPhone {
 }
 
 export const editPassword = (params: EditPasswordParams) => {
-  params['oldPwd'] = handleSM2Crypto(params.oldPwd)
-  params['newPwd'] = handleSM2Crypto(params.newPwd)
   return cyRequest(() =>
     request(`${baseUrl.common}/Users/ModifyPwd`, { method: 'POST', data: params })
   )

@@ -63,7 +63,6 @@ export const updateCompanyUserItem = (params: ItemDetailData) => {
 
 //修改（重置）密码
 export const resetItemPwd = (params: ItemDetailData) => {
-  params['pwd'] = handleSM2Crypto(params.pwd)
   return cyRequest(() =>
     request(`${baseUrl.project}/CompanyUser/ResetPwd`, { method: 'POST', data: params })
   )

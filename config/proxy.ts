@@ -11,7 +11,7 @@ export default {
     '/api/': {
       // http://10.6.1.54:21525/api/
       // 171.223.214.154:21573
-      // target: 'http://10.6.1.40:21529',
+      // target: 'http://117.191.93.63:21524',
       // target: 'https://srthkf3.gczhyun.com:21530',
       target: 'https://srthcs7.gczhyun.com:21700',
       // target: 'https://srthcs3.gczhyun.com:21564',

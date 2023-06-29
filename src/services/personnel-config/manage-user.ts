@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { handleSM2Crypto } from '@/utils/utils'
 import { cyRequest, baseUrl } from '../common'
 
 export enum BelongManageEnum {
@@ -51,7 +50,6 @@ export const getManageUserDetail = (id: string) => {
 
 //新增用户
 export const addManageUserItem = (params: AddManageUserItem) => {
-  params['pwd'] = handleSM2Crypto(params.pwd)
   return cyRequest(() =>
     request(`${baseUrl.project}/ManageUser/Create`, { method: 'POST', data: params })
   )
@@ -66,7 +64,6 @@ export const updateManageUserItem = (params: ItemDetailData) => {
 
 //修改（重置）密码
 export const resetItemPwd = (params: ItemDetailData) => {
-  params['pwd'] = handleSM2Crypto(params.pwd)
   return cyRequest(() =>
     request(`${baseUrl.project}/ManageUser/ResetPwd`, { method: 'POST', data: params })
   )
