@@ -350,7 +350,7 @@ const ProjectDetail: React.FC<any> = () => {
       title: '接户线',
       children: [
         {
-          title: '接户线',
+          title: '接户线(km)',
           dataIndex: 'col7',
           key: 'col7',
           width: 80,
