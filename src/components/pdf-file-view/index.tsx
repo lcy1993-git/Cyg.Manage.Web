@@ -49,7 +49,7 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({ params, hasAuthorization = fa
     pdfInfo.getPage(1).then((page: any) => {
       if (!page._pdfBug) {
         const normalSize = page.getViewport({ scale: 1 })
-
+        console.log(page, '这是啥啊  ')
         const width = normalSize.width
         const height = normalSize.height
         maxScale.current = +parseInt(Math.min(4000 / width, 4000 / height) as unknown as string)
@@ -64,6 +64,9 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({ params, hasAuthorization = fa
         setCssScale(minScale.current)
         wrapCanvasRef.current!.style.width = `${minScale.current * 100}%`
         wrapCanvasRef.current!.style.height = `${minScale.current * 100}%`
+
+        canvasRef.current!.style.maxWidth = width >= 800 ? '100px' : 'none'
+        canvasRef.current!.style.maxHeight = height >= 800 ? '100px' : 'none'
 
         wrapRef.current!.scrollLeft =
           (wrapCanvasRef.current!.clientWidth - wrapRef.current!.clientWidth) / 2
