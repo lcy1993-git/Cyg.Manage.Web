@@ -124,22 +124,22 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     const area = selectedOptions.filter((item) => item.label !== '无').map((item) => item.label)
     let projectName = ''
     area.forEach((item, index) => {
-      if (index === 0) projectName = item + '省'
-      if (index === 1) projectName += item + '市(州)'
+      if (index === 0) projectName = item
+      if (index === 1) projectName += item
       if (index === 2) projectName += item + '县'
     })
     const project = form.getFieldValue('projects')
     const projects = project.map((item) => {
       return {
         ...item,
-        name: projectName + '10千伏及以下新建（改造）工程',
+        name: projectName + '*镇*台区10千伏及以下新建（改造）工程',
         cityCompany: area[1] ? area[1] + '市(州)公司' : '',
         countyCompany: area[2] ? area[2] + '县公司' : '',
       }
     })
 
     form.setFieldsValue({
-      name: projectName + '10千伏及以下新建（改造）工程',
+      name: projectName + '*镇*台区10千伏及以下新建（改造）工程',
       projects: projects,
     })
 
