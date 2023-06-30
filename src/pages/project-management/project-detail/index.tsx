@@ -1,12 +1,12 @@
+import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
+import { exportConstructEffect } from '@/services/project-management/project-detail'
+import { useUpdateEffect } from 'ahooks'
 import { Button, Input, message, Spin } from 'antd'
 import React, { useRef, useState } from 'react'
 import ScreenModal from '../all-project/components/screen-modal'
 import { initSearchParams } from '../my-work/components/engineer-table-wrapper'
 import styles from './index.less'
-import { useUpdateEffect } from 'ahooks'
-import { epxortConstructEffect } from '@/services/project-management/project-detail'
-import GeneralTable from '@/components/general-table'
 
 const { Search } = Input
 
@@ -175,8 +175,8 @@ const ProjectDetail: React.FC<any> = () => {
         },
         {
           title: '新建环网柜(座)',
-          dataIndex: 'col3_2',
-          key: 'col3_2',
+          dataIndex: 'col4_2',
+          key: 'col4_2',
           width: 100,
           align: 'center',
         },
@@ -258,8 +258,8 @@ const ProjectDetail: React.FC<any> = () => {
             },
             {
               title: '容量',
-              dataIndex: 'col5_1_4',
-              key: 'col5_1_4',
+              dataIndex: 'col5_2_4',
+              key: 'col5_2_4',
               width: 100,
               align: 'center',
             },
@@ -445,7 +445,7 @@ const ProjectDetail: React.FC<any> = () => {
       const pageSize = tableRef.current.pageSize
       //@ts-ignore
       const currentPage = tableRef.current.currentPage
-      const res = await epxortConstructEffect({
+      const res = await exportConstructEffect({
         ...searchParams,
         pageSize: pageSize,
         pageIndex: currentPage,

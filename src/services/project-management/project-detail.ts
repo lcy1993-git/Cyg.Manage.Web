@@ -14,7 +14,7 @@ export const getProjectDesignData = (params: any) => {
 }
 
 //导出明细表
-export const epxortConstructEffect = (params: any) => {
+export const exportConstructEffect = (params: any) => {
   return request(`${baseUrl.project}/ProjectDesignData/ExportConstructEffect`, {
     method: 'POST',
     data: params,
