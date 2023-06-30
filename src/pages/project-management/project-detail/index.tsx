@@ -127,7 +127,7 @@ const ProjectDetail: React.FC<any> = () => {
               align: 'center',
             },
             {
-              title: '改造架空线路长度(km)',
+              title: '改造电缆线路长度(km)',
               dataIndex: 'col2_2_3',
               key: 'col2_2_3',
               width: 100,
