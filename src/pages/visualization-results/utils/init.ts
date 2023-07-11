@@ -66,7 +66,7 @@ export const initLayers = (resData: any): Layer[] => {
     imgLayer = new TileLayer({
       source: new sourceWmts({
         url: imgUrl,
-        layer: 'img_c',
+        layer: 'img',
         matrixSet: 'c',
         format: 'tiles',
         style: 'default',
