@@ -1,10 +1,12 @@
+import View from 'ol/View'
 import Control from 'ol/control/Control'
+import * as extent from 'ol/extent'
 import { default as Group, default as LayerGroup } from 'ol/layer/Group'
 import Layer from 'ol/layer/Layer'
 import TileLayer from 'ol/layer/Tile'
 import * as proj from 'ol/proj'
-import XYZ from 'ol/source/XYZ'
-import View from 'ol/View'
+import { XYZ, WMTS as sourceWmts } from 'ol/source'
+import tilegridWmts from 'ol/tilegrid/WMTS'
 
 export interface BaseMapProps {
   layers: Layer[]
@@ -23,10 +25,10 @@ export const initLayers = (resData: any): Layer[] => {
 
   if (resData && resData.code && resData.code !== 200) return []
 
-  let vecUrl = ''
   let imgUrl = ''
 
   let data = resData?.code ? resData.data[0] : resData[0]
+  let resolutions, projection, projectionExtent, size, matrixIds
   // 卫星图
   imgUrl = resData?.code
     ? data.url.replace(
@@ -37,81 +39,58 @@ export const initLayers = (resData: any): Layer[] => {
         '{s}',
         '{' + data.hostId[0] + '-' + data.hostId[data.hostId.length - 1] + '}'
       )
+
   imgUrl =
     imgUrl ||
     'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
-  const imgLayer = new TileLayer({
-    source: new XYZ({
-      url: decodeURI(imgUrl),
-    }),
-    // maxZoom: 18,
-    preload: 18,
-  })
+
+  let imgLayer
+  if (imgUrl.includes('tianditu')) {
+    imgUrl = 'http://t{0-7}.tianditu.gov.cn/img_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5;'
+    //分辨率数组
+    resolutions = []
+    //瓦片大小
+    // var tileSize = 256
+    //坐标系信息
+    projection = proj.get('EPSG:4326')
+    //获取当前坐标系的范围
+
+    projectionExtent = projection.getExtent()
+    size = extent.getWidth(projectionExtent) / 256
+    matrixIds = new Array(18)
+    //初始化分辨率数组
+    for (let i = 0; i < 18; i++) {
+      resolutions[i] = size / Math.pow(2, i)
+      matrixIds[i] = i
+    }
+    imgLayer = new TileLayer({
+      source: new sourceWmts({
+        url: imgUrl,
+        layer: 'img',
+        matrixSet: 'c',
+        format: 'tiles',
+        style: 'default',
+        projection: projection,
+        tileGrid: new tilegridWmts({
+          origin: extent.getTopLeft(projectionExtent),
+          resolutions: resolutions,
+          matrixIds: matrixIds,
+        }),
+        wrapX: false,
+      }),
+    })
+  } else {
+    imgLayer = new TileLayer({
+      source: new XYZ({
+        url: decodeURI(imgUrl),
+      }),
+      // maxZoom: 18,
+      preload: 18,
+    })
+  }
+
   imgLayer.set('name', 'imgLayer')
-
-  // 街道图
-  // vecUrl = data.url.replace(
-  //   '{s}',
-  //   '{' + data.servers[0] + '-' + data.servers[data.servers.length - 1] + '}'
-  // )
-  vecUrl =
-    // vecUrl ||
-    'https://t%7B0-7%7D.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
-  // const testUrl = 'http://t{0-7}.tianditu.gov.cn/vec_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
-  //分辨率数组
-  // var resolutions = []
-  // //瓦片大小
-  // // var tileSize = 256
-  // //坐标系信息
-  // var projection = proj.get('EPSG:4326')
-  // //获取当前坐标系的范围
-
-  // var projectionExtent = projection.getExtent()
-  // var size = extent.getWidth(projectionExtent) / 256
-  // var matrixIds = new Array(18)
-  // //初始化分辨率数组
-  // for (let i = 0; i < 18; i++) {
-  //   resolutions[i] = size / Math.pow(2, i)
-  //   matrixIds[i] = i
-  // }
-  // const vecLayer = new TileLayer({
-  //   source: new sourceWmts({
-  //     url: imgUrl,
-  //     layer: 'vec',
-  //     matrixSet: 'c',
-  //     format: 'tiles',
-  //     style: 'default',
-  //     projection: projection,
-  //     tileGrid: new tilegridWmts({
-  //       origin: extent.getTopLeft(projectionExtent),
-  //       resolutions: resolutions,
-  //       matrixIds: matrixIds,
-  //     }),
-  //     wrapX: false,
-  //   }),
-  // })
-
-  const vecLayer = new TileLayer({
-    source: new XYZ({
-      url: decodeURI(vecUrl),
-    }),
-    preload: 18,
-  })
-  vecLayer.setVisible(false)
-  vecLayer.set('name', 'vecLayer')
-
-  // ann图
-  // const annUrl =
-  //   'https://t{0-7}.tianditu.gov.cn/DataServer?T=cva_c&x={x}&y={y}&l={z}&tk=88b666f44bb8642ec5282ad2a9915ec5'
-  // const annLayer = new TileLayer({
-  //   source: new XYZ({
-  //     url: decodeURI(annUrl),
-  //   }),
-  //   preload: 18,
-  // })
-  // annLayer.set('name', 'annLayer')
-
-  return [imgLayer, vecLayer]
+  return [imgLayer]
 }
 
 export const initOtherLayers = (): LayerGroup[] => {
