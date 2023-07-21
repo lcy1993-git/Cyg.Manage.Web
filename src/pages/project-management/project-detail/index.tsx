@@ -90,7 +90,7 @@ const ProjectDetail: React.FC<any> = () => {
               title: '导线型号',
               dataIndex: 'col2_1_2',
               key: 'col2_1_2',
-              width: 100,
+              width: 150,
               align: 'center',
             },
             {
@@ -430,6 +430,32 @@ const ProjectDetail: React.FC<any> = () => {
       ],
     },
     {
+      title: '竣工阶段',
+      children: [
+        {
+          title: '竣工图绘制开始日期',
+          dataIndex: 'col10_1',
+          key: 'col10_1',
+          width: 150,
+          align: 'center',
+        },
+        {
+          title: '竣工图绘制人员',
+          dataIndex: 'col10_2',
+          key: 'col10_2',
+          width: 120,
+          align: 'center',
+        },
+        {
+          title: '竣工图计划绘制完成日期',
+          dataIndex: 'col10_3',
+          key: 'col10_3',
+          width: 160,
+          align: 'center',
+        },
+      ],
+    },
+    {
       title: '对应县区名称',
       dataIndex: 'areaName',
       key: 'areaName',
@@ -508,7 +534,7 @@ const ProjectDetail: React.FC<any> = () => {
             ref={tableRef}
             columns={columns}
             url="/ProjectDesignData/GetConstructEffect"
-            scroll={{ x: 3000, y: 345 }}
+            scroll={{ x: 3000, y: 'calc(100vh - 600px)' }}
             extractParams={{ ...searchParams, keyWord }}
           />
         </div>
