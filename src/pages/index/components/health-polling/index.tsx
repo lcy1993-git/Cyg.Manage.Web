@@ -107,6 +107,7 @@ const HealthPolling: React.FC = () => {
   const reconnect = () => {
     if (lockReconnect) return
     lockReconnect = true
+
     setTimeout(() => {
       createWebSocket()
       lockReconnect = false
@@ -117,8 +118,10 @@ const HealthPolling: React.FC = () => {
   const initWebSocket = () => {
     ws.onopen = () => {
       heart = setInterval(() => {
-        ws.send('PING')
-      }, 10000)
+        if (ws.readyState === 1) {
+          ws.send('PING')
+        }
+      }, 60000)
     }
     ws.onclose = () => {
       const currentToken = localStorage.getItem('Authorization')
@@ -127,6 +130,7 @@ const HealthPolling: React.FC = () => {
         clearInterval(heart)
         return
       }
+
       reconnect()
     }
     ws.onmessage = () => {}

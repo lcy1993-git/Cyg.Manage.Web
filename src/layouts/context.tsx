@@ -2,6 +2,7 @@ import { createContext, SetStateAction, useContext } from 'react'
 
 interface LayoutContextValue {
   clearWs?: () => void
+  newSocket?: WebSocket
   setNewSocket?: (value: WebSocket) => void
   resourceManageFlag?: boolean
   workHandoverFlag?: boolean

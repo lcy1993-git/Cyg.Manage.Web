@@ -200,6 +200,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
         value={{
           setNewSocket,
           clearWs,
+          newSocket,
           clearAgainLogin,
           allProjectSearchParams,
           mapSelectCity,
