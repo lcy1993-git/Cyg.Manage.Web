@@ -11,7 +11,8 @@ const HealthPolling: React.FC = () => {
   const [serverCode, setServerCode] = useState('')
   const location = useLocation()
 
-  const isTrans = localStorage.getItem('isTransfer')
+  const hasSocket = localStorage.getItem('EnableSocket')
+
   //轮询
   const { run } = useRequest(() => pollingHealth(), {
     manual: true,
@@ -81,7 +82,7 @@ const HealthPolling: React.FC = () => {
     if (serverCode && serverCode !== 'null' && serverCode !== 'undefined') {
       getStopNotice()
     }
-  }, 30000)
+  }, 60000)
 
   //轮询
 
@@ -121,7 +122,7 @@ const HealthPolling: React.FC = () => {
         if (ws.readyState === 1) {
           ws.send('PING')
         }
-      }, 60000)
+      }, 6000)
     }
     ws.onclose = () => {
       const currentToken = localStorage.getItem('Authorization')
@@ -142,7 +143,7 @@ const HealthPolling: React.FC = () => {
 
   //登录初始化连接webSocket，退出卸载
   useEffect(() => {
-    if (token && Number(isTrans) !== 1) {
+    if ((token && Number(hasSocket) !== 0) || hasSocket === null) {
       createWebSocket()
     }
     return () => {

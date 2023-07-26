@@ -8,13 +8,12 @@ import {
 import { useRequest } from 'ahooks'
 import { message } from 'antd'
 import React, { useMemo, useState } from 'react'
+import highRight from '../../../assets/icon-image/monitor/highRight.png'
+import lowRight from '../../../assets/icon-image/monitor/lowRight.png'
 import BarChartItem from './components/bar-chart-item'
 import LineChartItem from './components/line-chart-item'
 import NumberItem from './components/number-item'
 import styles from './index.less'
-
-import highRight from '../../../assets/icon-image/monitor/highRight.png'
-import lowRight from '../../../assets/icon-image/monitor/lowRight.png'
 
 const OnlineMonitor: React.FC = () => {
   //下载中提示

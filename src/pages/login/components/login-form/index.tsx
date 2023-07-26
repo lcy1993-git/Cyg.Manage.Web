@@ -114,6 +114,10 @@ const LoginForm: React.FC<Props> = (props) => {
           const sjConfig = await getConfigSwitch('useSjMap')
           sjConfig && localStorage.setItem('useSjMap', sjConfig.value)
 
+          //websocket启用判断
+          const hasSocket = await getConfigSwitch('EnableSocket')
+          hasSocket && localStorage.setItem('EnableSocket', hasSocket.value)
+
           const userInfo = await GetCommonUserInfo()
           userInfo && localStorage.setItem('userInfo', JSON.stringify(userInfo))
 

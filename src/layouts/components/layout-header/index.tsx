@@ -46,6 +46,9 @@ const LayoutHeader: React.FC = () => {
     ])
     await signOut()
     localStorage.setItem('Authorization', '')
+    localStorage.removeItem('EnableSocket')
+    localStorage.removeItem('isOpenReview')
+    localStorage.removeItem('useSjMap')
   }
 
   const menuData: any[] = useGetFunctionModules()

@@ -14,7 +14,6 @@ const ChartBoxLine: React.FC<ChartBoxLineProps> = (props) => {
     if (divRef && divRef.current) {
       const canvas = divRef.current
       const context = divRef.current.getContext('2d')
-
       if (context) {
         let [firstLineX, secondLineX, threeLineX, fourLineX, fiveLineX] = [0, 0, 0, 0, 0]
         context.lineWidth = 2
