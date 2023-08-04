@@ -461,7 +461,7 @@ export const editProject = (params: any) => {
 // 编辑qgc项目信息
 export const editQGCProject = (params: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.project}/Porject/ModifyQgc`, { method: 'POST', data: params })
+    request(`${baseUrl.project}/QgcPorject/ModifyQgc`, { method: 'POST', data: params })
   )
 }
 
@@ -1075,9 +1075,17 @@ export const sureRemoval = (params: { targetEngineerId: string; projectIds: stri
 // 提交项目至全过程
 export const postSubmitProjectToQGC = (projectId: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.comment}/Project/TransferNonStructured`, {
+    request(`${baseUrl.comment}/QgcProject/TransferNonStructured`, {
       method: 'POST',
       params: { projectId },
+    })
+  )
+}
+// 全过程变更项目关联关系
+export const postBatchSyncProject = () => {
+  return cyRequest(() =>
+    request(`${baseUrl.comment}/QgcProject/BatchSyncProject`, {
+      method: 'POST',
     })
   )
 }

@@ -1,7 +1,6 @@
 import headPortraitSrc from '@/assets/image/head-portrait.jpg'
 import ImageIcon from '@/components/image-icon'
 import LogoComponent from '@/components/logo-component'
-import { Stop } from '@/pages/login'
 import { baseUrl } from '@/services/common'
 import { signOut } from '@/services/login'
 import { useGetFunctionModules, useGetUserInfo } from '@/utils/hooks'
@@ -10,7 +9,7 @@ import { BellOutlined } from '@ant-design/icons'
 import { useInterval } from 'ahooks'
 import { Badge, Dropdown, Menu } from 'antd'
 import uuid from 'node-uuid'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { history } from 'umi'
 import CutAccount from '../cut-account'
 import EditPassword from '../edit-password'
@@ -19,13 +18,18 @@ import PersonInfoModal from '../person-info-modal'
 import VersionInfoModal from '../version-info-modal'
 import styles from './index.less'
 
+let intervalData = {
+  count: 0,
+  stopServerInfo: {},
+}
+
 const LayoutHeader: React.FC = () => {
   const [editPasswordModalVisible, setEditPasswordModalVisible] = useState<boolean>(false)
   const [cutAccoutModalVisible, setCutAccountModalVisible] = useState<boolean>(false)
   const [personInfoModalVisible, setPersonInfoModalVisible] = useState<boolean>(false)
   const [versionModalVisible, setVersionModalVisible] = useState<boolean>(false)
-  const [count, setCount] = useState<number>(0)
-  const [stopServerInfo, setStopServerInfo] = useState<Stop>({} as Stop)
+  // const [count, setCount] = useState<number>(0)
+  // const [stopServerInfo, setStopServerInfo] = useState<Stop>({} as Stop)
 
   const userInfo = useGetUserInfo()
 
@@ -59,11 +63,16 @@ const LayoutHeader: React.FC = () => {
   useInterval(() => {
     let info = JSON.parse(sessionStorage.getItem('stopServerInfo') || '{}')
     if (Object.keys(info).length !== 0) {
-      setCount(1)
-      setStopServerInfo(info)
+      // setCount(1)
+      intervalData.count = 1
+      intervalData.stopServerInfo = info
+      // setStopServerInfo(info)
     } else {
-      setCount(0)
-      setStopServerInfo({} as Stop)
+      // setCount(0)
+
+      intervalData.count = 0
+      intervalData.stopServerInfo = {}
+      // setStopServerInfo({} as Stop)
     }
   }, 30000)
   // TODO 点击个人信息对应的一些方法都还么写
@@ -130,6 +139,10 @@ const LayoutHeader: React.FC = () => {
       )
     })
 
+  useEffect(() => {
+    console.log(menuData, '666666666666')
+  }, [menuData])
+
   return (
     <div className={styles.layoutHeader}>
       <div className={styles.layoutHeaderContainer}>
@@ -142,7 +155,7 @@ const LayoutHeader: React.FC = () => {
 
         <div className={styles.layoutMyBaseInfo}>
           <div onClick={() => setVersionModalVisible(true)}>
-            <Badge count={count} color={'red'} size={'small'} offset={[1, 20]} dot>
+            <Badge count={intervalData.count} color={'red'} size={'small'} offset={[1, 20]} dot>
               <BellOutlined style={{ height: '32px' }} className={styles.myMessageTips} />
             </Badge>
           </div>
@@ -162,7 +175,7 @@ const LayoutHeader: React.FC = () => {
       <VersionInfoModal
         visible={versionModalVisible}
         onChange={setVersionModalVisible}
-        stopServerInfo={stopServerInfo}
+        stopServerInfo={intervalData.stopServerInfo}
       />
     </div>
   )

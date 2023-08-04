@@ -1,8 +1,8 @@
+import { postBatchSyncProject } from '@/services/project-management/all-project'
 import { CaretDownOutlined } from '@ant-design/icons'
-import { Dropdown, Menu } from 'antd'
+import { Dropdown, Menu, message } from 'antd'
 import React from 'react'
 import styles from './index.less'
-
 interface MenuItemParams {
   name: string
   jurisdiction?: string
@@ -25,7 +25,16 @@ const { SubMenu } = Menu
 const LayoutHeaderMenu: React.FC<MenuProps> = (props) => {
   const { name, icon, menuData, onSelect } = props
 
-  const toPath = (name: string, path: string) => {
+  const toPath = async (name: string, path: string) => {
+    if (name === '项目数据同步') {
+      try {
+        postBatchSyncProject()
+        message.info('数据同步中，请稍后')
+      } catch (err) {
+        return
+      }
+      return
+    }
     onSelect(name, path)
   }
 
