@@ -1,16 +1,15 @@
+import { webConfig } from '@/global'
+import Login from '@/pages/login'
 import { getProductServerList, getStopServerNotice } from '@/services/index'
-import { MaterialDataType } from '@/services/visualization-results/list-menu'
-
-// @ts-ignore
-import sm2 from 'sm-crypto/dist/sm2'
 import {
   EventInfo,
   UploadAuditEventInfo,
   UploadAuditEventInfoWithoutToken,
 } from '@/services/security-audit'
-import { webConfig } from '@/global'
+import { MaterialDataType } from '@/services/visualization-results/list-menu'
 import moment from 'moment/moment'
-import Login from '@/pages/login'
+// @ts-ignore
+import sm2 from 'sm-crypto/dist/sm2'
 
 const { NODE_ENV } = process.env
 /**
@@ -402,10 +401,15 @@ export const getStopServerList = (
       const { data } = res
 
       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
+
       const currenServer = data?.find(
-        (item: { propertys: { webSite: string; host: string | null } }) => {
+        (item: {
+          propertys: { webSite: string; host: string | null; javaTransferHost: string | null }
+        }) => {
           if (NODE_ENV === 'development' && item?.propertys?.webSite) {
             return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
+          } else if (item?.propertys?.javaTransferHost) {
+            return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
           } else if (item?.propertys?.webSite) {
             if (item?.propertys?.host) {
               return url === item?.propertys?.host?.split('/')?.slice(0, 3)?.join('/')
