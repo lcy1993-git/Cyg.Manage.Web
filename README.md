@@ -1,15 +1,15 @@
 ## 分支说明
 
-**master-general**: 配网设计云全功能版本通用分支（主分支）。
-**dev**: 主分支（旧）。
-**master**: 遗留分支（可删除）。
-**dev_xjIntranet**: 新疆内网分支。
-**ganan-0703**: 甘南需求分支。
-**xj-general**: 新疆全过程分支。
-**3d**: 3d 模型测试分支。
-**dev_gansu**: 甘肃功能分支。
-**release3d**: 3d 设备分支。
-**security-testing**: 安全测评分支。
+1. **master-general**: 配网设计云全功能版本通用分支（主分支）。
+1. **dev**: 主分支（旧）。
+1. **master**: 遗留分支（可删除）。
+1. **dev_xjIntranet**: 新疆内网分支。
+1. **ganan-0703**: 甘南需求分支。
+1. **xj-general**: 新疆全过程分支。
+1. **3d**: 3d 模型测试分支。
+1. **dev_gansu**: 甘肃功能分支。
+1. **release3d**: 3d 设备分支。
+1. **security-testing**: 安全测评分支。
 
 ## 深瑞同华配网项目前端规范
 
