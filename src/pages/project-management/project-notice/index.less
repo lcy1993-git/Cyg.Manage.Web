@@ -1,0 +1,81 @@
+.handover {
+  width: 100%;
+  height: 100%;
+
+  .moduleTitle {
+    padding: 20px 0 0 20px;
+  }
+
+  .moduleHead {
+    width: 98%;
+    height: calc(100% - 80px);
+    margin: auto;
+    background-color: #eaeaea;
+    border: 2px solid #eaeaea;
+
+    .tabTitle {
+      padding: 15px 0 10px 24px;
+      font-weight: 500;
+    }
+
+    .moduleTabs {
+      box-sizing: border-box;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+
+      :global {
+        .ant-tabs-card .ant-tabs-content {
+          z-index: 999;
+          height: calc(100% + 52px);
+          margin-top: 15px;
+          background-color: white;
+        }
+
+        .ant-tabs .ant-tabs-nav {
+          box-shadow: none;
+
+          .ant-tabs-nav-wrap .ant-tabs-tab {
+            width: 105px;
+            background-color: #eaeaea;
+
+            .ant-tabs-tab-btn {
+              width: 105px;
+              text-align: center;
+            }
+          }
+
+          .ant-tabs-nav-wrap .ant-tabs-tab::before {
+            width: 0 !important;
+          }
+
+          .ant-tabs-tab-active {
+            background-color: white !important;
+            border-radius: 0px;
+          }
+        }
+
+        .ant-tabs .ant-tabs-content-holder {
+          background-color: white;
+        }
+      }
+    }
+  }
+
+  .actionBtn {
+    width: 100%;
+    height: 48px;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .account {
+    padding-top: 5px;
+    padding-left: 20px;
+    font-size: 12px;
+
+    .numberAccount {
+      color: #0e7b3b;
+    }
+  }
+}

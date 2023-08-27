@@ -9,6 +9,7 @@ interface TableCommonRequestParams {
   extraParams?: object
   requestSource: 'project' | 'common' | 'resource' | 'tecEco' | 'tecEco1' | 'grid'
   postType: 'body' | 'query'
+  requestType?: 'get' | 'post'
 }
 
 export interface TableRequestResult {
@@ -23,7 +24,13 @@ export const tableCommonRequest = (
   params: TableCommonRequestParams
 ): Promise<TableRequestResult> => {
   let requestBaseUrl = baseUrl[params.requestSource]
-  if (params.postType == 'body') {
+  if (params.requestType === 'get') {
+    return cyRequest<TableRequestResult>(() =>
+      request(`${requestBaseUrl}${params.url}?${qs.stringify(params.extraParams)}`, {
+        method: 'GET',
+      })
+    )
+  } else if (params.postType == 'body') {
     return cyRequest<TableRequestResult>(() =>
       request(`${requestBaseUrl}${params.url}`, {
         method: 'Post',
@@ -39,6 +46,7 @@ export const tableCommonRequest = (
     )
   }
 }
+
 interface TreeTableParams {
   url: string
   params?: object

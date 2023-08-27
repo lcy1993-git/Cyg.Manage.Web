@@ -13,11 +13,12 @@ export default {
       // 171.223.214.154:21573
       // target: 'http://117.191.93.63:21524',
       // target: 'https://srthkf3.gczhyun.com:21530',
-      target: 'https://srthcs7.gczhyun.com:21700',
+      // target: 'https://srthcs7.gczhyun.com:21700',
       // target: 'https://srthcs3.gczhyun.com:21564',
       // target: 'https://srthk8scs3.gczhyun.com:21530',
 
       // target: 'https://srthkf1.gczhyun.com:21530',
+      target: 'https://gsfz.gczhyun.com',
       // target: 'http://10.6.211.96:8080',
 
       // target: 'https://ys.gczhyun.com/',
@@ -33,6 +34,7 @@ export default {
       // 测试服 2
       // target: 'https://srthcs2.gczhyun.com:21574',
       changeOrigin: true,
+      logLevel: 'debug',
       pathRewrite: { '^/api': '/' },
     },
   },

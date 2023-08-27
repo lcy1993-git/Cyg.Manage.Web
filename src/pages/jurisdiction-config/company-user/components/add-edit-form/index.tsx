@@ -103,11 +103,11 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         <CyFormItem label="身份证号" name="idNumber" rules={rules.idNumber} required>
           <Input placeholder="请输入身份证号" />
         </CyFormItem>
-        {/* {type === 'edit' && (
-          <CyFormItem label="公司管理员" name="IsCompanyAdmin">
-            <FormSwitch checkedChildren="开启" unCheckedChildren="关闭" />
+        {type === 'edit' && (
+          <CyFormItem label="手机号" name="phone">
+            <Input placeholder="请输入手机号" />
           </CyFormItem>
-        )} */}
+        )}
 
         <CyFormItem label="授权端口" name="clientCategorys">
           <Select

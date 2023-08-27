@@ -57,6 +57,8 @@ interface GeneralTableProps {
   requestConditions?: string
   // 不显示左侧选择列
   notShowSelect?: boolean
+
+  requestType?: 'get' | 'post'
 }
 
 type TableSelectType = 'radio' | 'checkbox'
@@ -87,6 +89,7 @@ const withGeneralTable =
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       cruxKey = '',
       requestConditions = true,
+      requestType = 'post',
       ...rest
     } = props
 
@@ -184,6 +187,7 @@ const withGeneralTable =
         pageSize,
         requestSource,
         postType,
+        requestType,
       })
       message.success('刷新成功')
     }
@@ -222,6 +226,7 @@ const withGeneralTable =
           pageSize,
           requestSource,
           postType,
+          requestType,
         })
     }, [pageSize, currentPage, requestConditions])
 
@@ -240,6 +245,7 @@ const withGeneralTable =
           pageSize,
           requestSource,
           postType,
+          requestType,
         })
       },
       search: () => {
@@ -251,6 +257,7 @@ const withGeneralTable =
           extraParams: extractParams,
           requestSource,
           postType,
+          requestType,
         })
         setSelectedRowKeys([])
         getSelectData?.([])
@@ -264,6 +271,7 @@ const withGeneralTable =
           extraParams: params,
           requestSource,
           postType,
+          requestType,
         })
         setSelectedRowKeys([])
         getSelectData?.([])

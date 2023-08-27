@@ -31,6 +31,13 @@ const ProjectDetail = Loadable({
   delay: 150,
 })
 
+const ProjectNotice = Loadable({
+  loader: () => import('@/pages/project-management/project-notice'),
+  loading: () => <Loading />,
+  delay: 150,
+})
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default [
   {
     title: '我的工作台',
@@ -56,5 +63,10 @@ export default [
     title: '项目明细表',
     path: '/project-management/project-detail',
     component: <ProjectDetail />,
+  },
+  {
+    title: '全过程通报',
+    path: '/project-management/project-notice',
+    component: <ProjectNotice />,
   },
 ]
