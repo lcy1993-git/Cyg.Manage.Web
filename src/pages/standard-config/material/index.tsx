@@ -179,6 +179,18 @@ const Material: React.FC<libParams> = (props) => {
     //   width: 240,
     // },
     {
+      dataIndex: 'technicalID',
+      index: 'technicalID',
+      title: '技术规范编号',
+      width: 150,
+    },
+    {
+      dataIndex: 'drawingNum',
+      index: 'drawingNum',
+      title: '图号',
+      width: 150,
+    },
+    {
       dataIndex: 'supplySide',
       index: 'supplySide',
       title: '供给方',
@@ -254,6 +266,8 @@ const Material: React.FC<libParams> = (props) => {
           // forDesign: '',
           remark: '',
           chartIds: '',
+          technicalID: '',
+          drawingNum: '',
         },
         value
       )

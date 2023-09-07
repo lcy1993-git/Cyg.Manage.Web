@@ -63,6 +63,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         name="category"
         required
         rules={[{ required: true, message: '类型不能为空' }]}
+        labelWidth={100}
       >
         <EnumSelect placeholder="请选择物料类型" enumList={materialType} valueString />
       </CyFormItem>
@@ -72,6 +73,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         name="materialName"
         required
         rules={[{ required: true, message: '物料名称不能为空' }]}
+        labelWidth={100}
       >
         <SelectCanSearch
           url="/Material/GetMaterialByNameList"
@@ -89,6 +91,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         label="规格型号"
         name="spec"
         required
+        labelWidth={100}
         rules={[{ required: true, message: '规格型号不能为空' }]}
       >
         {
@@ -112,6 +115,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         name="materialType"
         required
         rules={[{ required: true, message: '类别不能为空' }]}
+        labelWidth={100}
       >
         <SelectCanUpdate
           url="/Material/GetMaterialTypeList"
@@ -131,6 +135,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         name="unit"
         rules={[{ required: true, message: '单位不能为空' }]}
         required
+        labelWidth={100}
       >
         <Input placeholder="请输入单位" />
       </CyFormItem>
@@ -140,6 +145,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
         required
         initialValue="不限"
         rules={[{ required: true, message: '电压等级不能为空' }]}
+        labelWidth={100}
       >
         <EnumSelect placeholder="请选择电压等级" enumList={kvBothLevelType} valueString />
       </CyFormItem>
@@ -150,6 +156,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           name="xinxianshu"
           required
           rules={[{ required: true, message: '芯线数不能为空' }]}
+          labelWidth={100}
         >
           <Input placeholder="请输入芯线数" />
         </CyFormItem>
@@ -168,7 +175,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
 
       {
         <div style={{ display: isHidden ? 'none' : 'block' }}>
-          <CyFormItem label="加工图" name="chartIds">
+          <CyFormItem label="加工图" name="chartIds" labelWidth={100}>
             <UrlSelect
               requestType="post"
               mode="multiple"
@@ -186,10 +193,15 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           {/* 是否用于下户 */}
           {(isOverHead || isCable) && (
             <>
-              <CyFormItem label="截面积" name="jiemianji">
+              <CyFormItem label="截面积" name="jiemianji" labelWidth={100}>
                 <Input placeholder="请输入截面积" />
               </CyFormItem>
-              <CyFormItem label="是否用于下户" name="isTension" initialValue={false}>
+              <CyFormItem
+                label="是否用于下户"
+                name="isTension"
+                initialValue={false}
+                labelWidth={100}
+              >
                 <Radio.Group disabled={isCable}>
                   <Radio value={true}>是</Radio>
                   <Radio value={false}>否</Radio>
@@ -199,7 +211,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           )}
           {isCable && (
             <>
-              <CyFormItem label="内侧终端头" name="neice">
+              <CyFormItem label="内侧终端头" name="neice" labelWidth={100}>
                 <UrlSelect
                   allowClear
                   showSearch
@@ -212,7 +224,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
                   extraParams={{ libId: resourceLibId, type: '电缆附件' }}
                 />
               </CyFormItem>
-              <CyFormItem label="外侧终端头" name="waice">
+              <CyFormItem label="外侧终端头" name="waice" labelWidth={100}>
                 <UrlSelect
                   allowClear
                   showSearch
@@ -225,7 +237,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
                   extraParams={{ libId: resourceLibId, type: '电缆附件' }}
                 />
               </CyFormItem>
-              <CyFormItem label="中间头" name="zhongjiantou">
+              <CyFormItem label="中间头" name="zhongjiantou" labelWidth={100}>
                 <UrlSelect
                   allowClear
                   showSearch
@@ -240,14 +252,20 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
               </CyFormItem>
             </>
           )}
-          <CyFormItem label="物资编号" name="code">
+          <CyFormItem label="技术规范编号" name="technicalID" labelWidth={100}>
+            <Input placeholder="请输入技术规范编号" />
+          </CyFormItem>
+          <CyFormItem label="图号" name="drawingNum" labelWidth={100}>
+            <Input placeholder="请输入图号" />
+          </CyFormItem>
+          <CyFormItem label="物资编号" name="code" labelWidth={100}>
             <Input placeholder="请输入物资编号" />
           </CyFormItem>
-          <CyFormItem label="单重(kg)" name="pieceWeight">
+          <CyFormItem label="单重(kg)" name="pieceWeight" labelWidth={100}>
             <Input placeholder="请输入单重" type="number" />
           </CyFormItem>
 
-          <CyFormItem label="供给方" name="supplySide">
+          <CyFormItem label="供给方" name="supplySide" labelWidth={100}>
             <EnumSelect
               placeholder="请选择供给方"
               enumList={supplySideType}
@@ -256,7 +274,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
             />
           </CyFormItem>
 
-          <CyFormItem label="运输类型" name="transportationType">
+          <CyFormItem label="运输类型" name="transportationType" labelWidth={100}>
             <Input placeholder="请输入运输类型" />
           </CyFormItem>
           {/* <CyFormItem label="所属工程" name="forProject" initialValue="不限">
