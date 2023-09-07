@@ -140,7 +140,7 @@ const LayoutHeader: React.FC = () => {
     })
 
   useEffect(() => {
-    console.log(menuData, '666666666666')
+    console.log(menuData, '菜单')
   }, [menuData])
 
   return (

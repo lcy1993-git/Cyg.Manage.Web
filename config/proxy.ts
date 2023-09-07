@@ -17,8 +17,8 @@ export default {
       // target: 'https://srthcs3.gczhyun.com:21564',
       // target: 'https://srthk8scs3.gczhyun.com:21530',
 
-      // target: 'https://srthkf1.gczhyun.com:21530',
-      target: 'https://gsfz.gczhyun.com',
+      target: 'https://srthkf1.gczhyun.com:21530',
+      // target: 'https://gsfz.gczhyun.com',
       // target: 'http://10.6.211.96:8080',
 
       // target: 'https://ys.gczhyun.com/',
@@ -34,7 +34,7 @@ export default {
       // 测试服 2
       // target: 'https://srthcs2.gczhyun.com:21574',
       changeOrigin: true,
-      logLevel: 'debug',
+      // logLevel: 'debug',
       pathRewrite: { '^/api': '/' },
     },
   },

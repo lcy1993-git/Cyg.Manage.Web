@@ -23,7 +23,7 @@ const ProjectNotice: React.FC = () => {
           <div className={styles.moduleTabs}>
             <Tabs type="card">
               <TabPane tab="用户统计" key="user">
-                <UserTabs />{' '}
+                <UserTabs />
               </TabPane>
               <TabPane tab="项目统计" key="project">
                 <ProjectTabs />

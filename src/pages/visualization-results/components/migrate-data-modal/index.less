@@ -53,10 +53,10 @@
             }
           }
 
-          .ant-table-row-selected {
-            td {
-              background-color: @table-select-color !important;
-            }
+          .ant-table-tbody
+            > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
+            > td {
+            background: red;
           }
         }
       }
