@@ -7,19 +7,22 @@ import { Button, DatePicker, Select, Spin } from 'antd'
 import moment, { Moment } from 'moment'
 import React, { useMemo, useRef, useState } from 'react'
 import { useProMonitorStore } from '../context'
-import styles from './index.less'
+import styles from '../project-situation/index.less'
 
 const { Option } = Select
 
 const { RangePicker } = DatePicker
 
-const ProjectSituation: React.FC = () => {
+const UseSituation: React.FC = () => {
   const [startTime, setStartTime] = useState<Moment | string | null>(null)
   const [endTime, setEndTime] = useState<Moment | null | string>(null)
   const tableRef = useRef<HTMLDivElement>(null)
   const [chartTableData, setChartTableData] = useState<any>()
 
   const { setStartDate, setEndDate } = useProMonitorStore()
+
+  //阶段选择
+  const [stage, setStage] = useState<number>(2)
 
   //表格柱状图切换
   const [showType, setShowType] = useState<string>('table')
@@ -35,39 +38,62 @@ const ProjectSituation: React.FC = () => {
     },
     {
       title: '单位',
-      index: 'companyName',
-      dataIndex: 'companyName',
+      index: 'creationName',
+      dataIndex: 'creationName',
     },
     {
-      title: '竣工项目数量',
-      index: 'qty',
-      dataIndex: 'qty',
+      title: '设计单位',
+      index: 'executionName',
+      dataIndex: 'executionName',
     },
     {
-      title: '总项目数量',
-      index: 'totalQty',
-      dataIndex: 'totalQty',
+      title: '待安排',
+      index: 'qty1',
+      dataIndex: 'qty1',
     },
     {
-      title: '新增完成项目数量',
-      index: 'newQty',
-      dataIndex: 'newQty',
+      title: '未勘察',
+      index: 'qty2',
+      dataIndex: 'qty2',
     },
     {
-      title: '完成率（%）',
-      index: 'completionRate',
-      dataIndex: 'completionRate',
+      title: '勘察中',
+      index: 'qty3',
+      dataIndex: 'qty3',
+    },
+    {
+      title: '已勘察',
+      index: 'qty4',
+      dataIndex: 'qty4',
+    },
+    {
+      title: '设计中',
+      index: 'qty5',
+      dataIndex: 'qty5',
+    },
+    {
+      title: '设计完成',
+      index: 'qty6',
+      dataIndex: 'qty6',
+    },
+    {
+      title: '已提交',
+      index: 'qty7',
+      dataIndex: 'qty7',
     },
   ]
 
   const option = useMemo(() => {
     // const colors = ['#5470C6', '#91CC75', '#EE6666']
     if (chartTableData) {
-      const companyList = chartTableData?.map((item: any) => item.companyName)
-      const jgQty = chartTableData?.map((item: any) => item.qty)
-      const totalQty = chartTableData?.map((item: any) => item.totalQty)
-      const newQty = chartTableData?.map((item: any) => item.newQty)
-      const rateData = chartTableData?.map((item: any) => item.completionRate)
+      const companyList = chartTableData?.map((item: any) => item.executionName)
+      const qty1 = chartTableData?.map((item: any) => item.qty1)
+      const qty2 = chartTableData?.map((item: any) => item.qty2)
+      const qty3 = chartTableData?.map((item: any) => item.qty3)
+      const qty4 = chartTableData?.map((item: any) => item.qty4)
+      const qty5 = chartTableData?.map((item: any) => item.qty5)
+      const qty6 = chartTableData?.map((item: any) => item.qty6)
+      const qty7 = chartTableData?.map((item: any) => item.qty7)
 
       return {
         grid: {
@@ -77,7 +103,7 @@ const ProjectSituation: React.FC = () => {
           containLabel: true,
         },
         legend: {
-          data: ['竣工项目数量', '总项目数量', '新增完成项目数量', '完成率'],
+          data: ['待安排', '未勘察', '勘察中', '已勘察', '设计中', '设计完成', '已提交'],
           x: 'center',
           itemGap: 20,
           textStyle: {
@@ -101,7 +127,7 @@ const ProjectSituation: React.FC = () => {
             // 数据窗口范围的起始数值
             startValue: 0,
             // 数据窗口范围的结束数值（一页显示多少条数据）
-            endValue: 9,
+            endValue: 6,
             // empty：当前数据窗口外的数据，被设置为空。
             // 即不会影响其他轴的数据范围
             filterMode: 'empty',
@@ -168,103 +194,103 @@ const ProjectSituation: React.FC = () => {
             },
           },
         },
-        yAxis: [
-          {
-            type: 'value',
-            name: '完成数量/次',
-            nameTextStyle: {
-              color: '#2afe97',
-              fontSize: 14,
-            },
-            minInterval: 1,
-            position: 'left',
-            alignTicks: true,
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: '#167a50',
-              },
-            },
-            splitLine: {
-              show: true,
-              lineStyle: {
-                color: '#74AC91',
-                type: 'dashed',
-              },
-            },
-            axisLabel: {
-              color: '#2afe97',
-              formatter: '{value} ',
+        yAxis: {
+          type: 'value',
+          name: '项目数量/个',
+          nameTextStyle: {
+            color: '#2afe97',
+            fontSize: 14,
+          },
+          minInterval: 1,
+          position: 'left',
+          alignTicks: true,
+          axisLine: {
+            show: true,
+            lineStyle: {
+              color: '#167a50',
             },
           },
-          {
-            type: 'value',
-            name: '完成率(%)',
-            nameTextStyle: {
-              color: '#2afe97',
-              fontSize: 14,
+          splitLine: {
+            show: true,
+            lineStyle: {
+              color: '#74AC91',
+              type: 'dashed',
             },
+          },
+          axisLabel: {
+            color: '#2afe97',
+            formatter: '{value} ',
+          },
+        },
 
-            position: 'right',
-            alignTicks: true,
-            splitLine: {
-              show: false,
-              lineStyle: {
-                color: '#74AC91',
-                type: 'dashed',
-              },
-            },
-            axisLine: {
-              show: true,
-              lineStyle: {
-                color: '#167a50',
-              },
-            },
-            axisLabel: {
-              color: '#2afe97',
-              formatter: '{value}',
-            },
-          },
-        ],
         series: [
           {
-            name: '竣工项目数量',
+            name: '待安排',
             type: 'bar',
-            data: jgQty,
+            data: qty1,
             itemStyle: {
               normal: {
-                color: '#3ccb3e',
+                color: '#778899',
               },
             },
           },
           {
-            name: '总项目数量',
+            name: '未勘察',
             type: 'bar',
-            data: totalQty,
+            data: qty2,
             itemStyle: {
               normal: {
-                color: '#6d85cd',
+                color: '#AFEEEE',
               },
             },
           },
           {
-            name: '新增完成项目数量',
+            name: '勘察中',
             type: 'bar',
-            data: newQty,
+            data: qty3,
             itemStyle: {
               normal: {
-                color: '#5ec5e4',
+                color: '#00CED1',
               },
             },
           },
           {
-            name: '完成率',
+            name: '已勘察',
             type: 'bar',
-            yAxisIndex: 1,
-            data: rateData,
+            data: qty4,
             itemStyle: {
               normal: {
-                color: '#ecc849',
+                color: '#1e90ff',
+              },
+            },
+          },
+          {
+            name: '设计中',
+            type: 'bar',
+            data: qty5,
+            itemStyle: {
+              normal: {
+                color: '#eee8aa',
+              },
+            },
+          },
+          {
+            name: '设计完成',
+            type: 'bar',
+            data: qty6,
+            itemStyle: {
+              normal: {
+                color: '#ffd700',
+              },
+            },
+          },
+          {
+            name: '已提交',
+            type: 'bar',
+            data: qty7,
+            itemStyle: {
+              normal: {
+                color: '#ba55d3',
               },
             },
           },
@@ -285,20 +311,25 @@ const ProjectSituation: React.FC = () => {
       tableRef.current.searchByParams({
         startDate: startTime,
         endDate: endTime,
+        stage: stage,
       })
     }
   }
 
   useUpdateEffect(() => {
     searchByParams()
-  }, [JSON.stringify(startTime), JSON.stringify(endTime)])
+  }, [JSON.stringify(startTime), JSON.stringify(endTime), stage])
 
   const changeToChart = (value: any) => {
     setShowType(value)
   }
 
+  const changeStage = (value: any) => {
+    setStage(value)
+  }
+
   return (
-    <ChartBox title="竣工项目情况统计">
+    <ChartBox title="云平台应用情况">
       <Spin delay={300} spinning={!chartTableData && chartTableData !== undefined}>
         <div className={styles.monitorManage}>
           <div className={styles.monitorCondition}>
@@ -313,8 +344,21 @@ const ProjectSituation: React.FC = () => {
                 <Option value="chart">柱状图</Option>
               </Select>
             </div>
+
             {showType === 'table' && (
               <div className={styles.monitorTime}>
+                <span className={styles.monitorChooseLabel}>阶段选择</span>
+                <div className={styles.monitorSelect}>
+                  <Select
+                    bordered={false}
+                    value={stage}
+                    suffixIcon={<CaretDownOutlined />}
+                    onChange={(value: any) => changeStage(value)}
+                  >
+                    <Option value={2}>可研</Option>
+                    <Option value={3}>初设</Option>
+                  </Select>
+                </div>
                 <span className={styles.monitorChooseLabel}>选择日期</span>
                 <div className={styles.monitorChooseTime}>
                   <RangePicker
@@ -343,13 +387,13 @@ const ProjectSituation: React.FC = () => {
               <GeneralTable
                 getTableRequestData={setChartTableData}
                 noPaging
-                rowKey="companyId"
+                rowKey="index"
                 notShowSelect
                 ref={tableRef}
                 size="small"
                 columns={columns}
-                url="/Hotfix230908/GetCompletionRateByCreationIdentity"
-                extractParams={{ startDate: startTime, endDate: endTime }}
+                url="/Hotfix230908/GetQtyByExecutionIdentity"
+                extractParams={{ startDate: startTime, endDate: endTime, stage: stage }}
                 scroll={{ y: 'calc(98vh - 430px)' }}
               />
             </div>
@@ -362,4 +406,4 @@ const ProjectSituation: React.FC = () => {
   )
 }
 
-export default ProjectSituation
+export default UseSituation

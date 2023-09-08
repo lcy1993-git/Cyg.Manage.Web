@@ -5,8 +5,8 @@ import { TableRequestResult } from '../table'
 
 interface ProjectMonitorParams {
   stage?: number
-  startDate: Moment | String
-  endDate: Moment | String
+  startDate: Moment | string | null
+  endDate: Moment | string | null
 }
 
 // 竣工项目情况统计

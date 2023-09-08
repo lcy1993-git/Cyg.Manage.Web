@@ -7,13 +7,13 @@ import { Button, DatePicker, Select, Spin } from 'antd'
 import moment, { Moment } from 'moment'
 import React, { useMemo, useRef, useState } from 'react'
 import { useProMonitorStore } from '../context'
-import styles from './index.less'
+import styles from '../project-situation/index.less'
 
 const { Option } = Select
 
 const { RangePicker } = DatePicker
 
-const ProjectSituation: React.FC = () => {
+const ProjectComplete: React.FC = () => {
   const [startTime, setStartTime] = useState<Moment | string | null>(null)
   const [endTime, setEndTime] = useState<Moment | null | string>(null)
   const tableRef = useRef<HTMLDivElement>(null)
@@ -39,7 +39,7 @@ const ProjectSituation: React.FC = () => {
       dataIndex: 'companyName',
     },
     {
-      title: '竣工项目数量',
+      title: '累计完成竣工图数量',
       index: 'qty',
       dataIndex: 'qty',
     },
@@ -49,7 +49,7 @@ const ProjectSituation: React.FC = () => {
       dataIndex: 'totalQty',
     },
     {
-      title: '新增完成项目数量',
+      title: '日新增完成项目数量',
       index: 'newQty',
       dataIndex: 'newQty',
     },
@@ -77,7 +77,7 @@ const ProjectSituation: React.FC = () => {
           containLabel: true,
         },
         legend: {
-          data: ['竣工项目数量', '总项目数量', '新增完成项目数量', '完成率'],
+          data: ['累计完成竣工图数量', '总项目数量', '日新增完成项目数量', '完成率'],
           x: 'center',
           itemGap: 20,
           textStyle: {
@@ -228,7 +228,7 @@ const ProjectSituation: React.FC = () => {
         ],
         series: [
           {
-            name: '竣工项目数量',
+            name: '累计完成竣工图数量',
             type: 'bar',
             data: jgQty,
             itemStyle: {
@@ -248,7 +248,7 @@ const ProjectSituation: React.FC = () => {
             },
           },
           {
-            name: '新增完成项目数量',
+            name: '日新增完成项目数量',
             type: 'bar',
             data: newQty,
             itemStyle: {
@@ -298,7 +298,7 @@ const ProjectSituation: React.FC = () => {
   }
 
   return (
-    <ChartBox title="竣工项目情况统计">
+    <ChartBox title="竣工图完成情况">
       <Spin delay={300} spinning={!chartTableData && chartTableData !== undefined}>
         <div className={styles.monitorManage}>
           <div className={styles.monitorCondition}>
@@ -348,7 +348,7 @@ const ProjectSituation: React.FC = () => {
                 ref={tableRef}
                 size="small"
                 columns={columns}
-                url="/Hotfix230908/GetCompletionRateByCreationIdentity"
+                url="/Hotfix230908/GetCompletionRateByExecutionIdentity"
                 extractParams={{ startDate: startTime, endDate: endTime }}
                 scroll={{ y: 'calc(98vh - 430px)' }}
               />
@@ -362,4 +362,4 @@ const ProjectSituation: React.FC = () => {
   )
 }
 
-export default ProjectSituation
+export default ProjectComplete
