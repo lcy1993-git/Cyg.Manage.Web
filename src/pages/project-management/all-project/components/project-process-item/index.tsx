@@ -15,35 +15,35 @@ const getValueByName = (name: string, data: JSONData[]) => {
 }
 
 const getCompanyName = (data: JSONData[], category: number) => {
-  if (category === 2) {
+  if (category === 2 && data) {
     // 项目委托情况
     return getValueByName('user_company_name', data)
-  } else if (category === 51 || category === 50) {
+  } else if ((category === 51 || category === 50) && data) {
     // 项目工作交接 作业任务 项目管理
 
     return getValueByName('company', data)?.Text
   }
   return (
-    data?.find((item) => item.Key === 'company_name')?.Value ||
-    data?.find((item) => item.Key === 'source_company_name')?.Value ||
+    (data && data?.find((item) => item.Key === 'company_name')?.Value) ||
+    (data && data?.find((item) => item.Key === 'source_company_name')?.Value) ||
     ''
   )
 }
 
 const getAllotUsers = (data: JSONData[]) => {
-  return data?.find((item) => item.Key === 'allot_users')?.Value
+  return data && data?.find((item) => item.Key === 'allot_users')?.Value
 }
 
 const getHandover = (data: JSONData[]) => {
-  return data?.find((item) => item.Key === 'identitys')?.Value
+  return data && data?.find((item) => item.Key === 'identitys')?.Value
 }
 
 const getCompanyNameByShare = (data: JSONData[]) => {
-  return data?.find((item) => item.Key === 'target_company_name')?.Value
+  return data && data?.find((item) => item.Key === 'target_company_name')?.Value
 }
 
 const getCompanyGroupName = (data: JSONData[]) => {
-  return data?.find((item) => item.Key === 'company_group_admin_name')?.Value
+  return data && data?.find((item) => item.Key === 'company_group_admin_name')?.Value
 }
 
 const ProjectProcessItem: React.FC<OperateLog> = ({
@@ -94,7 +94,7 @@ const ProjectProcessItem: React.FC<OperateLog> = ({
     })
   }
 
-  const jsonData: JSONData[] = JSON.parse(content)
+  const jsonData: JSONData[] = content && JSON.parse(content)
 
   const allotUsers = getAllotUsers(jsonData)
 
