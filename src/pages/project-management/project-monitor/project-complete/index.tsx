@@ -57,6 +57,9 @@ const ProjectComplete: React.FC = () => {
       title: '完成率（%）',
       index: 'completionRate',
       dataIndex: 'completionRate',
+      render: (text: any, record: any) => {
+        return Number(record.completionRate) === 0 ? 0 : Number(record.completionRate).toFixed(2)
+      },
     },
   ]
 
@@ -67,7 +70,9 @@ const ProjectComplete: React.FC = () => {
       const jgQty = chartTableData?.map((item: any) => item.qty)
       const totalQty = chartTableData?.map((item: any) => item.totalQty)
       const newQty = chartTableData?.map((item: any) => item.newQty)
-      const rateData = chartTableData?.map((item: any) => item.completionRate)
+      const rateData = chartTableData?.map((item: any) =>
+        Number(item.completionRate) === 0 ? 0 : Number(item.completionRate).toFixed(2)
+      )
 
       return {
         grid: {
