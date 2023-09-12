@@ -239,7 +239,7 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
   // 如果是继承，那么筛掉value是1的选项
   const handleProjectDataSourceType = useMemo(() => {
     if ((projectDataSourceType && pointVisible) || (isInherit && projectDataSourceType)) {
-      return projectDataSourceType.filter((item: any) => item.value !== 1)
+      return projectDataSourceType
     }
     return []
   }, [projectDataSourceType, pointVisible, isInherit])
