@@ -46,20 +46,12 @@ const initConfig = async () => {
   //新增是否使用隔离装置中转开关判断
   const host = window.location.host
 
-  //此处同request用于判断是否显示code的请求接口使用什么地址
-  const targetUrl = encodeURIComponent(
-    `http://172.2.48.22${webConfig.requestUrl.common}/System/GetDictionary`
-  )
-  let codeApi
-
   if (host.includes('117.191.93.63')) {
-    //全过程地址则使用全过程地址请求code验证码显示判断
+    //全过程判断
     localStorage.setItem('isTransfer', '1')
-    codeApi = `http://117.191.93.63:21525/commonPost?target_url=${targetUrl}`
   } else {
     //非全过程
     localStorage.setItem('isTransfer', '0')
-    codeApi = `/api${webConfig.requestUrl.common}/System/GetDictionary`
   }
 
   if (NODE_ENV === 'development') {
@@ -81,6 +73,16 @@ const initConfig = async () => {
     webConfig = configInfo
   }
 
+  const isTrans = localStorage.getItem('isTransfer')
+
+  //此处同request用于判断是否显示code的请求接口使用什么地址
+  const targetUrl = encodeURIComponent(
+    `http://172.2.48.22${webConfig.requestUrl.common}/System/GetDictionary`
+  )
+  const codeApi =
+    Number(isTrans) !== 1
+      ? `${webConfig.requestUrl.common}/System/GetDictionary`
+      : `http://117.191.93.63:21525/commonPost?target_url=${targetUrl}`
   const SignCodeConfig = await request(codeApi, {
     method: 'POST',
     params: { key: 'EnableSignInCode' },
