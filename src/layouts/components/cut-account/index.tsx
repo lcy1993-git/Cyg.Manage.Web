@@ -35,6 +35,9 @@ const CutAccount = (props: EditPasswordProps) => {
   const [spinning, setSpinning] = useState<boolean>(false)
   const [imageCode, setImageCode] = useState<string>('')
 
+  //获取验证码是否显示
+  let hasCode = localStorage.getItem('EnableSignInCode')
+
   //cookie
   const [key] = useState<string>(uuid.v1())
   // 刷新验证码的hash值
@@ -66,7 +69,7 @@ const CutAccount = (props: EditPasswordProps) => {
       .validateFields()
       .then(async (value) => {
         const { userName } = value
-        value.code = imageCode
+        value.code = Number(hasCode) !== 0 ? imageCode : '*#*#*#'
         value.sessionKey = key
         // TODO 快捷切换
 
@@ -258,18 +261,20 @@ const CutAccount = (props: EditPasswordProps) => {
         >
           <Input type="password" {...noAutoCompletePassword} placeholder="请输入密码" />
         </CyFormItem>
-        <CyFormItem name="code" label="验证码" required labelWidth={100}>
-          <VerifycodeImage
-            loginKey={key}
-            activeKey={'account'}
-            needVerifycode={true}
-            onChange={setImageCode}
-            hasErr={hasErr}
-            setHasErr={setHasErr}
-            reloadSign={reloadSign}
-            refreshCode={refreshCode}
-          />
-        </CyFormItem>
+        {Number(hasCode) !== 0 && (
+          <CyFormItem name="code" label="验证码" required labelWidth={100}>
+            <VerifycodeImage
+              loginKey={key}
+              activeKey={'account'}
+              needVerifycode={true}
+              onChange={setImageCode}
+              hasErr={hasErr}
+              setHasErr={setHasErr}
+              reloadSign={reloadSign}
+              refreshCode={refreshCode}
+            />
+          </CyFormItem>
+        )}
       </Form>
     </Modal>
   )
