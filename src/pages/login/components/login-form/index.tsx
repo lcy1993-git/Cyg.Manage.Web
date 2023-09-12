@@ -1,5 +1,6 @@
 import ImageIcon from '@/components/image-icon'
 import VerificationCode from '@/components/verification-code'
+import { Stop } from '@/pages/login'
 import { loginRules } from '@/pages/login/components/login-form/rule'
 import { baseUrl } from '@/services/common'
 import {
@@ -20,12 +21,11 @@ import { flatten, getStopServerList, noAutoCompletePassword, uploadAuditLog } fr
 import { useMount, useRequest } from 'ahooks'
 import { Button, Form, Input, message, Tabs } from 'antd'
 import { isArray } from 'lodash'
+import uuid from 'node-uuid'
 import React, { Dispatch, SetStateAction, useRef, useState } from 'react'
 import { history } from 'umi'
-import { Stop } from '@/pages/login'
 import VerifycodeImage from '../verifycode-image'
 import styles from './index.less'
-import uuid from 'node-uuid'
 
 const { TabPane } = Tabs
 
@@ -54,6 +54,9 @@ const LoginForm: React.FC<Props> = (props) => {
   const [canSendCode, setCanSendCode] = useState<boolean>(false)
 
   const [requestLoading, setRequestLoading] = useState<boolean>(false)
+
+  //获取验证码是否显示
+  let hasCode = localStorage.getItem('EnableSignInCode')
 
   const [form] = Form.useForm()
   const userNameRef = useRef<Input>(null)
@@ -87,7 +90,7 @@ const LoginForm: React.FC<Props> = (props) => {
     form.validateFields().then(async (values) => {
       try {
         values.clientType = 2
-        values.code = imageCode
+        values.code = Number(hasCode) !== 0 ? imageCode : '*#*#*#'
         values.sessionKey = key
         setRequestLoading(true)
         const requestData = Object.assign({ ...values }, data)
@@ -284,17 +287,20 @@ const LoginForm: React.FC<Props> = (props) => {
                 autoComplete="off"
               />
             </Form.Item>
-            <VerifycodeImage
-              loginKey={key}
-              userKey={getkey(activeKey)}
-              activeKey={activeKey}
-              needVerifycode={needVerifycode}
-              onChange={setImageCode}
-              hasErr={hasErr}
-              setHasErr={setHasErr}
-              reloadSign={reloadSign}
-              refreshCode={refreshCode}
-            />
+            {Number(hasCode) !== 0 && (
+              <VerifycodeImage
+                loginKey={key}
+                userKey={getkey(activeKey)}
+                activeKey={activeKey}
+                needVerifycode={needVerifycode}
+                onChange={setImageCode}
+                hasErr={hasErr}
+                setHasErr={setHasErr}
+                reloadSign={reloadSign}
+                refreshCode={refreshCode}
+              />
+            )}
+
             <div>
               <Button
                 className={styles.loginButton}
@@ -334,6 +340,7 @@ const LoginForm: React.FC<Props> = (props) => {
                 onChange={setImageCode}
               />
             </Form.Item>
+
             <VerifycodeImage
               userKey={getkey(activeKey)}
               needVerifycode={needVerifycode}
@@ -343,6 +350,7 @@ const LoginForm: React.FC<Props> = (props) => {
               reloadSign={reloadSign}
               refreshCode={refreshCode}
             />
+
             <div>
               <Button className={styles.loginButton} onClick={getStopInfo} type="primary">
                 立即登录

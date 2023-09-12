@@ -1,5 +1,4 @@
 import CyFormItem from '@/components/cy-form-item'
-
 import { Col, Input, Row } from 'antd'
 import React from 'react'
 import rule from '../../rule'
@@ -34,7 +33,7 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
             initialValue={0}
             rules={[
               { required: true, message: '最小级别不能为空' },
-              { pattern: /^\d+$|^\d?\d+$/, message: '请输入0-18的正整数' },
+              { pattern: /^\d+$|^\d?\d+$/, message: '请输入0-20的正整数' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
@@ -54,8 +53,8 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
               placeholder="请输入最小级别"
               min={0}
               onChange={(e) => {
-                if (Number(e.target.value) > 18) {
-                  form.setFieldsValue({ minLevel: 18 })
+                if (Number(e.target.value) > 20) {
+                  form.setFieldsValue({ minLevel: 20 })
                   return
                 }
                 // if (e.target.value === '') {
@@ -73,10 +72,10 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
             required
             dependencies={['minLevel']}
             align="right"
-            initialValue={18}
+            initialValue={20}
             rules={[
               { required: true, message: '最大级别不能为空' },
-              { pattern: /^\d+$|^\d?\d+$/, message: '请输入0-18的正整数' },
+              { pattern: /^\d+$|^\d?\d+$/, message: '请输入0-20的正整数' },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (
@@ -96,8 +95,8 @@ const MapSourceForm: React.FC<MapSourceFormProps> = (props) => {
               placeholder="请输入最大级别"
               min={0}
               onChange={(e) => {
-                if (Number(e.target.value) > 18) {
-                  form.setFieldsValue({ maxLevel: 18 })
+                if (Number(e.target.value) > 20) {
+                  form.setFieldsValue({ maxLevel: 20 })
                   return
                 }
               }}

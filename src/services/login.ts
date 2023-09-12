@@ -1,7 +1,7 @@
-import request from '@/utils/request'
 import { baseUrl, cyRequest } from '@/services/common'
-import { ModulesItem, UserInfo } from './common.d'
+import request from '@/utils/request'
 import { generateUUID, handleSM2Crypto } from '@/utils/utils'
+import { ModulesItem, UserInfo } from './common.d'
 
 export interface UserLoginParams {
   userName: string
