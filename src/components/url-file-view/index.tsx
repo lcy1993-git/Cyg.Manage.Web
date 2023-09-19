@@ -2,6 +2,7 @@
 import PdfFileView from '@/components/pdf-file-view'
 import { baseUrl } from '@/services/common'
 import request from '@/utils/request'
+import { handleSM2Crypto } from '@/utils/utils'
 import React from 'react'
 import ApiFileView from '../api-file-view'
 import XlsxViewer from '../api-file-view/componnents/file-excel-view'
@@ -31,8 +32,8 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`)
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
   let handleUrl = `${baseUrl[requestSource]}${url}`
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   if (fileType === 'pdf') {
     api = {

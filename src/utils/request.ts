@@ -1,4 +1,4 @@
-import { uploadAuditLog } from '@/utils/utils'
+import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
 import { extend, RequestOptionsInit } from 'umi-request'
 
 const request = extend({
@@ -32,7 +32,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
 
-  let targetUrl = encodeURIComponent(url.includes('bbgl') ? url : `http://172.2.48.22${url}`) //目标接口转码
+  let targetUrl = handleSM2Crypto(url.includes('bbgl') ? url : `http://172.2.48.22${url}`) //目标接口转码
 
   let isNoGlzz = url.includes('/json') || url.includes('bbgl')
 
@@ -43,7 +43,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
       url:
         isNoGlzz || Number(isTrans) !== 1
           ? url
-          : `http://117.191.93.63:21525${accessUrl}?target_url=${targetUrl}`,
+          : `http://117.191.93.63:21525${accessUrl}?param=${targetUrl}`,
       options: {
         ...options,
         headers: {
@@ -61,7 +61,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
     url:
       isNoGlzz || Number(isTrans) !== 1
         ? url
-        : `http://117.191.93.63:21525${accessUrl}?target_url=${targetUrl}`,
+        : `http://117.191.93.63:21525${accessUrl}?param=${targetUrl}`,
     options: {
       ...options,
       headers: {

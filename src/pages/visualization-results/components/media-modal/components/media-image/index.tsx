@@ -11,7 +11,7 @@ import { baseUrl } from '@/services/common'
 
 import styles from './index.less'
 import uuid from 'node-uuid'
-import { uploadAuditLog } from '@/utils/utils'
+import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
 
 interface MediaImageProps {
   data: MediaData
@@ -57,9 +57,9 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
   let handleUrl = `${baseUrl.upload}`
 
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

@@ -12,6 +12,7 @@ import FileUpload from '@/components/file-upload'
 import { useBoolean } from 'ahooks'
 import { baseUrl } from '@/services/common'
 import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
+import { handleSM2Crypto } from '@/utils/utils'
 interface Props {
   data: string
   id: string
@@ -57,9 +58,9 @@ const ChapterInfo: React.FC<Props> = ({
   const isTrans = localStorage.getItem('isTransfer')
   let handleUrl = `${baseUrl.upload}`
 
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

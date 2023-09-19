@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import request from 'umi-request'
+import { handleSM2Crypto } from './utils/utils'
 const { NODE_ENV } = process.env
 // 为了防止有可能初始化失败，所以先默认一套设置
 export let webConfig = {
@@ -76,13 +77,13 @@ const initConfig = async () => {
   const isTrans = localStorage.getItem('isTransfer')
 
   //此处同request用于判断是否显示code的请求接口使用什么地址
-  const targetUrl = encodeURIComponent(
+  const targetUrl = handleSM2Crypto(
     `http://172.2.48.22${webConfig.requestUrl.common}/System/GetDictionary`
   )
   const codeApi =
     Number(isTrans) !== 1
       ? `${webConfig.requestUrl.common}/System/GetDictionary`
-      : `http://117.191.93.63:21525/commonPost?target_url=${targetUrl}`
+      : `http://117.191.93.63:21525/commonPost?param=${targetUrl}`
   const SignCodeConfig = await request(codeApi, {
     method: 'POST',
     params: { key: 'EnableSignInCode' },

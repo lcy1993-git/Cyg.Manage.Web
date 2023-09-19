@@ -2,6 +2,7 @@ import FileDocxView from '@/components/api-file-view/componnents/file-docx-view'
 import XlsxViewer from '@/components/api-file-view/componnents/file-excel-view'
 import { baseUrl } from '@/services/common'
 import { downLoadFileItem } from '@/services/operation-config/company-file'
+import { handleSM2Crypto } from '@/utils/utils'
 import React, { useEffect, useState } from 'react'
 
 interface UrlFileViewProps {
@@ -23,8 +24,8 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`)
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
   let handleUrl = `${baseUrl[requestSource]}${url}`
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   useEffect(() => {
     const { id } = params

@@ -7,7 +7,7 @@ import {
 } from '@/services/technology-economic/usual-quota-table'
 import { Table, Tabs } from 'antd'
 import { baseUrl } from '@/services/common'
-import { getObject } from '@/utils/utils'
+import { getObject, handleSM2Crypto } from '@/utils/utils'
 
 const { TabPane } = Tabs
 
@@ -42,9 +42,9 @@ const EarthworkParameters: React.FC<Props> = (props) => {
   const isTrans = localStorage.getItem('isTransfer')
   let handleUrl = `${baseUrl.upload}`
 
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

@@ -14,6 +14,7 @@ import {
 import { useMount } from 'ahooks'
 import { baseUrl } from '@/services/common'
 import moment from 'moment'
+import { handleSM2Crypto } from '@/utils/utils'
 
 interface Props {
   id: number
@@ -85,9 +86,9 @@ const ManualUpload: React.FC<Props> = (props) => {
 
   let handleUrl = `${baseUrl.upload}`
 
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

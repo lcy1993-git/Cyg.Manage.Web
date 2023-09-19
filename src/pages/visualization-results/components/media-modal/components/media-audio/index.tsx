@@ -1,4 +1,5 @@
 import { baseUrl } from '@/services/common'
+import { handleSM2Crypto } from '@/utils/utils'
 import type { MediaData } from '../../getComponentsByData'
 import styles from './index.less'
 
@@ -14,9 +15,9 @@ const MediaAudio: React.FC<MediaAudioProps> = ({ data }) => {
   // let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=${targetUrl}`
   let handleUrl = `${baseUrl.upload}`
 
-  let targetUrl = encodeURIComponent(`http://172.2.48.22${handleUrl}`)
+  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?target_url=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
   return (
