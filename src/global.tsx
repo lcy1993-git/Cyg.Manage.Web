@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash'
+//@ts-ignore
+import sm2 from 'sm-crypto/dist/sm2'
 import request from 'umi-request'
-import { handleSM2Crypto } from './utils/utils'
 const { NODE_ENV } = process.env
 // 为了防止有可能初始化失败，所以先默认一套设置
 export let webConfig = {
@@ -42,8 +43,14 @@ export let webConfig = {
 }
 
 const initConfig = async () => {
+  const SM2PublicKey =
+    '047981ed79b74289fd6e28fabe9002c07837892b20a919faecfedcaa1edfaf120031181d0fee61045323c010de4896a389c875baa882073125a4e97ab760bdfa74'
+  const handleSM2Crypto = (data: any) => {
+    const cipherMode = 0
+    // 加密结果
+    return '04' + sm2.doEncrypt(data, SM2PublicKey, cipherMode)
+  }
   const configInfo = await request('/config/config.json', { method: 'GET' })
-
   //新增是否使用隔离装置中转开关判断
   const host = window.location.host
 
