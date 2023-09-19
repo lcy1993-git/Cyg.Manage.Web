@@ -1,20 +1,19 @@
 import FileUpload from '@/components/file-upload'
-import React, { useState } from 'react'
-
-import styles from './index.less'
-import Modal from 'antd/lib/modal'
-import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
 import GeneralTable from '@/components/general-table'
-import { Button, message, Space, Spin } from 'antd'
+import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
+import { baseUrl } from '@/services/common'
 import {
   getLatestInstructions,
   instructionsCreate,
   uploadCreate,
 } from '@/services/system-config/manual-management'
-import { useMount } from 'ahooks'
-import { baseUrl } from '@/services/common'
-import moment from 'moment'
 import { handleSM2Crypto } from '@/utils/utils'
+import { useMount } from 'ahooks'
+import { Button, message, Space, Spin } from 'antd'
+import Modal from 'antd/lib/modal'
+import moment from 'moment'
+import React, { useState } from 'react'
+import styles from './index.less'
 
 interface Props {
   id: number
@@ -88,7 +87,7 @@ const ManualUpload: React.FC<Props> = (props) => {
 
   let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  let proxyUrl = `http://11.188.90.191:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

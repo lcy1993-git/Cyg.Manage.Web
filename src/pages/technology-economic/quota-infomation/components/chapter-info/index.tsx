@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { Button, message, Modal } from 'antd'
-import { DownloadOutlined, ExportOutlined } from '@ant-design/icons'
-import styles from './index.less'
-import WangEditor from '../wang-editor'
+import FileUpload from '@/components/file-upload'
+import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
+import { baseUrl } from '@/services/common'
 import {
   saveQuotaLibraryCatalogDescription,
   UploadChapterDescriptionFile,
   UploadChapterDescriptionFiles,
 } from '@/services/technology-economic'
-import FileUpload from '@/components/file-upload'
-import { useBoolean } from 'ahooks'
-import { baseUrl } from '@/services/common'
-import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
 import { handleSM2Crypto } from '@/utils/utils'
+import { DownloadOutlined, ExportOutlined } from '@ant-design/icons'
+import { useBoolean } from 'ahooks'
+import { Button, message, Modal } from 'antd'
+import React, { useEffect, useState } from 'react'
+import WangEditor from '../wang-editor'
+import styles from './index.less'
 interface Props {
   data: string
   id: string
@@ -60,7 +60,7 @@ const ChapterInfo: React.FC<Props> = ({
 
   let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  let proxyUrl = `http://11.188.90.191:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

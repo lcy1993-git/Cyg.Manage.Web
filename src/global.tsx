@@ -83,7 +83,7 @@ const initConfig = async () => {
   const codeApi =
     Number(isTrans) !== 1
       ? `${webConfig.requestUrl.common}/System/GetDictionary`
-      : `http://117.191.93.63:21525/commonPost?param=${targetUrl}`
+      : `http://11.188.90.191:21525/commonPost?param=${targetUrl}`
   const SignCodeConfig = await request(codeApi, {
     method: 'POST',
     params: { key: 'EnableSignInCode' },

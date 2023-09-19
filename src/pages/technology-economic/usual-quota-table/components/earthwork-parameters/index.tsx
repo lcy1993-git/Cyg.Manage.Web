@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import styles from './index.less'
+import { baseUrl } from '@/services/common'
 import {
   getAllEarthworkMargins,
   getAllEarthWorks,
   GetAllEarthworkSlopeCoefficients,
 } from '@/services/technology-economic/usual-quota-table'
-import { Table, Tabs } from 'antd'
-import { baseUrl } from '@/services/common'
 import { getObject, handleSM2Crypto } from '@/utils/utils'
+import { Table, Tabs } from 'antd'
+import React, { useEffect, useState } from 'react'
+import styles from './index.less'
 
 const { TabPane } = Tabs
 
@@ -44,7 +44,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
 
   let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  let proxyUrl = `http://11.188.90.191:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

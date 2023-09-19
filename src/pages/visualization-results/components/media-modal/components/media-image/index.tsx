@@ -1,17 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { useUpdateEffect } from 'ahooks'
-import type { MediaData } from '../../getComponentsByData'
-
-import { Button, Modal } from 'antd'
 import InputPercentNumber from '@/components/input-percent-number'
-import { DownloadOutlined, FullscreenOutlined, FullscreenExitOutlined } from '@ant-design/icons'
-
-import classNames from 'classnames'
 import { baseUrl } from '@/services/common'
-
-import styles from './index.less'
-import uuid from 'node-uuid'
 import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
+import { DownloadOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons'
+import { useUpdateEffect } from 'ahooks'
+import { Button, Modal } from 'antd'
+import classNames from 'classnames'
+import uuid from 'node-uuid'
+import React, { useEffect, useRef, useState } from 'react'
+import type { MediaData } from '../../getComponentsByData'
+import styles from './index.less'
 
 interface MediaImageProps {
   data: MediaData
@@ -59,7 +56,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
 
   let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  let proxyUrl = `http://11.188.90.191:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 
