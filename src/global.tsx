@@ -47,7 +47,7 @@ const initConfig = async () => {
   //新增是否使用隔离装置中转开关判断
   const host = window.location.host
 
-  if (host.includes('117.191.93.63')) {
+  if (host.includes('11.188.90.191')) {
     //全过程判断
     localStorage.setItem('isTransfer', '1')
   } else {
