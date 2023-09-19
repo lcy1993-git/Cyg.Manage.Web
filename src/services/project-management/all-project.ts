@@ -1081,11 +1081,20 @@ export const postSubmitProjectToQGC = (projectId: string) => {
     })
   )
 }
+
+export enum QgcTypeEnum {
+  '全部' = 0,
+  '需求' = 10,
+  '可研' = 20,
+  '立项项目' = 30,
+}
+
 // 全过程变更项目关联关系
-export const postBatchSyncProject = () => {
+export const postBatchSyncProject = (qgcPullType: any) => {
   return cyRequest(() =>
     request(`${baseUrl.comment}/QgcProject/BatchSyncProject`, {
       method: 'POST',
+      params: { qgcPullType },
     })
   )
 }
