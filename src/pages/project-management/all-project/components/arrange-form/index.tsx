@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { TreeSelect, message, Input, Divider } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import EnumSelect from '@/components/enum-select'
-import {
-  Arrangement,
-  IsArrangement,
-  getCompanyName,
-  getGroupInfo,
-} from '@/services/project-management/all-project'
-import { useRequest } from 'ahooks'
-import Search from 'antd/lib/input/Search'
 import ReadonlyItem from '@/components/readonly-item'
 import { getTreeSelectData } from '@/services/operation-config/company-group'
-import uuid from 'node-uuid'
+import {
+  Arrangement,
+  getCompanyName,
+  getGroupInfo,
+  IsArrangement,
+} from '@/services/project-management/all-project'
 import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Divider, Input, message, TreeSelect } from 'antd'
+import Search from 'antd/lib/input/Search'
+import uuid from 'node-uuid'
+import React, { useEffect, useState } from 'react'
 import styles from './index.less'
 
 interface GetGroupUserProps {
@@ -166,6 +166,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
+                showSearch
+                treeNodeFilterProp="title"
               />
             </CyFormItem>
           )}
@@ -177,6 +179,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               placeholder="请选择"
               treeDefaultExpandAll
               allowClear
+              showSearch
+              treeNodeFilterProp="title"
             />
           </CyFormItem>
           {Number(isOpenReview) === 1 && (
@@ -188,6 +192,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
+                showSearch
+                treeNodeFilterProp="title"
               />
             </CyFormItem>
           )}
@@ -219,6 +225,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                     placeholder="请选择"
                     treeDefaultExpandAll
                     allowClear
+                    showSearch
+                    treeNodeFilterProp="title"
                   />
                 </CyFormItem>
                 <CyFormItem label="校核" name="designAssessUser2">
@@ -229,6 +237,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                     placeholder="请选择"
                     treeDefaultExpandAll
                     allowClear
+                    showSearch
+                    treeNodeFilterProp="title"
                   />
                 </CyFormItem>
                 <CyFormItem label="审核" name="designAssessUser3">
@@ -239,6 +249,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                     placeholder="请选择"
                     treeDefaultExpandAll
                     allowClear
+                    showSearch
+                    treeNodeFilterProp="title"
                   />
                 </CyFormItem>
                 <CyFormItem label="审定" name="designAssessUser4">
@@ -249,6 +261,8 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                     placeholder="请选择"
                     treeDefaultExpandAll
                     allowClear
+                    showSearch
+                    treeNodeFilterProp="title"
                   />
                 </CyFormItem>
                 {/* 造价内审 */}

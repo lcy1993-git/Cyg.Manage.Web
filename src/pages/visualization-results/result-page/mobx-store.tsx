@@ -48,7 +48,7 @@ const initState = {
   designLayerVisible: false,
   dismantleLayerVisible: false,
 
-  isSj: true,
+  isSj: false,
   filterCondition: { haveAnnotate: 0 },
   currentLayers: [1],
   propertySidePopupShow: false,

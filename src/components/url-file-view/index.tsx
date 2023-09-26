@@ -33,7 +33,7 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
   let handleUrl = `${baseUrl[requestSource]}${url}`
   let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
-  let proxyUrl = `http://11.188.90.191:21525/commonGet?param=${targetUrl}`
+  let proxyUrl = `http://www.glzz.dev1.com/commonGet?param=${targetUrl}`
 
   if (fileType === 'pdf') {
     api = {

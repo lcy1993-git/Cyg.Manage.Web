@@ -84,6 +84,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
+            showSearch
+            treeNodeFilterProp="title"
           />
         </CyFormItem>
       ) : dataSourceType === 2 ? (
@@ -132,6 +134,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             placeholder="请选择"
             treeDefaultExpandAll
             allowClear
+            showSearch
+            treeNodeFilterProp="title"
           />
         </CyFormItem>
       ) : (
@@ -158,6 +162,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                 placeholder="请选择"
                 treeDefaultExpandAll
                 allowClear
+                showSearch
+                treeNodeFilterProp="title"
               />
             </CyFormItem>
           ) : (
@@ -203,6 +209,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                   placeholder="请选择"
                   treeDefaultExpandAll
                   allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
                 />
               </CyFormItem>
             ) : (
@@ -228,6 +236,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                   placeholder="请选择"
                   treeDefaultExpandAll
                   allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
                 />
               </CyFormItem>
             ) : (
@@ -252,6 +262,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                   placeholder="请选择"
                   treeDefaultExpandAll
                   allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
                 />
               </CyFormItem>
             ) : (
@@ -277,6 +289,8 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                   placeholder="请选择"
                   treeDefaultExpandAll
                   allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
                 />
               </CyFormItem>
             ) : (

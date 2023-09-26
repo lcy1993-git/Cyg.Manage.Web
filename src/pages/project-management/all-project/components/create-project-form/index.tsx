@@ -1076,7 +1076,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
               label="桩位范围(米)"
-              // initialValue={'50'}
+              initialValue={10}
               fieldKey={[field.fieldKey, 'pileRange']}
               name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
               labelWidth={120}
@@ -1093,7 +1093,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           ) : dataSourceType === 1 || (copyFlag && copyFlag[index] && copyFlag[index] === 1) ? (
             <CyFormItem
               label="桩位范围(米)"
-              // initialValue={'50'}
+              initialValue={10}
               fieldKey={[field.fieldKey, 'pileRange']}
               name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
               labelWidth={120}
@@ -1115,7 +1115,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             isInherit ? (
             <CyFormItem
               label="桩位范围(米)"
-              // initialValue={'50'}
+              initialValue={10}
               fieldKey={[field.fieldKey, 'pileRange']}
               name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
               required

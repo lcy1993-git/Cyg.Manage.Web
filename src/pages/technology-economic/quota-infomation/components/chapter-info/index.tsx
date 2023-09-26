@@ -60,7 +60,7 @@ const ChapterInfo: React.FC<Props> = ({
 
   let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://11.188.90.191:21525/commonGet?param=${targetUrl}`
+  let proxyUrl = `http://www.glzz.dev1.com/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 
