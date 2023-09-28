@@ -56,7 +56,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
 
   let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let proxyUrl = `http://www.glzz.dev1.com/commonGet?param=${targetUrl}`
+  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
 
   let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 

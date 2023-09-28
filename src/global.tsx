@@ -54,7 +54,7 @@ const initConfig = async () => {
   //新增是否使用隔离装置中转开关判断
   const host = window.location.host
 
-  if (host.includes('11.188.90.191')) {
+  if (host.includes('117.191.93.63')) {
     //全过程判断
     localStorage.setItem('isTransfer', '1')
   } else {
@@ -90,7 +90,7 @@ const initConfig = async () => {
   const codeApi =
     Number(isTrans) !== 1
       ? `${webConfig.requestUrl.common}/System/GetDictionary`
-      : `http://www.glzz.dev1.com/commonPost?param=${targetUrl}`
+      : `http://117.191.93.63:21525/commonPost?param=${targetUrl}`
   const SignCodeConfig = await request(codeApi, {
     method: 'POST',
     params: { key: 'EnableSignInCode' },

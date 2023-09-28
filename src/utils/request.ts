@@ -43,7 +43,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
       url:
         isNoGlzz || Number(isTrans) !== 1
           ? url
-          : `http://www.glzz.dev1.com${accessUrl}?param=${targetUrl}`,
+          : `http://117.191.93.63:21525${accessUrl}?param=${targetUrl}`,
       options: {
         ...options,
         headers: {
@@ -61,7 +61,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
     url:
       isNoGlzz || Number(isTrans) !== 1
         ? url
-        : `http://www.glzz.dev1.com${accessUrl}?param=${targetUrl}`,
+        : `http://117.191.93.63:21525${accessUrl}?param=${targetUrl}`,
     options: {
       ...options,
       headers: {
