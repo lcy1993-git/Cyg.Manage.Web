@@ -954,9 +954,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
                 onChange={(value: any) => {
                   if (value === 2 || value === 1) {
                     if (field.fieldKey === undefined) {
-                      form.resetFields(['disclosureRange', 'pileRange'])
+                      // form.resetFields(['disclosureRange', 'pileRange'])
 
-                      // form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined });
+                      form.setFieldsValue({ disclosureRange: undefined, pileRange: undefined })
                     } else {
                       const projectsInfo = form.getFieldValue('projects')
                       const newProjectsInfo = projectsInfo.map((item: any, ind: number) => {
@@ -1076,7 +1076,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
               label="桩位范围(米)"
-              initialValue={10}
+              // initialValue={10}
               fieldKey={[field.fieldKey, 'pileRange']}
               name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
               labelWidth={120}
@@ -1093,7 +1093,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           ) : dataSourceType === 1 || (copyFlag && copyFlag[index] && copyFlag[index] === 1) ? (
             <CyFormItem
               label="桩位范围(米)"
-              initialValue={10}
+              // initialValue={10}
               fieldKey={[field.fieldKey, 'pileRange']}
               name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
               labelWidth={120}
@@ -1153,7 +1153,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           ) : (
             <CyFormItem
               label="桩位范围(米)"
-              // initialValue={'50'}
+              initialValue={10}
               fieldKey={[field.fieldKey, 'pileRange']}
               name={isEmpty(field) ? 'pileRange' : [field.name, 'pileRange']}
               labelWidth={120}
