@@ -1,16 +1,16 @@
-import React, { useMemo, useState } from 'react'
-import { Input, Select, TreeSelect } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
+import { CompanyGroupTreeData } from '@/services/operation-config/company-group'
+import { getClientCategorys } from '@/services/personnel-config/company-user'
+// import FormSwitch from '@/components/form-switch'
+import { noAutoCompletePassword } from '@/utils/utils'
+import { useRequest } from 'ahooks'
+import { Input, Select, TreeSelect } from 'antd'
+import Spin from 'antd/es/spin'
+import React, { useMemo, useState } from 'react'
 // import EnumRadio from '@/components/enum-radio'
 // import UrlSelect from '@/components/url-select'
 // import { BelongStatusEnum } from '@/services/personnel-config/manage-user'
 import rules from '../rule'
-import { CompanyGroupTreeData } from '@/services/operation-config/company-group'
-import { getClientCategorys } from '@/services/personnel-config/company-user'
-import { useRequest } from 'ahooks'
-import Spin from 'antd/es/spin'
-// import FormSwitch from '@/components/form-switch'
-import { noAutoCompletePassword } from '@/utils/utils'
 
 interface CompanyUserFormProps {
   treeData: CompanyGroupTreeData[]
@@ -55,6 +55,12 @@ const CompanyUserForm: React.FC<CompanyUserFormProps> = (props) => {
         </CyFormItem>
         {type === 'add' && (
           <CyFormItem label="密码" name="pwd" required rules={rules.pwd} hasFeedback>
+            {/* <Input.Password
+              placeholder="请输入密码"
+              {...noAutoCompletePassword}
+              onPaste={(e) => e.preventDefault()}
+              style={{ height: '27px' }}
+            /> */}
             <Input
               type="password"
               placeholder="请输入密码"
