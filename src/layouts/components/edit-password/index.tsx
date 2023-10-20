@@ -103,7 +103,7 @@ const EditPassword = (props: EditPasswordProps) => {
           rules={[
             { required: true, message: '密码不能为空' },
             {
-              pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9@#$%^&+=!]{8,20}$/,
+              pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9@#$%^&*+=!]{8,20}$/,
               message: '密码必须由(8-20)位数字和大小写字母组成（可包含特殊字符）',
             },
           ]}
