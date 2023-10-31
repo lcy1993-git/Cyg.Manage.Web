@@ -48,6 +48,20 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
             </ReadonlyItem>
           </div>
         </div>
+
+        <div className="flex">
+          <div className="flex1">
+            <ReadonlyItem label="WBS编码" labelWidth={100}>
+              {projectInfo?.wbs ? projectInfo?.wbs : '无'}
+            </ReadonlyItem>
+          </div>
+          <div className="flex1">
+            <ReadonlyItem label="状态" labelWidth={100}>
+              {projectInfo?.stateInfo.showStatusText}
+            </ReadonlyItem>
+          </div>
+        </div>
+
         <div className="flex">
           <div className="flex1">
             <ReadonlyItem label="资源库" labelWidth={100}>
@@ -255,11 +269,6 @@ const ProjectBaseInfo: React.FC<ProjectBaseInfoProps> = (props) => {
           </div>
         </div>
         <div className="flex">
-          <div className="flex1">
-            <ReadonlyItem label="状态" labelWidth={100}>
-              {projectInfo?.stateInfo.showStatusText}
-            </ReadonlyItem>
-          </div>
           <div className="flex1">
             <ReadonlyItem label="备注" labelWidth={100}>
               <Tooltip title={projectInfo?.remark} placement="topLeft">

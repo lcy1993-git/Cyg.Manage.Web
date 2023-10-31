@@ -301,6 +301,35 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
+
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="WBS编码"
+            fieldKey={[field.fieldKey, 'wbs']}
+            name={isEmpty(field) ? 'wbs' : [field.name, 'wbs']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入WBS编码" />
+          </CyFormItem>
+        </div>
+
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            {...field}
+            label="是否开启"
+            fieldKey={[field.fieldKey, 'proIsOpen']}
+            name={isEmpty(field) ? 'proIsOpen' : [field.name, 'proIsOpen']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input disabled={!!isDisabled} placeholder="请输入" />
+          </CyFormItem>
+        </div>
+      </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -604,18 +633,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
-            {...field}
-            label="是否开启"
-            fieldKey={[field.fieldKey, 'proIsOpen']}
-            name={isEmpty(field) ? 'proIsOpen' : [field.name, 'proIsOpen']}
-            labelWidth={120}
-            align="right"
-          >
-            <Input disabled={!!isDisabled} placeholder="请输入" />
-          </CyFormItem>
-        </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
             fieldKey={[field.fieldKey, 'libId']}
             name={isEmpty(field) ? 'libId' : [field.name, 'libId']}
             label="资源库"
@@ -646,8 +663,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             />
           </CyFormItem>
         </div>
-      </div>
-      <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
             fieldKey={[field.fieldKey, 'inventoryOverviewId']}
@@ -668,6 +683,8 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             />
           </CyFormItem>
         </div>
+      </div>
+      <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
             fieldKey={[field.fieldKey, 'warehouseId']}
@@ -689,8 +706,7 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             />
           </CyFormItem>
         </div>
-      </div>
-      <div className="flex">
+
         <div className="flex1 flowHidden">
           <CyFormItem
             label="总投资(万元)"
@@ -730,26 +746,8 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             />
           </CyFormItem>
         </div>
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="项目批次"
-            initialValue={1}
-            fieldKey={[field.fieldKey, 'batch']}
-            name={isEmpty(field) ? 'batch' : [field.name, 'batch']}
-            required
-            labelWidth={120}
-            align="right"
-            rules={Rule.required}
-          >
-            <UrlSelect
-              defaultData={projectBatch}
-              valuekey="value"
-              titlekey="text"
-              placeholder="请选择"
-            />
-          </CyFormItem>
-        </div>
       </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -979,6 +977,28 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             )}
           </CyFormItem>
         </div>
+
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="项目批次"
+            initialValue={1}
+            fieldKey={[field.fieldKey, 'batch']}
+            name={isEmpty(field) ? 'batch' : [field.name, 'batch']}
+            required
+            labelWidth={120}
+            align="right"
+            rules={Rule.required}
+          >
+            <UrlSelect
+              defaultData={projectBatch}
+              valuekey="value"
+              titlekey="text"
+              placeholder="请选择"
+            />
+          </CyFormItem>
+        </div>
+      </div>
+      <div className="flex">
         <div className="flex1 flowHidden">
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
@@ -1055,8 +1075,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             </CyFormItem>
           )}
         </div>
-      </div>
-      <div className="flex">
         <div className="flex1 flowHidden">
           {dataSourceType === 2 || (copyFlag && copyFlag[index] && copyFlag[index] === 2) ? (
             <CyFormItem
@@ -1149,7 +1167,6 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
             </CyFormItem>
           )}
         </div>
-        <div className="flex1 flowHidden"></div>
       </div>
       <div className="flex">
         {' '}

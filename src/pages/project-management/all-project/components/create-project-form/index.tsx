@@ -311,6 +311,61 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
+
+      <div className="flex">
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            // shouldUpdate={valueChangeEvent}
+            label="WBS编码"
+            fieldKey={[field.fieldKey, 'code']}
+            name={isEmpty(field) ? 'wbs' : [field.name, 'wbs']}
+            labelWidth={120}
+            align="right"
+          >
+            <Input placeholder="请输入WBS编码" maxLength={64} />
+          </CyFormItem>
+        </div>
+        <div className="flex1 flowHidden">
+          <CyFormItem
+            label="总投资(万元)"
+            labelWidth={120}
+            align="right"
+            fieldKey={[field.fieldKey, 'totalInvest']}
+            name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
+            rules={[
+              () => ({
+                validator(_, value) {
+                  if (value <= 100000 && value > -1) {
+                    return Promise.resolve()
+                  }
+                  if (value > 100000) {
+                    return Promise.reject('请填写0~100000以内的整数')
+                  }
+                  return Promise.resolve()
+                },
+              }),
+
+              {
+                pattern: /^(([1-9]\d+)|[0-9])/, //匹配正整数
+                message: '该项不能为负数',
+              },
+              {
+                pattern: /^([\\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+                message: '最多保留三位小数',
+              },
+            ]}
+          >
+            <Input
+              type="number"
+              placeholder="请输入"
+              min={0}
+              defaultValue={0}
+              onKeyPress={keyPressEvent}
+            />
+          </CyFormItem>
+        </div>
+      </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -365,6 +420,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
           </CyFormItem>
         </div>
       </div>
+
       <div className="flex">
         <div className="flex1 flowHidden">
           <CyFormItem
@@ -581,45 +637,6 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         </div>
       </div>
       <div className="flex">
-        <div className="flex1 flowHidden">
-          <CyFormItem
-            label="总投资(万元)"
-            labelWidth={120}
-            align="right"
-            fieldKey={[field.fieldKey, 'totalInvest']}
-            name={isEmpty(field) ? 'totalInvest' : [field.name, 'totalInvest']}
-            rules={[
-              () => ({
-                validator(_, value) {
-                  if (value <= 100000 && value > -1) {
-                    return Promise.resolve()
-                  }
-                  if (value > 100000) {
-                    return Promise.reject('请填写0~100000以内的整数')
-                  }
-                  return Promise.resolve()
-                },
-              }),
-
-              {
-                pattern: /^(([1-9]\d+)|[0-9])/, //匹配正整数
-                message: '该项不能为负数',
-              },
-              {
-                pattern: /^([\\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
-                message: '最多保留三位小数',
-              },
-            ]}
-          >
-            <Input
-              type="number"
-              placeholder="请输入"
-              min={0}
-              defaultValue={0}
-              onKeyPress={keyPressEvent}
-            />
-          </CyFormItem>
-        </div>
         <div className="flex1 flowHidden">
           <CyFormItem
             label="项目性质"
