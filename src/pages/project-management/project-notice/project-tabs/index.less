@@ -1,5 +1,14 @@
 .missionTabs {
   height: 95%;
+  position: relative;
+
+  .filterArea {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    right: 0;
+    z-index: 999;
+  }
 
   :global {
     .ant-tabs-nav-wrap {

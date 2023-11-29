@@ -59,6 +59,9 @@ interface GeneralTableProps {
   notShowSelect?: boolean
 
   requestType?: 'get' | 'post'
+
+  //自定义无页码表格内容高度
+  tableHeight?: any
 }
 
 type TableSelectType = 'radio' | 'checkbox'
@@ -90,6 +93,7 @@ const withGeneralTable =
       cruxKey = '',
       requestConditions = true,
       requestType = 'post',
+      tableHeight,
       ...rest
     } = props
 
@@ -355,7 +359,10 @@ const withGeneralTable =
         )}
         <div className={styles.cyGeneralTableOtherSlot}>{otherSlot?.()}</div>
 
-        <div className={styles.cyGeneralTableConetnt}>
+        <div
+          className={`${styles.cyGeneralTableConetnt}`}
+          style={{ height: `${tableHeight ? tableHeight : null}` }}
+        >
           <WrapperComponent
             bordered={true}
             dataSource={tableResultData.items}

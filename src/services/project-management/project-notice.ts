@@ -85,3 +85,27 @@ export const exportProjectCount = () => {
     responseType: 'blob',
   })
 }
+
+//导入云平台统计文件
+export const importCloudPlat = (files: any[], requestSource: 'project', url: string) => {
+  const formData = new FormData()
+  files?.forEach((item) => {
+    formData.append('file', item)
+  })
+
+  const uploadUrl = `${baseUrl[requestSource]}${url}`
+
+  return request(uploadUrl, {
+    method: 'POST',
+    data: formData,
+    requestType: 'form',
+  })
+}
+
+//导出云平台统计
+export const exportCloudPlat = (params: number) => {
+  return request(`${baseUrl.project}/Hotfix231202/ExportCloudPlat?request=${params}`, {
+    method: 'POST',
+    responseType: 'blob',
+  })
+}
