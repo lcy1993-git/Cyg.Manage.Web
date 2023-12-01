@@ -86,7 +86,7 @@ export const exportProjectCount = () => {
   })
 }
 
-//导入云平台统计文件
+//导入云平台统计或批复文件
 export const importCloudPlat = (files: any[], requestSource: 'project', url: string) => {
   const formData = new FormData()
   files?.forEach((item) => {
@@ -105,6 +105,14 @@ export const importCloudPlat = (files: any[], requestSource: 'project', url: str
 //导出云平台统计
 export const exportCloudPlat = (params: number) => {
   return request(`${baseUrl.project}/Hotfix231202/ExportCloudPlat?request=${params}`, {
+    method: 'POST',
+    responseType: 'blob',
+  })
+}
+
+//导出批复
+export const exportApproved = (params: number) => {
+  return request(`${baseUrl.project}/Hotfix231202/ExportApprovedEngineer?projectStage=${params}`, {
     method: 'POST',
     responseType: 'blob',
   })

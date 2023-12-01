@@ -1,12 +1,11 @@
-import { useControllableValue } from 'ahooks'
-import { Button, Select } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import CyFormItem from '@/components/cy-form-item'
-import FileUpload from '@/components/file-upload'
 import CyTip from '@/components/cy-tip'
-import { CaretDownOutlined } from '@ant-design/icons'
+import FileUpload from '@/components/file-upload'
 import { importCloudPlat } from '@/services/project-management/project-notice'
+import { CaretDownOutlined } from '@ant-design/icons'
+import { useControllableValue } from 'ahooks'
+import { Button, Form, message, Modal, Select } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 interface UploadAddProjectProps {
   visible: boolean
@@ -66,10 +65,17 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
           return
         }
       } else {
-        alert('hello!')
-        return
+        const res = await importCloudPlat(
+          file,
+          'project',
+          `/Hotfix231202/ImportApprovedEngineer?projectStage=${stage}`
+        )
+        if (res.code === 5000 || res.code === 500 || res.code !== 200) {
+          message.error(res.message)
+          setRequestLoading(false)
+          return
+        }
       }
-
       message.success('导入成功')
       refreshEvent?.()
       setState(false)

@@ -3,10 +3,8 @@
  */
 import CommonTitle from '@/components/common-title'
 import PageCommonWrap from '@/components/page-common-wrap'
-
 import { Tabs } from 'antd'
 import React from 'react'
-
 import styles from './index.less'
 import ProjectTabs from './project-tabs'
 import UserTabs from './user-tabs'

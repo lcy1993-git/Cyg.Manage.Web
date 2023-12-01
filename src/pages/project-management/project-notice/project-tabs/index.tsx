@@ -1,5 +1,5 @@
 import GeneralTable from '@/components/general-table'
-import { exportCloudPlat } from '@/services/project-management/project-notice'
+import { exportApproved, exportCloudPlat } from '@/services/project-management/project-notice'
 import { CaretDownOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import { Button, message, Select, Tabs } from 'antd'
@@ -32,11 +32,11 @@ const UserTabs: React.FC = () => {
   const yColumns: any[] = [
     {
       title: '序号',
-      dataIndex: 'index',
-      index: 'index',
-      render: (text: any, record: any, index: number) => {
+      dataIndex: 'no',
+      index: 'no',
+      render: (text: any, record: any) => {
         return {
-          children: record.rowspan !== 0 ? (index === 0 ? index + 1 : index) : null,
+          children: text,
           props: { rowSpan: record.rowspan },
         }
       },
@@ -141,45 +141,45 @@ const UserTabs: React.FC = () => {
   const pColumns: any[] = [
     {
       title: '地州',
-      dataIndex: 'rank',
-      index: 'rank',
+      dataIndex: 'creationCompanyName',
+      index: 'creationCompanyName',
       width: 180,
       align: 'center',
     },
     {
       title: '项目名称',
-      index: 'companyName',
-      dataIndex: 'companyName',
+      index: 'projectName',
+      dataIndex: 'projectName',
       align: 'center',
     },
     {
       title: '设计院',
-      index: 'rateExpress',
-      dataIndex: 'rateExpress',
-      width: 300,
+      index: 'executionCompanyName',
+      dataIndex: 'executionCompanyName',
+      width: 320,
       align: 'center',
     },
     {
       title: '新增批复工程量',
       children: [
         {
-          title: '10kV线路',
-          dataIndex: 'col6',
-          key: 'col6',
-          width: 100,
+          title: '10kV线路长度',
+          dataIndex: 'approvedLineLength10kV',
+          key: 'approvedLineLength10kV',
+          width: 120,
           align: 'center',
         },
         {
-          title: '0.4kV线路',
-          dataIndex: 'col6',
-          key: 'col6',
-          width: 100,
+          title: '0.4kV线路长度',
+          dataIndex: 'approvedLineLength04kV',
+          key: 'approvedLineLength04kV',
+          width: 120,
           align: 'center',
         },
         {
           title: '变电容量',
-          dataIndex: 'col6',
-          key: 'col6',
+          dataIndex: 'approvedCapacity',
+          key: 'approvedCapacity',
           width: 100,
           align: 'center',
         },
@@ -189,23 +189,23 @@ const UserTabs: React.FC = () => {
       title: '新增竣工图工程量',
       children: [
         {
-          title: '10kV线路',
-          dataIndex: 'col6',
-          key: 'col6',
-          width: 100,
+          title: '10kV线路长度',
+          dataIndex: 'completedLineLength10kV',
+          key: 'completedLineLength10kV',
+          width: 120,
           align: 'center',
         },
         {
-          title: '0.4kV线路',
-          dataIndex: 'col6',
-          key: 'col6',
-          width: 100,
+          title: '0.4kV线路长度',
+          dataIndex: 'completedLineLength04kV',
+          key: 'completedLineLength04kV',
+          width: 120,
           align: 'center',
         },
         {
           title: '变电容量',
-          dataIndex: 'col6',
-          key: 'col6',
+          dataIndex: 'completedCapacity',
+          key: 'completedCapacity',
           width: 100,
           align: 'center',
         },
@@ -213,24 +213,27 @@ const UserTabs: React.FC = () => {
     },
     {
       title: '10kV线路差值',
-      index: 'rateExpress',
-      dataIndex: 'rateExpress',
+      index: 'lengthDiff10kV',
+      dataIndex: 'lengthDiff10kV',
       width: 120,
       align: 'center',
     },
     {
       title: '10kV差值百分比',
-      index: 'rateExpress',
-      dataIndex: 'rateExpress',
+      index: 'lengthDiffRate10kV',
+      dataIndex: 'lengthDiffRate10kV',
       width: 120,
       align: 'center',
     },
     {
       title: '变台存在差异',
-      index: 'rateExpress',
-      dataIndex: 'rateExpress',
+      index: 'isCapacityDiff',
+      dataIndex: 'isCapacityDiff',
       width: 100,
       align: 'center',
+      render: (text: any, record: any) => {
+        return <span>{record.isCapacityDiff ? '是' : '否'}</span>
+      },
     },
   ]
 
@@ -257,44 +260,76 @@ const UserTabs: React.FC = () => {
   }, [currentKey])
 
   const exportEvent = async () => {
-    try {
-      setSpinning(true)
-
-      const res = await exportCloudPlat(stage)
-      let blob = new Blob([res], {
-        type: 'application/vnd.ms-excel;charset=utf-8',
-      })
-      let finalyFileName = `云平台应用统计表[${selectLabel}].xlsx`
-      // for IE
-      //@ts-ignore
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+    if (currentKey === 'yun') {
+      try {
+        setSpinning(true)
+        const res = await exportCloudPlat(stage)
+        let blob = new Blob([res], {
+          type: 'application/vnd.ms-excel;charset=utf-8',
+        })
+        let finalyFileName = `云平台应用统计表[${selectLabel}].xlsx`
+        // for IE
         //@ts-ignore
-        window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
-      } else {
-        // for Non-IE
-        let objectUrl = URL.createObjectURL(blob)
-        let link = document.createElement('a')
-        link.href = objectUrl
-        link.setAttribute('download', finalyFileName)
-        document.body.appendChild(link)
-        link.click()
-        window.URL.revokeObjectURL(link.href)
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+        } else {
+          // for Non-IE
+          let objectUrl = URL.createObjectURL(blob)
+          let link = document.createElement('a')
+          link.href = objectUrl
+          link.setAttribute('download', finalyFileName)
+          document.body.appendChild(link)
+          link.click()
+          window.URL.revokeObjectURL(link.href)
+        }
+        setSpinning(false)
+        message.success('导出成功')
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setSpinning(false)
       }
-      setSpinning(false)
-      message.success('导出成功')
-    } catch (err) {
-      console.log(err)
-    } finally {
-      setSpinning(false)
+    } else {
+      try {
+        setSpinning(true)
+        const res = await exportApproved(stage)
+        let blob = new Blob([res], {
+          type: 'application/vnd.ms-excel;charset=utf-8',
+        })
+        let finalyFileName = `批复工程量统计表[${selectLabel}].xlsx`
+        // for IE
+        //@ts-ignore
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          //@ts-ignore
+          window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+        } else {
+          // for Non-IE
+          let objectUrl = URL.createObjectURL(blob)
+          let link = document.createElement('a')
+          link.href = objectUrl
+          link.setAttribute('download', finalyFileName)
+          document.body.appendChild(link)
+          link.click()
+          window.URL.revokeObjectURL(link.href)
+        }
+        setSpinning(false)
+        message.success('导出成功')
+      } catch (err) {
+        console.log(err)
+      } finally {
+        setSpinning(false)
+      }
     }
   }
 
   //切换状态
   const changeStage = (value: any) => {
     setStage(value)
-    if (yunRef && yunRef.current) {
+    const ref = currentKey === 'yun' ? yunRef : pfRef
+    if (ref && ref.current) {
       // @ts-ignore
-      yunRef.current.searchByParams({
+      ref.current.searchByParams({
         stage: value,
       })
     }
@@ -305,18 +340,6 @@ const UserTabs: React.FC = () => {
     setImportVisible(true)
   }
 
-  // const testData = [
-  //   { rowspan: 3 },
-  //   { rowspan: 0 },
-  //   { rowspan: 0 },
-  //   { rowspan: 2 },
-  //   { rowspan: 0 },
-  //   { rowspan: 1 },
-  //   { rowspan: 2 },
-  //   { rowspan: 0 },
-  //   { rowspan: 1 },
-  //   { rowspan: 1 },
-  // ]
   return (
     <div className={styles.missionTabs}>
       <div className={styles.filterArea}>
@@ -377,13 +400,16 @@ const UserTabs: React.FC = () => {
         <TabPane tab="批复工程量统计" key="pf">
           <GeneralTable
             noPaging
-            rowKey="rank"
+            rowKey="projectId"
             notShowSelect
             ref={pfRef}
             columns={pColumns}
             requestType="get"
-            url="/Hotfix230827/ProjectCompleteRateReportByCompany"
-            extractParams={{ projectStage: 4 }}
+            dataSource={table?.items}
+            getTableRequestData={setTable}
+            url="/Hotfix231202/ApprovedDiffRateStatistics"
+            extractParams={{ stage: stage }}
+            tableHeight="calc(100% - 30px)"
           />
         </TabPane>
         {/* <TabPane tab="竣工完成率统计" key="jg">
