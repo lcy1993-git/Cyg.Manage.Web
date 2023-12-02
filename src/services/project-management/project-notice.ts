@@ -103,7 +103,7 @@ export const importCloudPlat = (files: any[], requestSource: 'project', url: str
 }
 
 //导出云平台统计
-export const exportCloudPlat = (params: number) => {
+export const exportCloudPlat = (params: number | undefined) => {
   return request(`${baseUrl.project}/Hotfix231202/ExportCloudPlat?request=${params}`, {
     method: 'POST',
     responseType: 'blob',
@@ -111,7 +111,7 @@ export const exportCloudPlat = (params: number) => {
 }
 
 //导出批复
-export const exportApproved = (params: number) => {
+export const exportApproved = (params: number | undefined) => {
   return request(`${baseUrl.project}/Hotfix231202/ExportApprovedEngineer?projectStage=${params}`, {
     method: 'POST',
     responseType: 'blob',

@@ -11,7 +11,7 @@ interface UploadAddProjectProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
   currentKey: string
-  refreshEvent?: () => void
+  refreshEvent?: (value: any) => void
 }
 
 const { Option } = Select
@@ -20,7 +20,7 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
   const { currentKey, refreshEvent } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   //阶段选择
-  const [stage, setStage] = useState<number>(2)
+  const [stage, setStage] = useState<number>()
 
   const [requestLoading, setRequestLoading] = useState(false)
 
@@ -31,11 +31,7 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
   }
 
   useEffect(() => {
-    if (currentKey === 'yun') {
-      setStage(2)
-    } else {
-      setStage(3)
-    }
+    setStage(undefined)
   }, [currentKey])
 
   //传入上传后获取到的List
@@ -77,7 +73,7 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
         }
       }
       message.success('导入成功')
-      refreshEvent?.()
+      refreshEvent?.(stage)
       setState(false)
 
       setRequestLoading(false)
@@ -123,8 +119,15 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
             您可以通过下载excel模版，在模板中填写对应设计阶段项目信息，并上传填写后的文件。
           </CyTip>
           <div style={{ padding: '20px' }}>
-            <CyFormItem label="设计阶段" labelWidth={100}>
+            <CyFormItem
+              label="设计阶段"
+              labelWidth={100}
+              required
+              name="stage"
+              rules={[{ required: true, message: '未选择设计阶段' }]}
+            >
               <Select
+                placeholder="请选择"
                 value={stage}
                 suffixIcon={<CaretDownOutlined />}
                 onChange={(value: any) => changeStage(value)}

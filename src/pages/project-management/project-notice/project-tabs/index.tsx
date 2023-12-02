@@ -25,7 +25,7 @@ const UserTabs: React.FC = () => {
   const [table, setTable] = useState<any>([])
 
   //阶段选择
-  const [stage, setStage] = useState<number>(currentKey === 'yun' ? 2 : 3)
+  const [stage, setStage] = useState<number | undefined>(3)
 
   const [selectLabel, setSelectLable] = useState<string>('可研统计')
 
@@ -248,11 +248,7 @@ const UserTabs: React.FC = () => {
 
   const changeTabEvent = (key: string) => {
     setCurrentKey(key)
-    if (key === 'pf') {
-      setStage(3)
-    } else {
-      setStage(2)
-    }
+    setStage(3)
   }
 
   useUpdateEffect(() => {
@@ -453,7 +449,7 @@ const UserTabs: React.FC = () => {
         visible={importVisible}
         onChange={setImportVisible}
         currentKey={currentKey}
-        refreshEvent={refresh}
+        refreshEvent={changeStage}
       />
     </div>
   )
