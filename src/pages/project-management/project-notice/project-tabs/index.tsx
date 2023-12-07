@@ -57,10 +57,11 @@ const UserTabs: React.FC = () => {
       width: 300,
     },
     {
-      title: '设计院',
+      title: '设计单位',
       index: 'executionCompanyName',
       dataIndex: 'executionCompanyName',
       align: 'center',
+      width: 450,
     },
 
     {
@@ -99,7 +100,32 @@ const UserTabs: React.FC = () => {
       align: 'center',
     },
     {
-      title: '总项目数',
+      title: '设计单位项目总数',
+      index: 'projectCount',
+      dataIndex: 'projectCount',
+      width: 160,
+      align: 'center',
+    },
+    {
+      title: '设计单位项目上云率',
+      index: 'projectUpCloudRate',
+      dataIndex: 'projectUpCloudRate',
+      width: 180,
+      align: 'center',
+    },
+
+    {
+      title: '设计单位项目完成率',
+      index: 'completedRate',
+      dataIndex: 'completedRate',
+      render: (text: any, record: any) => {
+        return <span>{`${record.completedRate ? record.completedRate * 100 : 0}%`}</span>
+      },
+      width: 180,
+      align: 'center',
+    },
+    {
+      title: '地州项目总数',
       index: 'totalProjectCount',
       dataIndex: 'totalProjectCount',
       render: (text: any, record: any) => {
@@ -111,18 +137,7 @@ const UserTabs: React.FC = () => {
       width: 120,
       align: 'center',
     },
-    {
-      title: '初设完成率',
-      index: 'completedRate',
-      dataIndex: 'completedRate',
-      render: (text: any, record: any) => {
-        return (
-          <span>{`${record.completedRate ? (record.completedRate * 100)?.toFixed(2) : 0}%`}</span>
-        )
-      },
-      width: 120,
-      align: 'center',
-    },
+
     {
       title: '地州项目完成率',
       index: 'totalCompletedRate',
@@ -151,9 +166,10 @@ const UserTabs: React.FC = () => {
       index: 'projectName',
       dataIndex: 'projectName',
       align: 'center',
+      width: 350,
     },
     {
-      title: '设计院',
+      title: '设计单位',
       index: 'executionCompanyName',
       dataIndex: 'executionCompanyName',
       width: 320,
@@ -163,21 +179,21 @@ const UserTabs: React.FC = () => {
       title: '新增批复工程量',
       children: [
         {
-          title: '10kV线路长度',
+          title: '10kV线路长度(km)',
           dataIndex: 'approvedLineLength10kV',
           key: 'approvedLineLength10kV',
           width: 120,
           align: 'center',
         },
         {
-          title: '0.4kV线路长度',
+          title: '0.4kV线路长度(km)',
           dataIndex: 'approvedLineLength04kV',
           key: 'approvedLineLength04kV',
           width: 120,
           align: 'center',
         },
         {
-          title: '变电容量',
+          title: '变电容量(MVA)',
           dataIndex: 'approvedCapacity',
           key: 'approvedCapacity',
           width: 100,
@@ -189,21 +205,21 @@ const UserTabs: React.FC = () => {
       title: '新增竣工图工程量',
       children: [
         {
-          title: '10kV线路长度',
+          title: '10kV线路长度(km)',
           dataIndex: 'completedLineLength10kV',
           key: 'completedLineLength10kV',
           width: 120,
           align: 'center',
         },
         {
-          title: '0.4kV线路长度',
+          title: '0.4kV线路长度(km)',
           dataIndex: 'completedLineLength04kV',
           key: 'completedLineLength04kV',
           width: 120,
           align: 'center',
         },
         {
-          title: '变电容量',
+          title: '变电容量(MVA)',
           dataIndex: 'completedCapacity',
           key: 'completedCapacity',
           width: 100,
@@ -224,6 +240,20 @@ const UserTabs: React.FC = () => {
       dataIndex: 'lengthDiffRate10kV',
       width: 120,
       align: 'center',
+      render: (text: any, record: any) => {
+        return <span>{`${record.lengthDiffRate10kV ? record.lengthDiffRate10kV * 100 : 0}%`}</span>
+      },
+      onCell: (record: any) => {
+        if (record.lengthDiffRate10kV == null || record.lengthDiffRate10kV > 0.3) {
+          return {
+            style: {
+              backgroundColor: '#e2211c',
+              color: '#fff',
+            },
+          }
+        }
+        return
+      },
     },
     {
       title: '变台存在差异',
