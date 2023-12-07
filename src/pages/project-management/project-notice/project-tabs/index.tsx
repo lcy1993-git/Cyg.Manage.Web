@@ -429,7 +429,7 @@ const UserTabs: React.FC = () => {
         <TabPane tab="批复工程量统计" key="pf">
           <GeneralTable
             noPaging
-            rowKey="projectId"
+            rowKey="projectWbs"
             notShowSelect
             ref={pfRef}
             columns={pColumns}
