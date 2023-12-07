@@ -112,6 +112,9 @@ const UserTabs: React.FC = () => {
       dataIndex: 'projectUpCloudRate',
       width: 180,
       align: 'center',
+      render: (text: any, record: any) => {
+        return <span>{`${record.projectUpCloudRate ? record.projectUpCloudRate * 100 : 0}%`}</span>
+      },
     },
 
     {
@@ -472,6 +475,7 @@ const UserTabs: React.FC = () => {
         </TabPane> */}
       </Tabs>
       <div style={{ marginLeft: '20px' }}>
+        <span style={{ color: 'red' }}>* </span>
         截止日期：
         {table?.updateTime < 0 ? '-' : moment(table?.updateTime).format('YYYY-MM-DD HH:mm')}
       </div>
