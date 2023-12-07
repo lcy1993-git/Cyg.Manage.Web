@@ -244,7 +244,11 @@ const UserTabs: React.FC = () => {
       width: 120,
       align: 'center',
       render: (text: any, record: any) => {
-        return <span>{`${record.lengthDiffRate10kV ? record.lengthDiffRate10kV * 100 : 0}%`}</span>
+        return (
+          <span>
+            {record.lengthDiffRate10kV ? `${(record.lengthDiffRate10kV * 100).toFixed(2)}%` : ''}
+          </span>
+        )
       },
       onCell: (record: any) => {
         if (record.lengthDiffRate10kV == null || record.lengthDiffRate10kV > 0.3) {
@@ -429,7 +433,7 @@ const UserTabs: React.FC = () => {
         <TabPane tab="批复工程量统计" key="pf">
           <GeneralTable
             noPaging
-            rowKey="projectWbs"
+            rowKey={uuid.v1()}
             notShowSelect
             ref={pfRef}
             columns={pColumns}
@@ -474,10 +478,18 @@ const UserTabs: React.FC = () => {
           />
         </TabPane> */}
       </Tabs>
-      <div style={{ marginLeft: '20px' }}>
-        <span style={{ color: 'red' }}>* </span>
-        截止日期：
-        {table?.updateTime < 0 ? '-' : moment(table?.updateTime).format('YYYY-MM-DD HH:mm')}
+      <div className={styles.tabsBottom}>
+        <div>
+          <span style={{ color: 'red' }}>* </span>
+          截止日期：
+          {table?.updateTime < 0 ? '-' : moment(table?.updateTime).format('YYYY-MM-DD HH:mm')}
+        </div>
+
+        <div>
+          {currentKey === 'pf'
+            ? '* 注释:标红部分数据为强提醒显示，当数值超过30%或批复数值为0但实际项目有数值时，会作此提醒。'
+            : ''}
+        </div>
       </div>
       <TempImport
         visible={importVisible}
