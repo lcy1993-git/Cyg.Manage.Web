@@ -113,7 +113,11 @@ const UserTabs: React.FC = () => {
       width: 180,
       align: 'center',
       render: (text: any, record: any) => {
-        return <span>{`${record.projectUpCloudRate ? record.projectUpCloudRate * 100 : 0}%`}</span>
+        return (
+          <span>
+            {record.projectUpCloudRate ? `${(record.projectUpCloudRate * 100).toFixed(2)}%` : ''}
+          </span>
+        )
       },
     },
 
@@ -122,7 +126,9 @@ const UserTabs: React.FC = () => {
       index: 'completedRate',
       dataIndex: 'completedRate',
       render: (text: any, record: any) => {
-        return <span>{`${record.completedRate ? record.completedRate * 100 : 0}%`}</span>
+        return (
+          <span>{record.completedRate ? `${(record.completedRate * 100).toFixed(2)}%` : ''}</span>
+        )
       },
       width: 180,
       align: 'center',
@@ -147,7 +153,7 @@ const UserTabs: React.FC = () => {
       dataIndex: 'totalCompletedRate',
       render: (text: any, record: any) => {
         return {
-          children: `${text ? (text * 100)?.toFixed(2) : 0}%`,
+          children: text ? `${(text * 100).toFixed(2)}%` : '',
           props: { rowSpan: record.rowspan },
         }
       },
