@@ -42,6 +42,7 @@ const UserTabs: React.FC = () => {
       },
       width: 80,
       align: 'center',
+      fixed: 'left',
     },
     {
       title: '业主单位',
@@ -55,6 +56,7 @@ const UserTabs: React.FC = () => {
       },
       align: 'center',
       width: 300,
+      fixed: 'left',
     },
     {
       title: '设计单位',
@@ -62,6 +64,7 @@ const UserTabs: React.FC = () => {
       dataIndex: 'executionCompanyName',
       align: 'center',
       width: 450,
+      fixed: 'left',
     },
 
     {
@@ -106,20 +109,20 @@ const UserTabs: React.FC = () => {
       width: 160,
       align: 'center',
     },
-    {
-      title: '设计单位项目上云率',
-      index: 'projectUpCloudRate',
-      dataIndex: 'projectUpCloudRate',
-      width: 180,
-      align: 'center',
-      render: (text: any, record: any) => {
-        return (
-          <span>
-            {record.projectUpCloudRate ? `${(record.projectUpCloudRate * 100).toFixed(2)}%` : ''}
-          </span>
-        )
-      },
-    },
+    // {
+    //   title: '设计单位项目上云率',
+    //   index: 'projectUpCloudRate',
+    //   dataIndex: 'projectUpCloudRate',
+    //   width: 180,
+    //   align: 'center',
+    //   render: (text: any, record: any) => {
+    //     return (
+    //       <span>
+    //         {record.projectUpCloudRate ? `${(record.projectUpCloudRate * 100).toFixed(2)}%` : ''}
+    //       </span>
+    //     )
+    //   },
+    // },
 
     {
       title: '设计单位项目完成率',
@@ -169,6 +172,7 @@ const UserTabs: React.FC = () => {
       index: 'creationCompanyName',
       width: 180,
       align: 'center',
+      fixed: 'left',
     },
     {
       title: '项目名称',
@@ -176,6 +180,7 @@ const UserTabs: React.FC = () => {
       dataIndex: 'projectName',
       align: 'center',
       width: 350,
+      fixed: 'left',
     },
     {
       title: '设计单位',
@@ -183,6 +188,7 @@ const UserTabs: React.FC = () => {
       dataIndex: 'executionCompanyName',
       width: 320,
       align: 'center',
+      fixed: 'left',
     },
     {
       title: '新增批复工程量',
@@ -434,6 +440,7 @@ const UserTabs: React.FC = () => {
             dataSource={table?.items}
             getTableRequestData={setTable}
             tableHeight="calc(100% - 30px)"
+            scroll={{ y: 'calc(98vh - 496px)' }}
           />
         </TabPane>
         <TabPane tab="批复工程量统计" key="pf">
@@ -449,6 +456,7 @@ const UserTabs: React.FC = () => {
             url="/Hotfix231202/ApprovedDiffRateStatistics"
             extractParams={{ stage: stage }}
             tableHeight="calc(100% - 30px)"
+            scroll={{ y: 'calc(98vh - 496px)' }}
           />
         </TabPane>
         {/* <TabPane tab="竣工完成率统计" key="jg">
