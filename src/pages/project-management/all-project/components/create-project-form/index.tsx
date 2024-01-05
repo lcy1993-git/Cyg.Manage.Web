@@ -69,6 +69,9 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
   const [libId, setLibId] = useState<string | undefined>(inputLibId)
   const [newLibSelectData, setNewLibSelectData] = useState([])
 
+  //获取wbs是否必填开关
+  const wbsMust = localStorage.getItem('wbsMust')
+
   const { data: projectInfo, run } = useRequest(getProjectInfo, {
     onSuccess: () => {
       setLibId(projectInfo?.libId)
@@ -321,6 +324,15 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
             name={isEmpty(field) ? 'wbs' : [field.name, 'wbs']}
             labelWidth={120}
             align="right"
+            required={wbsMust && Number(wbsMust) === 1 ? true : false}
+            rules={[
+              wbsMust && Number(wbsMust) === 1
+                ? {
+                    required: true,
+                    message: 'WBS编码不能为空',
+                  }
+                : {},
+            ]}
           >
             <Input placeholder="请输入WBS编码" maxLength={64} />
           </CyFormItem>

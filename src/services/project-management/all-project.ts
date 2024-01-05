@@ -1073,11 +1073,11 @@ export const sureRemoval = (params: { targetEngineerId: string; projectIds: stri
   )
 }
 // 提交项目至全过程
-export const postSubmitProjectToQGC = (projectId: string) => {
+export const postSubmitProjectToQGC = (params: { projectId: string; stage: number }) => {
   return cyRequest(() =>
     request(`${baseUrl.comment}/QgcProject/TransferNonStructured`, {
       method: 'POST',
-      params: { projectId },
+      data: params,
     })
   )
 }
@@ -1087,6 +1087,15 @@ export enum QgcTypeEnum {
   '需求' = 10,
   '可研' = 20,
   '立项项目' = 30,
+}
+
+export enum stageEnum {
+  '需求编制' = 1,
+  '可研' = 2,
+  '初设' = 3,
+  '施工图' = 4,
+  '竣工图' = 5,
+  '设计变更' = 41,
 }
 
 // 全过程变更项目关联关系

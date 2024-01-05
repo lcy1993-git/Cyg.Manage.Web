@@ -28,7 +28,6 @@ import {
   getColumnsConfig,
   getProjectInfo,
   modifyExportPowerState,
-  postSubmitProjectToQGC,
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import {
@@ -56,6 +55,7 @@ import React, {
 import { useMyWorkStore } from '../../context'
 import ArchiveModal from '../archive-modal'
 import EngineerTable from '../engineer-table'
+import SubmitProjectModal from '../submit-project-modal'
 import styles from './index.less'
 
 const { Search } = Input
@@ -171,6 +171,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
 
   //项目归档模态框
   const [archiveVisible, setArchiveVisible] = useState<boolean>(false)
+
+  //新疆提交项目模态框
+  const [submitVisible, setSubmitVisible] = useState<boolean>(false)
 
   const isOpenReview = localStorage.getItem('isOpenReview')
   // 预设计
@@ -420,21 +423,25 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     setProjectMergeVisible(true)
   }
   const submitProjectToQGC = (projectId: string) => {
-    Modal.confirm({
-      title: '项目提交',
-      icon: <ExclamationCircleOutlined />,
-      content: `确定将提交项目吗？`,
-      okText: '确认',
-      cancelText: '取消',
-      onOk: () => {
-        handleSubmitProjectToQGC(projectId)
-      },
+    setModalInfo({
+      projectId: projectId,
     })
+    // Modal.confirm({
+    //   title: '项目提交',
+    //   icon: <ExclamationCircleOutlined />,
+    //   content: `确定将提交项目吗？`,
+    //   okText: '确认',
+    //   cancelText: '取消',
+    //   onOk: () => {
+    //     handleSubmitProjectToQGC(projectId)
+    //   },
+    // })
+    setSubmitVisible(true)
   }
-  const handleSubmitProjectToQGC = async (projectId: string) => {
-    await postSubmitProjectToQGC(projectId)
-    message.success('提交项目成功')
-  }
+  // const handleSubmitProjectToQGC = async (projectId: string) => {
+  //   await postSubmitProjectToQGC(projectId)
+  //   message.success('提交项目成功')
+  // }
 
   const checkProjectDetail = (projectId: string, judgmentMark: boolean) => {
     setModalInfo({
@@ -1495,6 +1502,16 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         <ArchiveModal
           visible={archiveVisible}
           onChange={setArchiveVisible}
+          finishEvent={delayRefresh}
+          projectId={modalNeedInfo.projectId}
+        />
+      )}
+
+      {/* 提交项目模态框 */}
+      {submitVisible && (
+        <SubmitProjectModal
+          visible={submitVisible}
+          onChange={setSubmitVisible}
           finishEvent={delayRefresh}
           projectId={modalNeedInfo.projectId}
         />

@@ -1,3 +1,4 @@
+import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
@@ -9,18 +10,24 @@ import {
 import {
   DeleteOutlined,
   ExclamationCircleOutlined,
-  EyeOutlined,
+  ImportOutlined,
   PlusOutlined,
 } from '@ant-design/icons'
 import useBoolean from 'ahooks/lib/useBoolean'
-import { Button, Col, DatePicker, Form, Input, message, Modal, Row, Space, Spin } from 'antd'
+import { Button, DatePicker, Form, Input, message, Modal, Space, Spin } from 'antd'
 import type { ColumnsType } from 'antd/lib/table'
 import { isArray } from 'lodash'
 import moment from 'moment'
 import React, { useState } from 'react'
 import { history } from 'umi'
 
-export interface SuppliesLibraryData {
+export interface AssemblyLibraryData {
+  // id?: string
+  // name: string
+  // publishOrg: string
+  // publishDate: string | moment.Moment
+  // remark: string
+  // "enabled": boolean
   file: any
 }
 
@@ -28,9 +35,9 @@ const { Search } = Input
 
 const { confirm } = Modal
 
-const SuppliesLibrary: React.FC = () => {
+const AssemblyLibrary: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null)
-  const [tableSelectRows, setTableSelectRows] = useState<SuppliesLibraryData[] | Object>([])
+  const [tableSelectRows, setTableSelectRows] = useState<AssemblyLibraryData[] | Object>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
   const [spinning, setSpinning] = useState<boolean>(false)
@@ -44,60 +51,67 @@ const SuppliesLibrary: React.FC = () => {
 
       title: '名称',
       align: 'center',
-      width: 170,
+      width: 300,
     },
     {
       dataIndex: 'publishDate',
 
       title: '发布时间',
       align: 'center',
-      width: 80,
+      width: 180,
       render(v: string) {
         return moment(v).format('YYYY-MM-DD')
       },
     },
     {
       dataIndex: 'publishOrg',
-
       ellipsis: true,
-      title: '发布机构',
+      title: '版本',
       align: 'center',
-      width: 170,
+      width: 300,
     },
-    // {
-    //   dataIndex: 'enabled',
-    //   key: 'enabled',
-    //   title: '状态',
-    //   ellipsis: true,
-    //   align: 'center',
-    //   width: 140,
-    //   render: (enable: boolean, record: any) => {
-    //     return (
-    //       <Space>
-    //         <Switch checked={enable} onChange={(status) => setStatus(status, record)}/>
-    //         <span>{enable ? '启用' : '停用'}</span>
-    //       </Space>
-    //     )
-    //   }
-    // },
+    {
+      dataIndex: 'publishOrg',
+      ellipsis: true,
+      title: '关联映射表',
+      align: 'center',
+      width: 260,
+    },
+
     {
       dataIndex: 'remark',
 
-      title: '说明',
+      title: '备注',
       align: 'center',
       ellipsis: true,
-      width: 150,
+      // width: 150,
+    },
+    {
+      dataIndex: 'enabled',
+      key: 'enabled',
+      title: '禁用状态',
+      ellipsis: true,
+      align: 'center',
+      width: 140,
+      render: (enable: boolean) => {
+        console.log(enable, '?a ?')
+        return (
+          <Space>
+            <span>{enable ? '启用' : '停用'}</span>
+          </Space>
+        )
+      },
     },
   ]
   const searchComponent = () => {
     return (
-      <TableSearch label="关键词" width="203px">
+      <TableSearch width="248px">
         <Search
           value={searchKeyWord}
           onChange={(e) => setSearchKeyWord(e.target.value)}
           onSearch={() => tableSearchEvent()}
           enterButton
-          placeholder="关键词"
+          placeholder="请输入组合件库名称"
         />
       </TableSearch>
     )
@@ -141,14 +155,14 @@ const SuppliesLibrary: React.FC = () => {
     const { id } = tableSelectRows?.[0] ?? ''
     history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
   }
-  const onFinish = (val: SuppliesLibraryData) => {
+  const onFinish = (val: AssemblyLibraryData) => {
     setSpinning(true)
     const data = JSON.parse(JSON.stringify(val))
     data.file = val.file
     // data.enabled = !!data.enabled
     data.name = data.name.trimEnd().trimStart()
     if (data.name === '') {
-      message.warning('物料库名称不能为空')
+      message.warning('名称不能为空')
       setSpinning(false)
       return
     }
@@ -192,20 +206,19 @@ const SuppliesLibrary: React.FC = () => {
           <PlusOutlined />
           添加
         </Button>
-
+        <Button className="mr7" onClick={() => gotoMoreInfo()}>
+          <ImportOutlined />
+          导入映射
+        </Button>
         <Button onClick={onRemoveRow} className="mr7">
           <DeleteOutlined />
           删除
-        </Button>
-        <Button className="mr7" onClick={() => gotoMoreInfo()}>
-          <EyeOutlined />
-          查看详情
         </Button>
       </Space>
     )
   }
 
-  const tableSelectEvent = (data: SuppliesLibraryData[] | Object) => {
+  const tableSelectEvent = (data: AssemblyLibraryData[] | Object) => {
     setTableSelectRows(data)
   }
 
@@ -216,9 +229,9 @@ const SuppliesLibrary: React.FC = () => {
         buttonLeftContentSlot={searchComponent}
         buttonRightContentSlot={tableElement}
         needCommonButton={true}
-        columns={columns as ColumnsType<SuppliesLibraryData | object>}
-        url="/MaterialLibrary/GetMaterialLibraryList"
-        tableTitle="物料库管理"
+        columns={columns as ColumnsType<AssemblyLibraryData | object>}
+        url="/AssemblyLibrary/QueryAssemblyLibraryPage"
+        tableTitle="组合件库管理"
         getSelectData={tableSelectEvent}
         requestSource="tecEco1"
         type="radio"
@@ -228,8 +241,8 @@ const SuppliesLibrary: React.FC = () => {
       />
       <Modal
         maskClosable={false}
-        title="添加-物料库"
-        width="880px"
+        title="添加-组合件库"
+        width="550px"
         visible={addFormVisible}
         okText="确认"
         footer={false}
@@ -238,65 +251,39 @@ const SuppliesLibrary: React.FC = () => {
         destroyOnClose
       >
         <Spin tip={'上传中...'} spinning={spinning}>
-          <Form
-            name="basic"
-            initialValues={{ remember: true }}
-            form={form}
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 18 }}
-            onFinish={onFinish}
-          >
-            <Row gutter={20}>
-              <Col span={12}>
-                <Form.Item
-                  label="名称"
-                  name="name"
-                  rules={[{ required: true, message: '请输入名称!' }]}
-                >
-                  <Input placeholder={'请输入名称'} />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="发布时间"
-                  name="publishDate"
-                  rules={[{ required: true, message: '请选择发布时间!' }]}
-                >
-                  <DatePicker defaultValue={undefined} />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={20}>
-              <Col span={12}>
-                <Form.Item label="发布机构" name="publishOrg">
-                  <Input />
-                </Form.Item>
-              </Col>
-              {/*<Col span={12}>*/}
-              {/*  <Form.Item*/}
-              {/*    label="状态"*/}
-              {/*    name="enabled"*/}
-              {/*  >*/}
-              {/*    <Switch/>*/}
-              {/*  </Form.Item>*/}
-              {/*</Col>*/}
-            </Row>
-            <Row gutter={20}>
-              <Col span={12}>
-                <Form.Item label="说明" name="remark">
-                  <Input.TextArea rows={3} />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="上传文件"
-                  name="file"
-                  rules={[{ required: true, message: '请上传物料库文件!' }]}
-                >
-                  <FileUpload trigger={triggerUploadFile} maxCount={1} accept=".xls,.xlsx" />
-                </Form.Item>
-              </Col>
-            </Row>
+          <Form name="basic" initialValues={{ remember: true }} form={form} onFinish={onFinish}>
+            <CyFormItem
+              label="名称"
+              name="name"
+              required
+              rules={[{ required: true, message: '请输入名称!' }]}
+            >
+              <Input placeholder={'请输入名称'} />
+            </CyFormItem>
+
+            <CyFormItem
+              label="发布时间"
+              required
+              name="publishDate"
+              rules={[{ required: true, message: '请选择发布时间!' }]}
+            >
+              <DatePicker defaultValue={undefined} />
+            </CyFormItem>
+
+            <CyFormItem
+              label="上传文件"
+              name="file"
+              required
+              rules={[{ required: true, message: '请上传文件!' }]}
+            >
+              <FileUpload trigger={triggerUploadFile} maxCount={1} accept=".xls,.xlsx" />
+            </CyFormItem>
+
+            <CyFormItem label="备注" name="remark">
+              <Input.TextArea rows={3} />
+            </CyFormItem>
+
+            {/* <Row gutter={20}></Row> */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Space>
                 <Button onClick={() => setAddFormVisible(false)}>取消</Button>
@@ -312,4 +299,4 @@ const SuppliesLibrary: React.FC = () => {
   )
 }
 
-export default SuppliesLibrary
+export default AssemblyLibrary
