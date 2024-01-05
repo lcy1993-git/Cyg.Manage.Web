@@ -103,6 +103,13 @@ const UserTabs: React.FC = () => {
       align: 'center',
     },
     {
+      title: '已提交',
+      index: 'submitted',
+      dataIndex: 'submitted',
+      width: 120,
+      align: 'center',
+    },
+    {
       title: '设计单位项目总数',
       index: 'projectCount',
       dataIndex: 'projectCount',

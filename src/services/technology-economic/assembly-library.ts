@@ -1,5 +1,4 @@
 import { AssemblyLibraryData } from '@/pages/technology-economic/assembly-library'
-import type { QueryData } from '@/services/technology-economic/usual-quota-table'
 import request, { transformUrlParams } from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
 
@@ -19,56 +18,28 @@ const formData = (params: Object) => {
   }
   return form
 }
-// 查询物料库树
-export const getMaterialLibraryTreeById = (MaterialId: string) => {
-  return cyRequest<[]>(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryTreeById`, {
-      method: 'GET',
-      params: { MaterialId },
-    })
-  )
-}
-// 修改物料库状态
-export const modifyMaterialLibraryStatus = (MaterialId: string) => {
+
+// 导入设计端模块组合件映射表
+export const importAssemblyMaps = (params: any, id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/ModifyStatus`, {
-      method: 'GET',
-      params: { MaterialId },
+    request(`${baseUrl.tecEco1}/AssemblyLibrary/ImportDesignAssemblyMaps?assemblyLibraryId=${id}`, {
+      method: 'POST',
+      data: params,
     })
   )
 }
 // 删除
-export const deleteMaterialLibraryById = (MaterialId: string) => {
+export const deleteAssembById = (id: string) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/DeleteMaterialLibraryById`, {
+    request(`${baseUrl.tecEco1}/AssemblyLibrary/DeleteAssemblyLibrary`, {
       method: 'GET',
-      params: { MaterialId },
+      params: { id },
     })
   )
 }
 
-// 查询物料库列表
-export const getMaterialLibraryList = (data: Partial<QueryData>) => {
-  return cyRequest<any>(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryList`, { method: 'POST', data })
-  )
-}
-
-// 查询物料库列表(物料映射库用)
-export const getMaterialLibraryAllList = () => {
-  return cyRequest<any>(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryAllList`, { method: 'GET' })
-  )
-}
-// 查询物料库列表没有使用的(物料映射库用)
-export const GetMaterialLibraryAllListNoUsed = () => {
-  return cyRequest<any>(() =>
-    request(`${baseUrl.tecEco1}/MaterialLibrary/GetMaterialLibraryAllListNoUsed`, { method: 'GET' })
-  )
-}
-
-// 新增物料库
-export const addMaterialLibrary = (data: AssemblyLibraryData, urlParams: object) => {
+// 新建组合件库
+export const addAssemblyLibrary = (data: AssemblyLibraryData, urlParams: object) => {
   const url = transformUrlParams(`${baseUrl.tecEco1}/AssemblyLibrary/AddAssemblyLibrary`, urlParams)
   return cyRequest<any>(() =>
     request(url, {

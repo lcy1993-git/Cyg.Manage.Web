@@ -3,10 +3,8 @@ import FileUpload from '@/components/file-upload'
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import {
-  addMaterialLibrary,
-  deleteMaterialLibraryById,
-} from '@/services/technology-economic/supplies-library'
+import { addAssemblyLibrary } from '@/services/technology-economic/assembly-library'
+import { deleteMaterialLibraryById } from '@/services/technology-economic/supplies-library'
 import {
   DeleteOutlined,
   ExclamationCircleOutlined,
@@ -161,15 +159,17 @@ const AssemblyLibrary: React.FC = () => {
     data.file = val.file
     // data.enabled = !!data.enabled
     data.name = data.name.trimEnd().trimStart()
-    if (data.name === '') {
-      message.warning('名称不能为空')
-      setSpinning(false)
-      return
-    }
+    console.log(val, data, '5555555')
+    // if (data.name === '') {
+    //   message.warning('名称不能为空')
+    //   setSpinning(false)
+    //   return
+    // }
+
     data.publishDate = moment(data.publishDate).format('YYYY-MM-DD')
     let urlParams = JSON.parse(JSON.stringify(data))
     delete urlParams.file
-    addMaterialLibrary({ file: data.file }, urlParams)
+    addAssemblyLibrary({ file: data.file }, urlParams)
       .then(() => {
         setSpinning(false)
         setAddFormVisible(false)
@@ -256,9 +256,18 @@ const AssemblyLibrary: React.FC = () => {
               label="名称"
               name="name"
               required
-              rules={[{ required: true, message: '请输入名称!' }]}
+              rules={[{ required: true, message: '组件库名称不能为空!' }]}
             >
               <Input placeholder={'请输入名称'} />
+            </CyFormItem>
+
+            <CyFormItem
+              label="版本"
+              required
+              name="version"
+              rules={[{ required: true, message: '版本不能为空' }]}
+            >
+              <Input placeholder={'请输入版本号'} />
             </CyFormItem>
 
             <CyFormItem
