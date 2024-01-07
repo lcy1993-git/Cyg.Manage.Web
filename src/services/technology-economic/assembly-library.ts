@@ -20,11 +20,15 @@ const formData = (params: Object) => {
 }
 
 // 导入设计端模块组合件映射表
-export const importAssemblyMaps = (params: any, id: string) => {
+export const importAssemblyMaps = (params: any, urlParams: object) => {
+  const url = transformUrlParams(
+    `${baseUrl.tecEco1}/AssemblyLibrary/ImportDesignAssemblyMaps`,
+    urlParams
+  )
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/AssemblyLibrary/ImportDesignAssemblyMaps?assemblyLibraryId=${id}`, {
+    request(url, {
       method: 'POST',
-      data: params,
+      data: formData(params),
     })
   )
 }

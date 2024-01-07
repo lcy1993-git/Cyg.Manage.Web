@@ -3,8 +3,11 @@ import FileUpload from '@/components/file-upload'
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { addAssemblyLibrary } from '@/services/technology-economic/assembly-library'
-import { deleteMaterialLibraryById } from '@/services/technology-economic/supplies-library'
+import {
+  addAssemblyLibrary,
+  deleteAssembById,
+  importAssemblyMaps,
+} from '@/services/technology-economic/assembly-library'
 import {
   DeleteOutlined,
   ExclamationCircleOutlined,
@@ -17,15 +20,8 @@ import type { ColumnsType } from 'antd/lib/table'
 import { isArray } from 'lodash'
 import moment from 'moment'
 import React, { useState } from 'react'
-import { history } from 'umi'
 
 export interface AssemblyLibraryData {
-  // id?: string
-  // name: string
-  // publishOrg: string
-  // publishDate: string | moment.Moment
-  // remark: string
-  // "enabled": boolean
   file: any
 }
 
@@ -37,11 +33,17 @@ const AssemblyLibrary: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [tableSelectRows, setTableSelectRows] = useState<AssemblyLibraryData[] | Object>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
+  // 新增组合件库
   const [addFormVisible, setAddFormVisible] = useState<boolean>(false)
+
+  // 导入 映射
+  const [importVisible, setImportVisible] = useState<boolean>(false)
+
   const [spinning, setSpinning] = useState<boolean>(false)
   const [triggerUploadFile] = useBoolean(false)
 
   const [form] = Form.useForm()
+  const [importForm] = Form.useForm()
 
   const columns: ColumnsType<any> = [
     {
@@ -49,7 +51,7 @@ const AssemblyLibrary: React.FC = () => {
 
       title: '名称',
       align: 'center',
-      width: 300,
+      width: 320,
     },
     {
       dataIndex: 'publishDate',
@@ -62,18 +64,21 @@ const AssemblyLibrary: React.FC = () => {
       },
     },
     {
-      dataIndex: 'publishOrg',
+      dataIndex: 'version',
       ellipsis: true,
       title: '版本',
       align: 'center',
-      width: 300,
+      width: 220,
     },
     {
-      dataIndex: 'publishOrg',
+      dataIndex: 'isImportMap',
       ellipsis: true,
       title: '关联映射表',
       align: 'center',
-      width: 260,
+      width: 150,
+      render(v: string, record: any) {
+        return record.isImportMap ? '是' : '否'
+      },
     },
 
     {
@@ -92,10 +97,13 @@ const AssemblyLibrary: React.FC = () => {
       align: 'center',
       width: 140,
       render: (enable: boolean) => {
-        console.log(enable, '?a ?')
         return (
           <Space>
-            <span>{enable ? '启用' : '停用'}</span>
+            {enable ? (
+              <span className="colorPrimary">启用</span>
+            ) : (
+              <span className="colorRed">禁用</span>
+            )}
           </Space>
         )
       },
@@ -145,13 +153,12 @@ const AssemblyLibrary: React.FC = () => {
   //   refresh()
   // }
 
-  const gotoMoreInfo = () => {
+  const importEvent = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择要操作的行')
       return
     }
-    const { id } = tableSelectRows?.[0] ?? ''
-    history.push(`/technology-economic/suppliesl-infomation?id=${id}`)
+    setImportVisible(true)
   }
   const onFinish = (val: AssemblyLibraryData) => {
     setSpinning(true)
@@ -159,7 +166,6 @@ const AssemblyLibrary: React.FC = () => {
     data.file = val.file
     // data.enabled = !!data.enabled
     data.name = data.name.trimEnd().trimStart()
-    console.log(val, data, '5555555')
     // if (data.name === '') {
     //   message.warning('名称不能为空')
     //   setSpinning(false)
@@ -180,16 +186,34 @@ const AssemblyLibrary: React.FC = () => {
         setSpinning(false)
       })
   }
+
+  // 确认导入
+  const sureImportEvent = (val: AssemblyLibraryData) => {
+    setSpinning(true)
+    const data = JSON.parse(JSON.stringify(val))
+    data.file = val.file
+    // data.enabled = !!data.enabled
+    importAssemblyMaps({ file: data.file }, { assemblyLibraryId: tableSelectRows[0].id })
+      .then(() => {
+        setSpinning(false)
+        setImportVisible(false)
+        importForm.resetFields()
+        refresh()
+      })
+      .finally(() => {
+        setSpinning(false)
+      })
+  }
   const onRemoveRow = () => {
     if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
       message.warning('请选择要操作的行')
       return
     }
     confirm({
-      title: '确定要删除该物料吗?',
+      title: '确定要删除该组件库吗?',
       icon: <ExclamationCircleOutlined />,
       async onOk() {
-        await deleteMaterialLibraryById(tableSelectRows[0].id)
+        await deleteAssembById(tableSelectRows[0].id)
         refresh()
         setTableSelectRows([])
       },
@@ -206,7 +230,7 @@ const AssemblyLibrary: React.FC = () => {
           <PlusOutlined />
           添加
         </Button>
-        <Button className="mr7" onClick={() => gotoMoreInfo()}>
+        <Button className="mr7" onClick={() => importEvent()}>
           <ImportOutlined />
           导入映射
         </Button>
@@ -246,7 +270,10 @@ const AssemblyLibrary: React.FC = () => {
         visible={addFormVisible}
         okText="确认"
         footer={false}
-        onCancel={() => setAddFormVisible(false)}
+        onCancel={() => {
+          form.resetFields()
+          setAddFormVisible(false)
+        }}
         cancelText="取消"
         destroyOnClose
       >
@@ -295,7 +322,63 @@ const AssemblyLibrary: React.FC = () => {
             {/* <Row gutter={20}></Row> */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Space>
-                <Button onClick={() => setAddFormVisible(false)}>取消</Button>
+                <Button
+                  onClick={() => {
+                    form.resetFields()
+                    setAddFormVisible(false)
+                  }}
+                >
+                  取消
+                </Button>
+                <Button type="primary" htmlType="submit">
+                  确定
+                </Button>
+              </Space>
+            </div>
+          </Form>
+        </Spin>
+      </Modal>
+      <Modal
+        maskClosable={false}
+        title="导入-映射表"
+        width="550px"
+        visible={importVisible}
+        okText="确认"
+        footer={false}
+        onCancel={() => {
+          importForm.resetFields()
+          setImportVisible(false)
+        }}
+        cancelText="取消"
+        destroyOnClose
+      >
+        <Spin tip={'上传中...'} spinning={spinning}>
+          <Form
+            name="basic"
+            initialValues={{ remember: true }}
+            form={importForm}
+            onFinish={sureImportEvent}
+          >
+            <CyFormItem
+              label="导入"
+              name="file"
+              required
+              rules={[{ required: true, message: '请上传文件!' }]}
+            >
+              <FileUpload trigger={triggerUploadFile} maxCount={1} accept=".xls,.xlsx" />
+            </CyFormItem>
+
+            {/* <Row gutter={20}></Row> */}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Space>
+                <Button
+                  onClick={() => {
+                    importForm.resetFields()
+                    setImportVisible(false)
+                  }}
+                >
+                  取消
+                </Button>
                 <Button type="primary" htmlType="submit">
                   确定
                 </Button>
