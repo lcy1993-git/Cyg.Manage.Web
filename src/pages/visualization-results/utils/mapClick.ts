@@ -842,9 +842,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
           }
         }
       }
-
       if (p === '是否改造') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否')
+      }
+      if (p === '户表ID' || p === '电缆沟土建') {
+        pJSON[p] = feature.getProperties()
       }
       resData.push({ propertyName: p, data: pJSON[p] || pJSON[p] === 0 ? pJSON[p] : '' })
     }

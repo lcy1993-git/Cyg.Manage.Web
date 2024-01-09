@@ -21,13 +21,13 @@ import moment from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useContainer } from '../../../mobx-store'
 
+import { AdditionMaterialTable } from '@/pages/visualization-results/components/addition-material-table'
+import CableSection from '@/pages/visualization-results/components/cable-section'
+import { HouseholdTable } from '@/pages/visualization-results/components/household-table'
+import { MaterialTableNew } from '@/pages/visualization-results/components/material-table-new'
 import MediaModal from '../../../../components/media-modal'
 import CommentList from './components/comment-list'
 import styles from './index.less'
-import { MaterialTableNew } from '@/pages/visualization-results/components/material-table-new'
-import { HouseholdTable } from '@/pages/visualization-results/components/household-table'
-import { AdditionMaterialTable } from '@/pages/visualization-results/components/addition-material-table'
-import CableSection from '@/pages/visualization-results/components/cable-section'
 
 export interface TableDataType {
   [propName: string]: any
