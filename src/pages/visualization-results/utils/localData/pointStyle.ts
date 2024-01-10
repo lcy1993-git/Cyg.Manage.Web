@@ -911,6 +911,7 @@ const pointStyle = function (
       text: new Text({
         // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
         text: count >= 0 ? '' + count : '',
+        scale,
         textAlign: 'center',
         font: 'bold 9px Source Han Sans SC', //字体与大小
         placement: 'line',
@@ -952,28 +953,26 @@ const pointStyle = function (
       : (pointStyles = [style, dismantleStyle])
   } else {
     style_ ? (pointStyles = [style, style_]) : (pointStyles = [style])
-    pointStyles = [style]
   }
 
-  // if (value === 'electric_meter') {
-  //   let boxCount = feature.getProperties().box_count ? feature.getProperties().box_count : 1
-  //   pointStyles.push(
-  //     new ClassStyle({
-  //       text: new Text({
-  //         font: 'normal bold  ' + 18 * scale + 'px  Arial,sans-serif',
-  //         text: boxCount + '✘',
-  //         fill: new Fill({
-  //           color: 'red',
-  //         }),
-  //         stroke: new Stroke({
-  //           color: 'red',
-  //           width: 1,
-  //         }),
-  //         offsetX: -40 * scale,
-  //       }),
-  //     })
-  //   )
-  // }
+  if (value === 'electric_meter' && feature.getProperties().co_to_ele) {
+    pointStyles.push(
+      new ClassStyle({
+        text: new Text({
+          font: 'normal bold  ' + 18 * scale + 'px  Arial,sans-serif',
+          text: '煤',
+          fill: new Fill({
+            color: 'red',
+          }),
+          stroke: new Stroke({
+            color: 'red',
+            width: 1,
+          }),
+          offsetX: -30 * scale,
+        }),
+      })
+    )
+  }
   return pointStyles
 }
 // 线样式
