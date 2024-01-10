@@ -260,6 +260,12 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const [Comment, setComment] = useState('')
   const [mediaVisiable, setMediaVisiable] = useState(false)
+  // 户表id弹出框是否显示
+  const [idsVisiable, setIdsVisiable] = useState(false)
+  const [idsListData, setIdsListData] = useState<any>([])
+  // 电缆沟土建弹出框是否显示
+  const [cableTjVisiable, setCableTjVisiable] = useState(false)
+  const [cableTjListData, setCableTjListData] = useState<any>([])
   const [mediaIndex, setMediaIndex] = useState<number>(0)
   const store = useContainer()
   // const { vState, setMediaListVisibel } = useContainer();
@@ -306,6 +312,90 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       width: 164,
       // ellipsis: true,
       render(value: any, record: any, index: any) {
+        if (record.propertyName === '户表ID') {
+          return (
+            <span
+              onClick={() => {
+                const list = [
+                  {
+                    name: '户表1',
+                    value: record.data.m_first || '-',
+                  },
+                  {
+                    name: '户表2',
+                    value: record.data.m_second || '-',
+                  },
+                  {
+                    name: '户表3',
+                    value: record.data.m_third || '-',
+                  },
+                  {
+                    name: '户表4',
+                    value: record.data.m_fourth || '-',
+                  },
+                  {
+                    name: '户表5',
+                    value: record.data.m_fifth || '-',
+                  },
+                  {
+                    name: '户表6',
+                    value: record.data.m_sixth || '-',
+                  },
+                ]
+                setIdsListData(list)
+                setIdsVisiable(true)
+              }}
+              className={styles.link}
+            >
+              查看
+            </span>
+          )
+        }
+
+        if (record.propertyName === '电缆沟土建') {
+          return (
+            <span
+              onClick={() => {
+                const list = [
+                  {
+                    name: '普土',
+                    value: (record.data.ordi_soil || '-') + '米',
+                  },
+                  {
+                    name: '砂石土',
+                    value: (record.data.sand_soil || '-') + '米',
+                  },
+                  {
+                    name: '混泥土',
+                    value: (record.data.concrete || '-') + '米',
+                  },
+                  {
+                    name: '柏油路',
+                    value: (record.data.asp_road || '-') + '米',
+                  },
+                  {
+                    name: '水钻50',
+                    value: (record.data.rh_fifty || '-') + '个',
+                  },
+                  {
+                    name: '非开挖水平定向钻100及以下',
+                    value: (record.data.rhbe_hun || '-') + '米',
+                  },
+                  {
+                    name: '非开挖水平定向钻100及以上',
+                    value: (record.data.rhab_hun || '-') + '米',
+                  },
+                ]
+                setCableTjListData(list)
+                setCableTjVisiable(true)
+              }}
+              className={styles.link}
+            >
+              查看
+            </span>
+          )
+        }
+
         if (record.propertyName === 'title') return null
         if (record.propertyName === '三维模型') {
           if (record.data) {
@@ -393,7 +483,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const mediaColumns = [
     {
-      title: '类型/序号',
+      title: '',
       dataIndex: 'type',
       key: 'type',
       render(t: any, r: any) {
@@ -436,6 +526,20 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           </span>
         )
       },
+    },
+  ]
+
+  const idsColumns = [
+    // showHeader
+    {
+      title: '',
+      dataIndex: 'name',
+      key: 'classNames',
+    },
+    {
+      title: '',
+      dataIndex: 'value',
+      key: 'value',
     },
   ]
 
@@ -567,6 +671,42 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   return (
     <div className={styles.wrap}>
+      <Modal
+        title="户表编号"
+        visible={idsVisiable}
+        width="15%"
+        onCancel={() => setIdsVisiable(false)}
+        onOk={() => setIdsVisiable(false)}
+        destroyOnClose={true}
+        className={styles.mediaModal}
+      >
+        <Table
+          key="media"
+          columns={idsColumns}
+          dataSource={idsListData}
+          pagination={false}
+          showHeader={false}
+        ></Table>
+      </Modal>
+
+      <Modal
+        title="土建属性"
+        visible={cableTjVisiable}
+        width="15%"
+        onCancel={() => setCableTjVisiable(false)}
+        onOk={() => setCableTjVisiable(false)}
+        destroyOnClose={true}
+        className={styles.mediaModal}
+      >
+        <Table
+          key="media"
+          columns={idsColumns}
+          dataSource={cableTjListData}
+          pagination={false}
+          showHeader={false}
+        ></Table>
+      </Modal>
+
       <Modal
         title={activeType ? modalTitle[activeType!] ?? '添加审阅' : ''}
         centered
