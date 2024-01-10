@@ -102,14 +102,14 @@ const Styles = {
   electric_meter: {
     size: 28,
     fillSize: 38,
-    strokeSize: 40,
+    strokeSize: 23,
     color: 'white',
     fillColor: 'rgba(20, 168, 107, 1)',
     strokeColor: 'rgba(16, 43, 38, 0.5)',
     selected: {
       size: 32,
       fillSize: 38,
-      strokeSize: 40,
+      strokeSize: 23,
       color: 'white',
       fillColor: 'rgba(249, 149, 52, 1)',
       strokeColor: 'rgba(255, 255, 255, 0.75)',
@@ -117,7 +117,7 @@ const Styles = {
     empty: {
       size: 32,
       fillSize: 38,
-      strokeSize: 40,
+      strokeSize: 23,
       color: 'white',
       fillColor: 'rgba(221, 64, 27, 1)',
       strokeColor: 'rgba(126, 38, 17, 1)',

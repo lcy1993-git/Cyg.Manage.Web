@@ -53,7 +53,7 @@ const materiaLayers = [
   'fault_indicator',
   'zero_guy',
 ]
-const householdLayers = ['electric_meter']
+// const householdLayers = ['electric_meter']
 const AdditionMaterialLayer = ['tower', 'cable_head']
 
 const commentLayers = ['tower', 'cable', 'cable_equipment', 'mark', 'transformer']
@@ -586,23 +586,23 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
     }
 
-    if (
-      layerType === 'survey' ||
-      layerType === 'plan' ||
-      layerType === 'design' ||
-      layerType === 'dismantle'
-    ) {
-      if (householdLayers.indexOf(layerName) >= 0) {
-        let params = {
-          type: layerType,
-          projectId: feature.getProperties().project_id,
-          deviceId: featureId,
-          getProperties: feature.getProperties(),
-        }
+    // if (
+    //   layerType === 'survey' ||
+    //   layerType === 'plan' ||
+    //   layerType === 'design' ||
+    //   layerType === 'dismantle'
+    // ) {
+    //   if (householdLayers.indexOf(layerName) >= 0) {
+    //     let params = {
+    //       type: layerType,
+    //       projectId: feature.getProperties().project_id,
+    //       deviceId: featureId,
+    //       getProperties: feature.getProperties(),
+    //     }
 
-        pJSON['入户线'] = { params }
-      }
-    }
+    //     pJSON['入户线'] = { params }
+    //   }
+    // }
 
     // 仅有设计图层和拆除图层可以查看相关的材料表
     if (layerType === 'design' || layerType === 'dismantle') {
@@ -713,7 +713,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       resData.push({ propertyName: '所属图层', data: layerTypeEnum[layerType] + '图层' })
     }
     resData.push({
-      propertyName: elementTypeEnum[layerName] === '水平拉线' ? '设备种类' : '元素类型',
+      propertyName:
+        elementTypeEnum[layerName] === '水平拉线' || elementTypeEnum[layerName] === '户表'
+          ? '设备种类'
+          : '元素类型',
       data: elementTypeEnum[layerName],
     })
     for (let p in pJSON) {
@@ -843,6 +846,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
         }
       }
       if (p === '是否改造') {
+        pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否')
+      }
+      if (p === '是否煤改电') {
         pJSON[p] ? (pJSON[p] = '是') : (pJSON[p] = '否')
       }
       if (p === '户表ID' || p === '电缆沟土建') {

@@ -203,7 +203,7 @@ const pointStyle = function (
   fillColor = Styles[value].fillColor
   strokeColor = Styles[value].strokeColor
 
-  if (value == 'tower') {
+  if (value === 'tower') {
     // 杆塔样式
     switch (feature.getProperties().symbol_id.toString()) {
       case '0':
@@ -294,7 +294,7 @@ const pointStyle = function (
     }
   }
 
-  if (value == 'transformer') {
+  if (value === 'transformer') {
     // 变压器样式
     switch (feature.getProperties().symbol_id.toString()) {
       case '11':
@@ -321,7 +321,7 @@ const pointStyle = function (
     }
   }
 
-  if (value == 'cable') {
+  if (value === 'cable') {
     // 电缆井样式
     switch (feature.getProperties().symbol_id.toString()) {
       case '111':
@@ -390,7 +390,7 @@ const pointStyle = function (
     }
   }
 
-  if (value == 'cable_equipment') {
+  if (value === 'cable_equipment') {
     // 电力设备样式
     switch (feature.getProperties().symbol_id.toString()) {
       case '111':
@@ -516,22 +516,23 @@ const pointStyle = function (
     }
   }
 
-  if (value == 'electric_meter') {
+  if (value === 'electric_meter') {
+    regular = true
     // 户表
-    if (feature.getProperties().type == 1) {
-      // 单相表箱
-      if (feature.getProperties().state == 1)
+    if (feature.getProperties().type === 1) {
+      // 单表箱
+      if (feature.getProperties().state === 1)
         // 原有
-        iconFontText = '\ue878'
-      else if (feature.getProperties().state == 2)
+        iconFontText = '\ue632'
+      else if (feature.getProperties().state === 2)
         // 新建
-        iconFontText = '\ue850'
-      else if (feature.getProperties().state == 3)
+        iconFontText = '\ue633'
+      else if (feature.getProperties().state === 3)
         // 利旧
-        iconFontText = '\ue82b'
-      else if (feature.getProperties().state == 4) {
+        iconFontText = '\ue625'
+      else if (feature.getProperties().state === 4) {
         // 拆除
-        iconFontText = '\ue850'
+        iconFontText = '\ue633'
         isDismantle = true
       } else {
         iconFontText = '\ue888'
@@ -542,20 +543,92 @@ const pointStyle = function (
         fillColor = Styles[value].empty.fillColor
         strokeColor = Styles[value].empty.strokeColor
       }
-    } else if (feature.getProperties().type == 2) {
-      // 三相表箱
-      if (feature.getProperties().state == 1)
+    } else if (feature.getProperties().type === 2) {
+      // 两表箱
+      if (feature.getProperties().state === 1)
         // 原有
-        iconFontText = '\ue86c'
-      else if (feature.getProperties().state == 2)
+        iconFontText = '\ue62a'
+      else if (feature.getProperties().state === 2)
         // 新建
-        iconFontText = '\ue854'
-      else if (feature.getProperties().state == 3)
+        iconFontText = '\ue62e'
+      else if (feature.getProperties().state === 3)
         // 利旧
-        iconFontText = '\ue841'
-      else if (feature.getProperties().state == 4) {
+        iconFontText = '\ue628'
+      else if (feature.getProperties().state === 4) {
         // 拆除
-        iconFontText = '\ue854'
+        iconFontText = '\ue62e'
+        isDismantle = true
+      } else {
+        iconFontText = '\ue888'
+        size = Styles[value].empty.size
+        fillSize = Styles[value].empty.fillSize
+        strokeSize = Styles[value].empty.strokeSize
+        color = Styles[value].empty.color
+        fillColor = Styles[value].empty.fillColor
+        strokeColor = Styles[value].empty.strokeColor
+      }
+    } else if (feature.getProperties().type === 3) {
+      // 四表箱
+      if (feature.getProperties().state === 1)
+        // 原有
+        iconFontText = '\ue62d'
+      else if (feature.getProperties().state === 2)
+        // 新建
+        iconFontText = '\ue626'
+      else if (feature.getProperties().state === 3)
+        // 利旧
+        iconFontText = '\ue627'
+      else if (feature.getProperties().state === 4) {
+        // 拆除
+        iconFontText = '\ue626'
+        isDismantle = true
+      } else {
+        iconFontText = '\ue888'
+        size = Styles[value].empty.size
+        fillSize = Styles[value].empty.fillSize
+        strokeSize = Styles[value].empty.strokeSize
+        color = Styles[value].empty.color
+        fillColor = Styles[value].empty.fillColor
+        strokeColor = Styles[value].empty.strokeColor
+      }
+    } else if (feature.getProperties().type === 4) {
+      // 六表箱
+      if (feature.getProperties().state === 1)
+        // 原有
+        iconFontText = '\ue630'
+      else if (feature.getProperties().state === 2)
+        // 新建
+        iconFontText = '\ue629'
+      else if (feature.getProperties().state === 3)
+        // 利旧
+        iconFontText = '\ue62c'
+      else if (feature.getProperties().state === 4) {
+        // 拆除
+        iconFontText = '\ue629'
+        isDismantle = true
+      } else {
+        iconFontText = '\ue888'
+        size = Styles[value].empty.size
+        fillSize = Styles[value].empty.fillSize
+        strokeSize = Styles[value].empty.strokeSize
+        color = Styles[value].empty.color
+        fillColor = Styles[value].empty.fillColor
+        strokeColor = Styles[value].empty.strokeColor
+      }
+    } else if (feature.getProperties().type === 5) {
+      // 动力表箱
+      if (feature.getProperties().state === 1)
+        // 原有
+        iconFontText = '\ue62f'
+      else if (feature.getProperties().state === 2)
+        // 新建
+        iconFontText = '\ue629'
+      else if (feature.getProperties().state === 3)
+        // 利旧
+        iconFontText = '\ue62c'
+      else if (feature.getProperties().state === 4) {
+        // 拆除
+        iconFontText = '\ue629'
         isDismantle = true
       } else {
         iconFontText = '\ue888'
@@ -577,7 +650,7 @@ const pointStyle = function (
     }
   }
 
-  if (value == 'fault_indicator') {
+  if (value === 'fault_indicator') {
     // 故障指示器样式
     switch (feature.getProperties().state) {
       // case '0':
@@ -607,7 +680,7 @@ const pointStyle = function (
     }
   }
 
-  if (value == 'cross_arm') {
+  if (value === 'cross_arm') {
     // 横担
     if (feature.getProperties().type == null) iconFontText = '\ue824'
     else if (
@@ -651,12 +724,12 @@ const pointStyle = function (
     }
   }
 
-  if (value == 'hole') {
+  if (value === 'hole') {
     // 穿孔
     iconFontText = '\ue84c'
   }
 
-  if (value == 'over_head_device') {
+  if (value === 'over_head_device') {
     // 杆上设备
     regular = true
     if (feature.getProperties().type < 6) azimuth += 90
@@ -833,7 +906,7 @@ const pointStyle = function (
   let style_ = null
   if (value === 'electric_meter') {
     // 下户表的表数
-    let count = feature.getProperties().count
+    let count = feature.getProperties().box_num ? feature.getProperties().box_num : ''
     let styleParams = {
       text: new Text({
         // text: feature.getProperties().mode + '   ' + dis.toFixed(2) + 'm',
@@ -879,27 +952,28 @@ const pointStyle = function (
       : (pointStyles = [style, dismantleStyle])
   } else {
     style_ ? (pointStyles = [style, style_]) : (pointStyles = [style])
+    pointStyles = [style]
   }
 
-  if (value == 'electric_meter') {
-    let boxCount = feature.getProperties().box_count ? feature.getProperties().box_count : 1
-    pointStyles.push(
-      new ClassStyle({
-        text: new Text({
-          font: 'normal bold  ' + 18 * scale + 'px  Arial,sans-serif',
-          text: boxCount + '✘',
-          fill: new Fill({
-            color: 'red',
-          }),
-          stroke: new Stroke({
-            color: 'red',
-            width: 1,
-          }),
-          offsetX: -40 * scale,
-        }),
-      })
-    )
-  }
+  // if (value === 'electric_meter') {
+  //   let boxCount = feature.getProperties().box_count ? feature.getProperties().box_count : 1
+  //   pointStyles.push(
+  //     new ClassStyle({
+  //       text: new Text({
+  //         font: 'normal bold  ' + 18 * scale + 'px  Arial,sans-serif',
+  //         text: boxCount + '✘',
+  //         fill: new Fill({
+  //           color: 'red',
+  //         }),
+  //         stroke: new Stroke({
+  //           color: 'red',
+  //           width: 1,
+  //         }),
+  //         offsetX: -40 * scale,
+  //       }),
+  //     })
+  //   )
+  // }
   return pointStyles
 }
 // 线样式
@@ -1348,12 +1422,12 @@ const trackLineStyle = (
 }
 
 export {
-  pointStyle,
-  line_style,
   cable_channel_styles,
   fzx_styles,
+  line_style,
   mark_style,
-  zero_guy_style,
-  trackStyle,
+  pointStyle,
   trackLineStyle,
+  trackStyle,
+  zero_guy_style,
 }

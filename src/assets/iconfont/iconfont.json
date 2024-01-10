@@ -6,6 +6,111 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "38871362",
+      "name": "四表箱-新建",
+      "font_class": "sibiaoxiang-xinjian",
+      "unicode": "e626",
+      "unicode_decimal": 58918
+    },
+    {
+      "icon_id": "38871370",
+      "name": "四表箱-利旧",
+      "font_class": "sibiaoxiang-lijiu",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "38871368",
+      "name": "两表箱-利旧",
+      "font_class": "liangbiaoxiang-lijiu",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "38871365",
+      "name": "六表箱-新建",
+      "font_class": "liubiaoxiang-xinjian",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "38871366",
+      "name": "两表箱-原有",
+      "font_class": "liangbiaoxiang-yuanyou",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "38871367",
+      "name": "动力表箱-新建",
+      "font_class": "donglibiaoxiang-xinjian",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "38871364",
+      "name": "六表箱-利旧",
+      "font_class": "liubiaoxiang-lijiu",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "38871363",
+      "name": "原表箱-原有",
+      "font_class": "yuanbiaoxiang-yuanyou",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "38871361",
+      "name": "两表箱-新建",
+      "font_class": "liangbiaoxiang-xinjian",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "38871359",
+      "name": "动力表箱-原有",
+      "font_class": "donglibiaoxiang-yuanyou",
+      "unicode": "e62f",
+      "unicode_decimal": 58927
+    },
+    {
+      "icon_id": "38871360",
+      "name": "六表箱-原有",
+      "font_class": "liubiaoxiang-yuanyou",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "38871358",
+      "name": "动力表箱-利旧",
+      "font_class": "donglibiaoxiang-lijiu",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "38871346",
+      "name": "单表箱-利旧",
+      "font_class": "danbiaoxiang-lijiu",
+      "unicode": "e625",
+      "unicode_decimal": 58917
+    },
+    {
+      "icon_id": "38871347",
+      "name": "单表箱-原有",
+      "font_class": "danbiaoxiang-yuanyou",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "38871348",
+      "name": "单表箱-新建",
+      "font_class": "danbiaoxiang-xinjian",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
       "icon_id": "19144299",
       "name": "icon_未选型支架",
       "font_class": "icon_weixuanxingzhijia",
