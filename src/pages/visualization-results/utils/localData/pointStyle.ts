@@ -137,19 +137,19 @@ const pointStyle = function (
 
   if (type.indexOf('cable_head') >= 0) {
     let text, size, color
-    if (feature.getProperties().type == '电缆终端') {
+    if (feature.getProperties().type === '电缆终端') {
       text = '\ue88c'
       size = '25'
-      if (feature.getProperties().state == 1)
+      if (feature.getProperties().state === 1)
         // 原有
         text = '\ue88c'
-      else if (feature.getProperties().state == 2)
+      else if (feature.getProperties().state === 2)
         // 新建
         text = '\ue61f'
-      else if (feature.getProperties().state == 3)
+      else if (feature.getProperties().state === 3)
         // 利旧
         text = '\ue61e'
-      else if (feature.getProperties().state == 4) {
+      else if (feature.getProperties().state === 4) {
         // 拆除
         text = '\ue61d'
       }
@@ -158,10 +158,10 @@ const pointStyle = function (
       size = '25'
     }
 
-    if (feature.getProperties().kv_level == 1) color = 'rgba(145, 145, 255, 1)'
-    else if (feature.getProperties().kv_level == 2) color = 'rgba(158, 227, 24, 1)'
-    else if (feature.getProperties().kv_level == 3) color = 'rgba(0, 255, 216, 1)'
-    else if (feature.getProperties().kv_level == 4) color = 'rgba(255, 175, 110, 1)'
+    if (feature.getProperties().kv_level === 1) color = 'rgba(145, 145, 255, 1)'
+    else if (feature.getProperties().kv_level === 2) color = 'rgba(158, 227, 24, 1)'
+    else if (feature.getProperties().kv_level === 3) color = 'rgba(0, 255, 216, 1)'
+    else if (feature.getProperties().kv_level === 4) color = 'rgba(255, 175, 110, 1)'
     else color = 'red'
     style = new ClassStyle({
       text: new Text({
@@ -622,13 +622,13 @@ const pointStyle = function (
         iconFontText = '\ue62f'
       else if (feature.getProperties().state === 2)
         // 新建
-        iconFontText = '\ue629'
+        iconFontText = '\ue62b'
       else if (feature.getProperties().state === 3)
         // 利旧
-        iconFontText = '\ue62c'
+        iconFontText = '\ue631'
       else if (feature.getProperties().state === 4) {
         // 拆除
-        iconFontText = '\ue629'
+        iconFontText = '\ue62b'
         isDismantle = true
       } else {
         iconFontText = '\ue888'
@@ -682,22 +682,22 @@ const pointStyle = function (
 
   if (value === 'cross_arm') {
     // 横担
-    if (feature.getProperties().type == null) iconFontText = '\ue824'
+    if (feature.getProperties().type === null) iconFontText = '\ue824'
     else if (
-      feature.getProperties().type == '两线墙装门型支架' ||
-      feature.getProperties().type == '四线墙装门型支架'
+      feature.getProperties().type === '两线墙装门型支架' ||
+      feature.getProperties().type === '四线墙装门型支架'
     ) {
       // 门型支架
-      if (feature.getProperties().state == 1)
+      if (feature.getProperties().state === 1)
         // 原有
         iconFontText = '\ue87b'
-      else if (feature.getProperties().state == 2)
+      else if (feature.getProperties().state === 2)
         // 新建
         iconFontText = '\ue84e'
-      else if (feature.getProperties().state == 3)
+      else if (feature.getProperties().state === 3)
         // 利旧
         iconFontText = '\ue830'
-      else if (feature.getProperties().state == 4) {
+      else if (feature.getProperties().state === 4) {
         // 拆除
         iconFontText = '\ue84e'
         isDismantle = true
@@ -705,16 +705,16 @@ const pointStyle = function (
         iconFontText = '\ue824'
       }
     } else {
-      if (feature.getProperties().state == 1)
+      if (feature.getProperties().state === 1)
         // 原有
         iconFontText = '\ue872'
-      else if (feature.getProperties().state == 2)
+      else if (feature.getProperties().state === 2)
         // 新建
         iconFontText = '\ue856'
-      else if (feature.getProperties().state == 3)
+      else if (feature.getProperties().state === 3)
         // 利旧
         iconFontText = '\ue83b'
-      else if (feature.getProperties().state == 4) {
+      else if (feature.getProperties().state === 4) {
         // 拆除
         iconFontText = '\ue856'
         isDismantle = true
@@ -733,120 +733,120 @@ const pointStyle = function (
     // 杆上设备
     regular = true
     if (feature.getProperties().type < 6) azimuth += 90
-    if (feature.getProperties().state == null) iconFontText = '\ue828'
+    if (feature.getProperties().state === null) iconFontText = '\ue828'
     // 未选型柱上物
-    else if (feature.getProperties().state == 1) {
+    else if (feature.getProperties().state === 1) {
       // 原有
-      if (feature.getProperties().type == 2)
+      if (feature.getProperties().type === 2)
         //  柱上熔断器
         iconFontText = '\ue874'
-      else if (feature.getProperties().type == 3)
+      else if (feature.getProperties().type === 3)
         // 柱上断路器
         iconFontText = '\ue87a'
-      else if (feature.getProperties().type == 4)
+      else if (feature.getProperties().type === 4)
         // 柱上隔离开关
         iconFontText = '\ue87c'
-      else if (feature.getProperties().type == 5)
+      else if (feature.getProperties().type === 5)
         // 柱上避雷器
         iconFontText = '\ue877'
-      else if (feature.getProperties().type == 7)
+      else if (feature.getProperties().type === 7)
         // 电力引下
         iconFontText = '\ue885'
-      else if (feature.getProperties().type == 8)
+      else if (feature.getProperties().type === 8)
         // 无功补偿
         iconFontText = '\ue894'
-      else if (feature.getProperties().type == 9)
+      else if (feature.getProperties().type === 9)
         // 高压计量
         iconFontText = '\ue87e'
-      else if (feature.getProperties().type == 10)
+      else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue883'
       else {
         iconFontText = '\ue828'
       }
-    } else if (feature.getProperties().state == 2) {
+    } else if (feature.getProperties().state === 2) {
       // 新建
-      if (feature.getProperties().type == 2)
+      if (feature.getProperties().type === 2)
         //  柱上熔断器
         iconFontText = '\ue85c'
-      else if (feature.getProperties().type == 3)
+      else if (feature.getProperties().type === 3)
         // 柱上断路器
         iconFontText = '\ue859'
-      else if (feature.getProperties().type == 4)
+      else if (feature.getProperties().type === 4)
         // 柱上隔离开关
         iconFontText = '\ue85d'
-      else if (feature.getProperties().type == 5)
+      else if (feature.getProperties().type === 5)
         // 柱上避雷器
         iconFontText = '\ue862'
-      else if (feature.getProperties().type == 7)
+      else if (feature.getProperties().type === 7)
         // 电力引下
         iconFontText = '\ue886'
-      else if (feature.getProperties().type == 8)
+      else if (feature.getProperties().type === 8)
         // 无功补偿
         iconFontText = '\ue892'
-      else if (feature.getProperties().type == 9)
+      else if (feature.getProperties().type === 9)
         // 高压计量
         iconFontText = '\ue882'
-      else if (feature.getProperties().type == 10)
+      else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue890'
       else {
         iconFontText = '\ue828'
       }
-    } else if (feature.getProperties().state == 3) {
+    } else if (feature.getProperties().state === 3) {
       // 利旧
-      if (feature.getProperties().type == 2)
+      if (feature.getProperties().type === 2)
         //  柱上熔断器
         iconFontText = '\ue83d'
-      else if (feature.getProperties().type == 3)
+      else if (feature.getProperties().type === 3)
         // 柱上断路器
         iconFontText = '\ue846'
-      else if (feature.getProperties().type == 4)
+      else if (feature.getProperties().type === 4)
         // 柱上隔离开关
         iconFontText = '\ue84b'
-      else if (feature.getProperties().type == 5)
+      else if (feature.getProperties().type === 5)
         // 柱上避雷器
         iconFontText = '\ue83a'
-      else if (feature.getProperties().type == 7)
+      else if (feature.getProperties().type === 7)
         // 电力引下
         iconFontText = '\ue893'
-      else if (feature.getProperties().type == 8)
+      else if (feature.getProperties().type === 8)
         // 无功补偿
         iconFontText = '\ue881'
-      else if (feature.getProperties().type == 9)
+      else if (feature.getProperties().type === 9)
         // 高压计量
         iconFontText = '\ue880'
-      else if (feature.getProperties().type == 10)
+      else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue891'
       else {
         iconFontText = '\ue828'
       }
-    } else if (feature.getProperties().state == 4) {
+    } else if (feature.getProperties().state === 4) {
       // 拆除
       isDismantle = true
-      if (feature.getProperties().type == 2)
+      if (feature.getProperties().type === 2)
         //  柱上熔断器
         iconFontText = '\ue85c'
-      else if (feature.getProperties().type == 3)
+      else if (feature.getProperties().type === 3)
         // 柱上断路器
         iconFontText = '\ue859'
-      else if (feature.getProperties().type == 4)
+      else if (feature.getProperties().type === 4)
         // 柱上隔离开关
         iconFontText = '\ue85d'
-      else if (feature.getProperties().type == 5)
+      else if (feature.getProperties().type === 5)
         // 柱上避雷器
         iconFontText = '\ue862'
-      else if (feature.getProperties().type == 7)
+      else if (feature.getProperties().type === 7)
         // 电力引下
         iconFontText = '\ue886'
-      else if (feature.getProperties().type == 8)
+      else if (feature.getProperties().type === 8)
         // 无功补偿
         iconFontText = '\ue892'
-      else if (feature.getProperties().type == 9)
+      else if (feature.getProperties().type === 9)
         // 高压计量
         iconFontText = '\ue882'
-      else if (feature.getProperties().type == 10)
+      else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue890'
       else {
