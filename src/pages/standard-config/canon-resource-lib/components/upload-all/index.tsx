@@ -40,21 +40,21 @@ const UploadAll: React.FC<UploadAllProps> = (props) => {
       .then(
         (res) => {
           if (res && res.code === 6000) {
-            setFalseData(res.message)
+            setFalseData(res?.message)
 
             setState(false)
             setImportTipsVisible(true)
             return Promise.resolve()
-          } else if (res.code === 200) {
+          } else if (res && res.code === 200) {
             setIsImportFlag(true)
             message.success('导入成功')
             return Promise.resolve()
           }
-          message.error(res.message)
+          message.error(res?.message)
           return Promise.reject()
         },
         (res) => {
-          message.error(res.message)
+          res && message.error(res?.message)
           return Promise.reject()
         }
       )
