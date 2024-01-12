@@ -33,6 +33,9 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   const [disRangeValue] = useState<number>()
   const [pileRangeValue] = useState<number>()
 
+  //获取wbs是否必填开关
+  const wbsMust = localStorage.getItem('wbsMust')
+
   const {
     projectInfo,
     finishEvent,
@@ -79,6 +82,14 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
       refreshDeps: [areaId],
     }
   )
+
+  const keyPressEvent = (e: any) => {
+    //只要输入的内容是'+-eE'  ，就阻止元素发生默认的行为
+    const invalidChars = ['-', '+', 'e', 'E']
+    if (invalidChars.indexOf(e.key) !== -1) {
+      e.preventDefault()
+    }
+  }
 
   useEffect(() => {
     form.setFieldsValue({
@@ -262,6 +273,68 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               </CyFormItem>
             </div>
           </div>
+
+          <div className="flex">
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                // shouldUpdate={valueChangeEvent}
+                label="WBS编码"
+                name="wbs"
+                labelWidth={120}
+                align="right"
+                required={wbsMust && Number(wbsMust) === 1 ? true : false}
+                rules={[
+                  wbsMust && Number(wbsMust) === 1
+                    ? {
+                        required: true,
+                        message: 'WBS编码不能为空',
+                      }
+                    : {},
+                ]}
+              >
+                <Input placeholder="请输入WBS编码" maxLength={64} />
+              </CyFormItem>
+            </div>
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                label="总投资(万元)"
+                labelWidth={120}
+                align="right"
+                name="totalInvest"
+                rules={[
+                  () => ({
+                    validator(_, value) {
+                      if (value <= 100000 && value > -1) {
+                        return Promise.resolve()
+                      }
+                      if (value > 100000) {
+                        return Promise.reject('请填写0~100000以内的整数')
+                      }
+                      return Promise.resolve()
+                    },
+                  }),
+
+                  {
+                    pattern: /^(([1-9]\d+)|[0-9])/, //匹配正整数
+                    message: '该项不能为负数',
+                  },
+                  {
+                    pattern: /^([\\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
+                    message: '最多保留三位小数',
+                  },
+                ]}
+              >
+                <Input
+                  type="number"
+                  placeholder="请输入"
+                  min={0}
+                  defaultValue={0}
+                  onKeyPress={keyPressEvent}
+                />
+              </CyFormItem>
+            </div>
+          </div>
+
           <div className="flex">
             <div className="flex1 flowHidden">
               <CyFormItem
@@ -429,6 +502,28 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               </CyFormItem>
             </div>
           </div>
+          <div className="flex">
+            <div className="flex1 flowHidden">
+              <CyFormItem
+                label="项目性质"
+                labelWidth={120}
+                align="right"
+                rules={Rule.required}
+                name="natures"
+                required
+              >
+                <UrlSelect
+                  defaultData={projectNature}
+                  mode="multiple"
+                  valuekey="value"
+                  titlekey="text"
+                  placeholder="请选择"
+                  value={nature}
+                  onChange={(value) => setNature(value as string)}
+                />
+              </CyFormItem>
+            </div>
+          </div>
 
           <div className="flex">
             <div className="flex1 flowHidden">
@@ -468,60 +563,7 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
               </CyFormItem>
             </div>
           </div>
-          <div className="flex">
-            <div className="flex1 flowHidden">
-              <CyFormItem
-                label="总投资(万元)"
-                labelWidth={120}
-                align="right"
-                name="totalInvest"
-                rules={[
-                  () => ({
-                    validator(_, value) {
-                      if (value <= 100000 && value > -1) {
-                        return Promise.resolve()
-                      }
-                      if (value > 100000) {
-                        return Promise.reject('请填写0~100000以内的整数')
-                      }
-                      return Promise.resolve()
-                    },
-                  }),
 
-                  {
-                    pattern: /^(([1-9]\d+)|[0-9])/, //匹配正整数
-                    message: '该项不能为负数',
-                  },
-                  {
-                    pattern: /^([\\-]?[0-9]+[\d]*(.[0-9]{1,3})?)$/, //匹配小数位数
-                    message: '最多保留三位小数',
-                  },
-                ]}
-              >
-                <Input placeholder="请输入" />
-              </CyFormItem>
-            </div>
-            <div className="flex1 flowHidden">
-              <CyFormItem
-                label="项目性质"
-                labelWidth={120}
-                align="right"
-                rules={Rule.required}
-                name="natures"
-                required
-              >
-                <UrlSelect
-                  defaultData={projectNature}
-                  mode="multiple"
-                  valuekey="value"
-                  titlekey="text"
-                  placeholder="请选择"
-                  value={nature}
-                  onChange={(value) => setNature(value as string)}
-                />
-              </CyFormItem>
-            </div>
-          </div>
           <div className="flex">
             <div className="flex1 flowHidden">
               <CyFormItem

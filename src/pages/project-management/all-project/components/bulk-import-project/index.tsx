@@ -637,11 +637,13 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       companyNoChoose: any[]
       departmentNoChoose: any[]
       inventoryOverviewNoChoose: any[]
+      wbsNoChoose: any[]
     } = {
       wareHouseNoChoose: [],
       companyNoChoose: [],
       departmentNoChoose: [],
       inventoryOverviewNoChoose: [],
+      wbsNoChoose: [],
     }
     copyEngineerInfo.forEach((item) => {
       if (item.areaChange) {
@@ -668,6 +670,15 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
           errorInfo.inventoryOverviewNoChoose.push(item.engineer)
         }
       }
+      // if (item.projects) {
+      //   item.projects.map((ite: any) => {
+      //     if (!ite.wbs) {
+      //       canSave = false
+      //       errorInfo.wbsNoChoose.push(ite)
+      //     }
+      //     return false
+      //   })
+      // }
     })
     return {
       canSave,
@@ -824,6 +835,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
         })
         tipMessage += '未选择协议库。'
       }
+      // if (judgeInfo.errorInfo.wbsNoChoose.length > 0) {
+      //   judgeInfo.errorInfo.wbsNoChoose.forEach((item) => {
+      //     tipMessage = tipMessage + item.name
+      //   })
+      //   tipMessage += '未填写WBS编码'
+      // }
 
       // if (judgeInfo.errorInfo.departmentNoChoose.length > 0) {
       //   judgeInfo.errorInfo.departmentNoChoose.forEach((item, index) => {
