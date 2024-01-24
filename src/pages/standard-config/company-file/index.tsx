@@ -1,38 +1,37 @@
+import '@/assets/icon/iconfont.css'
+import DataSelect from '@/components/data-select'
 import GeneralTable from '@/components/general-table'
+import ModalConfirm from '@/components/modal-confirm'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
-import { EditOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons'
-import { Input, Button, Modal, Form, Popconfirm, message, Spin, Tooltip } from 'antd'
-import React, { useMemo, useState } from 'react'
-import styles from './index.less'
-import { useRequest } from 'ahooks'
-import { isArray } from 'lodash'
-import '@/assets/icon/iconfont.css'
-import CompanyFileForm from './components/add-edit-form'
+import { baseUrl } from '@/services/common'
 import {
-  updateCompanyFileItem,
   addCompanyFileItem,
-  deleteCompanyFileItem,
-  getCompanyFileDetail,
-  getCompanyDefaultOptions,
-  updateCompanyDefaultOptions,
-  uploadCompanyFile,
   addFileGroupItem,
+  deleteCompanyFileItem,
   deleteFileGroupItem,
   downLoadFileItem,
+  getCompanyDefaultOptions,
+  getCompanyFileDetail,
   getFileList,
+  updateCompanyDefaultOptions,
+  updateCompanyFileItem,
+  uploadCompanyFile,
 } from '@/services/operation-config/company-file'
-import DefaultParams from './components/default-params'
 import { getUploadUrl } from '@/services/resource-config/drawing'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { TableRequestResult } from '@/services/table'
+import { useGetButtonJurisdictionArray, useGetSelectData } from '@/utils/hooks'
+import { uploadAuditLog } from '@/utils/utils'
+import { DownloadOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Popconfirm, Spin, Tooltip } from 'antd'
+import { isArray } from 'lodash'
+import React, { useMemo, useState } from 'react'
+import CompanyFileForm from './components/add-edit-form'
 // import UrlSelect from '@/components/url-select';
 import FileGroupForm from './components/add-file-group'
-import { useGetSelectData } from '@/utils/hooks'
-import DataSelect from '@/components/data-select'
-import { TableRequestResult } from '@/services/table'
-import ModalConfirm from '@/components/modal-confirm'
-import { baseUrl } from '@/services/common'
-import { uploadAuditLog } from '@/utils/utils'
+import DefaultParams from './components/default-params'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -361,6 +360,7 @@ const CompanyFile: React.FC = () => {
     //for IE
     //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE

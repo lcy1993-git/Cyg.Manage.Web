@@ -1,6 +1,6 @@
 import type { SuppliesLibraryData } from '@/pages/technology-economic/supplies-library'
 import type { QueryData } from '@/services/technology-economic/usual-quota-table'
-import request, { transformUrlParams } from '@/utils/request'
+import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
 
 /**
@@ -69,11 +69,13 @@ export const GetMaterialLibraryAllListNoUsed = () => {
 
 // 新增物料库
 export const addMaterialLibrary = (data: SuppliesLibraryData, urlParams: object) => {
-  const url = transformUrlParams(`${baseUrl.tecEco1}/MaterialLibrary/AddMaterialLibrary`, urlParams)
+  const url = `${baseUrl.tecEco1}/MaterialLibrary/AddMaterialLibrary`
   return cyRequest<any>(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(data),
+      requestType: 'form',
     })
   )
 }

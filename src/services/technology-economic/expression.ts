@@ -45,6 +45,7 @@ export const addExpressionTrees = (data: any) => {
     request(`${baseUrl.tecEco1}/ExpressionTrees/AddExpressionTrees`, {
       method: 'POST',
       data: formData(data),
+      requestType: 'form',
     })
   )
 }

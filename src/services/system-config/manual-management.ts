@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 /**
  * 将对象传参formData格式化
@@ -26,16 +26,22 @@ export const getCategorys = () => {
 }
 //根据端口获取最新说明书
 export const getLatestInstructions = (category: number) => {
+  console.log(category, '有吗')
   return cyRequest<{ id: string; fileName: string; fileId: string }>(() =>
-    request(`${baseUrl.project}/Instructions/GetLatest?category=${category}`, { method: 'GET' })
+    request(`${baseUrl.project}/Instructions/GetLatest`, {
+      method: 'GET',
+      params: { category },
+    })
   )
 }
 //添加说明书
 export const uploadCreate = (data: { category: number; file: File }) => {
   return cyRequest<any>(() =>
-    request(`${baseUrl.upload}/Upload/InstructionsFile?category=${data.category}`, {
+    request(`${baseUrl.upload}/Upload/InstructionsFile`, {
       method: 'POST',
+      params: { category: data.category },
       data: formData(data),
+      requestType: 'form',
     })
   )
 }

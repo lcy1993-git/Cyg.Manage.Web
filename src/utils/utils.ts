@@ -54,12 +54,12 @@ export const handleGetUrl = (params: any, requestUrl: any): string => {
   })
 
   const _url = _str.replace('&', '?')
+  console.log(params, '111111111111')
 
   //  开发环境和生产环境截取接口字符串
   if (NODE_ENV === 'development') {
     _handleUrl = _handleUrl.includes('bbgl') ? _handleUrl.slice(23) : _handleUrl.slice(4)
   }
-  // console.log(_url, 'final0')
   const finalUrl = _handleUrl + _url
   // console.log(finalUrl, 'final')
   return `?param=${handleSM2Crypto(finalUrl)}`

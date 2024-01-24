@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import qs from 'qs'
 import { baseUrl, cyRequest } from '../common'
 
 interface ResourceLibParams {
@@ -56,11 +55,12 @@ export const uploadDrawing = (files: any[], params: any) => {
     formData.append('file', item)
   })
 
-  const uploadUrl = `${baseUrl.upload}/Upload/Chart?${qs.stringify(params)}`
+  const uploadUrl = `${baseUrl.upload}/Upload/Chart`
 
   return cyRequest<any[]>(() =>
     request(uploadUrl, {
       method: 'POST',
+      params: params,
       data: formData,
       requestType: 'form',
     })

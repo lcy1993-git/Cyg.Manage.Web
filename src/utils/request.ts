@@ -25,20 +25,23 @@ const request = extend({
 request.interceptors.request.use(async (url: string, options: RequestOptionsInit) => {
   const { headers, params } = options
   const requestHost = localStorage.getItem('requestHost')
-  let c_token = localStorage.getItem('Authorization')
+  const c_token = localStorage.getItem('Authorization')
   // let isTrans = localStorage.getItem('isTransfer')
-  let currentHost =
+  const currentHost =
     requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
   // const reqid = uuid.v1()
   // const timeStamp = Date.parse(`${new Date()}`)
-  let handleUrl: string = url
+  const handleUrl: string = url
 
-  let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
+  const accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
 
-  let isPlain = url.includes('/json') || url.includes('bbgl')
+  const isPlain = url.includes('/json') || url.includes('bbgl')
 
-  let isUpload = options.requestType === 'form'
-  console.log(isUpload, options, 'kankan')
+  const isUpload = options.requestType === 'form'
+
+  const cheaders = isUpload ? headers : { ...headers, 'Content-Type': 'application/json' }
+
+  console.log(options, 'kankan122222')
   if (c_token) {
     return {
       url: isPlain ? url : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl)}`,
@@ -47,12 +50,11 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
         data: isPlain || isUpload ? options.data : handlePostData(options.data),
         params: {},
         headers: {
+          ...cheaders,
           Authorization: c_token,
-          'Content-Type': 'application/json',
           'Access-Control-Allow-Credentials': true,
           'Access-Control-Allow-Headers': 'x-requested-with',
           'X-Content-Type-Options': 'nosniff',
-          ...headers,
         },
       },
     }
@@ -65,11 +67,10 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
       data: isPlain || isUpload ? options.data : handlePostData(options.data),
       params: {},
       headers: {
-        'Content-Type': 'application/json',
+        ...cheaders,
         'Access-Control-Allow-Credentials': true,
         'Access-Control-Allow-Headers': 'x-requested-with',
         'X-Content-Type-Options': 'nosniff',
-        ...headers,
       },
     },
   }

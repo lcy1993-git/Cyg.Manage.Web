@@ -1,4 +1,4 @@
-import request, { transformUrlParams } from '@/utils/request'
+import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
 
 /**
@@ -57,11 +57,13 @@ export const queryQuotaLibraryCatalogList = (id: string) => {
 
 // 创建定额库
 export const createQuotaLibrary = (params: CreateQuotaLibrary, urlParams: object) => {
-  let url = transformUrlParams(`${baseUrl.tecEco}/QuotaLibrary/CreateQuotaLibrary`, urlParams)
+  let url = `${baseUrl.tecEco}/QuotaLibrary/CreateQuotaLibrary`
   return cyRequest(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(params),
+      requestType: 'form',
     })
   )
 }
@@ -120,14 +122,14 @@ export const createMaterialMachineLibrary = (
   data: CreateMaterialMachineLibrary,
   urlParams: object
 ) => {
-  let url = transformUrlParams(
-    `${baseUrl.tecEco}/MaterialMachineLibrary/CreateMaterialMachineLibrary`,
-    urlParams
-  )
+  let url = `${baseUrl.tecEco}/MaterialMachineLibrary/CreateMaterialMachineLibrary`
+
   return cyRequest(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(data),
+      requestType: 'form',
     })
   )
 }
@@ -196,7 +198,7 @@ export const UploadChapterDescriptionFiles = (data: {
   return cyRequest(() =>
     request(
       `${baseUrl.tecEco}/QuotaLibraryCatalog/UploadChapterDescriptionFiles/${data.quotaLibraryCatalogId}`,
-      { method: 'POST', data: formData(data) }
+      { method: 'POST', data: formData(data), requestType: 'form' }
     )
   )
 }
@@ -208,7 +210,7 @@ export const UploadChapterDescriptionFile = (data: {
   return cyRequest(() =>
     request(
       `${baseUrl.tecEco}//QuotaLibraryCatalog/UploadChapterDescriptionFile/${data.quotaLibraryCatalogId}`,
-      { method: 'POST', data: formData(data) }
+      { method: 'POST', data: formData(data), requestType: 'form' }
     )
   )
 }

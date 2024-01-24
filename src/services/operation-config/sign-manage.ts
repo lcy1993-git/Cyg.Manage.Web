@@ -1,6 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
-import qs from 'qs'
+import { baseUrl, cyRequest } from '../common'
 
 interface SignFileItemParams {
   name: string
@@ -86,11 +85,12 @@ export const uploadCompanyFile = (files: any[], params: any, url: string) => {
     formData.append('file', item)
   })
 
-  const uploadUrl = `${baseUrl.upload}${url}?${qs.stringify(params)}`
+  const uploadUrl = `${baseUrl.upload}${url}`
 
   return cyRequest<string>(() =>
     request(uploadUrl, {
       method: 'POST',
+      params: params,
       data: formData,
       requestType: 'form',
     })

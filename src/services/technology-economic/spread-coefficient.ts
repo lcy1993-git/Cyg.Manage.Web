@@ -1,4 +1,4 @@
-import request, { transformUrlParams } from '@/utils/request'
+import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
 
 interface ImportProject {
@@ -62,19 +62,20 @@ export const uploadTemplates = (data: ImportProject) => {
     request(`${baseUrl.tecEco1}/PriceDifference/UploadTemplates`, {
       method: 'POST',
       data: formData(data),
+      requestType: 'form',
     })
   )
 }
 // 导入默认模板数据
 export const importDefaultTemplateData = (data: ImportProject, urlParams: object) => {
-  const url = transformUrlParams(
-    `${baseUrl.tecEco1}/PriceDifference/ImportDefaultTemplateData`,
-    urlParams
-  )
+  const url = `${baseUrl.tecEco1}/PriceDifference/ImportDefaultTemplateData`
+
   return cyRequest(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(data),
+      requestType: 'form',
     })
   )
 }
@@ -145,21 +146,25 @@ export const createAdjustmentFile = (params: catalogueParams) => {
 }
 // 添加价差地区
 export const addArea = (params: catalogueParams, urlParams: any) => {
-  const url = transformUrlParams(`${baseUrl.tecEco1}/PriceDifference/AddArea`, urlParams)
+  const url = `${baseUrl.tecEco1}/PriceDifference/AddArea`
   return cyRequest<any[]>(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(params),
+      requestType: 'form',
     })
   )
 }
 // 编辑价差地区
 export const updateArea = (params: catalogueParams, urlParams: object) => {
-  const url = transformUrlParams(`${baseUrl.tecEco1}/PriceDifference/UpdateArea`, urlParams)
+  const url = `${baseUrl.tecEco1}/PriceDifference/UpdateArea`
   return cyRequest<any[]>(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(params),
+      requestType: 'form',
     })
   )
 }
@@ -202,8 +207,9 @@ export const deleteTemplateItem = (params: any) => {
 // 上传技经文件
 export const technicalEconomyFile = (securityKey: string, data: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.upload}/Upload/TechnicalEconomyFile?securityKey=${securityKey}`, {
+    request(`${baseUrl.upload}/Upload/TechnicalEconomyFile`, {
       method: 'POST',
+      params: { securityKey },
       data: formData(data),
       requestType: 'form',
     })

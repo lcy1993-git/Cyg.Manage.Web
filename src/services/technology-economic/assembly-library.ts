@@ -1,5 +1,5 @@
 import { AssemblyLibraryData } from '@/pages/technology-economic/assembly-library'
-import request, { transformUrlParams } from '@/utils/request'
+import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
 
 /**
@@ -21,14 +21,14 @@ const formData = (params: Object) => {
 
 // 导入设计端模块组合件映射表
 export const importAssemblyMaps = (params: any, urlParams: object) => {
-  const url = transformUrlParams(
-    `${baseUrl.tecEco1}/AssemblyLibrary/ImportDesignAssemblyMaps`,
-    urlParams
-  )
+  const url = `${baseUrl.tecEco1}/AssemblyLibrary/ImportDesignAssemblyMaps`
+
   return cyRequest(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(params),
+      requestType: 'form',
     })
   )
 }
@@ -44,11 +44,13 @@ export const deleteAssembById = (id: string) => {
 
 // 新建组合件库
 export const addAssemblyLibrary = (data: AssemblyLibraryData, urlParams: object) => {
-  const url = transformUrlParams(`${baseUrl.tecEco1}/AssemblyLibrary/AddAssemblyLibrary`, urlParams)
+  const url = `${baseUrl.tecEco1}/AssemblyLibrary/AddAssemblyLibrary`
   return cyRequest<any>(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(data),
+      requestType: 'form',
     })
   )
 }

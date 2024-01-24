@@ -18,7 +18,7 @@ const CompanyFileForm: React.FC<CompanyFileForm> = (props) => {
 
   const [categoryValue, setCategoryValue] = useState<number>()
 
-  const groupName = groupData.items?.map((item: any) => {
+  const groupName = groupData?.items?.map((item: any) => {
     return item.name
   })
 

@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import qs from 'qs'
 import { baseUrl, cyRequest } from '../common'
 
 export const getDrawingList = (libId: string) => {
@@ -42,10 +41,11 @@ export const uploadLineStressSag = (
     formData.append('file', item)
   })
 
-  const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`
+  const uploadUrl = `${baseUrl[requestSource]}${url}`
 
   return request(uploadUrl, {
     method: 'POST',
+    params: params,
     data: formData,
     requestType: 'form',
   }).then((res) => {
@@ -75,9 +75,10 @@ export const newUploadLineStressSag = (
   // const controller = new AbortController();
   // const { signal } = controller;
 
-  const uploadUrl = `${baseUrl[requestSource]}${url}?${qs.stringify(params)}`
+  const uploadUrl = `${baseUrl[requestSource]}${url}`
   return request(uploadUrl, {
     method: 'POST',
+    params: params,
     data: formData,
     requestType: 'form',
     // signal,

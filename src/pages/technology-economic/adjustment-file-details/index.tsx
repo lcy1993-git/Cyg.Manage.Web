@@ -2,6 +2,7 @@ import CommonTitle from '@/components/common-title'
 import WrapperComponent from '@/components/page-common-wrap'
 import { baseUrl } from '@/services/common'
 import { getEnabledAdjustmentFiles } from '@/services/technology-economic/spread-coefficient'
+import { handleGetUrl } from '@/utils/utils'
 import { useEffect, useState } from 'react'
 import PdfFileView from './components/pdf-file-view'
 import styles from './index.less'
@@ -46,11 +47,24 @@ const AdjustmentFileDetails: React.FC = () => {
       </div>
     )
   })
+
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+
+  const handleUrl = `${baseUrl.upload}/Download/GetFileById`
+
+  const finalUrl = `${currentHost}/commonGet`
+
   const getApi = (id: string) => {
     const api = {
-      url: `${
-        baseUrl.upload
-      }/Download/GetFileById?fileId=${id}&securityKey=${'1202531026526199123'}`,
+      url: `${finalUrl}${handleGetUrl(
+        {
+          fileId: id,
+          securityKey: '1202531026526199123',
+        },
+        handleUrl
+      )}`,
       httpHeaders: {
         Authorization: window.localStorage.getItem('Authorization'),
       },

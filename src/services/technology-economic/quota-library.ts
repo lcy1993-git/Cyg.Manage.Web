@@ -1,4 +1,4 @@
-import request, { transformUrlParams } from '@/utils/request'
+import request from '@/utils/request'
 import { baseUrl, cyRequest } from '../common'
 const formData = (params: Object) => {
   const form = new FormData()
@@ -105,14 +105,14 @@ export const queryQuotaRebarMappingList = () => {
 }
 // 导入定额钢筋映射
 export const importQuotaRebarMapping = (data: any, urlParams: object) => {
-  const url = transformUrlParams(
-    `${baseUrl.tecEco}/QuotaLibrary/ImportQuotaRebarMapping`,
-    urlParams
-  )
+  const url = `${baseUrl.tecEco}/QuotaLibrary/ImportQuotaRebarMapping`
+
   return cyRequest(() =>
     request(url, {
       method: 'POST',
+      params: urlParams,
       data: formData(data),
+      requestType: 'form',
     })
   )
 }
