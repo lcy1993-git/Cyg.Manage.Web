@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
-import { Input, Tooltip } from 'antd'
-import FileUpload from '@/components/file-upload'
 import CyFormItem from '@/components/cy-form-item'
+import FileUpload from '@/components/file-upload'
 import UrlSelect from '@/components/url-select'
-import rules from './rule'
 import { useGetSelectData } from '@/utils/hooks'
 import { QuestionCircleOutlined } from '@ant-design/icons'
+import { Input, Tooltip } from 'antd'
+import React, { useMemo } from 'react'
+import rules from './rule'
 interface CompanyFileForm {
   type?: 'add' | 'edit'
   securityKey?: string
@@ -21,7 +21,8 @@ const SignFileForm: React.FC<CompanyFileForm> = (props) => {
   })
 
   const { data: allUsers = [] } = useGetSelectData({
-    url: '/CompanyUser/GetList?clientCategory=0',
+    url: '/CompanyUser/GetList',
+    extraParams: { clientCategory: 0 },
   })
 
   const handleData = useMemo(() => {

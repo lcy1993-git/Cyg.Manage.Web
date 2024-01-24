@@ -1,5 +1,5 @@
 import { baseUrl } from '@/services/common'
-import { handleSM2Crypto } from '@/utils/utils'
+import { handleGetUrl } from '@/utils/utils'
 import type { MediaData } from '../../getComponentsByData'
 import styles from './index.less'
 
@@ -8,23 +8,26 @@ interface MediaAudioProps {
 }
 
 const MediaAudio: React.FC<MediaAudioProps> = ({ data }) => {
-  const isTrans = localStorage.getItem('isTransfer')
-  //场内测试
-  // let handleUrl = `${baseUrl.upload}`.slice(4)
-  // let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530${handleUrl}`)'
-  // let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=${targetUrl}`
-  let handleUrl = `${baseUrl.upload}`
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
 
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  // let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+  const targetUrl = handleGetUrl(
+    { fileId: data.filePath, securityKey: '1201332565548359680', token: data.authorization },
+    handleUrl
+  )
+
+  const finalUrl = `${currentHost}/commonGet${targetUrl}`
+
   return (
     <div className={styles.audioWrap}>
       <audio
         className={styles.audio}
-        src={`${finalUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+        src={finalUrl}
         controls={true}
         controlsList="noremoteplayback"
       />

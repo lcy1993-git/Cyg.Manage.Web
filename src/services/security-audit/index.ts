@@ -1,7 +1,7 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+// import { handleSM2Crypto } from '@/utils/utils'
 import { Moment } from 'moment'
-import { handleSM2Crypto } from '@/utils/utils'
+import { baseUrl, cyRequest } from '../common'
 
 interface Page {
   dateTime: Moment
@@ -305,15 +305,15 @@ export const UploadAuditEventInfo = (data: Partial<EventInfo>[]) => {
 // 上传审计日志事件不带token
 export const UploadAuditEventInfoWithoutToken = (data: {
   data: Partial<EventInfo>[]
-  reqId: string
-  timeStamp: number
+  X_Reqid: string
+  X_TimeStamp: number
 }) => {
   return request(`${baseUrl.securityAudit}/SecurityAudit/UploadAuditEventInfoWithoutToken`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    data: handleSM2Crypto(JSON.stringify(data)),
+    data: data,
   })
 }
 

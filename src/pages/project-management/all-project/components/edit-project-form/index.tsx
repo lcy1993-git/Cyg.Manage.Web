@@ -113,10 +113,11 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
 
   const { data: libSelectData = [] } = useGetSelectData(
     {
-      url: '/ResourceLib/GetList?status=0',
+      url: '/ResourceLib/GetList',
       requestSource: 'resource',
       titleKey: 'libName',
       valueKey: 'id',
+      extraParams: { status: 0 },
     },
     {
       onSuccess: () => {
@@ -127,10 +128,11 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
 
   const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
     {
-      url: `/Inventory/GetList?libId=${libId}`,
+      url: `/Inventory/GetList`,
       valueKey: 'id',
       titleKey: 'name',
       otherKey: 'hasMaped',
+      extraParams: { libId: libId },
       requestSource: 'resource',
     },
     {

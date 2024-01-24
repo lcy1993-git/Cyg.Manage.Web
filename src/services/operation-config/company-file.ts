@@ -1,6 +1,6 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
 import qs from 'qs'
+import { baseUrl, cyRequest } from '../common'
 
 interface CompanyFileItemParams {
   name: string
@@ -92,12 +92,15 @@ export const uploadCompanyFile = (files: any[], params: any, url: string) => {
   })
 
   const uploadUrl = `${baseUrl.upload}${url}?${qs.stringify(params)}`
-
+  console.log(files, formData, '有吗？')
   return cyRequest<string>(() =>
     request(uploadUrl, {
       method: 'POST',
       data: formData,
       requestType: 'form',
+      headers: {
+        'Content-Type': 'multipart/form-data; boundary=----WebKitFormBoundarynR0mBBaTGoRd5NNt',
+      },
     })
   )
 }

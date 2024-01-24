@@ -4,7 +4,7 @@ import {
   getAllEarthWorks,
   GetAllEarthworkSlopeCoefficients,
 } from '@/services/technology-economic/usual-quota-table'
-import { getObject, handleSM2Crypto } from '@/utils/utils'
+import { getObject, handleGetUrl } from '@/utils/utils'
 import { Table, Tabs } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styles from './index.less'
@@ -39,18 +39,19 @@ const EarthworkParameters: React.FC<Props> = (props) => {
     setDataSource2(res2)
   }
 
-  const isTrans = localStorage.getItem('isTransfer')
-  let handleUrl = `${baseUrl.upload}`
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
 
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  // let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+  const finalUrl = `${currentHost}/commonGet`
 
   const downImage = (row: AttritionRateRow) => {
     var xhr = new XMLHttpRequest()
-    xhr.open('GET', `${finalUrl}/Download/GetFileById?fileId=${row.picPath}`, true) // 也可以使用POST方式，根据接口
+    xhr.open('GET', `${finalUrl}${handleGetUrl({ fileId: row.picPath }, handleUrl)}`, true) // 也可以使用POST方式，根据接口
     xhr.responseType = 'blob' // 返回类型blob
     xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑

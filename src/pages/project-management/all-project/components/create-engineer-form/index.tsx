@@ -59,8 +59,8 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
 
   const { data: companySelectData = [] } = useGetSelectData(
     {
-      url: `/ElectricityCompany/GetListByAreaId?areaId=${areaId}`,
-      // extraParams: { area: areaId },
+      url: `/ElectricityCompany/GetListByAreaId`,
+      extraParams: { areaId: areaId },
       titleKey: 'text',
       valueKey: 'text',
     },
@@ -120,16 +120,18 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
     [canChange]
   )
 
-  const changeProvince = (value, selectedOptions) => {
-    const area = selectedOptions.filter((item) => item.label !== '无').map((item) => item.label)
+  const changeProvince = (value: any, selectedOptions: any) => {
+    const area = selectedOptions
+      .filter((item: any) => item.label !== '无')
+      .map((item: any) => item.label)
     let projectName = ''
-    area.forEach((item, index) => {
+    area.forEach((item: any, index: any) => {
       if (index === 0) projectName = item
       if (index === 1) projectName += item
       if (index === 2) projectName += item + '县'
     })
     const project = form.getFieldValue('projects')
-    const projects = project.map((item) => {
+    const projects = project.map((item: any) => {
       return {
         ...item,
         name: projectName + '*镇*台区10千伏及以下新建（改造）工程',

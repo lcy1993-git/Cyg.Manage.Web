@@ -1,7 +1,7 @@
 import ManualPreview from '@/pages/backstage-config/manual-management/components/manual-preview'
 import { baseUrl } from '@/services/common'
 import { getLatestInstructions } from '@/services/system-config/manual-management'
-import { handleSM2Crypto } from '@/utils/utils'
+import { handleGetUrl } from '@/utils/utils'
 import { useMount } from 'ahooks'
 import { message } from 'antd'
 import React, { useEffect, useState } from 'react'
@@ -38,7 +38,6 @@ const ManualUpload: React.FC<Props> = () => {
   const [current, setCurrent] = useState<number>(0)
   const [file, setFile] = useState([])
   const [isMobile, setisMobile] = useState(false)
-  const isTrans = localStorage.getItem('isTransfer')
 
   useMount(() => {
     let url = window.location.pathname
@@ -56,17 +55,19 @@ const ManualUpload: React.FC<Props> = () => {
     }
   })
 
-  let handleUrl = `${baseUrl.upload}`
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
 
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  // let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+  const finalUrl = `${currentHost}/commonGet`
 
   const downFile = (id: string, token: string) => {
     var xhr = new XMLHttpRequest()
-    xhr.open('GET', `${finalUrl}/Download/GetFileById?fileId=${id}&token=${token}`, true) // 也可以使用POST方式，根据接口
+    xhr.open('GET', `${finalUrl}${handleGetUrl({ fileId: id, token: token }, handleUrl)}`, true) // 也可以使用POST方式，根据接口
     xhr.responseType = 'blob' // 返回类型blob
     xhr.setRequestHeader('Authorization', token as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑

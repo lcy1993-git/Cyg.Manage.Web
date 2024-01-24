@@ -1,6 +1,6 @@
 import InputPercentNumber from '@/components/input-percent-number'
 import { baseUrl } from '@/services/common'
-import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
+import { handleGetUrl, uploadAuditLog } from '@/utils/utils'
 import { DownloadOutlined, FullscreenExitOutlined, FullscreenOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import { Button, Modal } from 'antd'
@@ -19,8 +19,6 @@ interface MediaImageProps {
 }
 
 const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
-  const isTrans = localStorage.getItem('isTransfer')
-
   const [currentPosition, setCurrentPosition] = useState([0, 0])
 
   const [downPosition, setDownPosition] = useState([0, 0])
@@ -47,25 +45,24 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
     }
   }, [percent])
 
-  //场内测试
-  // let handleUrl = `${baseUrl.upload}`.slice(4)
-  // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`)
-  // let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=${targetUrl}`
-  // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
-  let handleUrl = `${baseUrl.upload}`
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
 
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  // let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+  const targetUrl = handleGetUrl(
+    { fileId: data.filePath, securityKey: '1201332565548359680', token: data.authorization },
+    handleUrl
+  )
+
+  const finalUrl = `${currentHost}/commonGet${targetUrl}`
 
   const downLoad = () => {
     const a = document.createElement('a')
-    a.setAttribute(
-      'href',
-      `${finalUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`
-    )
+    a.setAttribute('href', finalUrl)
     // a.setAttribute(
     //   'href',
     //   `${proxyUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`

@@ -2,7 +2,7 @@ import FileDocxView from '@/components/api-file-view/componnents/file-docx-view'
 import XlsxViewer from '@/components/api-file-view/componnents/file-excel-view'
 import { baseUrl } from '@/services/common'
 import { downLoadFileItem } from '@/services/operation-config/company-file'
-import { handleSM2Crypto } from '@/utils/utils'
+import { handleGetUrl } from '@/utils/utils'
 import React, { useEffect, useState } from 'react'
 
 interface UrlFileViewProps {
@@ -18,14 +18,17 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   requestSource = 'upload',
 }) => {
   const [data, setData] = useState(null)
-  let isTrans = localStorage.getItem('isTransfer')
-  //场内测试代码
-  // let handleUrl = `${baseUrl.upload}`.slice(4)
-  // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`)
-  // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
-  let handleUrl = `${baseUrl[requestSource]}${url}`
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+
+  const handleUrl = `${baseUrl[requestSource]}${url}`
+  const targetUrl = handleGetUrl(
+    { fileId: params.id, token: window.localStorage.getItem('Authorization') },
+    handleUrl
+  )
+  const proxyUrl = `${currentHost}/commonGet${targetUrl}`
 
   useEffect(() => {
     const { id } = params
@@ -38,8 +41,7 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
 
   let api: any = null
   if (params.extension === '.xlsx') {
-    const excelUrl = Number(isTrans) === 1 ? `${proxyUrl}` : `${baseUrl[requestSource]}${url}`
-    api = `${excelUrl}?fileId=${params.id}&token=${window.localStorage.getItem('Authorization')}`
+    api = proxyUrl
 
     return <XlsxViewer url={api} />
   } else {

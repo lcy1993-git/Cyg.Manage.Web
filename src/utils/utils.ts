@@ -43,6 +43,40 @@ interface ToTreeDataOptions {
   parentField?: string
 }
 
+// request公共组件get传参处理
+export const handleGetUrl = (params: any, requestUrl: any): string => {
+  let _str = ''
+  let _handleUrl = requestUrl
+  params['X_Reqid'] = getUUid()
+  params['X_TimeStamp'] = Date.parse(`${new Date()}`)
+  Object.keys(params!).forEach((key) => {
+    _str += `&${key}=${params[key]}`
+  })
+
+  const _url = _str.replace('&', '?')
+
+  //  开发环境和生产环境截取接口字符串
+  if (NODE_ENV === 'development') {
+    _handleUrl = _handleUrl.includes('bbgl') ? _handleUrl.slice(23) : _handleUrl.slice(4)
+  }
+  // console.log(_url, 'final0')
+  const finalUrl = _handleUrl + _url
+  // console.log(finalUrl, 'final')
+  return `?param=${handleSM2Crypto(finalUrl)}`
+}
+
+// request公共组件post传参处理
+export const handlePostData = (data: any): string => {
+  const handleParams = {
+    X_Data: data,
+    X_Reqid: getUUid(),
+    X_TimeStamp: Date.parse(`${new Date()}`),
+  }
+
+  console.log(handleParams, 'asdasdas')
+  return handleSM2Crypto(JSON.stringify(handleParams))
+}
+
 export const toTreeData = <P, T>(data: P[], options: ToTreeDataOptions = {}): T[] => {
   const list = JSON.parse(JSON.stringify(data))
 
@@ -203,7 +237,7 @@ export const generateMaterialTreeList = (materialData: MaterialDataType[]): Mate
   /**
    * 获取type
    */
-  const typeSet: Set<string> = new Set(
+  const typeSet: Set<string | undefined> = new Set(
     materialData.map((v) => {
       return v.type
     })
@@ -317,6 +351,20 @@ export const getObject = (value: string): any => {
   return obj
 }
 
+export const getUUid = (length = 32) => {
+  const possibleChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let randomString = '' // 考虑到32位大约是UUID的长度
+
+  for (let i = 0; i < length; i++) {
+    // 使用crypto API得到一个随机索引
+    const randomIndex = Math.floor(
+      (crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1)) * possibleChars.length
+    )
+    randomString += possibleChars.charAt(randomIndex)
+  }
+  return randomString
+}
+
 export const productCode = '1301726010322214912'
 
 const SM2PublicKey =
@@ -326,6 +374,13 @@ export const handleSM2Crypto = (data: any) => {
   const cipherMode = 0
   // 加密结果
   return '04' + sm2.doEncrypt(data, SM2PublicKey, cipherMode)
+}
+
+const SM2PrivateKey = '009761bb18f9621e5281b3a0d06edc8083c2625e0b15fdad25b14e8020c2cc9967'
+export const handleDecrypto = (data: any) => {
+  const cipherMode = 0
+  const handleData = data.slice(2)
+  return JSON.parse(sm2.doDecrypt(handleData, SM2PrivateKey, cipherMode))
 }
 
 export const uploadAuditLog = (dataItem: Partial<EventInfo>[], needToken: boolean = false) => {
@@ -340,8 +395,8 @@ export const uploadAuditLog = (dataItem: Partial<EventInfo>[], needToken: boolea
   if (needToken) {
     UploadAuditEventInfoWithoutToken({
       data: dataItem,
-      reqId: generateUUID(),
-      timeStamp: new Date().valueOf(),
+      X_Reqid: getUUid(),
+      X_TimeStamp: new Date().valueOf(),
     }).then()
   } else {
     UploadAuditEventInfo(dataItem)

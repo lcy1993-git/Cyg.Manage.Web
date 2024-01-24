@@ -1,4 +1,7 @@
 import CyFormItem from '@/components/cy-form-item'
+import { useLayoutStore } from '@/layouts/context'
+import VerifycodeImage from '@/pages/login/components/verifycode-image'
+import { baseUrl } from '@/services/common'
 import {
   getAuthorityModules,
   GetCommonUserInfo,
@@ -6,19 +9,20 @@ import {
   // qgcLoginRequest,
   userLoginRequest,
 } from '@/services/login'
-import { isArray } from 'lodash'
 import { useGetUserInfo } from '@/utils/hooks'
-import { flatten, getStopServerList, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
+import {
+  flatten,
+  getStopServerList,
+  handleDecrypto,
+  noAutoCompletePassword,
+  uploadAuditLog,
+} from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, Input, message, Modal } from 'antd'
-import { Dispatch, useEffect, useState } from 'react'
-import { SetStateAction } from 'react'
-
-import { history } from 'umi'
-import VerifycodeImage from '@/pages/login/components/verifycode-image'
-import { baseUrl } from '@/services/common'
-import { useLayoutStore } from '@/layouts/context'
+import { isArray } from 'lodash'
 import uuid from 'node-uuid'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { history } from 'umi'
 
 interface EditPasswordProps {
   visible: boolean
@@ -76,13 +80,14 @@ const CutAccount = (props: EditPasswordProps) => {
         const requestData = Object.assign({ ...value }, data)
 
         const resData = await userLoginRequest(requestData)
-        if (resData.code === 200 && resData.isSuccess) {
+        const handleRes = handleDecrypto(resData)
+        if (handleRes.code === 200 && handleRes.isSuccess) {
           // eslint-disable-next-line react-hooks/rules-of-hooks
           const lastAccount = useGetUserInfo()
 
           const isLastAccount = lastAccount && lastAccount.userName === userName
           // @ts-ignore
-          const { accessToken } = resData.content
+          const { accessToken } = handleRes.content
 
           localStorage.setItem('Authorization', accessToken)
 
@@ -127,9 +132,9 @@ const CutAccount = (props: EditPasswordProps) => {
             setSpinning(false)
             setState(false)
           }
-        } else if (resData.code === 2002) {
-          if (resData.content && isArray(resData.content) && resData.content.length > 0) {
-            const errorMsgArray = resData.content.map((item: any) => item.errorMessages).flat()
+        } else if (handleRes.code === 2002) {
+          if (handleRes.content && isArray(handleRes.content) && handleRes.content.length > 0) {
+            const errorMsgArray = handleRes.content.map((item: any) => item.errorMessages).flat()
             const filterErrorMsg = errorMsgArray.filter((item: any, index: any, arr: any) => {
               return arr.indexOf(item) === index
             })
@@ -137,36 +142,36 @@ const CutAccount = (props: EditPasswordProps) => {
             message.error(showErrorMsg)
             setSpinning(false)
           } else {
-            message.error(resData.message)
+            message.error(handleRes.message)
             setSpinning(false)
           }
-        } else if (resData.code === 5000) {
-          message.error(resData.message)
+        } else if (handleRes.code === 5000) {
+          message.error(handleRes.message)
           setSpinning(false)
-        } else if (resData.code === 40100) {
+        } else if (handleRes.code === 40100) {
           // 临时关闭验证码，开启时，打开下行代码
           // setNeedVerifycode(true);
-          message.error(resData.message)
+          message.error(handleRes.message)
           loginField()
           setSpinning(false)
-        } else if (resData.code === 40201) {
+        } else if (handleRes.code === 40201) {
           history.push('/index')
-          message.error(resData.message)
+          message.error(handleRes.message)
           setSpinning(false)
-        } else if (resData.code === 40202) {
-          message.error(resData.message)
+        } else if (handleRes.code === 40202) {
+          message.error(handleRes.message)
           loginField()
           refreshCode()
           setSpinning(false)
-        } else if (resData.code === 40200) {
+        } else if (handleRes.code === 40200) {
           refreshCode()
           loginField()
-          message.warning(resData.message)
+          message.warning(handleRes.message)
           setSpinning(false)
         } else {
           loginField()
           refreshCode()
-          message.warning(resData.message)
+          message.warning(handleRes.message)
           setSpinning(false)
         }
         // 如果这次登录的账号跟之前的不一样，那么就只到首页

@@ -1,8 +1,8 @@
 import { baseUrl } from '@/services/common'
-import { handleSM2Crypto } from '@/utils/utils'
+import { handleGetUrl } from '@/utils/utils'
 import { Input } from 'antd'
 import classnames from 'classnames'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { LoginType } from '../login-form'
 import styles from './index.less'
 
@@ -29,19 +29,31 @@ const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
   loginKey,
 }) => {
   const codeRef = useRef<Input>(null)
+  const [proxyUrl, setProxyUrl] = useState<string>('')
 
-  const isTrans = localStorage.getItem('isTransfer')
   //场内测试
-  // let handleUrl = `${baseUrl.upload}`.slice(4)
-  // let targetUrl = encodeURIComponent(`https://srthkf2.gczhyun.com:21530${handleUrl}`)'
-  // let proxyUrl = `http://10.6.1.111:8082/commonGet?target_url=${targetUrl}`
-  let handleUrl = `${baseUrl.common}`
 
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  useEffect(() => {
+    const requestHost = localStorage.getItem('requestHost')
+    const currentHost =
+      requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    const handleUrl = `${baseUrl.common}/VerifyCode/Get`
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+    // let targetUrl = handleSM2Crypto(`${handleUrl}`)
+    const targetUrl = handleGetUrl(
+      {
+        category: 1,
+        codeType: 1,
+        codeLength: 4,
+        reloadSign: reloadSign,
+        sessionKey: loginKey,
+      },
+      handleUrl
+    )
+    setProxyUrl(`${currentHost}/commonGet${targetUrl}`)
+  }, [reloadSign, loginKey])
 
-  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+  // let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
 
   return activeKey && needVerifycode ? (
     <div className={styles.verifycodeImageWrap}>
@@ -58,12 +70,7 @@ const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
         <div className={styles.error}>{hasErr ? '验证码错误' : ''}</div>
       </div>
       <div className={styles.imgWrap} onClick={refreshCode}>
-        <img
-          title="看不清？换一张"
-          className={styles.img}
-          src={`${finalUrl}/VerifyCode/Get?category=1&codeType=1&codeLength=4&reloadSign=${reloadSign}&sessionKey=${loginKey}`}
-          alt="刷新"
-        />
+        <img title="看不清？换一张" className={styles.img} src={proxyUrl} alt="刷新" />
         <span className={classnames(styles.changeText, 'link')}>看不清？换一张</span>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
+import { handleGetUrl, handlePostData, uploadAuditLog } from '@/utils/utils'
 import { extend, RequestOptionsInit } from 'umi-request'
 
 const request = extend({
@@ -23,52 +23,53 @@ const request = extend({
 // request拦截器, 改变url 或 options.
 // @ts-ignore
 request.interceptors.request.use(async (url: string, options: RequestOptionsInit) => {
+  const { headers, params } = options
+  const requestHost = localStorage.getItem('requestHost')
   let c_token = localStorage.getItem('Authorization')
-  let isTrans = localStorage.getItem('isTransfer')
-
-  // 场内测试代码
-  // let handleUrl = url.includes('bbgl') ? url.slice(23) : url
-  // let targetUrl = encodeURIComponent(`https://srthkf1.gczhyun.com:21530${handleUrl}`) //目标接口转码
+  // let isTrans = localStorage.getItem('isTransfer')
+  let currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+  // const reqid = uuid.v1()
+  // const timeStamp = Date.parse(`${new Date()}`)
+  let handleUrl: string = url
 
   let accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
 
-  let targetUrl = handleSM2Crypto(url.includes('bbgl') ? url : `http://172.2.48.22${url}`) //目标接口转码
+  let isPlain = url.includes('/json') || url.includes('bbgl')
 
-  let isNoGlzz = url.includes('/json') || url.includes('bbgl')
-
-  const { headers } = options
-
+  let isUpload = options.requestType === 'form'
+  console.log(isUpload, options, 'kankan')
   if (c_token) {
     return {
-      url:
-        isNoGlzz || Number(isTrans) !== 1
-          ? url
-          : `http://117.191.93.63:21525${accessUrl}?param=${targetUrl}`,
+      url: isPlain ? url : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl)}`,
       options: {
         ...options,
+        data: isPlain || isUpload ? options.data : handlePostData(options.data),
+        params: {},
         headers: {
-          ...headers,
           Authorization: c_token,
+          'Content-Type': 'application/json',
           'Access-Control-Allow-Credentials': true,
           'Access-Control-Allow-Headers': 'x-requested-with',
           'X-Content-Type-Options': 'nosniff',
+          ...headers,
         },
       },
     }
   }
 
   return {
-    url:
-      isNoGlzz || Number(isTrans) !== 1
-        ? url
-        : `http://117.191.93.63:21525${accessUrl}?param=${targetUrl}`,
+    url: isPlain ? url : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl)}`,
     options: {
       ...options,
+      data: isPlain || isUpload ? options.data : handlePostData(options.data),
+      params: {},
       headers: {
-        ...headers,
+        'Content-Type': 'application/json',
         'Access-Control-Allow-Credentials': true,
         'Access-Control-Allow-Headers': 'x-requested-with',
         'X-Content-Type-Options': 'nosniff',
+        ...headers,
       },
     },
   }

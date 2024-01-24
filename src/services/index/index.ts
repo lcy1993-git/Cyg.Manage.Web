@@ -284,3 +284,13 @@ export const getProductServerList = (params: {
   })
   // )
 }
+
+//获取服务器详情
+export const getProductHost = (params: { productCode: string; serverCode: string }) => {
+  // return cyRequest<any>(() =>
+  return request(`${webConfig.commonServer}/api/ProductServer/Get`, {
+    method: 'POST',
+    data: params,
+  })
+  // )
+}

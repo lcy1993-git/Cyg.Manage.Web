@@ -7,7 +7,7 @@ import {
   instructionsCreate,
   uploadCreate,
 } from '@/services/system-config/manual-management'
-import { handleSM2Crypto } from '@/utils/utils'
+import { handleGetUrl } from '@/utils/utils'
 import { useMount } from 'ahooks'
 import { Button, message, Space, Spin } from 'antd'
 import Modal from 'antd/lib/modal'
@@ -21,7 +21,7 @@ interface Props {
 }
 
 const ManualUpload: React.FC<Props> = (props) => {
-  const isTrans = localStorage.getItem('isTransfer')
+  // const isTrans = localStorage.getItem('isTransfer')
   const { id, tabList } = props
   const tableRef = React.useRef<HTMLDivElement>(null)
   const [file, setFile] = useState<any>([])
@@ -83,17 +83,21 @@ const ManualUpload: React.FC<Props> = (props) => {
     }
   }
 
-  let handleUrl = `${baseUrl.upload}`
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
 
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  // let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+  const targetUrl = handleGetUrl({ fileId: lastFile.fileId }, handleUrl)
+
+  const finalUrl = `${currentHost}/commonGet${targetUrl}`
 
   const downFile = () => {
     var xhr = new XMLHttpRequest()
-    xhr.open('GET', `${finalUrl}/Download/GetFileById?fileId=${lastFile.fileId}`, true) // 也可以使用POST方式，根据接口
+    xhr.open('GET', finalUrl, true) // 也可以使用POST方式，根据接口
     xhr.responseType = 'blob' // 返回类型blob
     xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑

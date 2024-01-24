@@ -1,13 +1,11 @@
+import DataSelect from '@/components/data-select'
 import GeneralTable from '@/components/general-table'
 import TableSearch from '@/components/table-search'
+import { modifyMultipleProjectLib } from '@/services/project-management/all-project'
 import { useGetSelectData } from '@/utils/hooks'
 import { useControllableValue } from 'ahooks'
-import { Button, message } from 'antd'
-import { Modal, Input } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import DataSelect from '@/components/data-select'
-import { useRef } from 'react'
-import { modifyMultipleProjectLib } from '@/services/project-management/all-project'
+import { Button, Input, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 
 const { Search } = Input
 
@@ -26,10 +24,11 @@ const ResourceLibraryManageModal: React.FC<ResourceLibraryManageModalProps> = (p
   const { changeFinishEvent } = props
 
   const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList?status=1',
+    url: '/ResourceLib/GetList',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
+    extraParams: { status: 1 },
   })
 
   const tableRef = useRef<HTMLDivElement>(null)

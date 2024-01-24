@@ -49,19 +49,21 @@ const EditBulkProject: React.FC<EditBulkProjectProps> = (props) => {
   const [form] = Form.useForm()
 
   const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList?status=0',
+    url: '/ResourceLib/GetList',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
+    extraParams: { status: 0 },
   })
 
   const { data: inventoryOverviewSelectData = [] } = useGetSelectData(
     {
-      url: `/Inventory/GetList?libId=${libId}`,
+      url: `/Inventory/GetList`,
       valueKey: 'id',
       titleKey: 'name',
       otherKey: 'hasMaped',
       requestSource: 'resource',
+      extraParams: { libId: libId },
     },
     {
       ready: !!libId,

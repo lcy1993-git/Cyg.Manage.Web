@@ -64,12 +64,12 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
   const { run: getWarehouseSelectData } = useRequest(getCommonSelectData, { manual: true })
   const { run: getCompanySelectData } = useRequest(getCommonSelectData, { manual: true })
   // const { run: getDepartmentSelectData } = useRequest(getCommonSelectData, { manual: true })
-
   const { data: libSelectData = [] } = useGetSelectData({
-    url: '/ResourceLib/GetList?status=1',
+    url: '/ResourceLib/GetList',
     requestSource: 'resource',
     titleKey: 'libName',
     valueKey: 'id',
+    extraParams: { status: 1 },
   })
 
   useEffect(() => {

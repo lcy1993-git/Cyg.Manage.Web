@@ -1,10 +1,11 @@
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   required: [{ required: true, message: '该值不能为空' }],
   wordsLimit: [{ max: 32, message: '此项不能超过32个字符' }],
   name: [
     { required: true, message: '项目名称不能为空' },
     {
-      pattern: /^[^\\^/:*?？！!@￥"<>|;；：'‘’“”=\^\s]+$/,
+      pattern: /^[^\\^/:*?？！!@￥.`,，。"<>|;；：'‘’“”=\^\s]+$/,
       message: '项目名不能包含/\\:*?"<>|空格等字符',
     },
     {

@@ -1,6 +1,6 @@
 import { baseUrl, cyRequest } from '@/services/common'
 import request from '@/utils/request'
-import { generateUUID, handleSM2Crypto } from '@/utils/utils'
+import { handleSM2Crypto } from '@/utils/utils'
 import { ModulesItem, UserInfo } from './common.d'
 
 export interface UserLoginParams {
@@ -23,14 +23,12 @@ interface LoginSuccessInfo {
 }
 
 export const indexLoginRequest = (params: UserLoginParams) => {
-  params['reqid'] = generateUUID()
   params['pwd'] = handleSM2Crypto(params.pwd)
   params['clientType'] = '2'
-  params['timestamp'] = `${Date.parse(`${new Date()}`)}`
 
   return request<LoginSuccessInfo>(`${baseUrl.common}/Users/SignIn`, {
     method: 'POST',
-    data: handleSM2Crypto(JSON.stringify(params)),
+    data: params,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -39,13 +37,11 @@ export const indexLoginRequest = (params: UserLoginParams) => {
 
 // ---
 export const userLoginRequest = (params: UserLoginParams) => {
-  params['reqid'] = generateUUID()
   params['pwd'] = handleSM2Crypto(params.pwd)
   params['clientType'] = '2'
-  params['timestamp'] = `${Date.parse(`${new Date()}`)}`
   return request(`${baseUrl.common}/Users/SignIn`, {
     method: 'POST',
-    data: handleSM2Crypto(JSON.stringify(params)),
+    data: params,
     headers: {
       'Content-Type': 'application/json',
     },

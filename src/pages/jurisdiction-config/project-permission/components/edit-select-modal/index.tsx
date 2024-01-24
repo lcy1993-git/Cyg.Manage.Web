@@ -1,13 +1,13 @@
+import CyFormItem from '@/components/cy-form-item'
+import CyTip from '@/components/cy-tip'
+import EnumSelect from '@/components/enum-select'
+import UrlSelect from '@/components/url-select'
+import { getCompany } from '@/services/jurisdiction-config/company-manage'
+import { getTreeSelectData } from '@/services/operation-config/company-group'
+import { useGetSelectData } from '@/utils/hooks'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Col, Form, message, Modal, Row, Spin, TreeSelect } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import CyFormItem from '@/components/cy-form-item'
-import UrlSelect from '@/components/url-select'
-import CyTip from '@/components/cy-tip'
-import EnumSelect from '@/components/enum-select'
-import { getCompany } from '@/services/jurisdiction-config/company-manage'
-import { useGetSelectData } from '@/utils/hooks'
-import { getTreeSelectData } from '@/services/operation-config/company-group'
 import { permissionItem } from '../category-table'
 
 interface TypeModalParams {
@@ -62,7 +62,8 @@ const EditSelectModal: React.FC<TypeModalParams> = (props) => {
 
   //获取用户数据
   const { data: userData = [] } = useGetSelectData({
-    url: '/CompanyUser/GetList?clientCategory=2',
+    url: '/CompanyUser/GetList',
+    extraParams: { clientCategory: 2 },
   })
 
   //获取并处理部组数据

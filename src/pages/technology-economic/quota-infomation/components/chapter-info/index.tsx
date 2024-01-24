@@ -6,7 +6,7 @@ import {
   UploadChapterDescriptionFile,
   UploadChapterDescriptionFiles,
 } from '@/services/technology-economic'
-import { handleSM2Crypto } from '@/utils/utils'
+import { handleGetUrl, uploadAuditLog } from '@/utils/utils'
 import { DownloadOutlined, ExportOutlined } from '@ant-design/icons'
 import { useBoolean } from 'ahooks'
 import { Button, message, Modal } from 'antd'
@@ -55,24 +55,25 @@ const ChapterInfo: React.FC<Props> = ({
     }
   }
 
-  const isTrans = localStorage.getItem('isTransfer')
-  let handleUrl = `${baseUrl.upload}`
+  const requestHost = localStorage.getItem('requestHost')
+  const currentHost =
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
 
-  let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
+  const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
-  let proxyUrl = `http://117.191.93.63:21525/commonGet?param=${targetUrl}`
+  // let targetUrl = handleSM2Crypto(`http://172.2.48.22${handleUrl}`)
 
-  let finalUrl = Number(isTrans) === 1 ? proxyUrl : handleUrl
+  const finalUrl = `${currentHost}/commonGet`
 
   const downFile = (id: string, down = false) => {
     // 下载文件
     var xhr = new XMLHttpRequest()
-    xhr.open('GET', `${finalUrl}/Download/GetFileById?fileId=${id}`, true) // 也可以使用POST方式，根据接口
+    xhr.open('GET', `${finalUrl}${handleGetUrl({ fileId: id }, handleUrl)}`, true) // 也可以使用POST方式，根据接口
     xhr.responseType = 'blob' // 返回类型blob
     xhr.setRequestHeader('Authorization', localStorage.getItem('Authorization') as string)
     // 定义请求完成的处理函数，请求前也可以增加加载框/禁用下载按钮逻辑
     // @ts-ignore
-    xhr.onload = function (e) {
+    xhr.onload = function (e: any) {
       // 请求完成
       if (this.status === 200) {
         // 返回200

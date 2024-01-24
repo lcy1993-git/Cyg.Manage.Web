@@ -1,12 +1,11 @@
-import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import CyFormItem from '@/components/cy-form-item'
+import CyTip from '@/components/cy-tip'
 import FileUpload from '@/components/file-upload'
 import { uploadBulkProject } from '@/services/project-management/all-project'
+import { useControllableValue } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import BatchEditEngineerInfoTable from '../bulk-import-project/index'
-import CyTip from '@/components/cy-tip'
 
 interface UploadAddProjectProps {
   visible: boolean
@@ -118,13 +117,14 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
           </div>
         </Form>
       </Modal>
-
-      <BatchEditEngineerInfoTable
-        onChange={setBulkImportModalVisible}
-        visible={bulkImportModalVisible}
-        excelModalData={excelModalData?.content}
-        refreshEvent={refreshEvent}
-      />
+      {bulkImportModalVisible && (
+        <BatchEditEngineerInfoTable
+          onChange={setBulkImportModalVisible}
+          visible={bulkImportModalVisible}
+          excelModalData={excelModalData?.content}
+          refreshEvent={refreshEvent}
+        />
+      )}
     </>
   )
 }

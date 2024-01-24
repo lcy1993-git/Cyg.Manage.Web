@@ -1,11 +1,13 @@
 /* eslint-disable no-async-promise-executor */
 import { webConfig } from '@/global'
 import tokenRequest from '@/utils/request'
+import { handleDecrypto } from '@/utils/utils'
 import { message } from 'antd'
 import { isArray } from 'lodash'
 import { history, request } from 'umi'
 import type { RequestDataCommonType, RequestDataType } from './common.d'
 
+console.log('common')
 export const geoServeUrl = webConfig.requestUrl.geoServerUrl
 
 export const baseUrl = webConfig.requestUrl
@@ -13,11 +15,12 @@ export const baseUrl = webConfig.requestUrl
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
   return new Promise(async (resolve, reject) => {
     const res = await func()
-    if (!res) {
+    const decryptoRes = handleDecrypto(res)
+    if (!decryptoRes) {
       reject(null)
       return
     }
-    const { code, content, isSuccess, data } = res
+    const { code, content, isSuccess, data } = decryptoRes
 
     if (isSuccess && code === 200) {
       if (content) {
@@ -34,18 +37,18 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
         // message.error('会话超时，已自动跳转到登录界面');
       } else {
         // eslint-disable-next-line no-lonely-if
-        if (res.content && isArray(res.content) && res.content.length > 0) {
-          const errorMsgArray = res.content.map((item) => item.errorMessages).flat()
-          const filterErrorMsg = errorMsgArray.filter((item, index, arr) => {
+        if (decryptoRes.content && isArray(decryptoRes.content) && decryptoRes.content.length > 0) {
+          const errorMsgArray = decryptoRes.content.map((item: any) => item.errorMessages).flat()
+          const filterErrorMsg = errorMsgArray.filter((item: any, index: any, arr: any) => {
             return arr.indexOf(item) === index
           })
           const showErrorMsg = filterErrorMsg.join('\n')
           message.error(showErrorMsg)
         } else {
-          message.error(res.message)
+          message.error(decryptoRes.message)
         }
       }
-      reject(res.message)
+      reject(decryptoRes.message)
     }
   })
 }
@@ -55,13 +58,13 @@ export const cyCommonRequest = <T extends {}>(
 ): Promise<T> => {
   return new Promise(async (resolve, reject) => {
     const res = await func()
-
-    const { code, isSuccess } = res
+    const decryptoRes = handleDecrypto(res)
+    const { code, isSuccess } = decryptoRes
     if (isSuccess && code === 200) {
-      resolve(res as unknown as T)
+      resolve(decryptoRes as unknown as T)
     } else {
-      message.error(res.message)
-      reject(res.message)
+      message.error(decryptoRes.message)
+      reject(decryptoRes.message)
     }
   })
 }
@@ -136,19 +139,17 @@ export const getCommonSelectData = <T = any>(data: GetCommonSelectDataParams) =>
   if (method === 'post') {
     if (postType === 'query') {
       return cyRequest<T[]>(() =>
-        tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params })
+        tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params: params })
       )
     }
     return cyRequest<T[]>(() =>
       tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params })
     )
   }
-  if (method === 'get' && postType) {
-    return cyRequest<T[]>(() =>
-      tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, data: params })
-    )
-  }
-  return cyRequest<T[]>(() => tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params }))
+
+  return cyRequest<T[]>(() =>
+    tokenRequest(`${requestFinallyBaseUrl}${url}`, { method, params: params })
+  )
 }
 
 export const commonUpload = (

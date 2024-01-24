@@ -17,7 +17,13 @@ import {
 } from '@/services/login'
 import { getClientCategorys } from '@/services/personnel-config/company-user'
 import { phoneNumberRule } from '@/utils/common-rule'
-import { flatten, getStopServerList, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
+import {
+  flatten,
+  getStopServerList,
+  handleDecrypto,
+  noAutoCompletePassword,
+  uploadAuditLog,
+} from '@/utils/utils'
 import { useMount, useRequest } from 'ahooks'
 import { Button, Form, Input, message, Tabs } from 'antd'
 import { isArray } from 'lodash'
@@ -56,7 +62,7 @@ const LoginForm: React.FC<Props> = (props) => {
   const [requestLoading, setRequestLoading] = useState<boolean>(false)
 
   //获取验证码是否显示
-  let hasCode = localStorage.getItem('EnableSignInCode')
+  let hasCode: any = localStorage.getItem('EnableSignInCode')
 
   const [form] = Form.useForm()
   const userNameRef = useRef<Input>(null)
@@ -101,13 +107,15 @@ const LoginForm: React.FC<Props> = (props) => {
           resData = await phoneLoginRequest(requestData)
         }
 
-        if (resData.code === 200 && resData.isSuccess) {
-          const { accessToken } = resData.content
+        const handleRes = handleDecrypto(resData)
+
+        if (handleRes.code === 200 && handleRes.isSuccess) {
+          const { accessToken } = handleRes.content
           localStorage.setItem('Authorization', accessToken)
           //存储评审、技能开关
           const category = await getClientList()
           const handleList = category.map((item) => item.value)
-
+          console.log(handleList, '登录')
           localStorage.setItem('categoryList', JSON.stringify(handleList))
 
           const config = await getConfigSwitch('isOpenReview')
@@ -174,37 +182,37 @@ const LoginForm: React.FC<Props> = (props) => {
             history.push('/index')
             localStorage.removeItem('isAdminCategory')
           }
-        } else if (resData.code === 2002) {
-          if (resData.content && isArray(resData.content) && resData.content.length > 0) {
-            const errorMsgArray = resData.content.map((item: any) => item.errorMessages).flat()
+        } else if (handleRes.code === 2002) {
+          if (handleRes.content && isArray(handleRes.content) && handleRes.content.length > 0) {
+            const errorMsgArray = handleRes.content.map((item: any) => item.errorMessages).flat()
             const filterErrorMsg = errorMsgArray.filter((item: any, index: any, arr: any) => {
               return arr.indexOf(item) === index
             })
             const showErrorMsg = filterErrorMsg.join('\n')
             message.error(showErrorMsg)
           } else {
-            message.error(resData.message)
+            message.error(handleRes.message)
           }
-        } else if (resData.code === 40100) {
+        } else if (handleRes.code === 40100) {
           uploadFailMsg()
           // 临时关闭验证码，开启时，打开下行代码
           // setNeedVerifycode(true);
-          message.error(resData.message)
-        } else if (resData.code === 5000) {
-          message.error(resData.message)
-        } else if (resData.code === 40201) {
+          message.error(handleRes.message)
+        } else if (handleRes.code === 5000) {
+          message.error(handleRes.message)
+        } else if (handleRes.code === 40201) {
           uploadFailMsg()
           updateUserName(values.userName)
           updatePwd(true)
-          message.error(resData.message)
-        } else if (resData.code === 40202) {
+          message.error(handleRes.message)
+        } else if (handleRes.code === 40202) {
           uploadFailMsg()
-          message.error(resData.message)
+          message.error(handleRes.message)
           refreshCode()
-        } else if (resData.code === 40200) {
+        } else if (handleRes.code === 40200) {
           uploadFailMsg()
           refreshCode()
-          message.info(resData.message)
+          message.info(handleRes.message)
         } else {
           uploadFailMsg()
           refreshCode()
@@ -295,7 +303,7 @@ const LoginForm: React.FC<Props> = (props) => {
                 autoComplete="off"
               />
             </Form.Item>
-            {Number(hasCode) !== 0 && (
+            {hasCode !== 'undefined' && Number(hasCode) !== 0 && (
               <VerifycodeImage
                 loginKey={key}
                 userKey={getkey(activeKey)}
