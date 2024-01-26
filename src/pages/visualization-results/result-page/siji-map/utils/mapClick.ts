@@ -5,6 +5,7 @@ import {
   getlibId_new,
   getMaterialItemData,
 } from '@/services/visualization-results/visualization-results'
+import { handleDecrypto } from '@/utils/utils'
 import { getTrackRecordDateArray } from '../../../utils/methods'
 import getMappingTagsDictionary, { findenumsValue } from './localData/mappingTagsDictionary'
 import { format } from './utils'
@@ -137,12 +138,13 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
   }
 
   await getGisDetail(parmas).then((data: any) => {
-    if (data.content) {
-      feature.properties.companyName = data.content.companyName
-      feature.properties.projectName = data.content.projectName
-      feature.properties.recorderName = data.content.recordName
-      feature.properties.surveyorName = data.content.surveyName
-      feature.properties.modeName = data.content.pullLineModelName
+    const handleData = handleDecrypto(data)
+    if (handleData.content) {
+      feature.properties.companyName = handleData.content.companyName
+      feature.properties.projectName = handleData.content.projectName
+      feature.properties.recorderName = handleData.content.recordName
+      feature.properties.surveyorName = handleData.content.surveyName
+      feature.properties.modeName = handleData.content.pullLineModelName
     }
   })
 
@@ -546,6 +548,7 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             ...materiaParams.rest,
             layerName: 'electric_meter',
           })
+
           if (materialItemData.isSuccess) {
             const materialId = feature.properties.material_id
             const currentItem = materialItemData?.content?.find((item: any) => {

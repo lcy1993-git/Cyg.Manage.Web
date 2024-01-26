@@ -2,6 +2,7 @@ import GeneralTable from '@/components/general-table'
 import { deleteResourceInventoryMap } from '@/services/material-config/inventory'
 import { verifyPwd } from '@/services/user/user-info'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { handleDecrypto } from '@/utils/utils'
 import { ExclamationCircleOutlined, ImportOutlined } from '@ant-design/icons'
 import { useUpdateEffect } from 'ahooks'
 import { Button, Input, message, Modal, Space } from 'antd'
@@ -70,7 +71,8 @@ const HasMapModal = (props: HasMapModalProps, ref: Ref<any>) => {
     if (password) {
       await verifyPwd({ pwd: password })
         .then(async (res) => {
-          if (res.content) {
+          const handleRes = handleDecrypto(res)
+          if (handleRes.content) {
             await deleteResourceInventoryMap({ mappingId: tableSelectRows[0].id })
             message.success('删除映射成功')
             setTableSelectRows([])

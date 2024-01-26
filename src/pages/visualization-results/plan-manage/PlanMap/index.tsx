@@ -593,7 +593,7 @@ const PlanMap = () => {
   }
 
   useEffect(() => {
-    run(1)
+    run({ GridDataType: 1 })
   }, [isRefresh, run])
 
   return (

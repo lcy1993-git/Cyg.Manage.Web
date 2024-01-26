@@ -59,10 +59,12 @@ export const qgcLoginRequest = (params: UserLoginParams) => {
 }
 // qgc免登录
 export const qgcAutoLoginRequest = (params: any) => {
-  return request<LoginSuccessInfo>(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
-    method: 'POST',
-    data: { ...params, appType: 2 },
-  })
+  return cyRequest<any>(() =>
+    request<LoginSuccessInfo>(`${baseUrl.common}/Users/GetAccessTokenByTicket`, {
+      method: 'POST',
+      data: { ...params, appType: 2 },
+    })
+  )
 }
 
 //qgc获取ticket

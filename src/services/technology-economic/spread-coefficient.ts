@@ -89,9 +89,11 @@ export const downLoadTemplate = (params: any) => {
 }
 // 查看默认模板数据
 export const defaultPriceDifferenceTemplate = (id: any) => {
-  return request(`${baseUrl.tecEco1}/PriceDifference/DefaultPriceDifferenceTemplate/${id}`, {
-    method: 'GET',
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.tecEco1}/PriceDifference/DefaultPriceDifferenceTemplate/${id}`, {
+      method: 'GET',
+    })
+  )
 }
 // 获取工程的价差模板文件名和地区名
 export const getTemplateNameAndAreaOfEngineering = (EngineeringId: any) => {
@@ -104,9 +106,11 @@ export const getTemplateNameAndAreaOfEngineering = (EngineeringId: any) => {
 }
 // 获取目录详情列表
 export const getAllTemplateItemsById = (id: any) => {
-  return request(`${baseUrl.tecEco1}/PriceDifference/GetAllTemplateItems/${id}`, {
-    method: 'GET',
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.tecEco1}/PriceDifference/GetAllTemplateItems/${id}`, {
+      method: 'GET',
+    })
+  )
 }
 //下载模板Excel
 export const downLoadTemplateExcel = (params: any) => {

@@ -66,10 +66,12 @@ export const publishMessage = (params: any) => {
 
 //获取单个户表入户线信息
 export const getHouseholdLineInfo = (params: any) => {
-  return request(`${baseUrl.manage}/WebGis/GetHomeLines`, {
-    method: 'GET',
-    params,
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.manage}/WebGis/GetHomeLines`, {
+      method: 'GET',
+      params,
+    })
+  )
 }
 
 //获取附加材料表信息
@@ -82,10 +84,12 @@ export const getAdditionalMaterials = (params: any) => {
 
 //附加材料表获取物料信息
 export const getAdditionalDetails = (params: any) => {
-  return request(`${baseUrl.resourceV1}/LibraryMaterial/GetMaterialById`, {
-    method: 'POST',
-    data: params,
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resourceV1}/LibraryMaterial/GetMaterialById`, {
+      method: 'POST',
+      data: params,
+    })
+  )
 }
 
 //获取公司库id
@@ -113,10 +117,12 @@ export const getMaterialItemData = (params: any) => {
     '/LibraryCable/GetCableChannelDetailView',
   ]
 
-  return request(
-    `${baseUrl.resourceV1}` + url[type],
-    // 'http://10.6.1.36:8015/api/LibraryDesign/GetModuleDetailView',
-    { method: 'POST', data: { ...rest } }
+  return cyRequest<any>(() =>
+    request(
+      `${baseUrl.resourceV1}` + url[type],
+      // 'http://10.6.1.36:8015/api/LibraryDesign/GetModuleDetailView',
+      { method: 'POST', data: { ...rest } }
+    )
   )
 }
 // 获取材料表数据和附加材料表数据

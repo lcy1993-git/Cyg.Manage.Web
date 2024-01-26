@@ -112,7 +112,7 @@ const initConfig = async () => {
   const { data } = serverList
 
   const currentServer = data.find((item: any) => item?.propertys?.webSite?.includes(host))
-  localStorage.setItem('requestHost', currentServer?.propertys?.host)
+  localStorage.setItem('requestHost', currentServer?.propertys?.gatewayHost)
 
   // const isTrans = localStorage.getItem('isTransfer')
 

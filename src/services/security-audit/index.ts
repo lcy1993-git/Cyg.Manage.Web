@@ -85,9 +85,11 @@ export const getAccountReportForm = () => {
 
 // 查询审计记录总条数
 export const queryTotalCount = () => {
-  return request(`${baseUrl.securityAudit}/SecurityAudit/QueryTotalCount`, {
-    method: 'POST',
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.securityAudit}/SecurityAudit/QueryTotalCount`, {
+      method: 'POST',
+    })
+  )
 }
 
 // 通用审计分页查询列表

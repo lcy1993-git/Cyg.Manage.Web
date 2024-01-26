@@ -112,8 +112,9 @@ export const exportCloudPlat = (params: number | undefined) => {
 
 //导出批复
 export const exportApproved = (params: number | undefined) => {
-  return request(`${baseUrl.project}/Hotfix231202/ExportApprovedEngineer?projectStage=${params}`, {
+  return request(`${baseUrl.project}/Hotfix231202/ExportApprovedEngineer`, {
     method: 'POST',
+    params: { projectStage: params },
     responseType: 'blob',
   })
 }

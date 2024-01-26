@@ -8,7 +8,6 @@ import { useRequest, useUpdateEffect } from 'ahooks'
 import { Button, Divider, Form, Input, Modal, Select, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import PlanStandingBook from '../../components/plan-standing-book'
-
 import { useMyContext } from '../Context'
 import {
   CABLECIRCUITMODEL,
@@ -27,8 +26,8 @@ import GridSubstationTree from './GridSubstationTree'
 import styles from './index.less'
 import PlanPowerSupplyTree from './PlanPowerSupplyTree'
 import PlanSubstationTree from './PlanSubstationTree'
-
 import { TreeProvider } from './TreeContext'
+
 interface BelongingLineType {
   id: string
   name: string
@@ -422,7 +421,7 @@ const LeftMenu = () => {
   ])
 
   useEffect(() => {
-    stationItemsHandle(1)
+    stationItemsHandle({ GridDataType: 1 })
   }, [lineAssemble, isRefresh, stationItemsHandle])
 
   useEffect(() => {

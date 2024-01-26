@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 import { baseUrl, cyRequest } from './common'
-import qs from 'qs'
 
 interface TableCommonRequestParams {
   pageIndex: number
@@ -26,22 +25,24 @@ export const tableCommonRequest = (
   let requestBaseUrl = baseUrl[params.requestSource]
   if (params.requestType === 'get') {
     return cyRequest<TableRequestResult>(() =>
-      request(`${requestBaseUrl}${params.url}?${qs.stringify(params.extraParams)}`, {
+      request(`${requestBaseUrl}${params.url}`, {
         method: 'GET',
+        params: params.extraParams,
       })
     )
   } else if (params.postType == 'body') {
     return cyRequest<TableRequestResult>(() =>
       request(`${requestBaseUrl}${params.url}`, {
-        method: 'Post',
+        method: 'post',
         data: { ...params.extraParams, PageIndex: params.pageIndex, PageSize: params.pageSize },
       })
     )
   } else {
-    const queryUrl = `${requestBaseUrl}${params.url}?${qs.stringify(params.extraParams)}`
+    const queryUrl = `${requestBaseUrl}${params.url}`
     return cyRequest<TableRequestResult>(() =>
       request(queryUrl, {
-        method: 'Post',
+        method: 'post',
+        params: params.extraParams,
       })
     )
   }

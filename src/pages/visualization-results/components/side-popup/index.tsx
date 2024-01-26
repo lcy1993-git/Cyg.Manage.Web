@@ -1,14 +1,3 @@
-import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
-import { Input, message, Modal, Table } from 'antd'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-
-import { useContainer } from '../../result-page/mobx-store'
-import CommentList from './components/comment-list'
-
-import { useRequest } from 'ahooks'
-import { observer } from 'mobx-react-lite'
-import moment from 'moment'
-
 import {
   addComment,
   CommentRequestType,
@@ -22,13 +11,21 @@ import {
   getMedium,
 } from '@/services/visualization-results/visualization-results'
 import { translateMatDataToTree } from '@/utils/utils'
+import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Input, message, Modal, Table } from 'antd'
 import classnames from 'classnames'
+import { observer } from 'mobx-react-lite'
+import moment from 'moment'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useContainer } from '../../result-page/mobx-store'
 import { findEnumKeyByCN } from '../../utils/loadEnum'
 import { AdditionMaterialTable } from '../addition-material-table'
 import CableSection from '../cable-section'
 import { HouseholdTable } from '../household-table'
 import { MaterialTableNew } from '../material-table-new'
 import MediaModal from '../media-modal'
+import CommentList from './components/comment-list'
 import styles from './index.less'
 
 export interface TableDataType {

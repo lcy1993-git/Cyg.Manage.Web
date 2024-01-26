@@ -2,6 +2,7 @@ import CyFormItem from '@/components/cy-form-item'
 import CyTip from '@/components/cy-tip'
 import FileUpload from '@/components/file-upload'
 import { uploadBulkProject } from '@/services/project-management/all-project'
+import { handleDecrypto } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -47,12 +48,13 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       //   return;
       // }
       const res = await uploadBulkProject(file, 'project', '/Porject/ResolveImportData')
-      if (res.code === 5000) {
+      const handleRes = handleDecrypto(res)
+      if (handleRes.code === 5000) {
         message.error(res.message)
         setRequestLoading(false)
         return
       }
-      setExcelModalData(res)
+      setExcelModalData(handleRes)
       message.success('导入成功')
       setState(false)
       setBulkImportModalVisible(true)

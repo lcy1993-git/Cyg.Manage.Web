@@ -35,13 +35,12 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   const accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口
 
-  const isPlain = url.includes('/json') || url.includes('bbgl')
+  const isPlain = url.includes('json') || url.includes('bbgl')
 
   const isUpload = options.requestType === 'form'
 
   const cheaders = isUpload ? headers : { ...headers, 'Content-Type': 'application/json' }
 
-  console.log(options, 'kankan122222')
   if (c_token) {
     return {
       url: isPlain ? url : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl)}`,

@@ -1,6 +1,7 @@
 import TableSearch from '@/components/table-search'
 import { getProjectTableList } from '@/services/project-management/all-project'
 import { dataMigrate } from '@/services/visualization-results/side-tree'
+import { handleDecrypto } from '@/utils/utils'
 import { useControllableValue, useRequest } from 'ahooks'
 import { Button, Input, message, Modal, Pagination, Spin, Table } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
@@ -125,8 +126,9 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
     setLoadingMigrate(true)
     await dataMigrate(projectIds[0], id, surveyGisData, planGisData)
       .then((res: any) => {
+        const handleRes = handleDecrypto(res)
         // isSuccess
-        if (res.isSuccess) {
+        if (handleRes.isSuccess) {
           message.success('数据迁移成功')
           setState(false)
           // if (tableSelectRows[0].stateInfo?.status === 14) {
@@ -140,7 +142,7 @@ const MigrateDataModal: React.FC<MigrateDataModalProps> = (props) => {
           //   })
           // }
         } else {
-          message.error(res.message)
+          message.error(handleRes.message)
         }
       })
       .finally(() => {

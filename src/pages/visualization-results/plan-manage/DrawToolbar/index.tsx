@@ -563,7 +563,7 @@ const DrawToolbar = () => {
     },
   })
   useUpdateEffect(() => {
-    run(1)
+    run({ GridDataType: 1 })
   }, [isRefresh, zIndex])
 
   const formChange = async () => {

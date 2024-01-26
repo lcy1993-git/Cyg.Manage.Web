@@ -1,4 +1,5 @@
 import { bindEmail, sendBindEmailCode, unBindEmail } from '@/services/user/user-info'
+import { handleDecrypto } from '@/utils/utils'
 import { Button, Input, message, Popconfirm, Space } from 'antd'
 import classNames from 'classnames'
 import _ from 'lodash'
@@ -66,11 +67,12 @@ const EmailInfo: React.FC<EmailInfoProps> = ({ email, refresh, cancelEmail }) =>
     const code = codeRef.current?.input.value!
     if (isRegularCode(code)) {
       bindEmail(currentEmail, code).then((res) => {
-        if (res.isSuccess) {
+        const handleRes = handleDecrypto(res)
+        if (handleRes.isSuccess) {
           message.success('绑定成功')
           refresh()
         } else {
-          message.error(res.message)
+          message.error(handleRes.message)
         }
       })
     } else {

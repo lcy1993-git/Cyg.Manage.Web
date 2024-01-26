@@ -222,10 +222,12 @@ export const deleteAreaInfo = (areaType: number, firstCode: string) => {
 
 // 查询地区等级详情
 export const queryAreaInfoDetail = (areaType: number, firstCode: string) => {
-  return request(`${baseUrl.tecEco1}/Area/QueryAreaInfoDetail`, {
-    method: 'GET',
-    params: { areaType, firstCode },
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.tecEco1}/Area/QueryAreaInfoDetail`, {
+      method: 'GET',
+      params: { areaType, firstCode },
+    })
+  )
 }
 
 // 导入地区分类

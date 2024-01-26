@@ -54,7 +54,6 @@ export const handleGetUrl = (params: any, requestUrl: any): string => {
   })
 
   const _url = _str.replace('&', '?')
-  console.log(params, '111111111111')
 
   //  开发环境和生产环境截取接口字符串
   if (NODE_ENV === 'development') {
@@ -73,7 +72,6 @@ export const handlePostData = (data: any): string => {
     X_TimeStamp: Date.parse(`${new Date()}`),
   }
 
-  console.log(handleParams, 'asdasdas')
   return handleSM2Crypto(JSON.stringify(handleParams))
 }
 
