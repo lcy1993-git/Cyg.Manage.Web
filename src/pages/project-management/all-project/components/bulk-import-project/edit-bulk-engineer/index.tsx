@@ -131,6 +131,8 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
     setDepartmentSelectData(selectData.departmentSelectData)
 
     setLibId(engineer.libId)
+
+    provinceValue = provinceValue.filter((item) => item && !item.includes('_null'))
     setProvinceValue(provinceValue)
     setInventoryOverviewId(engineer.inventoryOverviewId)
     setWarehouseId(engineer.warehouseId)
@@ -251,7 +253,7 @@ const EditBulkEngineer: React.FC<EditBulkEngineerProps> = (props) => {
                     style={{ width: '100%' }}
                     allowClear={false}
                     value={provinceValue}
-                    onChange={(value) => areaChangeEvent(value)}
+                    onChange={(value: any) => areaChangeEvent(value)}
                     options={afterHandleData}
                   />
                 </div>

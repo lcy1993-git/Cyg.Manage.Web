@@ -47,6 +47,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
 
   //获取区域
   const { data: cityData } = useRequest(() => getCityAreas(), {
+    loadingDelay: 500,
     onSuccess: () => {
       if (cityData) {
         setCity(cityData.data)
@@ -76,7 +77,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             { label: '无', value: `${data.id}_null`, children: undefined },
             ...data.children.map(mapHandleCityData),
           ]
-        : [{ label: '无', value: `${data.id}_null`, children: undefined }],
+        : undefined,
     }
   }
 

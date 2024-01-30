@@ -403,6 +403,7 @@ const BatchEditEngineerInfoTable: React.FC<BatchEditEngineerInfoProps> = (props)
       provinceValue = []
     }
 
+    provinceValue = provinceValue.filter((item) => item && !item.includes('_null'))
     if (index === 0) {
       return (
         <tr key={item.id} className={item.checked ? styles.checked : ''}>

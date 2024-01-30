@@ -39,7 +39,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
             { label: '无', value: `${data.id}_null`, children: undefined },
             ...data.children.map(mapHandleCityData),
           ]
-        : [{ label: '无', value: `${data.id}_null`, children: undefined }],
+        : undefined,
     }
   }
 
@@ -49,6 +49,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
     run: getAreaData,
     loading: cityLoading,
   } = useRequest(getCityAreas, {
+    loadingDelay: 500,
     manual: true,
     onSuccess: () => {
       if (cityData) {
@@ -68,7 +69,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
   } = useRequest(() => getEngineerInfo(engineerId), {
     manual: true,
     onSuccess: async () => {
-      const provinceValue = [
+      let provinceValue = [
         engineerInfo?.province,
         engineerInfo?.city ? engineerInfo?.city : `${engineerInfo?.province}_null`,
         engineerInfo?.area
@@ -77,8 +78,11 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
           ? `${engineerInfo?.city}_null`
           : undefined,
       ]
-      console.log(provinceValue)
       await getAreaData()
+      provinceValue = provinceValue = provinceValue.filter(
+        (item) => item && !item.includes('_null')
+      )
+
       form.setFieldsValue({
         ...engineerInfo,
         compileTime: engineerInfo?.compileTime ? moment(engineerInfo?.compileTime) : null,
