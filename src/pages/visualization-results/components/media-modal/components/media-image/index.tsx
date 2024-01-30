@@ -147,7 +147,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
               percent === 100 ? styles.imgUnsetPointer : styles.imgSetMove
             )}
             crossOrigin={''}
-            src={`${finalUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+            src={`${finalUrl}`}
           />
         </div>
         <div className={styles.AreaButtons}>
@@ -189,7 +189,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
                 style={{ maxHeight: window.innerHeight, maxWidth: window.innerWidth }}
                 className={styles.fullScreenImg}
                 crossOrigin={''}
-                src={`${finalUrl}/Download/GetFileById?fileId=${content[fsIndex].filePath}&securityKey=1201332565548359680&token=${data.authorization}`}
+                src={`${finalUrl}`}
               />
             )}
           </div>

@@ -2,7 +2,6 @@
 
 const loadEnumsData = window.localStorage.getItem('loadEnumsData')
 const data = loadEnumsData && loadEnumsData !== 'undefined' ? JSON.parse(loadEnumsData) : null
-
 export interface EnumItem {
   key: string
   value: EnumValue[]

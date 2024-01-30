@@ -178,11 +178,11 @@ const TotalTable: React.FC<Props> = () => {
       <div className={styles.totalTable}>
         <div className={styles.topButton}>
           <TableImportButton
-            extraParams={{}}
+            extraParams={{ EngineeringTemplateId: id }}
             buttonTitle={'导入总算表'}
             requestSource={'tecEco1'}
             setSuccessful={getTableData}
-            importUrl={`/EngineeringTotal/ImportEngineeringInfoCostTotal?EngineeringTemplateId=${id}`}
+            importUrl={`/EngineeringTotal/ImportEngineeringInfoCostTotal`}
           />
         </div>
         <Table

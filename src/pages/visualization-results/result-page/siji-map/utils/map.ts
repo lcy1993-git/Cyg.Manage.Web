@@ -1,4 +1,5 @@
 import { getData, getExtent } from '@/services/visualization-results/visualization-results'
+import { handleDecrypto } from '@/utils/utils'
 import { addCircle, addLine, addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
 import { mapClick } from './mapClick'
@@ -77,11 +78,12 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
   if (isLoad) {
     clearHighlight()
     await getExtent({ layerTypes, projects, isSJ: true }).then((data: any) => {
-      if (data.content) {
-        const minX = data.content.minX
-        const minY = data.content.minY
-        const maxX = data.content.maxX
-        const maxY = data.content.maxY
+      const decryRes = handleDecrypto(data)
+      if (decryRes.content) {
+        const minX = decryRes.content.minX
+        const minY = decryRes.content.minY
+        const maxX = decryRes.content.maxX
+        const maxY = decryRes.content.maxY
         map.fitBounds(
           [
             [minX, minY],
@@ -121,7 +123,8 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
     if (startLength === mapMoveEnds.length) {
       const promise = getData(params)
       promise.then(async (data: any) => {
-        addDatas(data)
+        const decryData = handleDecrypto(data)
+        addDatas(decryData)
         clickFeature()
       })
       mapMoveEnds = []

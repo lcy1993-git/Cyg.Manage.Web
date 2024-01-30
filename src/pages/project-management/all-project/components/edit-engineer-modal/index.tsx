@@ -39,7 +39,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
             { label: '无', value: `${data.id}_null`, children: undefined },
             ...data.children.map(mapHandleCityData),
           ]
-        : undefined,
+        : [{ label: '无', value: `${data.id}_null`, children: undefined }],
     }
   }
 
@@ -77,6 +77,7 @@ const EditEngineerModal: React.FC<EditEngineerProps> = (props) => {
           ? `${engineerInfo?.city}_null`
           : undefined,
       ]
+      console.log(provinceValue)
       await getAreaData()
       form.setFieldsValue({
         ...engineerInfo,

@@ -30,12 +30,10 @@ export const getExpressionTemplateList = (data: any) => {
 // 根据sheetID获取表达式目录树
 export const getExpressionTemplateSheetMenuList = (id: any) => {
   return cyRequest(() =>
-    request(
-      `${baseUrl.tecEco1}/ExpressionTrees/GetExpressionTemplateSheetMenuList?TemplateSheetId=${id}`,
-      {
-        method: 'GET',
-      }
-    )
+    request(`${baseUrl.tecEco1}/ExpressionTrees/GetExpressionTemplateSheetMenuList`, {
+      method: 'GET',
+      params: { TemplateSheetId: id },
+    })
   )
 }
 

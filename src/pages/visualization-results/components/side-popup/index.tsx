@@ -10,7 +10,7 @@ import {
   getlibId_new,
   getMedium,
 } from '@/services/visualization-results/visualization-results'
-import { translateMatDataToTree } from '@/utils/utils'
+import { handleDecrypto, translateMatDataToTree } from '@/utils/utils'
 import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Input, message, Modal, Table } from 'antd'
@@ -220,8 +220,9 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
         if (additionMaterialParams.getProperties.id_.includes('cable_head')) {
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
-            if (data.isSuccess) {
-              const resourceLibID = data?.content
+            const decryRes = handleDecrypto(data)
+            if (decryRes.isSuccess) {
+              const resourceLibID = decryRes?.content
               setResourceLibId(resourceLibID)
             }
           })
@@ -574,7 +575,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
   const onOpenAddCommentModal = (value: any) => {
     setActiveType('annotation&' + value.id)
-
     const feature = data[0].find((item: any) => item.propertyName === '审阅')?.data.feature
 
     /**
@@ -612,7 +612,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         projectId,
         content: '',
       }
-
       setcommentRquestBody(body)
       fetchCommentListRequest({ layer: body.layerType, deviceId: body.deviceId, projectId })
     }

@@ -76,7 +76,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
             { label: '无', value: `${data.id}_null`, children: undefined },
             ...data.children.map(mapHandleCityData),
           ]
-        : undefined,
+        : [{ label: '无', value: `${data.id}_null`, children: undefined }],
     }
   }
 
@@ -131,7 +131,7 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
       if (index === 2) projectName += item + '县'
     })
     const project = form.getFieldValue('projects')
-    const projects = project.map((item: any) => {
+    const projects = project?.map((item: any) => {
       return {
         ...item,
         name: projectName + '*镇*台区10千伏及以下新建（改造）工程',
@@ -144,8 +144,6 @@ const CreateEngineerForm: React.FC<CreateEngineerForm> = (props) => {
       name: projectName + '*镇*台区10千伏及以下新建（改造）工程',
       projects: projects,
     })
-
-    console.log(project, '4444444444444')
   }
 
   return (

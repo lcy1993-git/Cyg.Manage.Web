@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { cyRequest, baseUrl } from '../common'
+import { baseUrl, cyRequest } from '../common'
 
 export interface CommentRequestType {
   projectId: string
@@ -30,21 +30,19 @@ export interface CommentType {
  */
 export const addComment = (requestData: CommentRequestType) => {
   return cyRequest<any>(() =>
-    request(
-      `${baseUrl.comment}/Comment/CreateProjectComment
-    `,
-      { method: 'POST', data: requestData }
-    )
+    request(`${baseUrl.comment}/Comment/CreateProjectComment`, {
+      method: 'POST',
+      data: requestData,
+    })
   )
 }
 
 export const fetchCommentList = (params: fetchCommentListType) => {
   return cyRequest<CommentType[]>(() =>
-    request(
-      `${baseUrl.comment}/Comment/GetProjectCommentItemList
-    `,
-      { method: 'POST', data: params }
-    )
+    request(`${baseUrl.comment}/Comment/GetProjectCommentItemList`, {
+      method: 'POST',
+      data: params,
+    })
   )
 }
 

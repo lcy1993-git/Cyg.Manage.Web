@@ -43,12 +43,14 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
 
   const [importModalVisible, setImportModalVisible] = useState(false)
   const [form] = Form.useForm()
+  const [downLoading, setDownLoading] = useState<boolean>(false)
 
   const cancelImport = () => {
     form.resetFields()
     setImportModalVisible(false)
   }
   const downLoad = async () => {
+    setDownLoading(true)
     const res = await downloadTemplate(downType)
     let blob = new Blob([res], {
       type: `application/xlsx`,
@@ -69,6 +71,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
       document.body.removeChild(link)
     }
     message.success('下载成功')
+    setDownLoading(false)
   }
   const sureImport = () => {
     form.validateFields().then(async (values) => {
@@ -107,6 +110,7 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
           style={{ display: template ? 'block' : 'none' }}
           className="mr5"
           type="primary"
+          loading={downLoading}
           onClick={() => {
             downLoad()
           }}

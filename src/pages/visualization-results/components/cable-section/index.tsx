@@ -1,15 +1,14 @@
-import { useRef } from 'react'
-import { useMount } from 'ahooks'
-import classNames from 'classnames'
-
 import {
-  findHoleDetails,
   CableSectionProps,
+  findHoleDetails,
 } from '@/services/visualization-results/visualization-results'
-import { initCtx } from './utils'
-
-import styles from './index.less'
+import { handleDecrypto } from '@/utils/utils'
+import { useMount } from 'ahooks'
 import { message, Tooltip } from 'antd'
+import classNames from 'classnames'
+import { useRef } from 'react'
+import styles from './index.less'
+import { initCtx } from './utils'
 
 const CableSection: React.FC<CableSectionProps> = (params) => {
   const { title, layMode, layerType, holeId, arrangement } = params
@@ -20,14 +19,15 @@ const CableSection: React.FC<CableSectionProps> = (params) => {
 
     const data: any[] = await findHoleDetails({ layerType, holeId })
       .then((res) => {
-        if (res.isSuccess === true) {
+        const decryRes = handleDecrypto(res)
+        if (decryRes.isSuccess === true) {
           return (
             (layerType === 1
-              ? Object(res)?.content?.designCableChannelProfile
-              : Object(res)?.content?.dismantleCableChannelProfile) ?? []
+              ? Object(decryRes)?.content?.designCableChannelProfile
+              : Object(decryRes)?.content?.dismantleCableChannelProfile) ?? []
           )
         } else {
-          message.error(res.message)
+          message.error(decryRes.message)
           return []
         }
       })

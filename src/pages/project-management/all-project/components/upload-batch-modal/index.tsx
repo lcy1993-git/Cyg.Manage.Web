@@ -50,7 +50,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
       const res = await uploadBulkProject(file, 'project', '/Porject/ResolveImportData')
       const handleRes = handleDecrypto(res)
       if (handleRes.code === 5000) {
-        message.error(res.message)
+        message.error(handleRes.message)
         setRequestLoading(false)
         return
       }

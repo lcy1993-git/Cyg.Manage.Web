@@ -50,11 +50,11 @@ const initConfig = async () => {
   // 产品编号
   const productCode = '1301726010322214912'
 
-  // 加密公钥
+  // // 加密公钥
   // const SM2PublicKey =
   //   '047981ed79b74289fd6e28fabe9002c07837892b20a919faecfedcaa1edfaf120031181d0fee61045323c010de4896a389c875baa882073125a4e97ab760bdfa74'
 
-  // 加密方法
+  // // 加密方法
   // const handleSM2Crypto = (data: any) => {
   //   const cipherMode = 0
   //   // 加密结果

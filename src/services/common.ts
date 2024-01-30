@@ -7,7 +7,6 @@ import { isArray } from 'lodash'
 import { history, request } from 'umi'
 import type { RequestDataCommonType, RequestDataType } from './common.d'
 
-console.log('common')
 export const geoServeUrl = webConfig.requestUrl.geoServerUrl
 
 export const baseUrl = webConfig.requestUrl
@@ -175,6 +174,7 @@ export const commonUpload = (
     tokenRequest(`${requestUrl}${url}`, {
       method: 'POST',
       data: formData,
+      params: extraParams,
       // headers:{
       //   'content-Type':'application/zip'
       // },

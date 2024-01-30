@@ -1,8 +1,7 @@
-import { Tabs } from 'antd'
-
 import TableImportButton from '@/components/table-import-button'
 import ConstructionFees from '@/pages/technology-economic/cost-template/components/construction-fees'
 import { getCostTableDirectory } from '@/services/technology-economic/cost-template'
+import { Tabs } from 'antd'
 import qs from 'qs'
 import React, { useEffect, useRef, useState } from 'react'
 import styles from './index.less'
@@ -57,8 +56,8 @@ const CostTemplate: React.FC<Props> = () => {
               }}
               setSuccessful={() => getDirectory(id)}
               requestSource={'tecEco1'}
-              extraParams={{}}
-              importUrl={`/EngineeringTemplateCostTable/ImportEngineeringTemplateCostTable?EngineeringTemplateId=${id}`}
+              extraParams={{ EngineeringTemplateId: id }}
+              importUrl={`/EngineeringTemplateCostTable/ImportEngineeringTemplateCostTable`}
             />
           </div>
         </div>

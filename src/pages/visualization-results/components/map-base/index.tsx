@@ -1,8 +1,9 @@
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results'
+import { handleDecrypto } from '@/utils/utils'
 import { useMount, useSize, useUpdateEffect } from 'ahooks'
 import { observer } from 'mobx-react-lite'
-import Map from 'ol/Map'
 import LayerGroup from 'ol/layer/Group'
+import Map from 'ol/Map'
 import { transform } from 'ol/proj'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useContainer } from '../../result-page/mobx-store'
@@ -89,7 +90,8 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 挂载
   useMount(() => {
     loadEnums().then((data) => {
-      localStorage.setItem('loadEnumsData', JSON.stringify(data.content))
+      const decryData = handleDecrypto(data)
+      localStorage.setItem('loadEnumsData', JSON.stringify(decryData.content))
     })
     const initialMap = new Map({
       target: mapElement.current!,

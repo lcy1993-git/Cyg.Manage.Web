@@ -133,8 +133,9 @@ export const ImportRateFileZip = (file: File) => {
 
 // 下载模板
 export const downloadTemplate = (rateFileType?: number) => {
-  return request(`${baseUrl.tecEco1}/RateTable/DownloadTemplate?rateFileType=${rateFileType}`, {
+  return request(`${baseUrl.tecEco1}/RateTable/DownloadTemplate`, {
     method: 'GET',
+    params: { rateFileType },
     responseType: 'blob',
   })
 }

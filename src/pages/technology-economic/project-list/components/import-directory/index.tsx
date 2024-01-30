@@ -1,10 +1,10 @@
-import React from 'react'
-import { Button, message } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
+import { baseUrl } from '@/services/common'
 import { downLoadTemplate } from '@/services/technology-economic/project-list'
 import { uploadAuditLog } from '@/utils/utils'
-import { baseUrl } from '@/services/common'
+import { Button, message } from 'antd'
+import React from 'react'
 
 interface ResponsData {}
 
@@ -16,7 +16,9 @@ const ImportDirectory: React.FC<ResponsData> = () => {
     })
     let finallyFileName = `模板.xlsx`
     //for IE
+    // @ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      // @ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE

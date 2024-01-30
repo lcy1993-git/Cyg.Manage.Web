@@ -1069,8 +1069,15 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
             <span>
               {record.startTime && record.endTime && (
                 <span>
-                  工程日期：{moment(record.startTime).format('YYYY/MM/DD')}-
-                  {moment(record.endTime).format('YYYY/MM/DD')}
+                  工程日期：
+                  <Tooltip
+                    title={`${moment(record.startTime).format('YYYY/MM/DD')}-${moment(
+                      record.endTime
+                    ).format('YYYY/MM/DD')}`}
+                  >
+                    {moment(record.startTime).format('YYYY/MM/DD')}-
+                    {moment(record.endTime).format('YYYY/MM/DD')}
+                  </Tooltip>
                 </span>
               )}
               {record.startTime && !record.endTime && (

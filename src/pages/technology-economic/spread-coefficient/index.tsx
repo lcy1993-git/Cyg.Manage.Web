@@ -1,20 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { history } from 'umi'
-import { Button, Modal, Form, Switch, message, Popconfirm, Tabs, Spin, Space } from 'antd'
-import type { ColumnsType } from 'antd/lib/table'
-import { EyeOutlined, PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import { isArray } from 'lodash'
-
-import GeneralTable from './components/general-table'
-import PageCommonWrap from '@/components/page-common-wrap'
-// import TableSearch from '@/components/table-search';
-import DictionaryForm from './components/add-edit-form'
-
-import styles from './index.less'
-import moment from 'moment'
-import { getEnums } from '../utils'
 import CommonTitle from '@/components/common-title'
-import AdjustmentFileForm from './components/adjustment-file-form'
+import PageCommonWrap from '@/components/page-common-wrap'
 import {
   createAdjustmentFile,
   createCatalogue,
@@ -22,10 +7,23 @@ import {
   deleteTemplate,
   setAdjustmentFileStatus,
   setDefaultTemplateStatus,
+  technicalEconomyFile,
   updateAdjustmentFile,
   updateCatalogue,
-  technicalEconomyFile,
 } from '@/services/technology-economic/spread-coefficient'
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form, message, Modal, Popconfirm, Space, Spin, Switch, Tabs } from 'antd'
+import type { ColumnsType } from 'antd/lib/table'
+import { isArray } from 'lodash'
+import moment from 'moment'
+import React, { useEffect, useState } from 'react'
+import { history } from 'umi'
+import { getEnums } from '../utils'
+// import TableSearch from '@/components/table-search';
+import DictionaryForm from './components/add-edit-form'
+import AdjustmentFileForm from './components/adjustment-file-form'
+import GeneralTable from './components/general-table'
+import styles from './index.less'
 
 type DataSource = {
   id: string

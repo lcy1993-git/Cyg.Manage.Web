@@ -115,7 +115,6 @@ const LoginForm: React.FC<Props> = (props) => {
           //存储评审、技能开关
           const category = await getClientList()
           const handleList = category.map((item) => item.value)
-          console.log(handleList, '登录')
           localStorage.setItem('categoryList', JSON.stringify(handleList))
 
           const config = await getConfigSwitch('isOpenReview')

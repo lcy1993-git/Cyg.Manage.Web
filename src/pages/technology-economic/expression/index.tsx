@@ -74,11 +74,11 @@ const Expression: React.FC = observer(() => {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '36px' }}>
           <div>表达式编辑器变量菜单</div>
           <TableImportButton
-            extraParams={{}}
+            extraParams={{ EngineeringTemplateId: id }}
             buttonTitle={'导入'}
             requestSource={'tecEco1'}
             setSuccessful={setSuccessful}
-            importUrl={`/ExpressionTrees/AddExpressionTrees?EngineeringTemplateId=${id}`}
+            importUrl={`/ExpressionTrees/AddExpressionTrees`}
           />
         </div>
         <div className={styles.contentDiv}>

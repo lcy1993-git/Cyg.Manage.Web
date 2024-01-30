@@ -5,6 +5,7 @@ import {
   getMediaSign,
   ProjectList,
 } from '@/services/visualization-results/visualization-results'
+import { handleDecrypto } from '@/utils/utils'
 import Feature from 'ol/Feature'
 import WKT from 'ol/format/WKT'
 import MultiLineString from 'ol/geom/MultiLineString'
@@ -129,14 +130,24 @@ const refreshMap = async (ops: any, projects_: any, location: boolean = false) =
     if (startLength === mapMoveEnds.length) {
       const promise = getData(params)
       promise.then(async (data: any) => {
+        const decryData = handleDecrypto(data)
+
         clearGroups(groupLayers)
 
-        data.content.survey && (await loadSurveyLayers(data.content.survey, groupLayers, map))
-        data.content.plan && (await loadPlanLayers(data.content.plan, groupLayers, map))
-        data.content.design &&
-          (await loadDesignLayers(data.content.design, groupLayers, view, setView, map, location))
-        data.content.dismantle &&
-          (await loadDismantleLayers(data.content.dismantle, groupLayers, map))
+        decryData.content.survey &&
+          (await loadSurveyLayers(decryData.content.survey, groupLayers, map))
+        decryData.content.plan && (await loadPlanLayers(decryData.content.plan, groupLayers, map))
+        decryData.content.design &&
+          (await loadDesignLayers(
+            decryData.content.design,
+            groupLayers,
+            view,
+            setView,
+            map,
+            location
+          ))
+        decryData.content.dismantle &&
+          (await loadDismantleLayers(decryData.content.dismantle, groupLayers, map))
       })
       mapMoveEnds = []
     } else {
@@ -629,10 +640,11 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
     return project.id
   })
   getDynamicTrackDetail({ projectIds, trackType: type + 1 }).then((data: any) => {
-    if (data.code !== 200) return
+    const decryData = handleDecrypto(data)
+    if (decryData.code !== 200) return
     // 筛选轨迹记录日期
     let recordSet: any = new Set()
-    data.content.forEach((feature: any) => {
+    decryData.content.forEach((feature: any) => {
       feature.record_date = feature.recordDate
       recordSet.add(new Date(feature.recordDate).toLocaleDateString())
     })
@@ -659,8 +671,8 @@ const loadTrackLayers = (map: any, trackLayers: any, type: number = 0) => {
     }
     const wktFormat: any = new WKT()
     let obj = {}
-    for (let i = 0; i < data.content.length; i++) {
-      let ai = data.content[i]
+    for (let i = 0; i < decryData.content.length; i++) {
+      let ai = decryData.content[i]
       if (!obj[ai.projectId]) {
         obj[ai.projectId] = [ai]
       } else {
@@ -782,7 +794,8 @@ const loadMediaSign = (
     return
   }
   mediaSignData.then((data: any) => {
-    if (data.content && data.content.length > 0) {
+    const decryData = handleDecrypto(data)
+    if (decryData.content && decryData.content.length > 0) {
       layerGroups.forEach((layerGroup: any) => {
         let l: any = layerGroup
           .getLayers()
@@ -802,7 +815,7 @@ const loadMediaSign = (
                 .getFeatures()
                 .forEach((item: any) => {
                   let feature = item
-                  data.content.forEach((d: any) => {
+                  decryData.content.forEach((d: any) => {
                     if (feature.getProperties().id === d.main_ID) {
                       // layerName =  layerName.substring(layerName.split('_')[0].length + 1, layerName.length);
                       if (!layerGroups[layerType + '_mediaSign']) {

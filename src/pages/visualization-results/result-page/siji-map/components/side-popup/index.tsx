@@ -1,3 +1,7 @@
+import { AdditionMaterialTable } from '@/pages/visualization-results/components/addition-material-table'
+import CableSection from '@/pages/visualization-results/components/cable-section'
+import { HouseholdTable } from '@/pages/visualization-results/components/household-table'
+import { MaterialTableNew } from '@/pages/visualization-results/components/material-table-new'
 import { findEnumKeyByCN } from '@/pages/visualization-results/utils/loadEnum'
 import {
   addComment,
@@ -11,7 +15,7 @@ import {
   getlibId_new,
   getMedium,
 } from '@/services/visualization-results/visualization-results'
-import { translateMatDataToTree } from '@/utils/utils'
+import { handleDecrypto, translateMatDataToTree } from '@/utils/utils'
 import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Input, message, Modal, Table } from 'antd'
@@ -19,13 +23,8 @@ import classnames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { useContainer } from '../../../mobx-store'
-
-import { AdditionMaterialTable } from '@/pages/visualization-results/components/addition-material-table'
-import CableSection from '@/pages/visualization-results/components/cable-section'
-import { HouseholdTable } from '@/pages/visualization-results/components/household-table'
-import { MaterialTableNew } from '@/pages/visualization-results/components/material-table-new'
 import MediaModal from '../../../../components/media-modal'
+import { useContainer } from '../../../mobx-store'
 import CommentList from './components/comment-list'
 import styles from './index.less'
 
@@ -338,8 +337,9 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
       if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
         if (additionMaterialParams.getProperties.id.includes('cable_head')) {
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
-            if (data.isSuccess) {
-              const resourceLibID = data?.content
+            const decryRes = handleDecrypto(data)
+            if (decryRes.isSuccess) {
+              const resourceLibID = decryRes?.content
               setResourceLibId(resourceLibID)
             }
           })

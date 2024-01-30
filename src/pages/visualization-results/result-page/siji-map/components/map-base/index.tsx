@@ -1,18 +1,18 @@
+import SideMenuTree from '@/pages/visualization-results/components/side-menu-tree'
 import { bd09Towgs84 } from '@/pages/visualization-results/utils'
 import { changeLayerType, clearHighlightLayer } from '@/pages/visualization-results/utils/methods'
 import { initIpLocation, loadEnums } from '@/services/visualization-results/visualization-results'
+import { handleDecrypto } from '@/utils/utils'
 import { useMount, useSize } from 'ahooks'
 import { observer } from 'mobx-react-lite'
 // import LayerGroup from 'ol/layer/Group'
 import Map from 'ol/Map'
 import { transform } from 'ol/proj'
 import { useEffect, useRef, useState } from 'react'
+import Footer from '../../../../components/footer'
 import { useContainer } from '../../../mobx-store'
 import { changerLayer, initMap, refreshMap } from '../../utils/map'
-
-import Footer from '../../../../components/footer'
 import MapDisplay from '../map-display'
-import SideMenuTree from '@/pages/visualization-results/components/side-menu-tree'
 import { TableDataType } from '../side-popup'
 import styles from './index.less'
 
@@ -67,7 +67,8 @@ const SjBaseMap = observer((props: any) => {
   // 挂载
   useMount(() => {
     loadEnums().then((data) => {
-      localStorage.setItem('loadEnumsData', JSON.stringify(data.content))
+      const decryData = handleDecrypto(data)
+      localStorage.setItem('loadEnumsData', JSON.stringify(decryData.content))
     })
 
     initMap(mapElement.current!, {

@@ -183,8 +183,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             id: feature.properties.id,
             tableName: `${layerType}_tower`,
           }).then((data: any) => {
-            if (data.content) {
-              pJSON[mappingTag] = data.content.code
+            const decryRes = handleDecrypto(data)
+            if (decryRes.content) {
+              pJSON[mappingTag] = decryRes.content.code
             } else {
               pJSON[mappingTag] = ''
             }
@@ -195,8 +196,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             id: feature.properties['sub_id'],
             tableName: `${layerType}_tower`,
           }).then((data: any) => {
-            if (data.content) {
-              pJSON[mappingTag] = data.content.code
+            const decryRes = handleDecrypto(data)
+            if (decryRes.content) {
+              pJSON[mappingTag] = decryRes.content.code
             } else {
               pJSON[mappingTag] = ''
             }
@@ -210,8 +212,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             id: feature.properties['start_id'],
             tableName: `${layerType}_${startItem?.value}`,
           }).then((data: any) => {
-            if (data.content) {
-              pJSON[mappingTag] = data.content.code
+            const decryRes = handleDecrypto(data)
+            if (decryRes.content) {
+              pJSON[mappingTag] = decryRes.content.code
             } else {
               pJSON[mappingTag] = ''
             }
@@ -223,8 +226,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             id: feature.properties['end_id'],
             tableName: `${layerType}_${endItem?.value}`,
           }).then((data: any) => {
-            if (data.content) {
-              pJSON[mappingTag] = data.content.code
+            const decryRes = handleDecrypto(data)
+            if (decryRes.content) {
+              pJSON[mappingTag] = decryRes.content.code
             } else {
               pJSON[mappingTag] = ''
             }
@@ -243,10 +247,11 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             id: feature.properties['parent_id'],
             tableName: `${layerType}_${parentLayer}`,
           }).then((data: any) => {
-            if (data.content) {
+            const decryRes = handleDecrypto(data)
+            if (decryRes.content) {
               parentLayer === 'electric_meter'
-                ? (pJSON[mappingTag] = data.content.name)
-                : (pJSON[mappingTag] = data.content.code)
+                ? (pJSON[mappingTag] = decryRes.content.name)
+                : (pJSON[mappingTag] = decryRes.content.code)
             } else {
               pJSON[mappingTag] = ''
             }
@@ -257,8 +262,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             id: feature.properties['parent_id'],
             tableName: `${layerType}_line`,
           }).then((data: any) => {
-            if (data.content) {
-              pJSON[mappingTag] = data.content.name
+            const decryRes = handleDecrypto(data)
+            if (decryRes.content) {
+              pJSON[mappingTag] = decryRes.content.name
             } else {
               pJSON[mappingTag] = ''
             }
@@ -359,12 +365,14 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
   if (layerType === 'design' || layerType === 'dismantle') {
     // 查看材料表
     if (materiaLayers.indexOf(layerName) >= 0) {
-      const materialModifyList = await getDesignMaterialModifyList({
+      const unDealMaterialModifyList = await getDesignMaterialModifyList({
         deviceId: featureId,
         projectId: feature.properties.project_id,
         layerType: layerType,
         // deviceType: "string"
       })
+
+      const materialModifyList = handleDecrypto(unDealMaterialModifyList)
 
       const objectID =
         layerName === 'electricMeter'

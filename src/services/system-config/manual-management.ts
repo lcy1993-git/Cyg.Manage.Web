@@ -26,7 +26,6 @@ export const getCategorys = () => {
 }
 //根据端口获取最新说明书
 export const getLatestInstructions = (category: number) => {
-  console.log(category, '有吗')
   return cyRequest<{ id: string; fileName: string; fileId: string }>(() =>
     request(`${baseUrl.project}/Instructions/GetLatest`, {
       method: 'GET',

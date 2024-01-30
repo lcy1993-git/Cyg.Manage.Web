@@ -1,14 +1,12 @@
 import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
-import { uploadLineStressSag } from '@/services/resource-config/drawing'
-import { useBoolean, useControllableValue } from 'ahooks'
-import React, { useState } from 'react'
-import { Dispatch } from 'react'
-import { SetStateAction } from 'react'
-import { Input, Form, message, Row, Col, Modal, Button } from 'antd'
 import UrlSelect from '@/components/url-select'
-import { uploadAuditLog } from '@/utils/utils'
 import { baseUrl } from '@/services/common'
+import { uploadLineStressSag } from '@/services/resource-config/drawing'
+import { uploadAuditLog } from '@/utils/utils'
+import { useBoolean, useControllableValue } from 'ahooks'
+import { Button, Col, Form, Input, message, Modal, Row } from 'antd'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 // interface CurrentDataParams {
 //   id?: string;
@@ -75,7 +73,7 @@ const ImportWareHouse: React.FC<ImportWareHouseProps> = (props) => {
         (res: any) => {
           const { message: msg } = res
           if (message) {
-            message.warn(msg)
+            message.error(msg)
             setIsImportFlag(false)
           }
           uploadAuditLog([

@@ -1,15 +1,13 @@
-import { useControllableValue } from 'ahooks'
-import { Button } from 'antd'
-import { Form, message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import EditArrangeForm from '../edit-arrange-form'
 import {
   editArrange,
   // getAllotUsers,
   getProjectInfo,
 } from '@/services/project-management/all-project'
-import { useRequest } from 'ahooks'
 import { UserInfo } from '@/services/project-management/select-add-list-form'
+import { useControllableValue, useRequest } from 'ahooks'
+import { Button, Form, message, Modal } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import EditArrangeForm from '../edit-arrange-form'
 
 interface EditArrangeProps {
   projectIds: string[]

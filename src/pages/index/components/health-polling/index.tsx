@@ -101,7 +101,7 @@ const HealthPolling: React.FC = () => {
       ws = new WebSocket(`wss://${url}/usercenter-ws/?accessToken=${token}`)
     }
     setNewSocket?.(ws)
-    initWebSocket()
+    window.location.hostname !== 'localhost' && initWebSocket()
   }
 
   //断开重连

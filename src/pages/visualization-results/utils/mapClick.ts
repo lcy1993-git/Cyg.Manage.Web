@@ -6,6 +6,7 @@ import {
   getMaterialItemData,
   getMedium,
 } from '@/services/visualization-results/visualization-results'
+import { handleDecrypto } from '@/utils/utils'
 import { message } from 'antd'
 import Vector from 'ol/layer/Vector'
 import { transform } from 'ol/proj'
@@ -233,10 +234,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
       getMedium(params)
         .then((data: any) => {
-          if (data.code === 200 && data.isSuccess === true) {
-            ops.addMediaData(data.content)
+          const decryData = handleDecrypto(data)
+          if (decryData.code === 200 && decryData.isSuccess === true) {
+            ops.addMediaData(decryData.content)
           } else {
-            message.error(data.message)
+            message.error(decryData.message)
           }
         })
         .catch((e) => {
@@ -383,12 +385,13 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       pullLineId: featureId,
     }
     await getGisDetail(parmas).then((data: any) => {
-      if (data.content) {
-        feature.set('companyName', data.content.companyName)
-        feature.set('projectName', data.content.projectName)
-        feature.set('recorderName', data.content.recordName)
-        feature.set('surveyorName', data.content.surveyName)
-        feature.set('modeName', data.content.pullLineModelName)
+      const decryData = handleDecrypto(data)
+      if (decryData.content) {
+        feature.set('companyName', decryData.content.companyName)
+        feature.set('projectName', decryData.content.projectName)
+        feature.set('recorderName', decryData.content.recordName)
+        feature.set('surveyorName', decryData.content.surveyName)
+        feature.set('modeName', decryData.content.pullLineModelName)
       }
     })
 
@@ -428,8 +431,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               id: feature.getProperties()['main_id'],
               tableName: `${layerType}_tower`,
             }).then((data: any) => {
-              if (data.content) {
-                pJSON[mappingTag] = data.content.code
+              const decryRes = handleDecrypto(data)
+              if (decryRes.content) {
+                pJSON[mappingTag] = decryRes.content.code
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -440,8 +444,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               id: feature.getProperties()['sub_id'],
               tableName: `${layerType}_tower`,
             }).then((data: any) => {
-              if (data.content) {
-                pJSON[mappingTag] = data.content.code
+              const decryRes = handleDecrypto(data)
+              if (decryRes.content) {
+                pJSON[mappingTag] = decryRes.content.code
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -455,8 +460,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               id: feature.getProperties()['start_id'],
               tableName: `${layerType}_${startItem?.value}`,
             }).then((data: any) => {
-              if (data.content) {
-                pJSON[mappingTag] = data.content.code
+              const decryRes = handleDecrypto(data)
+              if (decryRes.content) {
+                pJSON[mappingTag] = decryRes.content.code
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -470,8 +476,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               id: feature.getProperties()['end_id'],
               tableName: `${layerType}_${endItem?.value}`,
             }).then((data: any) => {
-              if (data.content) {
-                pJSON[mappingTag] = data.content.code
+              const decryRes = handleDecrypto(data)
+              if (decryRes.content) {
+                pJSON[mappingTag] = decryRes.content.code
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -490,10 +497,11 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               id: feature.getProperties()['parent_id'],
               tableName: `${layerType}_${parentLayer}`,
             }).then((data: any) => {
-              if (data.content) {
+              const decryRes = handleDecrypto(data)
+              if (decryRes.content) {
                 parentLayer === 'electric_meter'
-                  ? (pJSON[mappingTag] = data.content.name)
-                  : (pJSON[mappingTag] = data.content.code)
+                  ? (pJSON[mappingTag] = decryRes.content.name)
+                  : (pJSON[mappingTag] = decryRes.content.code)
               } else {
                 pJSON[mappingTag] = ''
               }
@@ -504,8 +512,9 @@ export const mapClick = (evt: any, map: any, ops: any) => {
               id: feature.getProperties()['parent_id'],
               tableName: `${layerType}_line`,
             }).then((data: any) => {
-              if (data.content) {
-                pJSON[mappingTag] = data.content.name
+              const decryRes = handleDecrypto(data)
+              if (decryRes.content) {
+                pJSON[mappingTag] = decryRes.content.name
               } else {
                 pJSON[mappingTag] = ''
               }

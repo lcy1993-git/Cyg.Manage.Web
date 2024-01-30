@@ -45,13 +45,14 @@ const PriceDifferenceDetails: React.FC = () => {
   const getList = async () => {
     // console.log(1412293753747296256);
     const result = await getAllTemplateItemsById(id)
-    setListData(result.content)
-    setActiveValue(result.content[0])
-    getRightData(result.content[0] ? result.content[0].item2 : {})
+    console.log(result, '123')
+    setListData(result)
+    setActiveValue(result?.[0])
+    getRightData(result?.[0] ? result?.[0].item2 : {})
   }
   const getRightData = async (id: string) => {
     const result = await defaultPriceDifferenceTemplate(id)
-    setRightData(result.content)
+    setRightData(result)
   }
   // const {
   //   data: listData = [],
@@ -68,7 +69,7 @@ const PriceDifferenceDetails: React.FC = () => {
   //   listDataRun();
   // });
 
-  const listDataElement = listData.map((item) => {
+  const listDataElement = listData?.map((item) => {
     return (
       <div
         className={`${styles.listElementItem} ${

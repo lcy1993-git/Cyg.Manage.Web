@@ -1,4 +1,3 @@
-import { useMount } from 'ahooks'
 import { message } from 'antd'
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf'
 import PDFJSWorker from 'pdfjs-dist/legacy/build/pdf.worker.entry'
@@ -97,9 +96,6 @@ const PdfFileView: React.FC<PdfFileViewProps> = ({ params, hasAuthorization = fa
     initPdfPage(pdf)
   }
 
-  useMount(() => {
-    initPdfFileViewer()
-  })
   useEffect(() => {
     initPdfFileViewer()
   }, [params])

@@ -1,3 +1,4 @@
+import { handleDecrypto } from '@/utils/utils'
 import { message } from 'antd/es'
 import { Feature } from 'ol'
 import LineString from 'ol/geom/LineString'
@@ -147,8 +148,9 @@ function saveAdsorptionOperation(
     const idProps = mode === 'history' ? {} : { id: preId! }
     save({ ...updateHistoryData, ...idProps })
       .then((res) => {
-        if (!(res.code === 200 && res.isSuccess === true)) {
-          message.error(res?.message || '操作失败，服务器未响应')
+        const decryRes = handleDecrypto(res)
+        if (!(decryRes.code === 200 && decryRes.isSuccess === true)) {
+          message.error(decryRes?.message || '操作失败，服务器未响应')
 
           refreshModifyCallBack()
         } else {

@@ -1,12 +1,13 @@
 import { HistoryGridVersion } from '@/pages/visualization-results/components/history-version-management'
+import { handleDecrypto } from '@/utils/utils'
 import ExclamationCircleOutlined from '@ant-design/icons/lib/icons/ExclamationCircleOutlined'
-
 import { useMount } from 'ahooks'
 import { Button, Checkbox, Input, Modal, Space, Table } from 'antd'
+import { message } from 'antd/es'
 import { FC, useEffect, useState } from 'react'
 import { DeleteGridVersions, getAllGridVersions } from '../../service'
 import styles from './index.less'
-import { message } from 'antd/es'
+
 interface Props {
   onClose: () => void
 }
@@ -24,16 +25,17 @@ const GridVersionManagement: FC<Props> = (props) => {
   }
   const confirmDelete = () => {
     DeleteGridVersions(row?.id, password).then((res) => {
-      if (res?.code === 200 && res?.isSuccess) {
+      const decryRes = handleDecrypto(res)
+      if (decryRes?.code === 200 && decryRes?.isSuccess) {
         setPasswordVisible(false)
         setRow({} as HistoryGridVersion)
         getHistoryList(showDelete)
         message.success('删除成功')
         setPassword('')
-      } else if (res?.code === 5000 && !res?.isSuccess) {
-        message.warning(res?.message)
-      } else if (typeof res === 'string') {
-        message.warning(res)
+      } else if (decryRes?.code === 5000 && !decryRes?.isSuccess) {
+        message.warning(decryRes?.message)
+      } else if (typeof decryRes === 'string') {
+        message.warning(decryRes)
       }
     })
   }

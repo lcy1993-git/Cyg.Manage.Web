@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import { Divider, TreeSelect } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import { getGroupInfo } from '@/services/project-management/all-project'
-import { useRequest } from 'ahooks'
-import uuid from 'node-uuid'
-import styles from './index.less'
 import { DownOutlined, UpOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Divider, TreeSelect } from 'antd'
+import uuid from 'node-uuid'
+import React, { useState } from 'react'
+import styles from './index.less'
 
 interface EditArrangeFormProps {
   allotCompanyId?: string | undefined
@@ -39,21 +39,33 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
     ]
   })()
 
-  const { data: surveyData = [] } = useRequest(() => getGroupInfo('68', allotCompanyId), {
-    refreshDeps: [allotCompanyId],
-  })
+  const { data: surveyData = [], loading: surveyLoading } = useRequest(
+    () => getGroupInfo('68', allotCompanyId),
+    {
+      refreshDeps: [allotCompanyId],
+    }
+  )
 
-  const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId), {
-    refreshDeps: [allotCompanyId],
-  })
+  const { data: designData = [], loading: designLoading } = useRequest(
+    () => getGroupInfo('8', allotCompanyId),
+    {
+      refreshDeps: [allotCompanyId],
+    }
+  )
 
-  const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId), {
-    refreshDeps: [allotCompanyId],
-  })
+  const { data: auditData = [], loading: auditLoading } = useRequest(
+    () => getGroupInfo('16', allotCompanyId),
+    {
+      refreshDeps: [allotCompanyId],
+    }
+  )
 
-  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId), {
-    refreshDeps: [allotCompanyId],
-  })
+  const { data: costUserData = [], loading: costLoading } = useRequest(
+    () => getGroupInfo('32', allotCompanyId),
+    {
+      refreshDeps: [allotCompanyId],
+    }
+  )
 
   const mapTreeData = (data: any) => {
     if (data.children && data.children.length > 0) {
@@ -80,6 +92,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
           <TreeSelect
             key="editSurveyUser"
             style={{ width: '100%' }}
+            loading={surveyLoading}
             treeData={notEdit.concat(surveyData.map(mapTreeData))}
             placeholder="请选择"
             treeDefaultExpandAll
@@ -91,6 +104,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
       ) : dataSourceType === 2 ? (
         <CyFormItem label="勘察" name="surveyUser" required>
           <TreeSelect
+            loading={surveyLoading}
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
@@ -103,6 +117,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         <CyFormItem label="勘察" name="surveyUser" required>
           <TreeSelect
             disabled
+            loading={surveyLoading}
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
@@ -115,6 +130,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         <CyFormItem label="勘察" name="surveyUser" required>
           <TreeSelect
             disabled
+            loading={surveyLoading}
             key="editSurveyUser"
             style={{ width: '100%' }}
             treeData={surveyData.map(mapTreeData)}
@@ -129,6 +145,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
         <CyFormItem label="设计" name="designUser" required>
           <TreeSelect
             key="editDesignUser"
+            loading={designLoading}
             style={{ width: '100%' }}
             treeData={notEdit.concat(designData.map(mapTreeData))}
             placeholder="请选择"
@@ -143,6 +160,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
           <TreeSelect
             disabled
             key="editDesignUser"
+            loading={designLoading}
             style={{ width: '100%' }}
             treeData={designData.map(mapTreeData)}
             placeholder="请选择"
@@ -157,6 +175,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             <CyFormItem label="造价" name="costUser">
               <TreeSelect
                 key="editCostUser"
+                loading={costLoading}
                 style={{ width: '100%' }}
                 treeData={notEdit.concat(costUserData.map(mapTreeData))}
                 placeholder="请选择"
@@ -170,6 +189,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
             <CyFormItem label="造价" name="costUser">
               <TreeSelect
                 disabled
+                loading={costLoading}
                 key="editCostUser"
                 style={{ width: '100%' }}
                 treeData={costUserData.map(mapTreeData)}
@@ -205,6 +225,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                 <TreeSelect
                   key="editDesignAssessUser1"
                   style={{ width: '100%' }}
+                  loading={auditLoading}
                   treeData={notEdit.concat(auditData.map(mapTreeData))}
                   placeholder="请选择"
                   treeDefaultExpandAll
@@ -219,6 +240,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                   disabled
                   key="editDesignAssessUser1"
                   style={{ width: '100%' }}
+                  loading={auditLoading}
                   treeData={auditData.map(mapTreeData)}
                   placeholder="请选择"
                   treeDefaultExpandAll
@@ -232,6 +254,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                 <TreeSelect
                   key="editDesignAssessUser2"
                   style={{ width: '100%' }}
+                  loading={auditLoading}
                   treeData={notEdit.concat(auditData.map(mapTreeData))}
                   placeholder="请选择"
                   treeDefaultExpandAll
@@ -245,6 +268,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                 <TreeSelect
                   disabled
                   key="editDesignAssessUser2"
+                  loading={auditLoading}
                   style={{ width: '100%' }}
                   treeData={auditData.map(mapTreeData)}
                   placeholder="请选择"
@@ -257,6 +281,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
               <CyFormItem label="审核" name="designAssessUser3">
                 <TreeSelect
                   key="editDesignAssessUser3"
+                  loading={auditLoading}
                   style={{ width: '100%' }}
                   treeData={notEdit.concat(auditData.map(mapTreeData))}
                   placeholder="请选择"
@@ -270,6 +295,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
               <CyFormItem label="审核" name="designAssessUser3">
                 <TreeSelect
                   disabled
+                  loading={auditLoading}
                   key="editDesignAssessUser3"
                   style={{ width: '100%' }}
                   treeData={auditData.map(mapTreeData)}
@@ -284,6 +310,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
               <CyFormItem label="审定" name="designAssessUser4">
                 <TreeSelect
                   key="editDesignAssessUser4"
+                  loading={auditLoading}
                   style={{ width: '100%' }}
                   treeData={notEdit.concat(auditData.map(mapTreeData))}
                   placeholder="请选择"
@@ -298,6 +325,7 @@ const EditArrangeForm: React.FC<EditArrangeFormProps> = (props) => {
                 <TreeSelect
                   disabled
                   key="editDesignAssessUser4"
+                  loading={auditLoading}
                   style={{ width: '100%' }}
                   treeData={auditData.map(mapTreeData)}
                   placeholder="请选择"

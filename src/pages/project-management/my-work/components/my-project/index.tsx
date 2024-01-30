@@ -89,6 +89,9 @@ const MyProject: React.FC<ProjectParams> = (props) => {
 
   const { userType = '' } = useGetUserInfo()
 
+  //修改安排loading
+  // const [arrangeLoading, setArrangeLoading] = useState<boolean>(false)
+
   useEffect(() => {
     setMyRef && setMyRef(tableRef)
     // eslint-disable-next-line react-hooks/exhaustive-deps

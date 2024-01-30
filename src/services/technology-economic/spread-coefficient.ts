@@ -222,9 +222,9 @@ export const technicalEconomyFile = (securityKey: string, data: any) => {
 // 删除调整文件
 export const deleteAdjustmentFile = (id: any) => {
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/PriceDifference/DeleteAdjustmentFile?id=${id}`, {
+    request(`${baseUrl.tecEco1}/PriceDifference/DeleteAdjustmentFile`, {
       method: 'POST',
-      data: {},
+      params: { id },
     })
   )
 }
