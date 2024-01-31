@@ -547,9 +547,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
           getProperties: feature.properties,
         }
         let libIdData = await getlibId_new({ projectId: materiaParams?.getProperties.project_id })
-
-        if (libIdData.isSuccess) {
-          const resourceLibID = libIdData?.content
+        const decryLibData = handleDecrypto(libIdData)
+        if (decryLibData.isSuccess) {
+          const resourceLibID = decryLibData?.content
 
           let materialItemData = await getMaterialItemData({
             resourceLibID,
@@ -557,9 +557,9 @@ export const mapClick = async (map: any, feature: any, pixel: any, ops: any) => 
             layerName: 'electric_meter',
           })
 
-          if (materialItemData.isSuccess) {
+          if (materialItemData) {
             const materialId = feature.properties.material_id
-            const currentItem = materialItemData?.content?.find((item: any) => {
+            const currentItem = materialItemData?.find((item: any) => {
               return item.addFlagID && item.addFlagID === materialId
             })
 

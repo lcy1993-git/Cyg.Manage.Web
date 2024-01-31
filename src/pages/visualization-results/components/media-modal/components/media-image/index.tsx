@@ -61,12 +61,14 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
   const finalUrl = `${currentHost}/commonGet${targetUrl}`
 
   const downLoad = () => {
+    const downLoadUrl = `${currentHost}/commonGet${handleGetUrl(
+      { fileId: data.filePath, securityKey: '1201332565548359680', token: data.authorization },
+      handleUrl
+    )}`
     const a = document.createElement('a')
-    a.setAttribute('href', finalUrl)
-    // a.setAttribute(
-    //   'href',
-    //   `${proxyUrl}/Download/GetFileById?fileId=${data.filePath}&securityKey=1201332565548359680&token=${data.authorization}`
-    // )
+
+    a.setAttribute('href', downLoadUrl)
+
     a.setAttribute('download', 'preview')
     a.click()
 
@@ -182,7 +184,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
             <div className={styles.left} onClick={checkPreImg} title="点击切换上一张"></div>
             <div className={styles.right} onClick={checkNextImg} title="点击切换下一张"></div>
           </div>
-          <div className={styles.content}>
+          <div className={styles.content} id="img">
             {data.type === 1 && (
               <img
                 alt=""

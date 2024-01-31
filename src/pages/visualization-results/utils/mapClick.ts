@@ -234,12 +234,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
       }
       getMedium(params)
         .then((data: any) => {
-          const decryData = handleDecrypto(data)
-          if (decryData.code === 200 && decryData.isSuccess === true) {
-            ops.addMediaData(decryData.content)
-          } else {
-            message.error(decryData.message)
-          }
+          ops.addMediaData(data)
         })
         .catch((e) => {
           message.error(e)
@@ -818,18 +813,18 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             getProperties: feature.getProperties(),
           }
           let libIdData = await getlibId_new({ projectId: materiaParams?.getProperties.project_id })
-
-          if (libIdData.isSuccess) {
-            const resourceLibID = libIdData?.content
+          const decryLibData = handleDecrypto(libIdData)
+          if (decryLibData.isSuccess) {
+            const resourceLibID = decryLibData?.content
 
             let materialItemData = await getMaterialItemData({
               resourceLibID,
               ...materiaParams.rest,
               layerName: 'electric_meter',
             })
-            if (materialItemData.isSuccess) {
+            if (materialItemData) {
               const materialId = feature.getProperties().material_id
-              const currentItem = materialItemData?.content?.find((item) => {
+              const currentItem = materialItemData?.find((item) => {
                 return item.addFlagID && item.addFlagID === materialId
               })
 
