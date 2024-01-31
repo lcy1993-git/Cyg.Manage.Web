@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { handleDecrypto } from '@/utils/utils'
 import { baseUrl, cyRequest } from '../common'
 
 export const getDrawingList = (libId: string) => {
@@ -49,21 +48,6 @@ export const uploadLineStressSag = (
     params: params,
     data: formData,
     requestType: 'form',
-  }).then((res) => {
-    console.log(res)
-    if (res) {
-      const handleRes = handleDecrypto(res)
-      const { code, isSuccess } = handleRes
-      if (code === 6000) {
-        return Promise.resolve(handleRes)
-      }
-      if (isSuccess) {
-        return Promise.resolve(handleRes)
-      } else {
-        return Promise.reject(handleRes)
-      }
-    }
-    return Promise.reject()
   })
 }
 
@@ -89,25 +73,6 @@ export const newUploadLineStressSag = (
     requestType: 'form',
     // signal,
   })
-    .then((res) => {
-      const handleRes = handleDecrypto(res)
-      const { code, isSuccess } = handleRes
-      if (code === 6000) {
-        return Promise.resolve(handleRes)
-      }
-      if (isSuccess) {
-        return Promise.resolve(handleRes)
-      } else {
-        return Promise.reject(handleRes)
-      }
-    })
-    .catch((err) => {
-      if (err.name === 'AbortError') {
-        console.log('aborted')
-      } else {
-        console.log('error')
-      }
-    })
 }
 
 interface DeleteItemParams {

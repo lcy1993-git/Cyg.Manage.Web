@@ -1,6 +1,7 @@
 import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
 import { newUploadLineStressSag } from '@/services/resource-config/drawing'
+import { handleDecrypto } from '@/utils/utils'
 import { useBoolean, useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
 import React, { Dispatch, SetStateAction, useState } from 'react'
@@ -39,22 +40,24 @@ const UploadAll: React.FC<UploadAllProps> = (props) => {
 
       .then(
         (res) => {
-          if (res && res.code === 6000) {
-            setFalseData(res?.message)
+          const decryRes = handleDecrypto(res)
+          if (decryRes && decryRes.code === 6000) {
+            setFalseData(decryRes?.message)
 
             setState(false)
             setImportTipsVisible(true)
             return Promise.resolve()
-          } else if (res && res.code === 200) {
+          } else if (decryRes && decryRes.code === 200) {
             setIsImportFlag(true)
             message.success('导入成功')
             return Promise.resolve()
           }
-          message.error(res?.message)
+          message.error(decryRes?.message)
           return Promise.reject()
         },
         (res) => {
-          res && message.error(res?.message)
+          const decryRes = handleDecrypto(res)
+          decryRes && message.error(decryRes?.message)
           return Promise.reject()
         }
       )

@@ -98,7 +98,9 @@ export const getCompanyLibInfo = (params: {
   libType: number
   libSource: string
 }) => {
-  return request(`${baseUrl.resource}/ResourceLib/GetList`, { method: 'GET', params })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.resource}/ResourceLib/GetList`, { method: 'GET', params })
+  )
 }
 
 // 获取材料表数据

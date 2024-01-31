@@ -205,7 +205,7 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
   const { data: mediaData, run: mediaDataRun } = useRequest(getMedium, {
     manual: true,
     onSuccess(data) {
-      if (data?.content?.length > 0) {
+      if (data?.length > 0) {
         mediaRef.current!.innerHTML = '查看'
         mediaRef.current!.className = 'mapSideBarlinkBtn'
       } else {
@@ -237,8 +237,8 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
     onSuccess(data) {
       // 材料表
       if (materialRef.current) {
-        if (data?.content?.materialList?.length > 0) {
-          data.content.materialList.forEach(() => {
+        if (data?.materialList?.length > 0) {
+          data?.materialList.forEach(() => {
             // if (item.unit === 'km') {
             //   item.itemNumber = item.itemNumber / 1000
             // }
@@ -253,8 +253,8 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
 
       // 附加材料表
       if (additionMaterialRef.current) {
-        if (data?.content?.additionalMaterialList?.length > 0) {
-          data.content.additionalMaterialList.forEach(() => {
+        if (data?.additionalMaterialList?.length > 0) {
+          data?.additionalMaterialList.forEach(() => {
             // if (item.unit === 'km') {
             //   item.itemNumber = item.itemNumber / 1000
             // }
@@ -276,8 +276,8 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
   } = useRequest(getHouseholdLineInfo, {
     manual: true,
     onSuccess(data) {
-      if (data?.content?.length > 0) {
-        data.content.forEach((item: any) => {
+      if (data?.length > 0) {
+        data.forEach((item: any) => {
           if (item.unit === 'km') {
             item.itemNumber = item.itemNumber / 1000
           }
@@ -335,7 +335,10 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
         dataResource?.find((item: any) => item.propertyName === '附加材料表')?.data?.params ?? {}
 
       if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
-        if (additionMaterialParams.getProperties.id.includes('cable_head')) {
+        if (
+          additionMaterialParams.getProperties.id_.includes('cable_head') ||
+          additionMaterialParams.getProperties.id_.includes('design_tower')
+        ) {
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
             const decryRes = handleDecrypto(data)
             if (decryRes.isSuccess) {
@@ -634,11 +637,8 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
   }, [JSON.stringify(checkedProjectIdList)])
 
   const materialDataRes = useMemo(() => {
-    if (
-      Array.isArray(materialData?.content?.materialList) &&
-      materialData?.content?.materialList?.length > 0
-    ) {
-      return translateMatDataToTree(materialData.content?.materialList)
+    if (Array.isArray(materialData?.materialList) && materialData?.materialList?.length > 0) {
+      return translateMatDataToTree(materialData?.materialList)
     } else {
       return []
     }
@@ -711,11 +711,11 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
         )}
 
         {activeType === 'household' && (
-          <HouseholdTable data={householdData?.content} loading={houseHoldLoading} />
+          <HouseholdTable data={householdData} loading={houseHoldLoading} />
         )}
         {activeType === 'additionMaterial' && (
           <AdditionMaterialTable
-            data={materialData?.content?.additionalMaterialList}
+            data={materialData?.additionalMaterialList}
             libId={resourceLibId}
           />
         )}

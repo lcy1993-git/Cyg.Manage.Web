@@ -127,7 +127,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     manual: true,
     throwOnError: true,
     onSuccess(data) {
-      console.log(data, '12312312312')
       // 材料表
       if (materialRef.current) {
         if (data?.materialList?.length > 0) {
@@ -219,7 +218,10 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       const additionMaterialParams =
         dataResource?.find((item: any) => item.propertyName === '附加材料表')?.data?.params ?? {}
       if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
-        if (additionMaterialParams.getProperties.id_.includes('cable_head')) {
+        if (
+          additionMaterialParams.getProperties.id_.includes('cable_head') ||
+          additionMaterialParams.getProperties.id_.includes('design_tower')
+        ) {
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
             const decryRes = handleDecrypto(data)
             if (decryRes.isSuccess) {

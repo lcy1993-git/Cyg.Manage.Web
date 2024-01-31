@@ -123,9 +123,10 @@ export const AdditionMaterialTable: FC<AdditionMaterialProps> = (props) => {
     () => getCompanyLibInfo({ status: 0, libType: 1, libSource: companyId }),
     {
       onSuccess: () => {
-        const ids = companyLibData?.content.map((ite: any) => {
+        const ids = companyLibData?.map((ite: any) => {
           return ite.id
         })
+        console.log(companyLibData)
         setCompanyId(ids)
         getDetail()
       },
@@ -147,15 +148,14 @@ export const AdditionMaterialTable: FC<AdditionMaterialProps> = (props) => {
       onSuccess: () => {
         setHandleData(
           data?.map((item: any) => {
-            const findValue = detailsData?.content.find(
-              (ite: any) => ite.materialID === item.materialId
-            )
+            const findValue = detailsData?.find((ite: any) => ite.materialID === item.materialId)
             return { ...item, ...findValue }
           })
         )
       },
     }
   )
+  console.log(data, handleData, '55')
 
   return (
     <Spin spinning={loading}>
