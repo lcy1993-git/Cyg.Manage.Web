@@ -69,6 +69,7 @@ const MediaImage: React.FC<MediaImageProps> = ({ data, content, index }) => {
     // )
     a.setAttribute('download', 'preview')
     a.click()
+
     uploadAuditLog([
       {
         auditType: 1,

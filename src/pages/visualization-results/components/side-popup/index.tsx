@@ -97,7 +97,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   const { data: mediaData, run: mediaDataRun } = useRequest(getMedium, {
     manual: true,
     onSuccess(data) {
-      if (data?.content?.length > 0) {
+      if (data?.length > 0) {
         mediaRef.current!.innerHTML = '查看'
         mediaRef.current!.className = 'mapSideBarlinkBtn'
       } else {
@@ -127,10 +127,11 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     manual: true,
     throwOnError: true,
     onSuccess(data) {
+      console.log(data, '12312312312')
       // 材料表
       if (materialRef.current) {
-        if (data?.content?.materialList?.length > 0) {
-          data.content.materialList.forEach(() => {
+        if (data?.materialList?.length > 0) {
+          data?.materialList.forEach(() => {
             // if (item.unit === 'km') {
             //   item.itemNumber = item.itemNumber / 1000
             // }
@@ -145,8 +146,8 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
 
       // 附加材料表
       if (additionMaterialRef.current) {
-        if (data?.content?.additionalMaterialList?.length > 0) {
-          data.content.additionalMaterialList.forEach(() => {
+        if (data?.additionalMaterialList?.length > 0) {
+          data.additionalMaterialList.forEach(() => {
             // if (item.unit === 'km') {
             //   item.itemNumber = item.itemNumber / 1000
             // }
@@ -168,8 +169,8 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   } = useRequest(getHouseholdLineInfo, {
     manual: true,
     onSuccess(data) {
-      if (data?.content?.length > 0) {
-        data.content.forEach((item: any) => {
+      if (data?.length > 0) {
+        data.forEach((item: any) => {
           if (item.unit === 'km') {
             item.itemNumber = item.itemNumber / 1000
           }
@@ -629,11 +630,8 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
   }, [JSON.stringify(checkedProjectIdList)])
 
   const materialDataRes = useMemo(() => {
-    if (
-      Array.isArray(materialData?.content?.materialList) &&
-      materialData?.content?.materialList?.length > 0
-    ) {
-      return translateMatDataToTree(materialData.content?.materialList)
+    if (Array.isArray(materialData?.materialList) && materialData?.materialList?.length > 0) {
+      return translateMatDataToTree(materialData?.materialList)
     } else {
       return []
     }
@@ -722,7 +720,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           className={styles.mediaModal}
         >
           <MediaModal
-            content={mediaData?.content ?? []}
+            content={mediaData ?? []}
             currentIndex={mediaIndex}
             setCurrentIndex={setMediaIndex}
           />
@@ -731,7 +729,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           <Table
             key="media"
             columns={mediaColumns}
-            dataSource={mediaData?.content ?? []}
+            dataSource={mediaData ?? []}
             rowKey={(e) => e.id}
             pagination={false}
           ></Table>
@@ -745,7 +743,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         )}
         {activeType === 'additionMaterial' && (
           <AdditionMaterialTable
-            data={materialData?.content?.additionalMaterialList}
+            data={materialData?.additionalMaterialList}
             libId={resourceLibId}
           />
         )}

@@ -127,14 +127,18 @@ export const getMaterialItemData = (params: any) => {
 }
 // 获取材料表数据和附加材料表数据
 export const GetDesignResultMaterial = (params: any) => {
-  return request(`${baseUrl.design}/Resource/GetDesignResultMaterial`, {
-    method: 'POST',
-    data: params,
-  })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.design}/Resource/GetDesignResultMaterial`, {
+      method: 'POST',
+      data: params,
+    })
+  )
 }
 // 获取多媒体数据
 export const getMedium = (params: any) => {
-  return request(`${baseUrl.design}/WebGis/GetMedias`, { method: 'POST', data: { ...params } })
+  return cyRequest<any>(() =>
+    request(`${baseUrl.design}/WebGis/GetMedias`, { method: 'POST', data: { ...params } })
+  )
 }
 
 // 获取资源库id

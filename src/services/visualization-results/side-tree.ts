@@ -55,11 +55,10 @@ export const fetchAreaEngineerProjectListByParams = (params: EngineerProjetListF
 
 export const fetchCompanyEngineerProjectListByParams = (params: EngineerProjetListFilterParams) => {
   return cyRequest<ProjectListByAreaType[]>(() =>
-    request(
-      `${baseUrl.project}/ProjectVisualization/GetProjectListByCompany
-    `,
-      { method: 'POST', data: params }
-    )
+    request(`${baseUrl.project}/ProjectVisualization/GetProjectListByCompany`, {
+      method: 'POST',
+      data: params,
+    })
   )
 }
 
