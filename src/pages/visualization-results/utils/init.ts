@@ -46,7 +46,7 @@ export const initLayers = (resData: any): Layer[] => {
 
   let imgLayer
   if (imgUrl.includes('tianditu')) {
-    imgUrl = 'http://t{0-7}.tianditu.gov.cn/img_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5;'
+    imgUrl = 'http://t{0-7}.tianditu.gov.cn/img_c/wmts?tk=88b666f44bb8642ec5282ad2a9915ec5'
     //分辨率数组
     resolutions = []
     //瓦片大小
