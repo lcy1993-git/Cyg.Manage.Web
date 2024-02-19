@@ -23,8 +23,8 @@ export default {
       // target: 'http://10.6.211.96:8080',
 
       // target: 'https://ys.gczhyun.com/',
-      // target: 'https://xj.gczhyun.com/',
-      target: 'https://xjfz.gczhyun.com/gateway',
+      target: 'https://xj.gczhyun.com/gateway',
+      // target: 'https://xjfz.gczhyun.com/gateway',
       // target: 'https://gs.gczhyun.com',
 
       // target: 'https://srthcs1.gczhyun.com:21564',

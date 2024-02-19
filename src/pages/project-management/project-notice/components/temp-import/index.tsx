@@ -2,6 +2,7 @@ import CyFormItem from '@/components/cy-form-item'
 import CyTip from '@/components/cy-tip'
 import FileUpload from '@/components/file-upload'
 import { importCloudPlat } from '@/services/project-management/project-notice'
+import { handleDecrypto } from '@/utils/utils'
 import { CaretDownOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal, Select } from 'antd'
@@ -50,13 +51,11 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
       //   return;
       // }
       if (currentKey === 'yun') {
-        const res = await importCloudPlat(
-          file,
-          'project',
-          `/Hotfix231202/ImportCloudPlat?projectStage=${stage}`
-        )
-        if (res.code === 5000 || res.code === 500 || res.code !== 200) {
-          message.error(res.message)
+        const res = await importCloudPlat(file, 'project', `/Hotfix231202/ImportCloudPlat`, stage)
+        const handleRes = handleDecrypto(res)
+        console.log(handleRes, '123')
+        if (handleRes.code === 5000 || handleRes.code === 500 || handleRes.code !== 200) {
+          message.error(handleRes.message)
           setRequestLoading(false)
           return
         }
@@ -64,10 +63,12 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
         const res = await importCloudPlat(
           file,
           'project',
-          `/Hotfix231202/ImportApprovedEngineer?projectStage=${stage}`
+          `/Hotfix231202/ImportApprovedEngineer`,
+          stage
         )
-        if (res.code === 5000 || res.code === 500 || res.code !== 200) {
-          message.error(res.message)
+        const handleRes = handleDecrypto(res)
+        if (handleRes.code === 5000 || handleRes.code === 500 || handleRes.code !== 200) {
+          message.error(handleRes.message)
           setRequestLoading(false)
           return
         }

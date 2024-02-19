@@ -87,7 +87,12 @@ export const exportProjectCount = () => {
 }
 
 //导入云平台统计或批复文件
-export const importCloudPlat = (files: any[], requestSource: 'project', url: string) => {
+export const importCloudPlat = (
+  files: any[],
+  requestSource: 'project',
+  url: string,
+  stage: any
+) => {
   const formData = new FormData()
   files?.forEach((item) => {
     formData.append('file', item)
@@ -97,6 +102,7 @@ export const importCloudPlat = (files: any[], requestSource: 'project', url: str
 
   return request(uploadUrl, {
     method: 'POST',
+    params: { projectStage: stage },
     data: formData,
     requestType: 'form',
   })
