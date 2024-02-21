@@ -17,9 +17,9 @@ import { isArray } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import MaterialForm from './component/add-edit-form'
 import CableMapping from './component/cable-mapping'
+import ClampMap from './component/clamp-map'
 import SaveImportMaterial from './component/import-form'
 import LineProperty from './component/line-property'
-
 import styles from './index.less'
 
 const { Search } = Input
@@ -48,6 +48,9 @@ const Material: React.FC<libParams> = (props) => {
   const [materialCategory, setMaterialCategory] = useState<string>('')
   const [chacheEditData, setChacheEditData] = useState<any>({})
   const [updateFlag, setUpdateFlag] = useState<boolean>(false)
+
+  //线夹映射模态框
+  const [clampMap, setClampMap] = useState<boolean>(false)
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -394,6 +397,9 @@ const Material: React.FC<libParams> = (props) => {
             电缆终端头映射
           </Button>
         )}
+        <Button className={styles.importBtn} onClick={() => setClampMap(true)}>
+          线夹映射
+        </Button>
       </div>
     )
   }
@@ -570,6 +576,9 @@ const Material: React.FC<libParams> = (props) => {
           })}
         />
       </Modal>
+
+      <ClampMap libId={libId} requestSource="resource" visible={clampMap} onChange={setClampMap} />
+
       <SaveImportMaterial
         libId={libId}
         requestSource="resource"
