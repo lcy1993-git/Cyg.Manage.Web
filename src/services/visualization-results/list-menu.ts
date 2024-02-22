@@ -71,17 +71,13 @@ export interface CommentListParams {
 
 export const fetchMaterialListByProjectIdList = (projectIdList: string[], designType: number) => {
   return cyRequest<MaterialDataType[]>(() =>
-    request(
-      `${baseUrl.manage}/WebGis/GetBatchProjectMaterials
-    `,
-      {
-        method: 'POST',
-        data: {
-          designType,
-          projectIds: projectIdList,
-        },
-      }
-    )
+    request(`${baseUrl.manage}/WebGis/GetBatchProjectMaterials`, {
+      method: 'POST',
+      data: {
+        designType,
+        projectIds: projectIdList,
+      },
+    })
   )
 }
 export const exportMaterialListByProject = (params: {
@@ -97,11 +93,7 @@ export const exportMaterialListByProject = (params: {
 
 export const fetchCommentListByParams = (params: CommentListParams) => {
   return cyRequest<ProjectCommentListItemType[]>(() =>
-    request(
-      `${baseUrl.comment}/Comment/GetProjectCommentList
-    `,
-      { method: 'POST', data: params }
-    )
+    request(`${baseUrl.comment}/Comment/GetProjectCommentList`, { method: 'POST', data: params })
   )
 }
 

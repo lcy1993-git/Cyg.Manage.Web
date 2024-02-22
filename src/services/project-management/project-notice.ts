@@ -110,8 +110,9 @@ export const importCloudPlat = (
 
 //导出云平台统计
 export const exportCloudPlat = (params: number | undefined) => {
-  return request(`${baseUrl.project}/Hotfix231202/ExportCloudPlat?request=${params}`, {
+  return request(`${baseUrl.project}/Hotfix231202/ExportCloudPlat`, {
     method: 'POST',
+    params: { request: params },
     responseType: 'blob',
   })
 }

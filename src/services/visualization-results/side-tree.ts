@@ -64,11 +64,7 @@ export const fetchCompanyEngineerProjectListByParams = (params: EngineerProjetLi
 
 export const fetchCommentCountById = (projectId: string) => {
   return cyRequest<CommentCount>(() =>
-    request(
-      `${baseUrl.comment}/Comment/GetCommentCount
-    `,
-      { method: 'POST', data: { projectId } }
-    )
+    request(`${baseUrl.comment}/Comment/GetCommentCount`, { method: 'POST', data: { projectId } })
   )
 }
 
