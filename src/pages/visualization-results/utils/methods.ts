@@ -79,11 +79,12 @@ const refreshMap = async (ops: any, projects_: any, location: boolean = false) =
   lineClusters = []
   if (isLoad) {
     await getExtent({ layerTypes, projects }).then((data: any) => {
-      if (data.content) {
-        const minX = data.content.minX
-        const minY = data.content.minY
-        const maxX = data.content.maxX
-        const maxY = data.content.maxY
+      if (data) {
+        const mapRegion = handleDecrypto(data)
+        const minX = mapRegion.content.minX
+        const minY = mapRegion.content.minY
+        const maxX = mapRegion.content.maxX
+        const maxY = mapRegion.content.maxY
         const min = transform([minX, minY], 'EPSG:4326', 'EPSG:3857')
         const max = transform([maxX, maxY], 'EPSG:4326', 'EPSG:3857')
         extent_ = [min[0], min[1], max[0], max[1]]
@@ -1123,22 +1124,22 @@ const handleGeom = (data: string) => {
 }
 
 export {
-  refreshMap,
+  CalcTowerAngle,
+  changeLayerType,
+  checkZoom,
+  clearHighlightLayer,
+  clearTrackLayers,
   getLayerByName,
   getLayerGroupByName,
-  clearHighlightLayer,
-  loadTrackLayers,
-  clearTrackLayers,
+  getLineClusters,
+  getLngAndLat,
+  getScale,
+  getTrackRecordDateArray,
+  handleGeom,
   loadMediaSign,
   loadMediaSignData,
+  loadTrackLayers,
+  refreshMap,
   relocateMap,
-  getScale,
-  CalcTowerAngle,
   ToDegrees,
-  checkZoom,
-  getLineClusters,
-  getTrackRecordDateArray,
-  changeLayerType,
-  getLngAndLat,
-  handleGeom,
 }
