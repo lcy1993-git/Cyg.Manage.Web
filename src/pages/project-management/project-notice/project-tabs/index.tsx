@@ -27,7 +27,7 @@ const UserTabs: React.FC = () => {
   //阶段选择
   const [stage, setStage] = useState<number | undefined>(3)
 
-  const [selectLabel, setSelectLable] = useState<string>('可研统计')
+  const [selectLabel, setSelectLable] = useState<string>('初设统计')
 
   const yColumns: any[] = [
     {
@@ -305,6 +305,7 @@ const UserTabs: React.FC = () => {
   const changeTabEvent = (key: string) => {
     setCurrentKey(key)
     setStage(3)
+    setSelectLable('初设统计')
   }
 
   useUpdateEffect(() => {
