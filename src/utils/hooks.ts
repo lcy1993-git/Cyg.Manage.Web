@@ -136,7 +136,7 @@ export const useGetProjectEnum = () => {
     projectRegionAttribute,
     projectStage,
   } = resData ?? {}
-
+  const handleDataSourceType = projectDataSourceType?.filter((item: any) => item.value === 0)
   return {
     meteorologicLevel,
     projectAssetsNature,
@@ -145,7 +145,7 @@ export const useGetProjectEnum = () => {
     projectCategory,
     projectClassification,
     projectConstructType,
-    projectDataSourceType,
+    projectDataSourceType: handleDataSourceType,
     projectGrade,
     projectImportance,
     projectKvLevel,
