@@ -23,11 +23,11 @@ export default {
       // target: 'http://10.6.211.96:8080',
 
       // target: 'https://ys.gczhyun.com/',
-      target: 'https://xj.gczhyun.com/gateway',
+      // target: 'https://xj.gczhyun.com/gateway',
       // target: 'https://xjfz.gczhyun.com/gateway',
       // target: 'https://gs.gczhyun.com',
 
-      // target: 'https://srthcs1.gczhyun.com:21564',
+      target: 'https://srthcs1.gczhyun.com:21564/gateway',
       // target: 'https://cy.gczhyun.com:21553',
       // target: 'https://srthk8scs2.gczhyun.com:21530',
       // 测试服9
