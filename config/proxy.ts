@@ -17,8 +17,8 @@ export default {
       // target: 'https://srthcs3.gczhyun.com:21564',
       // target: 'https://srthk8scs3.gczhyun.com:21530',
 
-      target: 'https://srthkf1.gczhyun.com:21530/gateway',
-      // target: 'https://srthkf2.gczhyun.com:21530',
+      // target: 'https://srthkf1.gczhyun.com:21530/gateway',
+      target: 'https://srthkf2.gczhyun.com:21530/gateway',
       // target: 'https://gsfz.gczhyun.com',
       // target: 'http://10.6.211.96:8080',
 

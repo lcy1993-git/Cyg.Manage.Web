@@ -101,6 +101,8 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(projectInfo)])
 
+  console.log(dataSourceType, '55555')
+
   const labelElement = (label: any) => {
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

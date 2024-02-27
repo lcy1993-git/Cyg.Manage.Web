@@ -127,8 +127,9 @@ const initConfig = async () => {
     params: { key: 'EnableSignInCode' },
   })
 
-  SignCodeConfig &&
-    localStorage.setItem('EnableSignInCode', handleDecrypto(SignCodeConfig)?.content?.value)
+  const handleValue = handleDecrypto(SignCodeConfig)?.content?.value
+
+  Number(handleValue) && localStorage.setItem('EnableSignInCode', handleValue)
 }
 
 initConfig()
