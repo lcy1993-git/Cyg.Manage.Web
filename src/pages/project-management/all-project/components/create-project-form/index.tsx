@@ -98,10 +98,11 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         Number(projectInfo?.dataSourceType) === 1 ? 0 : Number(projectInfo?.dataSourceType)
       )
     }
+
+    // 0229新疆屏蔽现场数据来源导入和免勘察，因此在复制，继承时重置现场数据来源
+    setDataSourceType(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(projectInfo)])
-
-  console.log(dataSourceType, '55555')
 
   const labelElement = (label: any) => {
     return (

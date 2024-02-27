@@ -73,7 +73,7 @@ const CutAccount = (props: EditPasswordProps) => {
       .validateFields()
       .then(async (value) => {
         const { userName } = value
-        value.code = Number(hasCode) !== 0 ? imageCode : '*#*#*#'
+        value.code = Number(hasCode) === 1 ? imageCode : '*#*#*#'
         value.sessionKey = key
         // TODO 快捷切换
 
@@ -266,7 +266,7 @@ const CutAccount = (props: EditPasswordProps) => {
         >
           <Input type="password" {...noAutoCompletePassword} placeholder="请输入密码" />
         </CyFormItem>
-        {Number(hasCode) !== 0 && (
+        {Number(hasCode) === 1 && (
           <CyFormItem name="code" label="验证码" required labelWidth={100}>
             <VerifycodeImage
               loginKey={key}

@@ -42,9 +42,8 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
     manual: true,
     onSuccess: () => {
       const { dataSourceType, disclosureRange, pileRange } = projectInfo!
-      const handleDisclosureRange =
-        dataSourceType === 2 ? '“免勘察”项目，免设置此条目' : disclosureRange
-      const handlePileRange = dataSourceType === 2 ? '“免勘察”项目，免设置此条目' : pileRange
+      const handleDisclosureRange = dataSourceType === 0 ? disclosureRange : undefined
+      const handlePileRange = dataSourceType === 0 ? pileRange : undefined
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
@@ -54,7 +53,7 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
         disclosureRange: handleDisclosureRange,
         pileRange: handlePileRange,
-        dataSourceType: projectInfo?.dataSourceType === 1 ? 0 : projectInfo?.dataSourceType,
+        dataSourceType: 0,
         stage: isNumber(projectInfo?.stage) && projectInfo ? projectInfo?.stage + 1 : 1,
       })
     },

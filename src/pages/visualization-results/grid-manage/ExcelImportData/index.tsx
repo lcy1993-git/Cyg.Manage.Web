@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { downloadExcelTemplate, importGridManageData } from '@/services/grid-manage/treeMenu'
+import { handleDecrypto } from '@/utils/utils'
 import { UploadOutlined } from '@ant-design/icons'
 import { Button, Form, message, Modal, Upload } from 'antd'
 import { useCallback, useState } from 'react'
@@ -7,13 +8,8 @@ import { useMyContext } from '../Context'
 const { Dragger } = Upload
 const { useForm } = Form
 const ExcelImportData = () => {
-  const {
-    importModalVisible,
-    setImportModalVisible,
-    setIsRefresh,
-    isRefresh,
-    setlineAssemble,
-  } = useMyContext()
+  const { importModalVisible, setImportModalVisible, setIsRefresh, isRefresh, setlineAssemble } =
+    useMyContext()
   const [form] = useForm()
   const [confirmLoading, setConfirmLoading] = useState(false)
 
@@ -30,7 +26,8 @@ const ExcelImportData = () => {
       setConfirmLoading(true)
       setlineAssemble(false)
       const res = await importGridManageData(data)
-      if (res.isSuccess) {
+      const decryRes = handleDecrypto(res)
+      if (decryRes.isSuccess) {
         message.success('上传成功')
         setConfirmLoading(false)
         setIsRefresh(!isRefresh)
@@ -38,7 +35,7 @@ const ExcelImportData = () => {
         closeModal()
       } else {
         setConfirmLoading(false)
-        message.error(res.message)
+        message.error(decryRes.message)
       }
     } catch (e: any) {
       setConfirmLoading(false)

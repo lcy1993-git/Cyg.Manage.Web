@@ -96,7 +96,7 @@ const LoginForm: React.FC<Props> = (props) => {
     form.validateFields().then(async (values) => {
       try {
         values.clientType = 2
-        values.code = Number(hasCode) !== 0 ? imageCode : '*#*#*#'
+        values.code = Number(hasCode) === 1 ? imageCode : '*#*#*#'
         values.sessionKey = key
         setRequestLoading(true)
         const requestData = Object.assign({ ...values }, data)
@@ -302,7 +302,7 @@ const LoginForm: React.FC<Props> = (props) => {
                 autoComplete="off"
               />
             </Form.Item>
-            {hasCode !== 'undefined' && Number(hasCode) !== 0 && (
+            {Number(hasCode) === 1 && (
               <VerifycodeImage
                 loginKey={key}
                 userKey={getkey(activeKey)}
