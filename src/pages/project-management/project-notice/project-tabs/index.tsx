@@ -198,7 +198,7 @@ const UserTabs: React.FC = () => {
       fixed: 'left',
     },
     {
-      title: '新增批复工程量',
+      title: '批复工程量',
       children: [
         {
           title: '10kV线路长度(km)',
@@ -224,7 +224,7 @@ const UserTabs: React.FC = () => {
       ],
     },
     {
-      title: '新增竣工图工程量',
+      title: '设计工程量',
       children: [
         {
           title: '10kV线路长度(km)',

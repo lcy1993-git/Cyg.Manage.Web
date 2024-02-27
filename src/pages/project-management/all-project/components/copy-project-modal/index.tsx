@@ -53,6 +53,8 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
         deadline: projectInfo?.startTime ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
+        // dataSourceType: projectInfo?.dataSourceType === 0 ? projectInfo?.dataSourceType : undefined,
+
         inventoryOverviewId:
           libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
             ? undefined

@@ -28,7 +28,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   const c_token = localStorage.getItem('Authorization')
   // let isTrans = localStorage.getItem('isTransfer')
   const currentHost =
-    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8001/api'
   // const reqid = uuid.v1()
   // const timeStamp = Date.parse(`${new Date()}`)
   const handleUrl: string = url
