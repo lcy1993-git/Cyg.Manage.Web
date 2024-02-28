@@ -100,7 +100,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
     }
 
     // 0229新疆屏蔽现场数据来源导入和免勘察，因此在复制，继承时重置现场数据来源
-    setDataSourceType(0)
+    if (!isEdit) setDataSourceType(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(projectInfo)])
 
@@ -287,6 +287,13 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
       </>
     )
   }
+
+  // 现场数据来源屏蔽选项使用下面的自定义枚举
+  const sourceTypeList = [
+    { value: 0, text: '勘察' },
+    { value: 1, text: '导入' },
+    { value: 2, text: '免勘察' },
+  ]
 
   return (
     <>
@@ -1018,7 +1025,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
               />
             ) : (
               <UrlSelect
-                defaultData={projectDataSourceType}
+                defaultData={sourceTypeList}
                 disabled
                 valuekey="value"
                 titlekey="text"

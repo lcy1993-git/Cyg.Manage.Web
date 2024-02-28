@@ -275,6 +275,13 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
     )
   }
 
+  // 现场数据来源屏蔽选项使用下面的自定义枚举
+  const sourceTypeList = [
+    { value: 0, text: '勘察' },
+    { value: 1, text: '导入' },
+    { value: 2, text: '免勘察' },
+  ]
+
   return (
     <>
       <div className="flex">
@@ -970,7 +977,7 @@ const EditProjectForm: React.FC<EditProjectFormProps> = (props) => {
               />
             ) : (
               <UrlSelect
-                defaultData={projectDataSourceType}
+                defaultData={sourceTypeList}
                 disabled
                 valuekey="value"
                 titlekey="text"
