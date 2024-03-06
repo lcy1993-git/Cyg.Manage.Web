@@ -1,13 +1,13 @@
 import {
-  getWinterConstructionRate,
-  getEasyRate,
-  getTemporaryFacilityRate,
   getBasicReserveRate,
-  getDesignRate,
-  getSpecialAreaConstructionRate,
   getDemolitionEasyRate,
-  getDemolitionWinterConstructionRate,
   getDemolitionSpecialAreaConstructionRate,
+  getDemolitionWinterConstructionRate,
+  getDesignRate,
+  getEasyRate,
+  getSafetyRate,
+  getSpecialAreaConstructionRate,
+  getWinterConstructionRate,
 } from '@/services/technology-economic/common-rate'
 
 /**
@@ -43,16 +43,19 @@ export const getApiByType = (rateTableType: string, rateFileId: string, demoliti
       /**
        * 夜间施工增加费率
        * 施工工具用具使用费率
-       * 安全文明施工费率
        * 企业管理费率
        * 利润率
        */
       case '1':
       case '2':
-      case '3':
       case '4':
       case '5':
         return () => getEasyRate(rateTableType, rateFileId)
+      /**
+       * 安全文明施工费率
+       */
+      case '3':
+        return () => getSafetyRate(rateFileId)
       /**
        * 冬雨季施工增加费率
        */
@@ -61,8 +64,8 @@ export const getApiByType = (rateTableType: string, rateFileId: string, demoliti
       /**
        * 临时设施费费率
        */
-      case '52':
-        return () => getTemporaryFacilityRate(rateFileId)
+      // case '52':
+      //   return () => getTemporaryFacilityRate(rateFileId)
       /**
        * 基本预备费费率
        */

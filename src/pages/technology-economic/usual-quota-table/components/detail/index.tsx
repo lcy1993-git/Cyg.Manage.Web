@@ -1,8 +1,7 @@
-import { Space } from 'antd'
-
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableImportButton from '@/components/table-import-button'
 import { useMount } from 'ahooks'
+import { Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import AttritionRate from '../atrition-rate'
 import EarthworkParameters from '../earthwork-parameters'
@@ -44,14 +43,14 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
           <div className={styles.topButton}>
             <Space>
               <TableImportButton
-                extraParams={{}}
+                extraParams={{ commonlyTableType: active, RateFileId: detailId }}
                 modalTitle={'导入费率'}
                 buttonTitle={'导入费率'}
                 style={{ zIndex: 99 }}
                 template={true}
                 downType={active}
                 requestSource={'tecEco1'}
-                importUrl={`/RateTable/ImportRateTable?commonlyTableType=${active}&RateFileId=${detailId}`}
+                importUrl={`/RateTable/ImportRateTable`}
                 setSuccessful={setSuccessful}
               />
               {/*<TableImportButton*/}

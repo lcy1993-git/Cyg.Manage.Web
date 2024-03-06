@@ -62,6 +62,15 @@ export const getEasyRate = (rateTableType: string, rateFileId: string) => {
     })
   )
 }
+// 获取安全文明施工费率详情
+export const getSafetyRate = (rateFileId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/GetSafeCultureRate`, {
+      method: 'GET',
+      params: { rateFileId },
+    })
+  )
+}
 // 获取特殊地区施工增加费费率详情
 export const getSpecialAreaConstructionRate = (rateFileId: string) => {
   return cyRequest(() =>
@@ -109,13 +118,15 @@ export const getBasicReserveRate = (rateFileId: string) => {
 
 // 导入费率表
 export const importRateTable = (rateFileId: string, file: File) => {
-  const data = new FormData()
-  data.append('file', file)
+  const formData = new FormData()
+  formData.append('file', file)
   // data.append('rateFileId', rateFileId)
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable?rateFileId=${rateFileId}`, {
+    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable`, {
       method: 'POST',
-      data,
+      params: { rateFileId: rateFileId },
+      data: formData,
+      requestType: 'form',
     })
   )
 }

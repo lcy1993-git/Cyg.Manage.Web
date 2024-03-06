@@ -1,5 +1,5 @@
-import commonLess from '../common.less'
 import classNames from 'classnames'
+import commonLess from '../common.less'
 interface SpecialTableProps {
   head: React.ReactNode
   data: any[]
@@ -41,7 +41,7 @@ const SpecialTable: React.FC<SpecialTableProps> = ({ head, data }) => {
             <td>{getData(2, 'hotCostRate')}</td>
           </tr>
           <tr>
-            <td colSpan={7}>
+            <td colSpan={7} style={{ textAlign: 'left' }}>
               <pre>
                 注1：高海拔地区指平均海拔在3000m以上的地区。
                 <br />

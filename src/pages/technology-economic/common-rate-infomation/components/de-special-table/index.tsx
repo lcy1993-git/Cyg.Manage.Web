@@ -1,5 +1,5 @@
-import commonLess from '../common.less'
 import classNames from 'classnames'
+import commonLess from '../common.less'
 interface DeSpecialTableProps {
   head: React.ReactNode
   data: any[]
@@ -38,7 +38,7 @@ const DeSpecialTable: React.FC<DeSpecialTableProps> = ({ head, data }) => {
             )
           })}
           <tr>
-            <td colSpan={7}>
+            <td colSpan={7} style={{ textAlign: 'left' }}>
               <pre>
                 注1：高海拔地区指平均海拔在3000m以上的地区。
                 <br />
