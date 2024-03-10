@@ -80,7 +80,7 @@ const refreshMap = async (ops: any, projects_: any, location: boolean = false) =
   if (isLoad) {
     await getExtent({ layerTypes, projects }).then((data: any) => {
       if (data) {
-        const mapRegion = handleDecrypto(data)
+        const mapRegion = data
         if (!mapRegion.content) return
         const minX = mapRegion.content?.minX
         const minY = mapRegion.content?.minY
@@ -132,7 +132,7 @@ const refreshMap = async (ops: any, projects_: any, location: boolean = false) =
     if (startLength === mapMoveEnds.length) {
       const promise = getData(params)
       promise.then(async (data: any) => {
-        const decryData = handleDecrypto(data)
+        const decryData = data
 
         clearGroups(groupLayers)
 

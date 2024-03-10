@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { getUUid, handleSM2Crypto } from '@/utils/utils'
 import JsonP from 'jsonp'
 import noTokenRequest from 'umi-request'
 // import { webConfig } from '../../../public/config/request';
@@ -249,7 +250,15 @@ export const getDesignMaterialModifyList = (params: any = {}) => {
 
 // 获取地图数据
 export const getData = (params: any = {}) => {
+  const claimData = {
+    DisableTransportSecurity: true,
+    X_Reqid: getUUid(),
+    X_TimeStamp: Date.parse(`${new Date()}`),
+  }
   return request(`${baseUrl.project}/WebGis/GetData`, {
+    headers: {
+      'X-Claim': handleSM2Crypto(JSON.stringify(claimData)),
+    },
     method: 'POST',
     data: { ...params },
   })
@@ -257,7 +266,15 @@ export const getData = (params: any = {}) => {
 
 // 获取项目范围
 export const getExtent = (params: any = {}) => {
+  const claimData = {
+    DisableTransportSecurity: true,
+    X_Reqid: getUUid(),
+    X_TimeStamp: Date.parse(`${new Date()}`),
+  }
   return request(`${baseUrl.project}/WebGis/GetMapRegion`, {
+    headers: {
+      'X-Claim': handleSM2Crypto(JSON.stringify(claimData)),
+    },
     method: 'POST',
     data: { ...params },
   })

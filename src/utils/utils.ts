@@ -44,7 +44,11 @@ interface ToTreeDataOptions {
 }
 
 // request公共组件get传参处理
-export const handleGetUrl = (params: any, requestUrl: any): string => {
+export const handleGetUrl = (
+  params: any,
+  requestUrl: any,
+  isEncrypt?: boolean | undefined
+): string => {
   let _str = ''
   let _handleUrl = requestUrl
   params['X_Reqid'] = getUUid()
@@ -61,18 +65,27 @@ export const handleGetUrl = (params: any, requestUrl: any): string => {
   }
   const finalUrl = _handleUrl + _url
   // console.log(finalUrl, 'final')
-  return `?param=${handleSM2Crypto(finalUrl)}`
+  if (isEncrypt) {
+    return `?param=${encodeURIComponent(finalUrl)}`
+  } else {
+    return `?param=${handleSM2Crypto(finalUrl)}`
+  }
 }
 
 // request公共组件post传参处理
-export const handlePostData = (data: any): string => {
-  const handleParams = {
-    X_Data: data,
-    X_Reqid: getUUid(),
-    X_TimeStamp: Date.parse(`${new Date()}`),
+export const handlePostData = (data: any, isEncrypt?: boolean | undefined): string => {
+  const handleParams = isEncrypt
+    ? { ...data, X_Reqid: getUUid(), X_TimeStamp: Date.parse(`${new Date()}`) }
+    : {
+        X_Data: data,
+        X_Reqid: getUUid(),
+        X_TimeStamp: Date.parse(`${new Date()}`),
+      }
+  if (isEncrypt) {
+    return handleParams
+  } else {
+    return handleSM2Crypto(JSON.stringify(handleParams))
   }
-
-  return handleSM2Crypto(JSON.stringify(handleParams))
 }
 
 export const toTreeData = <P, T>(data: P[], options: ToTreeDataOptions = {}): T[] => {

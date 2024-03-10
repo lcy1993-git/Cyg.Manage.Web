@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { getUUid, handleSM2Crypto } from '@/utils/utils'
 import { baseUrl, cyRequest } from '../common'
 
 export interface EngineerProjetListFilterParams {
@@ -45,8 +46,16 @@ export interface CommentCount {
  * */
 
 export const fetchAreaEngineerProjectListByParams = (params: EngineerProjetListFilterParams) => {
+  const claimData = {
+    DisableTransportSecurity: true,
+    X_Reqid: getUUid(),
+    X_TimeStamp: Date.parse(`${new Date()}`),
+  }
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(`${baseUrl.project}/ProjectVisualization/GetProjectListByArea`, {
+      headers: {
+        'X-Claim': handleSM2Crypto(JSON.stringify(claimData)),
+      },
       method: 'POST',
       data: params,
     })

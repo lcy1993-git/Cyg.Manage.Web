@@ -40,13 +40,16 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   const isUpload = options.requestType === 'form'
 
   const cheaders = isUpload ? headers : { ...headers, 'Content-Type': 'application/json' }
+  const isEncrypt = headers?.hasOwnProperty('X-Claim')
 
   if (c_token) {
     return {
-      url: isPlain ? url : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl)}`,
+      url: isPlain
+        ? url
+        : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl, isEncrypt)}`,
       options: {
         ...options,
-        data: isPlain || isUpload ? options.data : handlePostData(options.data),
+        data: isPlain || isUpload ? options.data : handlePostData(options.data, isEncrypt),
         params: {},
         headers: {
           ...cheaders,
@@ -60,10 +63,10 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   }
 
   return {
-    url: isPlain ? url : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl)}`,
+    url: isPlain ? url : `${currentHost}${accessUrl}${handleGetUrl(params, handleUrl, isEncrypt)}`,
     options: {
       ...options,
-      data: isPlain || isUpload ? options.data : handlePostData(options.data),
+      data: isPlain || isUpload ? options.data : handlePostData(options.data, isEncrypt),
       params: {},
       headers: {
         ...cheaders,

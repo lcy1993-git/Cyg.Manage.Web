@@ -14,7 +14,7 @@ export const baseUrl = webConfig.requestUrl
 export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>): Promise<T> => {
   return new Promise(async (resolve, reject) => {
     const res = await func()
-    const decryptoRes = handleDecrypto(res)
+    const decryptoRes = res && res.hasOwnProperty('isSuccess') ? res : handleDecrypto(res)
     if (!decryptoRes) {
       reject(null)
       return
