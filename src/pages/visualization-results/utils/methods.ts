@@ -6,6 +6,7 @@ import {
   ProjectList,
 } from '@/services/visualization-results/visualization-results'
 import { handleDecrypto } from '@/utils/utils'
+import { toJS } from 'mobx'
 import Feature from 'ol/Feature'
 import WKT from 'ol/format/WKT'
 import MultiLineString from 'ol/geom/MultiLineString'
@@ -76,9 +77,13 @@ const refreshMap = async (ops: any, projects_: any, location: boolean = false) =
     clearGroups(groupLayers)
     return false
   }
+
   lineClusters = []
   if (isLoad) {
-    await getExtent({ layerTypes, projects }).then((data: any) => {
+    const projectIds = toJS(projects).map((item: any) => {
+      return { id: item.id }
+    })
+    await getExtent({ layerTypes, projectIds }).then((data: any) => {
       if (data) {
         const mapRegion = data
         if (!mapRegion.content) return
