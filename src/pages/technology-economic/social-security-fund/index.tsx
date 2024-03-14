@@ -103,12 +103,13 @@ const SocialSecurityFund: React.FC = () => {
             <div className={styles.importButton}>
               <TableImportButton
                 extraParams={{
-                  // commonlyTableType: active,
+                  // commonlyTableType: 6,
                   RateFileId: window.location.search.split('=')[1],
                 }}
                 modalTitle={'导入费率'}
                 buttonTitle={'导入费率'}
                 // style={{ zIndex: 99 }}
+                downType={6}
                 template={true}
                 requestSource={'tecEco1'}
                 importUrl={`/RateTable/ImportRateTable`}

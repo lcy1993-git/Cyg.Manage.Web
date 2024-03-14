@@ -155,7 +155,7 @@ export const commonUpload = (
   url: string,
   files: any[],
   name: string = 'file',
-  requestSource: 'project' | 'resource' | 'upload',
+  requestSource: 'project' | 'resource' | 'upload' | 'tecEco1' | 'tecEco',
   extraParams?: Record<string, any>
   // postType: 'body' | 'query',
 ) => {

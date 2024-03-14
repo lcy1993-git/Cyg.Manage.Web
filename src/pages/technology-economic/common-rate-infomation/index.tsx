@@ -50,7 +50,7 @@ const CommonRateInfomation: React.FC = () => {
 
   const [fileList, setFileList] = useState<File[]>([])
 
-  let res = urlToJson()
+  let res: any = urlToJson()
   let params = { ...res, name: decodeURI(res.name), isDemolition: res?.isDemolition === 'true' }
   const {
     data: listData = [],
@@ -64,8 +64,8 @@ const CommonRateInfomation: React.FC = () => {
   })
 
   useMount(() => {
-    if ((params as Params).id) {
-      listDataRun((params as Params).id)
+    if ((params as unknown as Params).id) {
+      listDataRun((params as unknown as Params).id)
     } else {
       message.error('当前费率详情的rateFileId的值为空')
     }
@@ -79,7 +79,7 @@ const CommonRateInfomation: React.FC = () => {
         className={`${styles.listElementItem} ${
           item.value === activeValue.value ? styles.listActive : ''
         }`}
-        key={item.value + String((params as Params).isDemolition)}
+        key={item.value + String((params as unknown as Params).isDemolition)}
         onClick={() => setActiveValue(item)}
       >
         {item.text}

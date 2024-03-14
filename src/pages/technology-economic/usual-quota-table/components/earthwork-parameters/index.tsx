@@ -109,7 +109,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
                 width: 400,
                 render: (text: string, record: any) => {
                   return (
-                    record.picPath.includes('blob') && (
+                    record.picPath?.includes('blob') && (
                       <img src={record.picPath} alt={text} width={350} />
                     )
                   )

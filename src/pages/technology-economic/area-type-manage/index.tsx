@@ -1,17 +1,7 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import { Button, Modal, Spin, Form, Select, Space, message } from 'antd'
-import WrapperComponent from '@/components/page-common-wrap'
 import CommonTitle from '@/components/common-title'
-import styles from './index.less'
+import FileUpload from '@/components/file-upload'
 import GeneralTable from '@/components/general-table'
-import {
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-  ExclamationCircleOutlined,
-  ImportOutlined,
-} from '@ant-design/icons'
-import { useForm } from 'antd/lib/form/Form'
+import WrapperComponent from '@/components/page-common-wrap'
 import {
   createOrEditAreaInfo,
   deleteAreaInfo,
@@ -21,7 +11,17 @@ import {
   queryBasicAreaByLevel,
 } from '@/services/technology-economic/common-rate'
 import { generateUUID } from '@/utils/utils'
-import FileUpload from '@/components/file-upload'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  ImportOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
+import { Button, Form, message, Modal, Select, Space, Spin } from 'antd'
+import { useForm } from 'antd/lib/form/Form'
+import React, { Fragment, useEffect, useState } from 'react'
+import styles from './index.less'
 
 interface ListData {
   value: string | number
@@ -54,10 +54,13 @@ const AreaTypeManage: React.FC = () => {
   const [secondLevelList, setSecondLevelList] = useState<LevelItem[]>([]) // 二级地区
   const [thirdLevelList, setThirdLevelList] = useState<LevelItem[]>([]) // 三级地区
   const [disabledThirdLevel, setDisabledThirdLevel] = useState<boolean>(false) // 禁用第三级地区
-  const [selectValue, setSelecrValue] = useState<AreaItem>({} as AreaItem) // 列表选中项
+  const [selectValue, setSelectValue] = useState<AreaItem>({} as AreaItem) // 列表选中项
   const [fileList, setFileList] = useState<File[]>([])
   const [importVisibel, setImportVisibel] = useState<boolean>(false)
   const [form] = useForm()
+
+  // 操作loading
+  const [loading, setLoading] = useState<boolean>(false)
 
   const columns = [
     {
@@ -80,6 +83,10 @@ const AreaTypeManage: React.FC = () => {
       index: '3',
       title: '三级行政区',
       width: 180,
+
+      render: (arr: string[]) => {
+        return <Fragment>{arr?.join(',')}</Fragment>
+      },
     },
   ]
 
@@ -108,10 +115,15 @@ const AreaTypeManage: React.FC = () => {
   const getLevelList = async (
     level: number,
     parentCode: string[],
-    areaType?: number,
+    areaType?: string,
     firstCode?: string
   ) => {
-    const res = await queryBasicAreaByLevel(level, parentCode, areaType, firstCode)
+    const res = await queryBasicAreaByLevel({
+      level,
+      parentCode,
+      areaType: areaType ? areaType : '',
+      firstCode: firstCode ? firstCode : '',
+    })
     if (level === 1) {
       setFirstLevelList(res)
     } else if (level === 2) {
@@ -146,7 +158,7 @@ const AreaTypeManage: React.FC = () => {
   }
   // 获取编辑数据
   const turnEditData = async () => {
-    const { content } = await queryAreaInfoDetail(selectValue.areaType, selectValue.firstCode)
+    const content = await queryAreaInfoDetail(selectValue.areaType, selectValue.firstCode)
     if (content.secondCodes.length === 0) {
       // 处理选项['全部']
       content.secondCodes = ['all']
@@ -195,6 +207,7 @@ const AreaTypeManage: React.FC = () => {
     setAreaList(arr)
   }
   const onFinish = async (values: any) => {
+    setLoading(true)
     const data = {
       areaType: +activeValue.value,
       firstCode: values.firstCode,
@@ -204,9 +217,16 @@ const AreaTypeManage: React.FC = () => {
     }
     data.isEdit = isEdit
     await createOrEditAreaInfo(data)
-    form.resetFields()
-    setIsModalVisible(false)
-    getAreaListByLevel(Number(activeValue.value))
+      .then(() => {
+        setSelectValue({} as AreaItem)
+        form.resetFields()
+        setIsModalVisible(false)
+        setLoading(false)
+        getAreaListByLevel(Number(activeValue.value))
+      })
+      .catch(() => {
+        setLoading(false)
+      })
   }
 
   const deleteArea = () => {
@@ -247,7 +267,7 @@ const AreaTypeManage: React.FC = () => {
 
   const getSelectData = (values: object[]) => {
     if (values.length === 0) return
-    setSelecrValue(values[0] as AreaItem)
+    setSelectValue(values[0] as AreaItem)
   }
 
   const onBlur = () => {
@@ -358,73 +378,77 @@ const AreaTypeManage: React.FC = () => {
         title={isEdit ? '编辑-地区分类' : '添加-地区分类'}
         visible={isModalVisible}
         width={600}
-        onCancel={() => setIsModalVisible(false)}
+        onCancel={() => {
+          setIsModalVisible(false)
+        }}
         footer={null}
         destroyOnClose={true}
       >
-        <Form
-          name="basic"
-          form={form}
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 19 }}
-          onFinish={onFinish}
-        >
-          <Form.Item name="firstCode" label="一级行政区" rules={[{ required: true }]}>
-            <Select
-              placeholder="请选择一级行政区"
-              onChange={(value: string) => getLevelList(2, [value])}
-            >
-              {firstLevelList.map((item) => {
-                return (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                )
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item name="secondCodes" label="二级行政区" rules={[{ required: true }]}>
-            <Select
-              mode="multiple"
-              placeholder="请选择二级行政区"
-              onBlur={onBlur}
-              onChange={onBlur}
-            >
-              {secondLevelList.map((item) => {
-                return (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                )
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item name="thirdCodes" label="三级行政区" rules={[{ required: true }]}>
-            <Select
-              mode="multiple"
-              disabled={disabledThirdLevel}
-              placeholder="请选择三级行政区"
-              onBlur={thirdOnBlur}
-            >
-              {thirdLevelList.map((item) => {
-                return (
-                  <Option value={item.id} key={item.id}>
-                    {item.name}
-                  </Option>
-                )
-              })}
-            </Select>
-          </Form.Item>
-          <div style={{ float: 'right' }}>
-            <Space>
-              <Button type="primary" htmlType="submit">
-                确定
-              </Button>
-              <Button onClick={() => setIsModalVisible(false)}>取消</Button>
-            </Space>
-          </div>
-          <br />
-        </Form>
+        <Spin spinning={loading} tip="请稍后...">
+          <Form
+            name="basic"
+            form={form}
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 19 }}
+            onFinish={onFinish}
+          >
+            <Form.Item name="firstCode" label="一级行政区" rules={[{ required: true }]}>
+              <Select
+                placeholder="请选择一级行政区"
+                onChange={(value: string) => getLevelList(2, [value])}
+              >
+                {firstLevelList.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  )
+                })}
+              </Select>
+            </Form.Item>
+            <Form.Item name="secondCodes" label="二级行政区" rules={[{ required: true }]}>
+              <Select
+                mode="multiple"
+                placeholder="请选择二级行政区"
+                onBlur={onBlur}
+                onChange={onBlur}
+              >
+                {secondLevelList.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  )
+                })}
+              </Select>
+            </Form.Item>
+            <Form.Item name="thirdCodes" label="三级行政区" rules={[{ required: true }]}>
+              <Select
+                mode="multiple"
+                disabled={disabledThirdLevel}
+                placeholder="请选择三级行政区"
+                onBlur={thirdOnBlur}
+              >
+                {thirdLevelList.map((item) => {
+                  return (
+                    <Option value={item.id} key={item.id}>
+                      {item.name}
+                    </Option>
+                  )
+                })}
+              </Select>
+            </Form.Item>
+            <div style={{ float: 'right' }}>
+              <Space>
+                <Button type="primary" htmlType="submit">
+                  确定
+                </Button>
+                <Button onClick={() => setIsModalVisible(false)}>取消</Button>
+              </Space>
+            </div>
+            <br />
+          </Form>
+        </Spin>
       </Modal>
     </WrapperComponent>
   )

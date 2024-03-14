@@ -194,16 +194,16 @@ export const queryAreaInfoList = (areaType: number) => {
   )
 }
 // 查询基础数据地区列表
-export const queryBasicAreaByLevel = (
-  level: number,
-  parentCode: string[],
-  areaType?: number,
+export const queryBasicAreaByLevel = (params: {
+  level: number
+  parentCode: string[]
+  areaType?: string
   firstCode?: string
-) => {
+}) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.tecEco1}/Area/QueryBasicAreaByLevel`, {
       method: 'POST',
-      params: { level, parentCode, areaType, firstCode },
+      params: params,
     })
   )
 }
