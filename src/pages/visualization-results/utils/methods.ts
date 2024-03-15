@@ -83,7 +83,7 @@ const refreshMap = async (ops: any, projects_: any, location: boolean = false) =
     const projectIds = toJS(projects).map((item: any) => {
       return { id: item.id }
     })
-    await getExtent({ layerTypes, projectIds }).then((data: any) => {
+    await getExtent({ layerTypes, projects: projectIds }).then((data: any) => {
       if (data) {
         const mapRegion = data
         if (!mapRegion.content) return

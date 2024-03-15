@@ -1,4 +1,5 @@
 import { getData, getExtent } from '@/services/visualization-results/visualization-results'
+import { toJS } from 'mobx'
 import { addCircle, addLine, addPoint } from './addLayers'
 import { INITLOCATION, INITZOOM, MAPAPPKEY, MAPAPPSECRET, STREETMAP } from './localData/mapConfig'
 import { mapClick } from './mapClick'
@@ -76,7 +77,10 @@ export const refreshMap = async (projects: any, layerTypes: any, isLoad: boolean
   }
   if (isLoad) {
     clearHighlight()
-    await getExtent({ layerTypes, projects, isSJ: true }).then((data: any) => {
+    const projectIds = toJS(projects).map((item: any) => {
+      return { id: item.id }
+    })
+    await getExtent({ layerTypes, projects: projectIds, isSJ: true }).then((data: any) => {
       const decryRes = data
       if (decryRes.content) {
         const minX = decryRes.content.minX
