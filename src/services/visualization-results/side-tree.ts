@@ -63,8 +63,16 @@ export const fetchAreaEngineerProjectListByParams = (params: EngineerProjetListF
 }
 
 export const fetchCompanyEngineerProjectListByParams = (params: EngineerProjetListFilterParams) => {
+  const claimData = {
+    DisableTransportSecurity: true,
+    X_Reqid: getUUid(),
+    X_TimeStamp: Date.parse(`${new Date()}`),
+  }
   return cyRequest<ProjectListByAreaType[]>(() =>
     request(`${baseUrl.project}/ProjectVisualization/GetProjectListByCompany`, {
+      headers: {
+        'X-Claim': handleSM2Crypto(JSON.stringify(claimData)),
+      },
       method: 'POST',
       data: params,
     })
