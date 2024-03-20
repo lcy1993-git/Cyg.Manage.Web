@@ -17,7 +17,7 @@ export default {
       // target: 'https://srthcs3.gczhyun.com:21564',
       // target: 'https://srthk8scs3.gczhyun.com:21530',
 
-      // target: 'https://srthkf1.gczhyun.com:21530/gateway',
+      target: 'https://srthkf1.gczhyun.com:21530/gateway',
       // target: 'https://srthkf2.gczhyun.com:21530/gateway',
       // target: 'https://gsfz.gczhyun.com',
       // target: 'http://10.6.211.96:8080',
@@ -33,7 +33,7 @@ export default {
       // 测试服9
       // target: 'https://srthcs9.gczhyun.com:21724/gateway',
       // 测试服10
-      target: 'https://srthcs10.gczhyun.com:21726/gateway',
+      // target: 'https://srthcs10.gczhyun.com:21726/gateway',
       // 测试服 1
       // target: 'http://171.223.214.154:21563',
       // 测试服 2
