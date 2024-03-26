@@ -2,7 +2,7 @@ import CyFormItem from '@/components/cy-form-item'
 import CyTip from '@/components/cy-tip'
 import FileUpload from '@/components/file-upload'
 import { uploadBulkProject } from '@/services/project-management/all-project'
-import { handleDecrypto } from '@/utils/utils'
+import { getLocalPath, handleDecrypto } from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
@@ -102,7 +102,7 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
                 style={{ width: '100px' }}
                 onClick={() => downloadModalFileEvent()}
               >
-                <a href={'/template/proTemp.xlsx'} download="批量立项模板.xlsx">
+                <a href={getLocalPath('/template/proTemp.xlsx')} download="批量立项模板.xlsx">
                   点击下载
                 </a>
               </Button>

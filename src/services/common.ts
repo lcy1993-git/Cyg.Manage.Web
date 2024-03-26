@@ -1,7 +1,7 @@
 /* eslint-disable no-async-promise-executor */
 import { webConfig } from '@/global'
 import tokenRequest from '@/utils/request'
-import { handleDecrypto } from '@/utils/utils'
+import { handleDecrypto, postMsg } from '@/utils/utils'
 import { message } from 'antd'
 import { isArray } from 'lodash'
 import { history, request } from 'umi'
@@ -29,10 +29,18 @@ export const cyRequest = <T extends {}>(func: () => Promise<RequestDataType<T>>)
       }
     } else {
       if (code === 401) {
-        if (history.location.pathname === '/again-login') {
-          return
+        if (window.chrome.webview) {
+          message.info('会话超时，已自动跳转到登录界面')
+          setTimeout(() => {
+            postMsg('Func_LoginAgain')
+          }, 2000)
+        } else {
+          if (history.location.pathname === '/again-login') {
+            return
+          }
+          history.push('/again-login')
         }
-        history.push('/again-login')
+
         // message.error('会话超时，已自动跳转到登录界面');
       } else {
         // eslint-disable-next-line no-lonely-if

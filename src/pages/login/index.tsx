@@ -1,18 +1,22 @@
 import bannerSrc from '@/assets/image/login/banner.png'
 import loginBg from '@/assets/image/login/bg.png'
 import LogoComponent from '@/components/logo-component'
-import { getAuthorityModules, getUserInfoRequest, qgcAutoLoginRequest } from '@/services/login'
+import {
+  getAuthorityModules,
+  GetCommonUserInfo,
+  getUserInfoRequest,
+  qgcAutoLoginRequest,
+} from '@/services/login'
 import { flatten } from '@/utils/utils'
 import { useMount } from 'ahooks'
 import { Spin } from 'antd'
 import React, { useLayoutEffect, useState } from 'react'
 import { history } from 'umi'
 import LoginForm from './components/login-form'
+import StopServer from './components/stop-server'
+import UpdatePassword from './components/updatePassword'
 // import StopServer from './components/stop-server'
 import styles from './index.less'
-
-import UpdatePassword from '@/pages/login/components/updatePassword'
-import StopServer from './components/stop-server'
 
 export interface Stop {
   content: string
@@ -44,6 +48,9 @@ const Login: React.FC = () => {
     await getServerList()
   })
   useLayoutEffect(() => {
+    /**
+     * 管理端全过程免登录（票据登录方式）
+     */
     ;(async function () {
       let url = window.location.href
       url = url.toLocaleLowerCase()
@@ -78,6 +85,49 @@ const Login: React.FC = () => {
 
           history.push('/index')
         }
+      }
+    })()
+
+    /**
+     * 设计端进入管理端，跳过登录
+     */
+    ;(async function () {
+      // 此处判断当前是否为客户端环境，否则显示登录界面
+      if (window.chrome.webview) {
+        setIsAutoLogin(true)
+        const loginData =
+          localStorage.getItem('LoginDataFromWPF') &&
+          JSON.parse(localStorage.getItem('LoginDataFromWPF') || '')
+
+        /**
+         * 从C端获取数据存在异步，所以在获取到loginData之前需要循环执行定时器
+         * 直到监听反馈并拿到数据并从localstorage取到loginData后，执行登录的后续操作以及清除定时器
+         */
+        const getWPFDataTimer = setInterval(async () => {
+          if (loginData) {
+            clearInterval(getWPFDataTimer)
+            const { BaseHostUrl, ServerCode, UserToken } = loginData
+            localStorage.setItem('Authorization', UserToken)
+            localStorage.setItem('serverCode', ServerCode || '')
+            localStorage.setItem('requestHost', BaseHostUrl)
+
+            const userInfo = await GetCommonUserInfo()
+            userInfo && localStorage.setItem('userInfo', JSON.stringify(userInfo))
+            const modules = await getAuthorityModules()
+
+            const buttonModules = flatten(modules)
+
+            const buttonArray = buttonModules
+              .filter((item: any) => item.category === 3)
+              .map((item: any) => item.authCode)
+            localStorage.setItem('functionModules', JSON.stringify(modules))
+            localStorage.setItem('userInfo', JSON.stringify(userInfo))
+            localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
+            history.push('/index')
+          }
+        }, 500)
+      } else {
+        setIsAutoLogin(false)
       }
     })()
   }, [])

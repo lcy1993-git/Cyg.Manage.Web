@@ -1,10 +1,5 @@
 import { useLayoutStore } from '@/layouts/context'
-import {
-  AreaInfo,
-  getMapRegisterData,
-  getMapStatisticsData,
-  MapStatisticsData,
-} from '@/services/index'
+import { AreaInfo, getMapStatisticsData, MapStatisticsData } from '@/services/index'
 import { exportHomeStatisticData } from '@/services/operation-config/cockpit'
 import { useMount, useRequest, useSize } from 'ahooks'
 import { Button, message } from 'antd'
@@ -53,9 +48,9 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
 
   let myChart: any = null
 
-  const { run: getMapData } = useRequest(getMapRegisterData, {
-    manual: true,
-  })
+  // const { run: getMapData } = useRequest(getMapRegisterData, {
+  //   manual: true,
+  // })
 
   const { run: getStatisticData, data: mapStatisticData = [] } = useRequest(getMapStatisticsData, {
     manual: true,
@@ -245,7 +240,7 @@ const MapChartComponent: React.FC<MapChartComponentProps> = (props) => {
   ) => {
     const option = getMapOption(currentAreaId, getMapStatisticData)
 
-    const resData = await getMapData(currentAreaId)
+    const resData = await require(`@/assets/json/${currentAreaId}.json`)
 
     if (divRef && divRef.current) {
       echarts.registerMap(currentAreaId, resData)

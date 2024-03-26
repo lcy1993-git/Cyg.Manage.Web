@@ -1,5 +1,6 @@
 import { webConfig } from '@/global'
 import request from '@/utils/request'
+import { getLocalPath } from '@/utils/utils'
 import { Moment } from 'moment'
 import { baseUrl, cyRequest } from '../common'
 
@@ -198,7 +199,8 @@ export const getGridMapRegisterData = (areaId: string) => {
 
 // 获取地图组件的area组件
 export const getMapRegisterData = (areaId: string) => {
-  return request(`/json/${areaId}.json`, { method: 'GET' })
+  const JsonPath = getLocalPath(`/json/${areaId}.json`)
+  return request(JsonPath, { method: 'GET' })
 }
 
 // 获取项目操作log

@@ -2,7 +2,7 @@ import CyFormItem from '@/components/cy-form-item'
 import CyTip from '@/components/cy-tip'
 import FileUpload from '@/components/file-upload'
 import { importCloudPlat } from '@/services/project-management/project-notice'
-import { handleDecrypto } from '@/utils/utils'
+import { getLocalPath, handleDecrypto } from '@/utils/utils'
 import { CaretDownOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal, Select } from 'antd'
@@ -142,7 +142,9 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
             <CyFormItem label="下载模板" labelWidth={100}>
               <Button type="primary" style={{ width: '100px' }}>
                 <a
-                  href={`/template/${currentKey === 'yun' ? 'cloudTemp' : 'replyTemp'}.xlsx`}
+                  href={getLocalPath(
+                    `/template/${currentKey === 'yun' ? 'cloudTemp' : 'replyTemp'}.xlsx`
+                  )}
                   download={`${
                     currentKey === 'yun'
                       ? '云平台应用统计模板V1.0.xlsx'

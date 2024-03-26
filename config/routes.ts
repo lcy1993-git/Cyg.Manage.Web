@@ -6,6 +6,7 @@ const routes: IConfigFromPlugins['routes'] = [
   { path: '/Home/Login', redirect: '/login' },
   { path: '/login', component: './login' },
   { path: '/instructionsManage', component: './instructions' },
+
   { path: '/instructionsInvestigate', component: './instructions' },
   { path: '/instructionsDesign', component: './instructions' },
   { path: '/instructionsReview', component: './instructions' },

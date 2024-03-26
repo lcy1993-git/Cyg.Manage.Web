@@ -26,11 +26,11 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
   const { headers, params } = options
   const requestHost = localStorage.getItem('requestHost')
   const c_token = localStorage.getItem('Authorization')
+
   // let isTrans = localStorage.getItem('isTransfer')
   const currentHost =
     requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
-  // const reqid = uuid.v1()
-  // const timeStamp = Date.parse(`${new Date()}`)
+
   const handleUrl: string = url
 
   const accessUrl = options.method === 'get' ? '/commonGet' : '/commonPost' //穿透接口

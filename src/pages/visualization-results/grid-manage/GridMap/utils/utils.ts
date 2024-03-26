@@ -1,4 +1,4 @@
-import { getGridMapRegisterData } from '@/services/index'
+// import { getGridMapRegisterData } from '@/services/index'
 import {
   BOXTRANSFORMER,
   CABLEBRANCHBOX,
@@ -207,7 +207,7 @@ export const getDistrictdata = () => {
     '100000',
   ]
   district.forEach((item: string) => {
-    loadPromiseAll.push(getGridMapRegisterData(item))
+    loadPromiseAll.push(require(`@/assets/districtData/${item}.json`))
   })
   return Promise.all(loadPromiseAll)
 }

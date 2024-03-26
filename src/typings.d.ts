@@ -57,6 +57,8 @@ interface Window {
   jQuery: jQuery
   /** uuid */
   uuid: v4
+  /**window.chrome */
+  chrome: any
 }
 
 declare let ga: Function
