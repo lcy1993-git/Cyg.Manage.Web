@@ -283,7 +283,7 @@ const LoginForm: React.FC<Props> = (props) => {
           <TabPane tab="账号密码登录" key="account">
             <Form.Item className={styles.accountInput} name="userName" rules={formRules.account}>
               <Input
-                placeholder="请输入用户名/邮箱/手机号"
+                placeholder="请输入用户名/手机号"
                 className={styles.loginInput}
                 suffix={<ImageIcon imgUrl="user.png" />}
                 type="text"
