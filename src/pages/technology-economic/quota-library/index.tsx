@@ -1,10 +1,3 @@
-import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
-import { Button, Form, Input, message, Modal, Popconfirm, Space, Spin } from 'antd'
-import { ColumnsType } from 'antd/lib/table'
-import { isArray } from 'lodash'
-import React, { useState } from 'react'
-import { history } from 'umi'
-
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableSearch from '@/components/table-search'
@@ -13,9 +6,14 @@ import {
   CreateQuotaLibrary,
   deleteQuotaLibrary,
 } from '@/services/technology-economic'
-import DictionaryForm from './components/add-edit-form'
-
+import { DeleteOutlined, EyeOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Form, Input, message, Modal, Popconfirm, Space, Spin } from 'antd'
+import { ColumnsType } from 'antd/lib/table'
+import { isArray } from 'lodash'
 import moment from 'moment'
+import React, { useState } from 'react'
+import { history } from 'umi'
+import DictionaryForm from './components/add-edit-form'
 import styles from './index.less'
 
 const { Search } = Input
@@ -161,10 +159,10 @@ const QuotaLibrary: React.FC = () => {
   }
 
   const sureAddAuthorization = () => {
-    setSpinning(true)
     addForm.validateFields().then(async (values: CreateQuotaLibrary) => {
-      const data = {}
-      for (let key: string in values) {
+      setSpinning(true)
+      const data: any = {}
+      for (let key in values) {
         if (values[key] !== undefined) {
           data[key] = values[key]
         }

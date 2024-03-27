@@ -1,16 +1,16 @@
-import { Empty, Spin } from 'antd'
 import { useRequest } from 'ahooks'
-import { getApiByType } from '../../utils/getApiByType'
+import { Empty, Spin } from 'antd'
 import { useEffect } from 'react'
-import EasyTable from '../easy-table'
-import WinterTable from '../winter-table'
-import TemporaryTable from '../temporary-table'
+import { getApiByType } from '../../utils/getApiByType'
 import BasicTable from '../basic-table'
-import DesignTable from '../design-table'
-import SpecialTable from '../special-table'
+import DeEasyTable from '../de-easy-table'
 import DeSpecialTable from '../de-special-table'
 import DeWinterTable from '../de-winter-table'
-import DeEasyTable from '../de-easy-table'
+import DesignTable from '../design-table'
+import EasyTable from '../easy-table'
+import SafetyTable from '../safety-table'
+import SpecialTable from '../special-table'
+import WinterTable from '../winter-table'
 interface CommonRateTableProps {
   id: string
   type: string
@@ -49,14 +49,15 @@ const CommonRateTable: React.FC<CommonRateTableProps> = ({ id, type, demolition,
       switch (String(type)) {
         case '1':
         case '2':
-        case '3':
         case '4':
         case '5':
           return <EasyTable {...props} />
+        case '3':
+          return <SafetyTable {...props} />
         case '51':
           return <WinterTable {...props} />
-        case '52':
-          return <TemporaryTable {...props} />
+        // case '52':
+        //   return <TemporaryTable {...props} />
         case '53':
           return <BasicTable {...props} />
         case '54':

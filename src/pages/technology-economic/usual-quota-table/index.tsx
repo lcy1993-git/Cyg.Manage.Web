@@ -1,3 +1,20 @@
+import GeneralTable from '@/components/general-table'
+import WrapperComponent from '@/components/page-common-wrap'
+import type { CommonlyTableForm } from '@/services/technology-economic/usual-quota-table'
+import {
+  addCommonlyTable,
+  deleteCommonlyTable,
+  editCommonlyTable,
+  queryCommonlyTablePager,
+  SetCommonlyTableStatus,
+} from '@/services/technology-economic/usual-quota-table'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  EyeOutlined,
+  PlusOutlined,
+} from '@ant-design/icons'
 import {
   Button,
   Col,
@@ -14,28 +31,11 @@ import {
   Switch,
 } from 'antd'
 import type { ColumnsType } from 'antd/lib/table/Table'
+import _ from 'lodash'
+import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import styles from './index.less'
-import {
-  queryCommonlyTablePager,
-  addCommonlyTable,
-  deleteCommonlyTable,
-  editCommonlyTable,
-  SetCommonlyTableStatus,
-} from '@/services/technology-economic/usual-quota-table'
-import type { CommonlyTableForm } from '@/services/technology-economic/usual-quota-table'
-import moment from 'moment'
-import {
-  DeleteOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  EyeOutlined,
-  PlusOutlined,
-} from '@ant-design/icons'
-import WrapperComponent from '@/components/page-common-wrap'
-import GeneralTable from '@/components/general-table'
-import _ from 'lodash'
 
 interface Props {}
 
@@ -450,10 +450,15 @@ const UsualQuotaTable: React.FC<Props> = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
+                  <Form.Item label="发布时间" name="publishDate">
+                    <DatePicker />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
                   <Form.Item
                     label="适用专业"
                     name="majorType"
-                    // rules={[{required: true, message: '请选择适用专业!'}]}
+                    rules={[{ required: true, message: '请选择适用专业!' }]}
                   >
                     <Select>
                       {majorType.map((item) => (
@@ -466,11 +471,6 @@ const UsualQuotaTable: React.FC<Props> = () => {
                 </Col>
               </Row>
               <Row gutter={20}>
-                <Col span={12}>
-                  <Form.Item label="发布时间" name="publishDate">
-                    <DatePicker />
-                  </Form.Item>
-                </Col>
                 <Col span={12}>
                   <Form.Item label="备注" name="remark">
                     <Input />
