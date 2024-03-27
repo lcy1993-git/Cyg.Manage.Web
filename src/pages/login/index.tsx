@@ -58,7 +58,7 @@ const Login: React.FC = () => {
       url = url.toLocaleLowerCase()
       if (url.indexOf('ticket') > -1 && Number(isTrans) === 1) {
         setIsAutoLogin(true)
-        var query = window.location.search.substring(1)
+        var query = window.location.hash.substring(1)
         var vars = query.split('&')
         const map: any = {}
         for (let i = 0; i < vars.length; i++) {

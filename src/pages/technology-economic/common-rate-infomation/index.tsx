@@ -107,7 +107,7 @@ const CommonRateInfomation: React.FC = () => {
 
   const downLoad = async () => {
     let res
-    let query = window.location.search.substring(1)
+    let query = window.location.hash.substring(44)
     let vars = query.split('&')
     const map = {}
     for (let i = 0; i < vars.length; i++) {

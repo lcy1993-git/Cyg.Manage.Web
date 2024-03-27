@@ -29,7 +29,7 @@ request.interceptors.request.use(async (url: string, options: RequestOptionsInit
 
   // let isTrans = localStorage.getItem('isTransfer')
   const currentHost =
-    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    requestHost && requestHost !== 'undefined' ? requestHost : `http://${window.location.host}/api`
 
   const handleUrl: string = url
 

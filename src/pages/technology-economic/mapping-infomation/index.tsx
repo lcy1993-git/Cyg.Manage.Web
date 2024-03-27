@@ -170,7 +170,7 @@ const MappingInfomation = () => {
     )
   }
   const getRequest = () => {
-    const url = window.location.search //获取url中"?"符后的字串
+    const url = window.location.hash //获取url中"?"符后的字串
     const theRequest = new Object()
     if (url.indexOf('?') != -1) {
       let str = url.substr(1)

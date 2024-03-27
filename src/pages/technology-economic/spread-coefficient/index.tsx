@@ -44,10 +44,7 @@ export const getTypeName = (no: number) => {
     })
   return str
 }
-const ProjectTypeList = [
-  { text: '价差目录', value: 1 },
-  { text: '调整文件', value: 2 },
-]
+
 const SpreadCoefficient: React.FC = () => {
   const tableRef = React.useRef<HTMLDivElement>(null)
   const tableADRef = React.useRef<HTMLDivElement>(null)
@@ -372,41 +369,40 @@ const SpreadCoefficient: React.FC = () => {
       {tableElement()}
       <div className={styles.moduleTabs}>
         <Tabs onChange={callback} type="card">
-          {ProjectTypeList.map((item: any) => {
-            return (
-              <TabPane tab={item.text} key={item.value}>
-                {update && (
-                  <div className={styles.pannelTable}>
-                    {projectType === 1 ? (
-                      // 价差目录
-                      <GeneralTable
-                        ref={tableRef}
-                        needCommonButton={false}
-                        columns={columns as ColumnsType<DataSource | object>}
-                        url="/PriceDifference/GetAllDefaultPriceDifferenceTemplates"
-                        getSelectData={tableSelectEvent}
-                        type="checkbox"
-                        requestSource="tecEco1"
-                        extractParams={{}}
-                      />
-                    ) : (
-                      // 调整文件
-                      <GeneralTable
-                        ref={tableADRef}
-                        needCommonButton={false}
-                        columns={columns as ColumnsType<DataSource | object>}
-                        url="/PriceDifference/GetAllAdjustmentFiles"
-                        getSelectData={tableSelectADEvent}
-                        type="radio"
-                        requestSource="tecEco1"
-                        extractParams={{}}
-                      />
-                    )}
-                  </div>
-                )}
-              </TabPane>
-            )
-          })}
+          <TabPane tab="价差目录" key="1">
+            {update && (
+              <div className={styles.pannelTable}>
+                {/* 价差目录 */}
+                <GeneralTable
+                  ref={tableRef}
+                  needCommonButton={false}
+                  columns={columns as ColumnsType<DataSource | object>}
+                  url="/PriceDifference/GetAllDefaultPriceDifferenceTemplates"
+                  getSelectData={tableSelectEvent}
+                  type="checkbox"
+                  requestSource="tecEco1"
+                  extractParams={{}}
+                />
+              </div>
+            )}
+          </TabPane>
+          <TabPane tab="调整文件" key="2">
+            {update && (
+              <div className={styles.pannelTable}>
+                {/* 调整文件 */}
+                <GeneralTable
+                  ref={tableADRef}
+                  needCommonButton={false}
+                  columns={columns as ColumnsType<DataSource | object>}
+                  url="/PriceDifference/GetAllAdjustmentFiles"
+                  getSelectData={tableSelectADEvent}
+                  type="radio"
+                  requestSource="tecEco1"
+                  extractParams={{}}
+                />
+              </div>
+            )}
+          </TabPane>
         </Tabs>
       </div>
 

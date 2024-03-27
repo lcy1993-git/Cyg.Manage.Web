@@ -57,7 +57,7 @@ const ManualUpload: React.FC<Props> = () => {
 
   const requestHost = localStorage.getItem('requestHost')
   const currentHost =
-    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    requestHost && requestHost !== 'undefined' ? requestHost : `http://${window.location.host}/api`
 
   const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
@@ -85,7 +85,7 @@ const ManualUpload: React.FC<Props> = () => {
     xhr.send()
   }
   const getFile = async () => {
-    const str = window.location.search.split('token=')[1]
+    const str = window.location.hash.split('token=')[1]
     if (str === undefined) {
       message.warn('缺少请求token')
       return

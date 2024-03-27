@@ -32,7 +32,7 @@ const UrlFileView: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
   // let proxyUrl = `https://srthkf1.gczhyun.com:21530/glzz/commonGet?target_url=${targetUrl}`
   const requestHost = localStorage.getItem('requestHost')
   const currentHost =
-    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    requestHost && requestHost !== 'undefined' ? requestHost : `http://${window.location.host}/api`
   const handleUrl = `${baseUrl[requestSource]}${url}`
   // let targetUrl = handleSM2Crypto(`${handleUrl}`)
   const proxyUrl = `${currentHost}/commonGet`

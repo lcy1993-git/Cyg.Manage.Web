@@ -59,7 +59,7 @@ const ChapterInfo: React.FC<Props> = ({
 
   const requestHost = localStorage.getItem('requestHost')
   const currentHost =
-    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    requestHost && requestHost !== 'undefined' ? requestHost : `http://${window.location.host}/api`
 
   const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 

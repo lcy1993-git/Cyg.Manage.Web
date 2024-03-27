@@ -15,7 +15,7 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
   const [name, setName] = useState<string>('')
   const getTabList = async () => {
     setName('')
-    const urlName = decodeURI(window.location.search.split('=')[1]).replace('&id', '')
+    const urlName = decodeURI(window.location.hash.split('=')[1]).replace('&id', '')
     setName(urlName)
     if (urlName === '地形增加系数') {
       setActive(3)
@@ -32,9 +32,9 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
     e && getTabList()
   }
   useMount(() => {
-    setName(decodeURI(window.location.search.split('=')[1]).replace('&id', '') ?? '')
+    setName(decodeURI(window.location.hash.split('=')[1]).replace('&id', '') ?? '')
   })
-  const detailId = window.location.search.split('=')[2]
+  const detailId = window.location.hash.split('=')[2]
   return (
     <PageCommonWrap>
       <div className={styles.costTemplate}>

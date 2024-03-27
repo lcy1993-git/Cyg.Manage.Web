@@ -104,7 +104,7 @@ const SocialSecurityFund: React.FC = () => {
               <TableImportButton
                 extraParams={{
                   // commonlyTableType: 6,
-                  RateFileId: window.location.search.split('=')[1],
+                  RateFileId: window.location.hash.split('=')[1],
                 }}
                 modalTitle={'导入费率'}
                 buttonTitle={'导入费率'}
