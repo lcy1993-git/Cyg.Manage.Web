@@ -1,10 +1,19 @@
+import type { FileDocxViewProps } from './componnents/file-docx-view'
 import FileDocxView from './componnents/file-docx-view'
 import FileXlsxView from './componnents/file-excel-view'
-
-import type { FileDocxViewProps } from './componnents/file-docx-view'
 import type { FileXlsxViewProps } from './componnents/file-xlsx-view'
 
-export type FileType = 'xlsx' | 'docx' | 'dwg' | 'pdf' | 'png' | 'doc' | 'xls' | '.xlsx' | '.docx'
+export type FileType =
+  | 'xlsx'
+  | 'docx'
+  | 'dwg'
+  | 'pdf'
+  | 'png'
+  | 'doc'
+  | 'xls'
+  | '.xlsx'
+  | '.docx'
+  | 'xml'
 
 const context = new Map<FileType, React.FC<FileDocxViewProps | FileXlsxViewProps>>()
 

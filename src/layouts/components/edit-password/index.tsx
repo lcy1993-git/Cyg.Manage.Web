@@ -1,11 +1,17 @@
 import CyFormItem from '@/components/cy-form-item'
+import { baseUrl } from '@/services/common'
 import { editPassword } from '@/services/user/user-info'
-import { handleSM2Crypto, noAutoCompletePassword, uploadAuditLog } from '@/utils/utils'
+import {
+  handleSM2Crypto,
+  isBrowser,
+  noAutoCompletePassword,
+  postMsg,
+  uploadAuditLog,
+} from '@/utils/utils'
 import { useControllableValue } from 'ahooks'
 import { Form, Input, message, Modal } from 'antd'
 import { Dispatch, SetStateAction } from 'react'
 import { history } from 'umi'
-import { baseUrl } from '@/services/common'
 
 interface EditPasswordProps {
   visible: boolean
@@ -41,10 +47,20 @@ const EditPassword = (props: EditPasswordProps) => {
         setState(false)
         message.info('密码已经修改,请重新登录')
         localStorage.removeItem('Authorization')
-        history.push('/again-login')
-        setTimeout(() => {
-          localStorage.setItem('Authorization', '')
-        }, 100)
+        /**
+         * 如果是浏览器环境，则跳转快捷登录
+         */
+        if (isBrowser()) {
+          history.push('/again-login')
+          setTimeout(() => {
+            localStorage.setItem('Authorization', '')
+          }, 100)
+        } else {
+          setTimeout(() => {
+            postMsg('Func_LoginAgain')
+            localStorage.setItem('Authorization', '')
+          }, 1200)
+        }
       } catch (e) {
         uploadAuditLog([
           {

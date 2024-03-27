@@ -7,7 +7,11 @@ const { REACT_APP_ENV } = process.env
 
 export default defineConfig({
   hash: true,
-  publicPath: '/',
+  // publicPath: '/',
+  publicPath: './',
+  history: {
+    type: 'hash',
+  },
   antd: {},
   dva: {
     hmr: true,
@@ -27,7 +31,7 @@ export default defineConfig({
   },
   terserOptions: {
     compress: {
-      drop_console: true,
+      // drop_console: true,
       drop_debugger: true,
     },
   },

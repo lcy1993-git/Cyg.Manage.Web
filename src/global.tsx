@@ -46,40 +46,56 @@ export let serverCode = {
   'https://srthkf1.gczhyun.com:21530/': '1428961053395521536',
 }
 
+/**设计端登入需要该数据 */
+export const configInfo: any = {
+  requestUrl: {
+    monitor: '/monitor/v2/api',
+    project: '/manage/v2/api',
+    common: '/common/api',
+    upload: '/storage/api',
+    resource: '/resourcemanage/v2/api',
+    comment: '/project/api',
+    tecEco: '/quota/api',
+    tecEco1: '/technicaleconomy/api',
+    review: '/review/v2/api',
+    component: '/component/api',
+    material: '/material/api/',
+    resourceV1: '/resource/api',
+    manage: '/webgis/api',
+    geoserver: '/geoserver',
+    securityAudit: '/securityaudit/api',
+    design: '/design/api',
+    grid: '/gridremediation/api',
+    geoServerUrl: '/geoserver/pdd/ows/',
+    netFrameworkHistory: '/gridpredesign/api',
+  },
+  logoUrl: {
+    '218.6.242.125': 'ke-rui-logo.png',
+    '10.6.1.36': 'ke-rui-logo.png',
+    '10.6.1.37': 'logo.png',
+    '171.223.214.154': 'logo.png',
+    '47.108.63.23': 'logo.png',
+    '39.99.251.67': 'logo.png',
+    '10.6.1.38': 'logo.png',
+  },
+  areaStatisticsUrl: '/chart/index.html',
+  commonServer: 'https://bbgl.gczhyun.com/common',
+  version: '1.0.297',
+}
+
 const initConfig = async () => {
-  // 产品编号
-  const productCode = '1301726010322214912'
+  const productCode = '1301726010322214912' //产品编号
 
-  // // 加密公钥
-  // const SM2PublicKey =
-  //   '047981ed79b74289fd6e28fabe9002c07837892b20a919faecfedcaa1edfaf120031181d0fee61045323c010de4896a389c875baa882073125a4e97ab760bdfa74'
-
-  // // 加密方法
-  // const handleSM2Crypto = (data: any) => {
-  //   const cipherMode = 0
-  //   // 加密结果
-  //   return '04' + sm2.doEncrypt(data, SM2PublicKey, cipherMode)
-  // }
-
-  const SM2PrivateKey = '009761bb18f9621e5281b3a0d06edc8083c2625e0b15fdad25b14e8020c2cc9967'
+  const SM2PrivateKey = '009761bb18f9621e5281b3a0d06edc8083c2625e0b15fdad25b14e8020c2cc9967' //解密私钥
   const handleDecrypto = (data: any) => {
     const cipherMode = 0
     const handleData = data.slice(2)
     return JSON.parse(sm2.doDecrypt(handleData, SM2PrivateKey, cipherMode))
   }
 
-  const configInfo = await request('/config/config.json', { method: 'GET' })
+  const isBrowser = window.chrome.webview ? false : true //根据该值判断当前管理端环境
 
-  //新增是否使用隔离装置中转开关判断
-  // const host = window.location.host
-
-  // if (host.includes('117.191.93.63')) {
-  //   //全过程判断
-  //   localStorage.setItem('isTransfer', '1')
-  // } else {
-  //   //非全过程
-  //   localStorage.setItem('isTransfer', '0')
-  // }
+  // const configInfo = await request('../dist/config/config.json', { method: 'GET' })
 
   if (NODE_ENV === 'development') {
     // 如果是开发环境，那么将webConfig.requestUrl 中的每一个数据前面加上 /api
@@ -100,36 +116,48 @@ const initConfig = async () => {
     webConfig = configInfo
   }
 
-  // 获取当前服务器请求host
-  const host = window.location.host
-  const serverUrl = `${webConfig.commonServer}/api/ProductServer/GetList`
+  // 浏览器环境下，获取当前服务器请求host及是否输出验证码；客户端环境则与c端通信获取相关数据
+  if (isBrowser) {
+    const host = window.location.host //主机地址
+    const serverUrl = `${webConfig.commonServer}/api/ProductServer/GetList`
 
-  const serverList = await request(serverUrl, {
-    method: 'POST',
+    const serverList = await request(serverUrl, {
+      method: 'POST',
 
-    data: { productCode, category: 0, status: 0, province: '' },
-  })
-  const { data } = serverList
+      data: { productCode, category: 0, status: 0, province: '' },
+    })
+    const { data } = serverList
 
-  const currentServer = data.find((item: any) => item?.propertys?.webSite?.includes(host))
-  localStorage.setItem('requestHost', currentServer?.propertys?.gatewayHost)
+    const currentServer = data.find((item: any) => item?.propertys?.webSite?.includes(host))
 
-  // const isTrans = localStorage.getItem('isTransfer')
+    localStorage.setItem('requestHost', currentServer?.propertys?.gatewayHost)
 
-  //此处同request用于判断是否显示code的请求接口使用什么地址
-  // const targetUrl = handleSM2Crypto(
-  //   `http://172.2.48.22${webConfig.requestUrl.common}/System/GetDictionary`
-  // )
-  const codeApi = `${webConfig.requestUrl.common}/System/GetDictionary`
-  // : `http://117.191.93.63:21525/commonPost?param=${targetUrl}`
-  const SignCodeConfig = await request(codeApi, {
-    method: 'POST',
-    params: { key: 'EnableSignInCode' },
-  })
+    const codeApi = `${webConfig.requestUrl.common}/System/GetDictionary`
+    const SignCodeConfig = await request(codeApi, {
+      method: 'POST',
+      params: { key: 'EnableSignInCode' },
+    })
 
-  const handleValue = handleDecrypto(SignCodeConfig)?.content?.value
+    const handleValue = handleDecrypto(SignCodeConfig)?.content?.value
 
-  Number(handleValue) && localStorage.setItem('EnableSignInCode', handleValue)
+    Number(handleValue) && localStorage.setItem('EnableSignInCode', handleValue)
+  } else {
+    /**
+     * WEB端嵌入客户端-初始化时通信获取相关数据
+     * postMsg像c端发送关键字方法，调用对应c端方法
+     * addEventListener监听获取登录数据，存入本地
+     */
+    ;(function postMsg() {
+      const args = 'Func_PostStartupParameters'
+      window.chrome.webview.postMessage(args)
+    })()
+
+    window.chrome.webview.addEventListener('message', receiveMessage)
+
+    function receiveMessage(e: any) {
+      localStorage.setItem('LoginDataFromWPF', JSON.stringify(e.data))
+    }
+  }
 }
 
 initConfig()

@@ -648,3 +648,30 @@ export const getServiceIP = (api: string) => {
   }
   return
 }
+
+/**
+ *
+ * 管理端嵌客户端相关公用方法
+ *
+ */
+
+//发送操作数据至客户端
+export const postMsg = (actStr: string) => {
+  window.chrome.webview.postMessage(actStr)
+}
+
+//浏览器or客户端判断
+export const isBrowser = () => {
+  return window.chrome.webview ? false : true
+}
+
+//客户端本地地址../dist
+export const LOCAl_PATH = window.location.pathname.split('/index.html')[0]
+
+export const getLocalPath = (path: string) => {
+  return isBrowser() ? path : `${LOCAl_PATH}${path}`
+}
+
+// export const getJsonMap = (areaId: string) => {
+//   return `${LOCAl_PATH}/json/${areaId}.json`
+// }

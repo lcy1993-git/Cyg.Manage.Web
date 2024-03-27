@@ -160,7 +160,7 @@ const CreateProjectForm: React.FC<CreateProjectFormProps> = (props) => {
         getWarehouseData?.(warehouseSelectData)
         if (!isEdit) {
           const projectInfo = form.getFieldValue('projects')
-          const newProjectInfo = projectInfo.map((item: any, inx: number) => {
+          const newProjectInfo = projectInfo?.map((item: any, inx: number) => {
             if (inx === index) {
               return {
                 ...item,

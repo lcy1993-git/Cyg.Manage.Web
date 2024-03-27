@@ -1,11 +1,10 @@
 import CyFormItem from '@/components/cy-form-item'
 import FileUpload from '@/components/file-upload'
 import { importCustomMap } from '@/services/system-config/custom-map'
+import { getLocalPath } from '@/utils/utils'
 import { useBoolean, useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal, Spin } from 'antd'
-import React, { useState } from 'react'
-import { Dispatch } from 'react'
-import { SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 
 interface UploadDrawingProps {
   visible: boolean
@@ -117,7 +116,7 @@ const ImportCustomMap: React.FC<UploadDrawingProps> = (props) => {
           </CyFormItem>
           <a
             title="下载地图源配置模板"
-            href="/template/mapTemp.xlsx"
+            href={getLocalPath('/template/mapTemp.xlsx')}
             download="地图源配置模板.xlsx"
             style={{ fontSize: '12px', color: '#3c6ef3' }}
           >
