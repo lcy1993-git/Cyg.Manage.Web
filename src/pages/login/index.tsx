@@ -4,9 +4,11 @@ import LogoComponent from '@/components/logo-component'
 import {
   getAuthorityModules,
   GetCommonUserInfo,
+  getConfigSwitch,
   getUserInfoRequest,
   qgcAutoLoginRequest,
 } from '@/services/login'
+import { getClientCategorys } from '@/services/personnel-config/company-user'
 import { flatten } from '@/utils/utils'
 import { useMount } from 'ahooks'
 import { Spin } from 'antd'
@@ -123,6 +125,30 @@ const Login: React.FC = () => {
             localStorage.setItem('functionModules', JSON.stringify(modules))
             localStorage.setItem('userInfo', JSON.stringify(userInfo))
             localStorage.setItem('buttonJurisdictionArray', JSON.stringify(buttonArray))
+
+            const category = await getClientCategorys()
+            const handleList = category.map((item) => item.value)
+            localStorage.setItem('categoryList', JSON.stringify(handleList))
+
+            const config = await getConfigSwitch('isOpenReview')
+            config && localStorage.setItem('isOpenReview', config.value)
+
+            //存储思极地图开关
+            const sjConfig = await getConfigSwitch('useSjMap')
+            sjConfig && localStorage.setItem('useSjMap', sjConfig.value)
+
+            //websocket启用判断
+            const hasSocket = await getConfigSwitch('EnableSocket')
+            hasSocket && localStorage.setItem('EnableSocket', hasSocket.value)
+
+            //wbs必填判断
+            const wbsMust = await getConfigSwitch('wbsMust')
+            wbsMust && localStorage.setItem('wbsMust', wbsMust.value)
+
+            //提交项目时是否可选阶段
+            const stageSelect = await getConfigSwitch('stageSelect')
+            stageSelect && localStorage.setItem('stageSelect', stageSelect.value)
+
             history.push('/index')
           }
         }, 500)
