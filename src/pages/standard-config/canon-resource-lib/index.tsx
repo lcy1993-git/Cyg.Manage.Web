@@ -217,9 +217,11 @@ const ResourceLib: React.FC = () => {
                 onClick={() => {
                   setCurrentManageId(record.id)
                   storage.setItem('manageId', record.id)
-                  history.push({
-                    pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
-                  })
+                  history.push(
+                    `/standard-config/resource-manage?libId=${record.id}&&libName=${encodeURI(
+                      record.libName
+                    )}`
+                  )
                 }}
               >
                 <u>管理</u>

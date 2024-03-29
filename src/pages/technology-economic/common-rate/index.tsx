@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
-import { history } from 'umi'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { Input, Button, Modal, Form, message, Spin, Space } from 'antd'
-import { ColumnsType } from 'antd/lib/table'
-import { EyeOutlined, EditOutlined } from '@ant-design/icons'
-import { isArray } from 'lodash'
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
-import TableSearch from '@/components/table-search'
-import AddDictionaryForm from './components/add-edit-form'
-import { addRateTable, editRateTable } from '@/services/technology-economic/common-rate'
-import moment from 'moment'
 import TableImportButton from '@/components/table-import-button'
+import TableSearch from '@/components/table-search'
+import { addRateTable, editRateTable } from '@/services/technology-economic/common-rate'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, EyeOutlined } from '@ant-design/icons'
+import { Button, Form, Input, message, Modal, Space, Spin } from 'antd'
+import { ColumnsType } from 'antd/lib/table'
+import { isArray } from 'lodash'
+import moment from 'moment'
+import React, { useState } from 'react'
+import { history } from 'umi'
+import AddDictionaryForm from './components/add-edit-form'
 
 const { Search } = Input
 
@@ -191,12 +191,12 @@ const ProjectList: React.FC = () => {
     let id = tableSelectRows[0].id
     if (['建筑安装取费表费率', '拆除取费表费率'].includes(name)) {
       history.push(
-        `/technology-economic/common-rate-infomation?id=${
-          tableSelectRows[0].id
-        }&name=${name}&isDemolition=${name === '拆除取费表费率'}`
+        `/technology-economic/common-rate-infomation?id=${tableSelectRows[0].id}&name=${encodeURI(
+          name
+        )}&isDemolition=${name === '拆除取费表费率'}`
       )
     } else if (['地形增加系数', '未计价材料施工损耗率', '土方参数'].includes(name)) {
-      history.push(`/technology-economic/usual-quota-table/detail?name=${name}&id=${id}`)
+      history.push(`/technology-economic/usual-quota-table/detail?name=${encodeURI(name)}&id=${id}`)
     } else if (name === '社保公积金费率') {
       history.push(`/technology-economic/social-security-fund?id=${tableSelectRows[0].id}`)
     }
@@ -240,7 +240,7 @@ const ProjectList: React.FC = () => {
         {/*  </Popconfirm>*/}
         {/*}*/}
         {!buttonJurisdictionArray?.includes('commonrate-info') && (
-          <Button className="mr7" onClick={() => gotoMoreInfo()}>
+          <Button className="mr7" onClick={gotoMoreInfo}>
             <EyeOutlined />
             费率详情
           </Button>
@@ -273,6 +273,7 @@ const ProjectList: React.FC = () => {
           setFormVisible(false)
           setSpinning(false)
           form.resetFields()
+          //@ts-ignore
           tableRef.current.reset()
         })
         .finally(() => {
@@ -286,8 +287,9 @@ const ProjectList: React.FC = () => {
           setFormVisible(false)
           setTableSelectRow([])
           setSpinning(false)
-
+          //@ts-ignore
           tableRef.current.reset()
+          //@ts-ignore
           tableRef.current.refresh()
           form.resetFields()
         })

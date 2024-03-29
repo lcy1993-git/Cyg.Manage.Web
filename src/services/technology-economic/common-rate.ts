@@ -54,7 +54,7 @@ export const getRateTypeList = (rateFileId: string) => {
 }
 
 // 获取简单费率详情
-export const getEasyRate = (rateTableType: string, rateFileId: string) => {
+export const getEasyRate = (rateTableType: string | number, rateFileId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/GetEasyRate`, {
       method: 'GET',
@@ -159,7 +159,7 @@ export const downloadTemplate = (rateFileType?: number) => {
 //   社保公积金费率 = 6
 
 // 获取拆除工程简单费率详情
-export const getDemolitionEasyRate = (rateTableType: string, rateFileId: string) => {
+export const getDemolitionEasyRate = (rateTableType: string | number, rateFileId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/GetDemolitionEasyRate`, {
       method: 'GET',

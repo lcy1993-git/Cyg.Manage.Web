@@ -144,6 +144,7 @@ const CommonRateInfomation: React.FC = () => {
   const linkToArea = () => {
     history.push(`/technology-economic/area-type-manage`)
   }
+
   return (
     <WrapperComponent>
       <div className={styles.imfomationModalWrap}>

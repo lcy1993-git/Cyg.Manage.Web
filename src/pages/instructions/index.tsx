@@ -40,14 +40,16 @@ const ManualUpload: React.FC<Props> = () => {
   const [isMobile, setisMobile] = useState(false)
 
   useMount(() => {
-    let url = window.location.pathname
-    let str = url.substring(url.lastIndexOf('/') + 1, url.length)
+    let url = window.location.hash
+    let str = url.split('/')[1].split('?')[0]
     let num = pageType.find((item) => {
       return item.path === str
     })
+
     if (num !== undefined) {
       setCurrent(num.category)
     }
+
     if (!/windows phone|iphone|android/gi.test(window.navigator.userAgent)) {
       setisMobile(true)
     } else {

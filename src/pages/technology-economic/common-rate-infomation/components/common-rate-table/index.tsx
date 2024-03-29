@@ -12,8 +12,8 @@ import SafetyTable from '../safety-table'
 import SpecialTable from '../special-table'
 import WinterTable from '../winter-table'
 interface CommonRateTableProps {
-  id: string
-  type: string
+  id: string | number
+  type: string | number
   demolition: boolean
   rateFileId: string
 }

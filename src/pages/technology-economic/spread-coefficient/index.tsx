@@ -138,7 +138,7 @@ const SpreadCoefficient: React.FC = () => {
       // 价差目录
 
       if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
-        message.error('请选择一条数据进行编辑')
+        message.warning('请先选择删除数据')
         return
       }
       const ids = tableSelectRows?.map((item) => item.id)
@@ -149,7 +149,7 @@ const SpreadCoefficient: React.FC = () => {
     } else {
       // 调整文件
       if (tableSelectADRows && isArray(tableSelectADRows) && tableSelectADRows.length === 0) {
-        message.error('请选择一条数据进行编辑')
+        message.warning('请先选择删除数据')
         return
       }
       const { id } = tableSelectADRows[0]
