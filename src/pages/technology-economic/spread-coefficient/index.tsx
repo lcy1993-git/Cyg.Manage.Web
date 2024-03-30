@@ -193,7 +193,7 @@ const SpreadCoefficient: React.FC = () => {
       }
       const { id } = tableSelectRows[0]
       const { name } = tableSelectRows[0]
-      history.push(`/technology-economic/price-difference-details?id=${id}&name=${name}`)
+      history.push(`/technology-economic/price-difference-details?id=${id}&name=${encodeURI(name)}`)
     } else {
       history.push(`/technology-economic/adjustment-file-details`)
     }
