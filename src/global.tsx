@@ -93,7 +93,7 @@ const initConfig = async () => {
     return JSON.parse(sm2.doDecrypt(handleData, SM2PrivateKey, cipherMode))
   }
 
-  const isBrowser = window.chrome.webview ? false : true //根据该值判断当前管理端环境
+  const isBrowser = window.chrome?.webview ? false : true //根据该值判断当前管理端环境
 
   // const configInfo = await request('../dist/config/config.json', { method: 'GET' })
 
@@ -149,10 +149,10 @@ const initConfig = async () => {
      */
     ;(function postMsg() {
       const args = 'Func_PostStartupParameters'
-      window.chrome.webview.postMessage(args)
+      window.chrome?.webview.postMessage(args)
     })()
 
-    window.chrome.webview.addEventListener('message', receiveMessage)
+    window.chrome?.webview.addEventListener('message', receiveMessage)
 
     function receiveMessage(e: any) {
       localStorage.setItem('LoginDataFromWPF', JSON.stringify(e.data))

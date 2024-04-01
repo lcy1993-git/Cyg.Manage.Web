@@ -389,9 +389,11 @@ export const handleSM2Crypto = (data: any) => {
 
 const SM2PrivateKey = '009761bb18f9621e5281b3a0d06edc8083c2625e0b15fdad25b14e8020c2cc9967'
 export const handleDecrypto = (data: any) => {
-  const cipherMode = 0
-  const handleData = data.slice(2)
-  return JSON.parse(sm2.doDecrypt(handleData, SM2PrivateKey, cipherMode))
+  if (data) {
+    const cipherMode = 0
+    const handleData = data.slice(2)
+    return JSON.parse(sm2.doDecrypt(handleData, SM2PrivateKey, cipherMode))
+  }
 }
 
 export const uploadAuditLog = (dataItem: Partial<EventInfo>[], needToken: boolean = false) => {
