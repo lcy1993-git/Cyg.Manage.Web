@@ -761,6 +761,12 @@ const pointStyle = function (
       else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue883'
+      else if (feature.getProperties().type === 11)
+        // 接地环
+        iconFontText = '\ue636'
+      else if (feature.getProperties().type === 12)
+        // 调压器
+        iconFontText = '\ue637'
       else {
         iconFontText = '\ue828'
       }
@@ -790,6 +796,12 @@ const pointStyle = function (
       else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue890'
+      else if (feature.getProperties().type === 11)
+        // 接地环
+        iconFontText = '\ue638'
+      else if (feature.getProperties().type === 12)
+        // 调压器
+        iconFontText = '\ue639'
       else {
         iconFontText = '\ue828'
       }
@@ -819,6 +831,12 @@ const pointStyle = function (
       else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue891'
+      else if (feature.getProperties().type === 11)
+        // 接地环
+        iconFontText = '\ue635'
+      else if (feature.getProperties().type === 12)
+        // 调压器
+        iconFontText = '\ue634'
       else {
         iconFontText = '\ue828'
       }
@@ -849,6 +867,12 @@ const pointStyle = function (
       else if (feature.getProperties().type === 10)
         // PT
         iconFontText = '\ue890'
+      else if (feature.getProperties().type === 11)
+        // 接地环
+        iconFontText = '\ue638'
+      else if (feature.getProperties().type === 12)
+        // 调压器
+        iconFontText = '\ue639'
       else {
         iconFontText = '\ue828'
       }

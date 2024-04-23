@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "39842119",
+      "name": "柱上调压器-利旧",
+      "font_class": "zhushangtiaoyaqi-lijiu",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "39842120",
+      "name": "接地验电环-利旧",
+      "font_class": "jiediyandianhuan-lijiu",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "39842121",
+      "name": "接地验电环-原有",
+      "font_class": "jiediyandianhuan-yuanyou",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "39842122",
+      "name": "柱上调压器-原有",
+      "font_class": "zhushangtiaoyaqi-yuanyou",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "39842123",
+      "name": "接地验电环-新建",
+      "font_class": "jiediyandianhuan-xinjian",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "39842124",
+      "name": "柱上调压器-新建",
+      "font_class": "zhushangtiaoyaqi-xinjian",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
       "icon_id": "38871362",
       "name": "四表箱-新建",
       "font_class": "sibiaoxiang-xinjian",

@@ -1,8 +1,8 @@
 @font-face {
   font-family: "gridManageIconfont"; /* Project id 1908048 */
-  src: url('iconfont.woff2?t=1704853293671') format('woff2'),
-       url('iconfont.woff?t=1704853293671') format('woff'),
-       url('iconfont.ttf?t=1704853293671') format('truetype');
+  src: url('iconfont.woff2?t=1713877079100') format('woff2'),
+       url('iconfont.woff?t=1713877079100') format('woff'),
+       url('iconfont.ttf?t=1713877079100') format('truetype');
 }
 
 .gridManageIconfont {
@@ -11,6 +11,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-zhushangtiaoyaqi-lijiu:before {
+  content: "\e634";
+}
+
+.icon-jiediyandianhuan-lijiu:before {
+  content: "\e635";
+}
+
+.icon-jiediyandianhuan-yuanyou:before {
+  content: "\e636";
+}
+
+.icon-zhushangtiaoyaqi-yuanyou:before {
+  content: "\e637";
+}
+
+.icon-jiediyandianhuan-xinjian:before {
+  content: "\e638";
+}
+
+.icon-zhushangtiaoyaqi-xinjian:before {
+  content: "\e639";
 }
 
 .icon-sibiaoxiang-xinjian:before {
