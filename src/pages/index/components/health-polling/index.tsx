@@ -1,5 +1,6 @@
 import { useLayoutStore } from '@/layouts/context'
 import { getStopServerNotice, pollingHealth } from '@/services/index'
+import { postMsg } from '@/utils/utils'
 import { useInterval, useMount, useRequest } from 'ahooks'
 import { message, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
@@ -40,6 +41,7 @@ const HealthPolling: React.FC = () => {
           let is300 = data?.countdownSeconds <= 302 && data.countdownSeconds >= 298
           let is60 = data?.countdownSeconds <= 62 && data.countdownSeconds >= 58
           if (is60 || is300 || is600) {
+            postMsg('Func_StopService')
             notification.open({
               message: '停服通知',
               description: `您好！工程智慧云平台将在${is600 ? '10' : ''}${is300 ? '5' : ''}${
@@ -88,8 +90,21 @@ const HealthPolling: React.FC = () => {
 
   //获取token
   const token = localStorage.getItem('Authorization')
+
+  //客户端模式下获取host
+  const host = localStorage.getItem('requestHost')
+
+  //获取socketurl
+  const getSocketUrl = () => {
+    if (window.chrome.webview) {
+      return host?.split('//')[1].split('/')[0]
+    } else {
+      return window.location.host
+    }
+  }
+
   const url =
-    window.location.hostname === 'localhost' ? 'srthkf2.gczhyun.com:21530' : window.location.host
+    window.location.hostname === 'localhost' ? 'srthkf2.gczhyun.com:21530' : getSocketUrl()
   /**webSocket */
   let heart: any //心跳
   var lockReconnect = false //避免重复连接

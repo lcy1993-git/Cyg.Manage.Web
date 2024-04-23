@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
-import { Input, Select, Col, Row } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import DateFormItem from '@/components/date-from-item'
 import FileUpload from '@/components/file-upload'
-import { useRequest, useMount } from 'ahooks'
+import UrlSelect from '@/components/url-select'
 import {
   getQuotaScopeEnums,
   queryMaterialMachineLibraryPager,
   queryQuotaLibraryPager,
 } from '@/services/technology-economic'
-import UrlSelect from '@/components/url-select'
+import { useMount, useRequest } from 'ahooks'
+import { Col, Input, Row, Select } from 'antd'
+import React, { useState } from 'react'
 // import { getMaterialLibraryList } from '@/services/technology-economic/supplies-library'
 
 const { Option } = Select
@@ -21,7 +21,7 @@ interface ResponsData {
   }[]
 }
 
-const DictionaryForm: React.FC<null> = () => {
+const DictionaryForm: React.FC<any> = () => {
   const { data: MaterialMachineLibraryData, run } = useRequest<ResponsData>(
     queryMaterialMachineLibraryPager,
     { manual: true }
@@ -41,9 +41,9 @@ const DictionaryForm: React.FC<null> = () => {
     //   pageSize: 10000,
     // })
     // setMaterialList(res.items)
-    const data = await queryQuotaLibraryPager({ pageIndex: 1, pageSize: 3000 })
-    setLibrary(data.items as [])
-    const enumArr = await getQuotaScopeEnums()
+    const data: any = await queryQuotaLibraryPager({ pageIndex: 1, pageSize: 3000 })
+    setLibrary(data?.items as [])
+    const enumArr: any = await getQuotaScopeEnums()
     setEnums(enumArr)
   }
   const MaterialMachineLibraryListFn = () => {
@@ -142,7 +142,7 @@ const DictionaryForm: React.FC<null> = () => {
             <DateFormItem picker="year" allowClear={false} />
           </CyFormItem>
 
-          <CyFormItem label="适用专业" name="majorType">
+          {/* <CyFormItem label="适用专业" name="majorType">
             <UrlSelect
               url="/CommonEnum/GetMajorTypeEnums"
               requestType="get"
@@ -150,7 +150,7 @@ const DictionaryForm: React.FC<null> = () => {
               titlekey="text"
               valuekey="value"
             />
-          </CyFormItem>
+          </CyFormItem> */}
           {/*<CyFormItem*/}
           {/*  label="关联物料库"*/}
           {/*  name="SourceMaterialLibraryId"*/}

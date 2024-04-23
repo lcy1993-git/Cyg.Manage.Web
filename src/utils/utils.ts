@@ -389,9 +389,11 @@ export const handleSM2Crypto = (data: any) => {
 
 const SM2PrivateKey = '009761bb18f9621e5281b3a0d06edc8083c2625e0b15fdad25b14e8020c2cc9967'
 export const handleDecrypto = (data: any) => {
-  const cipherMode = 0
-  const handleData = data.slice(2)
-  return JSON.parse(sm2.doDecrypt(handleData, SM2PrivateKey, cipherMode))
+  if (data) {
+    const cipherMode = 0
+    const handleData = data.slice(2)
+    return JSON.parse(sm2.doDecrypt(handleData, SM2PrivateKey, cipherMode))
+  }
 }
 
 export const uploadAuditLog = (dataItem: Partial<EventInfo>[], needToken: boolean = false) => {
@@ -648,3 +650,30 @@ export const getServiceIP = (api: string) => {
   }
   return
 }
+
+/**
+ *
+ * 管理端嵌客户端相关公用方法
+ *
+ */
+
+//发送操作数据至客户端
+export const postMsg = (actStr: string) => {
+  window.chrome.webview.postMessage(actStr)
+}
+
+//浏览器or客户端判断
+export const isBrowser = () => {
+  return window.chrome.webview ? false : true
+}
+
+//客户端本地地址../dist
+export const LOCAl_PATH = window.location.pathname.split('/index.html')[0]
+
+export const getLocalPath = (path: string) => {
+  return isBrowser() ? path : `${LOCAl_PATH}${path}`
+}
+
+// export const getJsonMap = (areaId: string) => {
+//   return `${LOCAl_PATH}/json/${areaId}.json`
+// }

@@ -21,7 +21,7 @@ const ViewAuditFile: React.FC<UrlFileViewProps & Record<string, unknown>> = ({
 
   const requestHost = localStorage.getItem('requestHost')
   const currentHost =
-    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    requestHost && requestHost !== 'undefined' ? requestHost : `http://${window.location.host}/api`
 
   const handleUrl = `${baseUrl[requestSource]}${url}`
   const targetUrl = handleGetUrl(

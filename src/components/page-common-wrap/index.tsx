@@ -26,7 +26,9 @@ const PageCommonWrap: React.FC<PageCommonWrapProps> = (props) => {
         <span
           className={styles.explainHref}
           onClick={() =>
-            window.open(`/instructionsManage?token=${window.localStorage.getItem('Authorization')}`)
+            window.open(
+              `#/instructionsManage?token=${window.localStorage.getItem('Authorization')}`
+            )
           }
         >
           《工程智慧云管理端使用说明书》

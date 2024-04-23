@@ -1,5 +1,5 @@
 import { Table } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 const columns = [
   {
     title: '',
@@ -15,28 +15,28 @@ const columns = [
     colSpan: 2,
   },
 ]
-const columnsTwo = [
-  {
-    title: '建筑材机系数调差(%)',
-    children: [
-      {
-        title: '专业属性',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: '材料系数',
-        dataIndex: 'number1',
-        key: 'number1',
-      },
-      {
-        title: '机械系数',
-        dataIndex: 'number2',
-        key: 'number2',
-      },
-    ],
-  },
-]
+// const columnsTwo = [
+//   {
+//     title: '建筑材机系数调差(%)',
+//     children: [
+//       {
+//         title: '专业属性',
+//         dataIndex: 'name',
+//         key: 'name',
+//       },
+//       {
+//         title: '材料系数',
+//         dataIndex: 'number1',
+//         key: 'number1',
+//       },
+//       {
+//         title: '机械系数',
+//         dataIndex: 'number2',
+//         key: 'number2',
+//       },
+//     ],
+//   },
+// ]
 
 const columnsThree = [
   {
@@ -61,28 +61,28 @@ const columnsThree = [
   },
 ]
 
-const columnsFour = [
-  {
-    title: '建筑拆除材机系数调差(%)',
-    children: [
-      {
-        title: '专业属性',
-        dataIndex: 'name',
-        key: 'name',
-      },
-      {
-        title: '材料系数',
-        dataIndex: 'number1',
-        key: 'number1',
-      },
-      {
-        title: '机械系数',
-        dataIndex: 'number2',
-        key: 'number2',
-      },
-    ],
-  },
-]
+// const columnsFour = [
+//   {
+//     title: '建筑拆除材机系数调差(%)',
+//     children: [
+//       {
+//         title: '专业属性',
+//         dataIndex: 'name',
+//         key: 'name',
+//       },
+//       {
+//         title: '材料系数',
+//         dataIndex: 'number1',
+//         key: 'number1',
+//       },
+//       {
+//         title: '机械系数',
+//         dataIndex: 'number2',
+//         key: 'number2',
+//       },
+//     ],
+//   },
+// ]
 
 const columnsFive = [
   {
@@ -132,23 +132,23 @@ const RightComponent = (props: any) => {
     },
   ]
   // 建筑材机系数调差
-  const dataSourceTwo = [
-    {
-      name: '配电、开关站',
-      number1: data?.bmdsWithMaterial,
-      number2: data?.bmdsWithMachine,
-    },
-    {
-      name: '充电、换电站',
-      number1: data?.bmssWithMaterial,
-      number2: data?.bmssWithMachine,
-    },
-    {
-      name: '电缆线路',
-      number1: data?.bmclWithMaterial,
-      number2: data?.bmclWithMachine,
-    },
-  ]
+  // const dataSourceTwo = [
+  //   {
+  //     name: '配电、开关站',
+  //     number1: data?.bmdsWithMaterial,
+  //     number2: data?.bmdsWithMachine,
+  //   },
+  //   {
+  //     name: '充电、换电站',
+  //     number1: data?.bmssWithMaterial,
+  //     number2: data?.bmssWithMachine,
+  //   },
+  //   {
+  //     name: '电缆线路',
+  //     number1: data?.bmclWithMaterial,
+  //     number2: data?.bmclWithMachine,
+  //   },
+  // ]
   // 安装材机系数调差
   const dataSourceThree = [
     {
@@ -167,24 +167,40 @@ const RightComponent = (props: any) => {
       number2: data?.imolWithMachine,
     },
     {
-      name: '电缆线路',
-      number1: data?.imclWithMaterial,
-      number2: data?.imclWithMachine,
+      name: '陆上电缆',
+      number1: data?.imllWithMaterial,
+      number2: data?.imllWithMachine,
+    },
+
+    {
+      name: '海底电缆',
+      number1: data?.imslWithMaterial,
+      number2: data?.imslWithMachine,
+    },
+    {
+      name: '通信站',
+      number1: data?.imcsWithMaterial,
+      number2: data?.imcsWithMachine,
+    },
+    {
+      name: '通信线路',
+      number1: data?.imcmlWithMaterial,
+      number2: data?.imcmlWithMachine,
     },
   ]
   // 建筑拆除材机系数调差
-  const dataSourceFour = [
-    {
-      name: '配电、开关站',
-      number1: data?.brmdsWithMaterial,
-      number2: data?.brmdsWithMachine,
-    },
-    {
-      name: '电缆线路',
-      number1: data?.brmclWithMaterial,
-      number2: data?.brmclWithMachine,
-    },
-  ]
+  // const dataSourceFour = [
+  //   {
+  //     name: '配电、开关站',
+  //     number1: data?.brmdsWithMaterial,
+  //     number2: data?.brmdsWithMachine,
+  //   },
+  //   {
+  //     name: '电缆线路',
+  //     number1: data?.brmclWithMaterial,
+  //     number2: data?.brmclWithMachine,
+  //   },
+  // ]
   // 安装拆除材机系数调差
   const dataSourceFive = [
     {
@@ -193,14 +209,30 @@ const RightComponent = (props: any) => {
       number2: data?.irmdsWithMachine,
     },
     {
+      name: '充电、换电站',
+      number1: data?.irmssWithMaterial,
+      number2: data?.irmssWithMachine,
+    },
+    {
       name: '架空线路',
       number1: data?.irmolWithMaterial,
       number2: data?.irmolWithMachine,
     },
     {
-      name: '电缆线路',
-      number1: data?.irmclWithMaterial,
-      number2: data?.irmclWithMachine,
+      name: '陆上电缆',
+      number1: data?.irmllWithMaterial,
+      number2: data?.irmllWithMachine,
+    },
+
+    {
+      name: '海底电缆',
+      number1: data?.irmslWithMaterial,
+      number2: data?.irmslWithMachine,
+    },
+    {
+      name: '通信站',
+      number1: data?.irmcsWithMaterial,
+      number2: data?.irmcsWithMachine,
     },
     {
       name: '通信线路',
@@ -211,15 +243,11 @@ const RightComponent = (props: any) => {
   return (
     <div>
       <Table columns={columns} bordered dataSource={dataSource} pagination={false} />
-      <div style={{ marginTop: '20px' }}>
-        <Table columns={columnsTwo} bordered dataSource={dataSourceTwo} pagination={false} />
-      </div>
+
       <div style={{ marginTop: '20px' }}>
         <Table columns={columnsThree} bordered dataSource={dataSourceThree} pagination={false} />
       </div>
-      <div style={{ marginTop: '20px' }}>
-        <Table columns={columnsFour} bordered dataSource={dataSourceFour} pagination={false} />
-      </div>
+
       <div style={{ marginTop: '20px' }}>
         <Table columns={columnsFive} bordered dataSource={dataSourceFive} pagination={false} />
       </div>

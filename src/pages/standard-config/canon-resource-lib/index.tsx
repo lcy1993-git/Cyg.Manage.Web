@@ -10,6 +10,7 @@ import { getUploadUrl } from '@/services/resource-config/drawing'
 import {
   addResourceLibItem,
   changeLibStatus,
+  exportCompanyLib,
   getResourceLibDetail,
   restartResourceLib,
   updateResourceLibItem,
@@ -18,6 +19,7 @@ import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { uploadAuditLog } from '@/utils/utils'
 import {
   EditOutlined,
+  ExportOutlined,
   ImportOutlined,
   PlusOutlined,
   QuestionCircleOutlined,
@@ -55,6 +57,9 @@ const ResourceLib: React.FC = () => {
   const [currentManageId, setCurrentManageId] = useState<string>(window.localStorage.manageId) //当前管理 模块的资源库Id
   const [ifSuccess, setIfSuccess] = useState<boolean>(false)
   const { data: keyData } = useRequest(() => getUploadUrl())
+
+  //导出加载
+  const [exportLoading, setExportLoading] = useState<boolean>(false)
 
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
@@ -212,9 +217,11 @@ const ResourceLib: React.FC = () => {
                 onClick={() => {
                   setCurrentManageId(record.id)
                   storage.setItem('manageId', record.id)
-                  history.push({
-                    pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
-                  })
+                  history.push(
+                    `/standard-config/resource-manage?libId=${record.id}&&libName=${encodeURI(
+                      record.libName
+                    )}`
+                  )
                 }}
               >
                 <u>管理</u>
@@ -449,6 +456,52 @@ const ResourceLib: React.FC = () => {
     </Menu>
   )
 
+  /**导出资源库 */
+  const exportLibEvent = async () => {
+    if (tableSelectRows && isArray(tableSelectRows) && tableSelectRows.length === 0) {
+      message.warning('未选择典设资源库')
+      return
+    }
+
+    try {
+      setExportLoading(true)
+      const res = await exportCompanyLib(tableSelectRows[0].id)
+      let blob = new Blob([res], {
+        type: 'application/zip',
+      })
+      let reader = new FileReader()
+      reader.readAsText(blob, 'utf-8')
+      reader.onload = () => {
+        if (String(reader.result).includes(`"isSuccess":false`)) {
+          let result = JSON.parse((reader.result as string) || '')
+          message.error(result.message)
+        } else {
+          let finalyFileName = `资源库.zip`
+          // for IE
+          //@ts-ignore
+          if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            //@ts-ignore
+            window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+          } else {
+            // for Non-IE
+            let objectUrl = URL.createObjectURL(blob)
+            let link = document.createElement('a')
+            link.href = objectUrl
+            link.setAttribute('download', finalyFileName)
+            document.body.appendChild(link)
+            link.click()
+            window.URL.revokeObjectURL(link.href)
+          }
+          message.success('导出成功')
+        }
+      }
+    } catch (msg) {
+      console.error(msg)
+    } finally {
+      setExportLoading(false)
+    }
+  }
+
   const tableElement = () => {
     return (
       <div className={styles.buttonArea}>
@@ -464,6 +517,14 @@ const ResourceLib: React.FC = () => {
             <EditOutlined />
             编辑
           </Button>
+        )}
+        {buttonJurisdictionArray?.includes('lib-export') && (
+          // <Dropdown overlay={exportMenu}>
+          <Button className="mr7" onClick={() => exportLibEvent()}>
+            <ExportOutlined />
+            导出
+          </Button>
+          // </Dropdown>
         )}
         {buttonJurisdictionArray?.includes('lib-oneclick-import') && (
           <Button className="mr7" onClick={() => uploadAllEvent()}>
@@ -551,22 +612,24 @@ const ResourceLib: React.FC = () => {
 
   return (
     <PageCommonWrap>
-      <GeneralTable
-        ref={tableRef}
-        buttonLeftContentSlot={searchComponent}
-        buttonRightContentSlot={tableElement}
-        columns={columns}
-        requestSource="resource"
-        url="/ResourceLib/GetPageList"
-        tableTitle="资源库管理"
-        getSelectData={(data) => setTableSelectRows(data)}
-        type="radio"
-        extractParams={{
-          keyWord: searchKeyWord,
-          status: status,
-          libType: 0,
-        }}
-      />
+      <Spin spinning={exportLoading} tip="导出中...">
+        <GeneralTable
+          ref={tableRef}
+          buttonLeftContentSlot={searchComponent}
+          buttonRightContentSlot={tableElement}
+          columns={columns}
+          requestSource="resource"
+          url="/ResourceLib/GetPageList"
+          tableTitle="资源库管理"
+          getSelectData={(data) => setTableSelectRows(data)}
+          type="radio"
+          extractParams={{
+            keyWord: searchKeyWord,
+            status: status,
+            libType: 0,
+          }}
+        />
+      </Spin>
       <Modal
         maskClosable={false}
         title="创建资源库"

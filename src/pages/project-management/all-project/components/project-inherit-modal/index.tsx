@@ -24,6 +24,8 @@ interface ProjectInheritModalProps {
 const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState(false)
+  const [libData, setLibData] = useState<any[]>([])
+  const [warehouseInfo, setWarehouseInfo] = useState<any[]>([])
   const [form] = Form.useForm()
 
   const {
@@ -44,11 +46,28 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
       const { dataSourceType, disclosureRange, pileRange } = projectInfo!
       const handleDisclosureRange = dataSourceType === 0 ? disclosureRange : undefined
       const handlePileRange = dataSourceType === 0 ? pileRange : undefined
+
+      console.log(warehouseInfo, 'iiii')
+
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,
         endTime: projectInfo?.endTime ? moment(projectInfo?.endTime) : null,
         deadline: projectInfo?.deadline ? moment(projectInfo?.deadline) : null,
+
+        inventoryOverviewId:
+          libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
+            ? undefined
+            : projectInfo?.inventoryOverviewId,
+        libId:
+          libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
+            ? undefined
+            : projectInfo?.libId,
+
+        warehouseId:
+          warehouseInfo.findIndex((item: any) => item.value === projectInfo?.warehouseId) === -1
+            ? 'none'
+            : projectInfo?.warehouseId,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
         disclosureRange: handleDisclosureRange,
@@ -60,10 +79,11 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
   })
 
   useEffect(() => {
-    if (state) {
+    if (state && warehouseInfo && libData) {
       run()
     }
-  }, [state])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, warehouseInfo, libData])
 
   const sureProjectInheritEvent = () => {
     // TODO 做保存接口
@@ -130,6 +150,8 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
           status={1}
           projectId={projectId}
           engineerStart={startTime}
+          getWarehouseData={setWarehouseInfo}
+          getLibData={setLibData}
           engineerEnd={endTime}
           form={form}
         />

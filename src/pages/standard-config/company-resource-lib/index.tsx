@@ -34,7 +34,6 @@ import UploadAll from '../canon-resource-lib/./components/upload-all'
 import UploadDrawing from '../canon-resource-lib/./components/upload-drawing'
 import UploadExistedLib from '../canon-resource-lib/./components/upload-existed-lib'
 import SaveImportLib from '../canon-resource-lib/./components/upload-lib'
-
 import styles from './index.less'
 
 const ResourceLib: React.FC = () => {
@@ -171,9 +170,11 @@ const ResourceLib: React.FC = () => {
                   onClick={() => {
                     setCurrentCompanyManageId(record.id)
                     storage.setItem('manageId', record.id)
-                    history.push({
-                      pathname: `/standard-config/resource-manage?libId=${record.id}&&libName=${record.libName}`,
-                    })
+                    history.push(
+                      `/standard-config/resource-manage?libId=${record.id}&&libName=${encodeURI(
+                        record.libName
+                      )}`
+                    )
                   }}
                 >
                   <u>管理</u>

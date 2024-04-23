@@ -54,11 +54,20 @@ export const getRateTypeList = (rateFileId: string) => {
 }
 
 // 获取简单费率详情
-export const getEasyRate = (rateTableType: string, rateFileId: string) => {
+export const getEasyRate = (rateTableType: string | number, rateFileId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/GetEasyRate`, {
       method: 'GET',
       params: { rateFileId, rateTableType },
+    })
+  )
+}
+// 获取安全文明施工费率详情
+export const getSafetyRate = (rateFileId: string) => {
+  return cyRequest(() =>
+    request(`${baseUrl.tecEco1}/RateTable/GetSafeCultureRate`, {
+      method: 'GET',
+      params: { rateFileId },
     })
   )
 }
@@ -109,13 +118,15 @@ export const getBasicReserveRate = (rateFileId: string) => {
 
 // 导入费率表
 export const importRateTable = (rateFileId: string, file: File) => {
-  const data = new FormData()
-  data.append('file', file)
+  const formData = new FormData()
+  formData.append('file', file)
   // data.append('rateFileId', rateFileId)
   return cyRequest(() =>
-    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable?rateFileId=${rateFileId}`, {
+    request(`${baseUrl.tecEco1}/RateTable/ImportRateTable`, {
       method: 'POST',
-      data,
+      params: { rateFileId: rateFileId },
+      data: formData,
+      requestType: 'form',
     })
   )
 }
@@ -148,7 +159,7 @@ export const downloadTemplate = (rateFileType?: number) => {
 //   社保公积金费率 = 6
 
 // 获取拆除工程简单费率详情
-export const getDemolitionEasyRate = (rateTableType: string, rateFileId: string) => {
+export const getDemolitionEasyRate = (rateTableType: string | number, rateFileId: string) => {
   return cyRequest(() =>
     request(`${baseUrl.tecEco1}/RateTable/GetDemolitionEasyRate`, {
       method: 'GET',
@@ -183,16 +194,16 @@ export const queryAreaInfoList = (areaType: number) => {
   )
 }
 // 查询基础数据地区列表
-export const queryBasicAreaByLevel = (
-  level: number,
-  parentCode: string[],
-  areaType?: number,
+export const queryBasicAreaByLevel = (params: {
+  level: number
+  parentCode: string[]
+  areaType?: string
   firstCode?: string
-) => {
+}) => {
   return cyRequest<any[]>(() =>
     request(`${baseUrl.tecEco1}/Area/QueryBasicAreaByLevel`, {
       method: 'POST',
-      params: { level, parentCode, areaType, firstCode },
+      params: params,
     })
   )
 }

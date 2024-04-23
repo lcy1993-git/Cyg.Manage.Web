@@ -1,8 +1,7 @@
-import { Space } from 'antd'
-
 import PageCommonWrap from '@/components/page-common-wrap'
 import TableImportButton from '@/components/table-import-button'
 import { useMount } from 'ahooks'
+import { Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import AttritionRate from '../atrition-rate'
 import EarthworkParameters from '../earthwork-parameters'
@@ -16,7 +15,7 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
   const [name, setName] = useState<string>('')
   const getTabList = async () => {
     setName('')
-    const urlName = decodeURI(window.location.search.split('=')[1]).replace('&id', '')
+    const urlName = decodeURI(window.location.hash.split('=')[1]).replace('&id', '')
     setName(urlName)
     if (urlName === '地形增加系数') {
       setActive(3)
@@ -33,9 +32,9 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
     e && getTabList()
   }
   useMount(() => {
-    setName(decodeURI(window.location.search.split('=')[1]).replace('&id', '') ?? '')
+    setName(decodeURI(window.location.hash.split('=')[1]).replace('&id', '') ?? '')
   })
-  const detailId = window.location.search.split('=')[2]
+  const detailId = window.location.hash.split('=')[2]
   return (
     <PageCommonWrap>
       <div className={styles.costTemplate}>
@@ -44,14 +43,14 @@ const UsualQuotaTableDetail: React.FC<Props> = () => {
           <div className={styles.topButton}>
             <Space>
               <TableImportButton
-                extraParams={{}}
+                extraParams={{ commonlyTableType: active, RateFileId: detailId }}
                 modalTitle={'导入费率'}
                 buttonTitle={'导入费率'}
                 style={{ zIndex: 99 }}
                 template={true}
                 downType={active}
                 requestSource={'tecEco1'}
-                importUrl={`/RateTable/ImportRateTable?commonlyTableType=${active}&RateFileId=${detailId}`}
+                importUrl={`/RateTable/ImportRateTable`}
                 setSuccessful={setSuccessful}
               />
               {/*<TableImportButton*/}

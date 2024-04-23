@@ -36,7 +36,9 @@ const VerifycodeImage: React.FC<VerifycodeImageProps> = ({
   useEffect(() => {
     const requestHost = localStorage.getItem('requestHost')
     const currentHost =
-      requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+      requestHost && requestHost !== 'undefined'
+        ? requestHost
+        : `http://${window.location.host}/api`
     const handleUrl = `${baseUrl.common}/VerifyCode/Get`
 
     // let targetUrl = handleSM2Crypto(`${handleUrl}`)

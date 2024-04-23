@@ -255,7 +255,7 @@ const MaterialForm: React.FC<ChartListFromLibParams> = (props) => {
           <CyFormItem label="技术规范编号" name="technicalID" labelWidth={100}>
             <Input placeholder="请输入技术规范编号" />
           </CyFormItem>
-          <CyFormItem label="图号" name="drawingNum" labelWidth={100}>
+          <CyFormItem label="图号" name="figureNum" labelWidth={100}>
             <Input placeholder="请输入图号" />
           </CyFormItem>
           <CyFormItem label="物资编号" name="code" labelWidth={100}>

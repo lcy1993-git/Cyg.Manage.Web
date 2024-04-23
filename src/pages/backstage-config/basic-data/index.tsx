@@ -1,14 +1,14 @@
-import React from 'react'
-import PageCommonWrap from '@/components/page-common-wrap'
-import CommonTitle from '@/components/common-title'
-import styles from './index.less'
-import FileUpLoad from '@/components/file-upload'
-import { Button, Form, message } from 'antd'
-import { UploadOutlined } from '@ant-design/icons'
-import { baseUrl, commonUpload } from '@/services/common'
-import CyFormItem from '@/components/cy-form-item'
 import ExportAuthorityButton from '@/components/authortiy-export-button'
-import { uploadAuditLog } from '@/utils/utils'
+import CommonTitle from '@/components/common-title'
+import CyFormItem from '@/components/cy-form-item'
+import FileUpLoad from '@/components/file-upload'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { baseUrl, commonUpload } from '@/services/common'
+import { getLocalPath, uploadAuditLog } from '@/utils/utils'
+import { UploadOutlined } from '@ant-design/icons'
+import { Button, Form, message } from 'antd'
+import React from 'react'
+import styles from './index.less'
 
 const BasicData: React.FC = () => {
   const [assestsForm] = Form.useForm()
@@ -85,7 +85,7 @@ const BasicData: React.FC = () => {
               <CyFormItem label="气象区文件模板" labelAlign="right" labelWidth={111}>
                 <Button type="primary" style={{ width: '80px' }}>
                   <a
-                    href="/template/metareaTemp.xlsx"
+                    href={getLocalPath('/template/metareaTemp.xlsx')}
                     download="气象区文件模板.xlsx"
                     onClick={() => {
                       uploadAuditLog([

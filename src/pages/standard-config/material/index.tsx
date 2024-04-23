@@ -188,8 +188,8 @@ const Material: React.FC<libParams> = (props) => {
       width: 150,
     },
     {
-      dataIndex: 'drawingNum',
-      index: 'drawingNum',
+      dataIndex: 'figureNum',
+      index: 'figureNum',
       title: '图号',
       width: 150,
     },
@@ -270,7 +270,7 @@ const Material: React.FC<libParams> = (props) => {
           remark: '',
           chartIds: '',
           technicalID: '',
-          drawingNum: '',
+          figureNum: '',
         },
         value
       )

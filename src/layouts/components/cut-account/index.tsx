@@ -246,11 +246,11 @@ const CutAccount = (props: EditPasswordProps) => {
           rules={[
             {
               required: true,
-              message: '请输入用户名/邮箱/手机号',
+              message: '请输入用户名/手机号',
             },
           ]}
         >
-          <Input placeholder="请输入用户名/邮箱/手机号" />
+          <Input placeholder="请输入用户名/手机号" />
         </CyFormItem>
         <CyFormItem
           name="pwd"

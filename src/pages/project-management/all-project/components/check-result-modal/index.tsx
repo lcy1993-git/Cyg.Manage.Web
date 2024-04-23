@@ -1,30 +1,29 @@
+import excelSvg from '@/assets/image/fileIcon/excel.svg'
+import foldSvg from '@/assets/image/fileIcon/fold.svg'
+import jpgSvg from '@/assets/image/fileIcon/jpg.svg'
+import pdfSvg from '@/assets/image/fileIcon/pdf.svg'
+import wordSvg from '@/assets/image/fileIcon/word.svg'
+import { FileType } from '@/components/api-file-view/getStrategyComponent'
+import UrlFileView from '@/components/url-file-view'
+import { baseUrl } from '@/services/common'
 import {
-  createResult,
-  downloadFile,
-  getResultTreeData,
   createCompileResult,
+  createResult,
+  downloadAuditFile,
+  downloadFile,
   downloadFileCompile,
   getCompileResultTreeData,
-  downloadAuditFile,
+  getResultTreeData,
 } from '@/services/project-management/all-project'
+import { uploadAuditLog } from '@/utils/utils'
 import { FileOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Button, Modal, Spin, message, Tabs } from 'antd'
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react'
+import { Button, message, Modal, Spin, Tabs } from 'antd'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import CompileResultTab from '../check-compile-result'
 import DesignResultTab from '../check-design-result'
-import pdfSvg from '@/assets/image/fileIcon/pdf.svg'
-import foldSvg from '@/assets/image/fileIcon/fold.svg'
-import wordSvg from '@/assets/image/fileIcon/word.svg'
-import excelSvg from '@/assets/image/fileIcon/excel.svg'
-import jpgSvg from '@/assets/image/fileIcon/jpg.svg'
-
-import styles from './index.less'
-import UrlFileView from '@/components/url-file-view'
-import { FileType } from '@/components/api-file-view/getStrategyComponent'
 import ViewAuditFile from '../external-list-modal/components/viewFile'
-import { uploadAuditLog } from '@/utils/utils'
-import { baseUrl } from '@/services/common'
+import styles from './index.less'
 
 const { TabPane } = Tabs
 
@@ -67,7 +66,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   })
 
   const setCurrentFileInfo = (info: CurrentFileInfo) => {
-    if (info.type === 'doc' || info.type === 'xls') {
+    if (info.type === 'doc' || info.type === 'xls' || info.type === 'xml') {
       message.error(`当前版本暂不支持${info.type}文件预览，请导出该文件在本地进行预览`)
     } else {
       setCurrentFileInfoErr(info)
@@ -75,7 +74,7 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
   }
 
   const setAuditFileInfo = (info: AuditFileInfo) => {
-    if (info.extension === '.doc' || info.extension === '.xls') {
+    if (info.extension === '.doc' || info.extension === '.xls' || info.extension === 'xml') {
       message.error(`当前版本暂不支持${info.extension}文件预览，请导出该文件在本地进行预览`)
     } else {
       setAuditFileInfoErr(info)

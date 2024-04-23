@@ -13,7 +13,7 @@ import {
 import { handleDecrypto, translateMatDataToTree } from '@/utils/utils'
 import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Input, message, Modal, Table } from 'antd'
+import { Button, Input, message, Modal, Table } from 'antd'
 import classnames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
@@ -781,8 +781,13 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         visible={mediaListVisibel}
         width="96%"
         onOk={onOkClick}
-        onCancel={() => store.setMediaListVisibel(false)}
+        // onCancel={() => store.setMediaListVisibel(false)}
         // width={1200}
+        footer={[
+          <Button key="cancle" onClick={() => store.setMediaListVisibel(false)}>
+            关闭
+          </Button>,
+        ]}
         maskClosable={true}
       >
         <Table

@@ -209,7 +209,7 @@ export const UploadChapterDescriptionFile = (data: {
 }) => {
   return cyRequest(() =>
     request(
-      `${baseUrl.tecEco}//QuotaLibraryCatalog/UploadChapterDescriptionFile/${data.quotaLibraryCatalogId}`,
+      `${baseUrl.tecEco}/QuotaLibraryCatalog/UploadChapterDescriptionFile/${data.quotaLibraryCatalogId}`,
       { method: 'POST', data: formData(data), requestType: 'form' }
     )
   )

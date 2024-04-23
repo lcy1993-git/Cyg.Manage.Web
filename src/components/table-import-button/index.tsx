@@ -57,7 +57,9 @@ const TableImportButton: React.FC<TableImportButtonProps> = (props) => {
     })
     let finallyFileName = `模板.xlsx`
     //for IE
+    // @ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      //@ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, finallyFileName)
     } else {
       // for Non-IE

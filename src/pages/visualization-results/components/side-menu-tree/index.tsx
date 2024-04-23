@@ -3,6 +3,7 @@ import exportMedia from '@/assets/icon-image/menu-tree-icon/导出多媒体.png'
 import { useLayoutStore } from '@/layouts/context'
 import EngineerDetailInfo from '@/pages/project-management/all-project/components/engineer-detail-info'
 import ProjectDetailInfo from '@/pages/project-management/all-project/components/project-detail-info'
+import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
 import { downloadMapPositon } from '@/services/visualization-results/list-menu'
 import {
   downloadMediaZipFile,
@@ -21,6 +22,8 @@ import _ from 'lodash'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
 import React, { FC, useEffect, useRef, useState } from 'react'
+import { useContainer } from '../../result-page/mobx-store'
+import SjSidePopup from '../../result-page/siji-map/components/side-popup'
 import { flattenDeepToKey, getSelectKeyByKeyword, TreeNodeType } from '../../utils/utils'
 import CommentModal from '../comment-modal'
 import ControlLayers from '../control-layers'
@@ -30,13 +33,9 @@ import MaterialModal from '../material-modal'
 import MigrateDataModal from '../migrate-data-modal'
 import ResultModal from '../result-modal'
 import SiderMenuAreaButtons from '../side-menu-area-buttons'
-
+import SidePopup from '../side-popup'
 import MenuTree from './components/menu-tree'
 import styles from './index.less'
-import { getMoveData } from '@/pages/visualization-results/utils/mapClick'
-import SidePopup from '../side-popup'
-import { useContainer } from '../../result-page/mobx-store'
-import SjSidePopup from '../../result-page/siji-map/components/side-popup'
 
 const { RangePicker } = DatePicker
 
@@ -173,7 +172,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       if (buttonActive === 2) {
         // 初次请求初始化默认省级状态
         deepKeyArray(treeData, false, 2, selectArray)
-
         setSelectedKeys(selectArray)
 
         setExpandedKeys(flattenDeepToKey(treeData, 2, 'key', '-1'))
@@ -418,7 +416,7 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
   }
 
   const { data: treeListReponseData, loading: treeListDataLoading } = useRequest(whichTabToFetch, {
-    throttleInterval: 1000,
+    throttleInterval: 300,
     refreshDeps: [resultCondition, tabActiveKey],
     throwOnError: true,
     onSuccess: () => {
@@ -428,7 +426,6 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       store.setFilterCondition(resultCondition)
       if (treeListReponseData?.length) {
         const data = generateProjectTree(treeListReponseData)
-
         setTreeData(data)
         initSideTree(data)
         // 修复初次请求默认到县级的bug

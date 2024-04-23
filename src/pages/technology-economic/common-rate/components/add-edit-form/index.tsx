@@ -1,8 +1,7 @@
-import React from 'react'
-import { Input, Col, Row } from 'antd'
-import UrlSelect from '@/components/url-select'
 import CyFormItem from '@/components/cy-form-item'
 import DateFormItem from '@/components/date-from-item'
+import { Col, Input, Row } from 'antd'
+import React from 'react'
 import { getEnums } from '../../../utils'
 getEnums('RateTableType')
 
@@ -39,13 +38,13 @@ const DictionaryForm: React.FC<Props> = () => {
           <CyFormItem label="费率年度" name="year">
             <DateFormItem picker="year" />
           </CyFormItem>
-          <CyFormItem label="适用专业" name="majorType">
+          {/* <CyFormItem label="适用专业" name="majorType">
             <UrlSelect
               url="/CommonEnum/GetMajorTypeEnums"
               requestType="get"
               requestSource="tecEco"
             />
-          </CyFormItem>
+          </CyFormItem> */}
           <CyFormItem label="发布时间" name="publishDate">
             <DateFormItem />
           </CyFormItem>

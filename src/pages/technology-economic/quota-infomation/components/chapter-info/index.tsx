@@ -9,7 +9,7 @@ import {
 import { handleGetUrl, uploadAuditLog } from '@/utils/utils'
 import { DownloadOutlined, ExportOutlined } from '@ant-design/icons'
 import { useBoolean } from 'ahooks'
-import { Button, message, Modal } from 'antd'
+import { Button, message, Modal, Spin } from 'antd'
 import React, { useEffect, useState } from 'react'
 import WangEditor from '../wang-editor'
 import styles from './index.less'
@@ -38,6 +38,8 @@ const ChapterInfo: React.FC<Props> = ({
   const [docx, setDocx] = useState<any[]>([])
   const [triggerUploadFile, {}] = useBoolean(false)
 
+  // 添加上传Loading
+  const [loading, setLoading] = useState<boolean>(false)
   const saveData = () => {
     saveQuotaLibraryCatalogDescription({ id, chapterDescription: html })
     setModalVisible(false)
@@ -57,7 +59,7 @@ const ChapterInfo: React.FC<Props> = ({
 
   const requestHost = localStorage.getItem('requestHost')
   const currentHost =
-    requestHost && requestHost !== 'undefined' ? requestHost : 'http://localhost:8000/api'
+    requestHost && requestHost !== 'undefined' ? requestHost : `http://${window.location.host}/api`
 
   const handleUrl = `${baseUrl.upload}/Download/GetFileById`
 
@@ -127,25 +129,40 @@ const ChapterInfo: React.FC<Props> = ({
       message.warning('文档名称和选择目录名称不相同')
       return
     }
+
     if (type === 'zip') {
+      setLoading(true)
       await UploadChapterDescriptionFiles({
         files: file,
         quotaLibraryCatalogId: fileId,
       })
-      update()
+        .then(() => {
+          update()
+          setLoading(false)
+          setUploadModalVisible(false)
+        })
+        .catch(() => {
+          setLoading(false)
+        })
     } else {
       if (title !== file[0].name.split('.')[0]) {
         message.warn('当前选中章节与上传文档的章节说明不匹配,请重新选择章节!')
         return
       }
+      setLoading(true)
       await UploadChapterDescriptionFile({
         file: file,
         quotaLibraryCatalogId: nodeId as string,
       })
-      update()
+        .then(() => {
+          update()
+          setLoading(false)
+          setUploadModalVisible(false)
+        })
+        .catch(() => {
+          setLoading(false)
+        })
     }
-
-    setUploadModalVisible(false)
   }
   const showSuccess = (html: string) => {
     setHtml(html)
@@ -195,17 +212,20 @@ const ChapterInfo: React.FC<Props> = ({
         visible={uploadModalVisible}
         title="导入-章节说明"
         width="30%"
+        maskClosable={false}
         destroyOnClose={true}
         onCancel={() => setUploadModalVisible(false)}
         onOk={uploadFile}
       >
-        <FileUpload
-          accept=".zip,.docx,.doc"
-          uploadFileBtn={false}
-          trigger={triggerUploadFile}
-          onChange={onChange}
-          maxCount={1}
-        />
+        <Spin spinning={loading} tip="上传中...">
+          <FileUpload
+            accept=".zip,.docx,.doc"
+            uploadFileBtn={false}
+            trigger={triggerUploadFile}
+            onChange={onChange}
+            maxCount={1}
+          />
+        </Spin>
       </Modal>
     </div>
   )
