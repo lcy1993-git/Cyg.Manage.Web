@@ -116,6 +116,10 @@ export const useGetButtonJurisdictionArray = () => {
 
 export const useGetProjectEnum = () => {
   const { data: resData } = useRequest(() => getEngineerEnum(), {})
+
+  //获取现场数据来源是否仅勘察
+  const surveyOnly = localStorage.getItem('surveyOnly')
+
   const {
     meteorologicLevel,
     projectAssetsNature,
@@ -136,7 +140,14 @@ export const useGetProjectEnum = () => {
     projectRegionAttribute,
     projectStage,
   } = resData ?? {}
-  const handleDataSourceType = projectDataSourceType?.filter((item: any) => item.value === 0)
+
+  // 现场数据来源仅勘察 ，判断Tag：surveyOnly
+  const handleDataSourceType = projectDataSourceType?.filter((item: any) => {
+    if (surveyOnly && Number(surveyOnly) === 1) {
+      return item.value === 0
+    }
+    return item.value !== -1
+  })
   return {
     meteorologicLevel,
     projectAssetsNature,

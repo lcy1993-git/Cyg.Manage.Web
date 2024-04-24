@@ -1,26 +1,30 @@
+import EnumSelect from '@/components/enum-select'
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
-import { DownloadOutlined, FormOutlined } from '@ant-design/icons'
-import { Button, Modal, message, Input, DatePicker, Form, Space } from 'antd'
-import React, { useRef, useState } from 'react'
-import { isArray } from 'lodash'
-import { getFeedbackDetail, handleFeedback } from '@/services/system-config/platform-feedback'
-import { useRequest } from 'ahooks'
 import TableSearch from '@/components/table-search'
-import styles from './index.less'
-import FeedBackFormfrom from './components/deal-form'
-import moment, { Moment } from 'moment'
-import EnumSelect from '@/components/enum-select'
-import { Spin } from 'antd'
-import { SourceType, Category, Status } from '@/services/system-config/platform-feedback'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { downLoadFileItem } from '@/services/operation-config/company-file'
+import {
+  Category,
+  getFeedbackDetail,
+  handleFeedback,
+  SourceType,
+  Status,
+} from '@/services/system-config/platform-feedback'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { DownloadOutlined, FormOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, DatePicker, Form, Input, message, Modal, Space, Spin } from 'antd'
+import { isArray } from 'lodash'
+import moment, { Moment } from 'moment'
+import React, { useRef, useState } from 'react'
+import FeedBackFormfrom from './components/deal-form'
+import styles from './index.less'
 
 const { Search } = Input
 
 const PlatFormFeedBack: React.FC = () => {
   const tableRef = useRef<HTMLDivElement>(null)
-  const [tableSelectRows, setTableSelectRows] = useState<object | object[]>([])
+  const [tableSelectRows, setTableSelectRows] = useState<any[]>([])
   const [searchKeyWord, setSearchKeyWord] = useState<string>('')
 
   const [beginDate, setBeginDate] = useState<Moment | null>()
@@ -51,7 +55,7 @@ const PlatFormFeedBack: React.FC = () => {
       message.error('该反馈没有可以下载的文件')
       return
     }
-    const res = await downLoadFileItem({ fileId: tableSelectRows[0]?.fileId })
+    const res = await downLoadFileItem({ fileId: tableSelectRows[0]?.fileId.match(/\d+/g)[0] })
     const suffix = tableSelectRows[0]?.fileName?.substring(
       tableSelectRows[0]?.fileName.lastIndexOf('.') + 1
     )
@@ -59,7 +63,9 @@ const PlatFormFeedBack: React.FC = () => {
       type: `application/${suffix}`,
     })
     // for IE
+    // @ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      // @ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, tableSelectRows[0]?.fileName)
     } else {
       // for Non-IE

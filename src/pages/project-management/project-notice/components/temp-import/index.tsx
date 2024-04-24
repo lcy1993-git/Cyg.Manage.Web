@@ -1,27 +1,31 @@
 import CyFormItem from '@/components/cy-form-item'
 import CyTip from '@/components/cy-tip'
 import FileUpload from '@/components/file-upload'
-import { importCloudPlat } from '@/services/project-management/project-notice'
+import UrlSelect from '@/components/url-select'
+import { importCloudPlat, importMaterialInfo } from '@/services/project-management/project-notice'
 import { getLocalPath, handleDecrypto } from '@/utils/utils'
-import { CaretDownOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
 import { Button, Form, message, Modal, Select } from 'antd'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { categoryList } from '../../material-tabs'
 
 interface UploadAddProjectProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
   currentKey: string
+  category?: number
   refreshEvent?: (value: any) => void
 }
 
 const { Option } = Select
 
 const TempImport: React.FC<UploadAddProjectProps> = (props) => {
-  const { currentKey, refreshEvent } = props
+  const { currentKey, refreshEvent, category } = props
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   //阶段选择
   const [stage, setStage] = useState<number>()
+
+  const [pCategory, setPCategory] = useState<number>() //项目类别
 
   const [requestLoading, setRequestLoading] = useState(false)
 
@@ -53,18 +57,31 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
       if (currentKey === 'yun') {
         const res = await importCloudPlat(file, 'project', `/Hotfix231202/ImportCloudPlat`, stage)
         const handleRes = handleDecrypto(res)
-        console.log(handleRes, '123')
+        if (handleRes.code === 5000 || handleRes.code === 500 || handleRes.code !== 200) {
+          message.error(handleRes.message)
+          setRequestLoading(false)
+          return
+        }
+      } else if (currentKey === 'pf') {
+        const res = await importCloudPlat(
+          file,
+          'project',
+          `/Hotfix231202/ImportApprovedEngineer`,
+          stage
+        )
+        const handleRes = handleDecrypto(res)
         if (handleRes.code === 5000 || handleRes.code === 500 || handleRes.code !== 200) {
           message.error(handleRes.message)
           setRequestLoading(false)
           return
         }
       } else {
-        const res = await importCloudPlat(
+        const res = await importMaterialInfo(
           file,
           'project',
-          `/Hotfix231202/ImportApprovedEngineer`,
-          stage
+          `/Hotfix240506/ImportMaterialInfo`,
+          stage,
+          category
         )
         const handleRes = handleDecrypto(res)
         if (handleRes.code === 5000 || handleRes.code === 500 || handleRes.code !== 200) {
@@ -121,6 +138,24 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
           </CyTip>
           <div style={{ padding: '20px' }}>
             <CyFormItem
+              label="项目类别"
+              labelWidth={100}
+              required
+              name="PCategory"
+              rules={[{ required: true, message: '未选择项目类别' }]}
+            >
+              <UrlSelect
+                valuekey="value"
+                titlekey="text"
+                defaultData={categoryList}
+                value={pCategory}
+                onChange={(value: any) => {
+                  setPCategory(value)
+                }}
+                placeholder="项目类别"
+              />
+            </CyFormItem>
+            <CyFormItem
               label="设计阶段"
               labelWidth={100}
               required
@@ -130,25 +165,33 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
               <Select
                 placeholder="请选择"
                 value={stage}
-                suffixIcon={<CaretDownOutlined />}
                 onChange={(value: any) => changeStage(value)}
               >
-                {currentKey === 'yun' && <Option value={2}>可研统计</Option>}
+                {currentKey !== 'pf' && <Option value={2}>可研统计</Option>}
                 <Option value={3}>初设统计</Option>
                 <Option value={4}>施工统计</Option>
                 <Option value={5}>竣工统计</Option>
               </Select>
             </CyFormItem>
+
             <CyFormItem label="下载模板" labelWidth={100}>
               <Button type="primary" style={{ width: '100px' }}>
                 <a
                   href={getLocalPath(
-                    `/template/${currentKey === 'yun' ? 'cloudTemp' : 'replyTemp'}.xlsx`
+                    `/template/${
+                      currentKey === 'yun'
+                        ? 'cloudTemp'
+                        : currentKey === 'pf'
+                        ? 'replyTemp'
+                        : 'material'
+                    }.xlsx`
                   )}
                   download={`${
                     currentKey === 'yun'
                       ? '云平台应用统计模板V1.0.xlsx'
-                      : '批复工程量项目填写模板V1.0.xlsx'
+                      : currentKey === 'pf'
+                      ? '批复工程量项目填写模板V1.0.xlsx'
+                      : '物料统计模版'
                   }`}
                 >
                   点击下载

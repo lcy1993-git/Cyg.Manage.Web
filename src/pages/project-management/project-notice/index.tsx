@@ -6,6 +6,7 @@ import PageCommonWrap from '@/components/page-common-wrap'
 import { Tabs } from 'antd'
 import React from 'react'
 import styles from './index.less'
+import MaterialTabs from './material-tabs'
 import ProjectTabs from './project-tabs'
 import UserTabs from './user-tabs'
 
@@ -25,6 +26,9 @@ const ProjectNotice: React.FC = () => {
               </TabPane>
               <TabPane tab="项目统计" key="project">
                 <ProjectTabs />
+              </TabPane>
+              <TabPane tab="物资统计" key="material">
+                <MaterialTabs />
               </TabPane>
             </Tabs>
           </div>

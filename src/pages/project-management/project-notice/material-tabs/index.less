@@ -1,0 +1,38 @@
+.missionTabs {
+  height: 95%;
+  position: relative;
+
+  .filterArea {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    right: 0;
+    z-index: 999;
+  }
+
+  .tabsBottom {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    font-size: 12px;
+  }
+
+  :global {
+    .ant-tabs-nav-wrap {
+      padding: 20px;
+    }
+
+    .ant-tabs-nav-wrap .ant-tabs-tab {
+      width: 130px !important;
+      background-color: white !important;
+
+      .ant-tabs-tab-btn {
+        width: 130px !important;
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      bottom: -20px !important;
+    }
+  }
+}
