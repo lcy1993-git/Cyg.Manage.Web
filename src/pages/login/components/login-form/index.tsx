@@ -136,6 +136,10 @@ const LoginForm: React.FC<Props> = (props) => {
           const stageSelect = await getConfigSwitch('stageSelect')
           stageSelect && localStorage.setItem('stageSelect', stageSelect.value)
 
+          //现场数据来源仅勘察
+          const surveyOnly = await getConfigSwitch('surveyOnly')
+          surveyOnly && localStorage.setItem('surveyOnly', surveyOnly.value)
+
           const userInfo = await GetCommonUserInfo()
           userInfo && localStorage.setItem('userInfo', JSON.stringify(userInfo))
 

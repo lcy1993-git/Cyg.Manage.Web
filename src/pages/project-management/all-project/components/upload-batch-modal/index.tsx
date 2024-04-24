@@ -29,6 +29,9 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
     setState(false)
   }
 
+  //获取现场数据来源是否仅勘察
+  const surveyOnly = localStorage.getItem('surveyOnly')
+
   //下载excel批量立项模板
   const downloadModalFileEvent = () => {}
 
@@ -102,7 +105,16 @@ const UploadAddProjectModal: React.FC<UploadAddProjectProps> = (props) => {
                 style={{ width: '100px' }}
                 onClick={() => downloadModalFileEvent()}
               >
-                <a href={getLocalPath('/template/proTemp.xlsx')} download="批量立项模板.xlsx">
+                <a
+                  href={getLocalPath(
+                    `${
+                      surveyOnly && Number(surveyOnly) === 1
+                        ? '/template/proTempSurveyOnly.xlsx'
+                        : '/template/proTemp.xlsx'
+                    }`
+                  )}
+                  download="批量立项模板.xlsx"
+                >
                   点击下载
                 </a>
               </Button>

@@ -125,3 +125,43 @@ export const exportApproved = (params: number | undefined) => {
     responseType: 'blob',
   })
 }
+
+// 物资统计：导出基础统计、导出简略统计
+export const exportBaseStatistic = (projectStage: number, PCategory: number) => {
+  return request(`${baseUrl.project}/Hotfix240506/ExportMaterialStaticsData`, {
+    method: 'POST',
+    params: { projectStage, PCategory, statisticsOperationCategory: 1 },
+    responseType: 'blob',
+  })
+}
+
+export const exportShortStatistic = (projectStage: number, PCategory: number) => {
+  return request(`${baseUrl.project}/Hotfix240506/ExportMaterialBriefStaticsData`, {
+    method: 'POST',
+    params: { projectStage, PCategory, statisticsOperationCategory: 1 },
+    responseType: 'blob',
+  })
+}
+
+//导入物料信息
+export const importMaterialInfo = (
+  files: any[],
+  requestSource: 'project',
+  url: string,
+  stage: any,
+  category: any
+) => {
+  const formData = new FormData()
+  files?.forEach((item) => {
+    formData.append('file', item)
+  })
+
+  const uploadUrl = `${baseUrl[requestSource]}${url}`
+
+  return request(uploadUrl, {
+    method: 'POST',
+    params: { projectStage: stage, PCategory: category, statisticsOperationCategory: 1 },
+    data: formData,
+    requestType: 'form',
+  })
+}
