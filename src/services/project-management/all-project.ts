@@ -1089,14 +1089,13 @@ export enum QgcTypeEnum {
   '立项项目' = 30,
 }
 
-export enum stageEnum {
-  '需求编制' = 1,
-  '可研' = 2,
-  '初设' = 3,
-  '施工图' = 4,
-  '竣工图' = 5,
-  '设计变更' = 41,
-}
+export const stageEnum = [
+  { value: 1, text: '需求编制' },
+  { value: 2, text: '可研' },
+  { value: 3, text: '初设' },
+  { value: 4, text: '施工图' },
+  { value: 5, text: '竣工图' },
+]
 
 // 全过程变更项目关联关系
 export const postBatchSyncProject = (qgcPullType: any) => {

@@ -122,6 +122,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     projectId: '',
     areaId: '',
     company: '',
+    stage: '',
     companyName: '',
     canEditQgc: false,
   })
@@ -399,7 +400,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
         )} */}
         {/* {jurisdictionInfo.canSubmitQgc && ( */}
-        <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id)}>提交项目</Menu.Item>
+        <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id, tableItemData.stage)}>
+          提交项目
+        </Menu.Item>
         {/* )} */}
 
         {tableItemData.stateInfo.status !== 14 &&
@@ -422,9 +425,10 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     })
     setProjectMergeVisible(true)
   }
-  const submitProjectToQGC = (projectId: string) => {
+  const submitProjectToQGC = (projectId: string, stage: string) => {
     setModalInfo({
       projectId: projectId,
+      stage: stage,
     })
     // Modal.confirm({
     //   title: '项目提交',
@@ -1521,6 +1525,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
           onChange={setSubmitVisible}
           finishEvent={delayRefresh}
           projectId={modalNeedInfo.projectId}
+          currentStage={Number(modalNeedInfo.stage)}
         />
       )}
     </div>

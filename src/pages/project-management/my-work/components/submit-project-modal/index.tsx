@@ -1,5 +1,5 @@
 import CyFormItem from '@/components/cy-form-item'
-import EnumSelect from '@/components/enum-select'
+import UrlSelect from '@/components/url-select'
 import { postSubmitProjectToQGC, stageEnum } from '@/services/project-management/all-project'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useControllableValue } from 'ahooks'
@@ -11,12 +11,13 @@ interface SubmitProjectProps {
   visible: boolean
   onChange: Dispatch<SetStateAction<boolean>>
   finishEvent: () => void
+  currentStage: number
 }
 
 const SubmitProjectModal: React.FC<SubmitProjectProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [loading, setLoading] = useState<boolean>(false)
-  const [stage, setStage] = useState<string>('2')
+
   const [result, setResult] = useState<{ isSuccess: boolean; info: string }>({
     isSuccess: false,
     info: '',
@@ -25,7 +26,9 @@ const SubmitProjectModal: React.FC<SubmitProjectProps> = (props) => {
   //获取阶段是否屏蔽开关
   const stageSelect = localStorage.getItem('stageSelect')
 
-  const { projectId, finishEvent } = props
+  const { projectId, finishEvent, currentStage } = props
+
+  const [stage, setStage] = useState<number>(currentStage)
 
   const submitEvent = async () => {
     setLoading(true)
@@ -76,9 +79,14 @@ const SubmitProjectModal: React.FC<SubmitProjectProps> = (props) => {
             required
             rules={[{ required: true, message: '请选择提交阶段' }]}
           >
-            <EnumSelect
-              enumList={stageEnum}
+            <UrlSelect
+              style={{ width: '200px' }}
+              showSearch
+              titlekey="text"
+              defaultData={stageEnum.slice(0, currentStage)}
+              valuekey="value"
               value={stage}
+              placeholder="请选择"
               onChange={(value: any) => setStage(value)}
             />
           </CyFormItem>
