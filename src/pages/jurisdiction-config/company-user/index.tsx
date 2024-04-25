@@ -1,38 +1,38 @@
+import CommonTitle from '@/components/common-title'
+import CyTag from '@/components/cy-tag'
+import EnumSelect from '@/components/enum-select'
 import GeneralTable from '@/components/general-table'
 import PageCommonWrap from '@/components/page-common-wrap'
-import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons'
-import { Button, Modal, Form, message, Input, Spin } from 'antd'
-import React, { useMemo, useRef, useState } from 'react'
-import CompanyUserForm from './components/add-edit-form'
-import { isArray } from 'lodash'
-import {
-  getCompanyUserDetail,
-  addCompanyUserItem,
-  updateCompanyUserItem,
-  updateItemStatus,
-  resetItemPwd,
-  // batchAddCompanyUserItem,
-  getCurrentCompanyInfo,
-} from '@/services/personnel-config/company-user'
-import { getTreeSelectData } from '@/services/operation-config/company-group'
-import { useRequest } from 'ahooks'
-import EnumSelect from '@/components/enum-select'
-import { BelongManageEnum } from '@/services/personnel-config/manage-user'
-import ResetPasswordForm from './components/reset-form'
-import moment from 'moment'
 import TableSearch from '@/components/table-search'
-import styles from './index.less'
 // import BatchAddCompanyUser from './components/batch-add-form';
 import TableStatus from '@/components/table-status'
-import uuid from 'node-uuid'
-import CyTag from '@/components/cy-tag'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import CommonTitle from '@/components/common-title'
-import AccreditStatistic from './components/accredit-statistic'
-import { history } from 'umi'
 import { useLayoutStore } from '@/layouts/context'
-import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
 import { baseUrl } from '@/services/common'
+import { getTreeSelectData } from '@/services/operation-config/company-group'
+import {
+  addCompanyUserItem,
+  getCompanyUserDetail,
+  // batchAddCompanyUserItem,
+  getCurrentCompanyInfo,
+  resetItemPwd,
+  updateCompanyUserItem,
+  updateItemStatus,
+} from '@/services/personnel-config/company-user'
+import { BelongManageEnum } from '@/services/personnel-config/manage-user'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { handleSM2Crypto, uploadAuditLog } from '@/utils/utils'
+import { EditOutlined, PlusOutlined, ReloadOutlined, SwapOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+import { isArray } from 'lodash'
+import moment from 'moment'
+import uuid from 'node-uuid'
+import React, { useMemo, useRef, useState } from 'react'
+import { history } from 'umi'
+import AccreditStatistic from './components/accredit-statistic'
+import CompanyUserForm from './components/add-edit-form'
+import ResetPasswordForm from './components/reset-form'
+import styles from './index.less'
 
 const { Search } = Input
 
@@ -137,11 +137,11 @@ const CompanyUser: React.FC = () => {
       return
     }
     const userId = tableSelectRows[0].id
-    const name = tableSelectRows[0].name
+    const name = encodeURI(tableSelectRows[0].name) //中文转码处理
     const userName = tableSelectRows[0].userName
-    history.push({
-      pathname: `/jurisdiction-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`,
-    })
+    history.push(
+      `/jurisdiction-config/work-handover?id=${userId}&name=${name}&userName=${userName}`
+    )
   }
 
   //数据修改刷新

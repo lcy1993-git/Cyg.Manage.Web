@@ -40,6 +40,9 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
     endTime,
   } = props
 
+  //获取现场数据来源是否仅勘察
+  const surveyOnly = localStorage.getItem('surveyOnly')
+
   const {
     data: projectInfo,
     run,
@@ -53,7 +56,10 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
         deadline: projectInfo?.startTime ? moment(projectInfo?.deadline) : null,
         natures: (projectInfo?.natures ?? []).map((item: any) => item.value),
         isAcrossYear: projectInfo?.isAcrossYear ? 'true' : 'false',
-        dataSourceType: projectInfo?.dataSourceType === 0 ? projectInfo?.dataSourceType : undefined,
+        dataSourceType:
+          surveyOnly && Number(surveyOnly) === 1 && projectInfo?.dataSourceType !== 0
+            ? undefined
+            : projectInfo?.dataSourceType,
 
         inventoryOverviewId:
           libData.findIndex((item: any) => item.value === projectInfo?.libId) === -1
@@ -68,8 +74,17 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
             ? undefined
             : projectInfo?.warehouseId,
         disclosureRange:
-          projectInfo?.dataSourceType === 0 ? projectInfo?.disclosureRange : undefined,
-        pileRange: projectInfo?.dataSourceType === 0 ? projectInfo?.pileRange : undefined,
+          surveyOnly && Number(surveyOnly) === 1 && projectInfo?.dataSourceType !== 0
+            ? undefined
+            : projectInfo?.dataSourceType === 0
+            ? projectInfo?.disclosureRange
+            : undefined,
+        pileRange:
+          surveyOnly && Number(surveyOnly) === 1 && projectInfo?.dataSourceType !== 0
+            ? undefined
+            : projectInfo?.dataSourceType === 0
+            ? projectInfo?.pileRange
+            : undefined,
       })
     },
   })
