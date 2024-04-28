@@ -152,6 +152,13 @@ const MaterialTabs: React.FC = () => {
       width: 120,
       align: 'center',
     },
+    {
+      title: '单位',
+      index: 'materialUnit',
+      dataIndex: 'materialUnit',
+      width: 120,
+      align: 'center',
+    },
   ]
 
   const sColumns: any[] = [
@@ -223,6 +230,13 @@ const MaterialTabs: React.FC = () => {
       title: '物料数量',
       index: 'count',
       dataIndex: 'count',
+      width: 120,
+      align: 'center',
+    },
+    {
+      title: '单位',
+      index: 'materialUnit',
+      dataIndex: 'materialUnit',
       width: 120,
       align: 'center',
     },

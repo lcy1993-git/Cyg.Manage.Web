@@ -80,7 +80,7 @@ export const configInfo: any = {
   },
   areaStatisticsUrl: '/chart/index.html',
   commonServer: 'https://bbgl.gczhyun.com/common',
-  version: '1.0.301',
+  version: '1.0.303',
 }
 
 const initConfig = async () => {

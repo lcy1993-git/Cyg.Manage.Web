@@ -5,7 +5,6 @@ import UrlSelect from '@/components/url-select'
 import {
   getQuotaScopeEnums,
   queryMaterialMachineLibraryPager,
-  queryQuotaLibraryPager,
 } from '@/services/technology-economic'
 import { useMount, useRequest } from 'ahooks'
 import { Col, Input, Row, Select } from 'antd'
@@ -29,7 +28,7 @@ const DictionaryForm: React.FC<any> = () => {
 
   const MaterialMachineLibraryList = MaterialMachineLibraryData?.items ?? []
   // const [materialList, setMaterialList] = useState<{ name: string; id: string }[]>([])
-  const [library, setLibrary] = useState<{ quotaScope: number; id: string }[]>([])
+  // const [library, setLibrary] = useState<{ quotaScope: number; id: string }[]>([])
   const [enums, setEnums] = useState<{ text: string; value: number }[]>([])
   useMount(() => {
     getMaterialData()
@@ -41,8 +40,8 @@ const DictionaryForm: React.FC<any> = () => {
     //   pageSize: 10000,
     // })
     // setMaterialList(res.items)
-    const data: any = await queryQuotaLibraryPager({ pageIndex: 1, pageSize: 3000 })
-    setLibrary(data?.items as [])
+    // const data: any = await queryQuotaLibraryPager({ pageIndex: 1, pageSize: 3000 })
+    // setLibrary(data?.items as [])
     const enumArr: any = await getQuotaScopeEnums()
     setEnums(enumArr)
   }
@@ -81,7 +80,7 @@ const DictionaryForm: React.FC<any> = () => {
                   <Option
                     key={item.value}
                     value={item.value}
-                    disabled={library.filter((val) => val.quotaScope === item.value).length !== 0}
+                    // disabled={library.filter((val) => val.quotaScope === item.value).length !== 0}
                   >
                     {item.text}
                   </Option>

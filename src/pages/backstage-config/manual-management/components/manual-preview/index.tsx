@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
 import DocxFileViewer from '@/components/docx-file-viewer'
-import { Spin } from 'antd'
-import styles from './index.less'
 import { useMount } from 'ahooks'
+import { Spin } from 'antd'
+import React, { useLayoutEffect, useState } from 'react'
+import styles from './index.less'
 
 interface Props {
   file: any[]
@@ -118,10 +118,19 @@ const ManualPreview: React.FC<Props> = (props) => {
   })
   useMount(() => {
     turnFileToBlob(file)
+
     setTimeout(() => {
       setPageLoading(false)
     }, 2000)
   })
+
+  useLayoutEffect(() => {
+    const catelogId = window.location.href.split('catelogId=')[1]
+    const thisElementTop = document.getElementById(catelogId)?.offsetTop
+    if (document.getElementById('pageShowFileContent') !== null && catelogId) {
+      document.getElementById('pageShowFileContent')!.scrollTop = thisElementTop!
+    }
+  }, [elementStr])
   return (
     <div className={styles.pageShowFile} style={{ height: height }}>
       <div

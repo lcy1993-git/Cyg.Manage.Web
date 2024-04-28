@@ -138,7 +138,7 @@ const CompanyUser: React.FC = () => {
     }
     const userId = tableSelectRows[0].id
     const name = encodeURI(tableSelectRows[0].name) //中文转码处理
-    const userName = tableSelectRows[0].userName
+    const userName = encodeURI(tableSelectRows[0].userName)
     history.push(
       `/jurisdiction-config/work-handover?id=${userId}&name=${name}&userName=${userName}`
     )
