@@ -1,22 +1,22 @@
 import GeneralTable from '@/components/general-table'
-import TableSearch from '@/components/table-search'
-import { Input, Button, message, Form, Modal } from 'antd'
-import React, { useState } from 'react'
-import { PlusOutlined, EditOutlined } from '@ant-design/icons'
-// import styles from './index.less';
-import { isArray } from 'lodash'
-import {
-  updateCableWellDetailItem,
-  getCableWellDetailItem,
-  deleteCableWellDetailItem,
-  addCableWellDetailItem,
-} from '@/services/resource-config/cable-well'
-import { useRequest } from 'ahooks'
 // import UrlSelect from '@/components/url-select';
 import ModalConfirm from '@/components/modal-confirm'
-import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import TableSearch from '@/components/table-search'
 import AddComponentDetail from '@/pages/standard-config/component/components/detail-table/add-form'
 import EditComponentDetail from '@/pages/standard-config/component/components/detail-table/edit-form'
+import {
+  addCableWellDetailItem,
+  deleteCableWellDetailItem,
+  getCableWellDetailItem,
+  updateCableWellDetailItem,
+} from '@/services/resource-config/cable-well'
+import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Form, Input, message, Modal, Spin } from 'antd'
+// import styles from './index.less';
+import { isArray } from 'lodash'
+import React, { useState } from 'react'
 interface ModuleDetailParams {
   libId: string
   cableWellId: string[]
@@ -38,7 +38,8 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
   const buttonJurisdictionArray = useGetButtonJurisdictionArray()
-  const { data, run } = useRequest(getCableWellDetailItem, {
+
+  const { data, run, loading } = useRequest(getCableWellDetailItem, {
     manual: true,
   })
 
@@ -148,8 +149,8 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
     const editData = tableSelectRows[0]
     const editDataId = editData.id
 
-    setEditFormVisible(true)
     const ComponentDetailData = await run(libId, editDataId)
+    console.log(ComponentDetailData, '??')
     const formData = {
       componentId: ComponentDetailData.itemName,
       itemId: ComponentDetailData.itemId,
@@ -160,6 +161,7 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
     }
     setFormData(formData)
     editForm.setFieldsValue(formData)
+    setEditFormVisible(true)
   }
 
   const sureEditCableWellDetail = () => {
@@ -263,9 +265,11 @@ const CableWellDetail: React.FC<ModuleDetailParams> = (props) => {
         centered
         destroyOnClose
       >
-        <Form form={editForm} preserve={false}>
-          <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
-        </Form>
+        <Spin spinning={loading}>
+          <Form form={editForm} preserve={false}>
+            <EditComponentDetail resourceLibId={libId} formData={formData} editForm={editForm} />
+          </Form>
+        </Spin>
       </Modal>
     </div>
   )

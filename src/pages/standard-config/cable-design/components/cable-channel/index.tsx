@@ -41,7 +41,7 @@ const CableChannel = (props: CableDesignParams, ref: Ref<any>) => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, loading } = useRequest(getCableChannelDetail, {
+  const { data, run, loading } = useRequest(getCableChannelDetail, {
     manual: true,
   })
 

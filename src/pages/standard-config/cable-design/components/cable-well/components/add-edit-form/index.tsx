@@ -30,6 +30,7 @@ const CableWellForm: React.FC<PoleTypeParams> = (props) => {
     )
   }
   const changeNameHandle = (value: string, type: string) => {
+    console.log(value, type, '!')
     if (type === 'select') {
       // 根据选择的id填充表单数据
       onSetDefaultForm?.(value)

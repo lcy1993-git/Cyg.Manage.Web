@@ -41,7 +41,7 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
   const [addForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
-  const { data, loading } = useRequest(getCableWellDetail, {
+  const { data, run, loading } = useRequest(getCableWellDetail, {
     manual: true,
   })
 
@@ -256,9 +256,8 @@ const CableWell = (props: CableDesignParams, ref: Ref<any>) => {
     const editData = tableSelectRows[0]
     const editDataId = editData.id
 
-    setEditFormVisible(true)
     const ResourceLibData = await run(resourceLibId, editDataId)
-
+    setEditFormVisible(true)
     editForm.setFieldsValue(ResourceLibData)
   }
 

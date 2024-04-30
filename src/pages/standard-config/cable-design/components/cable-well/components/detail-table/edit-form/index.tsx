@@ -1,7 +1,7 @@
-import React from 'react'
-import { Input } from 'antd'
 import CyFormItem from '@/components/cy-form-item'
 import CascaderUrlSelect from '@/components/material-cascader-url-select'
+import { Input } from 'antd'
+import React from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 
 interface EditCableWellDetailParams {
@@ -22,7 +22,7 @@ const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
           rules={[
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (getFieldValue('materialId') != undefined && value) {
+                if (getFieldValue('materialId') !== undefined && value) {
                   return Promise.reject('组件或物料选其一')
                 }
                 return Promise.resolve()
@@ -41,7 +41,7 @@ const EditCableWellDetail: React.FC<EditCableWellDetailParams> = (props) => {
           rules={[
             ({ getFieldValue }) => ({
               validator(_, value) {
-                if (getFieldValue('componentId') != undefined && value) {
+                if (getFieldValue('componentId') !== undefined && value) {
                   return Promise.reject('组件或物料选其一')
                 }
                 return Promise.resolve()

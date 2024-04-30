@@ -116,17 +116,10 @@ const EarthworkParameters: React.FC<Props> = (props) => {
                 },
               },
               {
-                title: '大类',
-                dataIndex: 'earthworkType',
+                title: '土方类型',
+                dataIndex: 'earthworkTypeText',
               },
-              {
-                title: '是否沟槽施工',
-                dataIndex: 'isTrenchConstruction',
 
-                render: (text: boolean) => {
-                  return text ? '是' : '否'
-                },
-              },
               {
                 title: '默认计算式',
                 dataIndex: 'formula',
@@ -136,8 +129,8 @@ const EarthworkParameters: React.FC<Props> = (props) => {
                 dataIndex: 'commonlyTableEarthworkParams',
 
                 render: (text: string, record: any) => {
-                  // @ts-ignore
                   return (
+                    // @ts-ignore
                     <table border="1" style={{ borderColor: '#fafafa' }}>
                       <tbody>
                         {record.commonlyTableEarthworkParams.map((item: any) => {
@@ -157,8 +150,8 @@ const EarthworkParameters: React.FC<Props> = (props) => {
                 dataIndex: 'commonlyTableEarthworkParams',
 
                 render: (text: string, record: any) => {
-                  // @ts-ignore
                   return (
+                    // @ts-ignore
                     <table border="1" style={{ borderColor: '#fafafa' }}>
                       <tbody>
                         {record.commonlyTableEarthworkParams.map((item: any) => {
@@ -178,8 +171,8 @@ const EarthworkParameters: React.FC<Props> = (props) => {
                 dataIndex: 'commonlyTableEarthworkParams',
 
                 render: (text: string, record: any) => {
-                  // @ts-ignore
                   return (
+                    // @ts-ignore
                     <table border="1" style={{ borderColor: '#fafafa' }}>
                       <tbody>
                         {record.commonlyTableEarthworkParams.map((item: any) => {
@@ -214,23 +207,9 @@ const EarthworkParameters: React.FC<Props> = (props) => {
               dataSource={dataSource1}
               columns={[
                 {
-                  title: '土质',
+                  title: '基础材料',
                   width: 200,
-                  dataIndex: 'soilQualityType',
-                  render: (type: number) => {
-                    return [
-                      '普通土',
-                      '坚土',
-                      '冻土',
-                      '松砂石',
-                      '岩石（爆破）',
-                      '岩石（人工开凿）',
-                      '泥水坑',
-                      '流沙坑',
-                      '干砂坑',
-                      '水坑',
-                    ][type - 1]
-                  },
+                  dataIndex: 'earthworkMaterialTypeText',
                 },
                 {
                   title: '每边操作裕度',
@@ -244,7 +223,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
         <TabPane tab="放坡系数" {...getObject('3')}>
           <Table
             pagination={false}
-            scroll={{ y: 720 }}
+            scroll={{ y: 698 }}
             bordered
             size={'small'}
             rowKey={'id'}
@@ -253,21 +232,7 @@ const EarthworkParameters: React.FC<Props> = (props) => {
               {
                 title: '土质',
                 width: 200,
-                dataIndex: 'soilQualityType',
-                render: (type: number) => {
-                  return [
-                    '普通土',
-                    '坚土',
-                    '冻土',
-                    '松砂石',
-                    '岩石（爆破）',
-                    '岩石（人工开凿）',
-                    '泥水坑',
-                    '流沙坑',
-                    '干砂坑',
-                    '水坑',
-                  ][type - 1]
-                },
+                dataIndex: 'soilQualityTypeText',
               },
               {
                 title: '上限值',
@@ -283,29 +248,11 @@ const EarthworkParameters: React.FC<Props> = (props) => {
               },
               {
                 title: '挖土方式',
-                dataIndex: 'diggingType',
-
-                render: (type: number) => {
-                  return [
-                    { val: 11, name: '人工挖土' },
-                    { val: 12, name: '机械坑内挖土' },
-                    { val: 13, name: '机械坑上挖土 ' },
-                  ].find((item) => item.val === type)?.name
-                },
+                dataIndex: 'diggingTypeText',
               },
               {
                 title: '专业属性',
-                dataIndex: 'professionalProperty',
-
-                render: (type: number) => {
-                  return [
-                    { val: 1, name: '架空线路' },
-                    { val: 2, name: '电缆线路 ' },
-                    { val: 3, name: '通信光缆 ' },
-                    { val: 20, name: '配电站、开关站' },
-                    { val: 21, name: '充电、换电站' },
-                  ].find((item) => item.val === type)?.name
-                },
+                dataIndex: 'professionalPropertyText',
               },
             ]}
           />

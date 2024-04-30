@@ -16,7 +16,7 @@ import {
   updateResourceLibItem,
 } from '@/services/resource-config/resource-lib'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
-import { uploadAuditLog } from '@/utils/utils'
+import { handleDecrypto, uploadAuditLog } from '@/utils/utils'
 import {
   EditOutlined,
   ExportOutlined,
@@ -466,15 +466,16 @@ const ResourceLib: React.FC = () => {
     try {
       setExportLoading(true)
       const res = await exportCompanyLib(tableSelectRows[0].id)
+      console.log(res, '000')
       let blob = new Blob([res], {
         type: 'application/zip',
       })
       let reader = new FileReader()
       reader.readAsText(blob, 'utf-8')
-      reader.onload = () => {
-        if (String(reader.result).includes(`"isSuccess":false`)) {
-          let result = JSON.parse((reader.result as string) || '')
-          message.error(result.message)
+      reader.onload = (result: any) => {
+        const handleBlobMsg = handleDecrypto(result.target.result)
+        if (handleBlobMsg.code === 5000 || handleBlobMsg.code !== 200) {
+          message.error(handleBlobMsg.message)
         } else {
           let finalyFileName = `资源库.zip`
           // for IE
