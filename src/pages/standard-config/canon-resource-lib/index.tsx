@@ -466,15 +466,16 @@ const ResourceLib: React.FC = () => {
     try {
       setExportLoading(true)
       const res = await exportCompanyLib(tableSelectRows[0].id)
-      console.log(res, '000')
       let blob = new Blob([res], {
         type: 'application/zip',
       })
       let reader = new FileReader()
       reader.readAsText(blob, 'utf-8')
       reader.onload = (result: any) => {
-        const handleBlobMsg = handleDecrypto(result.target.result)
-        if (handleBlobMsg.code === 5000 || handleBlobMsg.code !== 200) {
+        // 此处代码用于判断当前加密返回结果是否报错，如报错，则不导出文件且提示，否则导出文件
+        const resData = result.target.result
+        if (resData.slice(0, 2) === '04') {
+          const handleBlobMsg = handleDecrypto(resData)
           message.error(handleBlobMsg.message)
         } else {
           let finalyFileName = `资源库.zip`

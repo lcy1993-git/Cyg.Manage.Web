@@ -282,6 +282,8 @@ const ProjectSituation: React.FC = () => {
   const reset = () => {
     setStartTime(null)
     setEndTime(null)
+    setStartDate(null)
+    setEndDate(null)
   }
 
   const searchByParams = () => {

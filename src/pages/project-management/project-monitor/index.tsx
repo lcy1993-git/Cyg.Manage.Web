@@ -1,6 +1,7 @@
 import bgSrc from '@/assets/image/index/bg.png'
 import PageCommonWrap from '@/components/page-common-wrap'
 import { exportProjectMonitor } from '@/services/project-management/project-monitor'
+import { handleDecrypto } from '@/utils/utils'
 import { Button, message, Tabs } from 'antd'
 import { Moment } from 'moment'
 import React, { useRef, useState } from 'react'
@@ -25,45 +26,59 @@ const ProjectMonitor: React.FC = () => {
 
   //导出用户数据
   const exportEvent = async () => {
-    messageApi.open({
-      key,
-      type: 'loading',
-      content: '导出中..',
-      duration: 0,
-    })
-
-    const res = await exportProjectMonitor({
-      startDate: startDate,
-      endDate: endDate,
-    })
-    let blob = new Blob([res], {
-      type: 'application/vnd.ms-excel;charset=utf-8',
-    })
-    let finalyFileName = `项目情况统计信息.xlsx`
-    // for IE
-    //@ts-ignore
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      //@ts-ignore
-      window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
-    } else {
-      // for Non-IE
-      let objectUrl = URL.createObjectURL(blob)
-      let link = document.createElement('a')
-      link.href = objectUrl
-      link.setAttribute('download', finalyFileName)
-      document.body.appendChild(link)
-      link.click()
-      window.URL.revokeObjectURL(link.href)
-    }
-
-    setTimeout(() => {
-      messageApi.open({
-        key,
-        type: 'success',
-        content: '导出完成!',
-        duration: 2,
+    try {
+      const res = await exportProjectMonitor({
+        startDate: startDate,
+        endDate: endDate,
       })
-    }, 1000)
+      let blob = new Blob([res], {
+        type: 'application/vnd.ms-excel;charset=utf-8',
+      })
+
+      let reader = new FileReader()
+      reader.readAsText(blob, 'utf-8')
+      reader.onload = (result: any) => {
+        // 此处代码用于判断当前加密返回结果是否报错，如报错，则不导出文件且提示，否则导出文件
+        const resData = result.target.result
+        if (resData.slice(0, 2) === '04') {
+          const handleBlobMsg = handleDecrypto(resData)
+          message.error(handleBlobMsg.message)
+        } else {
+          messageApi.open({
+            key,
+            type: 'loading',
+            content: '导出中..',
+            duration: 0,
+          })
+          let finalyFileName = `项目情况统计信息.xlsx`
+          // for IE
+          //@ts-ignore
+          if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+            //@ts-ignore
+            window.navigator.msSaveOrOpenBlob(blob, finalyFileName)
+          } else {
+            // for Non-IE
+            let objectUrl = URL.createObjectURL(blob)
+            let link = document.createElement('a')
+            link.href = objectUrl
+            link.setAttribute('download', finalyFileName)
+            document.body.appendChild(link)
+            link.click()
+            window.URL.revokeObjectURL(link.href)
+            setTimeout(() => {
+              messageApi.open({
+                key,
+                type: 'success',
+                content: '导出完成!',
+                duration: 2,
+              })
+            }, 1000)
+          }
+        }
+      }
+    } catch (msg) {
+      console.error(msg)
+    }
   }
 
   return (
