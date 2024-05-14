@@ -223,6 +223,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
           setResourceLibApprovalListFlag,
         }}
       >
+        {/* <LargeScreen width={1920} height={980}> */}
         <div className={styles.layoutContent}>
           <div className={layoutIsFold ? 'hide' : ''}>
             <LayoutHeader />
@@ -241,6 +242,7 @@ const Layout: React.FC<IRouteComponentProps> = ({ location, history }) => {
             </Tabs>
           </div>
         </div>
+        {/* </LargeScreen> */}
       </LayoutProvider>
     </ConfigProvider>
   )

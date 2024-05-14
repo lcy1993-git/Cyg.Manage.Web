@@ -23,6 +23,7 @@ import {
   checkCanRemoval,
   deleteProject,
   getProjectInfo,
+  initiateReview,
   receiveProject,
   revokeAllot,
 } from '@/services/project-management/all-project'
@@ -31,9 +32,16 @@ import {
   removeCollectionEngineers,
 } from '@/services/project-management/favorite-list'
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
-import { uploadAuditLog } from '@/utils/utils'
-import { DeleteOutlined, DownOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-import { Button, Dropdown, Menu, message, Modal, Tooltip } from 'antd'
+import { handleDecrypto, uploadAuditLog } from '@/utils/utils'
+import {
+  CheckOutlined,
+  CloseOutlined,
+  DeleteOutlined,
+  DownOutlined,
+  ExclamationCircleOutlined,
+} from '@ant-design/icons'
+import { useRequest } from 'ahooks'
+import { Button, Dropdown, Menu, message, Modal, Spin, Tooltip } from 'antd'
 import { uniq } from 'lodash'
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
 import { useMyWorkStore } from '../../context'
@@ -86,6 +94,9 @@ const MyProject: React.FC<ProjectParams> = (props) => {
   const [removalModalVisible, setRemovalModalVisible] = useState<boolean>(false)
   //坐标导出批量授权弹窗
   const [exportPointVisible, setExportPointVisible] = useState<boolean>(false)
+
+  // 批量提交评审
+  const { run: submitReview, loading } = useRequest(initiateReview, { manual: true })
 
   const { userType = '' } = useGetUserInfo()
 
@@ -621,10 +632,10 @@ const MyProject: React.FC<ProjectParams> = (props) => {
           获取
         </Button>
       )
-    ) : currentClickTabChildActiveType === 'externalReviewing' ? (
+    ) : currentClickTabChildActiveType === 'pendingReview' ? (
       buttonJurisdictionArray?.includes('review-manage') && (
-        <Button type="primary" onClick={() => externalEdit()}>
-          评审管理
+        <Button type="primary" onClick={() => reviewInitiateEvent()}>
+          提交评审
         </Button>
       )
     ) : currentClickTabChildActiveType === 'awaitApplyKnot' ? (
@@ -642,13 +653,14 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     ) : null
   }
 
-  const externalEdit = async () => {
-    if (tableSelectKeys && tableSelectKeys.length === 1) {
-      setExternalListModalVisible(true)
-      return
-    }
-    message.warning('请选择单条数据查看评审')
-  }
+  // 屏蔽以前的外审查看方法
+  // const externalEdit = async () => {
+  //   if (tableSelectKeys && tableSelectKeys.length === 1) {
+  //     setExternalListModalVisible(true)
+  //     return
+  //   }
+  //   message.warning('请选择单条数据查看评审')
+  // }
 
   //立项待审批模态框
   const reportApprove = (projectId: string[]) => {
@@ -710,6 +722,86 @@ const MyProject: React.FC<ProjectParams> = (props) => {
     //   return
     // }
     setRemovalModalVisible(true)
+  }
+
+  // 0601批量发起评审功能
+  let failKey: string[] = [] //存储提交失败的key
+
+  const reviewInitiateEvent = async () => {
+    const uniFailKey = Array.from(new Set(failKey))
+
+    // 修复选中工程后，取消选择某个项目，但是未移除该项目的问题
+    const selectRows = tableSelectRowData.filter((item: any) => tableSelectKeys.includes(item.id))
+    if (selectRows && selectRows.length === 0) {
+      message.info('请先选择提交评审的项目')
+      return
+    }
+
+    // 判断选中项目是否满足提交评审条件，满足则发起评审，不满足则提示
+    const canReview = selectRows.map((item: any) => item.operationAuthority.canReview)
+
+    if (canReview.length > 0 && canReview.includes(false)) {
+      message.error('勾选项目中包含不满足[提交评审]条件，无法批量提交评审')
+      return
+    }
+    let resultMsg: any[] = [] //存储批量提交评审情况
+
+    try {
+      if (uniFailKey && uniFailKey.length > 0) {
+        for (let i = 0; i < uniFailKey.length; i++) {
+          await submitReview(uniFailKey[i]).then((res) => {
+            const handleRes = handleDecrypto(res)
+
+            if (handleRes.code !== 200) {
+              failKey.push(uniFailKey[i])
+            }
+            resultMsg.push({ code: handleRes.code, msg: handleRes.message })
+          })
+        }
+      } else {
+        for (let i = 0; i < tableSelectKeys.length; i++) {
+          await submitReview(tableSelectKeys[i]).then((res) => {
+            const handleRes = handleDecrypto(res)
+            if (handleRes.code !== 200) {
+              failKey.push(tableSelectKeys[i])
+            }
+            resultMsg.push({ code: handleRes.code, msg: handleRes.message })
+          })
+        }
+      }
+
+      resultMsg.length > 0 &&
+        Modal.confirm({
+          title: '批量提交评审结果',
+          width: '650px',
+          cancelText: '关闭',
+          okText: '重新提交',
+          onOk: reviewInitiateEvent, //重新提交
+          bodyStyle: { height: 'auto', overflowY: 'auto' },
+          content: (
+            <>
+              {resultMsg.map((item: any, index: number) => {
+                return (
+                  <>
+                    <div>
+                      {index + 1}、{' '}
+                      {item.code === 200 ? (
+                        <CheckOutlined style={{ color: '#0e7b3b' }} />
+                      ) : (
+                        <CloseOutlined style={{ color: '#e24c4c' }} />
+                      )}{' '}
+                      {item.msg}，{item.code !== 200 && '请重试。'}
+                    </div>
+                    <br />
+                  </>
+                )
+              })}
+            </>
+          ),
+        })
+
+      delayRefresh()
+    } catch {}
   }
 
   return (
@@ -774,6 +866,13 @@ const MyProject: React.FC<ProjectParams> = (props) => {
                   收藏
                 </Button>
               )}
+
+              {buttonJurisdictionArray?.includes('all-project-removal') && (
+                <Button className="mr7" onClick={() => removalEvent()}>
+                  项目迁移
+                </Button>
+              )}
+
               {(buttonJurisdictionArray?.includes('all-project-export-all') ||
                 buttonJurisdictionArray?.includes('all-project-export-selected')) &&
                 currentClickTabType === 'allpro' && (
@@ -787,23 +886,20 @@ const MyProject: React.FC<ProjectParams> = (props) => {
                     />
                   </div>
                 )}
-              {buttonJurisdictionArray?.includes('all-project-removal') && (
-                <Button className="mr7" onClick={() => removalEvent()}>
-                  项目迁移
-                </Button>
-              )}
             </div>
           )}
       </div>
 
       <div className={styles.myProjectTableContent}>
-        <EngineerTableWrapper
-          ref={tableRef}
-          batchButtonSlot={batchButtonElement}
-          getSelectRowData={(data) => setTableSelectRowData(data)}
-          getSelectRowKeys={(data) => setTableSelectKeys(data as string[])}
-          getSearchParams={(params) => setSearchParams(params)}
-        />
+        <Spin spinning={loading} tip="提交评审中...">
+          <EngineerTableWrapper
+            ref={tableRef}
+            batchButtonSlot={batchButtonElement}
+            getSelectRowData={(data) => setTableSelectRowData(data)}
+            getSelectRowKeys={(data) => setTableSelectKeys(data as string[])}
+            getSearchParams={(params) => setSearchParams(params)}
+          />
+        </Spin>
       </div>
 
       {addEngineerModalVisible && (

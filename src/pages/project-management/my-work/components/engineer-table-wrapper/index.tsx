@@ -27,9 +27,11 @@ import {
   deleteProject,
   getColumnsConfig,
   getProjectInfo,
+  initiateReview,
   modifyExportPowerState,
 } from '@/services/project-management/all-project'
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
+import { handleDecrypto } from '@/utils/utils'
 import {
   BarsOutlined,
   ExclamationCircleOutlined,
@@ -38,7 +40,18 @@ import {
   SettingOutlined,
 } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Button, Divider, Dropdown, Input, Menu, message, Modal, Popconfirm, Tooltip } from 'antd'
+import {
+  Button,
+  Divider,
+  Dropdown,
+  Input,
+  Menu,
+  message,
+  Modal,
+  Popconfirm,
+  Spin,
+  Tooltip,
+} from 'antd'
 import moment from 'moment'
 import uuid from 'node-uuid'
 import React, {
@@ -111,12 +124,14 @@ export const initSearchParams = {
   surveyUser: '',
   costUser: '',
   statisticalCategory: '-1',
+  // 新增评审待提交、已提交查询传参
+  // isReview: -1,
 }
 const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) => {
   const { getSelectRowKeys, getSelectRowData, batchButtonSlot } = props
   const [keyWord, setKeyWord] = useState<string>('')
   // 从列表返回的数据中获取 TODO设置search的参数
-  const [searchParams, setSearchParams] = useState(initSearchParams)
+  const [searchParams, setSearchParams] = useState<any>(initSearchParams)
   const [modalNeedInfo, setModalInfo] = useState<any>({
     engineerId: '',
     projectId: '',
@@ -177,6 +192,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const [submitVisible, setSubmitVisible] = useState<boolean>(false)
 
   const isOpenReview = localStorage.getItem('isOpenReview')
+
   // 预设计
   // const { setPreDesignItem } = useLayoutStore()
 
@@ -207,6 +223,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   const { run } = useRequest(() => getTicketForDesign({ userId: id }), {
     manual: true,
   })
+
+  // 提交评审
+  const { run: submitReview, loading } = useRequest(initiateReview, { manual: true })
 
   const { data: columnsData } = useRequest(() => getColumnsConfig(), {
     onSuccess: () => {
@@ -309,13 +328,28 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
     a.remove()
   }
 
+  // 发起项目评审
+  const sendReviewEvent = async (projectId: string) => {
+    await submitReview(projectId)
+      .then((res) => {
+        const handleRes = handleDecrypto(res)
+        if (handleRes.code === 200) {
+          message.success(handleRes.message)
+          delayRefresh()
+        } else {
+          message.error(handleRes.message)
+        }
+      })
+      .catch(() => {})
+  }
+
   const projectItemMenu = (
     jurisdictionInfo: JurisdictionInfo,
     tableItemData: any,
     engineerInfo: any,
     status: any
   ) => {
-    const { stateInfo } = tableItemData
+    const { stateInfo, operationAuthority } = tableItemData
 
     return (
       <Menu>
@@ -399,6 +433,9 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         {/* {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
           <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
         )} */}
+        {operationAuthority.canReview && (
+          <Menu.Item onClick={() => sendReviewEvent(tableItemData.id)}>提交评审</Menu.Item>
+        )}
         {/* {jurisdictionInfo.canSubmitQgc && ( */}
         <Menu.Item onClick={() => submitProjectToQGC(tableItemData.id, tableItemData.stage)}>
           提交项目
@@ -1208,15 +1245,27 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
   }))
 
   useEffect(() => {
+    // 项目列表为评审管理时，需额外传参获取待提交和已提交评审
+    const reviewParams =
+      currentClickTabChildActiveType === 'pendingReview'
+        ? 0
+        : currentClickTabChildActiveType === 'reviewing'
+        ? 1
+        : null
+
     setKeyWord('')
     if (indexToPageSearchParams.projectId) {
       const searchParams = {
         ...initSearchParams,
         keyWord: '',
+        isReview: reviewParams,
         projectIds: [indexToPageSearchParams.projectId],
       }
-      setSearchParams(initSearchParams)
-      initTableData(indexToPageSearchParams.requestUrl, { ...searchParams, keyWord: '' })
+      setSearchParams({ ...initSearchParams, isReview: reviewParams })
+      initTableData(indexToPageSearchParams.requestUrl, {
+        ...searchParams,
+        keyWord: '',
+      })
       return
     }
     if (indexToPageSearchParams.searchPerson) {
@@ -1228,6 +1277,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         areaType: indexToPageSearchParams.areaLevel!,
         areaId: indexToPageSearchParams.areaId!,
         status: [30, 31, 14, 1, 2, 3, 4, 19, 5, 6, 11, 9, 10, 8, 7, 15] as never[],
+        isReview: reviewParams,
       })
       initTableData(indexToPageSearchParams.requestUrl, {
         ...initSearchParams,
@@ -1238,12 +1288,17 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         areaId: indexToPageSearchParams.areaId!,
         status: [30, 31, 14, 1, 2, 3, 4, 19, 5, 6, 11, 9, 10, 8, 7, 15] as never[],
         keyWord: '',
+        isReview: reviewParams,
       })
       return
     }
     if (indexToPageSearchParams.requestUrl) {
-      setSearchParams(initSearchParams)
-      initTableData(indexToPageSearchParams.requestUrl, { ...initSearchParams, keyWord: '' })
+      setSearchParams({ ...initSearchParams, isReview: reviewParams })
+      initTableData(indexToPageSearchParams.requestUrl, {
+        ...initSearchParams,
+        isReview: reviewParams,
+        keyWord: '',
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [indexToPageSearchParams])
@@ -1324,16 +1379,18 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       </div>
 
       <div className={styles.engineerTableContent}>
-        <EngineerTable
-          getSelectRowData={getSelectRowData}
-          getSelectRowKeys={getSelectRowKeys}
-          searchParams={{ ...searchParams, keyWord }}
-          ref={tableRef}
-          url={indexToPageSearchParams.requestUrl}
-          parentColumns={parentColumns}
-          columns={showColumns}
-          pagingSlot={typeColumns ? undefined : columnsIcon}
-        />
+        <Spin spinning={loading} tip="提交评审中...">
+          <EngineerTable
+            getSelectRowData={getSelectRowData}
+            getSelectRowKeys={getSelectRowKeys}
+            searchParams={{ ...searchParams, keyWord }}
+            ref={tableRef}
+            url={indexToPageSearchParams.requestUrl}
+            parentColumns={parentColumns}
+            columns={showColumns}
+            pagingSlot={typeColumns ? undefined : columnsIcon}
+          />
+        </Spin>
       </div>
 
       <ScreenModal
