@@ -19,7 +19,7 @@ import { uploadAuditLog } from '@/utils/utils'
 import { FileOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
 import { Button, message, Modal, Spin, Tabs } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import CompileResultTab from '../check-compile-result'
 import DesignResultTab from '../check-design-result'
 import ViewAuditFile from '../external-list-modal/components/viewFile'
@@ -81,13 +81,11 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     }
   }
 
-  const { data: resultData, run } = useRequest(getResultTreeData, {
-    manual: true,
-  })
+  const { data: resultData, loading } = useRequest(() => getResultTreeData(projectInfo.projectId))
 
-  const { data: compileResultData, run: getCompileTree } = useRequest(getCompileResultTreeData, {
-    manual: true,
-  })
+  const { data: compileResultData, loading: cloading } = useRequest(() =>
+    getCompileResultTreeData(projectInfo.projectId)
+  )
 
   // const { data: auditResultData, run: getAuditTree } = useRequest(getAuditResultData, {
   //   manual: true,
@@ -106,15 +104,15 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
       category: data.category,
       icon:
         data.category === 1 ? (
-          <img src={foldSvg} className={styles.svg} />
+          <img src={foldSvg} className={styles.svg} alt="" />
         ) : data.name.endsWith('jpg') || data.name.endsWith('dwg') ? (
-          <img src={jpgSvg} className={styles.svg} />
+          <img src={jpgSvg} className={styles.svg} alt="" />
         ) : data.name.endsWith('docx') || data.name.endsWith('doc') ? (
-          <img src={wordSvg} className={styles.svg} />
+          <img src={wordSvg} className={styles.svg} alt="" />
         ) : data.name.endsWith('pdf') ? (
-          <img src={pdfSvg} className={styles.svg} />
+          <img src={pdfSvg} className={styles.svg} alt="" />
         ) : data.name.endsWith('xlsx') ? (
-          <img src={excelSvg} className={styles.svg} />
+          <img src={excelSvg} className={styles.svg} alt="" />
         ) : (
           <FileOutlined />
         ),
@@ -305,17 +303,17 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
     message.success('生成成功')
   }
 
-  useEffect(() => {
-    if (currentTab === 'design') {
-      run(projectInfo.projectId)
-    }
-    if (currentTab === 'compile') {
-      getCompileTree(projectInfo.projectId)
-    }
-    // if (currentTab === 'audit') {
-    //   getAuditTree(projectInfo.projectId)
-    // }
-  }, [currentTab])
+  // useEffect(() => {
+  //   if (currentTab === 'design') {
+  //     run(projectInfo.projectId)
+  //   }
+  //   if (currentTab === 'compile') {
+  //     getCompileTree(projectInfo.projectId)
+  //   }
+  //   // if (currentTab === 'audit') {
+  //   //   getAuditTree(projectInfo.projectId)
+  //   // }
+  // }, [currentTab])
 
   // const mapAuditTree = (datas: any) => {
   //   return {
@@ -382,20 +380,24 @@ const CheckResultModal: React.FC<CheckResultModalProps> = (props) => {
         <div className={styles.resultTable}>
           <Tabs className="normalTabs" onChange={(key: string) => setCurrentTab(key)} type="card">
             <TabPane key="design" tab="设计成果">
-              <DesignResultTab
-                designData={resultData?.map(mapTreeData)}
-                createEvent={setCheckedKeys}
-                setTabEvent={setCurrentTab}
-                setCurrentFileInfo={setCurrentFileInfo}
-              />
+              <Spin spinning={loading} tip="正在获取成果...">
+                <DesignResultTab
+                  designData={resultData?.map(mapTreeData)}
+                  createEvent={setCheckedKeys}
+                  setTabEvent={setCurrentTab}
+                  setCurrentFileInfo={setCurrentFileInfo}
+                />
+              </Spin>
             </TabPane>
             <TabPane key="compile" tab="项目需求编制成果">
-              <CompileResultTab
-                compileResultData={compileResultData?.map(mapTreeData)}
-                createEvent={setCompileKeys}
-                setTabEvent={setCurrentTab}
-                setCurrentFileInfo={setCurrentFileInfo}
-              />
+              <Spin spinning={cloading} tip="正在获取成果...">
+                <CompileResultTab
+                  compileResultData={compileResultData?.map(mapTreeData)}
+                  createEvent={setCompileKeys}
+                  setTabEvent={setCurrentTab}
+                  setCurrentFileInfo={setCurrentFileInfo}
+                />
+              </Spin>
             </TabPane>
             {/* <TabPane key="audit" tab="评审成果">
               <AuditResultTab
