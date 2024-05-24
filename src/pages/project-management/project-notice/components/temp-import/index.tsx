@@ -137,24 +137,26 @@ const TempImport: React.FC<UploadAddProjectProps> = (props) => {
             您可以通过下载excel模版，在模板中填写对应设计阶段项目信息，并上传填写后的文件。
           </CyTip>
           <div style={{ padding: '20px' }}>
-            <CyFormItem
-              label="项目类别"
-              labelWidth={100}
-              required
-              name="PCategory"
-              rules={[{ required: true, message: '未选择项目类别' }]}
-            >
-              <UrlSelect
-                valuekey="value"
-                titlekey="text"
-                defaultData={categoryList}
-                value={pCategory}
-                onChange={(value: any) => {
-                  setPCategory(value)
-                }}
-                placeholder="项目类别"
-              />
-            </CyFormItem>
+            {category && (
+              <CyFormItem
+                label="项目类别"
+                labelWidth={100}
+                required
+                name="PCategory"
+                rules={[{ required: true, message: '未选择项目类别' }]}
+              >
+                <UrlSelect
+                  valuekey="value"
+                  titlekey="text"
+                  defaultData={categoryList}
+                  value={pCategory}
+                  onChange={(value: any) => {
+                    setPCategory(value)
+                  }}
+                  placeholder="项目类别"
+                />
+              </CyFormItem>
+            )}
             <CyFormItem
               label="设计阶段"
               labelWidth={100}
