@@ -158,10 +158,16 @@ const MyWork: React.FC = () => {
                 number: data.review.total,
                 children: [
                   {
-                    label: '外审中',
-                    id: 'externalReviewing',
-                    number: data.review.externalReviewing,
-                    url: '/ProjectList/GetExternalReviewings',
+                    label: '待提交评审',
+                    id: 'pendingReview',
+                    number: data.review.pendingReview,
+                    url: '/ProjectList/GetReviews',
+                  },
+                  {
+                    label: '已提交评审',
+                    id: 'reviewing',
+                    number: data.review.reviewing,
+                    url: '/ProjectList/GetReviews',
                   },
                 ],
               },

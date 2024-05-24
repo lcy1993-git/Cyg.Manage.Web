@@ -17,6 +17,7 @@ export let webConfig = {
     tecEco: '/quota/api',
     tecEco1: '/technicaleconomy/api',
     review: '/review/v2/api',
+    review2: '/review/api',
     component: '/component/api',
     material: '/material/api/',
     resourceV1: '/resource/api',
@@ -58,6 +59,7 @@ export const configInfo: any = {
     tecEco: '/quota/api',
     tecEco1: '/technicaleconomy/api',
     review: '/review/v2/api',
+    review2: '/review/api',
     component: '/component/api',
     material: '/material/api/',
     resourceV1: '/resource/api',
@@ -80,7 +82,7 @@ export const configInfo: any = {
   },
   areaStatisticsUrl: '/chart/index.html',
   commonServer: 'https://bbgl.gczhyun.com/common',
-  version: '1.0.304',
+  version: '1.0.306',
 }
 
 const initConfig = async () => {

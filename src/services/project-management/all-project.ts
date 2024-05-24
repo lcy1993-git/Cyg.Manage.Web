@@ -1106,3 +1106,11 @@ export const postBatchSyncProject = (qgcPullType: any) => {
     })
   )
 }
+
+// 项目发起评审
+export const initiateReview = (ProjectId: any) => {
+  return request(`${baseUrl.review2}/Project/InitiateReview`, {
+    method: 'POST',
+    params: { ProjectId },
+  })
+}

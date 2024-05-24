@@ -153,7 +153,9 @@ const Index: React.FC = () => {
   // useMount(()=>{
   //   getEnums('EngineeringTemplateType')
   // })
+
   return (
+    // <div className="screen" id="screen">
     <PageCommonWrap noPadding={true} className={styles.indexWrap}>
       <IndexContext.Provider
         value={{
@@ -175,11 +177,13 @@ const Index: React.FC = () => {
             </div>
           )}
         </div>
+
         {loading && (
           <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
             <Spin spinning={loading} tip="正在载入中..."></Spin>
           </div>
         )}
+
         {!loading && reloadLoading && (
           <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
             <Spin spinning={loading} tip="正在重绘中..."></Spin>
@@ -190,6 +194,7 @@ const Index: React.FC = () => {
         </div>
       </IndexContext.Provider>
     </PageCommonWrap>
+    // </div>
   )
 }
 

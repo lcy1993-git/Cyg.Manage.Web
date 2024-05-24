@@ -61,7 +61,6 @@ const useSelection = <T>(props: Pick<VirtualTableProps<T>, 'rowSelection' | 'dat
     } else {
       afterHandleData = selectRows.filter((item) => !selectRowsData.includes(item))
     }
-
     updateSelectRows(afterHandleData)
 
     if (rowSelection && rowSelection.onSelect) {
