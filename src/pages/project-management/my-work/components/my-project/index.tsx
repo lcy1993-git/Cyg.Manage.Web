@@ -34,7 +34,6 @@ import {
 import { useGetButtonJurisdictionArray, useGetUserInfo } from '@/utils/hooks'
 import { handleDecrypto, uploadAuditLog } from '@/utils/utils'
 import {
-  CheckOutlined,
   CloseOutlined,
   DeleteOutlined,
   DownOutlined,
@@ -754,8 +753,8 @@ const MyProject: React.FC<ProjectParams> = (props) => {
 
             if (handleRes.code !== 200) {
               failKey.push(uniFailKey[i])
+              resultMsg.push({ msg: handleRes.message })
             }
-            resultMsg.push({ code: handleRes.code, msg: handleRes.message })
           })
         }
       } else {
@@ -764,41 +763,38 @@ const MyProject: React.FC<ProjectParams> = (props) => {
             const handleRes = handleDecrypto(res)
             if (handleRes.code !== 200) {
               failKey.push(tableSelectKeys[i])
+              resultMsg.push({ msg: handleRes.message })
             }
-            resultMsg.push({ code: handleRes.code, msg: handleRes.message })
           })
         }
       }
 
-      resultMsg.length > 0 &&
-        Modal.confirm({
-          title: '批量提交评审结果',
-          width: '650px',
-          cancelText: '关闭',
-          okText: '重新提交',
-          onOk: reviewInitiateEvent, //重新提交
-          bodyStyle: { height: 'auto', overflowY: 'auto' },
-          content: (
-            <>
-              {resultMsg.map((item: any, index: number) => {
-                return (
-                  <>
-                    <div>
-                      {index + 1}、{' '}
-                      {item.code === 200 ? (
-                        <CheckOutlined style={{ color: '#0e7b3b' }} />
-                      ) : (
+      resultMsg.length > 0
+        ? Modal.confirm({
+            title: '批量提交评审结果',
+            width: '650px',
+            cancelText: '关闭',
+            okText: '重新提交',
+            onOk: reviewInitiateEvent, //重新提交
+            bodyStyle: { height: 'auto', overflowY: 'auto' },
+            content: (
+              <>
+                {resultMsg.map((item: any, index: number) => {
+                  return (
+                    <>
+                      <div>
+                        {index + 1}、
                         <CloseOutlined style={{ color: '#e24c4c' }} />
-                      )}{' '}
-                      {item.msg}，{item.code !== 200 && '请重试。'}
-                    </div>
-                    <br />
-                  </>
-                )
-              })}
-            </>
-          ),
-        })
+                        {item.msg} {',请重试。'}
+                      </div>
+                      <br />
+                    </>
+                  )
+                })}
+              </>
+            ),
+          })
+        : message.success('批量提交评审成功！')
 
       delayRefresh()
     } catch {}

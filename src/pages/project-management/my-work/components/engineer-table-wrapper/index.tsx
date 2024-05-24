@@ -334,7 +334,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
       .then((res) => {
         const handleRes = handleDecrypto(res)
         if (handleRes.code === 200) {
-          message.success(handleRes.message)
+          message.success('提交评审成功！')
           delayRefresh()
         } else {
           message.error(handleRes.message)
@@ -433,7 +433,7 @@ const EngineerTableWrapper = (props: EngineerTableWrapperProps, ref: Ref<any>) =
         {/* {buttonJurisdictionArray?.includes('all-project-submitToQGC') && (
           <Menu.Item onClick={() => projectMergeEvent(tableItemData.id)}>提交项目</Menu.Item>
         )} */}
-        {operationAuthority.canReview && (
+        {operationAuthority.canReview && !stateInfo.isReview && (
           <Menu.Item onClick={() => sendReviewEvent(tableItemData.id)}>提交评审</Menu.Item>
         )}
         {/* {jurisdictionInfo.canSubmitQgc && ( */}
