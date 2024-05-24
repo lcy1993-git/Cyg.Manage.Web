@@ -16,7 +16,7 @@ import { ProjectList } from '@/services/visualization-results/visualization-resu
 import { useGetButtonJurisdictionArray } from '@/utils/hooks'
 import { AlignLeftOutlined, LeftOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
 import { useMount, useRequest, useSize, useUpdateEffect } from 'ahooks'
-import { Button, DatePicker, Input, message, Modal } from 'antd'
+import { Button, DatePicker, Input, message, Modal, Tooltip } from 'antd'
 import classNames from 'classnames'
 import _ from 'lodash'
 import { observer } from 'mobx-react-lite'
@@ -708,16 +708,18 @@ const SideTree: FC<SideMenuProps> = observer((props: SideMenuProps) => {
       className={`${styles.wrap} ${projectModalVisible ? styles.wrapSelect : ''}`}
     >
       <div className={styles.searchWrap}>
-        <Input
-          prefix={<SearchOutlined />}
-          placeholder="请输入工程/项目名称"
-          value={keyWord}
-          onChange={(e) => {
-            setkeyWord(e.target.value)
-            setResultCondition({ ...resultCondition, keyWord: e.target.value })
-          }}
-          style={{ width: '78%' }}
-        />
+        <Tooltip overlay={'请输入工程/项目名称/项目编码/WBS编码'}>
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder="请输入工程/项目名称/项目编码/WBS编码"
+            value={keyWord}
+            onChange={(e) => {
+              setkeyWord(e.target.value)
+              setResultCondition({ ...resultCondition, keyWord: e.target.value })
+            }}
+            style={{ width: '78%' }}
+          />
+        </Tooltip>
         <Button type="text" onClick={() => setFilterModalVisibel(true)}>
           <AlignLeftOutlined />
           筛选

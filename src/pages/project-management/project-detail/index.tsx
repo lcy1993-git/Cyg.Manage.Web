@@ -510,12 +510,12 @@ const ProjectDetail: React.FC<any> = () => {
         <div className={styles.filter}>
           <div className="flex">
             <Search
-              placeholder="请输入工程/项目名称/项目编码"
+              placeholder="请输入工程/项目名称/项目编码/WBS编码"
               enterButton
               value={keyWord}
               onChange={(e) => setKeyWord(e.target.value)}
               onSearch={() => searchEvent()}
-              style={{ width: '280px' }}
+              style={{ width: '330px' }}
               className="mr22"
             />
             <Button onClick={() => setScreenModalVisible(true)}>筛选</Button>
