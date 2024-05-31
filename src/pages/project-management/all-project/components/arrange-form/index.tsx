@@ -8,13 +8,13 @@ import {
   getGroupInfo,
   IsArrangement,
 } from '@/services/project-management/all-project'
-import { DownOutlined, UpOutlined } from '@ant-design/icons'
+// import { DownOutlined, UpOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Divider, Input, message, TreeSelect } from 'antd'
+import { Input, message, TreeSelect } from 'antd'
 import Search from 'antd/lib/input/Search'
 import uuid from 'node-uuid'
 import React, { useEffect, useState } from 'react'
-import styles from './index.less'
+// import styles from './index.less'
 
 interface GetGroupUserProps {
   onChange?: (checkedValue: string) => void
@@ -44,16 +44,16 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
   })
 
   const [checkedValue, setCheckedValue] = useState<string>('2')
-  const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
+  // const [isInternalAudit, setIsInternalAudit] = useState<boolean>(false)
   const isOpenReview = localStorage.getItem('isOpenReview')
 
   const { data: surveyData = [] } = useRequest(() => getGroupInfo('68', allotCompanyId))
 
   const { data: designData = [] } = useRequest(() => getGroupInfo('8', allotCompanyId))
 
-  const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId))
+  // const { data: auditData = [] } = useRequest(() => getGroupInfo('16', allotCompanyId))
 
-  const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
+  // const { data: costUserData = [] } = useRequest(() => getGroupInfo('32', allotCompanyId))
 
   const { data: groupData = [] } = useRequest(() => getTreeSelectData({ pId: groupId }))
 
@@ -101,15 +101,15 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultType])
 
-  const notChoose = (() => {
-    return [
-      {
-        value: '',
-        title: '无',
-        children: null ?? [],
-      },
-    ]
-  })()
+  // const notChoose = (() => {
+  //   return [
+  //     {
+  //       value: '',
+  //       title: '无',
+  //       children: null ?? [],
+  //     },
+  //   ]
+  // })()
 
   return (
     <>
@@ -183,7 +183,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
               treeNodeFilterProp="title"
             />
           </CyFormItem>
-          {Number(isOpenReview) === 1 && (
+          {/* {Number(isOpenReview) === 1 && (
             <CyFormItem label="造价" name="costUser">
               <TreeSelect
                 key="costUser"
@@ -196,12 +196,12 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 treeNodeFilterProp="title"
               />
             </CyFormItem>
-          )}
+          )} */}
 
           {/* 继续安排审核 */}
           {Number(isOpenReview) === 1 && (
             <>
-              <div className={styles.continueAudit}>
+              {/* <div className={styles.continueAudit}>
                 <div
                   className={styles.internalTitle}
                   onClick={() => setIsInternalAudit(!isInternalAudit)}
@@ -211,62 +211,62 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                     {isInternalAudit ? <UpOutlined /> : <DownOutlined />}
                   </div>
                 </div>
-              </div>
-              <div style={{ display: isInternalAudit ? 'block' : 'none' }}>
-                {/* 设计内审 */}
-                <Divider>
-                  <span className={styles.divider}>设计校审</span>
-                </Divider>
-                <CyFormItem label="校对" name="designAssessUser1">
-                  <TreeSelect
-                    key="designAssessUser1"
-                    style={{ width: '100%' }}
-                    treeData={notChoose.concat(auditData.map(mapTreeData))}
-                    placeholder="请选择"
-                    treeDefaultExpandAll
-                    allowClear
-                    showSearch
-                    treeNodeFilterProp="title"
-                  />
-                </CyFormItem>
-                <CyFormItem label="校核" name="designAssessUser2">
-                  <TreeSelect
-                    key="designAssessUser2"
-                    style={{ width: '100%' }}
-                    treeData={notChoose.concat(auditData.map(mapTreeData))}
-                    placeholder="请选择"
-                    treeDefaultExpandAll
-                    allowClear
-                    showSearch
-                    treeNodeFilterProp="title"
-                  />
-                </CyFormItem>
-                <CyFormItem label="审核" name="designAssessUser3">
-                  <TreeSelect
-                    key="designAssessUser3"
-                    style={{ width: '100%' }}
-                    treeData={notChoose.concat(auditData.map(mapTreeData))}
-                    placeholder="请选择"
-                    treeDefaultExpandAll
-                    allowClear
-                    showSearch
-                    treeNodeFilterProp="title"
-                  />
-                </CyFormItem>
-                <CyFormItem label="审定" name="designAssessUser4">
-                  <TreeSelect
-                    key="designAssessUser4"
-                    style={{ width: '100%' }}
-                    treeData={notChoose.concat(auditData.map(mapTreeData))}
-                    placeholder="请选择"
-                    treeDefaultExpandAll
-                    allowClear
-                    showSearch
-                    treeNodeFilterProp="title"
-                  />
-                </CyFormItem>
-                {/* 造价内审 */}
-                {/* <Divider>
+              </div> */}
+              {/* <div style={{ display: isInternalAudit ? 'block' : 'none' }}> */}
+              {/* 设计内审 */}
+              {/* <Divider>
+                <span className={styles.divider}>设计校审</span>
+              </Divider>
+              <CyFormItem label="校对" name="designAssessUser1">
+                <TreeSelect
+                  key="designAssessUser1"
+                  style={{ width: '100%' }}
+                  treeData={notChoose.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
+                />
+              </CyFormItem>
+              <CyFormItem label="校核" name="designAssessUser2">
+                <TreeSelect
+                  key="designAssessUser2"
+                  style={{ width: '100%' }}
+                  treeData={notChoose.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
+                />
+              </CyFormItem>
+              <CyFormItem label="审核" name="designAssessUser3">
+                <TreeSelect
+                  key="designAssessUser3"
+                  style={{ width: '100%' }}
+                  treeData={notChoose.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
+                />
+              </CyFormItem>
+              <CyFormItem label="审定" name="designAssessUser4">
+                <TreeSelect
+                  key="designAssessUser4"
+                  style={{ width: '100%' }}
+                  treeData={notChoose.concat(auditData.map(mapTreeData))}
+                  placeholder="请选择"
+                  treeDefaultExpandAll
+                  allowClear
+                  showSearch
+                  treeNodeFilterProp="title"
+                />
+              </CyFormItem> */}
+              {/* 造价内审 */}
+              {/* <Divider>
               <span className={styles.divider}>造价校审</span>
             </Divider>
             <CyFormItem label="校核" name="costAuditUser1">
@@ -299,7 +299,7 @@ const ArrangeForm: React.FC<GetGroupUserProps> = (props) => {
                 allowClear
               />
             </CyFormItem> */}
-              </div>
+              {/* </div> */}
             </>
           )}
         </>

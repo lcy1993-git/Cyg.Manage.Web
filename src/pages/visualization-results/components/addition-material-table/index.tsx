@@ -126,7 +126,6 @@ export const AdditionMaterialTable: FC<AdditionMaterialProps> = (props) => {
         const ids = companyLibData?.map((ite: any) => {
           return ite.id
         })
-        console.log(companyLibData)
         setCompanyId(ids)
         getDetail()
       },
@@ -155,7 +154,6 @@ export const AdditionMaterialTable: FC<AdditionMaterialProps> = (props) => {
       },
     }
   )
-  console.log(data, handleData, '55')
 
   return (
     <Spin spinning={loading}>

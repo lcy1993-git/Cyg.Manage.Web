@@ -220,7 +220,8 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
       if (additionMaterialParams?.projectId && additionMaterialParams?.deviceId) {
         if (
           additionMaterialParams.getProperties.id_.includes('cable_head') ||
-          additionMaterialParams.getProperties.id_.includes('design_tower')
+          additionMaterialParams.getProperties.id_.includes('design_tower') ||
+          additionMaterialParams.getProperties.id_.includes('dismantle_tower')
         ) {
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
             const decryRes = handleDecrypto(data)

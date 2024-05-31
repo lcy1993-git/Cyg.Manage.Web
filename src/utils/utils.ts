@@ -467,16 +467,19 @@ export const getStopServerList = (
         return
       }
       const { data } = res
-
       const url = window.location.href.split('/')?.slice(0, 3)?.join('/')
-
       const currenServer = data?.find(
         (item: {
-          propertys: { webSite: string; host: string | null; javaTransferHost: string | null }
+          propertys: {
+            webSite: string
+            host: string | null
+            gatewayHost: string | null
+            reviewGatewayHost: string | null
+          }
         }) => {
           if (NODE_ENV === 'development' && item?.propertys?.webSite) {
-            return item?.propertys?.webSite === 'https://srthkf2.gczhyun.com:21530/login'
-          } else if (item?.propertys?.javaTransferHost) {
+            return item?.propertys?.webSite === 'https://srthcs1.gczhyun.com:21564/'
+          } else if (item?.propertys?.gatewayHost || item?.propertys?.reviewGatewayHost) {
             return url === item?.propertys?.webSite?.split('/')?.slice(0, 3)?.join('/')
           } else if (item?.propertys?.webSite) {
             if (item?.propertys?.host) {

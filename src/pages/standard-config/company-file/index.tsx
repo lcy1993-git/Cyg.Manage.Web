@@ -552,10 +552,25 @@ const CompanyFile: React.FC = () => {
         title="编辑-文件"
         width="680px"
         visible={editFormVisible}
-        okText="确认"
-        onOk={() => sureEditCompanyFile()}
+        // okText="确认"
+        // onOk={() => sureEditCompanyFile()}
         onCancel={() => setEditFormVisible(false)}
         cancelText="取消"
+        footer={[
+          <div className={styles.editSlot}>
+            <div className={styles.editTip}>
+              注意：成果文件名称修改后，需在设计端成果参数功能下重新选择该模版。
+            </div>
+            <div>
+              <Button key="cancle" onClick={() => setEditFormVisible(false)}>
+                取消
+              </Button>
+              <Button key="save" type="primary" onClick={() => sureEditCompanyFile()}>
+                确认
+              </Button>
+            </div>
+          </div>,
+        ]}
         destroyOnClose
       >
         <Form form={editForm} onValuesChange={onEditFormChange} preserve={false}>

@@ -47,8 +47,6 @@ const ProjectInheritModal: React.FC<ProjectInheritModalProps> = (props) => {
       const handleDisclosureRange = dataSourceType === 0 ? disclosureRange : undefined
       const handlePileRange = dataSourceType === 0 ? pileRange : undefined
 
-      console.log(warehouseInfo, 'iiii')
-
       form.setFieldsValue({
         ...projectInfo,
         startTime: projectInfo?.startTime ? moment(projectInfo?.startTime) : null,

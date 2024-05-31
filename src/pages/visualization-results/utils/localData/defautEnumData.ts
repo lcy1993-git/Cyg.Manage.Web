@@ -856,6 +856,8 @@ export default [
       { value: 8, text: '无功补偿' },
       { value: 9, text: '高压计量' },
       { value: 10, text: 'PT' },
+      { value: 11, text: '接地环' },
+      { value: 12, text: '调压器' },
     ],
   },
   {

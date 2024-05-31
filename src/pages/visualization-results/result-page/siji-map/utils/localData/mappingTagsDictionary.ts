@@ -493,6 +493,14 @@ function getMappingTagsDictionary() {
           value: 10,
           text: 'PT',
         },
+        {
+          value: 11,
+          text: '接地环',
+        },
+        {
+          value: 12,
+          text: '调压器',
+        },
       ],
     })
     mappingTagsDictionary.overHeadDevice = {
