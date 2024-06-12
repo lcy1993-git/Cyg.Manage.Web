@@ -626,7 +626,7 @@ const PlanStandingBook: React.FC<StandingBookProps> = (props) => {
               placeholder="请输入变电站名称"
             />
           </TableSearch>
-        ) : currentTab === 'power ' ? (
+        ) : currentTab === 'power' ? (
           <TableSearch width="248px">
             <Search
               value={powerKeyWord}

@@ -1,21 +1,21 @@
-import React, { useState } from 'react'
-import qs from 'qs'
-import { Button, Tabs, Modal, message } from 'antd'
-import styles from './index.less'
-import PageCommonWrap from '@/components/page-common-wrap'
 import CommonTitle from '@/components/common-title'
+import PageCommonWrap from '@/components/page-common-wrap'
+import { useLayoutStore } from '@/layouts/context'
 import {
   handoverCompanyGroup,
   handoverEngineer,
   handoverTask,
 } from '@/services/personnel-config/work-handover'
+import { ExclamationCircleOutlined } from '@ant-design/icons'
 import { useMount, useUnmount } from 'ahooks'
-import { useLayoutStore } from '@/layouts/context'
+import { Button, message, Modal, Tabs } from 'antd'
+import qs from 'qs'
+import React, { useState } from 'react'
 import Description from './components/description'
 import GroupIdentity from './components/identity'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
 import ProjectManage from './components/manage'
 import MissionTab from './components/mission'
+import styles from './index.less'
 
 const { TabPane } = Tabs
 
@@ -191,9 +191,7 @@ const WorkHandover: React.FC = () => {
   }
 
   const finishEvent = () => {
-    removeTab?.(
-      `/jurisdiction-config/work-handover?id=${userId}&&name=${name}&&userName=${userName}`
-    )
+    removeTab?.(`/jurisdiction-config/work-handover?id=${userId}&name=${name}&userName=${userName}`)
   }
 
   return (

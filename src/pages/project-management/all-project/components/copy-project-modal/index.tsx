@@ -25,6 +25,7 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
   const [state, setState] = useControllableValue(props, { valuePropName: 'visible' })
   const [requestLoading, setRequestLoading] = useState(false)
   const [warehouseInfo, setWarehouseInfo] = useState<any[]>([])
+
   //获取资源库选项
   const [libData, setLibData] = useState<any[]>([])
   const [form] = Form.useForm()
@@ -90,46 +91,54 @@ const CopyProjectModal: React.FC<CopyProjectModalProps> = (props) => {
   })
 
   const edit = () => {
-    form.validateFields().then(async (value) => {
-      try {
-        await copyProject({
-          copyProjectId: projectId,
-          engineerId: engineerId,
-          ...value,
-          totalInvest: value.totalInvest ? value.totalInvest : 0,
-          disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
-          pileRange: value.pileRange ? value.pileRange : 0,
-        })
-        message.success('项目复制成功')
-        uploadAuditLog([
-          {
-            auditType: 2,
-            eventType: 9,
-            eventDetailType: '项目复制',
-            executionResult: '成功',
-            auditLevel: 2,
-            serviceAdress: `${baseUrl.project}/Porject/Copy`,
-          },
-        ])
-        setState(false)
-        form.resetFields()
-        changeFinishEvent?.()
-      } catch (msg) {
-        console.error(msg)
-        uploadAuditLog([
-          {
-            auditType: 2,
-            eventType: 9,
-            eventDetailType: '项目复制',
-            executionResult: '失败',
-            auditLevel: 2,
-            serviceAdress: `${baseUrl.project}/Porject/Copy`,
-          },
-        ])
-      } finally {
+    setRequestLoading(true)
+    form
+      .validateFields()
+      .then(async (value) => {
+        try {
+          await copyProject({
+            copyProjectId: projectId,
+            engineerId: engineerId,
+            ...value,
+            totalInvest: value.totalInvest ? value.totalInvest : 0,
+            disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
+            pileRange: value.pileRange ? value.pileRange : 0,
+          })
+          message.success('项目复制成功')
+          uploadAuditLog([
+            {
+              auditType: 2,
+              eventType: 9,
+              eventDetailType: '项目复制',
+              executionResult: '成功',
+              auditLevel: 2,
+              serviceAdress: `${baseUrl.project}/Porject/Copy`,
+            },
+          ])
+          setState(false)
+          setRequestLoading(false)
+          form.resetFields()
+          changeFinishEvent?.()
+        } catch (msg) {
+          console.error(msg)
+          setRequestLoading(false)
+          uploadAuditLog([
+            {
+              auditType: 2,
+              eventType: 9,
+              eventDetailType: '项目复制',
+              executionResult: '失败',
+              auditLevel: 2,
+              serviceAdress: `${baseUrl.project}/Porject/Copy`,
+            },
+          ])
+        } finally {
+          setRequestLoading(false)
+        }
+      })
+      .catch(() => {
         setRequestLoading(false)
-      }
-    })
+      })
   }
 
   useEffect(() => {

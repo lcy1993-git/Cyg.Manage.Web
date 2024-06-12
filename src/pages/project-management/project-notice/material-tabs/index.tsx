@@ -254,7 +254,6 @@ const MaterialTabs: React.FC = () => {
   const changeTabEvent = (key: string) => {
     setCurrentKey(key)
     // setStage(2)
-    setSelectLable('初设统计')
   }
 
   useUpdateEffect(() => {

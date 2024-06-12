@@ -1,19 +1,14 @@
-import {
-  getAdditionalDetails,
-  getCompanyLibInfo,
-} from '@/services/visualization-results/visualization-results'
-import { useRequest } from 'ahooks'
 import { Spin, Table } from 'antd'
-import { FC, useState } from 'react'
+import { FC } from 'react'
 
 export interface AdditionMaterialProps {
   data?: any[]
-  //   loading: boolean
-  libId: string
+  loading?: boolean
+  libId?: string
 }
 
 //@ts-ignore
-const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
+// const { companyId } = JSON.parse(localStorage.getItem('userInfo'))
 // const stateMenu = {
 //   0: '无',
 //   1: '原有',
@@ -113,59 +108,18 @@ export const columns = [
 ]
 
 export const AdditionMaterialTable: FC<AdditionMaterialProps> = (props) => {
-  const { data, libId } = props
-  const [handleData, setHandleData] = useState<any>([])
-  const [companyLibId, setCompanyId] = useState<string[]>([])
-  const materialIds = data?.map((item: any) => item.materialId)
-
-  //获取公司库信息
-  const { data: companyLibData } = useRequest(
-    () => getCompanyLibInfo({ status: 0, libType: 1, libSource: companyId }),
-    {
-      onSuccess: () => {
-        const ids = companyLibData?.map((ite: any) => {
-          return ite.id
-        })
-        setCompanyId(ids)
-        getDetail()
-      },
-    }
-  )
-  const {
-    data: detailsData,
-    run: getDetail,
-    loading,
-  } = useRequest(
-    () =>
-      getAdditionalDetails({
-        materialIds: materialIds,
-        resourceLibID: libId,
-        additionalLibIds: companyLibId,
-      }),
-    {
-      manual: true,
-      onSuccess: () => {
-        setHandleData(
-          data?.map((item: any) => {
-            const findValue = detailsData?.find((ite: any) => ite.materialID === item.materialId)
-            return { ...item, ...findValue }
-          })
-        )
-      },
-    }
-  )
+  const { data, loading } = props
 
   return (
-    <Spin spinning={loading}>
+    <Spin spinning={loading} tip="数据请求中...">
       <Table
         columns={columns}
         bordered
         size="middle"
-        loading={loading}
         rowKey="id"
         pagination={false}
-        dataSource={handleData}
-        scroll={{ x: 1600 }}
+        dataSource={data}
+        scroll={{ x: 1600, y: 590 }}
       />
     </Spin>
   )

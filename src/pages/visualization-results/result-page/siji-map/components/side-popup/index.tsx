@@ -649,7 +649,19 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
     // return materialData?.content && materialData?.content.length > 0
     //   ? generateMaterialTreeList(materialData?.content)
     //   : [];
-  }, [JSON.stringify(materialData)])
+  }, [materialData?.materialList])
+
+  // 附加材料表变化
+  const addMaterialDataRes = useMemo(() => {
+    if (
+      Array.isArray(materialData?.additionalMaterialList) &&
+      materialData?.additionalMaterialList?.length > 0
+    ) {
+      return materialData?.additionalMaterialList
+    } else {
+      return []
+    }
+  }, [materialData?.additionalMaterialList])
 
   /**
    * 当modal click确定的时候
@@ -716,8 +728,9 @@ const SjSidePopup: React.FC<SidePopupProps> = observer((props) => {
         )}
         {activeType === 'additionMaterial' && (
           <AdditionMaterialTable
-            data={materialData?.additionalMaterialList}
+            data={addMaterialDataRes}
             libId={resourceLibId}
+            loading={matiralsLoading}
           />
         )}
 

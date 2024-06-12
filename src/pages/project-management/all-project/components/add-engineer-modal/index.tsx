@@ -61,35 +61,15 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
   }
 
   const sureAddEngineerEvent = () => {
-    form.validateFields().then(async (values) => {
-      try {
-        setSaveLoading(true)
-        const {
-          projects,
-          name,
-          province,
-          libId,
-          inventoryOverviewId,
-          warehouseId,
-          compiler,
-          compileTime,
-          organization,
-          startTime,
-          endTime,
-          company,
-          plannedYear,
-          importance,
-          grade,
-        } = values
-
-        const [provinceNumber, city, area] = province
-        await addEngineer({
-          projects,
-          engineer: {
+    setSaveLoading(true)
+    form
+      .validateFields()
+      .then(async (values) => {
+        try {
+          const {
+            projects,
             name,
-            province: !isNaN(provinceNumber) ? provinceNumber : '',
-            city: !isNaN(city) ? city : '',
-            area: !isNaN(area) ? area : '',
+            province,
             libId,
             inventoryOverviewId,
             warehouseId,
@@ -102,47 +82,74 @@ const AddEngineerModal: React.FC<AddEngineerModalProps> = (props) => {
             plannedYear,
             importance,
             grade,
-          },
-        })
+          } = values
 
-        if (!finishEvent) {
-          const res = await getProjectTableList(initParams)
-          const projectId = res?.items[0]?.projects[0]?.id
-
-          const finalData = pointData.map((item: any) => {
-            return { ...item, projectId: projectId }
+          const [provinceNumber, city, area] = province
+          await addEngineer({
+            projects,
+            engineer: {
+              name,
+              province: !isNaN(provinceNumber) ? provinceNumber : '',
+              city: !isNaN(city) ? city : '',
+              area: !isNaN(area) ? area : '',
+              libId,
+              inventoryOverviewId,
+              warehouseId,
+              compiler,
+              compileTime,
+              organization,
+              startTime,
+              endTime,
+              company,
+              plannedYear,
+              importance,
+              grade,
+            },
           })
-          await relationProject(finalData)
+
+          if (!finishEvent) {
+            const res = await getProjectTableList(initParams)
+            const projectId = res?.items[0]?.projects[0]?.id
+
+            const finalData = pointData.map((item: any) => {
+              return { ...item, projectId: projectId }
+            })
+            await relationProject(finalData)
+          }
+          uploadAuditLog([
+            {
+              auditType: 2,
+              eventType: 9,
+              eventDetailType: '项目立项',
+              executionResult: '成功',
+              auditLevel: 2,
+              serviceAdress: `${baseUrl.project}/Porject/CreateMultipleProject`,
+            },
+          ])
+          message.success('立项成功')
+          setState(false)
+          setSaveLoading(false)
+          finishEvent ? finishEvent?.() : refresh()
+        } catch (msg) {
+          uploadAuditLog([
+            {
+              auditType: 2,
+              eventType: 9,
+              eventDetailType: '项目立项',
+              executionResult: '失败',
+              auditLevel: 4,
+              serviceAdress: `${baseUrl.project}/Porject/CreateMultipleProject`,
+            },
+          ])
+          setSaveLoading(false)
+          console.error(msg)
+        } finally {
+          setSaveLoading(false)
         }
-        uploadAuditLog([
-          {
-            auditType: 2,
-            eventType: 9,
-            eventDetailType: '项目立项',
-            executionResult: '成功',
-            auditLevel: 2,
-            serviceAdress: `${baseUrl.project}/Porject/CreateMultipleProject`,
-          },
-        ])
-        message.success('立项成功')
-        setState(false)
-        finishEvent ? finishEvent?.() : refresh()
-      } catch (msg) {
-        uploadAuditLog([
-          {
-            auditType: 2,
-            eventType: 9,
-            eventDetailType: '项目立项',
-            executionResult: '失败',
-            auditLevel: 4,
-            serviceAdress: `${baseUrl.project}/Porject/CreateMultipleProject`,
-          },
-        ])
-        console.error(msg)
-      } finally {
+      })
+      .catch(() => {
         setSaveLoading(false)
-      }
-    })
+      })
   }
 
   return (

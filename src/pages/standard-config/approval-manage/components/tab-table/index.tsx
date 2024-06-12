@@ -5,7 +5,7 @@ import { useLayoutStore } from '@/layouts/context'
 import { resourceLibApproval } from '@/services/resource-config/approval'
 import { CheckSquareOutlined, CloseSquareOutlined } from '@ant-design/icons'
 import { useMount } from 'ahooks'
-import { Button, Form, Input, message, Modal, Table } from 'antd'
+import { Button, Form, Input, message, Modal, Spin, Table } from 'antd'
 import React, { useState } from 'react'
 import {
   CableChannelColumns,
@@ -20,8 +20,8 @@ import CategoryInfo from '../category-info'
 import ComponentAttribute from '../component-attribute'
 import ComponentDetail from '../component-detail'
 import LineProperty from '../line-property'
-
 import styles from './index.less'
+
 const { TextArea } = Input
 interface Props {
   type: string
@@ -43,13 +43,16 @@ const TabTable: React.FC<Props> = (props) => {
   const [approvalType, setApprovalType] = useState<string>('')
   const [catogeryInfoVisible, setCatogeryInfoVisible] = useState<boolean>(false)
   const [approvalForm] = Form.useForm()
+  // 加载效果
+  const [resLoading, setResLoading] = useState<boolean>(false)
+
   useMount(() => {
     const operationColumns = [
       {
         dataIndex: 'operationType',
         index: 'operationType',
         title: '操作类型',
-        width: 120,
+        width: 160,
         render: (text: any, record: any) => {
           return record.operationType === 10 ? (
             <ImageIcon width={52} height={18} imgUrl="resource-add.png" />
@@ -108,6 +111,7 @@ const TabTable: React.FC<Props> = (props) => {
     setApprovalVisible(true)
   }
   const approvalHandle = () => {
+    setResLoading(true)
     approvalForm.validateFields().then(async (value) => {
       if (approvalType === 'reject') {
         // 驳回
@@ -121,6 +125,7 @@ const TabTable: React.FC<Props> = (props) => {
         setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
         setApprovalVisible(false)
         refresh?.()
+        setResLoading(false)
         setClickKey([])
       } else {
         // 通过
@@ -134,6 +139,7 @@ const TabTable: React.FC<Props> = (props) => {
         setResourceLibApprovalListFlag(!resourceLibApprovalListFlag)
         setApprovalVisible(false)
         refresh?.()
+        setResLoading(false)
         setClickKey([])
       }
     })
@@ -325,18 +331,27 @@ const TabTable: React.FC<Props> = (props) => {
         width="680px"
         visible={approvalVisible}
         onCancel={() => setApprovalVisible(false)}
-        onOk={() => {
-          approvalHandle()
-        }}
-        okText="确认"
+        footer={[
+          <Button key="cancle" onClick={() => setApprovalVisible(false)}>
+            取消
+          </Button>,
+          <Button key="save" type="primary" loading={resLoading} onClick={() => approvalHandle()}>
+            确认
+          </Button>,
+        ]}
         cancelText="取消"
         destroyOnClose
       >
-        <Form form={approvalForm} preserve={false}>
-          <CyFormItem label="备注" name="approvalRemark">
-            <TextArea showCount maxLength={100} placeholder="备注说明" />
-          </CyFormItem>
-        </Form>
+        <Spin
+          spinning={resLoading}
+          tip={approvalType === 'reject' ? '审批驳回中...' : '审批通过中...'}
+        >
+          <Form form={approvalForm} preserve={false}>
+            <CyFormItem label="备注" name="approvalRemark">
+              <TextArea showCount maxLength={100} placeholder="备注说明" />
+            </CyFormItem>
+          </Form>
+        </Spin>
       </Modal>
     </div>
   )

@@ -27,26 +27,33 @@ const AddProjectModal: React.FC<AddProjectProps> = (props) => {
   })
 
   const addProjectEvent = () => {
-    form.validateFields().then(async (value) => {
-      try {
-        await addProject({
-          engineerId,
-          ...value,
-          totalInvest: value.totalInvest ? value.totalInvest : 0,
-          disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
-        })
+    setRequestLoading(true)
+    form
+      .validateFields()
+      .then(async (value) => {
+        try {
+          await addProject({
+            engineerId,
+            ...value,
+            totalInvest: value.totalInvest ? value.totalInvest : 0,
+            disclosureRange: value.disclosureRange ? value.disclosureRange : 0,
+          })
 
-        message.success('项目新增成功')
-        setState(false)
-
-        form.resetFields()
-        changeFinishEvent?.()
-      } catch (msg) {
-        console.error(msg)
-      } finally {
+          message.success('项目新增成功')
+          setState(false)
+          setRequestLoading(false)
+          form.resetFields()
+          changeFinishEvent?.()
+        } catch (msg) {
+          console.error(msg)
+          setRequestLoading(false)
+        } finally {
+          setRequestLoading(false)
+        }
+      })
+      .catch(() => {
         setRequestLoading(false)
-      }
-    })
+      })
   }
 
   const modalCloseEvent = () => {

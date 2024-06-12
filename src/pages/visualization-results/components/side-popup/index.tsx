@@ -223,6 +223,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           additionMaterialParams.getProperties.id_.includes('design_tower') ||
           additionMaterialParams.getProperties.id_.includes('dismantle_tower')
         ) {
+          console.log(additionMaterialParams, '111100000')
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
             const decryRes = handleDecrypto(data)
             if (decryRes.isSuccess) {
@@ -252,6 +253,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         reviewRun(reviewData.id)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(dataResource), rightSidebarVisible])
 
   const mediaRef = useRef<HTMLSpanElement>(null)
@@ -643,7 +645,19 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     // return materialData?.content && materialData?.content.length > 0
     //   ? generateMaterialTreeList(materialData?.content)
     //   : [];
-  }, [JSON.stringify(materialData)])
+  }, [materialData?.materialList])
+
+  // 附加材料表变化
+  const addMaterialDataRes = useMemo(() => {
+    if (
+      Array.isArray(materialData?.additionalMaterialList) &&
+      materialData?.additionalMaterialList?.length > 0
+    ) {
+      return materialData?.additionalMaterialList
+    } else {
+      return []
+    }
+  }, [materialData?.additionalMaterialList])
 
   /**
    * 当modal click确定的时候
@@ -746,8 +760,9 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         )}
         {activeType === 'additionMaterial' && (
           <AdditionMaterialTable
-            data={materialData?.additionalMaterialList}
+            data={addMaterialDataRes}
             libId={resourceLibId}
+            loading={matiralsLoading}
           />
         )}
 
@@ -782,14 +797,14 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
         visible={mediaListVisibel}
         width="96%"
         onOk={onOkClick}
-        // onCancel={() => store.setMediaListVisibel(false)}
+        onCancel={() => store.setMediaListVisibel(false)}
         // width={1200}
         footer={[
           <Button key="cancle" onClick={() => store.setMediaListVisibel(false)}>
             关闭
           </Button>,
         ]}
-        maskClosable={true}
+        maskClosable={false}
       >
         <Table
           columns={mediaColumns}
@@ -857,6 +872,7 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
             收起
           </div>
           <iframe
+            title=" "
             key={threeRouter}
             width="100%"
             height="100%"
