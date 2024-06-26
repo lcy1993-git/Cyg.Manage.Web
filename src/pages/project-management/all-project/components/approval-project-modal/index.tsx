@@ -1,21 +1,16 @@
+import FileUpload from '@/components/file-upload'
+import { downLoadFileItem, uploadCompanyFile } from '@/services/operation-config/company-file'
 import {
   createEngineerFile,
   delEngineerFile,
   GetEngineerFileGetList,
 } from '@/services/project-management/all-project'
-import { downLoadFileItem } from '@/services/operation-config/company-file'
-import { useControllableValue, useMount } from 'ahooks'
 import { getUploadUrl } from '@/services/resource-config/drawing'
-import { Button, Table } from 'antd'
-import { message, Modal } from 'antd'
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import { useRequest } from 'ahooks'
-
-import FileUpload from '@/components/file-upload'
-
-import styles from './index.less'
-import { uploadCompanyFile } from '@/services/operation-config/company-file'
+import { useControllableValue, useMount, useRequest } from 'ahooks'
+import { Button, message, Modal, Table } from 'antd'
 import moment from 'moment'
+import React, { Dispatch, SetStateAction, useState } from 'react'
+import styles from './index.less'
 
 interface EditEngineerProps {
   engineerId: string
@@ -52,6 +47,7 @@ const ApprovalProjectModal: React.FC<EditEngineerProps> = (props) => {
     // for IE
     //@ts-ignore
     if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      // @ts-ignore
       window.navigator.msSaveOrOpenBlob(blob, fileName)
     } else {
       // for Non-IE

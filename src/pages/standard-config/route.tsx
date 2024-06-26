@@ -58,6 +58,13 @@ const ApprovalManage = Loadable({
   delay: 150,
 })
 
+const StationHouse = Loadable({
+  loader: () => import('@/pages/standard-config/station-house'),
+  loading: Loading,
+  delay: 150,
+})
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default [
   {
     title: '典设资源库',
@@ -108,5 +115,10 @@ export default [
     title: '资源审批管理',
     path: '/standard-config/approval-manage',
     component: <ApprovalManage />,
+  },
+  {
+    title: '站房方案管理',
+    path: '/standard-config/station-house',
+    component: <StationHouse />,
   },
 ]
