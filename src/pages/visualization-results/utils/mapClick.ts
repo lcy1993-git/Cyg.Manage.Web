@@ -122,6 +122,9 @@ let selectedFeature = null
  */
 let trackRecordDate = ''
 let mapContent = null
+let clickEvt: any = null
+let clickOps: any = null
+let isShowCableStatus = false
 
 export const getMoveData = (map: any) => {
   let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
@@ -132,8 +135,23 @@ export const getMoveData = (map: any) => {
   }
 }
 
+export const changCheck = (map: any, isShowCable: any) => {
+  // let highlightLayer = getLayerByName('highlightLayer', map.getLayers().getArray())
+  // if(highlightLayer)
+  //   console.log(highlightLayer.getSource().getFeatures());
+  if (clickEvt && clickOps) {
+    clearHighlightLayer(map)
+    isShowCableStatus = isShowCable
+    setTimeout(() => {
+      mapClick(clickEvt, map, clickOps)
+    }, 1000) // 等待1秒（1000毫秒）
+  }
+}
+
 export const mapClick = (evt: any, map: any, ops: any) => {
   mapContent = map
+  clickEvt = evt
+  clickOps = ops
 
   // 解决本地存储mappingTagsData的bug
   const mappingTagsData = getMappingTagsDictionary()
@@ -283,9 +301,19 @@ export const mapClick = (evt: any, map: any, ops: any) => {
     }
     let highlightFeatures = []
     let totalLength = 0
+    let totalMode = feature.getProperties().mode
+    let totalkvLevel = feature.getProperties().kv_level
+    let totalState = feature.getProperties().state
+    let totalName = feature.getProperties().name
+    let totalIsupgraded = feature.getProperties().isupgraded
+    let totalRemark = feature.getProperties().remark
     if (layerName === 'line' || layerName === 'user_line' || layerName === 'zero_guy') {
       let layerTypeValue = feature.getProperties().layerType
-      if (feature.getProperties().polyline_id && feature.getProperties().is_cable) {
+      if (
+        feature.getProperties().polyline_id &&
+        feature.getProperties().is_cable &&
+        isShowCableStatus
+      ) {
         map
           .getLayers()
           .getArray()
@@ -314,6 +342,26 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                             let l = Number(f.getProperties().length) || 0
                             totalLength += l
                           }
+                          if (f.getProperties().mode !== totalMode) {
+                            totalMode = '*多种*'
+                          }
+                          if (f.getProperties().kv_level !== totalkvLevel) {
+                            totalkvLevel = '*多种*'
+                          }
+                          if (f.getProperties().state !== totalState) {
+                            totalState = '*多种*'
+                          }
+                          if (f.getProperties().name !== totalName) {
+                            totalName = '*多种*'
+                          }
+                          if (f.getProperties().isupgraded !== totalIsupgraded) {
+                            totalIsupgraded = '*多种*'
+                          }
+
+                          if (f.getProperties().remark !== totalRemark) {
+                            totalRemark = '*多种*'
+                          }
+
                           highlightFeatures.push(f)
                         }
                       })
@@ -394,7 +442,7 @@ export const mapClick = (evt: any, map: any, ops: any) => {
 
     for (var p in mappingTags) {
       var mappingTag = mappingTags[p]
-      if (mappingTagValues != undefined && mappingTagValues[p] != undefined) {
+      if (mappingTagValues !== undefined && mappingTagValues[p] !== undefined) {
         pJSON[mappingTag] = mappingTagValues[p][feature.getProperties()[p]]
       } else {
         switch (p) {
@@ -552,6 +600,27 @@ export const mapClick = (evt: any, map: any, ops: any) => {
             pJSON[mappingTag] = feature.getProperties()[p]
             break
         }
+      }
+
+      switch (p) {
+        case 'mode':
+          if (totalMode === '*多种*') pJSON[mappingTag] = totalMode
+          break
+        case 'kv_level':
+          if (totalkvLevel === '*多种*') pJSON[mappingTag] = totalkvLevel
+          break
+        case 'state':
+          if (totalState === '*多种*') pJSON[mappingTag] = totalState
+          break
+        case 'name':
+          if (totalName) pJSON[mappingTag] = totalName
+          break
+        case 'isupgraded':
+          if (totalIsupgraded) pJSON[mappingTag] = totalIsupgraded
+          break
+        case 'remark':
+          if (totalRemark) pJSON[mappingTag] = totalRemark
+          break
       }
     }
 

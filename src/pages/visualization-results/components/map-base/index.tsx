@@ -2,14 +2,14 @@ import { initIpLocation, loadEnums } from '@/services/visualization-results/visu
 import { handleDecrypto } from '@/utils/utils'
 import { useMount, useSize, useUpdateEffect } from 'ahooks'
 import { observer } from 'mobx-react-lite'
-import LayerGroup from 'ol/layer/Group'
 import Map from 'ol/Map'
+import LayerGroup from 'ol/layer/Group'
 import { transform } from 'ol/proj'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useContainer } from '../../result-page/mobx-store'
 import { bd09Towgs84 } from '../../utils'
 import { BaseMapProps } from '../../utils/init'
-import { mapClick, mapMoveend, mapPointermove } from '../../utils/mapClick'
+import { changCheck, mapClick, mapMoveend, mapPointermove } from '../../utils/mapClick'
 import {
   changeLayerType,
   checkZoom,
@@ -78,6 +78,7 @@ const BaseMap = observer((props: BaseMapProps) => {
 
   // 右侧边栏状态
   const [rightSidebarVisiviabel, setRightSidebarVisiviabelMap] = useState(false)
+  const [isShowCable, setIsShowCable] = useState(false)
   const setRightSidebarVisiviabel = (state: boolean) => {
     ;(map && state) || clearHighlightLayer(map)
     setRightSidebarVisiviabelMap(state)
@@ -87,13 +88,15 @@ const BaseMap = observer((props: BaseMapProps) => {
   // 勘察轨迹
   const [surveyModalVisible, setSurveyModalVisible] = useState(false)
   const [surveyModalData, setSurveyModalData] = useState(null)
+
+  const initialMap = useRef(null)
   // 挂载
   useMount(() => {
     loadEnums().then((data) => {
       const decryData = handleDecrypto(data)
       localStorage.setItem('loadEnumsData', JSON.stringify(decryData.content))
     })
-    const initialMap = new Map({
+    initialMap.current = new Map({
       target: mapElement.current!,
       layers: [...layers],
       view,
@@ -102,16 +105,24 @@ const BaseMap = observer((props: BaseMapProps) => {
 
     // 初始化勘察图层、方案图层、设计图层、删除图层、
     layerGroups.forEach((item: LayerGroup) => {
-      initialMap.addLayer(item)
+      initialMap.current.addLayer(item)
     })
 
     // 初始化勘察轨迹图层、交底轨迹图层
     trackLayers.forEach((item: LayerGroup) => {
-      initialMap.addLayer(item)
+      initialMap.current.addLayer(item)
     })
-    drawBox(initialMap, layerGroups)
+    drawBox(initialMap.current, layerGroups)
 
-    const ops = { layers, layerGroups, view, setView, setLayerGroups, map: initialMap, kvLevel }
+    const ops = {
+      layers,
+      layerGroups,
+      view,
+      setView,
+      setLayerGroups,
+      map: initialMap.current,
+      kvLevel,
+    }
 
     document.addEventListener('keydown', async (e) => {
       if (e.keyCode === 16) {
@@ -120,13 +131,13 @@ const BaseMap = observer((props: BaseMapProps) => {
 
       if (e.keyCode === 17) {
         // Ctrl开启点选
-        initialMap.set('isCtrl', true)
+        initialMap.current.set('isCtrl', true)
       }
 
       if (e.keyCode === 27) {
         // esc清空迁移数据
         // Ctrl开启点选
-        clearHighlightLayer(initialMap)
+        clearHighlightLayer(initialMap.current)
       }
     })
 
@@ -136,35 +147,38 @@ const BaseMap = observer((props: BaseMapProps) => {
       }
 
       if (e.keyCode === 17) {
-        initialMap.set('isCtrl', false)
+        initialMap.current.set('isCtrl', false)
       }
     })
 
     // 地图点击事件
-    initialMap.on('click', (e: Event) =>
-      mapClick(e, initialMap, {
+    initialMap.current.on('click', (e: Event) =>
+      mapClick(e, initialMap.current, {
         setRightSidebarVisiviabel,
         setRightSidebarData,
         setSurveyModalVisible,
         setSurveyModalData,
         addMediaData,
+        isShowCable,
       })
     )
-    initialMap.on('pointermove', (e: Event) => mapPointermove(e, initialMap))
-    initialMap.on('moveend', (e: Event) => {
+    initialMap.current.on('pointermove', (e: Event) => mapPointermove(e, initialMap.current))
+    initialMap.current.on('moveend', (e: Event) => {
       refreshMap(ops, null)
-      mapMoveend(e, initialMap)
+      mapMoveend(e, initialMap.current)
     })
 
-    initialMap.getView().on('change:resolution', (e: Event) => {
-      checkZoom(e, initialMap)
+    initialMap.current.getView().on('change:resolution', (e: Event) => {
+      checkZoom(e, initialMap.current)
     })
     refreshMap(ops, projects!)
-    setMap(initialMap)
-    store.setMapRef(initialMap)
-
-    // 注册 点击事件
+    setMap(initialMap.current)
+    store.setMapRef(initialMap.current)
   })
+
+  useEffect(() => {
+    changCheck(initialMap.current, isShowCable)
+  }, [isShowCable])
 
   // 动态刷新refreshMap
   useEffect(() => {
@@ -325,6 +339,8 @@ const BaseMap = observer((props: BaseMapProps) => {
     rightSidebarVisible: rightSidebarVisiviabel,
     data: rightSidebarData,
     setRightSidebarVisiviabel,
+    isShowCable,
+    setIsShowCable,
   }
 
   return (
