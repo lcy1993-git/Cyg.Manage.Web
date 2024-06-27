@@ -13,7 +13,7 @@ import {
 import { handleDecrypto, translateMatDataToTree } from '@/utils/utils'
 import { CloseOutlined, StepBackwardOutlined } from '@ant-design/icons'
 import { useRequest } from 'ahooks'
-import { Button, Input, message, Modal, Table } from 'antd'
+import { Button, Checkbox, Input, message, Modal, Table } from 'antd'
 import classnames from 'classnames'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
@@ -37,6 +37,8 @@ export interface SidePopupProps {
   rightSidebarVisible: boolean
   setRightSidebarVisiviabel: (arg0: boolean) => void
   height: number
+  isShowCable: boolean
+  setIsShowCable: any
 }
 
 const modalTitle = {
@@ -78,7 +80,15 @@ export interface CommentListItemDataType {
   datetime: React.ReactNode
 }
 const SidePopup: React.FC<SidePopupProps> = observer((props) => {
-  const { data: dataResource, rightSidebarVisible, setRightSidebarVisiviabel, height } = props
+  const {
+    data: dataResource,
+    rightSidebarVisible,
+    setRightSidebarVisiviabel,
+    height,
+    isShowCable,
+    setIsShowCable,
+  } = props
+
   const [commentRquestBody, setcommentRquestBody] = useState<CommentRequestType>()
   const [resourceLibId, setResourceLibId] = useState<string>('')
   const [activeType, setActiveType] = useState<string | undefined>(undefined)
@@ -223,7 +233,6 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           additionMaterialParams.getProperties.id_.includes('design_tower') ||
           additionMaterialParams.getProperties.id_.includes('dismantle_tower')
         ) {
-          console.log(additionMaterialParams, '111100000')
           getlibId_new({ projectId: additionMaterialParams?.projectId }).then((data) => {
             const decryRes = handleDecrypto(data)
             if (decryRes.isSuccess) {
@@ -680,6 +689,17 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
     }
   }
 
+  const onChange = (e: any) => {
+    setIsShowCable(e.target.checked)
+  }
+
+  const isShowCableText = () => {
+    return (
+      dataSource.find((item) => item.propertyName === '所属图层')?.data === '设计图层' &&
+      dataSource.find((item) => item.propertyName === '元素类型')?.data === '电缆'
+    )
+  }
+
   return (
     <div className={styles.wrap}>
       <Modal
@@ -843,6 +863,13 @@ const SidePopup: React.FC<SidePopupProps> = observer((props) => {
           >
             <CloseOutlined />
           </div>
+          {isShowCableText() && (
+            <div style={{ marginLeft: '5px' }}>
+              <Checkbox onChange={onChange} defaultChecked={isShowCable}>
+                显示整根电缆
+              </Checkbox>
+            </div>
+          )}
           <Table
             key={JSON.stringify(dataResource)}
             bordered
