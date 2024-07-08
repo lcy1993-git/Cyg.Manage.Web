@@ -336,7 +336,10 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                     v.getSource()
                       .getFeatures()
                       .forEach(function (f: any) {
-                        if (f.getProperties().polyline_id === feature.getProperties().polyline_id) {
+                        if (
+                          f.getProperties().polyline_id === feature.getProperties().polyline_id &&
+                          f.getProperties().segment_id === feature.getProperties().segment_id
+                        ) {
                           f.set('layerType', layerTypeValue)
                           if (f.getProperties().length) {
                             let l = Number(f.getProperties().length) || 0
@@ -357,7 +360,6 @@ export const mapClick = (evt: any, map: any, ops: any) => {
                           if (f.getProperties().isupgraded !== totalIsupgraded) {
                             totalIsupgraded = '*多种*'
                           }
-
                           if (f.getProperties().remark !== totalRemark) {
                             totalRemark = '*多种*'
                           }
